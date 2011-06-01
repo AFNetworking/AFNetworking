@@ -53,7 +53,7 @@ If you're tired of massive libraries that try to do too much, if you've taken it
 
 ## Example Project
 
-In order to demonstrate the power and flexibility of AFNetworking, we've included a small sample project. `AFNetworkingExample` asks for your current location and displays [Gowalla](http://gowalla.com/) spots nearby you. It uses `AFHTTPOperation` to load and parse the spots JSON, and `AFImageRequestOperation` to asynchronously load spot stamp images as you scroll.
+In order to demonstrate the power and flexibility of AFNetworking, we've included a small sample project, which asks for your current location and displays [Gowalla](http://gowalla.com/) spots nearby you. It uses `AFHTTPOperation` to load and parse the spots JSON, and `AFImageRequestOperation` to asynchronously load spot stamp images as you scroll.
 
 Take a close look at `AFGowallaAPIClient` and `AFImageRequest`. These two classes provide convenience methods on top of the core AFNetworking classes. They provide higher-level methods for creating requests, and enqueueing them into an `NSOperationQueue`.
 
