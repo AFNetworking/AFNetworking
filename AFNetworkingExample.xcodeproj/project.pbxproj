@@ -18,7 +18,6 @@
 		F8E469911395742500DB05C8 /* AFURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E4698B1395742500DB05C8 /* AFURLCache.m */; };
 		F8E469921395742500DB05C8 /* UIImage+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E4698D1395742500DB05C8 /* UIImage+AFNetworking.m */; };
 		F8E469A9139574DA00DB05C8 /* QHTTPOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469A4139574DA00DB05C8 /* QHTTPOperation.m */; };
-		F8E469AA139574DA00DB05C8 /* QReachabilityOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469A6139574DA00DB05C8 /* QReachabilityOperation.m */; };
 		F8E469AB139574DA00DB05C8 /* QRunLoopOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469A8139574DA00DB05C8 /* QRunLoopOperation.m */; };
 		F8E469B31395752400DB05C8 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469B21395752400DB05C8 /* JSONKit.m */; };
 		F8E469BC139575D000DB05C8 /* AFGowallaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469B9139575D000DB05C8 /* AFGowallaAPI.m */; };
@@ -56,8 +55,6 @@
 		F8E4698D1395742500DB05C8 /* UIImage+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+AFNetworking.m"; sourceTree = "<group>"; };
 		F8E469A3139574DA00DB05C8 /* QHTTPOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QHTTPOperation.h; sourceTree = "<group>"; };
 		F8E469A4139574DA00DB05C8 /* QHTTPOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QHTTPOperation.m; sourceTree = "<group>"; };
-		F8E469A5139574DA00DB05C8 /* QReachabilityOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QReachabilityOperation.h; sourceTree = "<group>"; };
-		F8E469A6139574DA00DB05C8 /* QReachabilityOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QReachabilityOperation.m; sourceTree = "<group>"; };
 		F8E469A7139574DA00DB05C8 /* QRunLoopOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRunLoopOperation.h; sourceTree = "<group>"; };
 		F8E469A8139574DA00DB05C8 /* QRunLoopOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRunLoopOperation.m; sourceTree = "<group>"; };
 		F8E469B11395752400DB05C8 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
@@ -190,8 +187,6 @@
 			children = (
 				F8E469A3139574DA00DB05C8 /* QHTTPOperation.h */,
 				F8E469A4139574DA00DB05C8 /* QHTTPOperation.m */,
-				F8E469A5139574DA00DB05C8 /* QReachabilityOperation.h */,
-				F8E469A6139574DA00DB05C8 /* QReachabilityOperation.m */,
 				F8E469A7139574DA00DB05C8 /* QRunLoopOperation.h */,
 				F8E469A8139574DA00DB05C8 /* QRunLoopOperation.m */,
 			);
@@ -339,7 +334,6 @@
 				F8E469911395742500DB05C8 /* AFURLCache.m in Sources */,
 				F8E469921395742500DB05C8 /* UIImage+AFNetworking.m in Sources */,
 				F8E469A9139574DA00DB05C8 /* QHTTPOperation.m in Sources */,
-				F8E469AA139574DA00DB05C8 /* QReachabilityOperation.m in Sources */,
 				F8E469AB139574DA00DB05C8 /* QRunLoopOperation.m in Sources */,
 				F8E469B31395752400DB05C8 /* JSONKit.m in Sources */,
 				F8E469BC139575D000DB05C8 /* AFGowallaAPI.m in Sources */,
@@ -433,6 +427,7 @@
 				F8E469831395739D00DB05C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
