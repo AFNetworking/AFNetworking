@@ -34,5 +34,6 @@
 
 + (void)requestImageWithURLString:(NSString *)urlString options:(AFImageRequestOptions)options block:(void (^)(UIImage *image))block;
 + (void)requestImageWithURLString:(NSString *)urlString size:(CGSize)imageSize options:(AFImageRequestOptions)options block:(void (^)(UIImage *image))block;
-
++ (void)cancelImageRequestOperationsForURLString:(NSString *)urlString;
++ (void)cancelAllImageRequestOperations;
 @end

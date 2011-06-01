@@ -80,6 +80,10 @@
 
 #pragma mark - UITableViewCell
 
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    [AFImageRequest cancelImageRequestOperationsForURLString:self.imageURLString];
+}
 
 #pragma mark - UIView
 

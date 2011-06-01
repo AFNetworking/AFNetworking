@@ -41,9 +41,9 @@ static NSMutableSet *_cachedRequests = nil;
 }
 
 + (void)requestImageWithURLString:(NSString *)urlString size:(CGSize)imageSize options:(AFImageRequestOptions)options block:(void (^)(UIImage *image))block {
-	// Append a hash to the image URL so that unique image options get cached separately
-    NSString *cacheKey = [NSString stringWithFormat:@"%fx%f:%d", imageSize.width, imageSize.height, options];
-	NSURL *url = [NSURL URLWithString:[urlString stringByAppendingString:[NSString stringWithFormat:@"#%@", cacheKey]]];
+	// Append a hash anchor to the image URL so that unique image options get cached separately
+    NSString *cacheAnchor = [NSString stringWithFormat:@"%fx%f:%d", imageSize.width, imageSize.height, options];
+	NSURL *url = [NSURL URLWithString:[urlString stringByAppendingString:[NSString stringWithFormat:@"#%@", cacheAnchor]]];
 	if (!url) {
 		if (block) {
 			block(nil);
@@ -68,6 +68,30 @@ static NSMutableSet *_cachedRequests = nil;
 	}
 	
 	[_operationQueue addOperation:operation];
+}
+
++ (void)cancelImageRequestOperationsForURLString:(NSString *)urlString {
+    if (!urlString) {
+        return;
+    }
+    
+    for (AFImageRequestOperation *operation in [_operationQueue operations]) {
+        NSString *requestURLString = [[[operation request] URL] absoluteString];
+        NSRange anchorRange = [requestURLString rangeOfString:@"#" options:NSBackwardsSearch];
+        if (anchorRange.location != NSNotFound && [[requestURLString substringToIndex:anchorRange.location] isEqualToString:urlString]) {
+            if (!([operation isExecuting] || [operation isCancelled])) {
+                [operation cancel];
+            }
+        }
+    }
+}
+
++ (void)cancelAllImageRequestOperations {
+    for (AFImageRequestOperation *operation in [_operationQueue operations]) {
+        if (!([operation isExecuting] || [operation isCancelled])) {
+            [operation cancel];
+        }
+    }    
 }
 
 @end
