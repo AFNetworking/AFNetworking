@@ -35,8 +35,12 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
 @implementation AFImageRequestOperation
 @synthesize callback = _callback;
 
-- (id)initWithRequest:(NSURLRequest *)someRequest callback:(AFImageRequestOperationCallback *)someCallback {
-	self = [super initWithRequest:someRequest];
++ (id)operationWithRequest:(NSURLRequest *)urlRequest callback:(AFImageRequestOperationCallback *)callback {
+    return [[self alloc] initWithRequest:urlRequest callback:callback];
+}
+
+- (id)initWithRequest:(NSURLRequest *)urlRequest callback:(AFImageRequestOperationCallback *)callback {
+	self = [super initWithRequest:urlRequest];
 	if (!self) {
 		return nil;
 	}
@@ -47,7 +51,7 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
 	[statusCodes addIndexesInRange:NSMakeRange(200, 100)];
 	self.acceptableStatusCodes = statusCodes;
 	self.acceptableContentTypes = [NSSet setWithObjects:@"image/png", @"image/jpeg", @"image/pjpeg", @"image/gif", @"application/x-0", nil];
-	self.callback = someCallback;
+	self.callback = callback;
 	
 	if (self.callback) {
 		self.runLoopModes = [NSSet setWithObjects:NSRunLoopCommonModes, NSDefaultRunLoopMode, nil];

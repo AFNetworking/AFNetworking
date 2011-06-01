@@ -41,7 +41,8 @@ typedef enum {
 
 @property (nonatomic, retain) AFImageRequestOperationCallback *callback;
 
-- (id)initWithRequest:(NSURLRequest *)someRequest callback:(AFImageRequestOperationCallback *)someCallback;
++ (id)operationWithRequest:(NSURLRequest *)urlRequest callback:(AFImageRequestOperationCallback *)callback;
+- (id)initWithRequest:(NSURLRequest *)urlRequest callback:(AFImageRequestOperationCallback *)callback;
 
 @end
 
