@@ -33,7 +33,7 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
 }
 
 @implementation AFImageRequestOperation
-@synthesize callback;
+@synthesize callback = _callback;
 
 - (id)initWithRequest:(NSURLRequest *)someRequest callback:(AFImageRequestOperationCallback *)someCallback {
 	self = [super initWithRequest:someRequest];
@@ -74,8 +74,8 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
 	[super finishWithError:error];
     
     if (error) {
-        if (callback.errorBlock) {
-			callback.errorBlock(error);
+        if (self.callback.errorBlock) {
+			self.callback.errorBlock(error);
 		}
 
         return;

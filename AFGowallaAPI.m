@@ -82,7 +82,7 @@ static NSOperationQueue *_operationQueue = nil;
 
 + (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters {	
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
-	NSMutableDictionary *headers = [_defaultHeaders mutableCopy];
+	NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:_defaultHeaders];
 	NSURL *url = nil;
 	
 	NSMutableArray *mutableParameterComponents = [NSMutableArray array];

@@ -89,7 +89,7 @@ NSString * const AFHTTPOperationParsedDataErrorKey = @"com.alamofire.http-operat
         [userInfo setValue:[[self.lastRequest URL] absoluteString] forKey:NSURLErrorFailingURLStringErrorKey];
         [userInfo setValue:data forKey:AFHTTPOperationParsedDataErrorKey];
         
-        error = [[NSError alloc] initWithDomain:NSURLErrorDomain code:[self.lastResponse statusCode] userInfo:userInfo];
+        error = [[[NSError alloc] initWithDomain:NSURLErrorDomain code:[self.lastResponse statusCode] userInfo:userInfo] autorelease];
         
         if (self.callback.errorBlock) {
             self.callback.errorBlock(self.lastRequest, self.lastResponse, error);
