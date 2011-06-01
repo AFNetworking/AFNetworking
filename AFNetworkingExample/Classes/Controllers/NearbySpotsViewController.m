@@ -109,6 +109,8 @@ static TTTLocationFormatter *__locationFormatter;
     
     [self.navigationController.navigationBar setTintColor:[UIColor darkGrayColor]];
     
+    self.tableView.rowHeight = 70.0f;
+    
     [self.locationManager startUpdatingLocation];
 }
 
@@ -143,10 +145,6 @@ static TTTLocationFormatter *__locationFormatter;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.nearbySpots count];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 70.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
