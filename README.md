@@ -59,8 +59,8 @@ Take a close look at `AFGowallaAPIClient` and `AFImageRequest`. These two classe
 
 ## Dependencies
 
-* [iOS 4](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) - `AFNetworking` uses blocks, which were introduced in iOS 4.
-*  [QHTTPOperation](http://developer.apple.com/library/ios/#samplecode/MVCNetworking/Listings/Networking_QHTTPOperation_m.html) - Underneath `AFHTTPOperation` and `AFImageRequestOperation` is `QHTTPOperation`, an `NSOperation` subclass that manages `NSURLConnection` delegate methods. It's fairly robust, performant, and complete, so rather than roll our own, we built `AFNetworking` on top of this. We may build our own replacement if the need arises.
+* [iOS 4](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) - AFNetworking uses blocks, which were introduced in iOS 4.
+*  [QHTTPOperation](http://developer.apple.com/library/ios/#samplecode/MVCNetworking/Listings/Networking_QHTTPOperation_m.html) - Underneath `AFHTTPOperation` and `AFImageRequestOperation` is `QHTTPOperation`, an `NSOperation` subclass that manages `NSURLConnection` delegate methods. It's fairly robust, performant, and complete, so rather than roll our own, we built AFNetworking on top of this. We may build our own replacement if the need arises.
 * [JSONKit](https://github.com/johnezang/JSONKit) - One of the conveniences built into `AFHTTPOperation` is automatic JSON parsing for HTTP requests that return content-type `application/json`. JSONKit is our preferred JSON parsing library, and is included in the example project.
 
 ## Credits
@@ -69,7 +69,7 @@ AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt 
 
 QRunLoopOperation and QHTTPOperation were created by Apple DTS Engineers as a part of the sample code project [MVC Networking](http://developer.apple.com/library/ios/#samplecode/MVCNetworking/Introduction/Intro.html). See corresponding files for copyright and usage information.
 
-[TTTLocationFormatter], used in the example project, was created by [Mattt Thompson](https://github.com/mattt/).
+[TTTLocationFormatter](), used in the example project, was created by [Mattt Thompson](https://github.com/mattt/TTTLocationFormatter/).
 
 ## License
 
