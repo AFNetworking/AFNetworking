@@ -8,6 +8,7 @@ AFNetworking was lovingly crafted to make best use of our favorite parts of Appl
 If you're tired of massive libraries that try to do too much, if you've taken it upon yourself to roll your own hacky solution, if you want a library that _actually makes iOS networking code kinda fun_, try out AFNetworking.
 
 ## Example Usage
+
 ### GET Request
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/users/mattt.json"]];
@@ -42,12 +43,19 @@ If you're tired of massive libraries that try to do too much, if you've taken it
         self.imageView.image = image;
     } imageSize:CGSizeMake(50.0f, 50.0f) options:AFImageRequestResize | AFImageRequestRoundCorners];
     [[AFImageRequestOperation operationWithRequest:request callback:callback] start];
+    
+### REST Client Request
+
+    // AFGowallaAPI is a subclass of AFRestClient, which defines the base URL and default HTTP  headers of NSURLRequests it creates
+    [[AFGowallaAPI sharedClient] getPath:@"/spots/9223" parameters:nil callback:[AFHTTPOperationCallback callbackWithSuccess:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *data) {
+      NSLog(@"%@: %@", [data valueForKeyPath:@"name"], [data valueForKeyPath:@"address.street_address"]);
+    }]];
 
 ## Example Project
 
 In order to demonstrate the power and flexibility of AFNetworking, we've included a small sample project. `AFNetworkingExample` asks for your current location and displays [Gowalla](http://gowalla.com/) spots nearby you. It uses `AFHTTPOperation` to load and parse the spots JSON, and `AFImageRequestOperation` to asynchronously load spot stamp images as you scroll.
 
-Take a close look at `AFGowallaAPI` and `AFImageRequest`. These two classes provide convenience methods on top of the core AFNetworking classes. They provide higher-level methods for creating requests, and enqueueing them into an `NSOperationQueue`. In the case of `AFGowallaAPI`, acts as an REST client that manages HTTP headers and encodes `NSDictionary` parameters into the `GET` URL query string or `POST/PUT/DELETE` request body. You can follow this design when creating your own REST client for a particular webservice.
+Take a close look at `AFGowallaAPI` and `AFImageRequest`. These two classes provide convenience methods on top of the core AFNetworking classes. They provide higher-level methods for creating requests, and enqueueing them into an `NSOperationQueue`.
 
 ## Dependencies
 
