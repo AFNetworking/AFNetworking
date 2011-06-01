@@ -36,6 +36,8 @@
     
     self.detailTextLabel.textColor = [UIColor grayColor];
     
+    self.selectionStyle = UITableViewCellSelectionStyleGray;
+    
     return self;
 }
 
@@ -49,11 +51,11 @@
 }
 
 - (void)setImageURLString:(NSString *)imageURLString options:(AFImageRequestOptions)options {
-	if ([_imageURLString isEqual:imageURLString]) {
+	if ([self.imageURLString isEqual:imageURLString]) {
 		return;
 	}
     
-	if (_imageURLString) {
+	if (self.imageURLString) {
 		self.imageView.image = [UIImage imageNamed:@"placeholder-stamp.png"];
 	}
 	
@@ -62,7 +64,7 @@
 	_imageURLString = [imageURLString copy];
 	[self didChangeValueForKey:@"imageURLString"];
 	
-	if (imageURLString) {
+	if (self.imageURLString) {
 		[AFImageRequest requestImageWithURLString:self.imageURLString size:CGSizeMake(50.0f, 50.0f) options:options block:^(UIImage *image) {
 			if ([self.imageURLString isEqualToString:imageURLString]) {
 				BOOL needsLayout = self.imageView.image == nil;
@@ -88,8 +90,7 @@
 	CGRect textLabelFrame = self.textLabel.frame;
 	CGRect detailTextLabelFrame = self.detailTextLabel.frame;
 	
-	imageViewFrame.origin.x = 10.0f;
-    imageViewFrame.origin.y = 10.0f;
+	imageViewFrame.origin = CGPointMake(10.0f, 10.0f);
 	imageViewFrame.size = CGSizeMake(50.0f, 50.0f);
              
 	textLabelFrame.origin.x = imageViewFrame.size.width + 30.0f;
