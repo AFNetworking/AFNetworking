@@ -1,4 +1,4 @@
-// AFGowallaAPI.m
+// AFGowallaAPI.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,35 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFGowallaAPI.h"
+#import <Foundation/Foundation.h>
+#import "AFRestClient.h"
 
-// Replace this with your own API Key, available at http://api.gowalla.com/api/keys/
-NSString * const kAFGowallaClientID = @"e7ccb7d3d2414eb2af4663fc91eb2793";
+extern NSString * const kAFGowallaClientID;
+extern NSString * const kAFGowallaBaseURLString;
 
-NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
-
-@implementation AFGowallaAPI
-
-- (id)init {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    
-    // X-Gowalla-API-Key HTTP Header; see http://api.gowalla.com/api/docs
-	[self setDefaultHeader:@"X-Gowalla-API-Key" value:kAFGowallaClientID];
-	
-	// X-Gowalla-API-Version HTTP Header; see http://api.gowalla.com/api/docs
-	[self setDefaultHeader:@"X-Gowalla-API-Version" value:@"1"];
-	
-	// X-UDID HTTP Header
-	[self setDefaultHeader:@"X-UDID" value:[[UIDevice currentDevice] uniqueIdentifier]];
-    
-    return self;
-}
-
-+ (NSURL *)baseURL {
-    return [NSURL URLWithString:kAFGowallaBaseURLString];
-}
-
+@interface AFGowallaAPIClient : AFRestClient
 @end

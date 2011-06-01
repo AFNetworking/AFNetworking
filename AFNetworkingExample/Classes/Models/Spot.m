@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 #import "Spot.h"
 
-#import "AFGowallaAPI.h"
+#import "AFGowallaAPIClient.h"
 
 @implementation Spot
 @synthesize name = _name;
@@ -63,7 +63,7 @@
 		[mutableParameters setValue:[NSString stringWithFormat:@"%1.7f", location.coordinate.longitude] forKey:@"lng"];
 	}
     
-    [[AFGowallaAPI sharedClient] getPath:urlString parameters:mutableParameters callback:[AFHTTPOperationCallback callbackWithSuccess:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *data) {
+    [[AFGowallaAPIClient sharedClient] getPath:urlString parameters:mutableParameters callback:[AFHTTPOperationCallback callbackWithSuccess:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *data) {
 		if (block) {
             NSMutableArray *mutableRecords = [NSMutableArray array];
             for (NSDictionary *attributes in [data valueForKeyPath:@"spots"]) {

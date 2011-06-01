@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F8D25CC41396948D00CF3BD6 /* AFGowallaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25CC21396948D00CF3BD6 /* AFGowallaAPI.m */; };
+		F8D25CC41396948D00CF3BD6 /* AFGowallaAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25CC21396948D00CF3BD6 /* AFGowallaAPIClient.m */; };
 		F8D25CC51396948D00CF3BD6 /* AFImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25CC31396948D00CF3BD6 /* AFImageRequest.m */; };
 		F8D25CC813969DD200CF3BD6 /* AFRestClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25CC713969DD200CF3BD6 /* AFRestClient.m */; };
 		F8E469651395739D00DB05C8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469641395739D00DB05C8 /* UIKit.framework */; };
@@ -33,9 +33,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F8D25CC01396948D00CF3BD6 /* AFGowallaAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGowallaAPI.h; path = AFNetworkingExample/Classes/AFGowallaAPI.h; sourceTree = "<group>"; };
+		F8D25CC01396948D00CF3BD6 /* AFGowallaAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; name = AFGowallaAPIClient.h; path = AFNetworkingExample/Classes/AFGowallaAPIClient.h; sourceTree = "<group>"; };
 		F8D25CC11396948D00CF3BD6 /* AFImageRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFImageRequest.h; path = AFNetworkingExample/Classes/AFImageRequest.h; sourceTree = "<group>"; };
-		F8D25CC21396948D00CF3BD6 /* AFGowallaAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGowallaAPI.m; path = AFNetworkingExample/Classes/AFGowallaAPI.m; sourceTree = "<group>"; };
+		F8D25CC21396948D00CF3BD6 /* AFGowallaAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGowallaAPIClient.m; path = AFNetworkingExample/Classes/AFGowallaAPIClient.m; sourceTree = "<group>"; };
 		F8D25CC31396948D00CF3BD6 /* AFImageRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFImageRequest.m; path = AFNetworkingExample/Classes/AFImageRequest.m; sourceTree = "<group>"; };
 		F8D25CC613969DD100CF3BD6 /* AFRestClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFRestClient.h; sourceTree = "<group>"; };
 		F8D25CC713969DD200CF3BD6 /* AFRestClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFRestClient.m; sourceTree = "<group>"; };
@@ -207,8 +207,8 @@
 		F8E469B71395759C00DB05C8 /* Networking Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				F8D25CC01396948D00CF3BD6 /* AFGowallaAPI.h */,
-				F8D25CC21396948D00CF3BD6 /* AFGowallaAPI.m */,
+				F8D25CC01396948D00CF3BD6 /* AFGowallaAPIClient.h */,
+				F8D25CC21396948D00CF3BD6 /* AFGowallaAPIClient.m */,
 				F8D25CC11396948D00CF3BD6 /* AFImageRequest.h */,
 				F8D25CC31396948D00CF3BD6 /* AFImageRequest.m */,
 			);
@@ -341,7 +341,7 @@
 				F8E469CE1395780600DB05C8 /* SpotTableViewCell.m in Sources */,
 				F8E469D11395781500DB05C8 /* Spot.m in Sources */,
 				F8E469EC13957FC500DB05C8 /* TTTLocationFormatter.m in Sources */,
-				F8D25CC41396948D00CF3BD6 /* AFGowallaAPI.m in Sources */,
+				F8D25CC41396948D00CF3BD6 /* AFGowallaAPIClient.m in Sources */,
 				F8D25CC51396948D00CF3BD6 /* AFImageRequest.m in Sources */,
 				F8D25CC813969DD200CF3BD6 /* AFRestClient.m in Sources */,
 			);

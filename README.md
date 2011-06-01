@@ -46,8 +46,8 @@ If you're tired of massive libraries that try to do too much, if you've taken it
     
 ### REST Client Request
 
-    // AFGowallaAPI is a subclass of AFRestClient, which defines the base URL and default HTTP  headers of NSURLRequests it creates
-    [[AFGowallaAPI sharedClient] getPath:@"/spots/9223" parameters:nil callback:[AFHTTPOperationCallback callbackWithSuccess:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *data) {
+    // AFGowallaAPIClient is a subclass of AFRestClient, which defines the base URL and default HTTP  headers of NSURLRequests it creates
+    [[AFGowallaAPIClient sharedClient] getPath:@"/spots/9223" parameters:nil callback:[AFHTTPOperationCallback callbackWithSuccess:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *data) {
       NSLog(@"%@: %@", [data valueForKeyPath:@"name"], [data valueForKeyPath:@"address.street_address"]);
     }]];
 
@@ -55,7 +55,7 @@ If you're tired of massive libraries that try to do too much, if you've taken it
 
 In order to demonstrate the power and flexibility of AFNetworking, we've included a small sample project. `AFNetworkingExample` asks for your current location and displays [Gowalla](http://gowalla.com/) spots nearby you. It uses `AFHTTPOperation` to load and parse the spots JSON, and `AFImageRequestOperation` to asynchronously load spot stamp images as you scroll.
 
-Take a close look at `AFGowallaAPI` and `AFImageRequest`. These two classes provide convenience methods on top of the core AFNetworking classes. They provide higher-level methods for creating requests, and enqueueing them into an `NSOperationQueue`.
+Take a close look at `AFGowallaAPIClient` and `AFImageRequest`. These two classes provide convenience methods on top of the core AFNetworking classes. They provide higher-level methods for creating requests, and enqueueing them into an `NSOperationQueue`.
 
 ## Dependencies
 
