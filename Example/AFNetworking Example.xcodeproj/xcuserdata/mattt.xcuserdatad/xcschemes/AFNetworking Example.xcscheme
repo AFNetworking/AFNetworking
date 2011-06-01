@@ -16,7 +16,7 @@
                BlueprintIdentifier = "F8E4695F1395739C00DB05C8"
                BuildableName = "AFNetworkingExample.app"
                BlueprintName = "AFNetworkingExample"
-               ReferencedContainer = "container:AFNetworkingExample.xcodeproj">
+               ReferencedContainer = "container:AFNetworking Example.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -43,7 +43,7 @@
             BlueprintIdentifier = "F8E4695F1395739C00DB05C8"
             BuildableName = "AFNetworkingExample.app"
             BlueprintName = "AFNetworkingExample"
-            ReferencedContainer = "container:AFNetworkingExample.xcodeproj">
+            ReferencedContainer = "container:AFNetworking Example.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -62,7 +62,7 @@
             BlueprintIdentifier = "F8E4695F1395739C00DB05C8"
             BuildableName = "AFNetworkingExample.app"
             BlueprintName = "AFNetworkingExample"
-            ReferencedContainer = "container:AFNetworkingExample.xcodeproj">
+            ReferencedContainer = "container:AFNetworking Example.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
