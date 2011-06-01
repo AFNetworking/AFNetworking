@@ -21,32 +21,10 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPOperation.h"
+#import "AFRestClient.h"
 
 extern NSString * const kAFGowallaClientID;
-extern NSString * const kAFGowallaClientSecret;
+extern NSString * const kAFGowallaBaseURLString;
 
-@interface AFGowallaAPI : NSObject
-
-+ (NSString *)defaultValueForHeader:(NSString *)header;
-+ (void)setDefaultHeader:(NSString *)header value:(NSString *)value;
-+ (void)setAuthorizationHeaderWithToken:(NSString *)token;
-+ (void)clearAuthorizationHeader;
-
-+ (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters;
-+ (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request callback:(AFHTTPOperationCallback *)callback;
-+ (void)enqueueHTTPOperation:(AFHTTPOperation *)operation;
-
-+ (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback;
-+ (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback;
-+ (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback;
-+ (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback;
-
-@end
-
-#pragma mark - NSString + AFGowallaAPI
-
-@interface NSString (AFGowallaAPI)
-- (NSString *)urlEncodedString;
-- (NSString *)urlEncodedStringWithEncoding:(NSStringEncoding)encoding;
+@interface AFGowallaAPI : AFRestClient
 @end

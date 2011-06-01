@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F8D25CC41396948D00CF3BD6 /* AFGowallaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25CC21396948D00CF3BD6 /* AFGowallaAPI.m */; };
 		F8D25CC51396948D00CF3BD6 /* AFImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25CC31396948D00CF3BD6 /* AFImageRequest.m */; };
+		F8D25CC813969DD200CF3BD6 /* AFRestClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25CC713969DD200CF3BD6 /* AFRestClient.m */; };
 		F8E469651395739D00DB05C8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469641395739D00DB05C8 /* UIKit.framework */; };
 		F8E469671395739D00DB05C8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469661395739D00DB05C8 /* Foundation.framework */; };
 		F8E469691395739D00DB05C8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469681395739D00DB05C8 /* CoreGraphics.framework */; };
@@ -36,6 +37,8 @@
 		F8D25CC11396948D00CF3BD6 /* AFImageRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFImageRequest.h; path = AFNetworkingExample/Classes/AFImageRequest.h; sourceTree = "<group>"; };
 		F8D25CC21396948D00CF3BD6 /* AFGowallaAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGowallaAPI.m; path = AFNetworkingExample/Classes/AFGowallaAPI.m; sourceTree = "<group>"; };
 		F8D25CC31396948D00CF3BD6 /* AFImageRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFImageRequest.m; path = AFNetworkingExample/Classes/AFImageRequest.m; sourceTree = "<group>"; };
+		F8D25CC613969DD100CF3BD6 /* AFRestClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFRestClient.h; sourceTree = "<group>"; };
+		F8D25CC713969DD200CF3BD6 /* AFRestClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFRestClient.m; sourceTree = "<group>"; };
 		F8E469601395739C00DB05C8 /* AFNetworkingExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AFNetworkingExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E469641395739D00DB05C8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F8E469661395739D00DB05C8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -170,10 +173,12 @@
 				F8E469871395742500DB05C8 /* AFHTTPOperation.m */,
 				F8E469881395742500DB05C8 /* AFImageRequestOperation.h */,
 				F8E469891395742500DB05C8 /* AFImageRequestOperation.m */,
-				F8E4698A1395742500DB05C8 /* AFURLCache.h */,
-				F8E4698B1395742500DB05C8 /* AFURLCache.m */,
 				F8E4698C1395742500DB05C8 /* UIImage+AFNetworking.h */,
 				F8E4698D1395742500DB05C8 /* UIImage+AFNetworking.m */,
+				F8D25CC613969DD100CF3BD6 /* AFRestClient.h */,
+				F8D25CC713969DD200CF3BD6 /* AFRestClient.m */,
+				F8E4698A1395742500DB05C8 /* AFURLCache.h */,
+				F8E4698B1395742500DB05C8 /* AFURLCache.m */,
 			);
 			name = Alamofire;
 			sourceTree = "<group>";
@@ -338,6 +343,7 @@
 				F8E469EC13957FC500DB05C8 /* TTTLocationFormatter.m in Sources */,
 				F8D25CC41396948D00CF3BD6 /* AFGowallaAPI.m in Sources */,
 				F8D25CC51396948D00CF3BD6 /* AFImageRequest.m in Sources */,
+				F8D25CC813969DD200CF3BD6 /* AFRestClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

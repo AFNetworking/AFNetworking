@@ -32,13 +32,6 @@ extern NSString * const AFHTTPOperationParsedDataErrorKey;
 
 @class AFHTTPOperationCallback;
 
-// QHTTPOperation/NSOperation subclass that provides JSON parsing and started/finished notifications.
-//
-// Usage:
-//    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://apple.com"]];
-//    AFHTTPOperation *op = [[[AFHTTPOperation alloc] initWithRequest:request] autorelease];
-//    [[NSOperationQueue mainQueue] addOperation:op];
-//
 @interface AFHTTPOperation : QHTTPOperation {
 @private
 	AFHTTPOperationCallback *_callback;
