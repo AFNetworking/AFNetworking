@@ -54,9 +54,7 @@ static NSMutableSet *_cachedRequests = nil;
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
 	[request setHTTPShouldHandleCookies:NO];
 	
-	AFImageRequestOperationCallback *callback = [AFImageRequestOperationCallback callbackWithSuccess:block];
-	callback.options = options;
-	callback.imageSize = imageSize;
+	AFImageRequestOperationCallback *callback = [AFImageRequestOperationCallback callbackWithSuccess:block imageSize:imageSize options:options];
 	AFImageRequestOperation *operation = [[[AFImageRequestOperation alloc] initWithRequest:request callback:callback] autorelease];
 	
 	NSCachedURLResponse *cachedResponse = [[[[AFURLCache sharedURLCache] cachedResponseForRequest:request] retain] autorelease];
@@ -91,7 +89,7 @@ static NSMutableSet *_cachedRequests = nil;
         if (!([operation isExecuting] || [operation isCancelled])) {
             [operation cancel];
         }
-    }    
+    }  
 }
 
 @end
