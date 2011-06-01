@@ -97,7 +97,7 @@
 	imageViewFrame.origin = CGPointMake(10.0f, 10.0f);
 	imageViewFrame.size = CGSizeMake(50.0f, 50.0f);
              
-	textLabelFrame.origin.x = imageViewFrame.size.width + 30.0f;
+	textLabelFrame.origin.x = imageViewFrame.size.width + 25.0f;
     detailTextLabelFrame.origin.x = textLabelFrame.origin.x;
 	
     textLabelFrame.size.width = 240.0f;
