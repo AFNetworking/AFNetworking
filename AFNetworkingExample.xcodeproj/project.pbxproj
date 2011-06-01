@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F8D25CC41396948D00CF3BD6 /* AFGowallaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25CC21396948D00CF3BD6 /* AFGowallaAPI.m */; };
+		F8D25CC51396948D00CF3BD6 /* AFImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25CC31396948D00CF3BD6 /* AFImageRequest.m */; };
 		F8E469651395739D00DB05C8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469641395739D00DB05C8 /* UIKit.framework */; };
 		F8E469671395739D00DB05C8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469661395739D00DB05C8 /* Foundation.framework */; };
 		F8E469691395739D00DB05C8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469681395739D00DB05C8 /* CoreGraphics.framework */; };
@@ -20,8 +22,6 @@
 		F8E469A9139574DA00DB05C8 /* QHTTPOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469A4139574DA00DB05C8 /* QHTTPOperation.m */; };
 		F8E469AB139574DA00DB05C8 /* QRunLoopOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469A8139574DA00DB05C8 /* QRunLoopOperation.m */; };
 		F8E469B31395752400DB05C8 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469B21395752400DB05C8 /* JSONKit.m */; };
-		F8E469BC139575D000DB05C8 /* AFGowallaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469B9139575D000DB05C8 /* AFGowallaAPI.m */; };
-		F8E469BD139575D000DB05C8 /* AFImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469BB139575D000DB05C8 /* AFImageRequest.m */; };
 		F8E469CB139577E000DB05C8 /* NearbySpotsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469C8139577E000DB05C8 /* NearbySpotsViewController.m */; };
 		F8E469CE1395780600DB05C8 /* SpotTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469CD1395780600DB05C8 /* SpotTableViewCell.m */; };
 		F8E469D11395781500DB05C8 /* Spot.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E469D01395781500DB05C8 /* Spot.m */; };
@@ -32,6 +32,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F8D25CC01396948D00CF3BD6 /* AFGowallaAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGowallaAPI.h; path = AFNetworkingExample/Classes/AFGowallaAPI.h; sourceTree = "<group>"; };
+		F8D25CC11396948D00CF3BD6 /* AFImageRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFImageRequest.h; path = AFNetworkingExample/Classes/AFImageRequest.h; sourceTree = "<group>"; };
+		F8D25CC21396948D00CF3BD6 /* AFGowallaAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGowallaAPI.m; path = AFNetworkingExample/Classes/AFGowallaAPI.m; sourceTree = "<group>"; };
+		F8D25CC31396948D00CF3BD6 /* AFImageRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFImageRequest.m; path = AFNetworkingExample/Classes/AFImageRequest.m; sourceTree = "<group>"; };
 		F8E469601395739C00DB05C8 /* AFNetworkingExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AFNetworkingExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E469641395739D00DB05C8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F8E469661395739D00DB05C8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -57,10 +61,6 @@
 		F8E469A8139574DA00DB05C8 /* QRunLoopOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRunLoopOperation.m; sourceTree = "<group>"; };
 		F8E469B11395752400DB05C8 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		F8E469B21395752400DB05C8 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
-		F8E469B8139575D000DB05C8 /* AFGowallaAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFGowallaAPI.h; sourceTree = "<group>"; };
-		F8E469B9139575D000DB05C8 /* AFGowallaAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFGowallaAPI.m; sourceTree = "<group>"; };
-		F8E469BA139575D000DB05C8 /* AFImageRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFImageRequest.h; sourceTree = "<group>"; };
-		F8E469BB139575D000DB05C8 /* AFImageRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageRequest.m; sourceTree = "<group>"; };
 		F8E469C7139577E000DB05C8 /* NearbySpotsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NearbySpotsViewController.h; sourceTree = "<group>"; };
 		F8E469C8139577E000DB05C8 /* NearbySpotsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NearbySpotsViewController.m; sourceTree = "<group>"; };
 		F8E469CC1395780600DB05C8 /* SpotTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotTableViewCell.h; sourceTree = "<group>"; };
@@ -202,10 +202,10 @@
 		F8E469B71395759C00DB05C8 /* Networking Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				F8E469B8139575D000DB05C8 /* AFGowallaAPI.h */,
-				F8E469B9139575D000DB05C8 /* AFGowallaAPI.m */,
-				F8E469BA139575D000DB05C8 /* AFImageRequest.h */,
-				F8E469BB139575D000DB05C8 /* AFImageRequest.m */,
+				F8D25CC01396948D00CF3BD6 /* AFGowallaAPI.h */,
+				F8D25CC21396948D00CF3BD6 /* AFGowallaAPI.m */,
+				F8D25CC11396948D00CF3BD6 /* AFImageRequest.h */,
+				F8D25CC31396948D00CF3BD6 /* AFImageRequest.m */,
 			);
 			name = "Networking Extensions";
 			sourceTree = "<group>";
@@ -332,12 +332,12 @@
 				F8E469A9139574DA00DB05C8 /* QHTTPOperation.m in Sources */,
 				F8E469AB139574DA00DB05C8 /* QRunLoopOperation.m in Sources */,
 				F8E469B31395752400DB05C8 /* JSONKit.m in Sources */,
-				F8E469BC139575D000DB05C8 /* AFGowallaAPI.m in Sources */,
-				F8E469BD139575D000DB05C8 /* AFImageRequest.m in Sources */,
 				F8E469CB139577E000DB05C8 /* NearbySpotsViewController.m in Sources */,
 				F8E469CE1395780600DB05C8 /* SpotTableViewCell.m in Sources */,
 				F8E469D11395781500DB05C8 /* Spot.m in Sources */,
 				F8E469EC13957FC500DB05C8 /* TTTLocationFormatter.m in Sources */,
+				F8D25CC41396948D00CF3BD6 /* AFGowallaAPI.m in Sources */,
+				F8D25CC51396948D00CF3BD6 /* AFImageRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
