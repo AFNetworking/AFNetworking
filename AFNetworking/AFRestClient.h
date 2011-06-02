@@ -30,8 +30,6 @@
 @end
 
 @interface AFRestClient : NSObject <AFRestClient>
-+ (id)sharedClient;
-
 - (NSString *)defaultValueForHeader:(NSString *)header;
 - (void)setDefaultHeader:(NSString *)header value:(NSString *)value;
 - (void)setAuthorizationHeaderWithToken:(NSString *)token;

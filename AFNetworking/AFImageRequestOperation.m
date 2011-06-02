@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 
 #import "AFImageRequestOperation.h"
-#import "AFURLCache.h"
 
 #import "UIImage+AFNetworking.h"
 
@@ -119,7 +118,7 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
         }
         NSURLResponse *response = [[[NSURLResponse alloc] initWithURL:[self.lastRequest URL] MIMEType:[self.lastResponse MIMEType] expectedContentLength:[processedImageData length] textEncodingName:[self.lastResponse textEncodingName]] autorelease];
         NSCachedURLResponse *cachedResponse = [[[NSCachedURLResponse alloc] initWithResponse:response data:processedImageData] autorelease];
-        [[AFURLCache sharedURLCache] storeCachedResponse:cachedResponse forRequest:self.lastRequest];
+        [[NSURLCache sharedURLCache] storeCachedResponse:cachedResponse forRequest:self.lastRequest];
         [pool drain];
     }
 }

@@ -19,16 +19,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 #import "AppDelegate.h"
 #import "NearbySpotsViewController.h"
-#import "AFURLCache.h"
 
 @implementation AppDelegate
 @synthesize window = _window;
 @synthesize navigationController = _navigationController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    AFURLCache *URLCache = [[[AFURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:[AFURLCache defaultCachePath]] autorelease];
+    NSURLCache *URLCache = [[[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil] autorelease];
 	[NSURLCache setSharedURLCache:URLCache];
     
     UITableViewController *viewController = [[[NearbySpotsViewController alloc] init] autorelease];

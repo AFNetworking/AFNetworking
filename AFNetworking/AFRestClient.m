@@ -24,7 +24,6 @@
 #import "AFHTTPOperation.h"
 
 static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding;
-static AFRestClient *_sharedClient = nil;
 
 @interface AFRestClient ()
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
@@ -34,16 +33,6 @@ static AFRestClient *_sharedClient = nil;
 @implementation AFRestClient
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
-
-+ (id)sharedClient {
-    if (_sharedClient == nil) {
-        @synchronized(self) {
-            _sharedClient = [[self alloc] init];
-        }
-    }
-    
-    return _sharedClient;
-}
 
 - (id)init {
     self = [super init];

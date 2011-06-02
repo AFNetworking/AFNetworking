@@ -22,7 +22,6 @@
 
 #import "AFImageRequest.h"
 #import "AFImageRequestOperation.h"
-#import "AFURLCache.h"
 
 static NSOperationQueue *_operationQueue = nil;
 static NSMutableSet *_cachedRequests = nil;
@@ -57,7 +56,7 @@ static NSMutableSet *_cachedRequests = nil;
 	AFImageRequestOperationCallback *callback = [AFImageRequestOperationCallback callbackWithSuccess:block imageSize:imageSize options:options];
 	AFImageRequestOperation *operation = [[[AFImageRequestOperation alloc] initWithRequest:request callback:callback] autorelease];
 	
-	NSCachedURLResponse *cachedResponse = [[[[AFURLCache sharedURLCache] cachedResponseForRequest:request] retain] autorelease];
+	NSCachedURLResponse *cachedResponse = [[[[NSURLCache sharedURLCache] cachedResponseForRequest:request] retain] autorelease];
 	if (cachedResponse) {
 		if (block) {
 			block([UIImage imageWithData:[cachedResponse data]]);
