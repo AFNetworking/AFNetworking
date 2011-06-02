@@ -230,16 +230,16 @@
 			isa = PBXGroup;
 			children = (
 				F8D25CEA1396A98600CF3BD6 /* AFCallback.h */,
-				F8D25CEB1396A98600CF3BD6 /* AFHTTPOperation.h */,
-				F8D25CEC1396A98600CF3BD6 /* AFImageRequestOperation.h */,
-				F8D25CED1396A98600CF3BD6 /* AFRestClient.h */,
-				F8D25CEE1396A98600CF3BD6 /* AFURLCache.h */,
-				F8D25CEF1396A98600CF3BD6 /* UIImage+AFNetworking.h */,
 				F8D25CF01396A98600CF3BD6 /* AFCallback.m */,
+				F8D25CEB1396A98600CF3BD6 /* AFHTTPOperation.h */,
 				F8D25CF11396A98600CF3BD6 /* AFHTTPOperation.m */,
+				F8D25CEC1396A98600CF3BD6 /* AFImageRequestOperation.h */,
 				F8D25CF21396A98600CF3BD6 /* AFImageRequestOperation.m */,
+				F8D25CED1396A98600CF3BD6 /* AFRestClient.h */,
 				F8D25CF31396A98600CF3BD6 /* AFRestClient.m */,
+				F8D25CEE1396A98600CF3BD6 /* AFURLCache.h */,
 				F8D25CF41396A98600CF3BD6 /* AFURLCache.m */,
+				F8D25CEF1396A98600CF3BD6 /* UIImage+AFNetworking.h */,
 				F8D25CF51396A98600CF3BD6 /* UIImage+AFNetworking.m */,
 			);
 			name = Alamofire;
