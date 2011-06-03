@@ -27,7 +27,7 @@
 const CGFloat kAFImageRequestJPEGQuality = 0.8;
 const NSUInteger kAFImageRequestMaximumResponseSize = 8 * 1024 * 1024;
 static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
-    CGFloat dimension = fmaxf(imageSize.width, imageSize.height);
+    CGFloat dimension = fmaxf(imageSize.width, imageSize.height) * 0.1;
     return CGSizeMake(dimension, dimension);
 }
 
