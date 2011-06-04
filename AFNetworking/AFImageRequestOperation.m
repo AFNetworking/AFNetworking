@@ -123,6 +123,12 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
     }
 }
 
+- (void) dealloc {
+	[_callback release];
+
+	[super dealloc];
+}
+
 @end
 
 #pragma mark - AFHTTPOperationCallback
