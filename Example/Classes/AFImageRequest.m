@@ -24,15 +24,12 @@
 #import "AFImageRequestOperation.h"
 
 static NSOperationQueue *_operationQueue = nil;
-static NSMutableSet *_cachedRequests = nil;
 
 @implementation AFImageRequest
 
 + (void)initialize {
 	_operationQueue = [[NSOperationQueue alloc] init];
 	[_operationQueue setMaxConcurrentOperationCount:6];
-	
-    _cachedRequests = [[NSMutableSet alloc] init];
 }
 
 + (void)requestImageWithURLString:(NSString *)urlString options:(AFImageRequestOptions)options block:(void (^)(UIImage *image))block {
