@@ -61,6 +61,7 @@ NSString * const AFHTTPOperationParsedDataErrorKey = @"com.alamofire.http-operat
 
 - (void)operationDidStart {
 	[super operationDidStart];
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 	[[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidStartNotification object:self];
 }
 
@@ -95,6 +96,8 @@ NSString * const AFHTTPOperationParsedDataErrorKey = @"com.alamofire.http-operat
             self.callback.errorBlock(self.lastRequest, self.lastResponse, error);
         }
     }
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
 }
 
 @end
