@@ -69,10 +69,8 @@ NSString * const AFHTTPOperationParsedDataErrorKey = @"com.alamofire.http-operat
     
     NSDictionary *data = nil;
     if (self.contentTypeAcceptable) {
-        if ([[self.lastResponse MIMEType] isEqualToString:@"application/json"]) {
-            NSError *jsonError = nil;
-            data = [[JSONDecoder decoder] parseJSONData:self.responseBody error:&jsonError];
-        }
+        NSError *jsonError = nil;
+		data = [[JSONDecoder decoder] parseJSONData:self.responseBody error:&jsonError];
     }
     
     if (self.statusCodeAcceptable) {		
