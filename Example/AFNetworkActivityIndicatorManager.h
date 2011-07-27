@@ -1,4 +1,4 @@
-// AFCallback.h
+// AFNetworkActivityIndicatorManager.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -22,15 +22,14 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol AFCallback <NSObject>
-+ (id)callbackWithSuccess:(id)success;
-+ (id)callbackWithSuccess:(id)success error:(id)error;
-@end
-
-@interface AFCallback : NSObject <AFCallback> {
+@interface AFNetworkActivityIndicatorManager : NSObject {
 @private
-	id _successBlock;
-	id _errorBlock;
+	NSUInteger _activityCount;
 }
+
++ (AFNetworkActivityIndicatorManager *)sharedManager;
+
+- (void)startAnimating;
+- (void)stopAnimating;
 
 @end

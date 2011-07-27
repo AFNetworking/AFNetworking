@@ -21,10 +21,7 @@
 // THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
-#import "AFImageRequest.h"
 
-@interface SpotTableViewCell : UITableViewCell <AFImageRequester> {
-    NSString *_imageURLString;
-}
+@interface SpotTableViewCell : UITableViewCell
 
 @end

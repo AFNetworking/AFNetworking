@@ -21,9 +21,14 @@
 // THE SOFTWARE.
 
 #import "NearbySpotsViewController.h"
+
 #import "Spot.h"
+
 #import "SpotTableViewCell.h"
+
 #import "TTTLocationFormatter.h"
+#import "AFImageCache.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface NearbySpotsViewController ()
 @property (readwrite, nonatomic, retain) NSArray *nearbySpots;
@@ -72,7 +77,7 @@ static TTTLocationFormatter *__locationFormatter;
     [self.activityIndicatorView startAnimating];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    [Spot spotsWithURLString:@"/spots/advanced_search" near:location parameters:[NSDictionary dictionaryWithObject:@"128" forKey:@"per_page"] withBlock:^(NSArray *records) {
+    [Spot spotsWithURLString:@"/spots/advanced_search" near:location parameters:[NSDictionary dictionaryWithObject:@"128" forKey:@"per_page"] block:^(NSArray *records) {
         self.nearbySpots = [records sortedArrayUsingComparator:^ NSComparisonResult(id obj1, id obj2) {
             CLLocationDistance d1 = [[(Spot *)obj1 location] distanceFromLocation:location];
             CLLocationDistance d2 = [[(Spot *)obj2 location] distanceFromLocation:location];
@@ -119,22 +124,23 @@ static TTTLocationFormatter *__locationFormatter;
     [self.locationManager stopUpdatingLocation];
 }
 
-#pragma mark - CLLocationManagerDelegate
-
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-    [self loadSpotsForLocation:newLocation];
-}
-
 #pragma mark - Actions
 
 - (void)refresh:(id)sender {
     self.nearbySpots = [NSArray array];
     [self.tableView reloadData];
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [[AFImageCache sharedImageCache] removeAllObjects];
     
     if (self.locationManager.location) {
         [self loadSpotsForLocation:self.locationManager.location];
     }
+}
+
+#pragma mark - CLLocationManagerDelegate
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    [self loadSpotsForLocation:newLocation];
 }
 
 #pragma mark - UITableViewDelegate
@@ -160,7 +166,7 @@ static TTTLocationFormatter *__locationFormatter;
     if (self.locationManager.location) {
         cell.detailTextLabel.text = [__locationFormatter stringFromDistanceAndBearingFromLocation:self.locationManager.location toLocation:spot.location];
     }
-    cell.imageURLString = spot.imageURLString;
+    [cell.imageView setImageWithURL:[NSURL URLWithString:spot.imageURLString] placeholderImage:[UIImage imageNamed:@"placeholder-stamp.png"]];
     
     return cell;
 }

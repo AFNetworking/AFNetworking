@@ -1,4 +1,4 @@
-// AFImageRequest.h
+// AFImageCache.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,20 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFImageRequestOperation.h"
+#import "AFImageCache.h"
 
-@protocol AFImageRequester
-@required
-- (void)setImageURLString:(NSString *)urlString;
-- (void)setImageURLString:(NSString *)urlString options:(AFImageRequestOptions)options;
-@optional
-@property (nonatomic, copy) NSString *imageURLString;
-@end
+static inline NSString * AFImageCacheKey(NSURLRequest *urlRequest, CGSize imageSize, AFImageRequestOptions options) {
+    return [[[urlRequest URL] absoluteString] stringByAppendingFormat:@"#%fx%f:%d", imageSize.width, imageSize.height, options];
+}
 
-@interface AFImageRequest : NSObject
+@implementation AFImageCache
 
-+ (void)requestImageWithURLString:(NSString *)urlString options:(AFImageRequestOptions)options block:(void (^)(UIImage *image))block;
-+ (void)requestImageWithURLString:(NSString *)urlString size:(CGSize)imageSize options:(AFImageRequestOptions)options block:(void (^)(UIImage *image))block;
-+ (void)cancelImageRequestOperationsForURLString:(NSString *)urlString;
-+ (void)cancelAllImageRequestOperations;
++ (id)sharedImageCache {
+    static NSCache *_sharedImageCache = nil;
+    
+    if (!_sharedImageCache) {
+        _sharedImageCache = [[self alloc] init];
+    }
+    
+    return _sharedImageCache;
+}
+
+- (UIImage *)cachedImageForRequest:(NSURLRequest *)urlRequest
+                         imageSize:(CGSize)imageSize
+                           options:(AFImageRequestOptions)options
+{
+    return [self objectForKey:AFImageCacheKey(urlRequest, imageSize, options)];
+}
+
+- (void)cacheImage:(UIImage *)image
+        forRequest:(NSURLRequest *)urlRequest
+         imageSize:(CGSize)imageSize
+           options:(AFImageRequestOptions)options
+{
+    if (!image) {
+        return;
+    }
+    
+    [self setObject:image forKey:AFImageCacheKey(urlRequest, imageSize, options)];
+}
+
 @end

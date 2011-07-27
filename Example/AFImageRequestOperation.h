@@ -1,4 +1,4 @@
-// Spot.h
+// AFImageRequestOperation.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -21,25 +21,22 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
+#import <UIKit/UIKit.h>
+#import "AFHTTPRequestOperation.h"
 
-typedef void (^AFRecordsBlock)(NSArray *records);
+typedef enum {
+    AFImageRequestDefaultOptions        = 0,
+    AFImageRequestRoundCorners			= 1 << 1,
+} AFImageRequestOptions;
 
-@interface Spot : NSObject {
-@private
-    NSString *_name;
-    NSString *_imageURLString;
-    NSNumber *_latitude;
-    NSNumber *_longitude;
-}
+@interface AFImageRequestOperation : AFHTTPRequestOperation
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSNumber *latitude;
-@property (nonatomic, retain) NSNumber *longitude;
-@property (readonly) CLLocation *location;
++ (id)operationWithRequest:(NSURLRequest *)urlRequest                
+                   success:(void (^)(UIImage *image))success;
 
-- (id)initWithAttributes:(NSDictionary *)attributes;
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block;
++ (id)operationWithRequest:(NSURLRequest *)urlRequest
+                 imageSize:(CGSize)imageSize
+                   options:(AFImageRequestOptions)options
+                   success:(void (^)(UIImage *image))success;
 
 @end

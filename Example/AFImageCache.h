@@ -1,4 +1,4 @@
-// Spot.h
+// AFImageCache.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -21,25 +21,19 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
+#import "AFImageRequestOperation.h"
 
-typedef void (^AFRecordsBlock)(NSArray *records);
+@interface AFImageCache : NSCache
 
-@interface Spot : NSObject {
-@private
-    NSString *_name;
-    NSString *_imageURLString;
-    NSNumber *_latitude;
-    NSNumber *_longitude;
-}
++ (id)sharedImageCache;
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSNumber *latitude;
-@property (nonatomic, retain) NSNumber *longitude;
-@property (readonly) CLLocation *location;
+- (UIImage *)cachedImageForRequest:(NSURLRequest *)urlRequest
+                         imageSize:(CGSize)imageSize
+                           options:(AFImageRequestOptions)options;
 
-- (id)initWithAttributes:(NSDictionary *)attributes;
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block;
+- (void)cacheImage:(UIImage *)image
+        forRequest:(NSURLRequest *)urlRequest
+         imageSize:(CGSize)imageSize
+           options:(AFImageRequestOptions)options;
 
 @end

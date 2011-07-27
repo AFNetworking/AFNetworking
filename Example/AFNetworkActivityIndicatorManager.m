@@ -1,4 +1,4 @@
-// AFCallback.m
+// AFNetworkActivityIndicatorManager.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,41 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFCallback.h"
+#import "AFNetworkActivityIndicatorManager.h"
 
-@interface AFCallback ()
-@property (readwrite, nonatomic, copy) id successBlock;
-@property (readwrite, nonatomic, copy) id errorBlock;
+@interface AFNetworkActivityIndicatorManager ()
+@property (readwrite, nonatomic, assign) NSUInteger activityCount;
 @end
 
-@implementation AFCallback
-@synthesize successBlock = _successBlock;
-@synthesize errorBlock = _errorBlock;
+@implementation AFNetworkActivityIndicatorManager
+@synthesize activityCount = _activityCount;
 
-+ (id)callbackWithSuccess:(id)success {
-	return [self callbackWithSuccess:success error:nil];
++ (AFNetworkActivityIndicatorManager *)sharedManager {
+    static AFNetworkActivityIndicatorManager *_sharedManager = nil;
+    if (!_sharedManager) {
+        _sharedManager = [[AFNetworkActivityIndicatorManager alloc] init];
+    }
+    
+    return _sharedManager;
 }
 
-+ (id)callbackWithSuccess:(id)success error:(id)error {
-	id callback = [[[self alloc] init] autorelease];
-	[callback setSuccessBlock:success];
-	[callback setErrorBlock:error];
-	
-	return callback;
+- (void)setActivityCount:(NSUInteger)activityCount {
+    [self willChangeValueForKey:@"activityCount"];
+    _activityCount = MAX(activityCount, 0);
+    [self didChangeValueForKey:@"activityCount"];
+
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:self.activityCount > 0];
 }
 
-- (id)init {
-	if ([self class] == [AFCallback class]) {
-		[NSException raise:NSInternalInconsistencyException format:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)];
-	}
-	
-	return [super init];
+- (void)startAnimating {
+	self.activityCount += 1;
 }
 
-- (void)dealloc {
-	[_successBlock release];
-	[_errorBlock release];
-	[super dealloc];
+- (void)stopAnimating {
+    self.activityCount -= 1;
 }
 
 @end

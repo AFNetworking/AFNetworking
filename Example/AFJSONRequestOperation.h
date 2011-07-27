@@ -1,4 +1,4 @@
-// Spot.h
+// AFJSONRequestOperation.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,26 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
+#import "AFHTTPRequestOperation.h"
 
-typedef void (^AFRecordsBlock)(NSArray *records);
+@interface AFJSONRequestOperation : AFHTTPRequestOperation
 
-@interface Spot : NSObject {
-@private
-    NSString *_name;
-    NSString *_imageURLString;
-    NSNumber *_latitude;
-    NSNumber *_longitude;
-}
++ (id)operationWithRequest:(NSURLRequest *)urlRequest                
+                   success:(void (^)(NSDictionary *JSON))success;
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSNumber *latitude;
-@property (nonatomic, retain) NSNumber *longitude;
-@property (readonly) CLLocation *location;
++ (id)operationWithRequest:(NSURLRequest *)urlRequest 
+                   success:(void (^)(NSDictionary *JSON))success
+                   failure:(void (^)(NSError *error))failure;
 
-- (id)initWithAttributes:(NSDictionary *)attributes;
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block;
++ (id)operationWithRequest:(NSURLRequest *)urlRequest
+     acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
+    acceptableContentTypes:(NSSet *)acceptableContentTypes
+                   success:(void (^)(NSDictionary *JSON))success
+                   failure:(void (^)(NSError *error))failure;
 
 @end
