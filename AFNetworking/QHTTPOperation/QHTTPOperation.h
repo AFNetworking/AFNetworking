@@ -148,6 +148,7 @@
 #if ! defined(NDEBUG)
 @property (copy,   readwrite) NSError *             debugError;             // default is nil
 @property (assign, readwrite) NSTimeInterval        debugDelay;             // default is none
+@property (retain,  readonly) NSTimer *             debugDelayTimer;
 #endif
 
 // Things you can configure up to the point where you start receiving data. 

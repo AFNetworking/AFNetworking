@@ -66,6 +66,14 @@ NSString * const AFHTTPOperationParsedDataErrorKey = @"com.alamofire.http-operat
 
 - (void)finishWithError:(NSError *)error {
 	[super finishWithError:error];
+	
+#if ! defined(NDEBUG)
+	if (self.debugDelayTimer != nil) {
+		// There is a debug delay, so don't do anything and wait.
+		// When the timer will fire this method will be called back ;-)
+		return;
+	}
+#endif
     
     NSDictionary *data = nil;
     if (self.contentTypeAcceptable) {
