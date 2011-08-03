@@ -25,7 +25,7 @@
 extern NSString * const AFHTTPOperationDidStartNotification;
 extern NSString * const AFHTTPOperationDidFinishNotification;
 
-@interface AFHTTPRequestOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate> {
+@interface AFHTTPRequestOperation : NSOperation {
 @private    
     NSURLConnection *_connection;
     NSPort *_port;
