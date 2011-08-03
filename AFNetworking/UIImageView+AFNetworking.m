@@ -24,8 +24,6 @@
 
 #import "AFImageCache.h"
 
-static NSOperationQueue *_operationQueue = nil;
-
 static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperation";
 
 @interface UIImageView (_AFNetworking)
@@ -48,11 +46,15 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
     objc_setAssociatedObject(self, kUIImageViewImageRequestObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-+ (void)initialize {
-    [super initialize];
++ (NSOperationQueue *)sharedImageRequestOperationQueue {
+    static NSOperationQueue *_imageRequestOperationQueue = nil;
     
-	_operationQueue = [[NSOperationQueue alloc] init];
-	[_operationQueue setMaxConcurrentOperationCount:6];
+    if (!_imageRequestOperationQueue) {
+        _imageRequestOperationQueue = [[NSOperationQueue alloc] init];
+        [_imageRequestOperationQueue setMaxConcurrentOperationCount:6];
+    }
+    
+    return _imageRequestOperationQueue;
 }
  
 - (void)setImageWithURL:(NSURL *)url {
@@ -68,16 +70,9 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
         return;
     }
     
-    if (self.imageRequestOperation && ([self.imageRequestOperation isReady] || [self.imageRequestOperation isExecuting])) {
-        if ([[[self.imageRequestOperation request] URL] isEqual:url]) {
-            return;
-        } else {
-            [self.imageRequestOperation cancel]; 
-        }
-    }
-    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
     [request setHTTPShouldHandleCookies:NO];
+    [request setHTTPShouldUsePipelining:YES];
         
     UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:request imageSize:imageSize options:options];
     if (cachedImage) {
@@ -93,9 +88,8 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
             }
         }];
         
-        [_operationQueue addOperation:self.imageRequestOperation];
+        [[[self class] sharedImageRequestOperationQueue] addOperation:self.imageRequestOperation];
     }
 }
-
 
 @end

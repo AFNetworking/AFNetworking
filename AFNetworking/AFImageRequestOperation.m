@@ -62,11 +62,9 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
             image = [UIImage imageByRoundingCornersOfImage:image corners:UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            if (success) {
-                success(image);
-            }
-        });
+        if (success) {
+            success(image);
+        }
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
             [[AFImageCache sharedImageCache] cacheImage:image forRequest:request imageSize:imageSize options:options];
