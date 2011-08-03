@@ -62,8 +62,7 @@
         } else {
             id JSON = nil;
             
-            Class NSJSONSerialization = NSClassFromString(@"NSJSONSerialization");
-            if (NSJSONSerialization) {
+            if ([NSJSONSerialization class]) {
                 JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
             } else {
                 JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
