@@ -23,7 +23,6 @@
 #import "SpotTableViewCell.h"
 
 @implementation SpotTableViewCell
-@synthesize imageURLString = _imageURLString;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -39,50 +38,6 @@
     self.selectionStyle = UITableViewCellSelectionStyleGray;
     
     return self;
-}
-
-- (void)dealloc {
-    [_imageURLString release];
-    [super dealloc];
-}
-
-- (void)setImageURLString:(NSString *)imageURLString {
-    [self setImageURLString:imageURLString options:AFImageRequestResize | AFImageCacheProcessedImage];
-}
-
-- (void)setImageURLString:(NSString *)imageURLString options:(AFImageRequestOptions)options {
-	if ([self.imageURLString isEqual:imageURLString]) {
-		return;
-	}
-    
-	if (self.imageURLString) {
-		self.imageView.image = [UIImage imageNamed:@"placeholder-stamp.png"];
-	}
-	
-	[self willChangeValueForKey:@"imageURLString"];
-	[_imageURLString release];
-	_imageURLString = [imageURLString copy];
-	[self didChangeValueForKey:@"imageURLString"];
-	
-	if (self.imageURLString) {
-		[AFImageRequest requestImageWithURLString:self.imageURLString size:CGSizeMake(50.0f, 50.0f) options:options block:^(UIImage *image) {
-			if ([self.imageURLString isEqualToString:imageURLString]) {
-				BOOL needsLayout = self.imageView.image == nil;
-                self.imageView.image = image;
-				
-				if (needsLayout) {
-					[self setNeedsLayout];
-				}
-            }
-		}];
-	}
-}
-
-#pragma mark - UITableViewCell
-
-- (void)prepareForReuse {
-    [super prepareForReuse];
-    [AFImageRequest cancelImageRequestOperationsForURLString:self.imageURLString];
 }
 
 #pragma mark - UIView

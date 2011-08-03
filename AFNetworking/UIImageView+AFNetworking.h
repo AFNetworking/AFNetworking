@@ -1,4 +1,4 @@
-// Spot.h
+// UIImageView+AFNetworking.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,26 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
+#import <UIKit/UIKit.h>
+#import "AFImageRequestOperation.h"
 
-typedef void (^AFRecordsBlock)(NSArray *records);
+@interface UIImageView (AFNetworking)
 
-@interface Spot : NSObject {
-@private
-    NSString *_name;
-    NSString *_imageURLString;
-    NSNumber *_latitude;
-    NSNumber *_longitude;
-}
-
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSNumber *latitude;
-@property (nonatomic, retain) NSNumber *longitude;
-@property (readonly) CLLocation *location;
-
-- (id)initWithAttributes:(NSDictionary *)attributes;
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block;
+- (void)setImageWithURL:(NSURL *)url;
+- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage;
+- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage imageSize:(CGSize)imageSize options:(AFImageRequestOptions)options;
 
 @end

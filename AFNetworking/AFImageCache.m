@@ -1,4 +1,4 @@
-// AFCallback.m
+// AFImageCache.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,41 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFCallback.h"
+#import "AFImageCache.h"
 
-@interface AFCallback ()
-@property (readwrite, nonatomic, copy) id successBlock;
-@property (readwrite, nonatomic, copy) id errorBlock;
-@end
-
-@implementation AFCallback
-@synthesize successBlock = _successBlock;
-@synthesize errorBlock = _errorBlock;
-
-+ (id)callbackWithSuccess:(id)success {
-	return [self callbackWithSuccess:success error:nil];
+static inline NSString * AFImageCacheKey(NSURLRequest *urlRequest, CGSize imageSize, AFImageRequestOptions options) {
+    return [[[urlRequest URL] absoluteString] stringByAppendingFormat:@"#%fx%f:%d", imageSize.width, imageSize.height, options];
 }
 
-+ (id)callbackWithSuccess:(id)success error:(id)error {
-	id callback = [[[self alloc] init] autorelease];
-	[callback setSuccessBlock:success];
-	[callback setErrorBlock:error];
-	
-	return callback;
+@implementation AFImageCache
+
++ (id)sharedImageCache {
+    static NSCache *_sharedImageCache = nil;
+    
+    if (!_sharedImageCache) {
+        _sharedImageCache = [[self alloc] init];
+    }
+    
+    return _sharedImageCache;
 }
 
-- (id)init {
-	if ([self class] == [AFCallback class]) {
-		[NSException raise:NSInternalInconsistencyException format:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)];
-	}
-	
-	return [super init];
+- (UIImage *)cachedImageForRequest:(NSURLRequest *)urlRequest
+                         imageSize:(CGSize)imageSize
+                           options:(AFImageRequestOptions)options
+{
+    return [self objectForKey:AFImageCacheKey(urlRequest, imageSize, options)];
 }
 
-- (void)dealloc {
-	[_successBlock release];
-	[_errorBlock release];
-	[super dealloc];
+- (void)cacheImage:(UIImage *)image
+        forRequest:(NSURLRequest *)urlRequest
+         imageSize:(CGSize)imageSize
+           options:(AFImageRequestOptions)options
+{
+    if (!image) {
+        return;
+    }
+    
+    [self setObject:image forKey:AFImageCacheKey(urlRequest, imageSize, options)];
 }
 
 @end

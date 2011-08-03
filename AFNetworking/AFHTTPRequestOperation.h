@@ -1,4 +1,4 @@
-// Spot.h
+// AFHTTPOperation.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -21,25 +21,36 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
 
-typedef void (^AFRecordsBlock)(NSArray *records);
+extern NSString * const AFHTTPOperationDidStartNotification;
+extern NSString * const AFHTTPOperationDidFinishNotification;
 
-@interface Spot : NSObject {
-@private
-    NSString *_name;
-    NSString *_imageURLString;
-    NSNumber *_latitude;
-    NSNumber *_longitude;
+@interface AFHTTPRequestOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate> {
+@private    
+    NSURLConnection *_connection;
+    NSPort *_port;
+    NSSet *_runLoopModes;
+    
+    NSURLRequest *_request;
+    NSHTTPURLResponse *_response;
+    
+    NSData *_responseBody;
+    NSMutableData *_dataAccumulator;
 }
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSNumber *latitude;
-@property (nonatomic, retain) NSNumber *longitude;
-@property (readonly) CLLocation *location;
+@property (nonatomic, retain) NSURLConnection *connection;
+@property (nonatomic, retain) NSSet *runLoopModes;
 
-- (id)initWithAttributes:(NSDictionary *)attributes;
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block;
+@property (nonatomic, retain) NSURLRequest *request;
+@property (nonatomic, retain) NSHTTPURLResponse *response;
+@property (nonatomic, retain) NSError *error;
+
+@property (nonatomic, retain) NSData *responseBody;
+@property (readonly) NSString *responseString;
+
++ (id)operationWithRequest:(NSURLRequest *)urlRequest 
+                completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion;
+
+- (id)initWithRequest:(NSURLRequest *)urlRequest;
 
 @end

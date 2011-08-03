@@ -1,4 +1,4 @@
-// AFImageRequest.h
+// AFNetworkActivityIndicatorManager.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,20 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFImageRequestOperation.h"
+#import <Foundation/Foundation.h>
 
-@protocol AFImageRequester
-@required
-- (void)setImageURLString:(NSString *)urlString;
-- (void)setImageURLString:(NSString *)urlString options:(AFImageRequestOptions)options;
-@optional
-@property (nonatomic, copy) NSString *imageURLString;
-@end
+@interface AFNetworkActivityIndicatorManager : NSObject {
+@private
+	NSUInteger _activityCount;
+}
 
-@interface AFImageRequest : NSObject
++ (AFNetworkActivityIndicatorManager *)sharedManager;
 
-+ (void)requestImageWithURLString:(NSString *)urlString options:(AFImageRequestOptions)options block:(void (^)(UIImage *image))block;
-+ (void)requestImageWithURLString:(NSString *)urlString size:(CGSize)imageSize options:(AFImageRequestOptions)options block:(void (^)(UIImage *image))block;
-+ (void)cancelImageRequestOperationsForURLString:(NSString *)urlString;
-+ (void)cancelAllImageRequestOperations;
+- (void)startAnimating;
+- (void)stopAnimating;
+
 @end

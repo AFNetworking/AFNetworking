@@ -1,4 +1,4 @@
-// AFCallback.h
+// AFJSONRequestOperation.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,17 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import "AFHTTPRequestOperation.h"
 
-@protocol AFCallback <NSObject>
-+ (id)callbackWithSuccess:(id)success;
-+ (id)callbackWithSuccess:(id)success error:(id)error;
-@end
+@interface AFJSONRequestOperation : AFHTTPRequestOperation
 
-@interface AFCallback : NSObject <AFCallback> {
-@private
-	id _successBlock;
-	id _errorBlock;
-}
++ (id)operationWithRequest:(NSURLRequest *)urlRequest                
+                   success:(void (^)(id JSON))success;
+
++ (id)operationWithRequest:(NSURLRequest *)urlRequest 
+                   success:(void (^)(id JSON))success
+                   failure:(void (^)(NSError *error))failure;
+
++ (id)operationWithRequest:(NSURLRequest *)urlRequest
+     acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
+    acceptableContentTypes:(NSSet *)acceptableContentTypes
+                   success:(void (^)(id JSON))success
+                   failure:(void (^)(NSError *error))failure;
+
++ (NSIndexSet *)defaultAcceptableStatusCodes;
++ (NSSet *)defaultAcceptableContentTypes;
 
 @end

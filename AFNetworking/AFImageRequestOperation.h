@@ -22,52 +22,21 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "QHTTPOperation.h"
-#import "AFCallback.h"
+#import "AFHTTPRequestOperation.h"
 
 typedef enum {
-    AFImageRequestResize                = 1 << 1,
-    AFImageRequestRoundCorners			= 1 << 2,
-    AFImageCacheProcessedImage          = 1 << 0xA,
-	AFImageRequestDefaultOptions		= AFImageRequestResize,
+    AFImageRequestDefaultOptions        = 0,
+    AFImageRequestRoundCorners			= 1 << 1,
 } AFImageRequestOptions;
 
-@class AFImageRequestOperationCallback;
+@interface AFImageRequestOperation : AFHTTPRequestOperation
 
-@interface AFImageRequestOperation : QHTTPOperation {
-@private
-	AFImageRequestOperationCallback *_callback;
-}
++ (id)operationWithRequest:(NSURLRequest *)urlRequest                
+                   success:(void (^)(UIImage *image))success;
 
-@property (nonatomic, retain) AFImageRequestOperationCallback *callback;
++ (id)operationWithRequest:(NSURLRequest *)urlRequest
+                 imageSize:(CGSize)imageSize
+                   options:(AFImageRequestOptions)options
+                   success:(void (^)(UIImage *image))success;
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest callback:(AFImageRequestOperationCallback *)callback;
-- (id)initWithRequest:(NSURLRequest *)urlRequest callback:(AFImageRequestOperationCallback *)callback;
-
-@end
-
-#pragma mark - AFHTTPOperationCallback
-
-typedef void (^AFImageRequestOperationSuccessBlock)(UIImage *image);
-typedef void (^AFImageRequestOperationErrorBlock)(NSError *error);
-
-@protocol AFImageRequestOperationCallback <NSObject>
-@optional
-+ (id)callbackWithSuccess:(AFImageRequestOperationSuccessBlock)success;
-+ (id)callbackWithSuccess:(AFImageRequestOperationSuccessBlock)success error:(AFImageRequestOperationErrorBlock)error;
-@end
-
-@interface AFImageRequestOperationCallback : AFCallback <AFImageRequestOperationCallback> {
-@private
-    CGSize _imageSize;
-    AFImageRequestOptions _options;
-}
-
-@property (readwrite, nonatomic, assign) CGSize imageSize;
-@property (readwrite, nonatomic, assign) AFImageRequestOptions options;
-
-@property (readwrite, nonatomic, copy) AFImageRequestOperationSuccessBlock successBlock;
-@property (readwrite, nonatomic, copy) AFImageRequestOperationErrorBlock errorBlock;
-
-+ (id)callbackWithSuccess:(AFImageRequestOperationSuccessBlock)success imageSize:(CGSize)imageSize options:(AFImageRequestOptions)options;
 @end

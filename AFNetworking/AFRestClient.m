@@ -21,13 +21,15 @@
 // THE SOFTWARE.
 
 #import "AFRestClient.h"
-#import "AFHTTPOperation.h"
+#import "AFJSONRequestOperation.h"
 
 static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding;
 
 @interface AFRestClient ()
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
+
+- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 @end
 
 @implementation AFRestClient
@@ -78,36 +80,6 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
     return nil;
 }
 
-- (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters {	
-	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
-	NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:_defaultHeaders];
-	NSURL *url = nil;
-	
-	NSMutableArray *mutableParameterComponents = [NSMutableArray array];
-	for (id key in [parameters allKeys]) {
-		NSString *component = [NSString stringWithFormat:@"%@=%@", [key urlEncodedStringWithEncoding:kAFRestClientStringEncoding], [[parameters valueForKey:key] urlEncodedStringWithEncoding:kAFRestClientStringEncoding]];
-		[mutableParameterComponents addObject:component];
-	}
-	NSString *queryString = [mutableParameterComponents componentsJoinedByString:@"&"];
-    
-	if ([method isEqualToString:@"GET"]) {
-		path = [path stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", queryString];
-		url = [NSURL URLWithString:path relativeToURL:[[self class] baseURL]];
-	} else {
-		url = [NSURL URLWithString:path relativeToURL:[[self class] baseURL]];
-		NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(kAFRestClientStringEncoding));
-		[headers setObject:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forKey:@"Content-Type"];
-		[request setHTTPBody:[queryString dataUsingEncoding:NSUTF8StringEncoding]];
-	}
-    
-	[request setURL:url];
-	[request setHTTPMethod:method];
-	[request setHTTPShouldHandleCookies:NO];
-	[request setAllHTTPHeaderFields:headers];
-    
-	return request;
-}
-
 - (NSString *)defaultValueForHeader:(NSString *)header {
 	return [self.defaultHeaders valueForKey:header];
 }
@@ -124,42 +96,81 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 	[self.defaultHeaders removeObjectForKey:@"Authorization"];
 }
 
-
 #pragma mark -
 
-- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback {
-	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
-	[self enqueueHTTPOperationWithRequest:request callback:callback];
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters {	
+	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
+	NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:self.defaultHeaders];
+	NSURL *url = [NSURL URLWithString:path relativeToURL:[[self class] baseURL]];
+	
+    if (parameters) {
+        NSMutableArray *mutableParameterComponents = [NSMutableArray array];
+        for (id key in [parameters allKeys]) {
+            NSString *component = [NSString stringWithFormat:@"%@=%@", [key urlEncodedStringWithEncoding:kAFRestClientStringEncoding], [[parameters valueForKey:key] urlEncodedStringWithEncoding:kAFRestClientStringEncoding]];
+            [mutableParameterComponents addObject:component];
+        }
+        NSString *queryString = [mutableParameterComponents componentsJoinedByString:@"&"];
+        
+        if ([method isEqualToString:@"GET"]) {
+            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", queryString]];
+        } else {
+            NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(kAFRestClientStringEncoding));
+            [headers setObject:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forKey:@"Content-Type"];
+            [request setHTTPBody:[queryString dataUsingEncoding:NSUTF8StringEncoding]];
+        }
+    }
+    
+	[request setURL:url];
+	[request setHTTPMethod:method];
+	[request setHTTPShouldHandleCookies:NO];
+	[request setAllHTTPHeaderFields:headers];
+    
+	return request;
 }
 
-- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback  {
-	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
-	[self enqueueHTTPOperationWithRequest:request callback:callback];
-}
-
-- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback  {
-	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
-	[self enqueueHTTPOperationWithRequest:request callback:callback];
-}
-
-- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback  {
-	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
-	[self enqueueHTTPOperationWithRequest:request callback:callback];
-}
-
-#pragma mark -
-
-- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request callback:(AFHTTPOperationCallback *)callback {
+- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	if ([request URL] == nil || [[request URL] isEqual:[NSNull null]]) {
 		return;
 	}
-	
-	AFHTTPOperation *operation = [[[AFHTTPOperation alloc] initWithRequest:request callback:callback] autorelease];
-    [self enqueueHTTPOperation:operation];
+    
+    AFHTTPRequestOperation *operation = [AFJSONRequestOperation operationWithRequest:request success:success failure:failure];
+    [self.operationQueue addOperation:operation];
 }
 
-- (void)enqueueHTTPOperation:(AFHTTPOperation *)operation {
-    [self.operationQueue addOperation:operation];
+- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
+    [self getPath:path parameters:parameters success:success failure:nil];
+}
+
+- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
+	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
+	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
+}
+
+- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
+    [self postPath:path parameters:parameters success:success failure:nil];
+}
+
+- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
+	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
+	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
+}
+
+- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
+    [self putPath:path parameters:parameters success:success failure:nil];
+}
+
+- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
+	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
+	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
+}
+
+- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
+    [self deletePath:path parameters:parameters success:success failure:nil];
+}
+
+- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
+	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
+	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }
 
 @end

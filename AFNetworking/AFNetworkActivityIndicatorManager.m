@@ -1,4 +1,4 @@
-// Spot.h
+// AFNetworkActivityIndicatorManager.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,26 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
+#import "AFNetworkActivityIndicatorManager.h"
 
-typedef void (^AFRecordsBlock)(NSArray *records);
+@interface AFNetworkActivityIndicatorManager ()
+@property (readwrite, nonatomic, assign) NSUInteger activityCount;
+@end
 
-@interface Spot : NSObject {
-@private
-    NSString *_name;
-    NSString *_imageURLString;
-    NSNumber *_latitude;
-    NSNumber *_longitude;
+@implementation AFNetworkActivityIndicatorManager
+@synthesize activityCount = _activityCount;
+
++ (AFNetworkActivityIndicatorManager *)sharedManager {
+    static AFNetworkActivityIndicatorManager *_sharedManager = nil;
+    if (!_sharedManager) {
+        _sharedManager = [[AFNetworkActivityIndicatorManager alloc] init];
+    }
+    
+    return _sharedManager;
 }
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSNumber *latitude;
-@property (nonatomic, retain) NSNumber *longitude;
-@property (readonly) CLLocation *location;
+- (void)setActivityCount:(NSUInteger)activityCount {
+    [self willChangeValueForKey:@"activityCount"];
+    _activityCount = MAX(activityCount, 0);
+    [self didChangeValueForKey:@"activityCount"];
 
-- (id)initWithAttributes:(NSDictionary *)attributes;
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:self.activityCount > 0];
+}
+
+- (void)startAnimating {
+	self.activityCount += 1;
+}
+
+- (void)stopAnimating {
+    self.activityCount -= 1;
+}
 
 @end

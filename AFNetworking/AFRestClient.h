@@ -21,27 +21,37 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPOperation.h"
+#import "AFHTTPRequestOperation.h"
 
 @protocol AFRestClient <NSObject>
-@required
 + (NSURL *)baseURL;
-- (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters;
 @end
 
-@interface AFRestClient : NSObject <AFRestClient>
+@interface AFRestClient : NSObject <AFRestClient> {
+@protected
+    NSMutableDictionary *_defaultHeaders;
+    NSOperationQueue *_operationQueue;
+}
+
 - (NSString *)defaultValueForHeader:(NSString *)header;
 - (void)setDefaultHeader:(NSString *)header value:(NSString *)value;
 - (void)setAuthorizationHeaderWithToken:(NSString *)token;
 - (void)clearAuthorizationHeader;
 
-- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback;
-- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback;
-- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback;
-- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters callback:(AFHTTPOperationCallback *)callback;
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters;
+- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 
-- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request callback:(AFHTTPOperationCallback *)callback;
-- (void)enqueueHTTPOperation:(AFHTTPOperation *)operation;
+- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success;
+- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
+
+- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success;
+- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
+
+- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success;
+- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
+
+- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success;
+- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 @end
 
 #pragma mark - NSString + AFRestClient

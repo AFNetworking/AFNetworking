@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 #import "Spot.h"
 
 #import "AFGowallaAPIClient.h"
@@ -56,24 +57,28 @@
     return [[[CLLocation alloc] initWithLatitude:[self.latitude doubleValue] longitude:[self.longitude doubleValue]] autorelease];
 }
 
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters withBlock:(AFRecordsBlock)block {
++ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block {
     NSDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
 	if (location) {
 		[mutableParameters setValue:[NSString stringWithFormat:@"%1.7f", location.coordinate.latitude] forKey:@"lat"];
 		[mutableParameters setValue:[NSString stringWithFormat:@"%1.7f", location.coordinate.longitude] forKey:@"lng"];
 	}
     
-    [[AFGowallaAPIClient sharedClient] getPath:urlString parameters:mutableParameters callback:[AFHTTPOperationCallback callbackWithSuccess:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *data) {
-		if (block) {
-            NSMutableArray *mutableRecords = [NSMutableArray array];
-            for (NSDictionary *attributes in [data valueForKeyPath:@"spots"]) {
-                Spot *spot = [[[Spot alloc] initWithAttributes:attributes] autorelease];
-                [mutableRecords addObject:spot];
-            }
-            
+    [[AFGowallaAPIClient sharedClient] getPath:urlString parameters:mutableParameters success:^(id response) {
+        NSMutableArray *mutableRecords = [NSMutableArray array];
+        for (NSDictionary *attributes in [response valueForKeyPath:@"spots"]) {
+            Spot *spot = [[[Spot alloc] initWithAttributes:attributes] autorelease];
+            [mutableRecords addObject:spot];
+        }
+        
+        if (block) {
             block([NSArray arrayWithArray:mutableRecords]);
         }
-	}]];
+    } failure:^(NSError *error) {
+        if (block) {
+            block([NSArray array]);
+        }
+    }];
 }
 
 @end
