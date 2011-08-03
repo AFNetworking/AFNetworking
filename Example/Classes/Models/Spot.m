@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 #import "Spot.h"
 
 #import "AFGowallaAPIClient.h"
@@ -63,7 +64,7 @@
 		[mutableParameters setValue:[NSString stringWithFormat:@"%1.7f", location.coordinate.longitude] forKey:@"lng"];
 	}
     
-    [[AFGowallaAPIClient sharedClient] getPath:urlString parameters:mutableParameters success:^(NSDictionary *response) {
+    [[AFGowallaAPIClient sharedClient] getPath:urlString parameters:mutableParameters success:^(id response) {
         NSMutableArray *mutableRecords = [NSMutableArray array];
         for (NSDictionary *attributes in [response valueForKeyPath:@"spots"]) {
             Spot *spot = [[[Spot alloc] initWithAttributes:attributes] autorelease];

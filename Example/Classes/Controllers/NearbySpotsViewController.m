@@ -39,17 +39,10 @@
 - (void)refresh:(id)sender;
 @end
 
-static TTTLocationFormatter *__locationFormatter;
-
 @implementation NearbySpotsViewController
 @synthesize nearbySpots = _spots;
 @synthesize locationManager = _locationManager;
 @synthesize activityIndicatorView = _activityIndicatorView;
-
-+ (void)initialize {
-    __locationFormatter = [[TTTLocationFormatter alloc] init];
-    [__locationFormatter setUnitSystem:TTTImperialSystem];
-}
 
 - (id)init {
     self = [super init];
@@ -103,7 +96,7 @@ static TTTLocationFormatter *__locationFormatter;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = NSLocalizedString(@"Nearby Spots", nil);
+    self.title = NSLocalizedString(@"AFNetworking", nil);
     
     self.activityIndicatorView = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite] autorelease];
     self.activityIndicatorView.hidesWhenStopped = YES;
@@ -143,7 +136,7 @@ static TTTLocationFormatter *__locationFormatter;
     [self loadSpotsForLocation:newLocation];
 }
 
-#pragma mark - UITableViewDelegate
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -160,15 +153,31 @@ static TTTLocationFormatter *__locationFormatter;
     if (cell == nil) {
         cell = [[[SpotTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
     }
+    
+    static TTTLocationFormatter *_locationFormatter = nil;
+    if (!_locationFormatter) {
+        _locationFormatter = [[TTTLocationFormatter alloc] init];
+        [_locationFormatter setUnitSystem:TTTImperialSystem];
+    }
 
     Spot *spot = [self.nearbySpots objectAtIndex:indexPath.row];
     cell.textLabel.text = spot.name;
     if (self.locationManager.location) {
-        cell.detailTextLabel.text = [__locationFormatter stringFromDistanceAndBearingFromLocation:self.locationManager.location toLocation:spot.location];
+        cell.detailTextLabel.text = [_locationFormatter stringFromDistanceAndBearingFromLocation:self.locationManager.location toLocation:spot.location];
     }
     [cell.imageView setImageWithURL:[NSURL URLWithString:spot.imageURLString] placeholderImage:[UIImage imageNamed:@"placeholder-stamp.png"]];
     
     return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if ([self tableView:tableView numberOfRowsInSection:section] > 0) {
+        return NSLocalizedString(@"Nearby Spots", nil);
+    }
+    
+    return nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

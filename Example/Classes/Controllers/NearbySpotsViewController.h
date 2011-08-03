@@ -24,10 +24,9 @@
 #import <CoreLocation/CoreLocation.h>
 
 @interface NearbySpotsViewController : UITableViewController <CLLocationManagerDelegate> {
+    NSArray *_nearbySpots;
+    CLLocationManager *_locationManager;
     UIActivityIndicatorView *_activityIndicatorView;
 }
-
-@property (readonly, nonatomic, retain) NSArray *nearbySpots;
-@property (readonly, nonatomic, retain) CLLocationManager *locationManager;
 
 @end
