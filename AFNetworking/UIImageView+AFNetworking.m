@@ -42,7 +42,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
 @implementation UIImageView (AFNetworking)
 
 - (AFHTTPRequestOperation *)imageRequestOperation {
-    return objc_getAssociatedObject(self, kUIImageViewImageRequestObjectKey);
+    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, kUIImageViewImageRequestObjectKey);
 }
 
 - (void)setImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
