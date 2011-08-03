@@ -26,25 +26,22 @@
 @implementation AFJSONRequestOperation
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(NSDictionary *JSON))success
+                   success:(void (^)(id JSON))success
 {
     return [self operationWithRequest:urlRequest success:success failure:nil];
 }
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
-                   success:(void (^)(NSDictionary *JSON))success
+                   success:(void (^)(id JSON))success
                    failure:(void (^)(NSError *error))failure
-{
-    NSIndexSet *acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-    NSSet *acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"application/x-javascript", @"text/javascript", @"text/x-javascript", @"text/x-json", @"text/plain", nil];
-    
-    return [self operationWithRequest:urlRequest acceptableStatusCodes:acceptableStatusCodes acceptableContentTypes:acceptableContentTypes success:success failure:failure];
+{    
+    return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:success failure:failure];
 }
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest
      acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
     acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(NSDictionary *JSON))success
+                   success:(void (^)(id JSON))success
                    failure:(void (^)(NSError *error))failure
 {
     return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
@@ -63,13 +60,34 @@
                 failure(error);
             }
         } else {
-            NSDictionary *JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
+            id JSON = nil;
             
-            if (success) {
-                success(JSON);
+            Class NSJSONSerialization = NSClassFromString(@"NSJSONSerialization");
+            if (NSJSONSerialization) {
+                JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            } else {
+                JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
+            }             
+            
+            if (error) {
+                if (failure) {
+                    failure(error);
+                }
+            } else {
+                if (success) {
+                    success(JSON);
+                }
             }
         }
     }];
+}
+
++ (NSIndexSet *)defaultAcceptableStatusCodes {
+    return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
+}
+
++ (NSSet *)defaultAcceptableContentTypes {
+    return [NSSet setWithObjects:@"application/json", @"application/x-javascript", @"text/javascript", @"text/x-javascript", @"text/x-json", @"text/json", @"text/plain", nil];
 }
 
 @end

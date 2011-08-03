@@ -39,19 +39,19 @@
 - (void)clearAuthorizationHeader;
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters;
-- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(NSDictionary *response))success failure:(void (^)(NSError *error))failure;
+- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 
-- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *response))success;
-- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *response))success failure:(void (^)(NSError *error))failure;
+- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success;
+- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 
-- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *response))success;
-- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *response))success failure:(void (^)(NSError *error))failure;
+- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success;
+- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 
-- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *response))success;
-- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *response))success failure:(void (^)(NSError *error))failure;
+- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success;
+- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 
-- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *response))success;
-- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *response))success failure:(void (^)(NSError *error))failure;
+- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success;
+- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 @end
 
 #pragma mark - NSString + AFRestClient

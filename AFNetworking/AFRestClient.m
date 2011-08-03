@@ -29,7 +29,7 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
 
-- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(NSDictionary *response))success failure:(void (^)(NSError *error))failure;
+- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 @end
 
 @implementation AFRestClient
@@ -128,7 +128,7 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 	return request;
 }
 
-- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(NSDictionary *response))success failure:(void (^)(NSError *error))failure {
+- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	if ([request URL] == nil || [[request URL] isEqual:[NSNull null]]) {
 		return;
 	}
@@ -137,38 +137,38 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
     [self.operationQueue addOperation:operation];
 }
 
-- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *))success {
+- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
     [self getPath:path parameters:parameters success:success failure:nil];
 }
 
-- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *))success failure:(void (^)(NSError *error))failure {
+- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }
 
-- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *))success {
+- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
     [self postPath:path parameters:parameters success:success failure:nil];
 }
 
-- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *))success failure:(void (^)(NSError *error))failure {
+- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }
 
-- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *))success {
+- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
     [self putPath:path parameters:parameters success:success failure:nil];
 }
 
-- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *))success failure:(void (^)(NSError *error))failure {
+- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }
 
-- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *))success {
+- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
     [self deletePath:path parameters:parameters success:success failure:nil];
 }
 
-- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(NSDictionary *))success failure:(void (^)(NSError *error))failure {
+- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }

@@ -25,16 +25,19 @@
 @interface AFJSONRequestOperation : AFHTTPRequestOperation
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(NSDictionary *JSON))success;
+                   success:(void (^)(id JSON))success;
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
-                   success:(void (^)(NSDictionary *JSON))success
+                   success:(void (^)(id JSON))success
                    failure:(void (^)(NSError *error))failure;
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest
      acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
     acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(NSDictionary *JSON))success
+                   success:(void (^)(id JSON))success
                    failure:(void (^)(NSError *error))failure;
+
++ (NSIndexSet *)defaultAcceptableStatusCodes;
++ (NSSet *)defaultAcceptableContentTypes;
 
 @end

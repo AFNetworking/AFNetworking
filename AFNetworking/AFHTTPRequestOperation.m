@@ -42,7 +42,6 @@ static inline NSString * AFKeyPathFromOperationState(AFHTTPOperationState state)
         case AFHTTPOperationExecutingState:
             return @"isExecuting";
         case AFHTTPOperationFinishedState:
-        case AFHTTPOperationCancelledState:
             return @"isFinished";
         default:
             return @"state";
@@ -58,7 +57,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
         case AFHTTPOperationReadyState:
             switch (to) {
                 case AFHTTPOperationExecutingState:
-                case AFHTTPOperationCancelledState:
                     return YES;
                 default:
                     return NO;
@@ -71,7 +69,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
                     return YES;
             }
         case AFHTTPOperationFinishedState:
-        case AFHTTPOperationCancelledState:
             return NO;
         default:
             return YES;
@@ -80,13 +77,17 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 
 @interface AFHTTPRequestOperation ()
 @property (nonatomic, assign) AFHTTPOperationState state;
+@property (nonatomic, assign) BOOL isCancelled;
 @property (readwrite, nonatomic, retain) NSPort *port;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
+
+- (void)cleanup;
 @end
 
 @implementation AFHTTPRequestOperation
 @synthesize state = _state;
+@synthesize isCancelled = _isCancelled;
 @synthesize connection = _connection;
 @synthesize runLoopModes = _runLoopModes;
 @synthesize port = _port;
@@ -136,6 +137,14 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     [super dealloc];
 }
 
+- (void)cleanup {
+    for (NSString *runLoopMode in self.runLoopModes) {
+        [[NSRunLoop currentRunLoop] removePort:self.port forMode:runLoopMode];
+        [self.connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
+    }
+    CFRunLoopStop([[NSRunLoop currentRunLoop] getCFRunLoop]); 
+}
+
 - (void)setState:(AFHTTPOperationState)state {
     if (!AFHTTPOperationStateTransitionIsValid(self.state, state)) {
         return;
@@ -156,15 +165,9 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidStartNotification object:self];
             break;
         case AFHTTPOperationFinishedState:
-        case AFHTTPOperationCancelledState:
             [[AFNetworkActivityIndicatorManager sharedManager] stopAnimating];
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidFinishNotification object:self];
-            
-            for (NSString *runLoopMode in self.runLoopModes) {
-                [[NSRunLoop currentRunLoop] removePort:self.port forMode:runLoopMode];
-                [self.connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
-            }
-            CFRunLoopStop([[NSRunLoop currentRunLoop] getCFRunLoop]);
+            [self cleanup];
             break;
         default:
             break;
@@ -186,11 +189,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 }
 
 - (BOOL)isFinished {
-    return self.state == AFHTTPOperationFinishedState || self.isCancelled;
-}
-
-- (BOOL)isCancelled {
-    return self.state == AFHTTPOperationCancelledState;
+    return self.state == AFHTTPOperationFinishedState || [self isCancelled];
 }
 
 - (BOOL)isConcurrent {
@@ -218,10 +217,12 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     [runLoop run];
 }
 
-- (void)cancel {    
-    self.state = AFHTTPOperationCancelledState;
-
+- (void)cancel {
+    self.isCancelled = YES;
+    
     [self.connection cancel];
+    
+    [self cleanup];
 }
 
 #pragma mark - AFHTTPRequestOperation
@@ -264,6 +265,14 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     self.error = error;
     
     [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+    if ([self isCancelled]) {
+        return nil;
+    }
+    
+    return cachedResponse;
 }
 
 @end
