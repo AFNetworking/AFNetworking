@@ -2,9 +2,13 @@
 ## A delightful iOS networking library with NSOperations and block-based callbacks
 ### There's a lot to be said for a networking library that you can wrap your head around. API design matters, too. Code at its best is poetry, and should be designed to delight (but never surprise).
 
-AFNetworking was lovingly crafted to make best use of our favorite parts of Apple's `Foundation` framework: `NSOperation` for managing multiple concurrent requests, `NSURLRequest` & `NSHTTPURLResponse` to encapsulate state, `NSCache` and `NSURLCache` for performant and compliant cacheing behavior, and blocks to keep HTTP request / response handling code in a single logical unit in code.
+AFNetworking was lovingly crafted to make best use of our favorite parts of Apple's `Foundation` framework: `NSOperation` for managing multiple concurrent requests, `NSURLRequest` & `NSHTTPURLResponse` to encapsulate state, `NSCache` & `NSURLCache` for performant and compliant cacheing behavior, and blocks to keep request / response handling code in a single logical unit in code.
 
-If you're tired of massive libraries that try to do too much, if you've taken it upon yourself to roll your own hacky solution, if you want a library that _actually makes iOS networking code kinda fun_, try out AFNetworking.
+If you're tired of massive libraries that try to do too much...  
+If you've taken it upon yourself to roll your own hacky solution...  
+If you want a library that _actually makes iOS networking code kinda fun_...  
+
+...try out AFNetworking
 
 ## Example Usage
 
@@ -25,17 +29,7 @@ UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0
     [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
 ```
 
-### HTTP POST Request With Authorization Header Using `NSOperationQueue`
-
-``` objective-c
-NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/"]];
-AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
-    NSLog(@"HTTP Status Code: %d", [response statusCode]);
-}];
-[operation start];
-```
-
-### POST Request With HTTP Authorization Header Using `NSOperationQueue`
+### POST Request With HTTP Authorization Header Using NSOperationQueue
 
 ``` objective-c
 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/friendships/request?user_id=1699"]];
@@ -73,7 +67,7 @@ In order to demonstrate the power and flexibility of AFNetworking, we've include
 ## Dependencies
 
 * [iOS 4.0+](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) - AFNetworking uses blocks, which were introduced in iOS 4.
-* [JSONKit](https://github.com/johnezang/JSONKit) - One of the conveniences built into `AFHTTPOperation` is automatic JSON parsing for HTTP requests that return content-type `application/json`. JSONKit is our preferred JSON parsing library, and is included in the example project. (`NSJSONSerialization`, introduced in iOS 5 is used if available, and falls back on JSONKit)
+* [JSONKit](https://github.com/johnezang/JSONKit) - One of the conveniences built into `AFJSONRequestOperation` is automatic JSON parsing. `NSJSONSerialization`, introduced in iOS 5 is used if available. Otherwise, we use JSONKit.
 
 ## Credits
 
