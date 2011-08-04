@@ -23,6 +23,8 @@
 #import "AFJSONRequestOperation.h"
 #import "JSONKit.h"
 
+#include <Availability.h>
+
 @implementation AFJSONRequestOperation
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest                
@@ -61,13 +63,17 @@
             }
         } else {
             id JSON = nil;
-            
+
+            #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
             if ([NSJSONSerialization class]) {
                 JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
             } else {
                 JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
-            }             
-            
+            }
+            #else
+            JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
+            #endif
+
             if (error) {
                 if (failure) {
                     failure(error);
