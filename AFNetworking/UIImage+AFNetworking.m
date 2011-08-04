@@ -38,7 +38,7 @@
     CGFloat heightFactor = size.height / image.size.height;
     CGFloat scaleFactor = (widthFactor > heightFactor) ? widthFactor : heightFactor;
     scaledSize.width = image.size.width * scaleFactor;
-    scaledSize.width = image.size.height * scaleFactor;
+    scaledSize.height = image.size.height * scaleFactor;
     if (widthFactor > heightFactor) {
         thumbnailPoint.y = (size.height - scaledSize.height) * 0.5; 
     } else if (widthFactor < heightFactor) {
