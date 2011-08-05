@@ -21,13 +21,15 @@
 // THE SOFTWARE.
 
 #import "NSMutableURLRequest+AFNetworking.h"
+#import "NSData+AFNetworking.h"
 
 @implementation NSMutableURLRequest (AFNetworking)
 
 - (void)setHTTPBodyWithData:(NSData *)data 
                    mimeType:(NSString *)mimeType 
           forParameterNamed:(NSString *)parameterName 
-                 parameters:(NSDictionary *)parameters 
+                 parameters:(NSDictionary *)parameters
+             useCompression:(BOOL)useCompression
 {
 	if ([[self HTTPMethod] isEqualToString:@"GET"]) {
 		[self setHTTPMethod:@"POST"];
@@ -56,7 +58,19 @@
 	[mutableData appendData:data];
 	[mutableData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
 	
-	[self setHTTPBody:mutableData];
+    if (useCompression) {
+        NSError *error = nil;
+        NSData *compressedData = [mutableData dataByGZipCompressingWithError:&error];
+        
+        if (!error && compressedData) {
+            [self setHTTPBody:compressedData];
+            
+            // Content-Encoding HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
+            [self setValue:@"gzip" forHTTPHeaderField:@"Content-Encoding"];
+        }
+    } else {
+        [self setHTTPBody:mutableData];
+    }
 }
 
 @end

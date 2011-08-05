@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		F85CE2D413EC478F00BFAE01 /* NSString+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F85CE2D313EC478F00BFAE01 /* NSString+AFNetworking.m */; };
 		F85CE2DC13EC4A4200BFAE01 /* NSMutableURLRequest+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F85CE2DB13EC4A4200BFAE01 /* NSMutableURLRequest+AFNetworking.m */; };
+		F85CE55513EC759200BFAE01 /* NSData+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F85CE55413EC759200BFAE01 /* NSData+AFNetworking.m */; };
+		F85CE55B13EC771100BFAE01 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F85CE55A13EC771100BFAE01 /* libz.1.2.5.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F874B5D913E0AA6500B28E3E /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5C913E0AA6500B28E3E /* AFHTTPRequestOperation.m */; };
 		F874B5DA13E0AA6500B28E3E /* AFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5CA13E0AA6500B28E3E /* AFImageCache.m */; };
 		F874B5DB13E0AA6500B28E3E /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5CB13E0AA6500B28E3E /* AFImageRequestOperation.m */; };
@@ -38,6 +40,9 @@
 		F85CE2D313EC478F00BFAE01 /* NSString+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+AFNetworking.m"; path = "../AFNetworking/NSString+AFNetworking.m"; sourceTree = "<group>"; };
 		F85CE2DA13EC4A4200BFAE01 /* NSMutableURLRequest+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMutableURLRequest+AFNetworking.h"; path = "../AFNetworking/NSMutableURLRequest+AFNetworking.h"; sourceTree = "<group>"; };
 		F85CE2DB13EC4A4200BFAE01 /* NSMutableURLRequest+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSMutableURLRequest+AFNetworking.m"; path = "../AFNetworking/NSMutableURLRequest+AFNetworking.m"; sourceTree = "<group>"; };
+		F85CE55313EC759100BFAE01 /* NSData+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+AFNetworking.h"; path = "../AFNetworking/NSData+AFNetworking.h"; sourceTree = "<group>"; };
+		F85CE55413EC759200BFAE01 /* NSData+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+AFNetworking.m"; path = "../AFNetworking/NSData+AFNetworking.m"; sourceTree = "<group>"; };
+		F85CE55A13EC771100BFAE01 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		F874B5C913E0AA6500B28E3E /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPRequestOperation.m; path = ../AFNetworking/AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		F874B5CA13E0AA6500B28E3E /* AFImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFImageCache.m; path = ../AFNetworking/AFImageCache.m; sourceTree = "<group>"; };
 		F874B5CB13E0AA6500B28E3E /* AFImageRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFImageRequestOperation.m; path = ../AFNetworking/AFImageRequestOperation.m; sourceTree = "<group>"; };
@@ -88,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F85CE55B13EC771100BFAE01 /* libz.1.2.5.dylib in Frameworks */,
 				F8E469651395739D00DB05C8 /* UIKit.framework in Frameworks */,
 				F8E469671395739D00DB05C8 /* Foundation.framework in Frameworks */,
 				F8E469691395739D00DB05C8 /* CoreGraphics.framework in Frameworks */,
@@ -109,6 +115,8 @@
 				F874B5CF13E0AA6500B28E3E /* UIImage+AFNetworking.m */,
 				F874B5D813E0AA6500B28E3E /* UIImageView+AFNetworking.h */,
 				F874B5D013E0AA6500B28E3E /* UIImageView+AFNetworking.m */,
+				F85CE55313EC759100BFAE01 /* NSData+AFNetworking.h */,
+				F85CE55413EC759200BFAE01 /* NSData+AFNetworking.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -186,6 +194,7 @@
 		F8E469631395739D00DB05C8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F85CE55A13EC771100BFAE01 /* libz.1.2.5.dylib */,
 				F8E469E413957E0400DB05C8 /* SystemConfiguration.framework */,
 				F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */,
 				F8E469E013957DF100DB05C8 /* Security.framework */,
@@ -351,6 +360,7 @@
 				F874B5E013E0AA6500B28E3E /* UIImageView+AFNetworking.m in Sources */,
 				F85CE2D413EC478F00BFAE01 /* NSString+AFNetworking.m in Sources */,
 				F85CE2DC13EC4A4200BFAE01 /* NSMutableURLRequest+AFNetworking.m in Sources */,
+				F85CE55513EC759200BFAE01 /* NSData+AFNetworking.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

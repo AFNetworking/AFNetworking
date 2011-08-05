@@ -1,4 +1,4 @@
-// NSMutableURLRequest+AFNetworking.h
+// NSData+AFNetworking.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -22,12 +22,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSMutableURLRequest (AFNetworking)
+extern NSString * const kAFZlibErrorDomain;
 
-- (void)setHTTPBodyWithData:(NSData *)data 
-                   mimeType:(NSString *)mimeType 
-          forParameterNamed:(NSString *)parameterName 
-                 parameters:(NSDictionary *)parameters
-             useCompression:(BOOL)useCompression;
+@interface NSData (AFNetworking)
+
+- (NSData *)dataByGZipCompressingWithError:(NSError **)error;
+- (NSData *)dataByGZipDecompressingDataWithError:(NSError **)error;
 
 @end
