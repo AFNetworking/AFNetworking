@@ -37,14 +37,22 @@
                    success:(void (^)(id JSON))success
                    failure:(void (^)(NSError *error))failure
 {    
-    return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:success failure:failure];
+    return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        if (success) {
+            success(JSON);
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
 }
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest
      acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
     acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(id JSON))success
-                   failure:(void (^)(NSError *error))failure
+                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
         BOOL statusCodeAcceptable = [acceptableStatusCodes containsIndex:[response statusCode]];
@@ -59,7 +67,7 @@
         
         if (error) {
             if (failure) {
-                failure(error);
+                failure(request, response, error);
             }
         } else {
             id JSON = nil;
@@ -76,11 +84,11 @@
 
             if (error) {
                 if (failure) {
-                    failure(error);
+                    failure(request, response, error);
                 }
             } else {
                 if (success) {
-                    success(JSON);
+                    success(request, response, JSON);
                 }
             }
         }

@@ -34,8 +34,8 @@
 + (id)operationWithRequest:(NSURLRequest *)urlRequest
      acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
     acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(id JSON))success
-                   failure:(void (^)(NSError *error))failure;
+                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 + (NSIndexSet *)defaultAcceptableStatusCodes;
 + (NSSet *)defaultAcceptableContentTypes;
