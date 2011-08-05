@@ -26,7 +26,19 @@
 @interface UIImageView (AFNetworking)
 
 - (void)setImageWithURL:(NSURL *)url;
-- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage;
-- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage imageSize:(CGSize)imageSize options:(AFImageRequestOptions)options;
+
+- (void)setImageWithURL:(NSURL *)url 
+       placeholderImage:(UIImage *)placeholderImage;
+
+- (void)setImageWithURL:(NSURL *)url 
+       placeholderImage:(UIImage *)placeholderImage 
+              imageSize:(CGSize)imageSize 
+                options:(AFImageRequestOptions)options;
+
+- (void)setImageWithURL:(NSURL *)url 
+       placeholderImage:(UIImage *)placeholderImage 
+              imageSize:(CGSize)imageSize 
+                options:(AFImageRequestOptions)options
+                  block:(void (^)(UIImage *image))block;
 
 @end

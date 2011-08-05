@@ -59,16 +59,33 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
     
     return _imageRequestOperationQueue;
 }
+
+#pragma mark -
  
 - (void)setImageWithURL:(NSURL *)url {
     [self setImageWithURL:url placeholderImage:nil];
 }
 
-- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage {
+- (void)setImageWithURL:(NSURL *)url 
+       placeholderImage:(UIImage *)placeholderImage 
+{
     [self setImageWithURL:url placeholderImage:placeholderImage imageSize:self.frame.size options:AFImageRequestDefaultOptions];
 }
 
-- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage imageSize:(CGSize)imageSize options:(AFImageRequestOptions)options {
+- (void)setImageWithURL:(NSURL *)url 
+       placeholderImage:(UIImage *)placeholderImage 
+              imageSize:(CGSize)imageSize 
+                options:(AFImageRequestOptions)options 
+{
+    [self setImageWithURL:url placeholderImage:placeholderImage imageSize:imageSize options:options block:nil];
+}
+
+- (void)setImageWithURL:(NSURL *)url 
+       placeholderImage:(UIImage *)placeholderImage 
+              imageSize:(CGSize)imageSize 
+                options:(AFImageRequestOptions)options
+                  block:(void (^)(UIImage *image))block
+{
     if (!url) {
         return;
     }
@@ -76,7 +93,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
     [request setHTTPShouldHandleCookies:NO];
     [request setHTTPShouldUsePipelining:YES];
-        
+    
     UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:request imageSize:imageSize options:options];
     if (cachedImage) {
         self.image = cachedImage;
@@ -88,6 +105,10 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
                 self.image = image;
             } else {
                 self.image = placeholderImage;
+            }
+            
+            if (block) {
+                block(image);
             }
         }];
         
