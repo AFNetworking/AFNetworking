@@ -234,7 +234,6 @@
 		F8E469941395744600DB05C8 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
-				F85CE2D613EC47BC00BFAE01 /* Categories */,
 				F874B5D113E0AA6500B28E3E /* AFHTTPRequestOperation.h */,
 				F874B5C913E0AA6500B28E3E /* AFHTTPRequestOperation.m */,
 				F874B5D413E0AA6500B28E3E /* AFJSONRequestOperation.h */,
@@ -247,6 +246,7 @@
 				F874B5CA13E0AA6500B28E3E /* AFImageCache.m */,
 				F874B5D513E0AA6500B28E3E /* AFNetworkActivityIndicatorManager.h */,
 				F874B5CD13E0AA6500B28E3E /* AFNetworkActivityIndicatorManager.m */,
+				F85CE2D613EC47BC00BFAE01 /* Categories */,
 			);
 			name = AFNetworking;
 			sourceTree = "<group>";
