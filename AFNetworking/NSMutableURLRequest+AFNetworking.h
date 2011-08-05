@@ -28,6 +28,6 @@
                    mimeType:(NSString *)mimeType 
           forParameterNamed:(NSString *)parameterName 
                  parameters:(NSDictionary *)parameters
-             useCompression:(BOOL)useCompression;
+         useGzipCompression:(BOOL)useGzipCompression;
 
 @end

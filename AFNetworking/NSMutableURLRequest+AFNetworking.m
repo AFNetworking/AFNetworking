@@ -29,7 +29,7 @@
                    mimeType:(NSString *)mimeType 
           forParameterNamed:(NSString *)parameterName 
                  parameters:(NSDictionary *)parameters
-             useCompression:(BOOL)useCompression
+         useGzipCompression:(BOOL)useGzipCompression
 {
 	if ([[self HTTPMethod] isEqualToString:@"GET"]) {
 		[self setHTTPMethod:@"POST"];
@@ -58,7 +58,7 @@
 	[mutableData appendData:data];
 	[mutableData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
 	
-    if (useCompression) {
+    if (useGzipCompression) {
         NSError *error = nil;
         NSData *compressedData = [mutableData dataByGZipCompressingWithError:&error];
         
