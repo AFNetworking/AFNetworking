@@ -28,8 +28,6 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 @interface AFRestClient ()
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
-
-- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 @end
 
 @implementation AFRestClient
@@ -171,27 +169,6 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 - (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
-}
-
-@end
-
-#pragma mark - NSString + AFRestClient
-
-@implementation NSString (AFRestClient)
-
-// See http://github.com/pokeb/asi-http-request/raw/master/Classes/ASIFormDataRequest.m
-- (NSString*)urlEncodedString { 
-	return [self urlEncodedStringWithEncoding:NSUTF8StringEncoding];
-}
-
-- (NSString *)urlEncodedStringWithEncoding:(NSStringEncoding)encoding { 
-	NSString *newString = [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)self, NULL, CFSTR(":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`"), CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
-	
-	if (newString) {
-		return newString;
-	}
-	
-	return @"";
 }
 
 @end
