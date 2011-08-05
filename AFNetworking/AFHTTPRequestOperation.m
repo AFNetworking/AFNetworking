@@ -33,6 +33,7 @@ typedef enum {
 NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.http-operation.start";
 NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.http-operation.finish";
 
+typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite);
 typedef void (^AFHTTPRequestOperationCompletionBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error);
 
 static inline NSString * AFKeyPathFromOperationState(AFHTTPOperationState state) {
@@ -80,8 +81,10 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @property (nonatomic, assign) BOOL isCancelled;
 @property (readwrite, nonatomic, retain) NSPort *port;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
+@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock progress;
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
 
+- (id)initWithRequest:(NSURLRequest *)urlRequest;
 - (void)cleanup;
 @end
 
@@ -96,6 +99,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @synthesize error = _error;
 @synthesize responseBody = _responseBody;
 @synthesize dataAccumulator = _dataAccumulator;
+@synthesize progress = _progress;
 @synthesize completion = _completion;
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
@@ -134,7 +138,12 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     [_connection release];
 	
     [_completion release];
+    [_progress release];
     [super dealloc];
+}
+
+- (void)setProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
+    self.progress = block;
 }
 
 - (void)cleanup {
@@ -239,14 +248,18 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 
 #pragma mark - NSURLConnection
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+- (void)connection:(NSURLConnection *)connection 
+didReceiveResponse:(NSURLResponse *)response 
+{
     self.response = (NSHTTPURLResponse *)response;
     NSUInteger contentLength = MIN(MAX(abs(response.expectedContentLength), 1024), 1024 * 1024 * 8);
 
     self.dataAccumulator = [NSMutableData dataWithCapacity:contentLength];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+- (void)connection:(NSURLConnection *)connection 
+    didReceiveData:(NSData *)data 
+{
 	[self.dataAccumulator appendData:data];
 }
 
@@ -259,12 +272,24 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
 }
 
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {  
+- (void)connection:(NSURLConnection *)connection 
+  didFailWithError:(NSError *)error 
+{  
     self.state = AFHTTPOperationFinishedState;
     
     self.error = error;
     
     [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
+}
+
+- (void)connection:(NSURLConnection *)connection 
+   didSendBodyData:(NSInteger)bytesWritten 
+ totalBytesWritten:(NSInteger)totalBytesWritten 
+totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
+{
+    if (self.progress) {
+        self.progress(totalBytesWritten, totalBytesExpectedToWrite);
+    }
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {

@@ -51,6 +51,6 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
                 completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion;
 
-- (id)initWithRequest:(NSURLRequest *)urlRequest;
+- (void)setProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block;
 
 @end

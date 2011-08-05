@@ -46,7 +46,7 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
                    options:(AFImageRequestOptions)options
                    success:(void (^)(UIImage *image))success
 {
-    return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
+    AFImageRequestOperation *operation = [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
         UIImage *image = nil;    
         if ([[UIScreen mainScreen] scale] == 2.0) {
             CGImageRef imageRef = [[UIImage imageWithData:data] CGImage];
@@ -70,17 +70,10 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
             [[AFImageCache sharedImageCache] cacheImage:image forRequest:request imageSize:imageSize options:options];
         });
     }];
-}
-
-- (id)initWithRequest:(NSURLRequest *)urlRequest {
-    self = [super initWithRequest:urlRequest];
-    if (!self) {
-        return nil;
-    }
     
-    self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
+    operation.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
     
-    return self;
+    return operation;
 }
 
 @end
