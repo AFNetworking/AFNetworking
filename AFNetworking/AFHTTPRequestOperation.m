@@ -78,7 +78,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @interface AFHTTPRequestOperation ()
 @property (nonatomic, assign) AFHTTPOperationState state;
 @property (nonatomic, assign) BOOL isCancelled;
-@property (readwrite, nonatomic, retain) NSPort *port;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
 
@@ -90,7 +89,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @synthesize isCancelled = _isCancelled;
 @synthesize connection = _connection;
 @synthesize runLoopModes = _runLoopModes;
-@synthesize port = _port;
 @synthesize request = _request;
 @synthesize response = _response;
 @synthesize error = _error;
@@ -124,7 +122,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 
 - (void)dealloc {
     [_runLoopModes release];
-    [_port release];
     
     [_request release];
     [_response release];
@@ -139,7 +136,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 
 - (void)cleanup {
     for (NSString *runLoopMode in self.runLoopModes) {
-        [[NSRunLoop currentRunLoop] removePort:self.port forMode:runLoopMode];
         [self.connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
     }
     CFRunLoopStop([[NSRunLoop currentRunLoop] getCFRunLoop]); 
@@ -204,12 +200,10 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     self.state = AFHTTPOperationExecutingState;
         
     self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
-    self.port = [NSPort port];
     
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
     for (NSString *runLoopMode in self.runLoopModes) {
         [self.connection scheduleInRunLoop:runLoop forMode:runLoopMode];
-        [runLoop addPort:self.port forMode:runLoopMode];
     }
     
     [self.connection start];

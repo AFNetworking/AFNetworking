@@ -28,7 +28,6 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
 @interface AFHTTPRequestOperation : NSOperation {
 @private    
     NSURLConnection *_connection;
-    NSPort *_port;
     NSSet *_runLoopModes;
     
     NSURLRequest *_request;
