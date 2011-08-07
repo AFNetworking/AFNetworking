@@ -72,15 +72,4 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
     }];
 }
 
-- (id)initWithRequest:(NSURLRequest *)urlRequest {
-    self = [super initWithRequest:urlRequest];
-    if (!self) {
-        return nil;
-    }
-    
-    self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
-    
-    return self;
-}
-
 @end

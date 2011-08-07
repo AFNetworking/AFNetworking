@@ -113,7 +113,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
         
     self.request = urlRequest;
 	
-    self.runLoopModes = [NSSet setWithObjects:NSDefaultRunLoopMode, NSRunLoopCommonModes, nil];
+    self.runLoopModes = [NSSet setWithObjects:NSRunLoopCommonModes, nil];
         
     self.state = AFHTTPOperationReadyState;
 	
