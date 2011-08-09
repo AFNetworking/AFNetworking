@@ -250,7 +250,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     self.responseBody = [NSData dataWithData:self.dataAccumulator];
     self.dataAccumulator = nil;
 
-    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
+    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:NO];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {  
@@ -258,7 +258,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     
     self.error = error;
     
-    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
+    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:NO];
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
