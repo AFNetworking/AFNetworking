@@ -47,26 +47,28 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
                    success:(void (^)(UIImage *image))success
 {
     return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
-        UIImage *image = nil;    
-        if ([[UIScreen mainScreen] scale] == 2.0) {
-            CGImageRef imageRef = [[UIImage imageWithData:data] CGImage];
-            image = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
-        } else {
-            image = [UIImage imageWithData:data]; 
-        }
-        
-        if (!(CGSizeEqualToSize(image.size, imageSize) || CGSizeEqualToSize(imageSize, CGSizeZero))) {
-            image = [UIImage imageByScalingAndCroppingImage:image size:imageSize];
-        }
-        if ((options & AFImageRequestRoundCorners)) {
-            image = [UIImage imageByRoundingCornersOfImage:image corners:UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
-        }
-        
-        if (success) {
-            success(image);
-        }
-        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+            UIImage *image = nil;    
+            if ([[UIScreen mainScreen] scale] == 2.0) {
+                CGImageRef imageRef = [[UIImage imageWithData:data] CGImage];
+                image = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
+            } else {
+                image = [UIImage imageWithData:data]; 
+            }
+            
+            if (!(CGSizeEqualToSize(image.size, imageSize) || CGSizeEqualToSize(imageSize, CGSizeZero))) {
+                image = [UIImage imageByScalingAndCroppingImage:image size:imageSize];
+            }
+            if ((options & AFImageRequestRoundCorners)) {
+                image = [UIImage imageByRoundingCornersOfImage:image corners:UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
+            }
+            
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                if (success) {
+                    success(image);
+                }
+            });
+        
             [[AFImageCache sharedImageCache] cacheImage:image forRequest:request imageSize:imageSize options:options];
         });
     }];

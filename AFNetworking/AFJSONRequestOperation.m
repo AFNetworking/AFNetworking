@@ -62,27 +62,31 @@
                 failure(error);
             }
         } else {
-            id JSON = nil;
-
-            #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
-            if ([NSJSONSerialization class]) {
-                JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-            } else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+                id JSON = nil;
+                
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
+                if ([NSJSONSerialization class]) {
+                    JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+                } else {
+                    JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
+                }
+#else
                 JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
-            }
-            #else
-            JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
-            #endif
-
-            if (error) {
-                if (failure) {
-                    failure(error);
-                }
-            } else {
-                if (success) {
-                    success(JSON);
-                }
-            }
+#endif
+                
+                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                    if (error) {
+                        if (failure) {
+                            failure(error);
+                        }
+                    } else {
+                        if (success) {
+                            success(JSON);
+                        }
+                    }
+                });
+            });
         }
     }];
 }
