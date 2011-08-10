@@ -61,6 +61,10 @@
             if (failure) {
                 failure(error);
             }
+        } else if ([data length] == 0) {
+            if (success) {
+                success(nil);
+            }
         } else {
             id JSON = nil;
 
