@@ -35,6 +35,7 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
     
     NSData *_responseBody;
     NSMutableData *_dataAccumulator;
+    NSOutputStream *_outputStream;
 }
 
 @property (nonatomic, retain) NSURLConnection *connection;
@@ -50,7 +51,10 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
                 completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion;
 
-- (id)initWithRequest:(NSURLRequest *)urlRequest;
++ (id)operationWithRequest:(NSURLRequest *)urlRequest
+               inputStream:(NSInputStream *)inputStream
+              outputStream:(NSOutputStream *)outputStream
+                completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion;
 
 - (void)setProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block;
 

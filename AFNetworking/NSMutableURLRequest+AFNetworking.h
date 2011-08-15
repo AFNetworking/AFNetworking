@@ -1,4 +1,4 @@
-// AFJSONRequestOperation.h
+// NSMutableURLRequest+AFNetworking.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,24 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFHTTPRequestOperation.h"
+#import <Foundation/Foundation.h>
 
-@interface AFJSONRequestOperation : AFHTTPRequestOperation
+@interface NSMutableURLRequest (AFNetworking)
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(id JSON))success;
-
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest 
-                   success:(void (^)(id JSON))success
-                   failure:(void (^)(NSError *error))failure;
-
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-     acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
-    acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
-                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-
-+ (NSIndexSet *)defaultAcceptableStatusCodes;
-+ (NSSet *)defaultAcceptableContentTypes;
+- (void)setHTTPBodyWithData:(NSData *)data 
+                   mimeType:(NSString *)mimeType 
+          forParameterNamed:(NSString *)parameterName 
+                 parameters:(NSDictionary *)parameters
+         useGzipCompression:(BOOL)useGzipCompression;
 
 @end

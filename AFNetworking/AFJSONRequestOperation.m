@@ -46,14 +46,22 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                    success:(void (^)(id JSON))success
                    failure:(void (^)(NSError *error))failure
 {    
-    return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:success failure:failure];
+    return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        if (success) {
+            success(JSON);
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
 }
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest
      acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
     acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(id JSON))success
-                   failure:(void (^)(NSError *error))failure
+                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
         BOOL statusCodeAcceptable = [acceptableStatusCodes containsIndex:[response statusCode]];
@@ -68,7 +76,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         
         if (error) {
             if (failure) {
-                failure(error);
+                failure(request, response, error);
             }
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
@@ -87,11 +95,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 dispatch_sync(dispatch_get_main_queue(), ^(void) {
                     if (JSONError) {
                         if (failure) {
-                            failure(JSONError);
+                            failure(request, response, JSONError);
                         }
                     } else {
                         if (success) {
-                            success(JSON);
+                            success(request, response, JSON);
                         }
                     }
                 });

@@ -1,4 +1,4 @@
-// AFJSONRequestOperation.h
+// NSString+AFNetworking.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,24 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFHTTPRequestOperation.h"
+#import "NSString+AFNetworking.h"
 
-@interface AFJSONRequestOperation : AFHTTPRequestOperation
+@implementation NSString (AFNetworking)
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(id JSON))success;
+- (NSString*)urlEncodedString { 
+	return [self urlEncodedStringWithEncoding:NSUTF8StringEncoding];
+}
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest 
-                   success:(void (^)(id JSON))success
-                   failure:(void (^)(NSError *error))failure;
-
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-     acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
-    acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
-                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-
-+ (NSIndexSet *)defaultAcceptableStatusCodes;
-+ (NSSet *)defaultAcceptableContentTypes;
+// See http://github.com/pokeb/asi-http-request/raw/master/Classes/ASIFormDataRequest.m
+- (NSString *)urlEncodedStringWithEncoding:(NSStringEncoding)encoding { 
+	NSString *urlEncodedString = [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)self, NULL, (CFStringRef)@":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`", CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
+	
+    return urlEncodedString ? urlEncodedString : @"";
+}
 
 @end
