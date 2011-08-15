@@ -24,7 +24,7 @@
 
 @interface AFNetworkActivityIndicatorManager : NSObject {
 @private
-	NSUInteger _activityCount;
+	NSInteger _activityCount;
 }
 
 + (AFNetworkActivityIndicatorManager *)sharedManager;

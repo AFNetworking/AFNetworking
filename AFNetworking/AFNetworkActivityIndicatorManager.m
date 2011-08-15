@@ -23,7 +23,7 @@
 #import "AFNetworkActivityIndicatorManager.h"
 
 @interface AFNetworkActivityIndicatorManager ()
-@property (readwrite, nonatomic, assign) NSUInteger activityCount;
+@property (readwrite, nonatomic, assign) NSInteger activityCount;
 @end
 
 @implementation AFNetworkActivityIndicatorManager
@@ -38,7 +38,7 @@
     return _sharedManager;
 }
 
-- (void)setActivityCount:(NSUInteger)activityCount {
+- (void)setActivityCount:(NSInteger)activityCount {
     [self willChangeValueForKey:@"activityCount"];
     _activityCount = MAX(activityCount, 0);
     [self didChangeValueForKey:@"activityCount"];
