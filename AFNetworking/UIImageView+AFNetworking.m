@@ -97,6 +97,10 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
     UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:request imageSize:imageSize options:options];
     if (cachedImage) {
         self.image = cachedImage;
+        
+        if (block) {
+            block(cachedImage);
+        }
     } else {
         self.image = placeholderImage;
         
