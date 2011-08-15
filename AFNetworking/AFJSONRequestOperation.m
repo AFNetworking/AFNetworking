@@ -78,6 +78,10 @@ static dispatch_queue_t json_request_operation_processing_queue() {
             if (failure) {
                 failure(request, response, error);
             }
+        } else if ([data length] == 0) {
+            if (success) {
+                success(nil);
+            }
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
                 id JSON = nil;
