@@ -33,6 +33,7 @@ typedef enum {
 NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.http-operation.start";
 NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.http-operation.finish";
 
+typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite);
 typedef void (^AFHTTPRequestOperationCompletionBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error);
 
 static inline NSString * AFKeyPathFromOperationState(AFHTTPOperationState state) {
@@ -79,6 +80,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @property (nonatomic, assign) AFHTTPOperationState state;
 @property (nonatomic, assign) BOOL isCancelled;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
+@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock progress;
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
 
 - (void)cleanup;
@@ -94,6 +96,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @synthesize error = _error;
 @synthesize responseBody = _responseBody;
 @synthesize dataAccumulator = _dataAccumulator;
+@synthesize progress = _progress;
 @synthesize completion = _completion;
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
@@ -130,6 +133,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     
     [_connection release];
 	
+    [_progress release];
     [_completion release];
     [super dealloc];
 }
@@ -139,6 +143,10 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
         [self.connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
     }
     CFRunLoopStop([[NSRunLoop currentRunLoop] getCFRunLoop]); 
+}
+
+- (void)setProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
+    self.progress = block;
 }
 
 - (void)setState:(AFHTTPOperationState)state {
@@ -259,6 +267,16 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     self.error = error;
     
     [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:NO];
+}
+
+- (void)connection:(NSURLConnection *)connection 
+   didSendBodyData:(NSInteger)bytesWritten 
+ totalBytesWritten:(NSInteger)totalBytesWritten 
+totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
+{
+    if (self.progress) {
+        self.progress(totalBytesWritten, totalBytesExpectedToWrite);
+    }
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
