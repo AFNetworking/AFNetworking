@@ -33,6 +33,15 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
     return CGSizeMake(dimension, dimension);
 }
 
+static dispatch_queue_t af_image_request_operation_processing_queue;
+static dispatch_queue_t image_request_operation_processing_queue() {
+    if (af_image_request_operation_processing_queue == NULL) {
+        af_image_request_operation_processing_queue = dispatch_queue_create("com.alamofire.image-request.processing", 0);
+    }
+    
+    return af_image_request_operation_processing_queue;
+}
+
 @implementation AFImageRequestOperation
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest                
@@ -47,7 +56,7 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
                    success:(void (^)(UIImage *image))success
 {
     return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+        dispatch_async(image_request_operation_processing_queue(), ^(void) {
             UIImage *image = nil;    
             if ([[UIScreen mainScreen] scale] == 2.0) {
                 CGImageRef imageRef = [[UIImage imageWithData:data] CGImage];

@@ -25,6 +25,15 @@
 
 #include <Availability.h>
 
+static dispatch_queue_t af_json_request_operation_processing_queue;
+static dispatch_queue_t json_request_operation_processing_queue() {
+    if (af_json_request_operation_processing_queue == NULL) {
+        af_json_request_operation_processing_queue = dispatch_queue_create("com.alamofire.json-request.processing", 0);
+    }
+    
+    return af_json_request_operation_processing_queue;
+}
+
 @implementation AFJSONRequestOperation
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest                
@@ -62,23 +71,23 @@
                 failure(error);
             }
         } else {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+            dispatch_async(json_request_operation_processing_queue(), ^(void) {
                 id JSON = nil;
-                
+                NSError *JSONError = nil;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
                 if ([NSJSONSerialization class]) {
-                    JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+                    JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
                 } else {
-                    JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
+                    JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
                 }
 #else
-                JSON = [[JSONDecoder decoder] objectWithData:data error:&error];
+                JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
 #endif
                 
                 dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                    if (error) {
+                    if (JSONError) {
                         if (failure) {
-                            failure(error);
+                            failure(JSONError);
                         }
                     } else {
                         if (success) {
