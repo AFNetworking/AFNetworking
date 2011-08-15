@@ -48,6 +48,10 @@
                                 success:(void (^)(id response))success 
                                 failure:(void (^)(NSError *error))failure;
 
+- (void)cancelHTTPOperationsWithRequest:(NSURLRequest *)request;
+
+- (void)cancelAllHTTPOperations;
+
 - (void)getPath:(NSString *)path 
      parameters:(NSDictionary *)parameters 
         success:(void (^)(id response))success;

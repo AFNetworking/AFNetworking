@@ -135,6 +135,20 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
     [self.operationQueue addOperation:operation];
 }
 
+- (void)cancelHTTPOperationsWithRequest:(NSURLRequest *)request {
+    for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
+        if ([[operation request] isEqual:request]) {
+            [operation cancel];
+        }
+    }
+}
+
+- (void)cancelAllHTTPOperations {
+    [self.operationQueue cancelAllOperations];
+}
+
+#pragma mark -
+
 - (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
     [self getPath:path parameters:parameters success:success failure:nil];
 }
