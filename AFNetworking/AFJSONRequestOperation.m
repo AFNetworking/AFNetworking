@@ -80,7 +80,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
             }
         } else if ([data length] == 0) {
             if (success) {
-                success(nil);
+                success(request, response, nil);
             }
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
