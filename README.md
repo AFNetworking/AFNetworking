@@ -29,7 +29,24 @@ UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0
     [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
 ```
 
-### POST Request With HTTP Authorization Header Using NSOperationQueue
+### File Upload with Progress Callback
+
+``` objective-c
+NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:8080/upload"]];
+NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"avatar.jpg"], 0.5);
+NSDictionary *parameters = [NSDictionary dictionaryWithObject:@"300x300" forKey:@"dimensions"];
+[request setHTTPBodyWithData:imageData mimeType:@"image/jpeg" forParameterNamed:@"avatar" parameters:parameters useGzipCompression:YES];
+
+AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
+    NSLog(@"Upload Complete");
+}];
+[operation setProgressBlock:^(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite) {
+    NSLog(@"Sent %d of %d bytes", totalBytesWritten, totalBytesExpectedToWrite);
+}];
+[[NSOperationQueue mainQueue] addOperation:operation];
+```
+
+### Request With HTTP Authorization Header
 
 ``` objective-c
 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/friendships/request?user_id=1699"]];
@@ -43,7 +60,7 @@ AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest
     if (HTTPStatusCodeIsAcceptable) {
         NSLog(@"Friend Request Sent");
     } else {
-        NSLog(@"[Error] (%@ %@) %@", [request HTTPMethod], [[request URL] relativePath], error);
+        NSLog(@"[Error]: (%@ %@) %@", [request HTTPMethod], [[request URL] relativePath], error);
     }
 }];
 
@@ -60,6 +77,17 @@ AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest
 }];
 ```
 
+### Streaming Request
+
+``` objective-c
+NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:8080/encode"]];
+NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:[[NSBundle mainBundle] pathForResource:@"large-image" ofType:@"tiff"]];
+NSOutputStream *outputStream = [NSOutputStream outputStreamToMemory];
+AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request inputStream:inputStream outputStream:outputStream completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+    NSLog(@"Streaming operation complete");
+}];
+```
+
 ## Example Project
 
 In order to demonstrate the power and flexibility of AFNetworking, we've included a small sample project, which asks for your current location and displays [Gowalla](http://gowalla.com/) spots nearby you. It uses `AFJSONRequestOperation` to load and parse the spots JSON, and a category on `UIImageView` to asynchronously load spot stamp images as you scroll.
@@ -67,7 +95,8 @@ In order to demonstrate the power and flexibility of AFNetworking, we've include
 ## Dependencies
 
 * [iOS 4.0+](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) - AFNetworking uses blocks, which were introduced in iOS 4.
-* [JSONKit](https://github.com/johnezang/JSONKit) - One of the conveniences built into `AFJSONRequestOperation` is automatic JSON parsing. `NSJSONSerialization`, introduced in iOS 5 is used if available. Otherwise, we use JSONKit.
+
+If you're using iOS 5, AFJSONRequestOperation uses JSON will use the built-in NSJSONSerialization class to parse JSON responses. If this is not available, it falls back on [JSONKit](https://github.com/johnezang/JSONKit).
 
 ## Credits
 
