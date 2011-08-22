@@ -19,7 +19,9 @@ NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http
 AFJSONRequestOperation *operation = [AFJSONRequestOperation operationWithRequest:request success:^(id JSON) {
     NSLog(@"Name: %@ %@", [JSON valueForKeyPath:@"first_name"], [JSON valueForKeyPath:@"last_name"]);
 }];
-[[NSOperationQueue mainQueue] addOperation:operation];
+
+NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+[queue addOperation:operation];
 ```
 
 ### Image Request
@@ -27,6 +29,16 @@ AFJSONRequestOperation *operation = [AFJSONRequestOperation operationWithRequest
 ``` objective-c
 UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 100.0f)];
     [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
+```
+
+### REST API Client Request
+
+``` objective-c
+// AFGowallaAPIClient is a subclass of AFRestClient, which defines the base URL and default HTTP headers for NSURLRequests it creates
+[[AFGowallaAPIClient sharedClient] getPath:@"/spots/9223" parameters:nil success:^(id response) {
+    NSLog(@"Name: %@", [response valueForKeyPath:@"name"]);
+    NSLog(@"Address: %@", [response valueForKeyPath:@"address.street_address"]);
+}];
 ```
 
 ### File Upload with Progress Callback
@@ -43,7 +55,9 @@ AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest
 [operation setProgressBlock:^(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite) {
     NSLog(@"Sent %d of %d bytes", totalBytesWritten, totalBytesExpectedToWrite);
 }];
-[[NSOperationQueue mainQueue] addOperation:operation];
+
+NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+[queue addOperation:operation];
 ```
 
 ### Request With HTTP Authorization Header
@@ -64,17 +78,8 @@ AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest
     }
 }];
 
-[[NSOperationQueue mainQueue] addOperation:operation];
-```
-
-### REST API Client Request
-
-``` objective-c
-// AFGowallaAPIClient is a subclass of AFRestClient, which defines the base URL and default HTTP headers for NSURLRequests it creates
-[[AFGowallaAPIClient sharedClient] getPath:@"/spots/9223" parameters:nil success:^(id response) {
-    NSLog(@"Name: %@", [response valueForKeyPath:@"name"]);
-    NSLog(@"Address: %@", [response valueForKeyPath:@"address.street_address"]);
-}];
+NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+[queue addOperation:operation];
 ```
 
 ### Streaming Request
