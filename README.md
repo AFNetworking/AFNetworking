@@ -19,7 +19,7 @@ NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http
 AFJSONRequestOperation *operation = [AFJSONRequestOperation operationWithRequest:request success:^(id JSON) {
     NSLog(@"Name: %@ %@", [JSON valueForKeyPath:@"first_name"], [JSON valueForKeyPath:@"last_name"]);
 }];
-[operation start];
+[[NSOperationQueue mainQueue] addOperation:operation];
 ```
 
 ### Image Request
