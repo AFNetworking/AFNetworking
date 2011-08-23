@@ -33,7 +33,7 @@ typedef enum {
 NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.http-operation.start";
 NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.http-operation.finish";
 
-typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite);
+typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytes, NSUInteger totalBytesExpected);
 typedef void (^AFHTTPRequestOperationCompletionBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error);
 
 static inline NSString * AFKeyPathFromOperationState(AFHTTPOperationState state) {
@@ -81,7 +81,8 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @property (nonatomic, assign) BOOL isCancelled;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, retain) NSOutputStream *outputStream;
-@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock progress;
+@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock uploadProgress;
+@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock downloadProgress;
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest;
@@ -98,7 +99,8 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @synthesize responseBody = _responseBody;
 @synthesize dataAccumulator = _dataAccumulator;
 @synthesize outputStream = _outputStream;
-@synthesize progress = _progress;
+@synthesize uploadProgress = _uploadProgress;
+@synthesize downloadProgress = _downloadProgress;
 @synthesize completion = _completion;
 
 static NSThread *_networkRequestThread = nil;
@@ -175,15 +177,20 @@ static NSThread *_networkRequestThread = nil;
     
     [_connection release]; _connection = nil;
 	
-    [_progress release];
+    [_uploadProgress release];
+    [_downloadProgress release];
     [_completion release];
-    [_progress release];
     [super dealloc];
 }
 
-- (void)setProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
-    self.progress = block;
+- (void)setUploadProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
+    self.uploadProgress = block;
 }
+
+- (void)setDownloadProgressBlock:(void (^)(NSUInteger totalBytesRead, NSUInteger totalBytesExpectedToRead))block {
+    self.downloadProgress = block;
+}
+
 
 - (void)setState:(AFHTTPOperationState)state {
     if (!AFHTTPOperationStateTransitionIsValid(self.state, state)) {
@@ -301,6 +308,10 @@ didReceiveResponse:(NSURLResponse *)response
         }
     } else {
         [self.dataAccumulator appendData:data];
+    
+        if (self.downloadProgress) {
+            self.downloadProgress([self.dataAccumulator length], self.response.expectedContentLength);
+        }
     }
 }
 
@@ -332,8 +343,8 @@ didReceiveResponse:(NSURLResponse *)response
  totalBytesWritten:(NSInteger)totalBytesWritten 
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
-    if (self.progress) {
-        self.progress(totalBytesWritten, totalBytesExpectedToWrite);
+    if (self.uploadProgress) {
+        self.uploadProgress(totalBytesWritten, totalBytesExpectedToWrite);
     }
 }
 
