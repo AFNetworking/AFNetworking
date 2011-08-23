@@ -85,7 +85,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest;
-- (void)cleanup;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -101,6 +100,25 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @synthesize outputStream = _outputStream;
 @synthesize progress = _progress;
 @synthesize completion = _completion;
+
+static NSThread *_networkRequestThread = nil;
+
++ (NSThread *)networkRequestThread {
+    if (!_networkRequestThread) {
+        _networkRequestThread = [[NSThread alloc] initWithTarget:self selector:@selector(networkRequestThreadEntryPoint:) object:nil];
+        [_networkRequestThread start];
+    }
+        
+    return _networkRequestThread;
+}
+
++ (void)networkRequestThreadEntryPoint:(id)object {
+    do {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        [[NSRunLoop currentRunLoop] run];
+        [pool drain];
+    } while (YES);
+}
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
                 completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion
@@ -163,15 +181,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     [super dealloc];
 }
 
-- (void)cleanup {
-    [self.outputStream close];
-    for (NSString *runLoopMode in self.runLoopModes) {
-        [self.connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
-        [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
-    }
-    CFRunLoopStop([[NSRunLoop currentRunLoop] getCFRunLoop]); 
-}
-
 - (void)setProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
     self.progress = block;
 }
@@ -198,7 +207,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
         case AFHTTPOperationFinishedState:
             [[AFNetworkActivityIndicatorManager sharedManager] stopAnimating];
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidFinishNotification object:self];
-            [self cleanup];
             break;
         default:
             break;
@@ -233,7 +241,11 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     }
     
     self.state = AFHTTPOperationExecutingState;
-        
+
+    [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
+}
+
+- (void)operationDidStart {
     self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
     
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -243,16 +255,13 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     }
     
     [self.connection start];
-
-    [runLoop run];
+    
 }
 
 - (void)cancel {
     self.isCancelled = YES;
     
-    [self.connection cancel];
-    
-    [self cleanup];
+    [self.connection cancel];    
 }
 
 #pragma mark - AFHTTPRequestOperation
