@@ -38,6 +38,7 @@
 
 - (NSString *)defaultValueForHeader:(NSString *)header;
 - (void)setDefaultHeader:(NSString *)header value:(NSString *)value;
+- (void)setAuthorizationHeaderWithUsername:(NSString *)username password:(NSString *)password;
 - (void)setAuthorizationHeaderWithToken:(NSString *)token;
 - (void)clearAuthorizationHeader;
 
