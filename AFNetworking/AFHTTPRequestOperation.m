@@ -79,6 +79,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @interface AFHTTPRequestOperation ()
 @property (nonatomic, assign) AFHTTPOperationState state;
 @property (nonatomic, assign) BOOL isCancelled;
+@property (readwrite, nonatomic, assign) NSUInteger totalBytesRead;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, retain) NSOutputStream *outputStream;
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock uploadProgress;
@@ -97,6 +98,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @synthesize response = _response;
 @synthesize error = _error;
 @synthesize responseBody = _responseBody;
+@synthesize totalBytesRead = _totalBytesRead;
 @synthesize dataAccumulator = _dataAccumulator;
 @synthesize outputStream = _outputStream;
 @synthesize uploadProgress = _uploadProgress;
@@ -301,6 +303,8 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)connection:(NSURLConnection *)connection 
     didReceiveData:(NSData *)data 
 {
+    self.totalBytesRead += [data length];
+    
     if (self.outputStream) {
         if ([self.outputStream hasSpaceAvailable]) {
             const uint8_t *dataBuffer = [data bytes];
@@ -308,10 +312,10 @@ didReceiveResponse:(NSURLResponse *)response
         }
     } else {
         [self.dataAccumulator appendData:data];
+    }
     
-        if (self.downloadProgress) {
-            self.downloadProgress([self.dataAccumulator length], self.response.expectedContentLength);
-        }
+    if (self.downloadProgress) {
+        self.downloadProgress(self.totalBytesRead, self.response.expectedContentLength);
     }
 }
 
@@ -348,7 +352,9 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
     }
 }
 
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection 
+                  willCacheResponse:(NSCachedURLResponse *)cachedResponse 
+{
     if ([self isCancelled]) {
         return nil;
     }
