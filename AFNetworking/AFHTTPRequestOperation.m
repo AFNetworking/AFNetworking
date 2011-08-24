@@ -329,7 +329,7 @@ didReceiveResponse:(NSURLResponse *)response
         [_dataAccumulator release]; _dataAccumulator = nil;
     }
 
-    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:NO];
+    [self finish];
 }
 
 - (void)connection:(NSURLConnection *)connection 
@@ -339,7 +339,7 @@ didReceiveResponse:(NSURLResponse *)response
     
     self.error = error;
     
-    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:NO];
+    [self finish];
 }
 
 - (void)connection:(NSURLConnection *)connection 
