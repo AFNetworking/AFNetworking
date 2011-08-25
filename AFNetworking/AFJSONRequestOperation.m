@@ -64,14 +64,16 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
-        BOOL statusCodeAcceptable = [acceptableStatusCodes containsIndex:[response statusCode]];
-        BOOL contentTypeAcceptable = [acceptableContentTypes containsObject:[response MIMEType]];
-        if (!statusCodeAcceptable || !contentTypeAcceptable) {
-            NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:[NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]] forKey:NSLocalizedDescriptionKey];
-            [userInfo setValue:[request URL] forKey:NSURLErrorFailingURLErrorKey];
-            
-            error = [[[NSError alloc] initWithDomain:NSURLErrorDomain code:[response statusCode] userInfo:userInfo] autorelease];
+        if (!error) {
+            BOOL statusCodeAcceptable = [acceptableStatusCodes containsIndex:[response statusCode]];
+            BOOL contentTypeAcceptable = [acceptableContentTypes containsObject:[response MIMEType]];
+            if (!statusCodeAcceptable || !contentTypeAcceptable) {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+                [userInfo setValue:[NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]] forKey:NSLocalizedDescriptionKey];
+                [userInfo setValue:[request URL] forKey:NSURLErrorFailingURLErrorKey];
+                
+                error = [[[NSError alloc] initWithDomain:NSURLErrorDomain code:[response statusCode] userInfo:userInfo] autorelease];
+            }
         }
         
         if (error) {
