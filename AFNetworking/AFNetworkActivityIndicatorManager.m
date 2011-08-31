@@ -23,7 +23,7 @@
 #import "AFNetworkActivityIndicatorManager.h"
 
 @interface AFNetworkActivityIndicatorManager ()
-@property (readwrite, nonatomic, assign) NSInteger activityCount;
+@property (readwrite, assign) NSInteger activityCount;
 @end
 
 @implementation AFNetworkActivityIndicatorManager
