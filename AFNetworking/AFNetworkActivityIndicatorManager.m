@@ -31,9 +31,10 @@
 
 + (AFNetworkActivityIndicatorManager *)sharedManager {
     static AFNetworkActivityIndicatorManager *_sharedManager = nil;
-    if (!_sharedManager) {
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
         _sharedManager = [[AFNetworkActivityIndicatorManager alloc] init];
-    }
+    });
     
     return _sharedManager;
 }
@@ -47,11 +48,15 @@
 }
 
 - (void)startAnimating {
-	self.activityCount += 1;
+    @synchronized(self) {
+        self.activityCount += 1;
+    }
 }
 
 - (void)stopAnimating {
-    self.activityCount -= 1;
+    @synchronized(self) {
+        self.activityCount -= 1;
+    }
 }
 
 @end
