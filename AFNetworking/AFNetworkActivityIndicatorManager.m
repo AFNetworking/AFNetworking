@@ -31,19 +31,22 @@
 
 + (AFNetworkActivityIndicatorManager *)sharedManager {
     static AFNetworkActivityIndicatorManager *_sharedManager = nil;
-    if (!_sharedManager) {
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
         _sharedManager = [[AFNetworkActivityIndicatorManager alloc] init];
-    }
+    });
     
     return _sharedManager;
 }
 
 - (void)setActivityCount:(NSInteger)activityCount {
-    [self willChangeValueForKey:@"activityCount"];
-    _activityCount = MAX(activityCount, 0);
-    [self didChangeValueForKey:@"activityCount"];
-
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:self.activityCount > 0];
+    @synchronized(self) {
+        [self willChangeValueForKey:@"activityCount"];
+        _activityCount = MAX(activityCount, 0);
+        [self didChangeValueForKey:@"activityCount"];
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:self.activityCount > 0];
+    }
 }
 
 - (void)startAnimating {
