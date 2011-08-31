@@ -30,10 +30,11 @@ static inline NSString * AFImageCacheKey(NSURLRequest *urlRequest, CGSize imageS
 
 + (id)sharedImageCache {
     static NSCache *_sharedImageCache = nil;
-    
-    if (!_sharedImageCache) {
+    static dispatch_once_t oncePredicate;
+
+    dispatch_once(&oncePredicate, ^{
         _sharedImageCache = [[self alloc] init];
-    }
+    });
     
     return _sharedImageCache;
 }
