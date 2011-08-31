@@ -23,7 +23,7 @@
 #import "AFNetworkActivityIndicatorManager.h"
 
 @interface AFNetworkActivityIndicatorManager ()
-@property (readwrite, assign) NSInteger activityCount;
+@property (readwrite, nonatomic, assign) NSInteger activityCount;
 @end
 
 @implementation AFNetworkActivityIndicatorManager
@@ -40,21 +40,23 @@
 }
 
 - (void)setActivityCount:(NSInteger)activityCount {
-    @synchronized(self) {
-        [self willChangeValueForKey:@"activityCount"];
-        _activityCount = MAX(activityCount, 0);
-        [self didChangeValueForKey:@"activityCount"];
-        
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:self.activityCount > 0];
-    }
+    [self willChangeValueForKey:@"activityCount"];
+    _activityCount = MAX(activityCount, 0);
+    [self didChangeValueForKey:@"activityCount"];
+
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:self.activityCount > 0];
 }
 
 - (void)startAnimating {
-	self.activityCount += 1;
+    @synchronized(self) {
+        self.activityCount += 1;
+    }
 }
 
 - (void)stopAnimating {
-    self.activityCount -= 1;
+    @synchronized(self) {
+        self.activityCount -= 1;
+    }
 }
 
 @end
