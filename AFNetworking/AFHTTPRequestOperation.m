@@ -108,10 +108,12 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 static NSThread *_networkRequestThread = nil;
 
 + (NSThread *)networkRequestThread {
-    if (!_networkRequestThread) {
+    static dispatch_once_t oncePredicate;
+    
+    dispatch_once(&oncePredicate, ^{
         _networkRequestThread = [[NSThread alloc] initWithTarget:self selector:@selector(networkRequestThreadEntryPoint:) object:nil];
         [_networkRequestThread start];
-    }
+    });
         
     return _networkRequestThread;
 }
