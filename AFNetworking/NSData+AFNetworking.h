@@ -26,6 +26,7 @@ extern NSString * const kAFZlibErrorDomain;
 
 @interface NSData (AFNetworking)
 
+- (NSString *)base64EncodedString;
 - (NSData *)dataByGZipCompressingWithError:(NSError **)error;
 - (NSData *)dataByGZipDecompressingDataWithError:(NSError **)error;
 

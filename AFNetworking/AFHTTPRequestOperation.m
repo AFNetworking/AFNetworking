@@ -33,7 +33,7 @@ typedef enum {
 NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.http-operation.start";
 NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.http-operation.finish";
 
-typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite);
+typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytes, NSUInteger totalBytesExpected);
 typedef void (^AFHTTPRequestOperationCompletionBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error);
 
 static inline NSString * AFKeyPathFromOperationState(AFHTTPOperationState state) {
@@ -79,13 +79,14 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @interface AFHTTPRequestOperation ()
 @property (nonatomic, assign) AFHTTPOperationState state;
 @property (nonatomic, assign) BOOL isCancelled;
+@property (readwrite, nonatomic, assign) NSUInteger totalBytesRead;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, retain) NSOutputStream *outputStream;
-@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock progress;
+@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock uploadProgress;
+@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock downloadProgress;
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest;
-- (void)cleanup;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -97,10 +98,31 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @synthesize response = _response;
 @synthesize error = _error;
 @synthesize responseBody = _responseBody;
+@synthesize totalBytesRead = _totalBytesRead;
 @synthesize dataAccumulator = _dataAccumulator;
 @synthesize outputStream = _outputStream;
-@synthesize progress = _progress;
+@synthesize uploadProgress = _uploadProgress;
+@synthesize downloadProgress = _downloadProgress;
 @synthesize completion = _completion;
+
+static NSThread *_networkRequestThread = nil;
+
++ (NSThread *)networkRequestThread {
+    if (!_networkRequestThread) {
+        _networkRequestThread = [[NSThread alloc] initWithTarget:self selector:@selector(networkRequestThreadEntryPoint:) object:nil];
+        [_networkRequestThread start];
+    }
+        
+    return _networkRequestThread;
+}
+
++ (void)networkRequestThreadEntryPoint:(id)object {
+    do {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        [[NSRunLoop currentRunLoop] run];
+        [pool drain];
+    } while (YES);
+}
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
                 completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion
@@ -157,24 +179,20 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     
     [_connection release]; _connection = nil;
 	
-    [_progress release];
+    [_uploadProgress release];
+    [_downloadProgress release];
     [_completion release];
-    [_progress release];
     [super dealloc];
 }
 
-- (void)cleanup {
-    [self.outputStream close];
-    for (NSString *runLoopMode in self.runLoopModes) {
-        [self.connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
-        [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
-    }
-    CFRunLoopStop([[NSRunLoop currentRunLoop] getCFRunLoop]); 
+- (void)setUploadProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
+    self.uploadProgress = block;
 }
 
-- (void)setProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
-    self.progress = block;
+- (void)setDownloadProgressBlock:(void (^)(NSUInteger totalBytesRead, NSUInteger totalBytesExpectedToRead))block {
+    self.downloadProgress = block;
 }
+
 
 - (void)setState:(AFHTTPOperationState)state {
     if (!AFHTTPOperationStateTransitionIsValid(self.state, state)) {
@@ -198,7 +216,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
         case AFHTTPOperationFinishedState:
             [[AFNetworkActivityIndicatorManager sharedManager] stopAnimating];
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidFinishNotification object:self];
-            [self cleanup];
             break;
         default:
             break;
@@ -233,7 +250,11 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     }
     
     self.state = AFHTTPOperationExecutingState;
-        
+
+    [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
+}
+
+- (void)operationDidStart {
     self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
     
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -243,16 +264,13 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     }
     
     [self.connection start];
-
-    [runLoop run];
+    
 }
 
 - (void)cancel {
     self.isCancelled = YES;
     
-    [self.connection cancel];
-    
-    [self cleanup];
+    [self.connection cancel];    
 }
 
 #pragma mark - AFHTTPRequestOperation
@@ -285,6 +303,8 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)connection:(NSURLConnection *)connection 
     didReceiveData:(NSData *)data 
 {
+    self.totalBytesRead += [data length];
+    
     if (self.outputStream) {
         if ([self.outputStream hasSpaceAvailable]) {
             const uint8_t *dataBuffer = [data bytes];
@@ -292,6 +312,10 @@ didReceiveResponse:(NSURLResponse *)response
         }
     } else {
         [self.dataAccumulator appendData:data];
+    }
+    
+    if (self.downloadProgress) {
+        self.downloadProgress(self.totalBytesRead, self.response.expectedContentLength);
     }
 }
 
@@ -305,7 +329,7 @@ didReceiveResponse:(NSURLResponse *)response
         [_dataAccumulator release]; _dataAccumulator = nil;
     }
 
-    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:NO];
+    [self finish];
 }
 
 - (void)connection:(NSURLConnection *)connection 
@@ -315,7 +339,7 @@ didReceiveResponse:(NSURLResponse *)response
     
     self.error = error;
     
-    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:NO];
+    [self finish];
 }
 
 - (void)connection:(NSURLConnection *)connection 
@@ -323,12 +347,14 @@ didReceiveResponse:(NSURLResponse *)response
  totalBytesWritten:(NSInteger)totalBytesWritten 
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
-    if (self.progress) {
-        self.progress(totalBytesWritten, totalBytesExpectedToWrite);
+    if (self.uploadProgress) {
+        self.uploadProgress(totalBytesWritten, totalBytesExpectedToWrite);
     }
 }
 
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection 
+                  willCacheResponse:(NSCachedURLResponse *)cachedResponse 
+{
     if ([self isCancelled]) {
         return nil;
     }

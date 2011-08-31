@@ -23,6 +23,8 @@
 #import "AFRestClient.h"
 #import "AFJSONRequestOperation.h"
 
+#import "NSData+AFNetworking.h"
+
 static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding;
 
 @interface AFRestClient ()
@@ -84,6 +86,12 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 
 - (void)setDefaultHeader:(NSString *)header value:(NSString *)value {
 	[self.defaultHeaders setObject:value forKey:header];
+}
+
+- (void)setAuthorizationHeaderWithUsername:(NSString *)username password:(NSString *)password {
+	NSString *authHeader = [NSString stringWithFormat:@"%@:%@", username, password];
+    NSString *encodedAuthHeader = [[NSData dataWithBytes:[authHeader UTF8String] length:[authHeader length]] base64EncodedString];
+    [self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Basic %@", encodedAuthHeader]];
 }
 
 - (void)setAuthorizationHeaderWithToken:(NSString *)token {
