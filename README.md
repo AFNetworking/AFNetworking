@@ -100,8 +100,8 @@ In order to demonstrate the power and flexibility of AFNetworking, we've include
 ## Dependencies
 
 * [iOS 4.0+](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) - AFNetworking uses blocks, which were introduced in iOS 4.
-
-If you're using iOS 5, AFJSONRequestOperation uses JSON will use the built-in NSJSONSerialization class to parse JSON responses. If this is not available, it falls back on [JSONKit](https://github.com/johnezang/JSONKit).
+* If you're using iOS 5, AFJSONRequestOperation uses JSON will use the built-in NSJSONSerialization class to parse JSON responses. If this is not available, it falls back on [JSONKit](https://github.com/johnezang/JSONKit).
+* If you include `NSData+AFNetworking.h` in your project, you will need to link against `libz.dylib`. To do this in Xcode 4, go to your project file, select your active target, and go to the "Build Phases" tab. Under "Link Binary With Libraries", click the "+" icon on the bottom left, and select "libz.dylib" from the list of available libraries.
 
 ## Credits
 
