@@ -39,6 +39,6 @@
        placeholderImage:(UIImage *)placeholderImage 
               imageSize:(CGSize)imageSize 
                 options:(AFImageRequestOptions)options
-                  block:(void (^)(UIImage *image))block;
+                  block:(void (^)(UIImage *image, BOOL cacheUsed))block;
 
 @end
