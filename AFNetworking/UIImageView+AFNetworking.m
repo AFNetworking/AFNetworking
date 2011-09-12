@@ -87,6 +87,9 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
                   block:(void (^)(UIImage *image))block
 {
     if (!url) {
+        // stop loading image
+        [self.imageRequestOperation cancel];
+        self.imageRequestOperation = nil;
         return;
     }
     
@@ -105,14 +108,16 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
         self.image = placeholderImage;
         
         self.imageRequestOperation = [AFImageRequestOperation operationWithRequest:request imageSize:imageSize options:options success:^(UIImage *image) {
-            if ([[request URL] isEqual:[[self.imageRequestOperation request] URL]]) {
-                self.image = image;
-            } else {
-                self.image = placeholderImage;
-            }
-            
-            if (block) {
-                block(image);
+            if (self.imageRequestOperation && ![self.imageRequestOperation isCancelled]) {
+                if ([[request URL] isEqual:[[self.imageRequestOperation request] URL]]) {
+                    self.image = image;
+                } else {
+                    self.image = placeholderImage;
+                }
+                
+                if (block) {
+                    block(image);
+                }
             }
         }];
         
