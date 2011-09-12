@@ -109,15 +109,15 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
         
         self.imageRequestOperation = [AFImageRequestOperation operationWithRequest:request imageSize:imageSize options:options success:^(UIImage *image) {
             if (self.imageRequestOperation && ![self.imageRequestOperation isCancelled]) {
+                if (block) {
+                    block(image);
+                }
+
                 if ([[request URL] isEqual:[[self.imageRequestOperation request] URL]]) {
                     self.image = image;
                 } else {
                     self.image = placeholderImage;
-                }
-                
-                if (block) {
-                    block(image);
-                }
+                }                
             }
         }];
         
