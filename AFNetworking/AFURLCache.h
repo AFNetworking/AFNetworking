@@ -35,6 +35,9 @@
     NSOperationQueue *_ioQueue;
     NSTimer *_periodicMaintenanceTimer;
     NSOperation *_periodicMaintenanceOperation;
+    NSDateFormatter *_FC1123DateFormatter;
+    NSDateFormatter *_ANSICDateFormatter;
+    NSDateFormatter *_RFC850DateFormatter;
 }
 
 /*

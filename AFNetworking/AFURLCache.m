@@ -36,7 +36,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format) {
     [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease]];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
     [dateFormatter setDateFormat:format];
-    return [dateFormatter autorelease];
+    return dateFormatter;
 }
 
 @implementation NSCachedURLResponse(NSCoder)
@@ -106,10 +106,48 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
             r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]];
 }
 
+#pragma mark AFURLCache (private)
+
+- (dispatch_queue_t)dateFormatterQueue {
+    static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_dateFormatterQueue = dispatch_queue_create("com.alamofire.disk-cache.dateformatter", NULL);
+	});
+	return _dateFormatterQueue;
+}
+
+/*
+ * Parse HTTP Date: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1
+ */
+- (NSDate *)dateFromHttpDateString:(NSString *)httpDate {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _FC1123DateFormatter = CreateDateFormatter(@"EEE, dd MMM yyyy HH:mm:ss z");
+        _ANSICDateFormatter = CreateDateFormatter(@"EEE MMM d HH:mm:ss yyyy");
+        _RFC850DateFormatter = CreateDateFormatter(@"EEEE, dd-MMM-yy HH:mm:ss z");
+    });
+    
+    __block NSDate *date = nil;
+    
+    dispatch_sync([self dateFormatterQueue], ^{
+        date = [_FC1123DateFormatter dateFromString:httpDate];
+        if (!date) {
+            // ANSI C date format - Sun Nov  6 08:49:37 1994
+            date = [_ANSICDateFormatter dateFromString:httpDate];
+            if (!date) {
+                // RFC 850 date format - Sunday, 06-Nov-94 08:49:37 GMT
+                date = [_RFC850DateFormatter dateFromString:httpDate];
+            }
+        }        
+    });
+    
+    return date;
+}
+
 /*
  * This method tries to determine the expiration date based on a response headers dictionary.
  */
-+ (NSDate *)expirationDateFromHeaders:(NSDictionary *)headers withStatusCode:(NSInteger)status {
+- (NSDate *)expirationDateFromHeaders:(NSDictionary *)headers withStatusCode:(NSInteger)status {
     if (status != 200 && status != 203 && status != 300 && status != 301 && status != 302 && status != 307 && status != 410) {
         // Uncacheable response status code
         return nil;
@@ -190,47 +228,8 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
     
     // If nothing permitted to define the cache expiration delay nor to restrict its cacheability, use a default cache expiration delay
     return [[[NSDate alloc] initWithTimeInterval:kAFURLCacheDefault sinceDate:now] autorelease];
-    
 }
 
-#pragma mark AFURLCache (private)
-
-- (dispatch_queue_t)dateFormatterQueue {
-    static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		_dateFormatterQueue = dispatch_queue_create("com.alamofire.disk-cache.dateformatter", NULL);
-	});
-	return _dateFormatterQueue;
-}
-
-/*
- * Parse HTTP Date: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1
- */
-- (NSDate *)dateFromHttpDateString:(NSString *)httpDate {
-    static NSDateFormatter *RFC1123DateFormatter;
-    static NSDateFormatter *ANSICDateFormatter;
-    static NSDateFormatter *RFC850DateFormatter;
-    __block NSDate *date = nil;
-    
-    dispatch_sync([self dateFormatterQueue], ^{
-        if (!RFC1123DateFormatter) RFC1123DateFormatter = [CreateDateFormatter(@"EEE, dd MMM yyyy HH:mm:ss z") retain];
-        date = [RFC1123DateFormatter dateFromString:httpDate];
-        if (!date)
-        {
-            // ANSI C date format - Sun Nov  6 08:49:37 1994
-            if (!ANSICDateFormatter) ANSICDateFormatter = [CreateDateFormatter(@"EEE MMM d HH:mm:ss yyyy") retain];
-            date = [ANSICDateFormatter dateFromString:httpDate];
-            if (!date)
-            {
-                // RFC 850 date format - Sunday, 06-Nov-94 08:49:37 GMT
-                if (!RFC850DateFormatter) RFC850DateFormatter = [CreateDateFormatter(@"EEEE, dd-MMM-yy HH:mm:ss z") retain];
-                date = [RFC850DateFormatter dateFromString:httpDate];
-            }
-        }        
-    });
-    
-    return date;
-}
 
 - (dispatch_queue_t)diskCacheQueue {
     static dispatch_once_t onceToken;
@@ -257,10 +256,10 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
                 _diskCacheUsage = [[_diskCacheInfo objectForKey:kAFURLCacheInfoDiskUsageKey] unsignedIntValue];
                 
                 _periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:5
-                                                                              target:self
-                                                                            selector:@selector(periodicMaintenance)
-                                                                            userInfo:nil
-                                                                             repeats:YES];
+                                                                             target:self
+                                                                           selector:@selector(periodicMaintenance)
+                                                                           userInfo:nil
+                                                                            repeats:YES];
             }
         });
     }
@@ -441,8 +440,8 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
         NSDictionary *headers = [(NSHTTPURLResponse *)cachedResponse.response allHeaderFields];
         // RFC 2616 section 13.3.4 says clients MUST use Etag in any cache-conditional request if provided by server
         if (![headers objectForKey:@"Etag"]) {
-            NSDate *expirationDate = [AFURLCache expirationDateFromHeaders:headers
-                                                            withStatusCode:((NSHTTPURLResponse *)cachedResponse.response).statusCode];
+            NSDate *expirationDate = [self expirationDateFromHeaders:headers
+                                                      withStatusCode:((NSHTTPURLResponse *)cachedResponse.response).statusCode];
             if (!expirationDate || [expirationDate timeIntervalSinceNow] - _minCacheInterval <= 0) {
                 // This response is not cacheable, headers said
                 return;
@@ -538,6 +537,9 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
     [_diskCachePath release], _diskCachePath = nil;
     [_diskCacheInfo release], _diskCacheInfo = nil;
     [_ioQueue release], _ioQueue = nil;
+    [_FC1123DateFormatter release];
+    [_ANSICDateFormatter release];
+    [_RFC850DateFormatter release];    
     dispatch_release(_diskCacheQueue);
     dispatch_release(_dateFormatterQueue);
     [super dealloc];
