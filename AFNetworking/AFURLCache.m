@@ -256,11 +256,11 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
                 
                 _diskCacheUsage = [[_diskCacheInfo objectForKey:kAFURLCacheInfoDiskUsageKey] unsignedIntValue];
                 
-                _periodicMaintenanceTimer = [[NSTimer scheduledTimerWithTimeInterval:5
+                _periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:5
                                                                               target:self
                                                                             selector:@selector(periodicMaintenance)
                                                                             userInfo:nil
-                                                                             repeats:YES] retain];
+                                                                             repeats:YES];
             }
         });
     }
@@ -534,7 +534,6 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
 
 - (void)dealloc {
     [_periodicMaintenanceTimer invalidate];
-    [_periodicMaintenanceTimer release], _periodicMaintenanceTimer = nil;
     [_periodicMaintenanceOperation release], _periodicMaintenanceOperation = nil;
     [_diskCachePath release], _diskCachePath = nil;
     [_diskCacheInfo release], _diskCacheInfo = nil;
