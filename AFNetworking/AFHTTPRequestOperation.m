@@ -275,6 +275,12 @@ static NSThread *_networkRequestThread = nil;
     self.isCancelled = YES;
     
     [self.connection cancel];    
+    
+    if(self.state == AFHTTPOperationExecutingState){
+        [[AFNetworkActivityIndicatorManager sharedManager] stopAnimating];
+    }
+    
+    self.state = AFHTTPOperationCancelledState;
 }
 
 #pragma mark - AFHTTPRequestOperation
