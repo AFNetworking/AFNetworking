@@ -78,8 +78,6 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
 @interface AFURLCache ()
 @property (nonatomic, retain) NSString *diskCachePath;
 @property (nonatomic, retain) NSMutableDictionary *diskCacheInfo;
-@property (nonatomic, retain) NSOperationQueue *ioQueue;
-@property (retain) NSOperation *periodicMaintenanceOperation;
 - (void)periodicMaintenance;
 @end
 
@@ -114,6 +112,22 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
 		_dateFormatterQueue = dispatch_queue_create("com.alamofire.disk-cache.dateformatter", NULL);
 	});
 	return _dateFormatterQueue;
+}
+
+- (dispatch_queue_t)diskCacheQueue {
+    static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_diskCacheQueue = dispatch_queue_create("com.alamofire.disk-cache.processing", NULL);
+	});
+	return _diskCacheQueue;
+}
+
+- (dispatch_queue_t)diskIOQueue {
+    static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_diskIOQueue = dispatch_queue_create("com.alamofire.disk-cache.io", NULL);
+	});
+	return _diskIOQueue;
 }
 
 /*
@@ -230,15 +244,6 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
     return [[[NSDate alloc] initWithTimeInterval:kAFURLCacheDefault sinceDate:now] autorelease];
 }
 
-
-- (dispatch_queue_t)diskCacheQueue {
-    static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		_diskCacheQueue = dispatch_queue_create("com.alamofire.disk-cache.processing", NULL);
-	});
-	return _diskCacheQueue;
-}
-
 - (NSMutableDictionary *)diskCacheInfo {
     if (!_diskCacheInfo) {
         dispatch_sync_afreentrant([self diskCacheQueue], ^{
@@ -345,10 +350,7 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
 }
 
 
-- (void)storeToDisk:(NSDictionary *)context {
-    NSURLRequest *request = [context objectForKey:@"request"];
-    NSCachedURLResponse *cachedResponse = [context objectForKey:@"cachedResponse"];
-    
+- (void)storeRequestToDisk:(NSURLRequest *)request response:(NSCachedURLResponse *)cachedResponse {
     NSString *cacheKey = [AFURLCache cacheKeyForURL:request.URL];
     NSString *cacheFilePath = [_diskCachePath stringByAppendingPathComponent:cacheKey];
     
@@ -378,20 +380,18 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
     });
 }
 
+// called in NSTimer
 - (void)periodicMaintenance {
-    // If another same maintenance operation is already sceduled, cancel it so this new operation will be executed after other
-    // operations of the queue, so we can group more work together
-    [_periodicMaintenanceOperation cancel];
-    self.periodicMaintenanceOperation = nil;
-    
     // If disk usage outrich capacity, run the cache eviction operation and if cacheInfo dictionnary is dirty, save it in an operation
     if (_diskCacheUsage > self.diskCapacity) {
-        self.periodicMaintenanceOperation = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(balanceDiskUsage) object:nil] autorelease];
-        [_ioQueue addOperation:_periodicMaintenanceOperation];
+        dispatch_async([self diskIOQueue], ^{
+            [self balanceDiskUsage];
+        });
     }
     else if (_diskCacheInfoDirty) {
-        self.periodicMaintenanceOperation = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(saveCacheInfo) object:nil] autorelease];
-        [_ioQueue addOperation:_periodicMaintenanceOperation];
+        dispatch_async([self diskIOQueue], ^{
+            [self saveCacheInfo];
+        });
     }
 }
 
@@ -408,11 +408,6 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
     if ((self = [super initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:path])) {
         self.minCacheInterval = kAFURLCacheInfoDefaultMinCacheInterval;
         self.diskCachePath = path;
-        
-        // Init the operation queue
-        self.ioQueue = [[[NSOperationQueue alloc] init] autorelease];
-        _ioQueue.maxConcurrentOperationCount = 1; // used to streamline operations in a separate thread
-        
         self.ignoreMemoryOnlyStoragePolicy = NO;
 	}
     
@@ -448,12 +443,9 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
             }
         }
         
-        [_ioQueue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self
-                                                                     selector:@selector(storeToDisk:)
-                                                                       object:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                               cachedResponse, @"cachedResponse",
-                                                                               request, @"request",
-                                                                               nil]] autorelease]];
+        dispatch_async([self diskIOQueue], ^{
+            [self storeRequestToDisk:request response:cachedResponse];
+        });
     }
 }
 
@@ -533,23 +525,20 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
 
 - (void)dealloc {
     [_periodicMaintenanceTimer invalidate];
-    [_periodicMaintenanceOperation release], _periodicMaintenanceOperation = nil;
     [_diskCachePath release], _diskCachePath = nil;
     [_diskCacheInfo release], _diskCacheInfo = nil;
-    [_ioQueue release], _ioQueue = nil;
     [_FC1123DateFormatter release];
     [_ANSICDateFormatter release];
     [_RFC850DateFormatter release];    
     dispatch_release(_diskCacheQueue);
     dispatch_release(_dateFormatterQueue);
+    dispatch_release(_diskIOQueue);
     [super dealloc];
 }
 
 @synthesize minCacheInterval = _minCacheInterval;
 @synthesize ignoreMemoryOnlyStoragePolicy = _ignoreMemoryOnlyStoragePolicy;
 @synthesize diskCachePath = _diskCachePath;
-@synthesize periodicMaintenanceOperation = _periodicMaintenanceOperation;
-@synthesize ioQueue = _ioQueue;
 @synthesize diskCacheInfo = _diskCacheInfo;
 
 @end

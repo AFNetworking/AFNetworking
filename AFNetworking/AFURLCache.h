@@ -26,15 +26,14 @@
     @private
     dispatch_queue_t _diskCacheQueue;
     dispatch_queue_t _dateFormatterQueue;
+    dispatch_queue_t _diskIOQueue;
     NSString *_diskCachePath;
     NSMutableDictionary *_diskCacheInfo;
     BOOL _diskCacheInfoDirty;
     BOOL _ignoreMemoryOnlyStoragePolicy;
     NSUInteger _diskCacheUsage;
     NSTimeInterval _minCacheInterval;
-    NSOperationQueue *_ioQueue;
     NSTimer *_periodicMaintenanceTimer;
-    NSOperation *_periodicMaintenanceOperation;
     NSDateFormatter *_FC1123DateFormatter;
     NSDateFormatter *_ANSICDateFormatter;
     NSDateFormatter *_RFC850DateFormatter;
