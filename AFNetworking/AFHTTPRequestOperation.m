@@ -23,6 +23,8 @@
 #import "AFHTTPRequestOperation.h"
 #import "AFNetworkActivityIndicatorManager.h"
 
+#define AFHTTPMinContentLength 1024 * 1024 * 8
+
 typedef enum {
     AFHTTPOperationReadyState       = 1,
     AFHTTPOperationExecutingState   = 2,
@@ -107,6 +109,14 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 
 static NSThread *_networkRequestThread = nil;
 
++ (void)networkRequestThreadEntryPoint:(id)object {
+    do {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        [[NSRunLoop currentRunLoop] run];
+        [pool drain];
+    } while (YES);
+}
+
 + (NSThread *)networkRequestThread {
     static dispatch_once_t oncePredicate;
     
@@ -116,14 +126,6 @@ static NSThread *_networkRequestThread = nil;
     });
         
     return _networkRequestThread;
-}
-
-+ (void)networkRequestThreadEntryPoint:(id)object {
-    do {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        [[NSRunLoop currentRunLoop] run];
-        [pool drain];
-    } while (YES);
 }
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
@@ -246,16 +248,6 @@ static NSThread *_networkRequestThread = nil;
     return YES;
 }
 
-- (void)start {
-    if (self.isFinished) {
-        return;
-    }
-    
-    self.state = AFHTTPOperationExecutingState;
-
-    [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
-}
-
 - (void)operationDidStart {
     self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
     
@@ -267,6 +259,16 @@ static NSThread *_networkRequestThread = nil;
     
     [self.connection start];
     
+}
+
+- (void)start {
+    if (self.isFinished) {
+        return;
+    }
+    
+    self.state = AFHTTPOperationExecutingState;
+
+    [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
 }
 
 - (void)cancel {
@@ -297,7 +299,10 @@ didReceiveResponse:(NSURLResponse *)response
     if (self.outputStream) {
         [self.outputStream open];
     } else {
-        NSUInteger contentLength = MIN(MAX(abs(response.expectedContentLength), 1024), 1024 * 1024 * 8);
+        NSUInteger contentLength = MAX(abs(response.expectedContentLength), 1024);
+        if (contentLength < AFHTTPMinContentLength) {
+            contentLength = AFHTTPMinContentLength;
+        }
         self.dataAccumulator = [NSMutableData dataWithCapacity:contentLength];
     }
 }
