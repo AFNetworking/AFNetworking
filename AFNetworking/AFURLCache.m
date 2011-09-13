@@ -1,6 +1,7 @@
 // AFURLCache.m
 //
 // Copyright (c) 2010-2011 Olivier Poitrey <rs@dailymotion.com>
+// Modernized to use GCD by Peter Steinberger <steipete@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +24,7 @@
 #import "AFURLCache.h"
 #import <CommonCrypto/CommonDigest.h>
 
+#define kAFURLCachePath @"AFNetworkingURLCache"
 static NSTimeInterval const kAFURLCacheInfoDefaultMinCacheInterval = 5 * 60; // 5 minute
 static NSString *const kAFURLCacheInfoFileName = @"cacheInfo.plist";
 static NSString *const kAFURLCacheInfoDiskUsageKey = @"diskUsage";
@@ -57,22 +59,15 @@ static NSDateFormatter* CreateDateFormatter(NSString *format) {
 
 @end
 
+// deadlock-free variant of dispatch_sync
 void dispatch_sync_afreentrant(dispatch_queue_t queue, dispatch_block_t block);
-void dispatch_sync_afreentrant(dispatch_queue_t queue, dispatch_block_t block) {
-	if (dispatch_get_current_queue() == queue) {
-		block();
-	}else {
-		dispatch_sync(queue, block);
-	}
+inline void dispatch_sync_afreentrant(dispatch_queue_t queue, dispatch_block_t block) {
+    dispatch_get_current_queue() == queue ? block() : dispatch_sync(queue, block);
 }
 
 void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block);
-void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) {
-	if (dispatch_get_current_queue() == queue) {
-		block();
-	}else {
-		dispatch_async(queue, block);
-	}
+inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) {
+	dispatch_get_current_queue() == queue ? block() : dispatch_async(queue, block);
 }
 
 @interface AFURLCache ()
@@ -257,7 +252,6 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
                                       nil];
                 }
                 _diskCacheInfoDirty = NO;
-                
                 _diskCacheUsage = [[_diskCacheInfo objectForKey:kAFURLCacheInfoDiskUsageKey] unsignedIntValue];
                 
                 _periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:5
@@ -382,7 +376,6 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
 
 // called in NSTimer
 - (void)periodicMaintenance {
-    // If disk usage outrich capacity, run the cache eviction operation and if cacheInfo dictionnary is dirty, save it in an operation
     if (_diskCacheUsage > self.diskCapacity) {
         dispatch_async([self diskIOQueue], ^{
             [self balanceDiskUsage];
@@ -399,7 +392,7 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
 
 + (NSString *)defaultCachePath {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    return [[paths objectAtIndex:0] stringByAppendingPathComponent:@"SDURLCache"];
+    return [[paths objectAtIndex:0] stringByAppendingPathComponent:kAFURLCachePath];
 }
 
 #pragma mark NSURLCache
@@ -525,14 +518,14 @@ void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t block) 
 
 - (void)dealloc {
     [_periodicMaintenanceTimer invalidate];
+    dispatch_release(_diskCacheQueue);
+    dispatch_release(_dateFormatterQueue);
+    dispatch_release(_diskIOQueue);
     [_diskCachePath release], _diskCachePath = nil;
     [_diskCacheInfo release], _diskCacheInfo = nil;
     [_FC1123DateFormatter release];
     [_ANSICDateFormatter release];
     [_RFC850DateFormatter release];    
-    dispatch_release(_diskCacheQueue);
-    dispatch_release(_dateFormatterQueue);
-    dispatch_release(_diskIOQueue);
     [super dealloc];
 }
 
