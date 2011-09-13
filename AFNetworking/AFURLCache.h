@@ -30,7 +30,8 @@
     BOOL _ignoreMemoryOnlyStoragePolicy;
     NSUInteger _diskCacheUsage;
     NSTimeInterval _minCacheInterval;
-    NSTimer *_periodicMaintenanceTimer;
+    dispatch_source_t _maintenanceTimer;
+    BOOL _timerPaused;
 }
 
 /*
