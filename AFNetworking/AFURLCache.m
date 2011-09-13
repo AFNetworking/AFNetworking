@@ -394,7 +394,6 @@ static dispatch_queue_t get_disk_io_queue() {
         _diskCacheUsage += [cacheItemSize unsignedIntegerValue];
         [self.diskCacheInfo setObject:[NSNumber numberWithUnsignedInteger:_diskCacheUsage] forKey:kAFURLCacheInfoDiskUsageKey];
         
-        
         // Update cache info for the stored item
         [(NSMutableDictionary *)[self.diskCacheInfo objectForKey:kAFURLCacheInfoAccessesKey] setObject:[NSDate date] forKey:cacheKey];
         [(NSMutableDictionary *)[self.diskCacheInfo objectForKey:kAFURLCacheInfoSizesKey] setObject:cacheItemSize forKey:cacheKey];
@@ -436,7 +435,7 @@ static dispatch_queue_t get_disk_io_queue() {
     if ((self = [super initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:path])) {
         self.minCacheInterval = kAFURLCacheInfoDefaultMinCacheInterval;
         self.diskCachePath = path;
-        self.ignoreMemoryOnlyStoragePolicy = YES;
+        self.ignoreMemoryOnlyStoragePolicy = NO;
 	}
     
     return self;
