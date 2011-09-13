@@ -27,10 +27,11 @@
 
 static dispatch_queue_t af_json_request_operation_processing_queue;
 static dispatch_queue_t json_request_operation_processing_queue() {
-    if (af_json_request_operation_processing_queue == NULL) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         af_json_request_operation_processing_queue = dispatch_queue_create("com.alamofire.json-request.processing", 0);
-    }
-    
+    });
+
     return af_json_request_operation_processing_queue;
 }
 

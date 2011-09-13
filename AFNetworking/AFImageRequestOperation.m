@@ -35,10 +35,11 @@ static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
 
 static dispatch_queue_t af_image_request_operation_processing_queue;
 static dispatch_queue_t image_request_operation_processing_queue() {
-    if (af_image_request_operation_processing_queue == NULL) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         af_image_request_operation_processing_queue = dispatch_queue_create("com.alamofire.image-request.processing", 0);
-    }
-    
+    });
+
     return af_image_request_operation_processing_queue;
 }
 
