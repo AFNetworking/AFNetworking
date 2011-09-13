@@ -22,8 +22,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AFURLCache : NSURLCache
-{
+@interface AFURLCache : NSURLCache {
     @private
     NSString *diskCachePath;
     NSMutableDictionary *diskCacheInfo;
