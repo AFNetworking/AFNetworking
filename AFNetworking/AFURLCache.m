@@ -101,7 +101,8 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
 
 #pragma mark AFURLCache (private)
 
-- (dispatch_queue_t)dateFormatterQueue {
+static dispatch_queue_t get_date_formatter_queue() {
+    static dispatch_queue_t _dateFormatterQueue;
     static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		_dateFormatterQueue = dispatch_queue_create("com.alamofire.disk-cache.dateformatter", NULL);
@@ -109,15 +110,17 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
 	return _dateFormatterQueue;
 }
 
-- (dispatch_queue_t)diskCacheQueue {
+static dispatch_queue_t get_disk_cache_queue() {
     static dispatch_once_t onceToken;
+    static dispatch_queue_t _diskCacheQueue;
 	dispatch_once(&onceToken, ^{
 		_diskCacheQueue = dispatch_queue_create("com.alamofire.disk-cache.processing", NULL);
 	});
 	return _diskCacheQueue;
 }
 
-- (dispatch_queue_t)diskIOQueue {
+static dispatch_queue_t get_disk_io_queue() {
+    static dispatch_queue_t _diskIOQueue;
     static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		_diskIOQueue = dispatch_queue_create("com.alamofire.disk-cache.io", NULL);
@@ -128,8 +131,11 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
 /*
  * Parse HTTP Date: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1
  */
-- (NSDate *)dateFromHttpDateString:(NSString *)httpDate {
++ (NSDate *)dateFromHttpDateString:(NSString *)httpDate {
     static dispatch_once_t onceToken;
+    static NSDateFormatter *_FC1123DateFormatter;
+    static NSDateFormatter *_ANSICDateFormatter;
+    static NSDateFormatter *_RFC850DateFormatter;
     dispatch_once(&onceToken, ^{
         _FC1123DateFormatter = CreateDateFormatter(@"EEE, dd MMM yyyy HH:mm:ss z");
         _ANSICDateFormatter = CreateDateFormatter(@"EEE MMM d HH:mm:ss yyyy");
@@ -137,8 +143,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
     });
     
     __block NSDate *date = nil;
-    
-    dispatch_sync([self dateFormatterQueue], ^{
+    dispatch_sync(get_date_formatter_queue(), ^{
         date = [_FC1123DateFormatter dateFromString:httpDate];
         if (!date) {
             // ANSI C date format - Sun Nov  6 08:49:37 1994
@@ -156,7 +161,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
 /*
  * This method tries to determine the expiration date based on a response headers dictionary.
  */
-- (NSDate *)expirationDateFromHeaders:(NSDictionary *)headers withStatusCode:(NSInteger)status {
++ (NSDate *)expirationDateFromHeaders:(NSDictionary *)headers withStatusCode:(NSInteger)status {
     if (status != 200 && status != 203 && status != 300 && status != 301 && status != 302 && status != 307 && status != 410) {
         // Uncacheable response status code
         return nil;
@@ -173,7 +178,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
     NSString *date = [headers objectForKey:@"Date"];
     NSDate *now;
     if (date) {
-        now = [self dateFromHttpDateString:date];
+        now = [AFURLCache dateFromHttpDateString:date];
     }
     else {
         // If no Date: header, define now from local clock
@@ -204,7 +209,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
     NSString *expires = [headers objectForKey:@"Expires"];
     if (expires) {
         NSTimeInterval expirationInterval = 0;
-        NSDate *expirationDate = [self dateFromHttpDateString:expires];
+        NSDate *expirationDate = [AFURLCache dateFromHttpDateString:expires];
         if (expirationDate) {
             expirationInterval = [expirationDate timeIntervalSinceDate:now];
         }
@@ -227,7 +232,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
     NSString *lastModified = [headers objectForKey:@"Last-Modified"];
     if (lastModified) {
         NSTimeInterval age = 0;
-        NSDate *lastModifiedDate = [self dateFromHttpDateString:lastModified];
+        NSDate *lastModifiedDate = [AFURLCache dateFromHttpDateString:lastModified];
         if (lastModifiedDate) {
             // Define the age of the document by comparing the Date header with the Last-Modified header
             age = [now timeIntervalSinceDate:lastModifiedDate];
@@ -241,7 +246,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
 
 - (NSMutableDictionary *)diskCacheInfo {
     if (!_diskCacheInfo) {
-        dispatch_sync_afreentrant([self diskCacheQueue], ^{
+        dispatch_sync_afreentrant(get_disk_cache_queue(), ^{
             if (!_diskCacheInfo) { // Check again, maybe another thread created it while waiting for the mutex
                 _diskCacheInfo = [[NSMutableDictionary alloc] initWithContentsOfFile:[_diskCachePath stringByAppendingPathComponent:kAFURLCacheInfoFileName]];
                 if (!_diskCacheInfo) {
@@ -282,7 +287,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
 
 - (void)saveCacheInfo {
     [self createDiskCachePath];
-    dispatch_async_afreentrant([self diskCacheQueue], ^{
+    dispatch_async_afreentrant(get_disk_cache_queue(), ^{
         NSData *data = [NSPropertyListSerialization dataFromPropertyList:self.diskCacheInfo format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
         if (data) {
             [data writeToFile:[_diskCachePath stringByAppendingPathComponent:kAFURLCacheInfoFileName] atomically:YES];
@@ -293,7 +298,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
 }
 
 - (void)removeCachedResponseForCachedKeys:(NSArray *)cacheKeys {
-    dispatch_async_afreentrant([self diskCacheQueue], ^{
+    dispatch_async_afreentrant(get_disk_cache_queue(), ^{
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         
         NSEnumerator *enumerator = [cacheKeys objectEnumerator];
@@ -322,7 +327,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
         return; // Already done
     }
     
-    dispatch_async_afreentrant([self diskCacheQueue], ^{
+    dispatch_async_afreentrant(get_disk_cache_queue(), ^{
         NSMutableArray *keysToRemove = [NSMutableArray array];
         
         // Apply LRU cache eviction algorithm while disk usage outreach capacity
@@ -361,7 +366,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
     NSNumber *cacheItemSize = [[fileManager attributesOfItemAtPath:cacheFilePath error:NULL] objectForKey:NSFileSize];
     [fileManager release];
     
-    dispatch_async_afreentrant([self diskCacheQueue], ^{
+    dispatch_async_afreentrant(get_disk_cache_queue(), ^{
         _diskCacheUsage += [cacheItemSize unsignedIntegerValue];
         [self.diskCacheInfo setObject:[NSNumber numberWithUnsignedInteger:_diskCacheUsage] forKey:kAFURLCacheInfoDiskUsageKey];
         
@@ -377,12 +382,12 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
 // called in NSTimer
 - (void)periodicMaintenance {
     if (_diskCacheUsage > self.diskCapacity) {
-        dispatch_async([self diskIOQueue], ^{
+        dispatch_async(get_disk_io_queue(), ^{
             [self balanceDiskUsage];
         });
     }
     else if (_diskCacheInfoDirty) {
-        dispatch_async([self diskIOQueue], ^{
+        dispatch_async(get_disk_io_queue(), ^{
             [self saveCacheInfo];
         });
     }
@@ -401,7 +406,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
     if ((self = [super initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:path])) {
         self.minCacheInterval = kAFURLCacheInfoDefaultMinCacheInterval;
         self.diskCachePath = path;
-        self.ignoreMemoryOnlyStoragePolicy = NO;
+        self.ignoreMemoryOnlyStoragePolicy = YES;
 	}
     
     return self;
@@ -428,7 +433,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
         NSDictionary *headers = [(NSHTTPURLResponse *)cachedResponse.response allHeaderFields];
         // RFC 2616 section 13.3.4 says clients MUST use Etag in any cache-conditional request if provided by server
         if (![headers objectForKey:@"Etag"]) {
-            NSDate *expirationDate = [self expirationDateFromHeaders:headers
+            NSDate *expirationDate = [AFURLCache expirationDateFromHeaders:headers
                                                       withStatusCode:((NSHTTPURLResponse *)cachedResponse.response).statusCode];
             if (!expirationDate || [expirationDate timeIntervalSinceNow] - _minCacheInterval <= 0) {
                 // This response is not cacheable, headers said
@@ -436,7 +441,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
             }
         }
         
-        dispatch_async([self diskIOQueue], ^{
+        dispatch_async(get_disk_io_queue(), ^{
             [self storeRequestToDisk:request response:cachedResponse];
         });
     }
@@ -455,23 +460,23 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
     // NOTE: We don't handle expiration here as even staled cache data is necessary for NSURLConnection to handle cache revalidation.
     //       Staled cache data is also needed for cachePolicies which force the use of the cache.
     __block NSCachedURLResponse *response = nil;
-    dispatch_sync_afreentrant([self diskCacheQueue], ^{
+    dispatch_sync(get_disk_cache_queue(), ^{
         NSMutableDictionary *accesses = [self.diskCacheInfo objectForKey:kAFURLCacheInfoAccessesKey];
         if ([accesses objectForKey:cacheKey]) { // OPTI: Check for cache-hit in a in-memory dictionnary before to hit the FS
-            NSCachedURLResponse *diskResponse = [NSKeyedUnarchiver unarchiveObjectWithFile:[_diskCachePath stringByAppendingPathComponent:cacheKey]];
-            if (diskResponse) {
+            response = [NSKeyedUnarchiver unarchiveObjectWithFile:[_diskCachePath stringByAppendingPathComponent:cacheKey]];
+            if (response) {
                 // OPTI: Log the entry last access time for LRU cache eviction algorithm but don't save the dictionary
                 //       on disk now in order to save IO and time
                 [accesses setObject:[NSDate date] forKey:cacheKey];
                 _diskCacheInfoDirty = YES;
-                
-                // OPTI: Store the response to memory cache for potential future requests
-                [super storeCachedResponse:diskResponse forRequest:request];
-                
-                response = [[diskResponse retain] autorelease];
             }
         }
     });
+    
+    // OPTI: Store the response to memory cache for potential future requests
+    if (response) {
+        [super storeCachedResponse:response forRequest:request];
+    }
     
     return response;
 }
@@ -495,7 +500,7 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
     [super removeAllCachedResponses];
     NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
     [fileManager removeItemAtPath:_diskCachePath error:NULL];
-    dispatch_async_afreentrant([self diskCacheQueue], ^{
+    dispatch_async_afreentrant(get_disk_cache_queue(), ^{
         self.diskCacheInfo = nil;
     });
 }
@@ -518,14 +523,8 @@ inline void dispatch_async_afreentrant(dispatch_queue_t queue, dispatch_block_t 
 
 - (void)dealloc {
     [_periodicMaintenanceTimer invalidate];
-    dispatch_release(_diskCacheQueue);
-    dispatch_release(_dateFormatterQueue);
-    dispatch_release(_diskIOQueue);
     [_diskCachePath release], _diskCachePath = nil;
     [_diskCacheInfo release], _diskCacheInfo = nil;
-    [_FC1123DateFormatter release];
-    [_ANSICDateFormatter release];
-    [_RFC850DateFormatter release];    
     [super dealloc];
 }
 

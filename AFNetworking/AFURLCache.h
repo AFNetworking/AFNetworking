@@ -24,10 +24,6 @@
 #import <Foundation/Foundation.h>
 
 @interface AFURLCache : NSURLCache {
-    @private
-    dispatch_queue_t _diskCacheQueue;
-    dispatch_queue_t _dateFormatterQueue;
-    dispatch_queue_t _diskIOQueue;
     NSString *_diskCachePath;
     NSMutableDictionary *_diskCacheInfo;
     BOOL _diskCacheInfoDirty;
@@ -35,9 +31,6 @@
     NSUInteger _diskCacheUsage;
     NSTimeInterval _minCacheInterval;
     NSTimer *_periodicMaintenanceTimer;
-    NSDateFormatter *_FC1123DateFormatter;
-    NSDateFormatter *_ANSICDateFormatter;
-    NSDateFormatter *_RFC850DateFormatter;
 }
 
 /*
