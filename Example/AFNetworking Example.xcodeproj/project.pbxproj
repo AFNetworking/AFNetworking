@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7827C080141F36D800252C31 /* AFURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7827C07F141F36D800252C31 /* AFURLCache.m */; };
 		F85CE2D413EC478F00BFAE01 /* NSString+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F85CE2D313EC478F00BFAE01 /* NSString+AFNetworking.m */; };
 		F85CE2DC13EC4A4200BFAE01 /* NSMutableURLRequest+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F85CE2DB13EC4A4200BFAE01 /* NSMutableURLRequest+AFNetworking.m */; };
 		F85CE55513EC759200BFAE01 /* NSData+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F85CE55413EC759200BFAE01 /* NSData+AFNetworking.m */; };
@@ -36,6 +37,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7827C07E141F36D800252C31 /* AFURLCache.h */ = {isa = PBXFileReference; fileEncoding = 4; name = AFURLCache.h; path = ../AFNetworking/AFURLCache.h; sourceTree = "<group>"; };
+		7827C07F141F36D800252C31 /* AFURLCache.m */ = {isa = PBXFileReference; fileEncoding = 4; name = AFURLCache.m; path = ../AFNetworking/AFURLCache.m; sourceTree = "<group>"; };
 		F85CE2D213EC478F00BFAE01 /* NSString+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+AFNetworking.h"; path = "../AFNetworking/NSString+AFNetworking.h"; sourceTree = "<group>"; };
 		F85CE2D313EC478F00BFAE01 /* NSString+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+AFNetworking.m"; path = "../AFNetworking/NSString+AFNetworking.m"; sourceTree = "<group>"; };
 		F85CE2DA13EC4A4200BFAE01 /* NSMutableURLRequest+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMutableURLRequest+AFNetworking.h"; path = "../AFNetworking/NSMutableURLRequest+AFNetworking.h"; sourceTree = "<group>"; };
@@ -243,6 +246,8 @@
 		F8E469941395744600DB05C8 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				7827C07E141F36D800252C31 /* AFURLCache.h */,
+				7827C07F141F36D800252C31 /* AFURLCache.m */,
 				F874B5D113E0AA6500B28E3E /* AFHTTPRequestOperation.h */,
 				F874B5C913E0AA6500B28E3E /* AFHTTPRequestOperation.m */,
 				F874B5D413E0AA6500B28E3E /* AFJSONRequestOperation.h */,
@@ -361,6 +366,7 @@
 				F85CE2D413EC478F00BFAE01 /* NSString+AFNetworking.m in Sources */,
 				F85CE2DC13EC4A4200BFAE01 /* NSMutableURLRequest+AFNetworking.m in Sources */,
 				F85CE55513EC759200BFAE01 /* NSData+AFNetworking.m in Sources */,
+				7827C080141F36D800252C31 /* AFURLCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
