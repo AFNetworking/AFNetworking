@@ -41,4 +41,6 @@
                 options:(AFImageRequestOptions)options
                   block:(void (^)(UIImage *image, BOOL cacheUsed))block;
 
+- (void)cancelImageRequestOperation;
+
 @end

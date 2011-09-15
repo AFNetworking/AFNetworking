@@ -27,7 +27,7 @@
 
 #import "AFImageCache.h"
 
-static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperation";
+static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOperation";
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, retain) AFImageRequestOperation *imageRequestOperation;
@@ -86,11 +86,10 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
                 options:(AFImageRequestOptions)options
                   block:(void (^)(UIImage *image, BOOL cacheUsed))block
 {
-    if (!url) {
-        // stop loading image
-        [self.imageRequestOperation cancel];
-        self.imageRequestOperation = nil;
+    if (!url || [url isEqual:self.imageRequestOperation.request.URL]) {
         return;
+    } else {
+        [self cancelImageRequestOperation];
     }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
@@ -123,6 +122,10 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"imageRequestOperat
         
         [[[self class] sharedImageRequestOperationQueue] addOperation:self.imageRequestOperation];
     }
+}
+
+- (void)cancelImageRequestOperation {
+    [self.imageRequestOperation cancel];
 }
 
 @end
