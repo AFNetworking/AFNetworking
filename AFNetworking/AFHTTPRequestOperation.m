@@ -55,10 +55,6 @@ static inline NSString * AFKeyPathFromOperationState(AFHTTPOperationState state)
 }
 
 static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState from, AFHTTPOperationState to) {
-    if (from == to) {
-        return NO;
-    }
-    
     switch (from) {
         case AFHTTPOperationReadyState:
             switch (to) {
@@ -83,7 +79,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 
 @interface AFHTTPRequestOperation ()
 @property (nonatomic, assign) AFHTTPOperationState state;
-@property (nonatomic, assign) BOOL isCancelled;
+@property (nonatomic, assign, getter = isCancelled) BOOL cancelled;
 @property (readwrite, nonatomic, assign) NSUInteger totalBytesRead;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, retain) NSOutputStream *outputStream;
@@ -92,11 +88,13 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest;
+- (void)operationDidStart;
+- (void)finish;
 @end
 
 @implementation AFHTTPRequestOperation
 @synthesize state = _state;
-@synthesize isCancelled = _isCancelled;
+@synthesize cancelled = _cancelled;
 @synthesize connection = _connection;
 @synthesize runLoopModes = _runLoopModes;
 @synthesize request = _request;
@@ -204,6 +202,10 @@ static NSThread *_networkRequestThread = nil;
 
 
 - (void)setState:(AFHTTPOperationState)state {
+    if (self.state == state) {
+        return;
+    }
+    
     if (!AFHTTPOperationStateTransitionIsValid(self.state, state)) {
         return;
     }
@@ -231,6 +233,14 @@ static NSThread *_networkRequestThread = nil;
     }
 }
 
+- (void)setCancelled:(BOOL)isCancelled {
+    [self willChangeValueForKey:@"isCancelled"];
+    _cancelled = YES;
+    [self didChangeValueForKey:@"isCancelled"];
+    
+    self.state = AFHTTPOperationFinishedState;
+}
+
 - (NSString *)responseString {
     return [[[NSString alloc] initWithData:self.responseBody encoding:NSUTF8StringEncoding] autorelease];
 }
@@ -246,11 +256,21 @@ static NSThread *_networkRequestThread = nil;
 }
 
 - (BOOL)isFinished {
-    return self.state == AFHTTPOperationFinishedState || [self isCancelled];
+    return self.state == AFHTTPOperationFinishedState;
 }
 
 - (BOOL)isConcurrent {
     return YES;
+}
+
+- (void)start {
+    if (![self isReady]) {
+        return;
+    }
+        
+    self.state = AFHTTPOperationExecutingState;
+
+    [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
 }
 
 - (void)operationDidStart {
@@ -263,29 +283,24 @@ static NSThread *_networkRequestThread = nil;
     }
     
     [self.connection start];
-    
-}
-
-- (void)start {
-    if (self.isFinished) {
-        return;
-    }
-    
-    self.state = AFHTTPOperationExecutingState;
-
-    [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
 }
 
 - (void)cancel {
-    self.isCancelled = YES;
+    if ([self isFinished]) {
+        return;
+    }
     
-    [self.connection cancel];    
+    [super cancel];
+    
+    self.cancelled = YES;
+    
+    [self.connection cancel];
 }
 
-#pragma mark - AFHTTPRequestOperation
-
 - (void)finish {
-    if (self.isCancelled) {
+    self.state = AFHTTPOperationFinishedState;
+    
+    if ([self isCancelled]) {
         return;
     }
     
@@ -328,9 +343,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    self.state = AFHTTPOperationFinishedState;
-    
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {        
     if (self.outputStream) {
         [self.outputStream close];
     } else {
@@ -343,10 +356,14 @@ didReceiveResponse:(NSURLResponse *)response
 
 - (void)connection:(NSURLConnection *)connection 
   didFailWithError:(NSError *)error 
-{  
-    self.state = AFHTTPOperationFinishedState;
-    
+{      
     self.error = error;
+    
+    if (self.outputStream) {
+        [self.outputStream close];
+    } else {
+        [_dataAccumulator release]; _dataAccumulator = nil;
+    }
     
     [self finish];
 }
