@@ -154,6 +154,8 @@ static NSThread *_networkRequestThread = nil;
         }
     }];
     
+    operation.outputStream = outputStream;
+    
     return operation;
 }
 
