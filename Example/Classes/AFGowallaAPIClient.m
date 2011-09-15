@@ -32,11 +32,10 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 @implementation AFGowallaAPIClient
 
 + (id)sharedClient {
-    if (_sharedClient == nil) {
-        @synchronized(self) {
-            _sharedClient = [[self alloc] init];
-        }
-    }
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _sharedClient = [[self alloc] init];
+    });
     
     return _sharedClient;
 }
