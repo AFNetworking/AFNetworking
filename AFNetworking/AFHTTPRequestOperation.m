@@ -23,7 +23,8 @@
 #import "AFHTTPRequestOperation.h"
 #import "AFNetworkActivityIndicatorManager.h"
 
-#define AFHTTPMinContentLength 1024 * 1024 * 8
+static NSUInteger const kAFHTTPMinimumInitialDataCapacity = 1024;
+static NSUInteger const kAFHTTPMaximumInitialDataCapacity = 1024 * 1024 * 8;
 
 typedef enum {
     AFHTTPOperationReadyState       = 1,
@@ -303,11 +304,8 @@ didReceiveResponse:(NSURLResponse *)response
     if (self.outputStream) {
         [self.outputStream open];
     } else {
-        NSUInteger contentLength = MAX(abs(response.expectedContentLength), 1024);
-        if (contentLength < AFHTTPMinContentLength) {
-            contentLength = AFHTTPMinContentLength;
-        }
-        self.dataAccumulator = [NSMutableData dataWithCapacity:contentLength];
+        NSUInteger capacity = MIN(MAX(abs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity), kAFHTTPMaximumInitialDataCapacity);
+        self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
     }
 }
 
