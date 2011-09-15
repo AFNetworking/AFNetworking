@@ -22,6 +22,9 @@
 
 #import <Foundation/Foundation.h>
 
+// Error codes for AFNetworkingErrorDomain correspond to codes in NSURLErrorDomain
+extern NSString * const AFNetworkingErrorDomain;
+
 extern NSString * const AFHTTPOperationDidStartNotification;
 extern NSString * const AFHTTPOperationDidFinishNotification;
 

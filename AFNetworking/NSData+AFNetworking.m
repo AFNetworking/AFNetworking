@@ -21,9 +21,11 @@
 // THE SOFTWARE.
 
 #import "NSData+AFNetworking.h"
+#import "AFHTTPRequestOperation.h"
+
 #import <zlib.h>
 
-NSString * const kAFZlibErrorDomain = @"com.alamofire.zlib.error";
+NSString * const AFZlibErrorDomain = @"com.alamofire.networking.zlib.error";
 
 static char Base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -72,7 +74,7 @@ typedef enum {
 			break;
 		} else if (status != Z_OK) {
             if (error) {
-                *error = [NSError errorWithDomain:kAFZlibErrorDomain code:status userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Compression of data failed with code %hi", status] forKey:NSLocalizedDescriptionKey]];
+                *error = [NSError errorWithDomain:AFZlibErrorDomain code:status userInfo:nil];
             }
             
 			return nil;
@@ -108,8 +110,8 @@ typedef enum {
         }
         
         NSInteger idx = (i / 3) * 4;
-        output[idx + 0] =                    Base64EncodingTable[(value >> 18) & 0x3F];
-        output[idx + 1] =                    Base64EncodingTable[(value >> 12) & 0x3F];
+        output[idx + 0] = Base64EncodingTable[(value >> 18) & 0x3F];
+        output[idx + 1] = Base64EncodingTable[(value >> 12) & 0x3F];
         output[idx + 2] = (i + 1) < length ? Base64EncodingTable[(value >> 6)  & 0x3F] : '=';
         output[idx + 3] = (i + 2) < length ? Base64EncodingTable[(value >> 0)  & 0x3F] : '=';
     }

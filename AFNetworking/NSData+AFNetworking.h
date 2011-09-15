@@ -22,7 +22,7 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * const kAFZlibErrorDomain;
+extern NSString * const AFZlibErrorDomain;
 
 @interface NSData (AFNetworking)
 

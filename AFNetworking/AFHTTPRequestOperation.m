@@ -32,8 +32,10 @@ typedef enum {
     AFHTTPOperationCancelledState   = 4,
 } AFHTTPOperationState;
 
-NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.http-operation.start";
-NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.http-operation.finish";
+NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
+
+NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.networking.http-operation.start";
+NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.networking.http-operation.finish";
 
 typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytes, NSUInteger totalBytesExpected);
 typedef void (^AFHTTPRequestOperationCompletionBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error);
