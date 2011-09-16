@@ -1,4 +1,4 @@
-// AFJSONRequestOperation.m
+// AFXMLRequestOperation.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,35 +20,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFJSONRequestOperation.h"
-#import "JSONKit.h"
+#import "AFXMLRequestOperation.h"
 
 #include <Availability.h>
 
-static dispatch_queue_t af_json_request_operation_processing_queue;
-static dispatch_queue_t json_request_operation_processing_queue() {
-    if (af_json_request_operation_processing_queue == NULL) {
-        af_json_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.json-request.processing", 0);
+static dispatch_queue_t af_xml_request_operation_processing_queue;
+static dispatch_queue_t xml_request_operation_processing_queue() {
+    if (af_xml_request_operation_processing_queue == NULL) {
+        af_xml_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.xml-request.processing", 0);
     }
     
-    return af_json_request_operation_processing_queue;
+    return af_xml_request_operation_processing_queue;
 }
 
-@implementation AFJSONRequestOperation
+@implementation AFXMLRequestOperation
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(id JSON))success
+                   success:(void (^)(id XML))success
 {
     return [self operationWithRequest:urlRequest success:success failure:nil];
 }
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
-                   success:(void (^)(id JSON))success
+                   success:(void (^)(id XML))success
                    failure:(void (^)(NSError *error))failure
 {    
-    return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:^(NSURLRequest *request, NSHTTPURLResponse *response, id XML) {
         if (success) {
-            success(JSON);
+            success(XML);
         }
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
         if (failure) {
@@ -91,30 +90,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 success(request, response, nil);
             }
         } else {
-            dispatch_async(json_request_operation_processing_queue(), ^(void) {
-                id JSON = nil;
-                NSError *JSONError = nil;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
-                if ([NSJSONSerialization class]) {
-                    JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
-                } else {
-                    JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
-                }
-#else
-                JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
-#endif
+            dispatch_async(xml_request_operation_processing_queue(), ^(void) {
+                id XML = nil;
+                NSError *XMLError = nil;
                 
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                    if (JSONError) {
-                        if (failure) {
-                            failure(request, response, JSONError);
-                        }
-                    } else {
-                        if (success) {
-                            success(request, response, JSON);
-                        }
-                    }
-                });
+                
             });
         }
     }];
@@ -125,7 +105,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 }
 
 + (NSSet *)defaultAcceptableContentTypes {
-    return [NSSet setWithObjects:@"application/json", @"application/x-javascript", @"text/javascript", @"text/x-javascript", @"text/x-json", @"text/json", @"text/plain", nil];
+    return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
 }
 
 @end
