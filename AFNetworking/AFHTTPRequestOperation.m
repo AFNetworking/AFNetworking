@@ -78,8 +78,13 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 }
 
 @interface AFHTTPRequestOperation ()
-@property (nonatomic, assign) AFHTTPOperationState state;
-@property (nonatomic, assign, getter = isCancelled) BOOL cancelled;
+@property (readwrite, nonatomic, assign) AFHTTPOperationState state;
+@property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
+@property (readwrite, nonatomic, retain) NSURLConnection *connection;
+@property (readwrite, nonatomic, retain) NSURLRequest *request;
+@property (readwrite, nonatomic, retain) NSHTTPURLResponse *response;
+@property (readwrite, nonatomic, retain) NSError *error;
+@property (readwrite, nonatomic, retain) NSData *responseBody;
 @property (readwrite, nonatomic, assign) NSUInteger totalBytesRead;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, retain) NSOutputStream *outputStream;
@@ -199,7 +204,6 @@ static NSThread *_networkRequestThread = nil;
 - (void)setDownloadProgressBlock:(void (^)(NSUInteger totalBytesRead, NSUInteger totalBytesExpectedToRead))block {
     self.downloadProgress = block;
 }
-
 
 - (void)setState:(AFHTTPOperationState)state {
     if (self.state == state) {

@@ -30,25 +30,26 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
 
 @interface AFHTTPRequestOperation : NSOperation {
 @private    
-    NSURLConnection *_connection;
     NSSet *_runLoopModes;
     
+    NSURLConnection *_connection;
     NSURLRequest *_request;
     NSHTTPURLResponse *_response;
+    NSError *_error;
     
     NSData *_responseBody;
+    NSUInteger _totalBytesRead;
     NSMutableData *_dataAccumulator;
     NSOutputStream *_outputStream;
 }
 
-@property (nonatomic, retain) NSURLConnection *connection;
 @property (nonatomic, retain) NSSet *runLoopModes;
 
-@property (nonatomic, retain) NSURLRequest *request;
-@property (nonatomic, retain) NSHTTPURLResponse *response;
-@property (nonatomic, retain) NSError *error;
+@property (readonly, nonatomic, retain) NSURLRequest *request;
+@property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
+@property (readonly, nonatomic, retain) NSError *error;
 
-@property (nonatomic, retain) NSData *responseBody;
+@property (readonly, nonatomic, retain) NSData *responseBody;
 @property (readonly) NSString *responseString;
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest 
