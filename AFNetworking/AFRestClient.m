@@ -28,19 +28,23 @@
 static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding;
 
 @interface AFRestClient ()
+@property (readwrite, nonatomic, retain) NSURL *baseURL;
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
 @end
 
 @implementation AFRestClient
+@synthesize baseURL = _baseURL;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
 
-- (id)init {
+- (id)initWithBaseURL:(NSURL *)url {
     self = [super init];
     if (!self) {
         return nil;
     }
+    
+    self.baseURL = url;
     
     self.operationQueue = [[[NSOperationQueue alloc] init] autorelease];
 	[self.operationQueue setMaxConcurrentOperationCount:2];
@@ -64,17 +68,10 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 }
 
 - (void)dealloc {
+    [_baseURL release];
     [_defaultHeaders release];
     [_operationQueue release];
     [super dealloc];
-}
-
-+ (NSURL *)baseURL {
-    if ([self class] == [AFRestClient class]) {
-		[NSException raise:NSInternalInconsistencyException format:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)];
-	}
-    
-    return nil;
 }
 
 - (NSString *)defaultValueForHeader:(NSString *)header {
@@ -104,7 +101,7 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters {	
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
 	NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:self.defaultHeaders];
-	NSURL *url = [NSURL URLWithString:path relativeToURL:[[self class] baseURL]];
+	NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
 	
     if (parameters) {
         NSMutableArray *mutableParameterComponents = [NSMutableArray array];

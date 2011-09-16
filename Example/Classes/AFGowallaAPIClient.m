@@ -34,14 +34,14 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 + (id)sharedClient {
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
-        _sharedClient = [[self alloc] init];
+        _sharedClient = [[self alloc] initWithBaseURL:[NSURL URLWithString:kAFGowallaBaseURLString]];
     });
     
     return _sharedClient;
 }
 
-- (id)init {
-    self = [super init];
+- (id)initWithBaseURL:(NSURL *)url {
+    self = [super initWithBaseURL:url];
     if (!self) {
         return nil;
     }
@@ -56,10 +56,6 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 	[self setDefaultHeader:@"X-UDID" value:[[UIDevice currentDevice] uniqueIdentifier]];
     
     return self;
-}
-
-+ (NSURL *)baseURL {
-    return [NSURL URLWithString:kAFGowallaBaseURLString];
 }
 
 @end

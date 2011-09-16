@@ -26,15 +26,14 @@
 #import "NSMutableURLRequest+AFNetworking.h"
 #import "NSString+AFNetworking.h"
 
-@protocol AFRestClient <NSObject>
-+ (NSURL *)baseURL;
-@end
-
-@interface AFRestClient : NSObject <AFRestClient> {
-@protected
+@interface AFRestClient : NSObject {
+@private
+    NSURL *_baseURL;
     NSMutableDictionary *_defaultHeaders;
     NSOperationQueue *_operationQueue;
 }
+
+- (id)initWithBaseURL:(NSURL *)url;
 
 - (NSString *)defaultValueForHeader:(NSString *)header;
 - (void)setDefaultHeader:(NSString *)header value:(NSString *)value;
