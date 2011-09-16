@@ -248,7 +248,13 @@ static NSThread *_networkRequestThread = nil;
 }
 
 - (NSString *)responseString {
-    return [[[NSString alloc] initWithData:self.responseBody encoding:NSUTF8StringEncoding] autorelease];
+    if (!self.response || !self.responseBody) {
+        return nil;
+    }
+    
+    NSStringEncoding textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.response.textEncodingName));
+    
+    return [[[NSString alloc] initWithData:self.responseBody encoding:textEncoding] autorelease];
 }
 
 #pragma mark - NSOperation
