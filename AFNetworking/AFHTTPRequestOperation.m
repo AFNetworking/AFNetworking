@@ -237,12 +237,14 @@ static NSThread *_networkRequestThread = nil;
     }
 }
 
-- (void)setCancelled:(BOOL)isCancelled {
+- (void)setCancelled:(BOOL)cancelled {
     [self willChangeValueForKey:@"isCancelled"];
-    _cancelled = YES;
+    _cancelled = cancelled;
     [self didChangeValueForKey:@"isCancelled"];
     
-    self.state = AFHTTPOperationFinishedState;
+    if ([self isCancelled]) {
+        self.state = AFHTTPOperationFinishedState;
+    }
 }
 
 - (NSString *)responseString {
