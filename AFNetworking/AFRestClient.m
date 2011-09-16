@@ -128,13 +128,17 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 	return request;
 }
 
+- (void)enqueueHTTPOperation:(AFHTTPRequestOperation *)operation {
+    [self.operationQueue addOperation:operation];
+}
+
 - (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	if ([request URL] == nil || [[request URL] isEqual:[NSNull null]]) {
 		return;
 	}
     
     AFHTTPRequestOperation *operation = [AFJSONRequestOperation operationWithRequest:request success:success failure:failure];
-    [self.operationQueue addOperation:operation];
+    [self enqueueHTTPOperation:operation];
 }
 
 - (void)cancelHTTPOperationsWithRequest:(NSURLRequest *)request {

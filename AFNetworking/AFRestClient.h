@@ -44,6 +44,8 @@
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
                                       path:(NSString *)path parameters:(NSDictionary *)parameters;
 
+- (void)enqueueHTTPOperation:(AFHTTPRequestOperation *)operation;
+
 - (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request 
                                 success:(void (^)(id response))success 
                                 failure:(void (^)(NSError *error))failure;
