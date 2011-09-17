@@ -154,18 +154,20 @@
         cell = [[[SpotTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
     }
     
+    Spot *spot = [self.nearbySpots objectAtIndex:indexPath.row];
+    
     static TTTLocationFormatter *_locationFormatter = nil;
     if (!_locationFormatter) {
         _locationFormatter = [[TTTLocationFormatter alloc] init];
         [_locationFormatter setUnitSystem:TTTImperialSystem];
     }
 
-    Spot *spot = [self.nearbySpots objectAtIndex:indexPath.row];
-    cell.textLabel.text = spot.name;
     if (self.locationManager.location) {
         cell.detailTextLabel.text = [_locationFormatter stringFromDistanceAndBearingFromLocation:self.locationManager.location toLocation:spot.location];
     }
-    [cell.imageView setImageWithURL:[NSURL URLWithString:spot.imageURLString] placeholderImage:[UIImage imageNamed:@"placeholder-stamp.png"]];
+    
+    cell.spot = spot;
+    
     
     return cell;
 }
