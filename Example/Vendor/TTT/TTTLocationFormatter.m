@@ -159,13 +159,12 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
     
     switch (self.unitSystem) {
         case TTTMetricSystem: {
-            double meterDistance = distance;
-            double kilometerDistance = CLLocationDistanceToKilometers(distance);
-            
+            double kilometerDistance = CLLocationDistanceToKilometers(distance);            
             if (kilometerDistance > 1) {
                 distanceString = [self.numberFormatter stringFromNumber:[NSNumber numberWithDouble:kilometerDistance]];
                 unitString = NSLocalizedString(@"km", @"Kilometer Unit");
             } else {
+                double meterDistance = distance;
                 distanceString = [self.numberFormatter stringFromNumber:[NSNumber numberWithDouble:meterDistance]];
                 unitString = NSLocalizedString(@"m", @"Meter Unit");
             }
@@ -174,18 +173,19 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
             
         case TTTImperialSystem: {
             double feetDistance = CLLocationDistanceToFeet(distance);
-            double yardDistance = CLLocationDistanceToYards(distance);
-            double milesDistance = CLLocationDistanceToMiles(distance);
-            
             if (feetDistance < 300) {
                 distanceString = [self.numberFormatter stringFromNumber:[NSNumber numberWithDouble:feetDistance]];
                 unitString = NSLocalizedString(@"ft", @"Feet Unit");
-            } else if (yardDistance < 500) {
-                distanceString = [self.numberFormatter stringFromNumber:[NSNumber numberWithDouble:yardDistance]];
-                unitString = NSLocalizedString(@"yds", @"Yard Unit");
             } else {
-                distanceString = [self.numberFormatter stringFromNumber:[NSNumber numberWithDouble:milesDistance]];
-                unitString = (milesDistance > 1.0 && milesDistance < 1.1) ? NSLocalizedString(@"mile", @"Mile Unit (Singular)") : NSLocalizedString(@"miles", @"Mile Unit (Plural)");
+                double yardDistance = CLLocationDistanceToYards(distance);
+                if (yardDistance < 500) {
+                    distanceString = [self.numberFormatter stringFromNumber:[NSNumber numberWithDouble:yardDistance]];
+                    unitString = NSLocalizedString(@"yds", @"Yard Unit");
+                } else {
+                    double milesDistance = CLLocationDistanceToMiles(distance);
+                    distanceString = [self.numberFormatter stringFromNumber:[NSNumber numberWithDouble:milesDistance]];
+                    unitString = (milesDistance > 1.0 && milesDistance < 1.1) ? NSLocalizedString(@"mile", @"Mile Unit (Singular)") : NSLocalizedString(@"miles", @"Mile Unit (Plural)");
+                } 
             }
             break; 
         }
