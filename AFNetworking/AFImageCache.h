@@ -28,12 +28,10 @@
 + (id)sharedImageCache;
 
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)urlRequest
-                         imageSize:(CGSize)imageSize
-                           options:(AFImageRequestOptions)options;
+                         cacheName:(NSString *)cacheName;
 
 - (void)cacheImage:(UIImage *)image
         forRequest:(NSURLRequest *)urlRequest
-         imageSize:(CGSize)imageSize
-           options:(AFImageRequestOptions)options;
+         cacheName:(NSString *)cacheName;
 
 @end

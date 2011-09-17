@@ -22,8 +22,8 @@
 
 #import "AFImageCache.h"
 
-static inline NSString * AFImageCacheKey(NSURLRequest *urlRequest, CGSize imageSize, AFImageRequestOptions options) {
-    return [[[urlRequest URL] absoluteString] stringByAppendingFormat:@"#%fx%f:%d", imageSize.width, imageSize.height, options];
+static inline NSString * AFImageCacheKey(NSURLRequest *urlRequest, NSString *cacheName) {
+    return [[[urlRequest URL] absoluteString] stringByAppendingFormat:@"#%@", cacheName];
 }
 
 @implementation AFImageCache
@@ -40,22 +40,20 @@ static inline NSString * AFImageCacheKey(NSURLRequest *urlRequest, CGSize imageS
 }
 
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)urlRequest
-                         imageSize:(CGSize)imageSize
-                           options:(AFImageRequestOptions)options
+                         cacheName:(NSString *)cacheName
 {
-    return [self objectForKey:AFImageCacheKey(urlRequest, imageSize, options)];
+    return [self objectForKey:AFImageCacheKey(urlRequest, cacheName)];
 }
 
 - (void)cacheImage:(UIImage *)image
         forRequest:(NSURLRequest *)urlRequest
-         imageSize:(CGSize)imageSize
-           options:(AFImageRequestOptions)options
+         cacheName:(NSString *)cacheName
 {
     if (!image) {
         return;
     }
-    
-    [self setObject:image forKey:AFImageCacheKey(urlRequest, imageSize, options)];
+        
+    [self setObject:image forKey:AFImageCacheKey(urlRequest, cacheName)];
 }
 
 @end

@@ -32,14 +32,7 @@
 
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage 
-              imageSize:(CGSize)imageSize 
-                options:(AFImageRequestOptions)options;
-
-- (void)setImageWithURL:(NSURL *)url 
-       placeholderImage:(UIImage *)placeholderImage 
-              imageSize:(CGSize)imageSize 
-                options:(AFImageRequestOptions)options
-                  block:(void (^)(UIImage *image, BOOL cacheUsed))block;
+                success:(void (^)(UIImage *image, BOOL cacheUsed))block;
 
 - (void)cancelImageRequestOperation;
 

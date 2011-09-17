@@ -24,19 +24,15 @@
 #import <UIKit/UIKit.h>
 #import "AFHTTPRequestOperation.h"
 
-typedef enum {
-    AFImageRequestDefaultOptions        = 0,
-    AFImageRequestRoundCorners			= 1 << 1,
-} AFImageRequestOptions;
-
 @interface AFImageRequestOperation : AFHTTPRequestOperation
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest                
                    success:(void (^)(UIImage *image))success;
 
 + (id)operationWithRequest:(NSURLRequest *)urlRequest
-                 imageSize:(CGSize)imageSize
-                   options:(AFImageRequestOptions)options
-                   success:(void (^)(UIImage *image))success;
+      imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                 cacheName:(NSString *)cacheNameOrNil
+                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 @end

@@ -24,6 +24,7 @@
 #import <objc/runtime.h>
 
 #import "UIImageView+AFNetworking.h"
+#import "UIImage+AFNetworking.h"
 
 #import "AFImageCache.h"
 
@@ -54,37 +55,27 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
     
     if (!_imageRequestOperationQueue) {
         _imageRequestOperationQueue = [[NSOperationQueue alloc] init];
-        [_imageRequestOperationQueue setMaxConcurrentOperationCount:6];
+        [_imageRequestOperationQueue setMaxConcurrentOperationCount:8];
     }
     
     return _imageRequestOperationQueue;
 }
 
 #pragma mark -
- 
+
 - (void)setImageWithURL:(NSURL *)url {
     [self setImageWithURL:url placeholderImage:nil];
 }
 
 - (void)setImageWithURL:(NSURL *)url 
-       placeholderImage:(UIImage *)placeholderImage 
+       placeholderImage:(UIImage *)placeholderImage
 {
-    [self setImageWithURL:url placeholderImage:placeholderImage imageSize:self.frame.size options:AFImageRequestDefaultOptions];
+    [self setImageWithURL:url placeholderImage:placeholderImage success:nil]; 
 }
 
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage 
-              imageSize:(CGSize)imageSize 
-                options:(AFImageRequestOptions)options 
-{
-    [self setImageWithURL:url placeholderImage:placeholderImage imageSize:imageSize options:options block:nil];
-}
-
-- (void)setImageWithURL:(NSURL *)url 
-       placeholderImage:(UIImage *)placeholderImage 
-              imageSize:(CGSize)imageSize 
-                options:(AFImageRequestOptions)options
-                  block:(void (^)(UIImage *image, BOOL cacheUsed))block
+                success:(void (^)(UIImage *image, BOOL cacheUsed))success
 {
     if (!url || [url isEqual:self.imageRequestOperation.request.URL]) {
         return;
@@ -96,30 +87,43 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
     [request setHTTPShouldHandleCookies:NO];
     [request setHTTPShouldUsePipelining:YES];
     
-    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:request imageSize:imageSize options:options];
+    NSString *cacheName = @"UIImageView";
+    if (placeholderImage) {
+        cacheName = [cacheName stringByAppendingFormat:@"(%@)", NSStringFromCGSize(placeholderImage.size)];
+    }
+    
+    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:request cacheName:cacheName];
     if (cachedImage) {
         self.image = cachedImage;
         
-        if (block) {
-            block(cachedImage, YES);
+        if (success) {
+            success(cachedImage, YES);
         }
     } else {
         self.image = placeholderImage;
         
-        self.imageRequestOperation = [AFImageRequestOperation operationWithRequest:request imageSize:imageSize options:options success:^(UIImage *image) {
+        self.imageRequestOperation = [AFImageRequestOperation operationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
+            if (placeholderImage) {
+                image = [UIImage imageByScalingAndCroppingImage:image size:placeholderImage.size];
+            }
+            
+            return image;
+        } cacheName:cacheName success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
             if (self.imageRequestOperation && ![self.imageRequestOperation isCancelled]) {
-                if (block) {
-                    block(image, NO);
+                if (success) {
+                    success(image, NO);
                 }
-
+                
                 if ([[request URL] isEqual:[[self.imageRequestOperation request] URL]]) {
                     self.image = image;
                 } else {
                     self.image = placeholderImage;
                 }                
             }
+        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+            self.imageRequestOperation = nil;
         }];
-        
+       
         [[[self class] sharedImageRequestOperationQueue] addOperation:self.imageRequestOperation];
     }
 }
