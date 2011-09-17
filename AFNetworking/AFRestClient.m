@@ -155,17 +155,9 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 
 #pragma mark -
 
-- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
-    [self getPath:path parameters:parameters success:success failure:nil];
-}
-
 - (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
-}
-
-- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
-    [self postPath:path parameters:parameters success:success failure:nil];
 }
 
 - (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
@@ -173,17 +165,9 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }
 
-- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
-    [self putPath:path parameters:parameters success:success failure:nil];
-}
-
 - (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
-}
-
-- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success {
-    [self deletePath:path parameters:parameters success:success failure:nil];
 }
 
 - (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
