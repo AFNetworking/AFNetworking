@@ -52,7 +52,7 @@ NSDictionary *parameters = [NSDictionary dictionaryWithObject:@"300x300" forKey:
 AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
     NSLog(@"Upload Complete");
 }];
-[operation setProgressBlock:^(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite) {
+[operation setUploadProgressBlock:^(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite) {
     NSLog(@"Sent %d of %d bytes", totalBytesWritten, totalBytesExpectedToWrite);
 }];
 
