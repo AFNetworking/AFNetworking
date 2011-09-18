@@ -83,14 +83,14 @@
 ///----------------------------------
 
 /**
- Returns an `NSIndexSet` object containing the ranges of acceptable [HTTP status codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) used in operationWithRequest:success and operationWithRequest:success:failure.
+ Returns an `NSIndexSet` object containing the ranges of acceptable HTTP status codes (http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) used in operationWithRequest:success and operationWithRequest:success:failure.
  
  By default, this is the range 200 to 299, inclusive.
  */
 + (NSIndexSet *)defaultAcceptableStatusCodes;
 
 /**
- Returns an `NSSet` object containing the acceptable [HTTP content type](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) used in operationWithRequest:success and operationWithRequest:success:failure.
+ Returns an `NSSet` object containing the acceptable HTTP content type (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) used in operationWithRequest:success and operationWithRequest:success:failure.
  
  By default, this contains `application/json`, `application/x-javascript`, `text/javascript`, `text/x-javascript`, `text/x-json`, `text/json`, and `text/plain`
  */
