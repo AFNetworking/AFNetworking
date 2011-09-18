@@ -149,9 +149,11 @@ static NSThread *_networkRequestThread = nil;
                 completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion
 {
     NSMutableURLRequest *mutableURLRequest = [[urlRequest mutableCopy] autorelease];
-    [mutableURLRequest setHTTPBodyStream:inputStream];
-    if ([[mutableURLRequest HTTPMethod] isEqualToString:@"GET"]) {
-        [mutableURLRequest setHTTPMethod:@"POST"];
+    if (inputStream) {
+        [mutableURLRequest setHTTPBodyStream:inputStream];
+        if ([[mutableURLRequest HTTPMethod] isEqualToString:@"GET"]) {
+            [mutableURLRequest setHTTPMethod:@"POST"];
+        }
     }
 
     AFHTTPRequestOperation *operation = [self operationWithRequest:mutableURLRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
