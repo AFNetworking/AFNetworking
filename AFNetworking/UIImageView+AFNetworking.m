@@ -98,29 +98,29 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage
 {
-    [self setImageWithURL:url placeholderImage:placeholderImage success:nil]; 
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
+    [request setHTTPShouldHandleCookies:NO];
+    [request setHTTPShouldUsePipelining:YES];
+    
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil];
 }
 
-- (void)setImageWithURL:(NSURL *)url 
-       placeholderImage:(UIImage *)placeholderImage 
-                success:(void (^)(UIImage *image, BOOL cacheUsed))success
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
+              placeholderImage:(UIImage *)placeholderImage 
+                       success:(void (^)(UIImage *image, BOOL cacheUsed))success
 {
-    if (!url || (![self.imageRequestOperation isCancelled] && [url isEqual:self.imageRequestOperation.request.URL])) {
+    if (![urlRequest URL] || (![self.imageRequestOperation isCancelled] && [[urlRequest URL] isEqual:self.imageRequestOperation.request.URL])) {
         return;
     } else {
         [self cancelImageRequestOperation];
     }
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
-    [request setHTTPShouldHandleCookies:NO];
-    [request setHTTPShouldUsePipelining:YES];
     
     NSString *cacheName = @"UIImageView";
     if (placeholderImage) {
         cacheName = [cacheName stringByAppendingFormat:@"(%@)", NSStringFromCGSize(placeholderImage.size)];
     }
     
-    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:request cacheName:cacheName];
+    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:urlRequest cacheName:cacheName];
     if (cachedImage) {
         self.image = cachedImage;
         
@@ -130,7 +130,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
     } else {
         self.image = placeholderImage;
         
-        self.imageRequestOperation = [AFImageRequestOperation operationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
+        self.imageRequestOperation = [AFImageRequestOperation operationWithRequest:urlRequest imageProcessingBlock:^UIImage *(UIImage *image) {
             if (placeholderImage) {
                 image = AFImageByScalingAndCroppingImageToSize(image, placeholderImage.size);
             }
@@ -154,7 +154,9 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
             self.imageRequestOperation = nil;
         }];
        
-        [[[self class] sharedImageRequestOperationQueue] addOperation:self.imageRequestOperation];
+        if ([urlRequest cachePolicy] != NSURLCacheStorageNotAllowed) {
+            [[[self class] sharedImageRequestOperationQueue] addOperation:self.imageRequestOperation];
+        }
     }
 }
 

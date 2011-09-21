@@ -30,9 +30,9 @@
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage;
 
-- (void)setImageWithURL:(NSURL *)url 
-       placeholderImage:(UIImage *)placeholderImage 
-                success:(void (^)(UIImage *image, BOOL cacheUsed))block;
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
+              placeholderImage:(UIImage *)placeholderImage 
+                       success:(void (^)(UIImage *image, BOOL cacheUsed))success;
 
 - (void)cancelImageRequestOperation;
 
