@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFRestClient.h"
+#import "AFRESTClient.h"
 #import "AFJSONRequestOperation.h"
 
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
@@ -83,13 +83,13 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
 }
 
-@interface AFRestClient ()
+@interface AFRESTClient ()
 @property (readwrite, nonatomic, retain) NSURL *baseURL;
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
 @end
 
-@implementation AFRestClient
+@implementation AFRESTClient
 @synthesize baseURL = _baseURL;
 @synthesize stringEncoding = _stringEncoding;
 @synthesize defaultHeaders = _defaultHeaders;

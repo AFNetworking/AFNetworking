@@ -21,11 +21,11 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFRestClient.h"
+#import "AFRESTClient.h"
 
 extern NSString * const kAFGowallaClientID;
 extern NSString * const kAFGowallaBaseURLString;
 
-@interface AFGowallaAPIClient : AFRestClient
+@interface AFGowallaAPIClient : AFRESTClient
 + (AFGowallaAPIClient *)sharedClient;
 @end

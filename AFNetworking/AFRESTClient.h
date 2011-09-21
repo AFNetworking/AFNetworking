@@ -25,7 +25,7 @@
 
 @protocol AFMultipartFormDataProxy;
 
-@interface AFRestClient : NSObject {
+@interface AFRESTClient : NSObject {
 @private
     NSURL *_baseURL;
     NSStringEncoding _stringEncoding;
