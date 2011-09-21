@@ -66,10 +66,10 @@ static dispatch_queue_t image_request_operation_processing_queue() {
             }
             
             if (!(CGSizeEqualToSize(image.size, imageSize) || CGSizeEqualToSize(imageSize, CGSizeZero))) {
-                image = [UIImage imageByScalingAndCroppingImage:image size:imageSize];
+                image = [UIImage afImageByScalingAndCroppingImage:image size:imageSize];
             }
             if ((options & AFImageRequestRoundCorners)) {
-                image = [UIImage imageByRoundingCornersOfImage:image corners:(UIRectCorner)UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
+                image = [UIImage afImageByRoundingCornersOfImage:image corners:(UIRectCorner)UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
             }
             
             dispatch_sync(dispatch_get_main_queue(), ^(void) {

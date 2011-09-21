@@ -95,7 +95,7 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 
 - (void)setAuthorizationHeaderWithUsername:(NSString *)username password:(NSString *)password {
 	NSString *authHeader = [NSString stringWithFormat:@"%@:%@", username, password];
-    NSString *encodedAuthHeader = [[NSData dataWithBytes:[authHeader UTF8String] length:[authHeader length]] base64EncodedString];
+    NSString *encodedAuthHeader = [[NSData dataWithBytes:[authHeader UTF8String] length:[authHeader length]] afBase64EncodedString];
     [self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Basic %@", encodedAuthHeader]];
 }
 
@@ -117,7 +117,7 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
     if (parameters) {
         NSMutableArray *mutableParameterComponents = [NSMutableArray array];
         for (id key in [parameters allKeys]) {
-            NSString *component = [NSString stringWithFormat:@"%@=%@", [[key description] urlEncodedStringWithEncoding:kAFRestClientStringEncoding], [[[parameters valueForKey:key] description] urlEncodedStringWithEncoding:kAFRestClientStringEncoding]];
+            NSString *component = [NSString stringWithFormat:@"%@=%@", [[key description] afUrlEncodedStringWithEncoding:kAFRestClientStringEncoding], [[[parameters valueForKey:key] description] afUrlEncodedStringWithEncoding:kAFRestClientStringEncoding]];
             [mutableParameterComponents addObject:component];
         }
         NSString *queryString = [mutableParameterComponents componentsJoinedByString:@"&"];

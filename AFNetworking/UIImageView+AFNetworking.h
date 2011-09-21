@@ -25,22 +25,42 @@
 
 @interface UIImageView (AFNetworking)
 
-- (void)setImageWithURL:(NSURL *)url;
+#ifndef AFNETWORKING_NO_DEPRECATED
+- (void)setImageWithURL:(NSURL *)url __attribute__((deprecated("Will be removed in a future release. Please use afSetImageWithURL:.")));
 
 - (void)setImageWithURL:(NSURL *)url 
-       placeholderImage:(UIImage *)placeholderImage;
+       placeholderImage:(UIImage *)placeholderImage __attribute__((deprecated("Will be removed in a future release. Please use afSetImageWithURL:placeholderImage:.")));
 
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage 
               imageSize:(CGSize)imageSize 
-                options:(AFImageRequestOptions)options;
+                options:(AFImageRequestOptions)options __attribute__((deprecated("Will be removed in a future release. Please use afSetImageWithURL:.")));
 
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage 
               imageSize:(CGSize)imageSize 
                 options:(AFImageRequestOptions)options
-                  block:(void (^)(UIImage *image, BOOL cacheUsed))block;
+                  block:(void (^)(UIImage *image, BOOL cacheUsed))block __attribute__((deprecated("Will be removed in a future release. Please use afSetImageWithURL:placeholderImage:imageSize:options:block:.")));
 
-- (void)cancelImageRequestOperation;
+- (void)cancelImageRequestOperation __attribute__((deprecated("Will be removed in a future release. Please use afCancelImageRequestOperation.")));
+#endif
+
+- (void)afSetImageWithURL:(NSURL *)url;
+
+- (void)afSetImageWithURL:(NSURL *)url 
+         placeholderImage:(UIImage *)placeholderImage;
+
+- (void)afSetImageWithURL:(NSURL *)url 
+         placeholderImage:(UIImage *)placeholderImage 
+                imageSize:(CGSize)imageSize 
+                  options:(AFImageRequestOptions)options;
+
+- (void)afSetImageWithURL:(NSURL *)url 
+         placeholderImage:(UIImage *)placeholderImage 
+                imageSize:(CGSize)imageSize 
+                  options:(AFImageRequestOptions)options
+                    block:(void (^)(UIImage *image, BOOL cacheUsed))block;
+
+- (void)afCancelImageRequestOperation;
 
 @end

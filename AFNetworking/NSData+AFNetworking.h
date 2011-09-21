@@ -26,8 +26,14 @@ extern NSString * const AFZlibErrorDomain;
 
 @interface NSData (AFNetworking)
 
-- (NSString *)base64EncodedString;
-- (NSData *)dataByGZipCompressingWithError:(NSError **)error;
-- (NSData *)dataByGZipDecompressingDataWithError:(NSError **)error;
+#ifndef AFNETWORKING_NO_DEPRECATED
+- (NSString *)base64EncodedString __attribute__((deprecated("Will be removed in a future release. Please use afBase64EncodedString.")));
+- (NSData *)dataByGZipCompressingWithError:(NSError **)error __attribute__((deprecated("Will be removed in a future release. Please use afDataByGZipCompressingWithError:.")));
+- (NSData *)dataByGZipDecompressingDataWithError:(NSError **)error __attribute__((deprecated("Will be removed in a future release. Please use afDataByGZipDecompressingDataWithError:.")));
+#endif
+
+- (NSString *)afBase64EncodedString;
+- (NSData *)afDataByGZipCompressingWithError:(NSError **)error;
+- (NSData *)afDataByGZipDecompressingDataWithError:(NSError **)error;
 
 @end

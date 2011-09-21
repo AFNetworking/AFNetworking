@@ -25,11 +25,24 @@
 
 @implementation NSMutableURLRequest (AFNetworking)
 
+#ifndef AFNETWORKING_NO_DEPRECATED
 - (void)setHTTPBodyWithData:(NSData *)data 
                    mimeType:(NSString *)mimeType 
           forParameterNamed:(NSString *)parameterName 
                  parameters:(NSDictionary *)parameters
-         useGzipCompression:(BOOL)useGzipCompression
+         useGzipCompression:(BOOL)useGzipCompression {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    [self afSetHTTPBodyWithData:data mimeType:mimeType forParameterNamed:parameterName parameters:parameters useGzipCompression:useGzipCompression];
+}
+#endif
+
+- (void)afSetHTTPBodyWithData:(NSData *)data 
+                     mimeType:(NSString *)mimeType 
+            forParameterNamed:(NSString *)parameterName 
+                   parameters:(NSDictionary *)parameters
+           useGzipCompression:(BOOL)useGzipCompression
 {
 	if ([[self HTTPMethod] isEqualToString:@"GET"]) {
 		[self setHTTPMethod:@"POST"];
@@ -60,7 +73,7 @@
 	
     if (useGzipCompression) {
         NSError *error = nil;
-        NSData *compressedData = [mutableData dataByGZipCompressingWithError:&error];
+        NSData *compressedData = [mutableData afDataByGZipCompressingWithError:&error];
         
         if (!error && compressedData) {
             [self setHTTPBody:compressedData];

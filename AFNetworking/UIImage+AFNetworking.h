@@ -22,7 +22,12 @@
 
 @interface UIImage (AFNetworking)
 
-+ (UIImage *)imageByScalingAndCroppingImage:(UIImage *)image size:(CGSize)size;
-+ (UIImage *)imageByRoundingCornersOfImage:(UIImage *)image corners:(UIRectCorner)corners cornerRadii:(CGSize)radii;
+#ifndef AFNETWORKING_NO_DEPRECATED
++ (UIImage *)imageByScalingAndCroppingImage:(UIImage *)image size:(CGSize)size __attribute__((deprecated("Will be removed in a future release. Please use afImageByScalingAndCroppingImage:size:.")));
++ (UIImage *)imageByRoundingCornersOfImage:(UIImage *)image corners:(UIRectCorner)corners cornerRadii:(CGSize)radii __attribute__((deprecated("Will be removed in a future release. Please use afImageByRoundingCornersOfImage:corners:cornerRadii:.")));
+#endif
+
++ (UIImage *)afImageByScalingAndCroppingImage:(UIImage *)image size:(CGSize)size;
++ (UIImage *)afImageByRoundingCornersOfImage:(UIImage *)image corners:(UIRectCorner)corners cornerRadii:(CGSize)radii;
 
 @end
