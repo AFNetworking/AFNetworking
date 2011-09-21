@@ -203,14 +203,8 @@ static dispatch_queue_t get_disk_io_queue() {
     
     // Define "now" based on the request
     NSString *date = [headers objectForKey:@"Date"];
-    NSDate *now;
-    if (date) {
-        now = [AFURLCache dateFromHttpDateString:date];
-    }
-    else {
-        // If no Date: header, define now from local clock
-        now = [NSDate date];
-    }
+    // If no Date: header, define now from local clock
+    NSDate *now = date ? [AFURLCache dateFromHttpDateString:date] : [NSDate date];
     
     // Look at info from the Cache-Control: max-age=n header
     NSString *cacheControl = [headers objectForKey:@"Cache-Control"];
@@ -227,7 +221,7 @@ static dispatch_queue_t get_disk_io_queue() {
             NSScanner *cacheControlScanner = [NSScanner scannerWithString:cacheControl];
             [cacheControlScanner setScanLocation:foundRange.location + foundRange.length];
             if ([cacheControlScanner scanInteger:&maxAge]) {
-                return maxAge > 0 ? [NSDate dateWithTimeIntervalSinceNow:maxAge] : nil;
+                return maxAge > 0 ? [[[NSDate alloc] initWithTimeInterval:maxAge sinceDate:now] autorelease] : nil;
             }
         }
     }
