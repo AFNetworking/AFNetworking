@@ -37,7 +37,7 @@ static NSString * AFMultipartFormFinalBoundary() {
 @interface AFMutableMultipartFormData : NSObject <AFMultipartFormDataProxy> {
 @private
     NSStringEncoding _stringEncoding;
-    NSMutableArray *_lines;
+    NSMutableArray *_mutableLines;
 }
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
@@ -197,7 +197,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     }
     
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
-    __block AFMutableMultipartFormData *formData = [[AFMutableMultipartFormData alloc] init];
+    __block AFMutableMultipartFormData *formData = [[AFMutableMultipartFormData alloc] initWithStringEncoding:self.stringEncoding];
     
     id key = nil;
 	NSEnumerator *enumerator = [parameters keyEnumerator];
@@ -276,14 +276,14 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 // multipart/form-data; see http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
 @interface AFMutableMultipartFormData ()
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
-@property (readwrite, nonatomic, retain) NSMutableArray *lines;
+@property (readwrite, nonatomic, retain) NSMutableArray *mutableLines;
 
 - (void)appendBlankLine;
 @end
 
 @implementation AFMutableMultipartFormData
 @synthesize stringEncoding = _stringEncoding;
-@synthesize lines = _lines;
+@synthesize mutableLines = _mutableLines;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding {
     self = [super init];
@@ -292,25 +292,31 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     }
     
     self.stringEncoding = encoding;
-    self.lines = [NSMutableArray array];
+    self.mutableLines = [NSMutableArray array];
     
     return self;
 }
 
 - (void)dealloc {
-    [_lines release];
+    [_mutableLines release];
     [super dealloc];
 }
 
 - (NSData *)data {
-    NSLog(@"DATA: %@", [[self.lines componentsJoinedByString:kAFMultipartFormLineDelimiter] stringByAppendingString:AFMultipartFormFinalBoundary()]);
+    if ([self.mutableLines count] == 0) {
+        return nil;
+    }
     
-    return [[[[self.lines componentsJoinedByString:kAFMultipartFormLineDelimiter] stringByAppendingString:AFMultipartFormFinalBoundary()] stringByAppendingString:kAFMultipartFormLineDelimiter] dataUsingEncoding:self.stringEncoding];
+    return [[[[self.mutableLines componentsJoinedByString:kAFMultipartFormLineDelimiter]  stringByAppendingString:kAFMultipartFormLineDelimiter] stringByAppendingString:AFMultipartFormFinalBoundary()] dataUsingEncoding:self.stringEncoding];
 }
 
 #pragma mark - AFMultipartFormDataProxy
 
 - (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body {
+    if ([self.mutableLines count] > 0) {
+        [self appendString:AFMultipartFormEncapsulationBoundary()];
+    }
+    
     for (NSString *field in [headers allKeys]) {
         [self appendString:[NSString stringWithFormat:@"%@: %@", field, [headers valueForKey:field]]];
     }
@@ -339,7 +345,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 }
 
 - (void)appendString:(NSString *)string {
-    [self.lines addObject:string];
+    [self.mutableLines addObject:string];
 }
 
 - (void)appendBlankLine {
