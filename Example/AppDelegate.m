@@ -22,13 +22,19 @@
 
 #import "AppDelegate.h"
 #import "NearbySpotsViewController.h"
+#import "AFURLCache.h"
 
 @implementation AppDelegate
 @synthesize window = _window;
 @synthesize navigationController = _navigationController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSURLCache *URLCache = [[[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil] autorelease];
+    
+    // use custom URLCache to get disk caching on iOS
+    AFURLCache *URLCache = [[AFURLCache alloc] initWithMemoryCapacity:1024*1024   // 1MB mem cache
+                                                         diskCapacity:1024*1024*5 // 5MB disk cache
+                                                             diskPath:[AFURLCache defaultCachePath]];
+    
 	[NSURLCache setSharedURLCache:URLCache];
     
     UITableViewController *viewController = [[[NearbySpotsViewController alloc] init] autorelease];
