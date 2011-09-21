@@ -331,7 +331,8 @@ didReceiveResponse:(NSURLResponse *)response
     if (self.outputStream) {
         [self.outputStream open];
     } else {
-        NSUInteger capacity = MIN(MAX(abs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity), kAFHTTPMaximumInitialDataCapacity);
+        NSUInteger maxCapacity = MAX(abs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity);
+        NSUInteger capacity = MIN(maxCapacity, kAFHTTPMaximumInitialDataCapacity);
         self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
     }
 }
