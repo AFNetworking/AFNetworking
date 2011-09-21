@@ -34,12 +34,18 @@
 }
 
 /**
- An `NSURL` object that is used as the base for paths specified in methods such as `getPath:parameteres:success:failure`
+ The url used as the base for paths specified in methods such as `getPath:parameteres:success:failure`
  */
 @property (readonly, nonatomic, retain) NSURL *baseURL;
 
+/**
+ The string encoding used in constructing url requests. This is `NSUTF8StringEncoding` by default.
+ */
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 
+/**
+ The operation queue which manages operations enqueued by the REST client.
+ */
 @property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;;
 
 ///--------------------------------
@@ -101,17 +107,29 @@
 ///-------------------------------
 
 /**
- Creates an `NSMutableURLRequest` object with the specified HTTP method, resource path, and parameters, with the default HTTP headers specified for the client.
+ Creates an `NSMutableURLRequest` object with the specified HTTP method and resource path. If the HTTP method is `GET`, the parameters will be used to construct a url-encoded query string that is appended to the request's URL. If `POST`, `PUT`, or `DELETE`, the parameters will be encoded into a `application/x-www-form-urlencoded` HTTP body.
  
- @param method The HTTP method for the request, such as `GET`, `POST`, `PUT`, or `DELETE`
- @param path The resource path to be appended to the REST client's base URL and used as the request URL
- @param parameters The parameters to be either set as a query string for `GET` requests, or form URL-encoded and set in the request HTTP body
+ @param method The HTTP method for the request, such as `GET`, `POST`, `PUT`, or `DELETE`.
+ @param path The resource path to be appended to the REST client's base URL and used as the request URL.
+ @param parameters The parameters to be either set as a query string for `GET` requests, or the request HTTP body.
  
  @return An `NSMutableURLRequest` object
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
                                       path:(NSString *)path parameters:(NSDictionary *)parameters;
 
+/**
+ Creates an `NSMutableURLRequest` object with the specified HTTP method and resource path, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block.
+ 
+ @param method The HTTP method for the request. Must be either `POST`, `PUT`, or `DELETE`.
+ @param path The resource path to be appended to the REST client's base URL and used as the request URL.
+ @param parameters The parameters to be encoded and set in the request HTTP body.
+ @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormDataProxy` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
+ 
+ @see AFMultipartFormDataProxy
+ 
+ @return An `NSMutableURLRequest` object
+ */
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                                    path:(NSString *)path
                                              parameters:(NSDictionary *)parameters
@@ -121,8 +139,14 @@
 ///--------------------------------
 /// @name Enqueuing HTTP Operations
 ///--------------------------------
-- (void)enqueueHTTPOperation:(AFHTTPRequestOperation *)operation;
 
+/**
+ Constructs and enqueues an `AFHTTPRequestOperation` to the REST client's operation queue.
+ 
+ @param request The request object to be loaded asynchronously during execution of the operation.
+ @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content types (e.g. `application/json`). This block has no return value and takes a single argument, which is the response object created from the response data of request.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ */
 - (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request 
                                 success:(void (^)(id response))success 
                                 failure:(void (^)(NSError *error))failure;
@@ -131,9 +155,13 @@
 /// @name Cancelling HTTP Operations
 ///---------------------------------
 
-- (void)cancelHTTPOperationsWithRequest:(NSURLRequest *)request;
-
-- (void)cancelAllHTTPOperations;
+/**
+ Cancels all operations in the REST client's operation queue that match the specified HTTP method and URL.
+ 
+ @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`.
+ @param url The URL to match for the cancelled requests.
+ */
+- (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url;
 
 ///---------------------------
 /// @name Making HTTP Requests

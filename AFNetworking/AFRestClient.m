@@ -222,29 +222,21 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     return request;
 }
 
-- (void)enqueueHTTPOperation:(AFHTTPRequestOperation *)operation {
-    [self.operationQueue addOperation:operation];
-}
-
 - (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
 	if ([request URL] == nil || [[request URL] isEqual:[NSNull null]]) {
 		return;
 	}
     
     AFHTTPRequestOperation *operation = [AFJSONRequestOperation operationWithRequest:request success:success failure:failure];
-    [self enqueueHTTPOperation:operation];
+    [self.operationQueue addOperation:operation];
 }
 
-- (void)cancelHTTPOperationsWithRequest:(NSURLRequest *)request {
+- (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url {
     for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
-        if ([[operation request] isEqual:request]) {
+        if ([[[operation request] HTTPMethod] isEqualToString:method] && [[[operation request] URL] isEqual:url]) {
             [operation cancel];
         }
     }
-}
-
-- (void)cancelAllHTTPOperations {
-    [self.operationQueue cancelAllOperations];
 }
 
 #pragma mark -
