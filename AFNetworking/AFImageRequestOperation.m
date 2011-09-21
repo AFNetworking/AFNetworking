@@ -69,7 +69,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 image = [UIImage imageByScalingAndCroppingImage:image size:imageSize];
             }
             if ((options & AFImageRequestRoundCorners)) {
-                image = [UIImage imageByRoundingCornersOfImage:image corners:UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
+                image = [UIImage imageByRoundingCornersOfImage:image corners:(UIRectCorner)UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
             }
             
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
