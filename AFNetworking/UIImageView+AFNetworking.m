@@ -24,9 +24,37 @@
 #import <objc/runtime.h>
 
 #import "UIImageView+AFNetworking.h"
-#import "UIImage+AFNetworking.h"
 
 #import "AFImageCache.h"
+
+static UIImage * AFImageByScalingAndCroppingImageToSize(UIImage *image, CGSize size) {
+    if (image == nil) {
+        return nil;
+    } else if (CGSizeEqualToSize(image.size, size) || CGSizeEqualToSize(size, CGSizeZero)) {
+        return image;
+    }
+    
+    CGSize scaledSize = size;
+	CGPoint thumbnailPoint = CGPointZero;
+    
+    CGFloat widthFactor = size.width / image.size.width;
+    CGFloat heightFactor = size.height / image.size.height;
+    CGFloat scaleFactor = (widthFactor > heightFactor) ? widthFactor : heightFactor;
+    scaledSize.width = image.size.width * scaleFactor;
+    scaledSize.height = image.size.height * scaleFactor;
+    if (widthFactor > heightFactor) {
+        thumbnailPoint.y = (size.height - scaledSize.height) * 0.5; 
+    } else if (widthFactor < heightFactor) {
+        thumbnailPoint.x = (size.width - scaledSize.width) * 0.5;
+    }
+    
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0); 
+    [image drawInRect:CGRectMake(thumbnailPoint.x, thumbnailPoint.y, scaledSize.width, scaledSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+	
+	return newImage;
+}
 
 static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOperation";
 
@@ -104,7 +132,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
         
         self.imageRequestOperation = [AFImageRequestOperation operationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
             if (placeholderImage) {
-                image = [UIImage imageByScalingAndCroppingImage:image size:placeholderImage.size];
+                image = AFImageByScalingAndCroppingImageToSize(image, placeholderImage.size);
             }
             
             return image;
