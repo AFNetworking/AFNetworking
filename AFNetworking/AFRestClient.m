@@ -23,9 +23,40 @@
 #import "AFRestClient.h"
 #import "AFJSONRequestOperation.h"
 
-#import "NSData+AFNetworking.h"
+static NSString * AFBase64EncodedStringFromString(NSString *string) {
+    NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string length]];
+    NSUInteger length = [data length];
+    NSMutableData *mutableData = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
+    
+    uint8_t *input = (uint8_t *)[data bytes];
+    uint8_t *output = (uint8_t *)[mutableData mutableBytes];
+    
+    for (NSUInteger i = 0; i < length; i += 3) {
+        NSUInteger value = 0;
+        for (NSUInteger j = i; j < (i + 3); j++) {
+            value <<= 8;
+            if (j < length) {
+                value |= (0xFF & input[j]); 
+            }
+        }
+        
+        static char const kAFBase64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding;
+        NSInteger idx = (i / 3) * 4;
+        output[idx + 0] = kAFBase64EncodingTable[(value >> 18) & 0x3F];
+        output[idx + 1] = kAFBase64EncodingTable[(value >> 12) & 0x3F];
+        output[idx + 2] = (i + 1) < length ? kAFBase64EncodingTable[(value >> 6)  & 0x3F] : '=';
+        output[idx + 3] = (i + 2) < length ? kAFBase64EncodingTable[(value >> 0)  & 0x3F] : '=';
+    }
+    
+    return [[[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding] autorelease];
+}
+
+static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
+    static NSString * const kAFLegalCharactersToBeEscaped = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ ";
+    
+	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
+}
 
 @interface AFRestClient ()
 @property (readwrite, nonatomic, retain) NSURL *baseURL;
@@ -35,6 +66,7 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 
 @implementation AFRestClient
 @synthesize baseURL = _baseURL;
+@synthesize stringEncoding = _stringEncoding;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
 
@@ -46,8 +78,7 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
     
     self.baseURL = url;
     
-    self.operationQueue = [[[NSOperationQueue alloc] init] autorelease];
-	[self.operationQueue setMaxConcurrentOperationCount:2];
+    self.stringEncoding = NSUTF8StringEncoding;
 	
 	self.defaultHeaders = [NSMutableDictionary dictionary];
     
@@ -63,6 +94,9 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 	
 	// User-Agent Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
 	[self setDefaultHeader:@"User-Agent" value:[NSString stringWithFormat:@"%@/%@ (%@, %@ %@, %@, Scale/%f)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], @"unknown", [[UIDevice currentDevice] systemName], [[UIDevice currentDevice] systemVersion], [[UIDevice currentDevice] model], ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0)]];
+    
+    self.operationQueue = [[[NSOperationQueue alloc] init] autorelease];
+	[self.operationQueue setMaxConcurrentOperationCount:2];
     
     return self;
 }
@@ -83,9 +117,8 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 }
 
 - (void)setAuthorizationHeaderWithUsername:(NSString *)username password:(NSString *)password {
-	NSString *authHeader = [NSString stringWithFormat:@"%@:%@", username, password];
-    NSString *encodedAuthHeader = [[NSData dataWithBytes:[authHeader UTF8String] length:[authHeader length]] base64EncodedString];
-    [self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Basic %@", encodedAuthHeader]];
+	NSString *basicAuthCredentials = [NSString stringWithFormat:@"%@:%@", username, password];
+    [self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Basic %@", AFBase64EncodedStringFromString(basicAuthCredentials)]];
 }
 
 - (void)setAuthorizationHeaderWithToken:(NSString *)token {
@@ -106,7 +139,7 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
     if (parameters) {
         NSMutableArray *mutableParameterComponents = [NSMutableArray array];
         for (id key in [parameters allKeys]) {
-            NSString *component = [NSString stringWithFormat:@"%@=%@", [[key description] urlEncodedStringWithEncoding:kAFRestClientStringEncoding], [[[parameters valueForKey:key] description] urlEncodedStringWithEncoding:kAFRestClientStringEncoding]];
+            NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], self.stringEncoding), AFURLEncodedStringFromStringWithEncoding([[parameters valueForKey:key] description], self.stringEncoding)];
             [mutableParameterComponents addObject:component];
         }
         NSString *queryString = [mutableParameterComponents componentsJoinedByString:@"&"];
@@ -114,9 +147,9 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
         if ([method isEqualToString:@"GET"]) {
             url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", queryString]];
         } else {
-            NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(kAFRestClientStringEncoding));
+            NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
             [headers setObject:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forKey:@"Content-Type"];
-            [request setHTTPBody:[queryString dataUsingEncoding:NSUTF8StringEncoding]];
+            [request setHTTPBody:[queryString dataUsingEncoding:self.stringEncoding]];
         }
     }
     

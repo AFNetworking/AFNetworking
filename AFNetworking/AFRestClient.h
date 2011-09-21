@@ -24,11 +24,11 @@
 #import "AFHTTPRequestOperation.h"
 
 #import "NSMutableURLRequest+AFNetworking.h"
-#import "NSString+AFNetworking.h"
 
 @interface AFRestClient : NSObject {
 @private
     NSURL *_baseURL;
+    NSStringEncoding _stringEncoding;
     NSMutableDictionary *_defaultHeaders;
     NSOperationQueue *_operationQueue;
 }
@@ -37,6 +37,10 @@
  An `NSURL` object that is used as the base for paths specified in methods such as `getPath:parameteres:success:failure`
  */
 @property (readonly, nonatomic, retain) NSURL *baseURL;
+
+@property (nonatomic, assign) NSStringEncoding stringEncoding;
+
+@property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;;
 
 ///--------------------------------
 /// @name Initializing REST Clients
