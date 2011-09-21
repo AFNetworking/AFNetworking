@@ -54,7 +54,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (error) {
                 if (failure) {
-                    failure(request, response, error);
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        failure(request, response, error);
+                    });
                 }
             } else {
                 UIImage *image = nil;    
@@ -69,7 +71,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                     image = imageProcessingBlock(image);
                 }
                 
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (success) {
                         success(request, response, image);
                     }
