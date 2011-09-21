@@ -1,4 +1,4 @@
-// AFRestClient.m
+// AFRESTClient.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
