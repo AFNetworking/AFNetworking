@@ -23,7 +23,7 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
 
-#import "NSMutableURLRequest+AFNetworking.h"
+@protocol AFMultipartFormDataProxy;
 
 @interface AFRestClient : NSObject {
 @private
@@ -112,6 +112,12 @@
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
                                       path:(NSString *)path parameters:(NSDictionary *)parameters;
 
+- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
+                                                   path:(NSString *)path
+                                             parameters:(NSDictionary *)parameters
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormDataProxy>formData))block;
+
+
 ///--------------------------------
 /// @name Enqueuing HTTP Operations
 ///--------------------------------
@@ -132,9 +138,9 @@
 ///---------------------------
 /// @name Making HTTP Requests
 ///---------------------------
-- (void)getPath:(NSString *)path 
-     parameters:(NSDictionary *)parameters 
-        success:(void (^)(id response))success 
+- (void)getPath:(NSString *)path
+     parameters:(NSDictionary *)parameters
+        success:(void (^)(id response))success
         failure:(void (^)(NSError *error))failure;
 
 - (void)postPath:(NSString *)path 
@@ -151,4 +157,14 @@
         parameters:(NSDictionary *)parameters 
            success:(void (^)(id response))success 
            failure:(void (^)(NSError *error))failure;
+@end
+
+#pragma mark -
+
+@protocol AFMultipartFormDataProxy <NSObject>
+- (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body;
+- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
+- (void)appendPartWithFile:(NSURL *)fileURL fileName:(NSString *)fileNameOrNil;
+- (void)appendData:(NSData *)data;
+- (void)appendString:(NSString *)string;
 @end
