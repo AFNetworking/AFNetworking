@@ -25,11 +25,11 @@
 
 #import "UIImage+AFNetworking.h"
 
-static CGFloat const kAFImageRequestJPEGQuality = 0.8;
+static CGFloat const kAFImageRequestJPEGQuality = 0.8f;
 static NSUInteger const kAFImageRequestMaximumResponseSize = 8 * 1024 * 1024;
 
 static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
-    CGFloat dimension = fmaxf(imageSize.width, imageSize.height) * 0.1;
+    CGFloat dimension = fmaxf(imageSize.width, imageSize.height) * 0.1f;
     return CGSizeMake(dimension, dimension);
 }
 
