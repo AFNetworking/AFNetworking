@@ -105,7 +105,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
        placeholderImage:(UIImage *)placeholderImage 
                 success:(void (^)(UIImage *image, BOOL cacheUsed))success
 {
-    if (!url || [url isEqual:self.imageRequestOperation.request.URL]) {
+    if (!url || (![self.imageRequestOperation isCancelled] && [url isEqual:self.imageRequestOperation.request.URL])) {
         return;
     } else {
         [self cancelImageRequestOperation];
@@ -138,15 +138,17 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
             return image;
         } cacheName:cacheName success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
             if (self.imageRequestOperation && ![self.imageRequestOperation isCancelled]) {
-                if (success) {
-                    success(image, NO);
-                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (success) {
+                        success(image, NO);
+                    }
                 
-                if ([[request URL] isEqual:[[self.imageRequestOperation request] URL]]) {
-                    self.image = image;
-                } else {
-                    self.image = placeholderImage;
-                }                
+                    if ([[request URL] isEqual:[[self.imageRequestOperation request] URL]]) {
+                        self.image = image;
+                    } else {
+                        self.image = placeholderImage;
+                    }
+                });
             }
         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
             self.imageRequestOperation = nil;
