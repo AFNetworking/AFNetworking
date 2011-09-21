@@ -61,8 +61,19 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
 	NSString *preferredLanguageCodes = [[NSLocale preferredLanguages] componentsJoinedByString:@", "];
 	[self setDefaultHeader:@"Accept-Language" value:[NSString stringWithFormat:@"%@, en-us;q=0.8", preferredLanguageCodes]];
 	
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    UIDevice *device = [UIDevice currentDevice];
+    UIScreen *screen = [UIScreen mainScreen];
+    
 	// User-Agent Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
-	[self setDefaultHeader:@"User-Agent" value:[NSString stringWithFormat:@"%@/%@ (%@, %@ %@, %@, Scale/%f)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], @"unknown", [[UIDevice currentDevice] systemName], [[UIDevice currentDevice] systemVersion], [[UIDevice currentDevice] model], ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0)]];
+	[self setDefaultHeader:@"User-Agent" value:[NSString stringWithFormat:@"%@/%@ (%@, %@ %@, %@, Scale/%f)", 
+                                                [infoDictionary objectForKey:(NSString *)kCFBundleIdentifierKey], 
+                                                [infoDictionary objectForKey:(NSString *)kCFBundleVersionKey], 
+                                                @"unknown", 
+                                                [device systemName], 
+                                                [device systemVersion], 
+                                                [device model], 
+                                                ([screen respondsToSelector:@selector(bounds)] ? [screen scale] : 1.0)]];
     
     return self;
 }
