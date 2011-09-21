@@ -40,8 +40,8 @@
  
  @return A new JSON request operation
  */
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(id JSON))success;
++ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
+                                         success:(void (^)(id JSON))success;
 
 /**
  Creates and returns an `AFJSONRequestOperation` object and sets the specified success and failure callbacks.
@@ -56,9 +56,9 @@
  
  @return A new JSON request operation
  */
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest 
-                   success:(void (^)(id JSON))success
-                   failure:(void (^)(NSError *error))failure;
++ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
+                                         success:(void (^)(id JSON))success
+                                         failure:(void (^)(NSError *error))failure;
 
 /**
  Creates and returns an `AFJSONRequestOperation` object and sets the specified success and failure callbacks, as well as the status codes and content types that are acceptable for a successful request.
@@ -71,11 +71,11 @@
   
  @return A new JSON request operation
  */
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-     acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
-    acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
-                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
++ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
+                           acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
+                          acceptableContentTypes:(NSSet *)acceptableContentTypes
+                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 
 ///----------------------------------

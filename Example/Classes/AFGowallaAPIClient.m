@@ -22,8 +22,6 @@
 
 #import "AFGowallaAPIClient.h"
 
-static AFGowallaAPIClient *_sharedClient = nil;
-
 // Replace this with your own API Key, available at http://api.gowalla.com/api/keys/
 NSString * const kAFGowallaClientID = @"e7ccb7d3d2414eb2af4663fc91eb2793";
 
@@ -31,7 +29,8 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 
 @implementation AFGowallaAPIClient
 
-+ (id)sharedClient {
++ (AFGowallaAPIClient *)sharedClient {
+    static AFGowallaAPIClient *_sharedClient = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _sharedClient = [[self alloc] initWithBaseURL:[NSURL URLWithString:kAFGowallaBaseURLString]];

@@ -23,8 +23,6 @@
 #import "AFImageRequestOperation.h"
 #import "AFImageCache.h"
 
-#import "UIImage+AFNetworking.h"
-
 static dispatch_queue_t af_image_request_operation_processing_queue;
 static dispatch_queue_t image_request_operation_processing_queue() {
     if (af_image_request_operation_processing_queue == NULL) {
@@ -36,8 +34,8 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 @implementation AFImageRequestOperation
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(UIImage *image))success
++ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
+                                          success:(void (^)(UIImage *image))success
 {
     return [self operationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
         if (success) {
@@ -46,13 +44,13 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     } failure:nil];
 }
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-      imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
-                 cacheName:(NSString *)cacheNameOrNil
-                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
++ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
+                             imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                                        cacheName:(NSString *)cacheNameOrNil
+                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    AFImageRequestOperation *operation = [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
+    return (AFImageRequestOperation *)[self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (error) {
                 if (failure) {
@@ -81,8 +79,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
             }
         });
     }];
-    
-    return operation;
 }
 
 @end

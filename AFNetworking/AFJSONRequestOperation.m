@@ -36,15 +36,15 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 @implementation AFJSONRequestOperation
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(id JSON))success
++ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
+                                         success:(void (^)(id JSON))success
 {
     return [self operationWithRequest:urlRequest success:success failure:nil];
 }
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest 
-                   success:(void (^)(id JSON))success
-                   failure:(void (^)(NSError *error))failure
++ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
+                                         success:(void (^)(id JSON))success
+                                         failure:(void (^)(NSError *error))failure
 {    
     return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         if (success) {
@@ -57,13 +57,13 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     }];
 }
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-     acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
-    acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
-                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
++ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
+                           acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
+                          acceptableContentTypes:(NSSet *)acceptableContentTypes
+                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
+    return (AFJSONRequestOperation *)[self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
         if (!error) {
             if (acceptableStatusCodes && ![acceptableStatusCodes containsIndex:[response statusCode]]) {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];

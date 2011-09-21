@@ -27,5 +27,5 @@ extern NSString * const kAFGowallaClientID;
 extern NSString * const kAFGowallaBaseURLString;
 
 @interface AFGowallaAPIClient : AFRestClient
-+ (id)sharedClient;
++ (AFGowallaAPIClient *)sharedClient;
 @end

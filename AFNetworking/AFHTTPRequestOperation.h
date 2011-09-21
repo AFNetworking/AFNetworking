@@ -82,8 +82,8 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
   
  @return A new HTTP request operation
  */
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest 
-                completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion;
++ (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
+                                      completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion;
 
 /**
  Creates and returns an `AFHTTPRequestOperation` object and sets the specified input and output streams, and completion callback.
@@ -97,10 +97,10 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
  
  @return A new HTTP request operation
  */
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-               inputStream:(NSInputStream *)inputStream
-              outputStream:(NSOutputStream *)outputStream
-                completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion;
++ (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
+                                     inputStream:(NSInputStream *)inputStream
+                                    outputStream:(NSOutputStream *)outputStream
+                                      completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion;
 
 ///---------------------------------
 /// @name Setting Progress Callbacks

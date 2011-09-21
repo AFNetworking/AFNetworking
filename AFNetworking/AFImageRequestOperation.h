@@ -26,13 +26,13 @@
 
 @interface AFImageRequestOperation : AFHTTPRequestOperation
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(UIImage *image))success;
++ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
+                                          success:(void (^)(UIImage *image))success;
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-      imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
-                 cacheName:(NSString *)cacheNameOrNil
-                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
++ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
+                             imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                                        cacheName:(NSString *)cacheNameOrNil
+                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 @end

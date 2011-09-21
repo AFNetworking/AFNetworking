@@ -25,7 +25,7 @@
 
 @interface AFImageCache : NSCache
 
-+ (id)sharedImageCache;
++ (AFImageCache *)sharedImageCache;
 
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)urlRequest
                          cacheName:(NSString *)cacheName;

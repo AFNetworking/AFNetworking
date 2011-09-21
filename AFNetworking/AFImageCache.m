@@ -28,8 +28,8 @@ static inline NSString * AFImageCacheKey(NSURLRequest *urlRequest, NSString *cac
 
 @implementation AFImageCache
 
-+ (id)sharedImageCache {
-    static NSCache *_sharedImageCache = nil;
++ (AFImageCache *)sharedImageCache {
+    static AFImageCache *_sharedImageCache = nil;
     static dispatch_once_t oncePredicate;
 
     dispatch_once(&oncePredicate, ^{

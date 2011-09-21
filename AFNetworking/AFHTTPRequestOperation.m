@@ -134,7 +134,7 @@ static NSThread *_networkRequestThread = nil;
     return _networkRequestThread;
 }
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest 
++ (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
                 completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion
 {
     AFHTTPRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
@@ -143,10 +143,10 @@ static NSThread *_networkRequestThread = nil;
     return operation;
 }
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-               inputStream:(NSInputStream *)inputStream
-              outputStream:(NSOutputStream *)outputStream
-                completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion
++ (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
+                                     inputStream:(NSInputStream *)inputStream
+                                    outputStream:(NSOutputStream *)outputStream
+                                      completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion
 {
     NSMutableURLRequest *mutableURLRequest = [[urlRequest mutableCopy] autorelease];
     if (inputStream) {
@@ -175,7 +175,7 @@ static NSThread *_networkRequestThread = nil;
         
     self.request = urlRequest;
 	
-    self.runLoopModes = [NSSet setWithObjects:NSRunLoopCommonModes, nil];
+    self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
         
     self.state = AFHTTPOperationReadyState;
 	
