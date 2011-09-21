@@ -55,7 +55,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                    options:(AFImageRequestOptions)options
                    success:(void (^)(UIImage *image))success
 {
-    AFImageRequestOperation *operation = [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
+    AFImageRequestOperation *operation = [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse __unused *response, NSData *data, NSError __unused *error) {
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             UIImage *image = nil;    
             if ([[UIScreen mainScreen] scale] == 2.0) {

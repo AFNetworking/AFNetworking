@@ -60,7 +60,7 @@ static char Base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     return [[[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding] autorelease];
 }
 
-- (NSData *)dataByGZipCompressingWithError:(NSError **)error {
+- (NSData *)dataByGZipCompressingWithError:(NSError **)__unused error {
     if ([self length] == 0) {
         return self;
     }
