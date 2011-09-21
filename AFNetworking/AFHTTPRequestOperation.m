@@ -387,7 +387,7 @@ didReceiveResponse:(NSURLResponse *)response
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
     if (self.uploadProgress) {
-        self.uploadProgress(totalBytesWritten, totalBytesExpectedToWrite);
+        self.uploadProgress((NSUInteger)totalBytesWritten, (NSUInteger)totalBytesExpectedToWrite);
     }
 }
 
