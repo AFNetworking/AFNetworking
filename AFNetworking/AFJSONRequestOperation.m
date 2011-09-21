@@ -84,11 +84,15 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         
         if (error) {
             if (failure) {
-                failure(request, response, error);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failure(request, response, error);
+                });
             }
         } else if ([data length] == 0) {
             if (success) {
-                success(request, response, nil);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    success(request, response, nil);
+                });
             }
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
@@ -104,7 +108,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
 #endif
                 
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (JSONError) {
                         if (failure) {
                             failure(request, response, JSONError);
