@@ -31,9 +31,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     // use custom URLCache to get disk caching on iOS
-    AFURLCache *URLCache = [[AFURLCache alloc] initWithMemoryCapacity:1024*1024   // 1MB mem cache
+    AFURLCache *URLCache = [[[AFURLCache alloc] initWithMemoryCapacity:1024*1024   // 1MB mem cache
                                                          diskCapacity:1024*1024*5 // 5MB disk cache
-                                                             diskPath:[AFURLCache defaultCachePath]];
+                                                             diskPath:[AFURLCache defaultCachePath]] autorelease];
     
 	[NSURLCache setSharedURLCache:URLCache];
     
