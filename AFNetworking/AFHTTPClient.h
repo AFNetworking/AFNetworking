@@ -51,14 +51,25 @@
  */
 @property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;;
 
-///--------------------------------
-/// @name Initializing HTTP Clients
-///--------------------------------
+///---------------------------------------------
+/// @name Creating and Initializing HTTP Clients
+///---------------------------------------------
+
+/**
+ Creates and initializes an `AFHTTPClient` object with the specified base URL.
+ 
+ @param url The base URL for the HTTP client. This argument must not be nil.
+  
+ @return The newly-initialized HTTP client
+ */
++ (AFHTTPClient *)clientWithBaseURL:(NSURL *)url;
 
 /**
  Initializes an `AFHTTPClient` object with the specified base URL.
  
  @param url The base URL for the HTTP client. This argument must not be nil.
+ 
+ @discussion This is the designated initializer for `AFHTTPClient`
  
  @return The newly-initialized HTTP client
  */

@@ -95,6 +95,10 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
 
++ (AFHTTPClient *)clientWithBaseURL:(NSURL *)url {
+    return [[[self alloc] initWithBaseURL:url] autorelease];
+}
+
 - (id)initWithBaseURL:(NSURL *)url {
     self = [super init];
     if (!self) {
