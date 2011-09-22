@@ -227,11 +227,11 @@ static NSThread *_networkRequestThread = nil;
     
     switch (state) {
         case AFHTTPOperationExecutingState:
-            [[AFNetworkActivityIndicatorManager sharedManager] startAnimating];
+            [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidStartNotification object:self];
             break;
         case AFHTTPOperationFinishedState:
-            [[AFNetworkActivityIndicatorManager sharedManager] stopAnimating];
+            [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidFinishNotification object:self];
             break;
         default:

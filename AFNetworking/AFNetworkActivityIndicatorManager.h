@@ -22,14 +22,29 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ `AFNetworkActivityIndicatorManager` manages the state of the network activity indicator in the status bar. When network operations start, they can call `-incrementActivityCount`, and once they're finished, call `-decrementActivityCount`. The number of active requests is incremented and decremented much like a stack or a semaphore, and the activity indicator will animate so long as that number is greater than zero.
+ */
 @interface AFNetworkActivityIndicatorManager : NSObject {
 @private
 	NSInteger _activityCount;
 }
 
+/**
+ Returns the shared network activity indicator manager object for the system.
+ 
+ @return The systemwide network activity indicator manager.
+ */
 + (AFNetworkActivityIndicatorManager *)sharedManager;
 
-- (void)startAnimating;
-- (void)stopAnimating;
+/**
+ Increments the number of active network requests. If this number was zero before incrementing, this will start animating the status bar network activity indicator.
+ */
+- (void)incrementActivityCount;
+
+/**
+ Decrements the number of active network requests. If this number becomes zero before decrementing, this will stop animating the status bar network activity indicator.
+ */
+- (void)decrementActivityCount;
 
 @end
