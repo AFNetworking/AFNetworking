@@ -47,8 +47,10 @@
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `image/png`). This block has no return value and takes a three arguments: the request object of the operation, the response for the request, and the image created from the response data.
- @param failure A block object to be executed when the request finishes unsuccessfully. This block has no return value and takes a three arguments: the request object of the operation, the response for the request, and the error associated with the cause for the unsuccessful operation.
+ @param imageProcessingBlock A block object to be executed after the image request finishes successfully, but before the image is returned in the `success` block. This block takes a single argument, the image loaded from the response body, and returns the processed image.
+ @param cacheName The cache name to be associated with the image. `AFImageCache` associates objects by URL and cache name, allowing for multiple versions of the same image to be cached.
+ @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `image/png`). This block has no return value and takes three arguments: the request object of the operation, the response for the request, and the image created from the response data.
+ @param failure A block object to be executed when the request finishes unsuccessfully. This block has no return value and takes three arguments: the request object of the operation, the response for the request, and the error associated with the cause for the unsuccessful operation.
  
  @return A new image request operation
  */
