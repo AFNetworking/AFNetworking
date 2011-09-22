@@ -36,7 +36,7 @@
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, and with an acceptable content types (e.g. `image/png`). This block has no return value and takes a single arguments, the image created from the response data of the request.
+ @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `image/png`). This block has no return value and takes a single arguments, the image created from the response data of the request.
  
  @return A new image request operation
  */
@@ -47,8 +47,8 @@
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, and with an acceptable content types (e.g. `image/png`). This block has no return value and takes a three arguments: the request object of the operation, the response for the request, and the image created from the response data.
- @param success A block object to be executed when the request finishes unsuccessfully. This block has no return value and takes a three arguments: the request object of the operation, the response for the request, and the error associated with the cause for the unsuccessful operation.
+ @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `image/png`). This block has no return value and takes a three arguments: the request object of the operation, the response for the request, and the image created from the response data.
+ @param failure A block object to be executed when the request finishes unsuccessfully. This block has no return value and takes a three arguments: the request object of the operation, the response for the request, and the error associated with the cause for the unsuccessful operation.
  
  @return A new image request operation
  */

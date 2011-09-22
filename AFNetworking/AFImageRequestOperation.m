@@ -77,7 +77,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                     }
                 });
                 
-                [[AFImageCache sharedImageCache] cacheImage:image forURL:[request URL] cacheName:cacheNameOrNil];
+                if ([request cachePolicy] != NSURLCacheStorageNotAllowed) {
+                    [[AFImageCache sharedImageCache] cacheImage:image forURL:[request URL] cacheName:cacheNameOrNil];
+                }
             }
         });
     }];

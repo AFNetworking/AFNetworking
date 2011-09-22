@@ -87,7 +87,7 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
  Creates and returns an `AFHTTPRequestOperation` object and sets the specified completion callback.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the NSURLRequest sent from the client and the NSHTTPURLResponse received from the server, the NSData received by the server during the execution of the request, and an NSError, which will have been set if an error occured while loading the request.
+ @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the request sent from the client, the response received from the server, the HTTP body received by the server during the execution of the request, and an error, which will have been set if an error occured while loading the request.
  
  @see operationWithRequest:inputStream:outputStream:completion
   
@@ -101,8 +101,8 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
  @param inputStream The input stream object for reading data to be sent during the request. If set, the input stream is set as the HTTPBodyStream on the NSMutableURLRequest, and the request method is changed to `POST`. This argument may be `nil`.
- @param outputStream The output stream object for writing data received during the request. If set, data accumulated in NSURLConnectionDelegate methods will be sent to the output stream, and the NSData parameter in the completion block will be `nil`. This argument may be `nil`.
- @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the NSURLRequest sent from the client and the NSHTTPURLResponse received from the server, the NSData received by the server during the execution of the request, and an NSError, which will have been set if an error occured while loading the request. This argument may be `NULL`.
+ @param outputStream The output stream object for writing data received during the request. If set, data accumulated in `NSURLConnectionDelegate` methods will be sent to the output stream, and the NSData parameter in the completion block will be `nil`. This argument may be `nil`.
+ @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the request sent from the client, the response received from the server, the NSData received by the server during the execution of the request, and an error, which will have been set if an error occured while loading the request. This argument may be `nil`.
  
  @see operationWithRequest:completion
  
@@ -129,7 +129,7 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
 /**
  Sets a callback to be called when an undetermined number of bytes have been uploaded to the server.
  
- @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes two arguments: the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the NSHTTPURLResponse. This block may be called multiple times.
+ @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes two arguments: the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times.
  
  @see setUploadProgressBlock
  */
