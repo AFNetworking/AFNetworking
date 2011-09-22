@@ -34,6 +34,7 @@ typedef enum {
 } AFHTTPOperationState;
 
 NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
+NSString * const AFNetworkingErrorStatusCode = @"com.alamofire.networking.error.httpcode";
 
 NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.networking.http-operation.start";
 NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.networking.http-operation.finish";
