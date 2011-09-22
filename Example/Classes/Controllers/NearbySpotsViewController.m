@@ -70,7 +70,7 @@
     [self.activityIndicatorView startAnimating];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    [Spot spotsWithURLString:@"/spots/advanced_search" near:location parameters:[NSDictionary dictionaryWithObject:@"128" forKey:@"per_page"] block:^(NSArray *records) {
+    [Spot spotsWithURLString:@"/spots" near:location parameters:[NSDictionary dictionaryWithObject:@"128" forKey:@"per_page"] block:^(NSArray *records) {
         self.nearbySpots = [records sortedArrayUsingComparator:^ NSComparisonResult(id obj1, id obj2) {
             CLLocationDistance d1 = [[(Spot *)obj1 location] distanceFromLocation:location];
             CLLocationDistance d2 = [[(Spot *)obj2 location] distanceFromLocation:location];
