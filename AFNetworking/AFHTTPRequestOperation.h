@@ -60,7 +60,7 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
               outputStream:(NSOutputStream *)outputStream
                 completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion;
 
-- (void)setUploadProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block;
-- (void)setDownloadProgressBlock:(void (^)(NSUInteger totalBytesRead, NSUInteger totalBytesExpectedToRead))block;
+- (void)setUploadProgressBlock:(void (^)(long long totalBytesWritten, long long totalBytesExpectedToWrite))block;
+- (void)setDownloadProgressBlock:(void (^)(long long totalBytesRead, long long totalBytesExpectedToRead))block;
 
 @end

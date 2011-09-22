@@ -23,8 +23,8 @@
 #import "AFHTTPRequestOperation.h"
 #import "AFNetworkActivityIndicatorManager.h"
 
-static NSUInteger const kAFHTTPMinimumInitialDataCapacity = 1024;
-static NSUInteger const kAFHTTPMaximumInitialDataCapacity = 1024 * 1024 * 8;
+static long long const kAFHTTPMinimumInitialDataCapacity = 1024;
+static long long const kAFHTTPMaximumInitialDataCapacity = 1024 * 1024 * 8;
 
 typedef enum {
     AFHTTPOperationReadyState       = 1,
@@ -38,7 +38,7 @@ NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
 NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.networking.http-operation.start";
 NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.networking.http-operation.finish";
 
-typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytes, NSUInteger totalBytesExpected);
+typedef void (^AFHTTPRequestOperationProgressBlock)(long long totalBytes, long long totalBytesExpected);
 typedef void (^AFHTTPRequestOperationCompletionBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error);
 
 static inline NSString * AFKeyPathFromOperationState(AFHTTPOperationState state) {
@@ -197,11 +197,11 @@ static NSThread *_networkRequestThread = nil;
     [super dealloc];
 }
 
-- (void)setUploadProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
+- (void)setUploadProgressBlock:(void (^)(long long totalBytesWritten, long long totalBytesExpectedToWrite))block {
     self.uploadProgress = block;
 }
 
-- (void)setDownloadProgressBlock:(void (^)(NSUInteger totalBytesRead, NSUInteger totalBytesExpectedToRead))block {
+- (void)setDownloadProgressBlock:(void (^)(long long totalBytesRead, long long totalBytesExpectedToRead))block {
     self.downloadProgress = block;
 }
 
@@ -279,7 +279,7 @@ static NSThread *_networkRequestThread = nil;
     if (![self isReady]) {
         return;
     }
-        
+    
     self.state = AFHTTPOperationExecutingState;
 
     [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
@@ -290,6 +290,10 @@ static NSThread *_networkRequestThread = nil;
     
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
     for (NSString *runLoopMode in self.runLoopModes) {
+        if ([self.connection respondsToSelector:@selector(setDelegateQueue:)]) //added in 10.7 and iOS 5
+        {
+            [self.connection setDelegateQueue:[NSOperationQueue currentQueue]];
+        }
         [self.connection scheduleInRunLoop:runLoop forMode:runLoopMode];
         [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
     }
@@ -331,8 +335,8 @@ didReceiveResponse:(NSURLResponse *)response
     if (self.outputStream) {
         [self.outputStream open];
     } else {
-        NSUInteger capacity = MIN(MAX(abs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity), kAFHTTPMaximumInitialDataCapacity);
-        self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
+        NSUInteger capacity = (NSUInteger)MIN(MAX(llabs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity), kAFHTTPMaximumInitialDataCapacity);
+        self.dataAccumulator = [NSMutableData dataWithCapacity:(NSUInteger)capacity];
     }
 }
 

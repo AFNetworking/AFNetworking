@@ -106,7 +106,7 @@ static NSStringEncoding const kAFRestClientStringEncoding = NSUTF8StringEncoding
     if (parameters) {
         NSMutableArray *mutableParameterComponents = [NSMutableArray array];
         for (id key in [parameters allKeys]) {
-            NSString *component = [NSString stringWithFormat:@"%@=%@", [[key description] urlEncodedStringWithEncoding:kAFRestClientStringEncoding], [[[parameters valueForKey:key] description] urlEncodedStringWithEncoding:kAFRestClientStringEncoding]];
+            NSString *component = [NSString stringWithFormat:@"%@=%@", [[key description] stringByEscapingForURLParameterWithEncoding:kAFRestClientStringEncoding], [[[parameters valueForKey:key] description] stringByEscapingForURLParameterWithEncoding:kAFRestClientStringEncoding]];
             [mutableParameterComponents addObject:component];
         }
         NSString *queryString = [mutableParameterComponents componentsJoinedByString:@"&"];

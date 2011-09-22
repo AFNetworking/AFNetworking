@@ -22,9 +22,30 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (AFNetworking)
 
-- (NSString *)urlEncodedString;
-- (NSString *)urlEncodedStringWithEncoding:(NSStringEncoding)encoding;
+@interface NSString (AFNetworking_URL)
+
+- (NSString *)stringByEscapingForURL;
+- (NSString *)stringByEscapingForURLWithEncoding:(NSStringEncoding)encoding;
+
++ (NSString *)stringByEscapingForURLFromString:(NSString *)string;
++ (NSString *)stringByEscapingForURLFromString:(NSString *)string withEncoding:(NSStringEncoding)encoding;
+@end
+
+@interface NSString (AFNetworking_URLParams)
+
+- (NSString *)stringByEscapingForURLParameter;
+- (NSString *)stringByEscapingForURLParameterWithEncoding:(NSStringEncoding)encoding;
+
++ (NSString *)stringByEscapingForURLParameterFromString:(NSString *)param;
++ (NSString *)stringByEscapingForURLParameterFromString:(NSString *)param withEncoding:(NSStringEncoding)encoding;
+@end
+
+@interface NSString (AFNetworking_Legacy)
+
+//LEGACY, use the better named versions above.
+- (NSString *)urlEncodedString __attribute__((deprecated));
+- (NSString *)urlEncodedStringWithEncoding:(NSStringEncoding)encoding __attribute__((deprecated)); 
 
 @end
+

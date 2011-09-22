@@ -21,7 +21,19 @@
 // THE SOFTWARE.
 
 #import "AFJSONRequestOperation.h"
+
+
+#ifndef USE_FOUNDATION_JSON
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
+#define USE_FOUNDATION_JSON 1
+#else
+#define USE_FOUNDATION_JSON 0
+#endif
+#endif
+
+#if !USE_FOUNDATION_JSON
 #import "JSONKit.h"
+#endif
 
 #include <Availability.h>
 
@@ -63,6 +75,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
+    
+
     return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
         if (!error) {
             if (![acceptableStatusCodes containsIndex:[response statusCode]]) {
@@ -91,20 +105,17 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 success(request, response, nil);
             }
         } else {
+            __block dispatch_queue_t caller_queue = dispatch_get_current_queue();
+            dispatch_retain(caller_queue); //retain calling queue
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
                 id JSON = nil;
                 NSError *JSONError = nil;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
-                if ([NSJSONSerialization class]) {
-                    JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
-                } else {
-                    JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
-                }
+#if USE_FOUNDATION_JSON
+                JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
 #else
                 JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
 #endif
-                
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                dispatch_sync(caller_queue, ^(void) {
                     if (JSONError) {
                         if (failure) {
                             failure(request, response, JSONError);
@@ -115,6 +126,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                         }
                     }
                 });
+                dispatch_release(caller_queue);
             });
         }
     }];
