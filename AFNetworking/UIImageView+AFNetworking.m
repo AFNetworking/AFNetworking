@@ -59,26 +59,26 @@ static UIImage * AFImageByScalingAndCroppingImageToSize(UIImage *image, CGSize s
 static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOperation";
 
 @interface UIImageView (_AFNetworking)
-@property (readwrite, nonatomic, retain) AFImageRequestOperation *imageRequestOperation;
+@property (readwrite, nonatomic, retain, setter = af_setImageRequestOperation:) AFImageRequestOperation *af_imageRequestOperation;
 @end
 
 @implementation UIImageView (_AFNetworking)
-@dynamic imageRequestOperation;
+@dynamic af_imageRequestOperation;
 @end
 
 #pragma mark -
 
 @implementation UIImageView (AFNetworking)
 
-- (AFHTTPRequestOperation *)imageRequestOperation {
+- (AFHTTPRequestOperation *)af_imageRequestOperation {
     return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, kUIImageViewImageRequestObjectKey);
 }
 
-- (void)setImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
+- (void)af_setImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
     objc_setAssociatedObject(self, kUIImageViewImageRequestObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-+ (NSOperationQueue *)sharedImageRequestOperationQueue {
++ (NSOperationQueue *)af_sharedImageRequestOperationQueue {
     static NSOperationQueue *_imageRequestOperationQueue = nil;
     
     if (!_imageRequestOperationQueue) {
@@ -110,7 +110,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response,UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    if (![urlRequest URL] || (![self.imageRequestOperation isCancelled] && [[urlRequest URL] isEqual:self.imageRequestOperation.request.URL])) {
+    if (![urlRequest URL] || (![self.af_imageRequestOperation isCancelled] && [[urlRequest URL] isEqual:self.af_imageRequestOperation.request.URL])) {
         return;
     } else {
         [self cancelImageRequestOperation];
@@ -131,20 +131,20 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
     } else {
         self.image = placeholderImage;
         
-        self.imageRequestOperation = [AFImageRequestOperation operationWithRequest:urlRequest imageProcessingBlock:^UIImage *(UIImage *image) {
+        self.af_imageRequestOperation = [AFImageRequestOperation operationWithRequest:urlRequest imageProcessingBlock:^UIImage *(UIImage *image) {
             if (placeholderImage) {
                 image = AFImageByScalingAndCroppingImageToSize(image, placeholderImage.size);
             }
             
             return image;
         } cacheName:cacheName success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-            if (self.imageRequestOperation && ![self.imageRequestOperation isCancelled]) {
+            if (self.af_imageRequestOperation && ![self.af_imageRequestOperation isCancelled]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (success) {
                         success(request, response, image);
                     }
                 
-                    if ([[request URL] isEqual:[[self.imageRequestOperation request] URL]]) {
+                    if ([[request URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
                         self.image = image;
                     } else {
                         self.image = placeholderImage;
@@ -152,7 +152,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
                 });
             }
         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-            self.imageRequestOperation = nil;
+            self.af_imageRequestOperation = nil;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (failure) {
@@ -161,12 +161,12 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
             });
         }];
        
-        [[[self class] sharedImageRequestOperationQueue] addOperation:self.imageRequestOperation];
+        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
     }
 }
 
 - (void)cancelImageRequestOperation {
-    [self.imageRequestOperation cancel];
+    [self.af_imageRequestOperation cancel];
 }
 
 @end
