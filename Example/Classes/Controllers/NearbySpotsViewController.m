@@ -159,7 +159,9 @@
     static TTTLocationFormatter *_locationFormatter = nil;
     if (!_locationFormatter) {
         _locationFormatter = [[TTTLocationFormatter alloc] init];
-        [_locationFormatter setUnitSystem:TTTImperialSystem];
+        if (![[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue]) {
+            [_locationFormatter setUnitSystem:TTTImperialSystem]; 
+        }
     }
 
     if (self.locationManager.location) {
