@@ -47,13 +47,13 @@
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:self.activityCount > 0];
 }
 
-- (void)startAnimating {
+- (void)incrementActivityCount {
     @synchronized(self) {
         self.activityCount += 1;
     }
 }
 
-- (void)stopAnimating {
+- (void)decrementActivityCount {
     @synchronized(self) {
         self.activityCount -= 1;
     }
