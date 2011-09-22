@@ -261,7 +261,7 @@
  Appends the HTTP header `Content-Disposition: file; filename=#{filename}"`, followed by the encoded file data and the multipart form boundary.
  
  @param fileURL The URL for the local file to have its contents appended to the form data.
- @param body The filename to be associated with the file contents. If `nil`, the last path component followed by its file extension will be used instead.
+ @param fileNameOrNil The filename to be associated with the file contents. If `nil`, the last path component followed by its file extension will be used instead.
  */
 - (void)appendPartWithFile:(NSURL *)fileURL fileName:(NSString *)fileNameOrNil;
 
