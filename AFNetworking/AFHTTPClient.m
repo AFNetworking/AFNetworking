@@ -1,4 +1,4 @@
-// AFRESTClient.m
+// AFHTTPClient.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFRESTClient.h"
+#import "AFHTTPClient.h"
 #import "AFJSONRequestOperation.h"
 
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
@@ -83,13 +83,13 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
 }
 
-@interface AFRESTClient ()
+@interface AFHTTPClient ()
 @property (readwrite, nonatomic, retain) NSURL *baseURL;
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
 @end
 
-@implementation AFRESTClient
+@implementation AFHTTPClient
 @synthesize baseURL = _baseURL;
 @synthesize stringEncoding = _stringEncoding;
 @synthesize defaultHeaders = _defaultHeaders;

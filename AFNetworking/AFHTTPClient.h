@@ -1,4 +1,4 @@
-// AFRESTClient.h
+// AFHTTPClient.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -25,7 +25,7 @@
 
 @protocol AFMultipartFormDataProxy;
 
-@interface AFRESTClient : NSObject {
+@interface AFHTTPClient : NSObject {
 @private
     NSURL *_baseURL;
     NSStringEncoding _stringEncoding;
