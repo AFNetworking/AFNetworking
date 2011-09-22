@@ -90,7 +90,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
     return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, kUIImageViewImageRequestObjectKey);
 }
 
-- (void)afSetImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
+- (void)setAfImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
     objc_setAssociatedObject(self, kUIImageViewImageRequestObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
