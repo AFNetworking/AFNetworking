@@ -102,12 +102,13 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
     [request setHTTPShouldHandleCookies:NO];
     [request setHTTPShouldUsePipelining:YES];
     
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil];
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
               placeholderImage:(UIImage *)placeholderImage 
-                       success:(void (^)(UIImage *image, BOOL cacheUsed))success
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response,UIImage *image))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     if (![urlRequest URL] || (![self.imageRequestOperation isCancelled] && [[urlRequest URL] isEqual:self.imageRequestOperation.request.URL])) {
         return;
@@ -125,7 +126,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
         self.image = cachedImage;
         
         if (success) {
-            success(cachedImage, YES);
+            success(nil, nil, cachedImage);
         }
     } else {
         self.image = placeholderImage;
@@ -140,7 +141,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
             if (self.imageRequestOperation && ![self.imageRequestOperation isCancelled]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (success) {
-                        success(image, NO);
+                        success(request, response, image);
                     }
                 
                     if ([[request URL] isEqual:[[self.imageRequestOperation request] URL]]) {
@@ -152,11 +153,15 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
             }
         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
             self.imageRequestOperation = nil;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (failure) {
+                    failure(request, response, error);
+                } 
+            });
         }];
        
-        if ([urlRequest cachePolicy] != NSURLCacheStorageNotAllowed) {
-            [[[self class] sharedImageRequestOperationQueue] addOperation:self.imageRequestOperation];
-        }
+        [[[self class] sharedImageRequestOperationQueue] addOperation:self.imageRequestOperation];
     }
 }
 
