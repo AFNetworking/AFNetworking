@@ -47,11 +47,11 @@ static inline double CLLocationDistanceToMiles(CLLocationDistance distance) {
 
 static inline double DEG2RAD(double degrees) { 
     return degrees * M_PI / 180; 
-};
+}
 
 static inline double RAD2DEG(double radians) { 
     return radians * 180 / M_PI; 
-};
+}
 
 static inline CLLocationDegrees CLLocationDegreesBearingBetweenCoordinates(CLLocationCoordinate2D originCoordinate, CLLocationCoordinate2D destinationCoordinate) {
     double lat1 = DEG2RAD(originCoordinate.latitude);
