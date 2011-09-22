@@ -25,6 +25,9 @@
 
 /**
  `AFJSONRequestOperation` is an `NSOperation` that wraps the callback from `AFHTTPRequestOperation` to determine the success or failure of a request based on its status code and response content type, and parse the response body into a JSON object.
+ 
+ @see NSOperation
+ @see AFHTTPRequestOperation
  */
 @interface AFJSONRequestOperation : AFHTTPRequestOperation
 
