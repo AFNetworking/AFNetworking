@@ -120,7 +120,7 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
         cacheName = [cacheName stringByAppendingFormat:@"(%@)", NSStringFromCGSize(placeholderImage.size)];
     }
     
-    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:urlRequest cacheName:cacheName];
+    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForURL:[urlRequest URL] cacheName:cacheName];
     if (cachedImage) {
         self.image = cachedImage;
         

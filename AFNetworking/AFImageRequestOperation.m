@@ -77,7 +77,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                     }
                 });
                 
-                [[AFImageCache sharedImageCache] cacheImage:image forRequest:request cacheName:cacheNameOrNil];
+                [[AFImageCache sharedImageCache] cacheImage:image forURL:[request URL] cacheName:cacheNameOrNil];
             }
         });
     }];
