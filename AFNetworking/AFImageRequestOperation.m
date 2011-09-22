@@ -25,11 +25,11 @@
 
 #import "UIImage+AFNetworking.h"
 
-static CGFloat const kAFImageRequestJPEGQuality = 0.8;
+static CGFloat const kAFImageRequestJPEGQuality = 0.8f;
 static NSUInteger const kAFImageRequestMaximumResponseSize = 8 * 1024 * 1024;
 
 static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
-    CGFloat dimension = fmaxf(imageSize.width, imageSize.height) * 0.1;
+    CGFloat dimension = fmaxf(imageSize.width, imageSize.height) * 0.1f;
     return CGSizeMake(dimension, dimension);
 }
 
@@ -55,7 +55,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                    options:(AFImageRequestOptions)options
                    success:(void (^)(UIImage *image))success
 {
-    AFImageRequestOperation *operation = [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
+    AFImageRequestOperation *operation = [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse __unused *response, NSData *data, NSError __unused *error) {
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             UIImage *image = nil;    
             if ([[UIScreen mainScreen] scale] == 2.0) {
@@ -69,7 +69,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 image = [UIImage imageByScalingAndCroppingImage:image size:imageSize];
             }
             if ((options & AFImageRequestRoundCorners)) {
-                image = [UIImage imageByRoundingCornersOfImage:image corners:UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
+                image = [UIImage imageByRoundingCornersOfImage:image corners:(UIRectCorner)UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
             }
             
             dispatch_sync(dispatch_get_main_queue(), ^(void) {

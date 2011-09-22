@@ -27,7 +27,7 @@
 
 NSString * const AFZlibErrorDomain = @"com.alamofire.networking.zlib.error";
 
-static char Base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static uint8_t Base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 #pragma mark -
 
@@ -50,7 +50,7 @@ static char Base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
             }
         }
         
-        NSInteger idx = (i / 3) * 4;
+        NSUInteger idx = (i / 3) * 4;
         output[idx + 0] = Base64EncodingTable[(value >> 18) & 0x3F];
         output[idx + 1] = Base64EncodingTable[(value >> 12) & 0x3F];
         output[idx + 2] = (i + 1) < length ? Base64EncodingTable[(value >> 6)  & 0x3F] : '=';
@@ -60,7 +60,7 @@ static char Base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     return [[[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding] autorelease];
 }
 
-- (NSData *)dataByGZipCompressingWithError:(NSError **)error {
+- (NSData *)dataByGZipCompressingWithError:(NSError **)__unused error {
     if ([self length] == 0) {
         return self;
     }

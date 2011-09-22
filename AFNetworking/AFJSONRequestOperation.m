@@ -46,11 +46,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                    success:(void (^)(id JSON))success
                    failure:(void (^)(NSError *error))failure
 {    
-    return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, id JSON) {
         if (success) {
             success(JSON);
         }
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSError *error) {
         if (failure) {
             failure(error);
         }
@@ -65,7 +65,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 {
     return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
         if (!error) {
-            if (![acceptableStatusCodes containsIndex:[response statusCode]]) {
+            if (![acceptableStatusCodes containsIndex:(NSUInteger)[response statusCode]]) {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
                 [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code %@, got %d", nil), acceptableStatusCodes, [response statusCode]] forKey:NSLocalizedDescriptionKey];
                 [userInfo setValue:[request URL] forKey:NSURLErrorFailingURLErrorKey];

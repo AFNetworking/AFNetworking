@@ -40,9 +40,9 @@
     scaledSize.width = image.size.width * scaleFactor;
     scaledSize.height = image.size.height * scaleFactor;
     if (widthFactor > heightFactor) {
-        thumbnailPoint.y = (size.height - scaledSize.height) * 0.5; 
+        thumbnailPoint.y = (size.height - scaledSize.height) * 0.5f; 
     } else if (widthFactor < heightFactor) {
-        thumbnailPoint.x = (size.width - scaledSize.width) * 0.5;
+        thumbnailPoint.x = (size.width - scaledSize.width) * 0.5f;
     }
     
     UIGraphicsBeginImageContextWithOptions(size, NO, 0.0); 
