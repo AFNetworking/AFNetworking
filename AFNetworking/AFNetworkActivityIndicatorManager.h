@@ -25,6 +25,8 @@
 /**
  `AFNetworkActivityIndicatorManager` manages the state of the network activity indicator in the status bar. When network operations start, they can call `-incrementActivityCount`, and once they're finished, call `-decrementActivityCount`. The number of active requests is incremented and decremented much like a stack or a semaphore, and the activity indicator will animate so long as that number is greater than zero.
  */
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 @interface AFNetworkActivityIndicatorManager : NSObject {
 @private
 	NSInteger _activityCount;
@@ -48,3 +50,4 @@
 - (void)decrementActivityCount;
 
 @end
+#endif

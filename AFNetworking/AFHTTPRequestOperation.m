@@ -225,6 +225,7 @@ static NSThread *_networkRequestThread = nil;
     [self didChangeValueForKey:oldStateKey];
     [self didChangeValueForKey:newStateKey];
     
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
     switch (state) {
         case AFHTTPOperationExecutingState:
             [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
@@ -237,6 +238,7 @@ static NSThread *_networkRequestThread = nil;
         default:
             break;
     }
+#endif
 }
 
 - (void)setCancelled:(BOOL)cancelled {

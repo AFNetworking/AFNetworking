@@ -34,6 +34,8 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 @implementation AFImageRequestOperation
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
 + (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
                                           success:(void (^)(UIImage *image))success
 {
@@ -84,5 +86,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         });
     }];
 }
+
+#endif
 
 @end

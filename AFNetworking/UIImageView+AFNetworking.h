@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import <Availability.h>
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
 #import "AFImageRequestOperation.h"
 
@@ -71,3 +74,4 @@
 - (void)cancelImageRequestOperation;
 
 @end
+#endif

@@ -22,6 +22,7 @@
 
 #import "AFNetworkActivityIndicatorManager.h"
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 @interface AFNetworkActivityIndicatorManager ()
 @property (readwrite, nonatomic, assign) NSInteger activityCount;
 @end
@@ -60,3 +61,4 @@
 }
 
 @end
+#endif
