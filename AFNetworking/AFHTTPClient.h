@@ -37,7 +37,7 @@
 }
 
 /**
- The url used as the base for paths specified in methods such as `getPath:parameteres:success:failure`
+ The url used as the base for paths specified in methods such as `getPath:parameters:success:failure`
  */
 @property (readonly, nonatomic, retain) NSURL *baseURL;
 
@@ -49,7 +49,7 @@
 /**
  The operation queue which manages operations enqueued by the HTTP client.
  */
-@property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;;
+@property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;
 
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
