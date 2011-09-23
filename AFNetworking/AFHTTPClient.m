@@ -34,11 +34,13 @@ static NSString * AFMultipartFormFinalBoundary() {
     return [NSString stringWithFormat:@"--%@--", kAFMultipartFormBoundary];
 }
 
-@interface AFMutableMultipartFormData : NSMutableData <AFMultipartFormDataProxy> {
+@interface AFMultipartFormDataProxy : NSObject <AFMultipartFormDataProxy> {
 @private
     NSStringEncoding _stringEncoding;
-    NSRange _finalBoundaryRange;
+    NSMutableData *_mutableData;
 }
+
+@property (readonly) NSData *data;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
 
@@ -199,7 +201,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     }
     
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
-    __block AFMutableMultipartFormData *formData = [[AFMutableMultipartFormData alloc] initWithStringEncoding:self.stringEncoding];
+    __block AFMultipartFormDataProxy *formData = [[AFMultipartFormDataProxy alloc] initWithStringEncoding:self.stringEncoding];
     
     id key = nil;
 	NSEnumerator *enumerator = [parameters keyEnumerator];
@@ -213,7 +215,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
             data = [[value description] dataUsingEncoding:self.stringEncoding];
         }
         
-        [formData appendPartWithHeaders:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"form-data; name=\"%@\"", [key description]] forKey:@"Content-Disposition"] body:value];
+        [formData appendPartWithHeaders:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"form-data; name=\"%@\"", [key description]] forKey:@"Content-Disposition"] body:data];
     }
     
     if (block) {
@@ -221,7 +223,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     }
     
     [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", kAFMultipartFormBoundary] forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPBody:formData];
+    [request setHTTPBody:[formData data]];
     
     [formData autorelease];
     
@@ -272,16 +274,16 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 #pragma mark -
 
 // multipart/form-data; see http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
-@interface AFMutableMultipartFormData ()
+@interface AFMultipartFormDataProxy ()
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
-@property (readwrite, nonatomic, assign) NSRange finalBoundaryRange;
+@property (readwrite, nonatomic, retain) NSMutableData *mutableData;
 
 - (void)appendBlankLine;
 @end
 
-@implementation AFMutableMultipartFormData
+@implementation AFMultipartFormDataProxy
 @synthesize stringEncoding = _stringEncoding;
-@synthesize finalBoundaryRange = _finalBoundaryRange;
+@synthesize mutableData = _mutableData;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding {
     self = [super init];
@@ -290,20 +292,34 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     }
     
     self.stringEncoding = encoding;
-    self.finalBoundaryRange = NSMakeRange(0, 0);
+    self.mutableData = [NSMutableData dataWithLength:0];
     
     return self;
+}
+
+- (void)dealloc {
+    [_mutableData release];
+    [super dealloc];
+}
+
+- (NSData *)data {
+    NSMutableData *finalizedData = [NSMutableData dataWithData:self.mutableData];
+    [finalizedData appendData:[AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding]];
+    
+    return finalizedData;
 }
 
 #pragma mark - AFMultipartFormDataProxy
 
 - (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body {
-    if ([self length] > 0) {
+    if ([self.mutableData length] > 0) {
         [self appendString:AFMultipartFormEncapsulationBoundary()];
+        [self appendBlankLine];
     }
     
     for (NSString *field in [headers allKeys]) {
         [self appendString:[NSString stringWithFormat:@"%@: %@", field, [headers valueForKey:field]]];
+        [self appendBlankLine];
     }
     
     [self appendBlankLine];
@@ -336,12 +352,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 }
 
 - (void)appendData:(NSData *)data {
-    NSMutableData *mutableData = [NSMutableData dataWithData:data];
-    [self replaceBytesInRange:self.finalBoundaryRange withBytes:[mutableData bytes]];
-    
-    NSData *finalBoundary = [AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding];
-    self.finalBoundaryRange = NSMakeRange([self length], [finalBoundary length]);
-    [super appendData:finalBoundary];
+    [self.mutableData appendData:data];
 }
 
 - (void)appendString:(NSString *)string {
@@ -349,7 +360,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 }
 
 - (void)appendBlankLine {
-    [self appendString:@""];
+    [self appendString:kAFMultipartFormLineDelimiter];
 }
 
 @end
