@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 
 #import "AFHTTPRequestOperation.h"
-#import "AFNetworkActivityIndicatorManager.h"
 
 static NSUInteger const kAFHTTPMinimumInitialDataCapacity = 1024;
 static NSUInteger const kAFHTTPMaximumInitialDataCapacity = 1024 * 1024 * 8;
@@ -227,11 +226,9 @@ static NSThread *_networkRequestThread = nil;
     
     switch (state) {
         case AFHTTPOperationExecutingState:
-            [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidStartNotification object:self];
             break;
         case AFHTTPOperationFinishedState:
-            [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidFinishNotification object:self];
             break;
         default:

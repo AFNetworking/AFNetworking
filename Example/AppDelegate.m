@@ -23,6 +23,8 @@
 #import "AppDelegate.h"
 #import "NearbySpotsViewController.h"
 
+#import "AFNetworkActivityIndicatorManager.h"
+
 @implementation AppDelegate
 @synthesize window = _window;
 @synthesize navigationController = _navigationController;
@@ -31,6 +33,8 @@
     NSURLCache *URLCache = [[[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil] autorelease];
 	[NSURLCache setSharedURLCache:URLCache];
     
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+    
     UITableViewController *viewController = [[[NearbySpotsViewController alloc] init] autorelease];
     self.navigationController = [[[UINavigationController alloc] initWithRootViewController:viewController] autorelease];
     
@@ -38,6 +42,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
