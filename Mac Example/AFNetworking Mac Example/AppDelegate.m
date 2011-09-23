@@ -6,9 +6,9 @@
 //  Copyright 2011年 Gowalla. All rights reserved.
 //
 
-#import "AFNetworking_Mac_ExampleAppDelegate.h"
+#import "AppDelegate.h"
 
-@implementation AFNetworking_Mac_ExampleAppDelegate
+@implementation AppDelegate
 
 @synthesize window = _window;
 

@@ -18,7 +18,7 @@
 		F8CEEB6F142CEC6E00247B03 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CEEB6E142CEC6E00247B03 /* Cocoa.framework */; };
 		F8CEEB7B142CEC6E00247B03 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8CEEB7A142CEC6E00247B03 /* main.m */; };
 		F8CEEB7F142CEC6E00247B03 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = F8CEEB7D142CEC6E00247B03 /* Credits.rtf */; };
-		F8CEEB82142CEC6E00247B03 /* AFNetworking_Mac_ExampleAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8CEEB81142CEC6E00247B03 /* AFNetworking_Mac_ExampleAppDelegate.m */; };
+		F8CEEB82142CEC6E00247B03 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8CEEB81142CEC6E00247B03 /* AppDelegate.m */; };
 		F8CEEB85142CEC6E00247B03 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8CEEB83142CEC6E00247B03 /* MainMenu.xib */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +39,7 @@
 		F8A27A2B142CF24700F5E0D6 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+AFNetworking.m"; path = "AFNetworking/UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		F8A27A38142CF36100F5E0D6 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		F8A27A39142CF36100F5E0D6 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		F8A27A3B142CF75A00F5E0D6 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworking.h; path = AFNetworking/AFNetworking.h; sourceTree = "<group>"; };
 		F8CEEB6A142CEC6E00247B03 /* AFNetworking Mac Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking Mac Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8CEEB6E142CEC6E00247B03 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F8CEEB71142CEC6E00247B03 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -48,8 +49,8 @@
 		F8CEEB7A142CEC6E00247B03 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F8CEEB7C142CEC6E00247B03 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		F8CEEB7E142CEC6E00247B03 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		F8CEEB80142CEC6E00247B03 /* AFNetworking_Mac_ExampleAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFNetworking_Mac_ExampleAppDelegate.h; sourceTree = "<group>"; };
-		F8CEEB81142CEC6E00247B03 /* AFNetworking_Mac_ExampleAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFNetworking_Mac_ExampleAppDelegate.m; sourceTree = "<group>"; };
+		F8CEEB80142CEC6E00247B03 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		F8CEEB81142CEC6E00247B03 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		F8CEEB84142CEC6E00247B03 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,8 +116,8 @@
 		F8CEEB74142CEC6E00247B03 /* AFNetworking Mac Example */ = {
 			isa = PBXGroup;
 			children = (
-				F8CEEB80142CEC6E00247B03 /* AFNetworking_Mac_ExampleAppDelegate.h */,
-				F8CEEB81142CEC6E00247B03 /* AFNetworking_Mac_ExampleAppDelegate.m */,
+				F8CEEB80142CEC6E00247B03 /* AppDelegate.h */,
+				F8CEEB81142CEC6E00247B03 /* AppDelegate.m */,
 				F8CEEB83142CEC6E00247B03 /* MainMenu.xib */,
 				F8CEEB75142CEC6E00247B03 /* Supporting Files */,
 			);
@@ -146,6 +147,7 @@
 		F8CEEB8C142CED6F00247B03 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				F8A27A3B142CF75A00F5E0D6 /* AFNetworking.h */,
 				F8A27A20142CF24700F5E0D6 /* AFHTTPRequestOperation.h */,
 				F8A27A21142CF24700F5E0D6 /* AFHTTPRequestOperation.m */,
 				F8A27A26142CF24700F5E0D6 /* AFJSONRequestOperation.h */,
@@ -229,7 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8CEEB7B142CEC6E00247B03 /* main.m in Sources */,
-				F8CEEB82142CEC6E00247B03 /* AFNetworking_Mac_ExampleAppDelegate.m in Sources */,
+				F8CEEB82142CEC6E00247B03 /* AppDelegate.m in Sources */,
 				F8A27A2C142CF24700F5E0D6 /* AFHTTPClient.m in Sources */,
 				F8A27A2D142CF24700F5E0D6 /* AFHTTPRequestOperation.m in Sources */,
 				F8A27A2E142CF24700F5E0D6 /* AFImageCache.m in Sources */,
