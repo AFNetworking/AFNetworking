@@ -333,7 +333,7 @@ didReceiveResponse:(NSURLResponse *)response
     if (self.outputStream) {
         [self.outputStream open];
     } else {
-        NSUInteger capacity = MIN(MAX(abs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity), kAFHTTPMaximumInitialDataCapacity);
+        NSUInteger capacity = MIN(MAX(llabs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity), kAFHTTPMaximumInitialDataCapacity);
         self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
     }
 }
@@ -353,7 +353,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     if (self.downloadProgress) {
-        self.downloadProgress(self.totalBytesRead, self.response.expectedContentLength);
+        self.downloadProgress(self.totalBytesRead, (NSUInteger)self.response.expectedContentLength);
     }
 }
 
