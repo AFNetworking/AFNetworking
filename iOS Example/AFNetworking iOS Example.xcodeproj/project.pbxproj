@@ -15,7 +15,6 @@
 		F874B5E013E0AA6500B28E3E /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5D013E0AA6500B28E3E /* UIImageView+AFNetworking.m */; };
 		F8D25D191396A9D300CF3BD6 /* placeholder-stamp.png in Resources */ = {isa = PBXBuildFile; fileRef = F8D25D171396A9D300CF3BD6 /* placeholder-stamp.png */; };
 		F8D25D1A1396A9D300CF3BD6 /* placeholder-stamp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8D25D181396A9D300CF3BD6 /* placeholder-stamp@2x.png */; };
-		F8DA09D21396ABED0057D0CC /* AFGowallaAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25D1D1396A9DE00CF3BD6 /* AFGowallaAPIClient.m */; };
 		F8DA09D41396ABED0057D0CC /* NearbySpotsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09C81396AB690057D0CC /* NearbySpotsViewController.m */; };
 		F8DA09D51396ABED0057D0CC /* Spot.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09CB1396AB690057D0CC /* Spot.m */; };
 		F8DA09D61396ABED0057D0CC /* SpotTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09CE1396AB690057D0CC /* SpotTableViewCell.m */; };
@@ -50,8 +49,6 @@
 		F8D25D141396A9C400CF3BD6 /* TTTLocationFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTLocationFormatter.m; sourceTree = "<group>"; };
 		F8D25D171396A9D300CF3BD6 /* placeholder-stamp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "placeholder-stamp.png"; path = "Images/placeholder-stamp.png"; sourceTree = SOURCE_ROOT; };
 		F8D25D181396A9D300CF3BD6 /* placeholder-stamp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "placeholder-stamp@2x.png"; path = "Images/placeholder-stamp@2x.png"; sourceTree = SOURCE_ROOT; };
-		F8D25D1B1396A9DE00CF3BD6 /* AFGowallaAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGowallaAPIClient.h; path = Classes/AFGowallaAPIClient.h; sourceTree = "<group>"; };
-		F8D25D1D1396A9DE00CF3BD6 /* AFGowallaAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGowallaAPIClient.m; path = Classes/AFGowallaAPIClient.m; sourceTree = "<group>"; };
 		F8DA09C71396AB690057D0CC /* NearbySpotsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NearbySpotsViewController.h; sourceTree = "<group>"; };
 		F8DA09C81396AB690057D0CC /* NearbySpotsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NearbySpotsViewController.m; sourceTree = "<group>"; };
 		F8DA09CA1396AB690057D0CC /* Spot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spot.h; sourceTree = "<group>"; };
@@ -62,7 +59,7 @@
 		F8DA09E51396AC220057D0CC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		F8DA09E61396AC220057D0CC /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
 		F8DA09E71396AC220057D0CC /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
-		F8E469601395739C00DB05C8 /* AFNetworkingExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AFNetworkingExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E469641395739D00DB05C8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F8E469661395739D00DB05C8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F8E469681395739D00DB05C8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -71,7 +68,7 @@
 		F8E469E013957DF100DB05C8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F8E469E413957E0400DB05C8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		F8FBFA96142AA237001409DB /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; name = AFHTTPClient.h; path = ../AFNetworking/AFHTTPClient.h; sourceTree = "<group>"; };
+		F8FBFA96142AA237001409DB /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPClient.h; path = ../AFNetworking/AFHTTPClient.h; sourceTree = "<group>"; };
 		F8FBFA97142AA238001409DB /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPClient.m; path = ../AFNetworking/AFHTTPClient.m; sourceTree = "<group>"; };
 		FF2B770C140DAC4E00A8DEC2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -154,7 +151,6 @@
 		F8E469551395739C00DB05C8 = {
 			isa = PBXGroup;
 			children = (
-				F8E469B71395759C00DB05C8 /* Networking Extensions */,
 				F8E4696A1395739D00DB05C8 /* Classes */,
 				F8E469ED1395812A00DB05C8 /* Images */,
 				F8E469931395743A00DB05C8 /* Vendor */,
@@ -166,7 +162,7 @@
 		F8E469611395739C00DB05C8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F8E469601395739C00DB05C8 /* AFNetworkingExample.app */,
+				F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -189,6 +185,7 @@
 		F8E4696A1395739D00DB05C8 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				F8E469B71395759C00DB05C8 /* Networking Extensions */,
 				F8DA09C61396AB690057D0CC /* Controllers */,
 				F8DA09C91396AB690057D0CC /* Models */,
 				F8DA09CC1396AB690057D0CC /* Views */,
@@ -243,10 +240,9 @@
 		F8E469B71395759C00DB05C8 /* Networking Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				F8D25D1B1396A9DE00CF3BD6 /* AFGowallaAPIClient.h */,
-				F8D25D1D1396A9DE00CF3BD6 /* AFGowallaAPIClient.m */,
 			);
 			name = "Networking Extensions";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		F8E469ED1395812A00DB05C8 /* Images */ = {
@@ -262,9 +258,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F8E4695F1395739C00DB05C8 /* AFNetworkingExample */ = {
+		F8E4695F1395739C00DB05C8 /* AFNetworking iOS Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworkingExample" */;
+			buildConfigurationList = F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworking iOS Example" */;
 			buildPhases = (
 				F8E4695C1395739C00DB05C8 /* Sources */,
 				F8E4695D1395739C00DB05C8 /* Frameworks */,
@@ -274,9 +270,9 @@
 			);
 			dependencies = (
 			);
-			name = AFNetworkingExample;
+			name = "AFNetworking iOS Example";
 			productName = AFNetworkingExample;
-			productReference = F8E469601395739C00DB05C8 /* AFNetworkingExample.app */;
+			productReference = F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -288,7 +284,7 @@
 				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = Gowalla;
 			};
-			buildConfigurationList = F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking Example" */;
+			buildConfigurationList = F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking iOS Example" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -300,7 +296,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F8E4695F1395739C00DB05C8 /* AFNetworkingExample */,
+				F8E4695F1395739C00DB05C8 /* AFNetworking iOS Example */,
 			);
 		};
 /* End PBXProject section */
@@ -322,7 +318,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8DA09D21396ABED0057D0CC /* AFGowallaAPIClient.m in Sources */,
 				F8DA09D41396ABED0057D0CC /* NearbySpotsViewController.m in Sources */,
 				F8DA09D51396ABED0057D0CC /* Spot.m in Sources */,
 				F8DA09D61396ABED0057D0CC /* SpotTableViewCell.m in Sources */,
@@ -406,7 +401,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking Example" */ = {
+		F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking iOS Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8E4697F1395739D00DB05C8 /* Debug */,
@@ -415,7 +410,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworkingExample" */ = {
+		F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworking iOS Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8E469821395739D00DB05C8 /* Debug */,
