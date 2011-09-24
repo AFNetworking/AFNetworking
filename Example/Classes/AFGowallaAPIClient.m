@@ -22,8 +22,6 @@
 
 #import "AFGowallaAPIClient.h"
 
-static AFGowallaAPIClient *_sharedClient = nil;
-
 // Replace this with your own API Key, available at http://api.gowalla.com/api/keys/
 NSString * const kAFGowallaClientID = @"e7ccb7d3d2414eb2af4663fc91eb2793";
 
@@ -31,18 +29,18 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 
 @implementation AFGowallaAPIClient
 
-+ (id)sharedClient {
-    if (_sharedClient == nil) {
-        @synchronized(self) {
-            _sharedClient = [[self alloc] init];
-        }
-    }
++ (AFGowallaAPIClient *)sharedClient {
+    static AFGowallaAPIClient *_sharedClient = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _sharedClient = [[self alloc] initWithBaseURL:[NSURL URLWithString:kAFGowallaBaseURLString]];
+    });
     
     return _sharedClient;
 }
 
-- (id)init {
-    self = [super init];
+- (id)initWithBaseURL:(NSURL *)url {
+    self = [super initWithBaseURL:url];
     if (!self) {
         return nil;
     }
@@ -57,10 +55,6 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 	[self setDefaultHeader:@"X-UDID" value:[[UIDevice currentDevice] uniqueIdentifier]];
     
     return self;
-}
-
-+ (NSURL *)baseURL {
-    return [NSURL URLWithString:kAFGowallaBaseURLString];
 }
 
 @end

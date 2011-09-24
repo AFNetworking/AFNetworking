@@ -22,6 +22,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class Spot;
+
 @interface SpotTableViewCell : UITableViewCell
+
+@property (nonatomic, retain) Spot *spot;
 
 @end

@@ -70,7 +70,7 @@
     [self.activityIndicatorView startAnimating];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    [Spot spotsWithURLString:@"/spots/advanced_search" near:location parameters:[NSDictionary dictionaryWithObject:@"128" forKey:@"per_page"] block:^(NSArray *records) {
+    [Spot spotsWithURLString:@"/spots" near:location parameters:[NSDictionary dictionaryWithObject:@"128" forKey:@"per_page"] block:^(NSArray *records) {
         self.nearbySpots = [records sortedArrayUsingComparator:^ NSComparisonResult(id obj1, id obj2) {
             CLLocationDistance d1 = [[(Spot *)obj1 location] distanceFromLocation:location];
             CLLocationDistance d2 = [[(Spot *)obj2 location] distanceFromLocation:location];
@@ -154,18 +154,22 @@
         cell = [[[SpotTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
     }
     
+    Spot *spot = [self.nearbySpots objectAtIndex:indexPath.row];
+    
     static TTTLocationFormatter *_locationFormatter = nil;
     if (!_locationFormatter) {
         _locationFormatter = [[TTTLocationFormatter alloc] init];
-        [_locationFormatter setUnitSystem:TTTImperialSystem];
+        if (![[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue]) {
+            [_locationFormatter setUnitSystem:TTTImperialSystem]; 
+        }
     }
 
-    Spot *spot = [self.nearbySpots objectAtIndex:indexPath.row];
-    cell.textLabel.text = spot.name;
     if (self.locationManager.location) {
         cell.detailTextLabel.text = [_locationFormatter stringFromDistanceAndBearingFromLocation:self.locationManager.location toLocation:spot.location];
     }
-    [cell.imageView setImageWithURL:[NSURL URLWithString:spot.imageURLString] placeholderImage:[UIImage imageNamed:@"placeholder-stamp.png"]];
+    
+    cell.spot = spot;
+    
     
     return cell;
 }

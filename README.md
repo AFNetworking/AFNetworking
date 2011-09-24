@@ -2,13 +2,21 @@
 ## A delightful iOS networking library with NSOperations and block-based callbacks
 ### There's a lot to be said for a networking library that you can wrap your head around. API design matters, too. Code at its best is poetry, and should be designed to delight (but never surprise).
 
-AFNetworking was lovingly crafted to make best use of our favorite parts of Apple's `Foundation` framework: `NSOperation` for managing multiple concurrent requests, `NSURLRequest` & `NSHTTPURLResponse` to encapsulate state, `NSCache` & `NSURLCache` for performant and compliant cacheing behavior, and blocks to keep request / response handling code in a single logical unit in code.
+AFNetworking is lovingly crafted to make best use of our favorite parts of Apple's `Foundation` framework: `NSOperation` for managing multiple concurrent requests, `NSURLRequest` & `NSHTTPURLResponse` to encapsulate state, `NSCache` & `NSURLCache` for performant and compliant cacheing behavior, and blocks to keep request / response handling code in a single logical unit in code.
+
+At its core is `AFHTTPRequestOperation`, a thin wrapper around `NSURLConnection`, which provides a block callback for when the operation completes. Everything else is built on top of that in a way that's completely modular: take what you need, leave what you don't.
 
 If you're tired of massive libraries that try to do too much...  
 If you've taken it upon yourself to roll your own hacky solution...  
 If you want a library that _actually makes iOS networking code kinda fun_...  
 
 ...try out AFNetworking
+
+## Documentation
+
+Online documentation is available at http://gowalla.github.com/AFNetworking/. 
+
+To install the docset directly into your local Xcode organizer, first [install `appledoc`](https://github.com/tomaz/appledoc), and then clone this project and run `appledoc -p AFNetworking -c "Gowalla" --company-id com.gowalla AFNetworking/*.h`
 
 ## Example Usage
 
@@ -31,28 +39,29 @@ UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0
     [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
 ```
 
-### REST API Client Request
+### API Client Request
 
 ``` objective-c
-// AFGowallaAPIClient is a subclass of AFRestClient, which defines the base URL and default HTTP headers for NSURLRequests it creates
+// AFGowallaAPIClient is a subclass of AFHTTPClient, which defines the base URL and default HTTP headers for NSURLRequests it creates
 [[AFGowallaAPIClient sharedClient] getPath:@"/spots/9223" parameters:nil success:^(id response) {
     NSLog(@"Name: %@", [response valueForKeyPath:@"name"]);
     NSLog(@"Address: %@", [response valueForKeyPath:@"address.street_address"]);
-}];
+} failure:nil];
 ```
 
 ### File Upload with Progress Callback
 
 ``` objective-c
-NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:8080/upload"]];
 NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"avatar.jpg"], 0.5);
-NSDictionary *parameters = [NSDictionary dictionaryWithObject:@"300x300" forKey:@"dimensions"];
-[request setHTTPBodyWithData:imageData mimeType:@"image/jpeg" forParameterNamed:@"avatar" parameters:parameters useGzipCompression:YES];
+NSMutableURLRequest *request = [[AFHTTPClient sharedClient] multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:nil constructingBodyWithBlock: ^(id <AFMultipartFormDataProxy>formData) {
+  [formData appendPartWithFormData:data name:@"avatar"]; 
+}];
 
 AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
     NSLog(@"Upload Complete");
 }];
-[operation setProgressBlock:^(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite) {
+
+[operation setUploadProgressBlock:^(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite) {
     NSLog(@"Sent %d of %d bytes", totalBytesWritten, totalBytesExpectedToWrite);
 }];
 
@@ -100,8 +109,17 @@ In order to demonstrate the power and flexibility of AFNetworking, we've include
 ## Dependencies
 
 * [iOS 4.0+](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) - AFNetworking uses blocks, which were introduced in iOS 4.
+* If you're using iOS 5, AFJSONRequestOperation uses JSON will use the built-in NSJSONSerialization class to parse JSON responses. If this is not available, it falls back on [JSONKit](https://github.com/johnezang/JSONKit).
 
-If you're using iOS 5, AFJSONRequestOperation uses JSON will use the built-in NSJSONSerialization class to parse JSON responses. If this is not available, it falls back on [JSONKit](https://github.com/johnezang/JSONKit).
+### ARC Support
+
+If you are including AFNetworking in a project with [Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html) enabled, you will need to set the `-fno-objc-arc` compiler flag on all of the AFNetworking source files. To do this in Xcode, go to your active target and select the "Build Phases" tab. In the "Compiler Flags" column, set `-fno-objc-arc` for each of the AFNetworking source files.
+
+This is certainly suboptimal, forking the project into an ARC and non-ARC branch would be extremely difficult to maintain. On the bright side, we're very excited about [CocoaPods](https://github.com/alloy/cocoapods), which is a promising solution to this and many other pain points.
+
+### Mac OS X Support
+
+Full support for OS X is planned for the very near future. In the meantime, you are perfectly safe to use `AFHTTPRequestOperation`, `AFJSONRequestOperation`, `AFHTTPClient`, and `AFNetworkActivityIndicatorManager`.
 
 ## Credits
 
@@ -109,26 +127,20 @@ AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt 
 
 [TTTLocationFormatter](), used in the example project, is part of [FormatterKit](https://github.com/mattt/FormatterKit), created by [Mattt Thompson](https://github.com/mattt/).
 
+## Contact
+
+Mattt Thompson
+
+- http://github.com/mattt
+- http://twitter.com/mattt
+- m@mattt.me
+
+Scott Raymond
+
+- http://github.com/sco
+- http://twitter.com/sco
+- sco@gowalla.com
+
 ## License
 
-AFNetworking is licensed under the MIT License:
-
-  Copyright (c) 2011 Gowalla (http://gowalla.com/)
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
+AFNetworking is available under the MIT license. See the LICENSE file for more info.

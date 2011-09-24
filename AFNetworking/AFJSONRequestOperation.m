@@ -36,15 +36,15 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 @implementation AFJSONRequestOperation
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(id JSON))success
++ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
+                                         success:(void (^)(id JSON))success
 {
     return [self operationWithRequest:urlRequest success:success failure:nil];
 }
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest 
-                   success:(void (^)(id JSON))success
-                   failure:(void (^)(NSError *error))failure
++ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
+                                         success:(void (^)(id JSON))success
+                                         failure:(void (^)(NSError *error))failure
 {    
     return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         if (success) {
@@ -57,30 +57,42 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     }];
 }
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-     acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
-    acceptableContentTypes:(NSSet *)acceptableContentTypes
-                   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
-                   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
++ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
+                           acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
+                          acceptableContentTypes:(NSSet *)acceptableContentTypes
+                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    return [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
-        BOOL statusCodeAcceptable = [acceptableStatusCodes containsIndex:[response statusCode]];
-        BOOL contentTypeAcceptable = [acceptableContentTypes containsObject:[response MIMEType]];
-        if (!statusCodeAcceptable || !contentTypeAcceptable) {
-            NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:[NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]] forKey:NSLocalizedDescriptionKey];
-            [userInfo setValue:[request URL] forKey:NSURLErrorFailingURLErrorKey];
+    return (AFJSONRequestOperation *)[self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {        
+        if (!error) {
+            if (acceptableStatusCodes && ![acceptableStatusCodes containsIndex:[response statusCode]]) {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+                [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code %@, got %d", nil), acceptableStatusCodes, [response statusCode]] forKey:NSLocalizedDescriptionKey];
+                [userInfo setValue:[request URL] forKey:NSURLErrorFailingURLErrorKey];
+                
+                error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
+            }
             
-            error = [[[NSError alloc] initWithDomain:NSURLErrorDomain code:[response statusCode] userInfo:userInfo] autorelease];
+            if (acceptableContentTypes && ![acceptableContentTypes containsObject:[response MIMEType]]) {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+                [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), acceptableContentTypes, [response MIMEType]] forKey:NSLocalizedDescriptionKey];
+                [userInfo setValue:[request URL] forKey:NSURLErrorFailingURLErrorKey];
+                
+                error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo] autorelease];
+            }
         }
         
         if (error) {
             if (failure) {
-                failure(request, response, error);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failure(request, response, error);
+                });
             }
         } else if ([data length] == 0) {
             if (success) {
-                success(request, response, nil);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    success(request, response, nil);
+                });
             }
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
@@ -96,7 +108,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
 #endif
                 
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (JSONError) {
                         if (failure) {
                             failure(request, response, JSONError);

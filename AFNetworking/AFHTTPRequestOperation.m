@@ -21,7 +21,9 @@
 // THE SOFTWARE.
 
 #import "AFHTTPRequestOperation.h"
-#import "AFNetworkActivityIndicatorManager.h"
+
+static NSUInteger const kAFHTTPMinimumInitialDataCapacity = 1024;
+static NSUInteger const kAFHTTPMaximumInitialDataCapacity = 1024 * 1024 * 8;
 
 typedef enum {
     AFHTTPOperationReadyState       = 1,
@@ -30,10 +32,12 @@ typedef enum {
     AFHTTPOperationCancelledState   = 4,
 } AFHTTPOperationState;
 
-NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.http-operation.start";
-NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.http-operation.finish";
+NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
 
-typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite);
+NSString * const AFHTTPOperationDidStartNotification = @"com.alamofire.networking.http-operation.start";
+NSString * const AFHTTPOperationDidFinishNotification = @"com.alamofire.networking.http-operation.finish";
+
+typedef void (^AFHTTPRequestOperationProgressBlock)(NSUInteger totalBytes, NSUInteger totalBytesExpected);
 typedef void (^AFHTTPRequestOperationCompletionBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error);
 
 static inline NSString * AFKeyPathFromOperationState(AFHTTPOperationState state) {
@@ -50,10 +54,6 @@ static inline NSString * AFKeyPathFromOperationState(AFHTTPOperationState state)
 }
 
 static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState from, AFHTTPOperationState to) {
-    if (from == to) {
-        return NO;
-    }
-    
     switch (from) {
         case AFHTTPOperationReadyState:
             switch (to) {
@@ -77,32 +77,63 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 }
 
 @interface AFHTTPRequestOperation ()
-@property (nonatomic, assign) AFHTTPOperationState state;
-@property (nonatomic, assign) BOOL isCancelled;
+@property (readwrite, nonatomic, assign) AFHTTPOperationState state;
+@property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
+@property (readwrite, nonatomic, retain) NSURLConnection *connection;
+@property (readwrite, nonatomic, retain) NSURLRequest *request;
+@property (readwrite, nonatomic, retain) NSHTTPURLResponse *response;
+@property (readwrite, nonatomic, retain) NSError *error;
+@property (readwrite, nonatomic, retain) NSData *responseBody;
+@property (readwrite, nonatomic, assign) NSUInteger totalBytesRead;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, retain) NSOutputStream *outputStream;
-@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock progress;
+@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock uploadProgress;
+@property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock downloadProgress;
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest;
-- (void)cleanup;
+- (void)operationDidStart;
+- (void)finish;
 @end
 
 @implementation AFHTTPRequestOperation
 @synthesize state = _state;
-@synthesize isCancelled = _isCancelled;
+@synthesize cancelled = _cancelled;
 @synthesize connection = _connection;
 @synthesize runLoopModes = _runLoopModes;
 @synthesize request = _request;
 @synthesize response = _response;
 @synthesize error = _error;
 @synthesize responseBody = _responseBody;
+@synthesize totalBytesRead = _totalBytesRead;
 @synthesize dataAccumulator = _dataAccumulator;
 @synthesize outputStream = _outputStream;
-@synthesize progress = _progress;
+@synthesize uploadProgress = _uploadProgress;
+@synthesize downloadProgress = _downloadProgress;
 @synthesize completion = _completion;
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest 
+static NSThread *_networkRequestThread = nil;
+
++ (void)networkRequestThreadEntryPoint:(id)object {
+    do {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        [[NSRunLoop currentRunLoop] run];
+        [pool drain];
+    } while (YES);
+}
+
++ (NSThread *)networkRequestThread {
+    static dispatch_once_t oncePredicate;
+    
+    dispatch_once(&oncePredicate, ^{
+        _networkRequestThread = [[NSThread alloc] initWithTarget:self selector:@selector(networkRequestThreadEntryPoint:) object:nil];
+        [_networkRequestThread start];
+    });
+        
+    return _networkRequestThread;
+}
+
++ (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
                 completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion
 {
     AFHTTPRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
@@ -111,15 +142,17 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     return operation;
 }
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-               inputStream:(NSInputStream *)inputStream
-              outputStream:(NSOutputStream *)outputStream
-                completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion
++ (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
+                                     inputStream:(NSInputStream *)inputStream
+                                    outputStream:(NSOutputStream *)outputStream
+                                      completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion
 {
     NSMutableURLRequest *mutableURLRequest = [[urlRequest mutableCopy] autorelease];
-    [mutableURLRequest setHTTPBodyStream:inputStream];
-    if ([[mutableURLRequest HTTPMethod] isEqualToString:@"GET"]) {
-        [mutableURLRequest setHTTPMethod:@"POST"];
+    if (inputStream) {
+        [mutableURLRequest setHTTPBodyStream:inputStream];
+        if ([[mutableURLRequest HTTPMethod] isEqualToString:@"GET"]) {
+            [mutableURLRequest setHTTPMethod:@"POST"];
+        }
     }
 
     AFHTTPRequestOperation *operation = [self operationWithRequest:mutableURLRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
@@ -127,6 +160,8 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
             completion(request, response, error);
         }
     }];
+    
+    operation.outputStream = outputStream;
     
     return operation;
 }
@@ -139,7 +174,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
         
     self.request = urlRequest;
 	
-    self.runLoopModes = [NSSet setWithObjects:NSRunLoopCommonModes, nil];
+    self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
         
     self.state = AFHTTPOperationReadyState;
 	
@@ -157,26 +192,25 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     
     [_connection release]; _connection = nil;
 	
-    [_progress release];
+    [_uploadProgress release];
+    [_downloadProgress release];
     [_completion release];
-    [_progress release];
     [super dealloc];
 }
 
-- (void)cleanup {
-    [self.outputStream close];
-    for (NSString *runLoopMode in self.runLoopModes) {
-        [self.connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
-        [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
-    }
-    CFRunLoopStop([[NSRunLoop currentRunLoop] getCFRunLoop]); 
+- (void)setUploadProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
+    self.uploadProgress = block;
 }
 
-- (void)setProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block {
-    self.progress = block;
+- (void)setDownloadProgressBlock:(void (^)(NSUInteger totalBytesRead, NSUInteger totalBytesExpectedToRead))block {
+    self.downloadProgress = block;
 }
 
 - (void)setState:(AFHTTPOperationState)state {
+    if (self.state == state) {
+        return;
+    }
+    
     if (!AFHTTPOperationStateTransitionIsValid(self.state, state)) {
         return;
     }
@@ -192,21 +226,34 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     
     switch (state) {
         case AFHTTPOperationExecutingState:
-            [[AFNetworkActivityIndicatorManager sharedManager] startAnimating];
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidStartNotification object:self];
             break;
         case AFHTTPOperationFinishedState:
-            [[AFNetworkActivityIndicatorManager sharedManager] stopAnimating];
             [[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPOperationDidFinishNotification object:self];
-            [self cleanup];
             break;
         default:
             break;
     }
 }
 
+- (void)setCancelled:(BOOL)cancelled {
+    [self willChangeValueForKey:@"isCancelled"];
+    _cancelled = cancelled;
+    [self didChangeValueForKey:@"isCancelled"];
+    
+    if ([self isCancelled]) {
+        self.state = AFHTTPOperationFinishedState;
+    }
+}
+
 - (NSString *)responseString {
-    return [[[NSString alloc] initWithData:self.responseBody encoding:NSUTF8StringEncoding] autorelease];
+    if (!self.response || !self.responseBody) {
+        return nil;
+    }
+    
+    NSStringEncoding textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.response.textEncodingName));
+    
+    return [[[NSString alloc] initWithData:self.responseBody encoding:textEncoding] autorelease];
 }
 
 #pragma mark - NSOperation
@@ -220,7 +267,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 }
 
 - (BOOL)isFinished {
-    return self.state == AFHTTPOperationFinishedState || [self isCancelled];
+    return self.state == AFHTTPOperationFinishedState;
 }
 
 - (BOOL)isConcurrent {
@@ -228,12 +275,16 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 }
 
 - (void)start {
-    if (self.isFinished) {
+    if (![self isReady]) {
         return;
     }
-    
-    self.state = AFHTTPOperationExecutingState;
         
+    self.state = AFHTTPOperationExecutingState;
+
+    [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
+}
+
+- (void)operationDidStart {
     self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
     
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -243,22 +294,24 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
     }
     
     [self.connection start];
-
-    [runLoop run];
 }
 
 - (void)cancel {
-    self.isCancelled = YES;
+    if ([self isFinished]) {
+        return;
+    }
+    
+    [super cancel];
+    
+    self.cancelled = YES;
     
     [self.connection cancel];
-    
-    [self cleanup];
 }
 
-#pragma mark - AFHTTPRequestOperation
-
 - (void)finish {
-    if (self.isCancelled) {
+    self.state = AFHTTPOperationFinishedState;
+    
+    if ([self isCancelled]) {
         return;
     }
     
@@ -277,14 +330,16 @@ didReceiveResponse:(NSURLResponse *)response
     if (self.outputStream) {
         [self.outputStream open];
     } else {
-        NSUInteger contentLength = MIN(MAX(abs(response.expectedContentLength), 1024), 1024 * 1024 * 8);
-        self.dataAccumulator = [NSMutableData dataWithCapacity:contentLength];
+        NSUInteger capacity = MIN(MAX(abs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity), kAFHTTPMaximumInitialDataCapacity);
+        self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
     }
 }
 
 - (void)connection:(NSURLConnection *)connection 
     didReceiveData:(NSData *)data 
 {
+    self.totalBytesRead += [data length];
+    
     if (self.outputStream) {
         if ([self.outputStream hasSpaceAvailable]) {
             const uint8_t *dataBuffer = [data bytes];
@@ -293,11 +348,13 @@ didReceiveResponse:(NSURLResponse *)response
     } else {
         [self.dataAccumulator appendData:data];
     }
+    
+    if (self.downloadProgress) {
+        self.downloadProgress(self.totalBytesRead, self.response.expectedContentLength);
+    }
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    self.state = AFHTTPOperationFinishedState;
-    
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {        
     if (self.outputStream) {
         [self.outputStream close];
     } else {
@@ -305,17 +362,21 @@ didReceiveResponse:(NSURLResponse *)response
         [_dataAccumulator release]; _dataAccumulator = nil;
     }
 
-    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:NO];
+    [self finish];
 }
 
 - (void)connection:(NSURLConnection *)connection 
   didFailWithError:(NSError *)error 
-{  
-    self.state = AFHTTPOperationFinishedState;
-    
+{      
     self.error = error;
     
-    [self performSelectorOnMainThread:@selector(finish) withObject:nil waitUntilDone:NO];
+    if (self.outputStream) {
+        [self.outputStream close];
+    } else {
+        [_dataAccumulator release]; _dataAccumulator = nil;
+    }
+    
+    [self finish];
 }
 
 - (void)connection:(NSURLConnection *)connection 
@@ -323,12 +384,14 @@ didReceiveResponse:(NSURLResponse *)response
  totalBytesWritten:(NSInteger)totalBytesWritten 
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
-    if (self.progress) {
-        self.progress(totalBytesWritten, totalBytesExpectedToWrite);
+    if (self.uploadProgress) {
+        self.uploadProgress(totalBytesWritten, totalBytesExpectedToWrite);
     }
 }
 
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection 
+                  willCacheResponse:(NSCachedURLResponse *)cachedResponse 
+{
     if ([self isCancelled]) {
         return nil;
     }

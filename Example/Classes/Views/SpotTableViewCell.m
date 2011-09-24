@@ -22,7 +22,12 @@
 
 #import "SpotTableViewCell.h"
 
+#import "Spot.h"
+
+#import "UIImageView+AFNetworking.h"
+
 @implementation SpotTableViewCell
+@synthesize spot = _spot;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -32,35 +37,40 @@
     
     self.textLabel.textColor = [UIColor darkGrayColor];
     self.textLabel.numberOfLines = 2;
+    self.textLabel.backgroundColor = self.backgroundColor;
     
     self.detailTextLabel.textColor = [UIColor grayColor];
+    self.detailTextLabel.backgroundColor = self.backgroundColor;
+
+    self.imageView.backgroundColor = self.backgroundColor;
     
     self.selectionStyle = UITableViewCellSelectionStyleGray;
     
     return self;
 }
 
-#pragma mark - UIView
+- (void)dealloc {
+    [_spot release];
+    [super dealloc];
+}
 
-- (void)layoutSubviews {
-	[super layoutSubviews];
-	
-	CGRect imageViewFrame = self.imageView.frame;
-	CGRect textLabelFrame = self.textLabel.frame;
-	CGRect detailTextLabelFrame = self.detailTextLabel.frame;
-	
-	imageViewFrame.origin = CGPointMake(10.0f, 10.0f);
-	imageViewFrame.size = CGSizeMake(50.0f, 50.0f);
-             
-	textLabelFrame.origin.x = imageViewFrame.size.width + 25.0f;
-    detailTextLabelFrame.origin.x = textLabelFrame.origin.x;
-	
-    textLabelFrame.size.width = 240.0f;
-	detailTextLabelFrame.size.width = textLabelFrame.size.width;
-	
-	self.textLabel.frame = textLabelFrame;
-	self.detailTextLabel.frame = detailTextLabelFrame;
-	self.imageView.frame = imageViewFrame;
+- (void)setSpot:(Spot *)spot {
+    [self willChangeValueForKey:@"spot"];
+    [_spot autorelease];
+    _spot = [spot retain];
+    [self didChangeValueForKey:@"spot"];
+
+    [self.imageView setImageWithURL:[NSURL URLWithString:self.spot.imageURLString] placeholderImage:[UIImage imageNamed:@"placeholder-stamp.png"]];
+     
+    self.textLabel.text = spot.name;
+}
+
+#pragma mark - UITableViewCell
+
+- (void)prepareForReuse {
+    [self.imageView cancelImageRequestOperation];
+    self.textLabel.text = nil;
+    self.detailTextLabel.text = nil;
 }
 
 @end

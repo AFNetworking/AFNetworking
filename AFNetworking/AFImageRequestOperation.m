@@ -23,16 +23,6 @@
 #import "AFImageRequestOperation.h"
 #import "AFImageCache.h"
 
-#import "UIImage+AFNetworking.h"
-
-static CGFloat const kAFImageRequestJPEGQuality = 0.8;
-static NSUInteger const kAFImageRequestMaximumResponseSize = 8 * 1024 * 1024;
-
-static inline CGSize kAFImageRequestRoundedCornerRadii(CGSize imageSize) {
-    CGFloat dimension = fmaxf(imageSize.width, imageSize.height) * 0.1;
-    return CGSizeMake(dimension, dimension);
-}
-
 static dispatch_queue_t af_image_request_operation_processing_queue;
 static dispatch_queue_t image_request_operation_processing_queue() {
     if (af_image_request_operation_processing_queue == NULL) {
@@ -44,47 +34,55 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 @implementation AFImageRequestOperation
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest                
-                   success:(void (^)(UIImage *image))success
++ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
+                                          success:(void (^)(UIImage *image))success
 {
-    return [self operationWithRequest:urlRequest imageSize:CGSizeZero options:AFImageRequestDefaultOptions success:success];
+    return [self operationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        if (success) {
+            success(image);
+        }
+    } failure:nil];
 }
 
-+ (id)operationWithRequest:(NSURLRequest *)urlRequest
-                 imageSize:(CGSize)imageSize
-                   options:(AFImageRequestOptions)options
-                   success:(void (^)(UIImage *image))success
++ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
+                             imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                                        cacheName:(NSString *)cacheNameOrNil
+                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    AFImageRequestOperation *operation = [self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
+    return (AFImageRequestOperation *)[self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
-            UIImage *image = nil;    
-            if ([[UIScreen mainScreen] scale] == 2.0) {
-                CGImageRef imageRef = [[UIImage imageWithData:data] CGImage];
-                image = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
-            } else {
-                image = [UIImage imageWithData:data]; 
-            }
-            
-            if (!(CGSizeEqualToSize(image.size, imageSize) || CGSizeEqualToSize(imageSize, CGSizeZero))) {
-                image = [UIImage imageByScalingAndCroppingImage:image size:imageSize];
-            }
-            if ((options & AFImageRequestRoundCorners)) {
-                image = [UIImage imageByRoundingCornersOfImage:image corners:UIRectCornerAllCorners cornerRadii:kAFImageRequestRoundedCornerRadii(image.size)];
-            }
-            
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                if (success) {
-                    success(image);
+            if (error) {
+                if (failure) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        failure(request, response, error);
+                    });
                 }
-            });
-        
-            [[AFImageCache sharedImageCache] cacheImage:image forRequest:request imageSize:imageSize options:options];
+            } else {
+                UIImage *image = nil;    
+                if ([[UIScreen mainScreen] scale] == 2.0) {
+                    CGImageRef imageRef = [[UIImage imageWithData:data] CGImage];
+                    image = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
+                } else {
+                    image = [UIImage imageWithData:data]; 
+                }
+                
+                if (imageProcessingBlock) {
+                    image = imageProcessingBlock(image);
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    if (success) {
+                        success(request, response, image);
+                    }
+                });
+                
+                if ([request cachePolicy] != NSURLCacheStorageNotAllowed) {
+                    [[AFImageCache sharedImageCache] cacheImage:image forURL:[request URL] cacheName:cacheNameOrNil];
+                }
+            }
         });
     }];
-
-    operation.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
-    
-    return operation;
 }
 
 @end
