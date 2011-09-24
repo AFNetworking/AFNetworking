@@ -11,17 +11,17 @@
 		1B26C16A142E48B400103A02 /* UIImageView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C154142E48B400103A02 /* UIImageView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B26C16B142E48B400103A02 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B26C155142E48B400103A02 /* UIImageView+AFNetworking.m */; };
 		1B26C173142E4A6700103A02 /* JSONKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C172142E4A6700103A02 /* JSONKit.h */; };
-		1B26C184142E4D6A00103A02 /* AFHTTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C178142E4D6A00103A02 /* AFHTTPClient.h */; };
+		1B26C184142E4D6A00103A02 /* AFHTTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C178142E4D6A00103A02 /* AFHTTPClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B26C185142E4D6A00103A02 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B26C179142E4D6A00103A02 /* AFHTTPClient.m */; };
-		1B26C186142E4D6A00103A02 /* AFHTTPRequestOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C17A142E4D6A00103A02 /* AFHTTPRequestOperation.h */; };
+		1B26C186142E4D6A00103A02 /* AFHTTPRequestOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C17A142E4D6A00103A02 /* AFHTTPRequestOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B26C187142E4D6A00103A02 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B26C17B142E4D6A00103A02 /* AFHTTPRequestOperation.m */; };
-		1B26C188142E4D6A00103A02 /* AFImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C17C142E4D6A00103A02 /* AFImageCache.h */; };
+		1B26C188142E4D6A00103A02 /* AFImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C17C142E4D6A00103A02 /* AFImageCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B26C189142E4D6A00103A02 /* AFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B26C17D142E4D6A00103A02 /* AFImageCache.m */; };
-		1B26C18A142E4D6A00103A02 /* AFImageRequestOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C17E142E4D6A00103A02 /* AFImageRequestOperation.h */; };
+		1B26C18A142E4D6A00103A02 /* AFImageRequestOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C17E142E4D6A00103A02 /* AFImageRequestOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B26C18B142E4D6A00103A02 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B26C17F142E4D6A00103A02 /* AFImageRequestOperation.m */; };
-		1B26C18C142E4D6A00103A02 /* AFJSONRequestOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C180142E4D6A00103A02 /* AFJSONRequestOperation.h */; };
+		1B26C18C142E4D6A00103A02 /* AFJSONRequestOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C180142E4D6A00103A02 /* AFJSONRequestOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B26C18D142E4D6A00103A02 /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B26C181142E4D6A00103A02 /* AFJSONRequestOperation.m */; };
-		1B26C18E142E4D6A00103A02 /* AFNetworkActivityIndicatorManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C182142E4D6A00103A02 /* AFNetworkActivityIndicatorManager.h */; };
+		1B26C18E142E4D6A00103A02 /* AFNetworkActivityIndicatorManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B26C182142E4D6A00103A02 /* AFNetworkActivityIndicatorManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B26C18F142E4D6A00103A02 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B26C183142E4D6A00103A02 /* AFNetworkActivityIndicatorManager.m */; };
 /* End PBXBuildFile section */
 
@@ -136,13 +136,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B26C16A142E48B400103A02 /* UIImageView+AFNetworking.h in Headers */,
-				1B26C173142E4A6700103A02 /* JSONKit.h in Headers */,
 				1B26C184142E4D6A00103A02 /* AFHTTPClient.h in Headers */,
 				1B26C186142E4D6A00103A02 /* AFHTTPRequestOperation.h in Headers */,
 				1B26C188142E4D6A00103A02 /* AFImageCache.h in Headers */,
 				1B26C18A142E4D6A00103A02 /* AFImageRequestOperation.h in Headers */,
 				1B26C18C142E4D6A00103A02 /* AFJSONRequestOperation.h in Headers */,
 				1B26C18E142E4D6A00103A02 /* AFNetworkActivityIndicatorManager.h in Headers */,
+				1B26C173142E4A6700103A02 /* JSONKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,8 +257,7 @@
 				INSTALL_PATH = /;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = /Headers;
-				SKIP_INSTALL = YES;
+				PUBLIC_HEADERS_FOLDER_PATH = Headers;
 			};
 			name = Debug;
 		};
@@ -270,8 +269,7 @@
 				INSTALL_PATH = /;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = /Headers;
-				SKIP_INSTALL = YES;
+				PUBLIC_HEADERS_FOLDER_PATH = Headers;
 			};
 			name = Release;
 		};
