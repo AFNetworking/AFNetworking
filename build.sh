@@ -15,3 +15,4 @@ xcodebuild -project $PROJ -sdk iphonesimulator INSTALL_ROOT=$INSTALL_PATH/simula
 lipo -create -output $INSTALL_PATH/libAFNetworking.a $INSTALL_PATH/device/libAFNetworking.a $INSTALL_PATH/simulator/libAFNetworking.a
 mv $INSTALL_PATH/device/Headers $INSTALL_PATH
 rm -rf $INSTALL_PATH/device $INSTALL_PATH/simulator
+(cd $INSTALL_PATH; zip -r ../AFNetworking.zip libAFNetworking.a Headers)
