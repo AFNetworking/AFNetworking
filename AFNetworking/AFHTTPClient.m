@@ -94,6 +94,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 @synthesize stringEncoding = _stringEncoding;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
+@synthesize HTTPShouldHandleCookies = _HTTPShouldHandleCookies;
 
 + (AFHTTPClient *)clientWithBaseURL:(NSURL *)url {
     return [[[self alloc] initWithBaseURL:url] autorelease];
@@ -184,7 +185,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     
 	[request setURL:url];
 	[request setHTTPMethod:method];
-	[request setHTTPShouldHandleCookies:NO];
+	[request setHTTPShouldHandleCookies:self.HTTPShouldHandleCookies];
 	[request setAllHTTPHeaderFields:headers];
     
 	return request;
