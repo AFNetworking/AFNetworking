@@ -27,11 +27,11 @@ static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
 
 static NSString * AFMultipartFormEncapsulationBoundary() {
-    return [NSString stringWithFormat:@"--%@", kAFMultipartFormBoundary];
+    return [NSString stringWithFormat:@"%@--%@%@", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary, kAFMultipartFormLineDelimiter];
 }
 
 static NSString * AFMultipartFormFinalBoundary() {
-    return [NSString stringWithFormat:@"--%@--", kAFMultipartFormBoundary];
+    return [NSString stringWithFormat:@"%@--%@--", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary];
 }
 
 @interface AFMultipartFormDataProxy : NSObject <AFMultipartFormDataProxy> {
@@ -305,21 +305,17 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 - (NSData *)data {
     NSMutableData *finalizedData = [NSMutableData dataWithData:self.mutableData];
     [finalizedData appendData:[AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding]];
-    
     return finalizedData;
 }
 
 #pragma mark - AFMultipartFormDataProxy
 
 - (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body {
-    if ([self.mutableData length] > 0) {
-        [self appendString:AFMultipartFormEncapsulationBoundary()];
-        [self appendBlankLine];
-    }
+    
+    [self appendString:AFMultipartFormEncapsulationBoundary()];
     
     for (NSString *field in [headers allKeys]) {
-        [self appendString:[NSString stringWithFormat:@"%@: %@", field, [headers valueForKey:field]]];
-        [self appendBlankLine];
+        [self appendString:[NSString stringWithFormat:@"%@: %@%@", field, [headers valueForKey:field], kAFMultipartFormLineDelimiter]];
     }
     
     [self appendBlankLine];
@@ -347,6 +343,17 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
     
     NSData *data = [NSData dataWithContentsOfFile:[fileURL absoluteString]];
+    
+    [self appendPartWithHeaders:mutableHeaders body:data];
+}
+
+- (void)appendPartWithFileData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name {
+    
+    NSString *fileName = [[NSString stringWithFormat:@"%d", [[NSDate date] hash]] stringByAppendingPathExtension:[mimeType lastPathComponent]];
+    
+    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+    [mutableHeaders setValue:[NSString stringWithFormat:@"file; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
     
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
