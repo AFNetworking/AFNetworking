@@ -34,15 +34,15 @@ static NSString * AFMultipartFormFinalBoundary() {
     return [NSString stringWithFormat:@"--%@--", kAFMultipartFormBoundary];
 }
 
-@interface AFMutableMultipartFormData : NSObject <AFMultipartFormDataProxy> {
+@interface AFMultipartFormDataProxy : NSObject <AFMultipartFormDataProxy> {
 @private
     NSStringEncoding _stringEncoding;
-    NSMutableArray *_mutableLines;
+    NSMutableData *_mutableData;
 }
 
-- (id)initWithStringEncoding:(NSStringEncoding)encoding;
+@property (readonly) NSData *data;
 
-- (NSData *)data;
+- (id)initWithStringEncoding:(NSStringEncoding)encoding;
 
 @end
 
@@ -201,18 +201,22 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     }
     
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
-    __block AFMutableMultipartFormData *formData = [[AFMutableMultipartFormData alloc] initWithStringEncoding:self.stringEncoding];
+    __block AFMultipartFormDataProxy *formData = [[AFMultipartFormDataProxy alloc] initWithStringEncoding:self.stringEncoding];
     
     id key = nil;
 	NSEnumerator *enumerator = [parameters keyEnumerator];
 	while ((key = [enumerator nextObject])) {
         id value = [parameters valueForKey:key];
-        if (![value isKindOfClass:[NSData class]]) {
-            value = [value description];
+        NSData *data = nil;
+        
+        if ([value isKindOfClass:[NSData class]]) {
+            data = value;
+        } else {
+            data = [[value description] dataUsingEncoding:self.stringEncoding];
         }
         
-        [formData appendPartWithFormData:[value dataUsingEncoding:self.stringEncoding] name:[key description]];
-	}
+        [formData appendPartWithHeaders:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"form-data; name=\"%@\"", [key description]] forKey:@"Content-Disposition"] body:data];
+    }
     
     if (block) {
         block(formData);
@@ -270,16 +274,16 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 #pragma mark -
 
 // multipart/form-data; see http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
-@interface AFMutableMultipartFormData ()
+@interface AFMultipartFormDataProxy ()
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
-@property (readwrite, nonatomic, retain) NSMutableArray *mutableLines;
+@property (readwrite, nonatomic, retain) NSMutableData *mutableData;
 
 - (void)appendBlankLine;
 @end
 
-@implementation AFMutableMultipartFormData
+@implementation AFMultipartFormDataProxy
 @synthesize stringEncoding = _stringEncoding;
-@synthesize mutableLines = _mutableLines;
+@synthesize mutableData = _mutableData;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding {
     self = [super init];
@@ -288,64 +292,75 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     }
     
     self.stringEncoding = encoding;
-    self.mutableLines = [NSMutableArray array];
+    self.mutableData = [NSMutableData dataWithLength:0];
     
     return self;
 }
 
 - (void)dealloc {
-    [_mutableLines release];
+    [_mutableData release];
     [super dealloc];
 }
 
 - (NSData *)data {
-    if ([self.mutableLines count] == 0) {
-        return nil;
-    }
+    NSMutableData *finalizedData = [NSMutableData dataWithData:self.mutableData];
+    [finalizedData appendData:[AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding]];
     
-    return [[[[self.mutableLines componentsJoinedByString:kAFMultipartFormLineDelimiter]  stringByAppendingString:kAFMultipartFormLineDelimiter] stringByAppendingString:AFMultipartFormFinalBoundary()] dataUsingEncoding:self.stringEncoding];
+    return finalizedData;
 }
 
 #pragma mark - AFMultipartFormDataProxy
 
 - (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body {
-    if ([self.mutableLines count] > 0) {
+    if ([self.mutableData length] > 0) {
         [self appendString:AFMultipartFormEncapsulationBoundary()];
+        [self appendBlankLine];
     }
     
     for (NSString *field in [headers allKeys]) {
         [self appendString:[NSString stringWithFormat:@"%@: %@", field, [headers valueForKey:field]]];
+        [self appendBlankLine];
     }
     
     [self appendBlankLine];
     [self appendData:body];
 }
 
-- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name {
-    [self appendPartWithHeaders:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"] body:data];
+- (void)appendPartWithFormData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name {
+    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
+    if (mimeType) {
+        [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    }
+    
+    [self appendPartWithHeaders:mutableHeaders body:data];
 }
 
-- (void)appendPartWithFile:(NSURL *)fileURL fileName:(NSString *)fileNameOrNil {
+- (void)appendPartWithFile:(NSURL *)fileURL mimeType:(NSString *)mimeType fileName:(NSString *)fileName {
     if (![fileURL isFileURL]) {
         [NSException raise:@"Invalid fileURL value" format:@"%@ must be a valid file URL", fileURL];
         return;
     }
     
+    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+    [mutableHeaders setValue:[NSString stringWithFormat:@"file; filename=\"%@\"", fileName] forKey:@"Content-Disposition"];
+    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    
     NSData *data = [NSData dataWithContentsOfFile:[fileURL absoluteString]];
-    NSString *fileName = fileNameOrNil ? fileNameOrNil : [[fileURL lastPathComponent] stringByAppendingPathExtension:[fileURL pathExtension]];
-    [self appendPartWithHeaders:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"file; filename=\"%@\"", fileName] forKey:@"Content-Disposition"] body:data];
+    
+    [self appendPartWithHeaders:mutableHeaders body:data];
 }
 
 - (void)appendData:(NSData *)data {
-    [self appendString:[[[NSString alloc] initWithData:data encoding:self.stringEncoding] autorelease]];
+    [self.mutableData appendData:data];
 }
 
 - (void)appendString:(NSString *)string {
-    [self.mutableLines addObject:string];
+    [self appendData:[string dataUsingEncoding:self.stringEncoding]];
 }
 
 - (void)appendBlankLine {
-    [self appendString:@""];
+    [self appendString:kAFMultipartFormLineDelimiter];
 }
 
 @end

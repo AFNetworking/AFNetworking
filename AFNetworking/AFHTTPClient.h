@@ -250,20 +250,22 @@
 - (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body;
 
 /**
- Appends the HTTP header `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
+ Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"` and, if mimeType is specified, `Content-Type: #{mimeType}`,  followed by the encoded data and the multipart form boundary.
  
  @param data The data to be encoded and appended to the form data.
- @param name The name to be associated with the specified data.
+ @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. If `nil`, the `Content-Type` header will be omitted.
+ @param name The name to be associated with the specified data. This parameter must not be `nil`.
  */
-- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
+- (void)appendPartWithFormData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name;
 
 /**
- Appends the HTTP header `Content-Disposition: file; filename=#{filename}"`, followed by the encoded file data and the multipart form boundary.
+ Appends the HTTP header `Content-Disposition: file; filename=#{filename}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
  
- @param fileURL The URL for the local file to have its contents appended to the form data.
- @param fileNameOrNil The filename to be associated with the file contents. If `nil`, the last path component followed by its file extension will be used instead.
+ @param fileURL The URL for the local file to have its contents appended to the form data. This parameter must not be `nil`.
+ @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
+ @param fileName The filename to be associated with the file contents. This parameter must not be `nil`.
  */
-- (void)appendPartWithFile:(NSURL *)fileURL fileName:(NSString *)fileNameOrNil;
+- (void)appendPartWithFile:(NSURL *)fileURL mimeType:(NSString *)mimeType fileName:(NSString *)fileName;
 
 /**
  Appends encoded data to the form data.
