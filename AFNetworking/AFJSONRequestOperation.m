@@ -69,6 +69,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
                 [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code %@, got %d", nil), acceptableStatusCodes, [response statusCode]] forKey:NSLocalizedDescriptionKey];
                 [userInfo setValue:[request URL] forKey:NSURLErrorFailingURLErrorKey];
+                [userInfo setValue:[NSNumber numberWithInt:[response statusCode]] forKey:AFNetworkingErrorStatusCode];
                 
                 error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
             }

@@ -28,6 +28,7 @@
  @discussion Error codes for AFNetworkingErrorDomain correspond to codes in NSURLErrorDomain.
  */
 extern NSString * const AFNetworkingErrorDomain;
+extern NSString * const AFNetworkingErrorStatusCode;
 
 /**
  Posted when an operation begins executing.
