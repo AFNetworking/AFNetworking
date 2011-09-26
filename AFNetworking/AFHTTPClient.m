@@ -34,7 +34,7 @@ static NSString * AFMultipartFormFinalBoundary() {
     return [NSString stringWithFormat:@"%@--%@--", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary];
 }
 
-@interface AFMultipartFormDataProxy : NSObject <AFMultipartFormDataProxy> {
+@interface AFMultipartFormData : NSObject <AFMultipartFormData> {
 @private
     NSStringEncoding _stringEncoding;
     NSMutableData *_mutableData;
@@ -192,7 +192,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                                    path:(NSString *)path
                                              parameters:(NSDictionary *)parameters
-                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormDataProxy>formData))block
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData>formData))block
 {
     if (!([method isEqualToString:@"POST"] || [method isEqualToString:@"PUT"] || [method isEqualToString:@"DELETE"])) {
         [NSException raise:@"Invalid HTTP Method" format:@"%@ is not supported for multipart form requests; must be either POST, PUT, or DELETE", method];
@@ -200,7 +200,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     }
     
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
-    __block AFMultipartFormDataProxy *formData = [[AFMultipartFormDataProxy alloc] initWithStringEncoding:self.stringEncoding];
+    __block AFMultipartFormData *formData = [[AFMultipartFormData alloc] initWithStringEncoding:self.stringEncoding];
     
     id key = nil;
 	NSEnumerator *enumerator = [parameters keyEnumerator];
@@ -214,7 +214,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
             data = [[value description] dataUsingEncoding:self.stringEncoding];
         }
         
-        [formData appendPartWithHeaders:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"form-data; name=\"%@\"", [key description]] forKey:@"Content-Disposition"] body:data];
+        [formData appendPartWithFormData:data name:[key description]];
     }
     
     if (block) {
@@ -272,15 +272,12 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 
 #pragma mark -
 
-// multipart/form-data; see http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
-@interface AFMultipartFormDataProxy ()
+@interface AFMultipartFormData ()
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
 @property (readwrite, nonatomic, retain) NSMutableData *mutableData;
-
-- (void)appendBlankLine;
 @end
 
-@implementation AFMultipartFormDataProxy
+@implementation AFMultipartFormData
 @synthesize stringEncoding = _stringEncoding;
 @synthesize mutableData = _mutableData;
 
@@ -307,48 +304,28 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     return finalizedData;
 }
 
-#pragma mark - AFMultipartFormDataProxy
+#pragma mark - AFMultipartFormData
 
 - (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body {
-    
     [self appendString:AFMultipartFormEncapsulationBoundary()];
     
     for (NSString *field in [headers allKeys]) {
         [self appendString:[NSString stringWithFormat:@"%@: %@%@", field, [headers valueForKey:field], kAFMultipartFormLineDelimiter]];
     }
     
-    [self appendBlankLine];
+    [self appendString:kAFMultipartFormLineDelimiter];
     [self appendData:body];
 }
 
-- (void)appendPartWithFormData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name {
+- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name {
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
-    if (mimeType) {
-        [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
-    }
-    
-    [self appendPartWithHeaders:mutableHeaders body:data];
-}
-
-- (void)appendPartWithFile:(NSURL *)fileURL mimeType:(NSString *)mimeType fileName:(NSString *)fileName {
-    if (![fileURL isFileURL]) {
-        [NSException raise:@"Invalid fileURL value" format:@"%@ must be a valid file URL", fileURL];
-        return;
-    }
-    
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"file; filename=\"%@\"", fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
-    
-    NSData *data = [NSData dataWithContentsOfFile:[fileURL absoluteString]];
     
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
 
 - (void)appendPartWithFileData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name {
-    
-    NSString *fileName = [[NSString stringWithFormat:@"%d", [[NSDate date] hash]] stringByAppendingPathExtension:[mimeType lastPathComponent]];
+    NSString *fileName = [[NSString stringWithFormat:@"%@-%d", name, [[NSDate date] hash]] stringByAppendingPathExtension:[mimeType lastPathComponent]];
     
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"file; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
@@ -357,16 +334,23 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
 
+- (void)appendPartWithFile:(NSURL *)fileURL mimeType:(NSString *)mimeType fileName:(NSString *)fileName error:(NSError **)error {
+    NSData *data = [NSData dataWithContentsOfFile:[fileURL absoluteString] options:0 error:error];
+    if (data) {
+        NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+        [mutableHeaders setValue:[NSString stringWithFormat:@"file; filename=\"%@\"", fileName] forKey:@"Content-Disposition"];
+        [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+        
+        [self appendPartWithHeaders:mutableHeaders body:data];
+    }
+}
+
 - (void)appendData:(NSData *)data {
     [self.mutableData appendData:data];
 }
 
 - (void)appendString:(NSString *)string {
     [self appendData:[string dataUsingEncoding:self.stringEncoding]];
-}
-
-- (void)appendBlankLine {
-    [self appendString:kAFMultipartFormLineDelimiter];
 }
 
 @end

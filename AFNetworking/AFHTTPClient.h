@@ -23,7 +23,7 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
 
-@protocol AFMultipartFormDataProxy;
+@protocol AFMultipartFormData;
 
 /**
  `AFHTTPClient` objects encapsulates the common patterns of communicating with an application, webservice, or API. It encapsulates persistent information, like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
@@ -133,21 +133,21 @@
                                       path:(NSString *)path parameters:(NSDictionary *)parameters;
 
 /**
- Creates an `NSMutableURLRequest` object with the specified HTTP method and path, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block.
+ Creates an `NSMutableURLRequest` object with the specified HTTP method and path, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block. See http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
  
  @param method The HTTP method for the request. Must be either `POST`, `PUT`, or `DELETE`.
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
- @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormDataProxy` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
+ @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
  
- @see AFMultipartFormDataProxy
+ @see AFMultipartFormData
  
  @return An `NSMutableURLRequest` object
  */
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                                    path:(NSString *)path
                                              parameters:(NSDictionary *)parameters
-                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormDataProxy>formData))block;
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
 
 
 ///--------------------------------
@@ -237,9 +237,9 @@
 #pragma mark -
 
 /**
- The `AFMultipartFormDataProxy` protocol defines the methods supported by the parameter in the block argument of `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:`.
+ The `AFMultipartFormData` protocol defines the methods supported by the parameter in the block argument of `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:`.
  */
-@protocol AFMultipartFormDataProxy <NSObject>
+@protocol AFMultipartFormData
 
 /**
  Appends HTTP headers, followed by the encoded data and the multipart form boundary.
@@ -250,13 +250,23 @@
 - (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body;
 
 /**
- Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"` and, if mimeType is specified, `Content-Type: #{mimeType}`,  followed by the encoded data and the multipart form boundary.
+ Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
  
  @param data The data to be encoded and appended to the form data.
- @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. If `nil`, the `Content-Type` header will be omitted.
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
  */
-- (void)appendPartWithFormData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name;
+- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
+
+/**
+ Appends the HTTP header `Content-Disposition: file; filename=#{generated filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
+ 
+ @param data The data to be encoded and appended to the form data.
+ @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
+ @param name The name to be associated with the specified data. This parameter must not be `nil`.
+ 
+ @discussion The filename associated with this data in the form will be automatically generated using the parameter name specified and a unique timestamp-based hash.  
+ */
+- (void)appendPartWithFileData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name;
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{filename}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
@@ -264,10 +274,9 @@
  @param fileURL The URL for the local file to have its contents appended to the form data. This parameter must not be `nil`.
  @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
  @param fileName The filename to be associated with the file contents. This parameter must not be `nil`.
+ @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
  */
-- (void)appendPartWithFile:(NSURL *)fileURL mimeType:(NSString *)mimeType fileName:(NSString *)fileName;
-
-- (void)appendPartWithFileData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name;
+- (void)appendPartWithFile:(NSURL *)fileURL mimeType:(NSString *)mimeType fileName:(NSString *)fileName error:(NSError **)error;
 
 /**
  Appends encoded data to the form data.
