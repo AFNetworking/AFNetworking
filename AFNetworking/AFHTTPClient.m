@@ -142,7 +142,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 }
 
 - (void)setDefaultHeader:(NSString *)header value:(NSString *)value {
-	[self.defaultHeaders setObject:value forKey:header];
+	[self.defaultHeaders setValue:value forKey:header];
 }
 
 - (void)setAuthorizationHeaderWithUsername:(NSString *)username password:(NSString *)password {
@@ -177,7 +177,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
             url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", queryString]];
         } else {
             NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-            [headers setObject:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forKey:@"Content-Type"];
+            [headers setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forKey:@"Content-Type"];
             [request setHTTPBody:[queryString dataUsingEncoding:self.stringEncoding]];
         }
     }
