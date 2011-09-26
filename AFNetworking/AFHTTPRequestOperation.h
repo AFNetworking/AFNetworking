@@ -97,21 +97,21 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
                                       completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion;
 
 /**
- Creates and returns a streaming `AFHTTPRequestOperation` object and sets the specified input and output streams, and completion callback.
+ Creates and returns a streaming `AFHTTPRequestOperation` object and sets the specified input stream, output stream, and completion callback.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param inputStream The input stream object for reading data to be sent during the request. If set, the input stream is set as the HTTPBodyStream on the NSMutableURLRequest, and the request method is changed to `POST`. This argument may be `nil`.
+ @param inputStream The input stream object for reading data to be sent during the request. If set, the input stream is set as the `HTTPBodyStream` on the `NSMutableURLRequest`. If the request method is `GET`, it is changed to `POST`. This argument may be `nil`.
  @param outputStream The output stream object for writing data received during the request. If set, data accumulated in `NSURLConnectionDelegate` methods will be sent to the output stream, and the NSData parameter in the completion block will be `nil`. This argument may be `nil`.
- @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the request sent from the client, the response received from the server, the NSData received by the server during the execution of the request, and an error, which will have been set if an error occured while loading the request. This argument may be `nil`.
+ @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the request sent from the client, the response received from the server, the data received by the server during the execution of the request, and an error, which will have been set if an error occured while loading the request. This argument may be `nil`.
  
  @see operationWithRequest:completion
  
- @return A new HTTP request operation
+ @return A new streaming HTTP request operation
  */
-+ (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
-                                     inputStream:(NSInputStream *)inputStream
-                                    outputStream:(NSOutputStream *)outputStream
-                                      completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion;
++ (AFHTTPRequestOperation *)streamingOperationWithRequest:(NSURLRequest *)urlRequest
+                                              inputStream:(NSInputStream *)inputStream
+                                             outputStream:(NSOutputStream *)outputStream
+                                               completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion;
 
 ///---------------------------------
 /// @name Setting Progress Callbacks

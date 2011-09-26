@@ -142,10 +142,10 @@ static NSThread *_networkRequestThread = nil;
     return operation;
 }
 
-+ (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
-                                     inputStream:(NSInputStream *)inputStream
-                                    outputStream:(NSOutputStream *)outputStream
-                                      completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion
++ (AFHTTPRequestOperation *)streamingOperationWithRequest:(NSURLRequest *)urlRequest
+                                              inputStream:(NSInputStream *)inputStream
+                                             outputStream:(NSOutputStream *)outputStream
+                                               completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion
 {
     NSMutableURLRequest *mutableURLRequest = [[urlRequest mutableCopy] autorelease];
     if (inputStream) {
