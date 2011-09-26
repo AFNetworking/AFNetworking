@@ -34,6 +34,7 @@
     NSStringEncoding _stringEncoding;
     NSMutableDictionary *_defaultHeaders;
     NSOperationQueue *_operationQueue;
+    BOOL _HTTPShouldHandleCookies;
 }
 
 /**
@@ -50,6 +51,11 @@
  The operation queue which manages operations enqueued by the HTTP client.
  */
 @property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;
+
+/**
+ The value to pass on to the request indicating if cookies should be handled 
+ */	
+@property (nonatomic, assign) BOOL HTTPShouldHandleCookies;
 
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
