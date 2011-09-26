@@ -91,7 +91,6 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationProgressBlock downloadProgress;
 @property (readwrite, nonatomic, copy) AFHTTPRequestOperationCompletionBlock completion;
 
-- (id)initWithRequest:(NSURLRequest *)urlRequest;
 - (void)operationDidStart;
 - (void)finish;
 @end
@@ -136,7 +135,8 @@ static NSThread *_networkRequestThread = nil;
 + (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
                 completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion
 {
-    AFHTTPRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    AFHTTPRequestOperation *operation = [[[self alloc] init] autorelease];
+    operation.request = urlRequest;
     operation.completion = completion;
     
     return operation;
@@ -166,16 +166,14 @@ static NSThread *_networkRequestThread = nil;
     return operation;
 }
 
-- (id)initWithRequest:(NSURLRequest *)urlRequest {
+- (id)init {
     self = [super init];
     if (!self) {
 		return nil;
     }
-        
-    self.request = urlRequest;
-	
+    	
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
-        
+    
     self.state = AFHTTPOperationReadyState;
 	
     return self;
@@ -330,7 +328,9 @@ didReceiveResponse:(NSURLResponse *)response
     if (self.outputStream) {
         [self.outputStream open];
     } else {
-        NSUInteger capacity = MIN(MAX(abs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity), kAFHTTPMaximumInitialDataCapacity);
+        
+        NSUInteger maxCapacity = MAX((NSUInteger)llabs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity);
+        NSUInteger capacity = MIN(maxCapacity, kAFHTTPMaximumInitialDataCapacity);
         self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
     }
 }
@@ -350,7 +350,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     if (self.downloadProgress) {
-        self.downloadProgress(self.totalBytesRead, self.response.expectedContentLength);
+        self.downloadProgress(self.totalBytesRead, (NSUInteger)self.response.expectedContentLength);
     }
 }
 
