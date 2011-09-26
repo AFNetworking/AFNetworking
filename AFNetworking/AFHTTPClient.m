@@ -224,12 +224,20 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     return request;
 }
 
-- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)request success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
-	if ([request URL] == nil || [[request URL] isEqual:[NSNull null]]) {
-		return;
-	}
+- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)urlRequest 
+                                success:(void (^)(id object))success 
+                                failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+{
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation operationWithRequest:urlRequest success:^(id JSON) {
+        if (success) {
+            success(JSON);
+        }
+    } failure:^(NSHTTPURLResponse *response, NSError *error) {
+        if (failure) {
+            failure(response, error);
+        }
+    }];
     
-    AFHTTPRequestOperation *operation = [AFJSONRequestOperation operationWithRequest:request success:success failure:failure];
     [self.operationQueue addOperation:operation];
 }
 
@@ -243,22 +251,38 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 
 #pragma mark -
 
-- (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
+- (void)getPath:(NSString *)path 
+     parameters:(NSDictionary *)parameters 
+        success:(void (^)(id object))success 
+        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+{
 	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }
 
-- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
+- (void)postPath:(NSString *)path 
+      parameters:(NSDictionary *)parameters 
+         success:(void (^)(id object))success 
+         failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+{
 	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }
 
-- (void)putPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
+- (void)putPath:(NSString *)path 
+     parameters:(NSDictionary *)parameters 
+        success:(void (^)(id object))success 
+        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+{
 	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }
 
-- (void)deletePath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(id response))success failure:(void (^)(NSError *error))failure {
+- (void)deletePath:(NSString *)path 
+        parameters:(NSDictionary *)parameters 
+           success:(void (^)(id object))success 
+           failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+{
 	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
 	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
 }

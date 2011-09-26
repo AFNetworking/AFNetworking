@@ -44,15 +44,15 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 + (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
                                          success:(void (^)(id JSON))success
-                                         failure:(void (^)(NSError *error))failure
+                                         failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
 {    
     return [self operationWithRequest:urlRequest acceptableStatusCodes:[self defaultAcceptableStatusCodes] acceptableContentTypes:[self defaultAcceptableContentTypes] success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, id JSON) {
         if (success) {
             success(JSON);
         }
-    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSError *error) {
+    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
         if (failure) {
-            failure(error);
+            failure(response, error);
         }
     }];
 }
