@@ -113,7 +113,7 @@ static inline BOOL AFHTTPOperationStateTransitionIsValid(AFHTTPOperationState fr
 
 static NSThread *_networkRequestThread = nil;
 
-+ (void)networkRequestThreadEntryPoint:(id)object {
++ (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         [[NSRunLoop currentRunLoop] run];
@@ -155,7 +155,7 @@ static NSThread *_networkRequestThread = nil;
         }
     }
 
-    AFHTTPRequestOperation *operation = [self operationWithRequest:mutableURLRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
+    AFHTTPRequestOperation *operation = [self operationWithRequest:mutableURLRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, __unused NSData *data, NSError *error) {
         if (completion) {
             completion(request, response, error);
         }
@@ -320,7 +320,7 @@ static NSThread *_networkRequestThread = nil;
 
 #pragma mark - NSURLConnection
 
-- (void)connection:(NSURLConnection *)connection 
+- (void)connection:(NSURLConnection *)__unused connection 
 didReceiveResponse:(NSURLResponse *)response 
 {
     self.response = (NSHTTPURLResponse *)response;
@@ -335,7 +335,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
-- (void)connection:(NSURLConnection *)connection 
+- (void)connection:(NSURLConnection *)__unused connection 
     didReceiveData:(NSData *)data 
 {
     self.totalBytesRead += [data length];
@@ -354,7 +354,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {        
+- (void)connectionDidFinishLoading:(NSURLConnection *)__unused connection {        
     if (self.outputStream) {
         [self.outputStream close];
     } else {
@@ -365,7 +365,7 @@ didReceiveResponse:(NSURLResponse *)response
     [self finish];
 }
 
-- (void)connection:(NSURLConnection *)connection 
+- (void)connection:(NSURLConnection *)__unused connection 
   didFailWithError:(NSError *)error 
 {      
     self.error = error;
@@ -379,8 +379,8 @@ didReceiveResponse:(NSURLResponse *)response
     [self finish];
 }
 
-- (void)connection:(NSURLConnection *)connection 
-   didSendBodyData:(NSInteger)bytesWritten 
+- (void)connection:(NSURLConnection *)__unused connection 
+   didSendBodyData:(NSInteger)__unused bytesWritten 
  totalBytesWritten:(NSInteger)totalBytesWritten 
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
@@ -389,7 +389,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
     }
 }
 
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection 
+- (NSCachedURLResponse *)connection:(NSURLConnection *)__unused connection 
                   willCacheResponse:(NSCachedURLResponse *)cachedResponse 
 {
     if ([self isCancelled]) {
