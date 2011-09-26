@@ -65,9 +65,9 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
             }
         }
         
-        static char const kAFBase64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        static uint8_t const kAFBase64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-        NSInteger idx = (i / 3) * 4;
+        NSUInteger idx = (i / 3) * 4;
         output[idx + 0] = kAFBase64EncodingTable[(value >> 18) & 0x3F];
         output[idx + 1] = kAFBase64EncodingTable[(value >> 12) & 0x3F];
         output[idx + 2] = (i + 1) < length ? kAFBase64EncodingTable[(value >> 6)  & 0x3F] : '=';
