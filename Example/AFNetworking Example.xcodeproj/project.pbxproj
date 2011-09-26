@@ -13,6 +13,8 @@
 		F874B5DC13E0AA6500B28E3E /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5CC13E0AA6500B28E3E /* AFJSONRequestOperation.m */; };
 		F874B5DD13E0AA6500B28E3E /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5CD13E0AA6500B28E3E /* AFNetworkActivityIndicatorManager.m */; };
 		F874B5E013E0AA6500B28E3E /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5D013E0AA6500B28E3E /* UIImageView+AFNetworking.m */; };
+		F8D0701B14310F4A00653FD3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */; };
+		F8D0701C14310F4F00653FD3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E013957DF100DB05C8 /* Security.framework */; };
 		F8D25D191396A9D300CF3BD6 /* placeholder-stamp.png in Resources */ = {isa = PBXBuildFile; fileRef = F8D25D171396A9D300CF3BD6 /* placeholder-stamp.png */; };
 		F8D25D1A1396A9D300CF3BD6 /* placeholder-stamp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8D25D181396A9D300CF3BD6 /* placeholder-stamp@2x.png */; };
 		F8DA09D21396ABED0057D0CC /* AFGowallaAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25D1D1396A9DE00CF3BD6 /* AFGowallaAPIClient.m */; };
@@ -28,7 +30,6 @@
 		F8E469691395739D00DB05C8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469681395739D00DB05C8 /* CoreGraphics.framework */; };
 		F8E469DF13957DD500DB05C8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469DE13957DD500DB05C8 /* CoreLocation.framework */; };
 		F8FBFA98142AA239001409DB /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FBFA97142AA238001409DB /* AFHTTPClient.m */; };
-		FF2B770D140DAC4E00A8DEC2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FF2B770C140DAC4E00A8DEC2 /* libz.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,10 +71,8 @@
 		F8E469DE13957DD500DB05C8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		F8E469E013957DF100DB05C8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		F8E469E413957E0400DB05C8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F8FBFA96142AA237001409DB /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPClient.h; path = ../AFNetworking/AFHTTPClient.h; sourceTree = "<group>"; };
 		F8FBFA97142AA238001409DB /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPClient.m; path = ../AFNetworking/AFHTTPClient.m; sourceTree = "<group>"; };
-		FF2B770C140DAC4E00A8DEC2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,7 +84,8 @@
 				F8E469671395739D00DB05C8 /* Foundation.framework in Frameworks */,
 				F8E469691395739D00DB05C8 /* CoreGraphics.framework in Frameworks */,
 				F8E469DF13957DD500DB05C8 /* CoreLocation.framework in Frameworks */,
-				FF2B770D140DAC4E00A8DEC2 /* libz.dylib in Frameworks */,
+				F8D0701B14310F4A00653FD3 /* SystemConfiguration.framework in Frameworks */,
+				F8D0701C14310F4F00653FD3 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,14 +174,12 @@
 		F8E469631395739D00DB05C8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F8E469E413957E0400DB05C8 /* SystemConfiguration.framework */,
 				F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */,
 				F8E469E013957DF100DB05C8 /* Security.framework */,
 				F8E469DE13957DD500DB05C8 /* CoreLocation.framework */,
 				F8E469641395739D00DB05C8 /* UIKit.framework */,
 				F8E469661395739D00DB05C8 /* Foundation.framework */,
 				F8E469681395739D00DB05C8 /* CoreGraphics.framework */,
-				FF2B770C140DAC4E00A8DEC2 /* libz.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
