@@ -48,9 +48,24 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
  
  For instance, `AFJSONRequestOperation` makes a distinction between successful and unsuccessful requests by validating the HTTP status code and content type of the response, and provides separate callbacks for both the succeeding and failing cases. As another example, `AFImageRequestOperation` offers a pared-down callback, with a single block argument that is an image object that was created from the response data.
  
- ## Methods to subclass
+ # Methods to Subclass
  
  Unless you need to override specific `NSURLConnection` delegate methods, you shouldn't need to subclass any methods. Instead, you should provide alternative constructor class methods, that are essentially wrappers around the callback from `AFHTTPRequestOperation`.
+ 
+ ## `NSURLConnection` Delegate Methods
+ 
+ Notably, `AFHTTPRequestOperation` does not implement any of the authentication challenge-related `NSURLConnection` delegate methods.
+ 
+ `AFHTTPRequestOperation` does implement the following `NSURLConnection` delegate methods:
+ 
+ - `connection:didReceiveResponse:`
+ - `connection:didReceiveData:`
+ - `connectionDidFinishLoading:`
+ - `connection:didFailWithError:`
+ - `connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:`
+ - `connection:willCacheResponse:`
+ 
+ If you overwrite any of the above methods, be sure to make the call to `super` first, or else it may cause unexpected results.
  
  @see NSOperation
  @see NSURLConnection
@@ -89,8 +104,6 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
  @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the request sent from the client, the response received from the server, the HTTP body received by the server during the execution of the request, and an error, which will have been set if an error occured while loading the request.
  
- @see operationWithRequest:inputStream:outputStream:completion
-  
  @return A new HTTP request operation
  */
 + (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
