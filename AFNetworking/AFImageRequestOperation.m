@@ -59,13 +59,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                     });
                 }
             } else {
-                UIImage *image = nil;    
-                if ([[UIScreen mainScreen] scale] == 2.0) {
-                    CGImageRef imageRef = [[UIImage imageWithData:data] CGImage];
-                    image = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
-                } else {
-                    image = [UIImage imageWithData:data]; 
-                }
+                UIImage *image = [UIImage imageWithData:data];
                 
                 if (imageProcessingBlock) {
                     image = imageProcessingBlock(image);
