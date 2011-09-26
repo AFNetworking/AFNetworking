@@ -49,7 +49,7 @@
 /**
  The operation queue which manages operations enqueued by the HTTP client.
  */
-@property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;;
+@property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;
 
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
