@@ -48,11 +48,11 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
  
  For instance, `AFJSONRequestOperation` makes a distinction between successful and unsuccessful requests by validating the HTTP status code and content type of the response, and provides separate callbacks for both the succeeding and failing cases. As another example, `AFImageRequestOperation` offers a pared-down callback, with a single block argument that is an image object that was created from the response data.
  
- # Methods to Subclass
+ ## Methods to Subclass
  
  Unless you need to override specific `NSURLConnection` delegate methods, you shouldn't need to subclass any methods. Instead, you should provide alternative constructor class methods, that are essentially wrappers around the callback from `AFHTTPRequestOperation`.
  
- ## `NSURLConnection` Delegate Methods
+ ### `NSURLConnection` Delegate Methods
  
  Notably, `AFHTTPRequestOperation` does not implement any of the authentication challenge-related `NSURLConnection` delegate methods.
  

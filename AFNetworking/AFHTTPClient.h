@@ -27,6 +27,23 @@
 
 /**
  `AFHTTPClient` objects encapsulates the common patterns of communicating with an application, webservice, or API. It encapsulates persistent information, like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
+ 
+ In its default implementation, `AFHTTPClient` sets the following HTTP headers:
+ 
+ - `Accept: application/json`
+ - `Accept-Encoding: gzip`
+ - `Accept-Language: #{[NSLocale preferredLanguages]}, en-us;q=0.8`
+ - `User-Agent: #{generated user agent}
+ 
+ You can override these HTTP headers or define new ones using `setDefaultHeader:value:`. 
+ 
+ # Subclassing Notes
+ 
+ It is strongly recommended that you create an `AFHTTPClient` subclass for each website or web application that your application communicates with, and in each subclass, defining a method that returns a singleton object that acts as single a shared HTTP client that holds authentication credentials and other configuration for the entire application.
+ 
+ ## Methods to Override
+ 
+ If an `AFHTTPClient` wishes to change the way request parameters are encoded, then the base implementation of `requestWithMethod:path:parameters: should be overridden. Otherwise, it should be sufficient to take the `super` implementation, and configure the resulting `NSMutableURLRequest` object accordingly.
  */
 @interface AFHTTPClient : NSObject {
 @private
@@ -35,6 +52,10 @@
     NSMutableDictionary *_defaultHeaders;
     NSOperationQueue *_operationQueue;
 }
+
+///---------------------------------------
+/// @name Accessing HTTP Client Properties
+///---------------------------------------
 
 /**
  The url used as the base for paths specified in methods such as `getPath:parameteres:success:failure`
@@ -80,7 +101,7 @@
 ///----------------------------------
 
 /**
- Returns the value for the HTTP headers set in request objects created by the HTTP client
+ Returns the value for the HTTP headers set in request objects created by the HTTP client.
  
  @param header The HTTP header to return the default value for
  
@@ -130,7 +151,8 @@
  @return An `NSMutableURLRequest` object
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
-                                      path:(NSString *)path parameters:(NSDictionary *)parameters;
+                                      path:(NSString *)path 
+                                parameters:(NSDictionary *)parameters;
 
 /**
  Creates an `NSMutableURLRequest` object with the specified HTTP method and path, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block. See http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2

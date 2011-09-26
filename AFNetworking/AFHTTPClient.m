@@ -26,14 +26,6 @@
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
 
-static NSString * AFMultipartFormEncapsulationBoundary() {
-    return [NSString stringWithFormat:@"%@--%@%@", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary, kAFMultipartFormLineDelimiter];
-}
-
-static NSString * AFMultipartFormFinalBoundary() {
-    return [NSString stringWithFormat:@"%@--%@--", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary];
-}
-
 @interface AFMultipartFormData : NSObject <AFMultipartFormData> {
 @private
     NSStringEncoding _stringEncoding;
@@ -160,7 +152,10 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 
 #pragma mark -
 
-- (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters {	
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
+                                      path:(NSString *)path 
+                                parameters:(NSDictionary *)parameters 
+{	
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
 	NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:self.defaultHeaders];
 	NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
@@ -271,6 +266,14 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 @end
 
 #pragma mark -
+
+static inline NSString * AFMultipartFormEncapsulationBoundary() {
+    return [NSString stringWithFormat:@"%@--%@%@", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary, kAFMultipartFormLineDelimiter];
+}
+
+static inline NSString * AFMultipartFormFinalBoundary() {
+    return [NSString stringWithFormat:@"%@--%@--", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary];
+}
 
 @interface AFMultipartFormData ()
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
