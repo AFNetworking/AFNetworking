@@ -184,7 +184,6 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     
 	[request setURL:url];
 	[request setHTTPMethod:method];
-	[request setHTTPShouldHandleCookies:NO];
 	[request setAllHTTPHeaderFields:headers];
     
 	return request;
