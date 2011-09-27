@@ -85,7 +85,7 @@
 }
 
 + (NSString *)stringByEscapingForURLParameterFromString:(NSString *)param {
-    return [self stringByEscapingForURLParameter:param withEncoding:NSUTF8StringEncoding];
+    return [self stringByEscapingForURLParameterFromString:param withEncoding:NSUTF8StringEncoding];
 }
 
 + (NSString *)stringByEscapingForURLParameterFromString:(NSString *)param withEncoding:(NSStringEncoding)encoding 
