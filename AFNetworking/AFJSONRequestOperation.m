@@ -99,11 +99,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 id JSON = nil;
                 NSError *JSONError = nil;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
-                if ([NSJSONSerialization class]) {
-                    JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
-                } else {
-                    JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
-                }
+                JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
 #else
                 JSON = [[JSONDecoder decoder] objectWithData:data error:&JSONError];
 #endif
