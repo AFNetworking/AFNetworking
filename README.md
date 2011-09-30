@@ -97,7 +97,7 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:8080/encode"]];
 NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:[[NSBundle mainBundle] pathForResource:@"large-image" ofType:@"tiff"]];
 NSOutputStream *outputStream = [NSOutputStream outputStreamToMemory];
-AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request inputStream:inputStream outputStream:outputStream completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+AFHTTPRequestOperation *operation = [AFHTTPRequestOperation streamingOperationWithRequest:request inputStream:inputStream outputStream:outputStream completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
     NSLog(@"Streaming operation complete");
 }];
 ```
