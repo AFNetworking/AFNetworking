@@ -24,7 +24,12 @@
 
 @interface NSString (AFNetworking)
 
-- (NSString *)urlEncodedString;
-- (NSString *)urlEncodedStringWithEncoding:(NSStringEncoding)encoding;
+#ifndef AFNETWORKING_NO_DEPRECATED
+- (NSString *)urlEncodedString __attribute__((deprecated("Will be removed in a future release. Please use afUrlEncodedString.")));
+- (NSString *)urlEncodedStringWithEncoding:(NSStringEncoding)encoding __attribute__((deprecated("Will be removed in a future release. Please use afDataByGZipCompressingWithError:.")));
+#endif
+
+- (NSString *)afUrlEncodedString;
+- (NSString *)afUrlEncodedStringWithEncoding:(NSStringEncoding)encoding;
 
 @end

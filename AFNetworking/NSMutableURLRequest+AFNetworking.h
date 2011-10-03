@@ -24,10 +24,18 @@
 
 @interface NSMutableURLRequest (AFNetworking)
 
+#ifndef AFNETWORKING_NO_DEPRECATED
 - (void)setHTTPBodyWithData:(NSData *)data 
-                   mimeType:(NSString *)mimeType 
-          forParameterNamed:(NSString *)parameterName 
-                 parameters:(NSDictionary *)parameters
-         useGzipCompression:(BOOL)useGzipCompression;
+                     mimeType:(NSString *)mimeType 
+            forParameterNamed:(NSString *)parameterName 
+                   parameters:(NSDictionary *)parameters
+           useGzipCompression:(BOOL)useGzipCompression __attribute__((deprecated("Will be removed in a future release. Please use afSetHTTPBodyWithData:mimeType:forParameterNamed:parameters:useGzipCompression:.")));
+#endif
+
+- (void)afSetHTTPBodyWithData:(NSData *)data 
+                     mimeType:(NSString *)mimeType 
+            forParameterNamed:(NSString *)parameterName 
+                   parameters:(NSDictionary *)parameters
+           useGzipCompression:(BOOL)useGzipCompression;
 
 @end

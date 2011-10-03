@@ -30,26 +30,71 @@
 static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOperation";
 
 @interface UIImageView (_AFNetworking)
-@property (readwrite, nonatomic, retain) AFImageRequestOperation *imageRequestOperation;
+@property (readwrite, nonatomic, retain) AFImageRequestOperation *afImageRequestOperation;
 @end
 
 @implementation UIImageView (_AFNetworking)
-@dynamic imageRequestOperation;
+@dynamic afImageRequestOperation;
 @end
 
 #pragma mark -
 
 @implementation UIImageView (AFNetworking)
 
-- (AFHTTPRequestOperation *)imageRequestOperation {
+#ifndef AFNETWORKING_NO_DEPRECATED
+- (void)setImageWithURL:(NSURL *)url {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    [self afSetImageWithURL:url];
+}
+
+- (void)setImageWithURL:(NSURL *)url 
+       placeholderImage:(UIImage *)placeholderImage {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    [self afSetImageWithURL:url placeholderImage:placeholderImage];
+}
+
+- (void)setImageWithURL:(NSURL *)url 
+       placeholderImage:(UIImage *)placeholderImage 
+              imageSize:(CGSize)imageSize 
+                options:(AFImageRequestOptions)options {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    [self afSetImageWithURL:url placeholderImage:placeholderImage imageSize:imageSize options:options];
+}
+
+- (void)setImageWithURL:(NSURL *)url 
+       placeholderImage:(UIImage *)placeholderImage 
+              imageSize:(CGSize)imageSize 
+                options:(AFImageRequestOptions)options
+                  block:(void (^)(UIImage *image, BOOL cacheUsed))block {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    [self afSetImageWithURL:url placeholderImage:placeholderImage imageSize:imageSize options:options block:block];
+}
+
+- (void)cancelImageRequestOperation {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    [self afCancelImageRequestOperation];
+}
+#endif
+
+- (AFHTTPRequestOperation *)afImageRequestOperation {
     return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, kUIImageViewImageRequestObjectKey);
 }
 
-- (void)setImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
+- (void)afSetImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
     objc_setAssociatedObject(self, kUIImageViewImageRequestObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-+ (NSOperationQueue *)sharedImageRequestOperationQueue {
++ (NSOperationQueue *)afSharedImageRequestOperationQueue {
     static NSOperationQueue *_imageRequestOperationQueue = nil;
     
     if (!_imageRequestOperationQueue) {
@@ -62,34 +107,34 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
 
 #pragma mark -
  
-- (void)setImageWithURL:(NSURL *)url {
-    [self setImageWithURL:url placeholderImage:nil];
+- (void)afSetImageWithURL:(NSURL *)url {
+    [self afSetImageWithURL:url placeholderImage:nil];
 }
 
-- (void)setImageWithURL:(NSURL *)url 
+- (void)afSetImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage 
 {
-    [self setImageWithURL:url placeholderImage:placeholderImage imageSize:self.frame.size options:AFImageRequestDefaultOptions];
+    [self afSetImageWithURL:url placeholderImage:placeholderImage imageSize:self.frame.size options:AFImageRequestDefaultOptions];
 }
 
-- (void)setImageWithURL:(NSURL *)url 
-       placeholderImage:(UIImage *)placeholderImage 
-              imageSize:(CGSize)imageSize 
-                options:(AFImageRequestOptions)options 
+- (void)afSetImageWithURL:(NSURL *)url 
+         placeholderImage:(UIImage *)placeholderImage 
+                imageSize:(CGSize)imageSize 
+                  options:(AFImageRequestOptions)options 
 {
-    [self setImageWithURL:url placeholderImage:placeholderImage imageSize:imageSize options:options block:nil];
+    [self afSetImageWithURL:url placeholderImage:placeholderImage imageSize:imageSize options:options block:nil];
 }
 
-- (void)setImageWithURL:(NSURL *)url 
-       placeholderImage:(UIImage *)placeholderImage 
-              imageSize:(CGSize)imageSize 
-                options:(AFImageRequestOptions)options
-                  block:(void (^)(UIImage *image, BOOL cacheUsed))block
+- (void)afSetImageWithURL:(NSURL *)url 
+         placeholderImage:(UIImage *)placeholderImage 
+                imageSize:(CGSize)imageSize 
+                  options:(AFImageRequestOptions)options
+                    block:(void (^)(UIImage *image, BOOL cacheUsed))block
 {
-    if (!url || [url isEqual:self.imageRequestOperation.request.URL]) {
+    if (!url || [url isEqual:self.afImageRequestOperation.request.URL]) {
         return;
     } else {
-        [self cancelImageRequestOperation];
+        [self afCancelImageRequestOperation];
     }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
@@ -106,13 +151,13 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
     } else {
         self.image = placeholderImage;
         
-        self.imageRequestOperation = [AFImageRequestOperation operationWithRequest:request imageSize:imageSize options:options success:^(UIImage *image) {
-            if (self.imageRequestOperation && ![self.imageRequestOperation isCancelled]) {
+        self.afImageRequestOperation = [AFImageRequestOperation operationWithRequest:request imageSize:imageSize options:options success:^(UIImage *image) {
+            if (self.afImageRequestOperation && ![self.afImageRequestOperation isCancelled]) {
                 if (block) {
                     block(image, NO);
                 }
 
-                if ([[request URL] isEqual:[[self.imageRequestOperation request] URL]]) {
+                if ([[request URL] isEqual:[[self.afImageRequestOperation request] URL]]) {
                     self.image = image;
                 } else {
                     self.image = placeholderImage;
@@ -120,12 +165,12 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
             }
         }];
         
-        [[[self class] sharedImageRequestOperationQueue] addOperation:self.imageRequestOperation];
+        [[[self class] afSharedImageRequestOperationQueue] addOperation:self.afImageRequestOperation];
     }
 }
 
-- (void)cancelImageRequestOperation {
-    [self.imageRequestOperation cancel];
+- (void)afCancelImageRequestOperation {
+    [self.afImageRequestOperation cancel];
 }
 
 @end

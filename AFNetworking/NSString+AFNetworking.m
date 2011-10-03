@@ -24,12 +24,28 @@
 
 @implementation NSString (AFNetworking)
 
-- (NSString*)urlEncodedString { 
-	return [self urlEncodedStringWithEncoding:NSUTF8StringEncoding];
+#ifndef AFNETWORKING_NO_DEPRECATED
+- (NSString *)urlEncodedString {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    return [self afUrlEncodedString];
+}
+
+- (NSString *)urlEncodedStringWithEncoding:(NSStringEncoding)encoding {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    return [self afUrlEncodedStringWithEncoding:encoding];
+}
+#endif
+
+- (NSString*)afUrlEncodedString { 
+	return [self afUrlEncodedStringWithEncoding:NSUTF8StringEncoding];
 }
 
 // See http://github.com/pokeb/asi-http-request/raw/master/Classes/ASIFormDataRequest.m
-- (NSString *)urlEncodedStringWithEncoding:(NSStringEncoding)encoding { 
+- (NSString *)afUrlEncodedStringWithEncoding:(NSStringEncoding)encoding { 
 	NSString *urlEncodedString = [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)self, NULL, (CFStringRef)@":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`", CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
 	
     return urlEncodedString ? urlEncodedString : @"";

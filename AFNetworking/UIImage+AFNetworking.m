@@ -24,7 +24,24 @@
 
 @implementation UIImage (AFNetworking)
 
+#ifndef AFNETWORKING_NO_DEPRECATED
 + (UIImage *)imageByScalingAndCroppingImage:(UIImage *)image size:(CGSize)size {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    return [self afImageByScalingAndCroppingImage:image size:size];
+}
+
++ (UIImage *)imageByRoundingCornersOfImage:(UIImage *)image corners:(UIRectCorner)corners cornerRadii:(CGSize)radii {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    return [self afImageByRoundingCornersOfImage:image corners:corners cornerRadii:radii];
+}
+
+#endif
+
++ (UIImage *)afImageByScalingAndCroppingImage:(UIImage *)image size:(CGSize)size {
     if (image == nil) {
         return nil;
     } else if (CGSizeEqualToSize(image.size, size) || CGSizeEqualToSize(size, CGSizeZero)) {
@@ -53,7 +70,7 @@
 	return newImage;
 }
 
-+ (UIImage *)imageByRoundingCornersOfImage:(UIImage *)image corners:(UIRectCorner)corners cornerRadii:(CGSize)radii {
++ (UIImage *)afImageByRoundingCornersOfImage:(UIImage *)image corners:(UIRectCorner)corners cornerRadii:(CGSize)radii {
     if (image == nil) {
 		return nil;
 	} else if(UIGraphicsBeginImageContextWithOptions != NULL) {

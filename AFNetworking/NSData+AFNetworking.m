@@ -33,7 +33,30 @@ static char Base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 
 @implementation NSData (AFNetworking)
 
+#ifndef AFNETWORKING_NO_DEPRECATED
 - (NSString *)base64EncodedString {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    return [self afBase64EncodedString];
+}
+
+- (NSData *)dataByGZipCompressingWithError:(NSError **)error {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    return [self afDataByGZipCompressingWithError:error];
+}
+
+- (NSData *)dataByGZipDecompressingDataWithError:(NSError **)error {
+#ifndef NDEBUG
+    NSLog(@"Use of deprecated category method: %s", __PRETTY_FUNCTION__);
+#endif
+    return [self afDataByGZipDecompressingDataWithError:error];
+}
+#endif
+
+- (NSString *)afBase64EncodedString {
     NSUInteger length = [self length];
     NSMutableData *mutableData = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
     
@@ -60,7 +83,7 @@ static char Base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     return [[[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding] autorelease];
 }
 
-- (NSData *)dataByGZipCompressingWithError:(NSError **)error {
+- (NSData *)afDataByGZipCompressingWithError:(NSError **)__unused error {
     if ([self length] == 0) {
         return self;
     }
@@ -99,7 +122,7 @@ static char Base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 	return [NSData dataWithData:compressedData];
 }
 
-- (NSData *)dataByGZipDecompressingDataWithError:(NSError **)error {
+- (NSData *)afDataByGZipDecompressingDataWithError:(NSError **)error {
     z_stream zStream;
 	
     zStream.zalloc = Z_NULL;
