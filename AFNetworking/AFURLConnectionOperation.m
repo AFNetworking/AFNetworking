@@ -274,6 +274,10 @@ static inline BOOL AFOperationStateTransitionIsValid(AFOperationState from, AFOp
 }
 
 - (void)cancel {
+    if ([self isFinished]) {
+        return;
+    }
+    
     [super cancel];
     
     self.cancelled = YES;
@@ -282,7 +286,7 @@ static inline BOOL AFOperationStateTransitionIsValid(AFOperationState from, AFOp
 }
 
 - (void)finish {
-    self.state = AFHTTPOperationFinishedState;    
+    self.state = AFHTTPOperationFinishedState;
 }
 
 #pragma mark - NSURLConnectionDelegate

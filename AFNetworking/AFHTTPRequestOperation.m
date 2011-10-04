@@ -38,6 +38,10 @@
 {
     AFHTTPRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
     operation.completionBlock = ^ {
+        if ([operation isCancelled]) {
+            return;
+        }
+        
         if (operation.error) {
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {

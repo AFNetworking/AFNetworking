@@ -53,6 +53,10 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     AFImageRequestOperation *operation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     
     operation.completionBlock = ^ {
+        if ([operation isCancelled]) {
+            return;
+        }
+        
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (operation.error) {
                 if (failure) {
