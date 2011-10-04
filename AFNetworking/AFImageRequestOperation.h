@@ -40,8 +40,8 @@
  
  @return A new image request operation
  */
-+ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
-                                          success:(void (^)(UIImage *image))success;
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
+                                                      success:(void (^)(UIImage *image))success;
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -54,10 +54,10 @@
  
  @return A new image request operation
  */
-+ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
-                             imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
-                                        cacheName:(NSString *)cacheNameOrNil
-                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                         imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                                                    cacheName:(NSString *)cacheNameOrNil
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                                                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 @end

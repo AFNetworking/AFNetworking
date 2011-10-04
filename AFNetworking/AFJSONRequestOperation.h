@@ -29,43 +29,17 @@
  @see NSOperation
  @see AFHTTPRequestOperation
  */
-@interface AFJSONRequestOperation : AFHTTPRequestOperation
+@interface AFJSONRequestOperation : AFHTTPRequestOperation {
+@private
+    id _responseJSON;    
+}
+
+@property (readonly, nonatomic, retain) id responseJSON;
+
 
 ///---------------------------------------
 /// @name Creating JSON Request Operations
 ///---------------------------------------
-
-/**
- Creates and returns an `AFJSONRequestOperation` object and sets the specified success callback.
- 
- @param urlRequest The request object to be loaded asynchronously during execution of the operation
- @param success A block object to be executed when the JSON request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the JSON object created from the response data of request, or nil if there was an error.
- 
- @see defaultAcceptableStatusCodes
- @see defaultAcceptableContentTypes
- @see operationWithRequest:success:failure:
- 
- @return A new JSON request operation
- */
-+ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
-                                         success:(void (^)(id JSON))success;
-
-/**
- Creates and returns an `AFJSONRequestOperation` object and sets the specified success and failure callbacks.
- 
- @param urlRequest The request object to be loaded asynchronously during execution of the operation
- @param success A block object to be executed when the JSON request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the JSON object created from the response data of request.
- @param failure A block object to be executed when the JSON request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a two arguments: the response from the server, and the error describing the network or parsing error that occurred.
- 
- @see defaultAcceptableStatusCodes
- @see defaultAcceptableContentTypes
- @see operationWithRequest:success:
- 
- @return A new JSON request operation
- */
-+ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
-                                         success:(void (^)(id JSON))success
-                                         failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
 
 /**
  Creates and returns an `AFJSONRequestOperation` object and sets the specified success and failure callbacks, as well as the status codes and content types that are acceptable for a successful request.
@@ -78,29 +52,7 @@
   
  @return A new JSON request operation
  */
-+ (AFJSONRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
-                           acceptableStatusCodes:(NSIndexSet *)acceptableStatusCodes
-                          acceptableContentTypes:(NSSet *)acceptableContentTypes
-                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
-                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-
-
-///----------------------------------
-/// @name Getting Default HTTP Values
-///----------------------------------
-
-/**
- Returns an `NSIndexSet` object containing the ranges of acceptable HTTP status codes (http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) used in operationWithRequest:success and operationWithRequest:success:failure.
- 
- By default, this is the range 200 to 299, inclusive.
- */
-+ (NSIndexSet *)defaultAcceptableStatusCodes;
-
-/**
- Returns an `NSSet` object containing the acceptable HTTP content type (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) used in operationWithRequest:success and operationWithRequest:success:failure.
- 
- By default, this contains `application/json`, `application/x-javascript`, `text/javascript`, `text/x-javascript`, `text/x-json`, `text/json`, and `text/plain`
- */
-+ (NSSet *)defaultAcceptableContentTypes;
-
++ (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 @end

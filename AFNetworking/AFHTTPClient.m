@@ -228,11 +228,11 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
                                 success:(void (^)(id object))success 
                                 failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
 {
-    AFJSONRequestOperation *operation = [AFJSONRequestOperation operationWithRequest:urlRequest success:^(id JSON) {
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:urlRequest success:^(__unused NSURLRequest *request, __unused NSHTTPURLResponse *response, id JSON) {
         if (success) {
             success(JSON);
         }
-    } failure:^(NSHTTPURLResponse *response, NSError *error) {
+    } failure:^(__unused NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
         if (failure) {
             failure(response, error);
         }

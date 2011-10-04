@@ -97,7 +97,7 @@ static NSString * const kAFImageRequestOperationObjectKey = @"_af_imageRequestOp
     } else {
         self.image = placeholderImage;
         
-        self.af_imageRequestOperation = [AFImageRequestOperation operationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        self.af_imageRequestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
             if (self.af_imageRequestOperation && ![self.af_imageRequestOperation isCancelled]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (success) {
