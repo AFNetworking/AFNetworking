@@ -64,9 +64,9 @@
 		[mutableParameters setValue:[NSString stringWithFormat:@"%1.7f", location.coordinate.longitude] forKey:@"lng"];
 	}
     
-    [[AFGowallaAPIClient sharedClient] getPath:urlString parameters:mutableParameters success:^(id response) {
+    [[AFGowallaAPIClient sharedClient] getPath:urlString parameters:mutableParameters success:^(id object) {
         NSMutableArray *mutableRecords = [NSMutableArray array];
-        for (NSDictionary *attributes in [response valueForKeyPath:@"spots"]) {
+        for (NSDictionary *attributes in [object valueForKeyPath:@"spots"]) {
             Spot *spot = [[[Spot alloc] initWithAttributes:attributes] autorelease];
             [mutableRecords addObject:spot];
         }
@@ -74,7 +74,7 @@
         if (block) {
             block([NSArray arrayWithArray:mutableRecords]);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, NSError *error) {
         if (block) {
             block([NSArray array]);
         }

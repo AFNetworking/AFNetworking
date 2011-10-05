@@ -97,7 +97,7 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:8080/encode"]];
 NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:[[NSBundle mainBundle] pathForResource:@"large-image" ofType:@"tiff"]];
 NSOutputStream *outputStream = [NSOutputStream outputStreamToMemory];
-AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request inputStream:inputStream outputStream:outputStream completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+AFHTTPRequestOperation *operation = [AFHTTPRequestOperation streamingOperationWithRequest:request inputStream:inputStream outputStream:outputStream completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
     NSLog(@"Streaming operation complete");
 }];
 ```
@@ -113,7 +113,7 @@ In order to demonstrate the power and flexibility of AFNetworking, we've include
 
 ### ARC Support
 
-If you are including AFNetworking in a project with [Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html) enabled, you will need to set the `-fno-obj-arc` compiler flag on all of the AFNetworking source files. To do this in Xcode, go to your active target and select the "Build Phases" tab. In the "Compiler Flags" column, set `-fno-obj-arc` for each of the AFNetworking source files.
+If you are including AFNetworking in a project with [Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html) enabled, you will need to set the `-fno-objc-arc` compiler flag on all of the AFNetworking source files. To do this in Xcode, go to your active target and select the "Build Phases" tab. In the "Compiler Flags" column, set `-fno-objc-arc` for each of the AFNetworking source files.
 
 This is certainly suboptimal, forking the project into an ARC and non-ARC branch would be extremely difficult to maintain. On the bright side, we're very excited about [CocoaPods](https://github.com/alloy/cocoapods), which is a promising solution to this and many other pain points.
 

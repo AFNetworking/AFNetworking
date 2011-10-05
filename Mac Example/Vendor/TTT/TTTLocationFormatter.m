@@ -233,7 +233,7 @@ static inline double CLLocationSpeedToMilesPerHour(CLLocationSpeed speed) {
                 case TTTWestDirection:
                     return NSLocalizedString(@"W", @"West Direction Abbreviation");
                 case TTTNorthwestDirection:
-                    return NSLocalizedString(@"NW", @"Northwest Direction Abbreviation");;
+                    return NSLocalizedString(@"NW", @"Northwest Direction Abbreviation");
             }
             break;
         case TTTBearingNumericStyle:
