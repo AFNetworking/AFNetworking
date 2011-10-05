@@ -49,6 +49,7 @@
 @private
     NSURL *_baseURL;
     NSStringEncoding _stringEncoding;
+    NSMutableArray *_registeredHTTPOperationClassNames;
     NSMutableDictionary *_defaultHeaders;
     NSOperationQueue *_operationQueue;
 }
@@ -95,6 +96,12 @@
  @return The newly-initialized HTTP client
  */
 - (id)initWithBaseURL:(NSURL *)url;
+
+///----------------------------------
+/// @name Managing HTTP Operations
+///----------------------------------
+
+- (BOOL)registerHTTPOperationClass:(Class)operationClass;
 
 ///----------------------------------
 /// @name Managing HTTP Header Values

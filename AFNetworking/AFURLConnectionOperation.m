@@ -142,6 +142,18 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     [super dealloc];
 }
 
+- (void)setCompletionBlock:(void (^)(void))block {
+    if (!block) {
+        [super setCompletionBlock:nil];
+    }
+    
+    __block id _blockSelf = [self retain];
+    [super setCompletionBlock:^ {
+        block();
+        [_blockSelf autorelease];
+    }];
+}
+
 - (NSInputStream *)inputStream {
     return self.request.HTTPBodyStream;
 }
@@ -194,8 +206,6 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
             switch (state) {
                 case AFHTTPOperationExecutingState:
                     return YES;
-                case AFHTTPOperationFinishedState:
-                    return [self isCancelled];
                 default:
                     return NO;
             }

@@ -113,4 +113,26 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     return _responsePropertyList;
 }
 
+#pragma mark - AFHTTPClientOperation
+
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    NSSet *acceptableContentTypes = [NSSet setWithObjects:@"application/x-plist", @"application/xml", nil];
+    return [acceptableContentTypes containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[[request URL] pathExtension] isEqualToString:@"plist"];
+}
+
++ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
+    return request;
+}
+
++ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                    success:(void (^)(id object))success 
+                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
+{
+    return [self propertyListRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, id propertyList) {
+        success(propertyList);
+    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
+        failure(response, error);
+    }];
+}
+
 @end

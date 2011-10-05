@@ -77,6 +77,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 
 @interface AFHTTPClient ()
 @property (readwrite, nonatomic, retain) NSURL *baseURL;
+@property (readwrite, nonatomic, retain) NSMutableArray *registeredHTTPOperationClassNames;
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
 @end
@@ -84,6 +85,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 @implementation AFHTTPClient
 @synthesize baseURL = _baseURL;
 @synthesize stringEncoding = _stringEncoding;
+@synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
 
@@ -101,6 +103,8 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     
     self.stringEncoding = NSUTF8StringEncoding;
 	
+    self.registeredHTTPOperationClassNames = [NSMutableArray array];
+    
 	self.defaultHeaders = [NSMutableDictionary dictionary];
     
     // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
@@ -124,10 +128,27 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 
 - (void)dealloc {
     [_baseURL release];
+    [_registeredHTTPOperationClassNames release];
     [_defaultHeaders release];
     [_operationQueue release];
     [super dealloc];
 }
+
+#pragma mark -
+
+- (BOOL)registerHTTPOperationClass:(Class)operationClass {
+    if (![operationClass conformsToProtocol:@protocol(AFHTTPClientOperation)]) {
+        return NO;
+    }
+    
+    NSString *className = NSStringFromClass(operationClass);
+    [self.registeredHTTPOperationClassNames removeObject:className];
+    [self.registeredHTTPOperationClassNames insertObject:className atIndex:0];
+    
+    return YES;
+}
+
+#pragma mark -
 
 - (NSString *)defaultValueForHeader:(NSString *)header {
 	return [self.defaultHeaders valueForKey:header];
@@ -228,16 +249,16 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
                                        success:(void (^)(id object))success 
                                        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
 {
-    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:urlRequest success:^(__unused NSURLRequest *request, __unused NSHTTPURLResponse *response, id JSON) {
-        if (success) {
-            success(JSON);
+    AFHTTPRequestOperation *operation = nil;
+    NSString *className = nil;
+    NSEnumerator *enumerator = [self.registeredHTTPOperationClassNames reverseObjectEnumerator];
+    while (!operation && (className = [enumerator nextObject])) {
+        Class class = NSClassFromString(className);
+        if (class && [class canProcessRequest:urlRequest]) {
+            operation = [class HTTPRequestOperationWithRequest:urlRequest success:success failure:failure];
         }
-    } failure:^(__unused NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-        if (failure) {
-            failure(response, error);
-        }
-    }];
-    
+    }
+       
     [self.operationQueue addOperation:operation];
 }
 

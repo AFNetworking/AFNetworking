@@ -31,34 +31,6 @@
 @synthesize acceptableContentTypes = _acceptableContentTypes;
 @synthesize error = _HTTPError;
 
-+ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data))success
-                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
-{
-    AFHTTPRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
-        }
-        
-        if (operation.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.request, operation.response, operation.error);
-                });
-            }
-        } else {
-            if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    success(operation.request, operation.response, operation.responseData);
-                });
-            }
-        }
-    };
-    
-    return operation;
-}
-
 - (id)initWithRequest:(NSURLRequest *)request {
     self = [super initWithRequest:request];
     if (!self) {
@@ -107,5 +79,43 @@
 - (BOOL)hasAcceptableContentType {
     return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
 }
+
+#pragma mark - AFHTTPClientOperation
+
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    return NO;
+}
+
++ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
+    return request;
+}
+
++ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                    success:(void (^)(id object))success 
+                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
+{
+    AFHTTPRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    operation.completionBlock = ^ {
+        if ([operation isCancelled]) {
+            return;
+        }
+        
+        if (operation.error) {
+            if (failure) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    failure(operation.response, operation.error);
+                });
+            }
+        } else {
+            if (success) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    success(operation.responseData);
+                });
+            }
+        }
+    };
+    
+    return operation;
+}        
 
 @end

@@ -23,9 +23,12 @@
 #import <Foundation/Foundation.h>
 #import "AFURLConnectionOperation.h"
 
-@protocol AFHTTPClientRequestOperation
-+ (BOOL)canInitWithRequest:(NSURLRequest *)request;
+@protocol AFHTTPClientOperation <NSObject>
++ (BOOL)canProcessRequest:(NSURLRequest *)request;
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request;
++ (id)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
+                              success:(void (^)(id object))success 
+                              failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
 @end
 
 /**
@@ -59,7 +62,7 @@
  @see NSOperation
  @see NSURLConnection
  */
-@interface AFHTTPRequestOperation : AFURLConnectionOperation {
+@interface AFHTTPRequestOperation : AFURLConnectionOperation <AFHTTPClientOperation> {
 @private
     NSIndexSet *_acceptableStatusCodes;
     NSSet *_acceptableContentTypes;
@@ -80,9 +83,9 @@
 /// @name Creating HTTP Request Operations
 ///---------------------------------------
 
-+ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data))success
-                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+//+ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
+//                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data))success
+//                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 ///-------------------------------
 /// @name Validating HTTP Response
