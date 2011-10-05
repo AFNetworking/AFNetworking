@@ -49,7 +49,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
     NSHTTPURLResponse *_response;
     NSError *_error;
 
-    NSData *_responseBody;
+    NSData *_responseData;
     NSInteger _totalBytesRead;
     NSMutableData *_dataAccumulator;
     NSOutputStream *_outputStream;

@@ -78,7 +78,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @synthesize request = _request;
 @synthesize response = _response;
 @synthesize error = _error;
-@synthesize responseData = _responseBody;
+@synthesize responseData = _responseData;
 @synthesize responseString = _responseString;
 @synthesize totalBytesRead = _totalBytesRead;
 @synthesize dataAccumulator = _dataAccumulator;
@@ -129,7 +129,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     [_response release];
     [_error release];
     
-    [_responseBody release];
+    [_responseData release];
     [_responseString release];
     [_dataAccumulator release];
     [_outputStream release]; _outputStream = nil;
