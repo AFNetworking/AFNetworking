@@ -51,29 +51,6 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     }
 }
 
-static inline BOOL AFOperationStateTransitionIsValid(AFOperationState from, AFOperationState to) {
-    switch (from) {
-        case AFHTTPOperationReadyState:
-            switch (to) {
-                case AFHTTPOperationExecutingState:
-                    return YES;
-                default:
-                    return NO;
-            }
-        case AFHTTPOperationExecutingState:
-            switch (to) {
-                case AFHTTPOperationReadyState:
-                    return NO;
-                default:
-                    return YES;
-            }
-        case AFHTTPOperationFinishedState:
-            return NO;
-        default:
-            return YES;
-    }
-}
-
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
@@ -88,6 +65,7 @@ static inline BOOL AFOperationStateTransitionIsValid(AFOperationState from, AFOp
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock downloadProgress;
 
+- (BOOL)shouldTransitionToState:(AFOperationState)state;
 - (void)operationDidStart;
 - (void)finish;
 @end
@@ -135,9 +113,9 @@ static inline BOOL AFOperationStateTransitionIsValid(AFOperationState from, AFOp
 		return nil;
     }
     
-    self.request = urlRequest;
-    
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
+    
+    self.request = urlRequest;
     
     self.state = AFHTTPOperationReadyState;
 	
@@ -185,11 +163,7 @@ static inline BOOL AFOperationStateTransitionIsValid(AFOperationState from, AFOp
 }
 
 - (void)setState:(AFOperationState)state {
-    if (self.state == state) {
-        return;
-    }
-    
-    if (!AFOperationStateTransitionIsValid(self.state, state)) {
+    if (![self shouldTransitionToState:state]) {
         return;
     }
     
@@ -211,6 +185,30 @@ static inline BOOL AFOperationStateTransitionIsValid(AFOperationState from, AFOp
             break;
         default:
             break;
+    }
+}
+
+- (BOOL)shouldTransitionToState:(AFOperationState)state {    
+    switch (self.state) {
+        case AFHTTPOperationReadyState:
+            switch (state) {
+                case AFHTTPOperationExecutingState:
+                    return YES;
+                case AFHTTPOperationFinishedState:
+                    return [self isCancelled];
+                default:
+                    return NO;
+            }
+        case AFHTTPOperationExecutingState:
+            switch (state) {
+                case AFHTTPOperationFinishedState:
+                    return YES;
+                default:
+                    return NO;
+            }
+        case AFHTTPOperationFinishedState:
+        default:
+            return NO;
     }
 }
 
@@ -273,6 +271,10 @@ static inline BOOL AFOperationStateTransitionIsValid(AFOperationState from, AFOp
     [self.connection start];
 }
 
+- (void)finish {
+    self.state = AFHTTPOperationFinishedState;
+}
+
 - (void)cancel {
     if ([self isFinished]) {
         return;
@@ -283,10 +285,6 @@ static inline BOOL AFOperationStateTransitionIsValid(AFOperationState from, AFOp
     self.cancelled = YES;
     
     [self.connection cancel];
-}
-
-- (void)finish {
-    self.state = AFHTTPOperationFinishedState;
 }
 
 #pragma mark - NSURLConnectionDelegate
