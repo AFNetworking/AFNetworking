@@ -53,7 +53,7 @@ UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0
 
 ``` objective-c
 NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"avatar.jpg"], 0.5);
-NSMutableURLRequest *request = [[AFHTTPClient sharedClient] multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:nil constructingBodyWithBlock: ^(id <AFMultipartFormDataProxy>formData) {
+NSMutableURLRequest *request = [[AFHTTPClient sharedClient] multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:nil constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
   [formData appendPartWithFormData:data name:@"avatar"]; 
 }];
 
