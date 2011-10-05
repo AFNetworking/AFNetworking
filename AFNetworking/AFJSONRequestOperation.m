@@ -36,12 +36,14 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, retain) id responseJSON;
+@property (readwrite, nonatomic, retain) NSError *error;
 
 + (id)JSONObjectWithData:(NSData *)data error:(NSError **)error;
 @end
 
 @implementation AFJSONRequestOperation
 @synthesize responseJSON = _responseJSON;
+@synthesize error = _JSONError;
 
 + (id)JSONObjectWithData:(NSData *)data error:(NSError **)error {
     id JSON = nil;
@@ -55,7 +57,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 #else
     JSON = [[JSONDecoder decoder] objectWithData:data error:error];
 #endif
-    
+
     return JSON;
 }
 
@@ -65,6 +67,10 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 {
     AFJSONRequestOperation *operation = [[[AFJSONRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     operation.completionBlock = ^ {
+        if ([operation isCancelled]) {
+            return;
+        }
+        
         if (operation.error) {
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -74,10 +80,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
                 NSError *error = nil;
-                id JSON = [self JSONObjectWithData:operation.responseBody error:&error];
+                id JSON = [self JSONObjectWithData:operation.responseData error:&error];
+                operation.error = error;
                 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if (error) {
+                    if (operation.error) {
                         if (failure) {
                             failure(operation.request, operation.response, error);
                         }
@@ -111,8 +118,10 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 }
 
 - (id)responseJSON {
-    if (!_responseJSON && self.response && self.responseBody) {
-        self.responseJSON = [[self class] JSONObjectWithData:self.responseBody error:nil];
+    if (!_responseJSON && [self isFinished]) {
+        NSError *error = nil;
+        self.responseJSON = [[self class] JSONObjectWithData:self.responseData error:nil];
+        self.error = error;
     }
     
     return _responseJSON;

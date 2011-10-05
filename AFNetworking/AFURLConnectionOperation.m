@@ -58,7 +58,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSURLResponse *response;
 @property (readwrite, nonatomic, retain) NSError *error;
-@property (readwrite, nonatomic, retain) NSData *responseBody;
+@property (readwrite, nonatomic, retain) NSData *responseData;
 @property (readwrite, nonatomic, copy) NSString *responseString;
 @property (readwrite, nonatomic, assign) NSInteger totalBytesRead;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
@@ -78,7 +78,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @synthesize request = _request;
 @synthesize response = _response;
 @synthesize error = _error;
-@synthesize responseBody = _responseBody;
+@synthesize responseData = _responseBody;
 @synthesize responseString = _responseString;
 @synthesize totalBytesRead = _totalBytesRead;
 @synthesize dataAccumulator = _dataAccumulator;
@@ -207,8 +207,9 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
                     return NO;
             }
         case AFHTTPOperationFinishedState:
-        default:
             return NO;
+        default:
+            return YES;
     }
 }
 
@@ -223,9 +224,9 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 - (NSString *)responseString {
-    if (!_responseString && self.response && self.responseBody) {
+    if (!_responseString && self.response && self.responseData) {
         NSStringEncoding textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.response.textEncodingName));
-        self.responseString = [[[NSString alloc] initWithData:self.responseBody encoding:textEncoding] autorelease];
+        self.responseString = [[[NSString alloc] initWithData:self.responseData encoding:textEncoding] autorelease];
     }
     
     return _responseString;
@@ -336,7 +337,7 @@ didReceiveResponse:(NSURLResponse *)response
     if (self.outputStream) {
         [self.outputStream close];
     } else {
-        self.responseBody = [NSData dataWithData:self.dataAccumulator];
+        self.responseData = [NSData dataWithData:self.dataAccumulator];
         [_dataAccumulator release]; _dataAccumulator = nil;
     }
     

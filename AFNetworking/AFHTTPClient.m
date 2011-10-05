@@ -224,9 +224,9 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     return request;
 }
 
-- (void)enqueueHTTPOperationWithRequest:(NSURLRequest *)urlRequest 
-                                success:(void (^)(id object))success 
-                                failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+- (void)enqueueHTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
+                                       success:(void (^)(id object))success 
+                                       failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
 {
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:urlRequest success:^(__unused NSURLRequest *request, __unused NSHTTPURLResponse *response, id JSON) {
         if (success) {
@@ -257,7 +257,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
         failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
 {
 	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
-	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
+	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
 }
 
 - (void)postPath:(NSString *)path 
@@ -266,7 +266,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
          failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
 {
 	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
-	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
+	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
 }
 
 - (void)putPath:(NSString *)path 
@@ -275,7 +275,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
         failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
 {
 	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
-	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
+	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
 }
 
 - (void)deletePath:(NSString *)path 
@@ -284,7 +284,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
            failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
 {
 	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
-	[self enqueueHTTPOperationWithRequest:request success:success failure:failure];
+	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
 }
 
 @end

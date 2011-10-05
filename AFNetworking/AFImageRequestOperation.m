@@ -32,7 +32,26 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     return af_image_request_operation_processing_queue;
 }
 
+@interface AFImageRequestOperation ()
+@property (readwrite, nonatomic, retain) UIImage *responseImage;
+
++ (UIImage *)imageWithData:(NSData *)data error:(NSError **)error ;
+@end
+
 @implementation AFImageRequestOperation
+@synthesize responseImage = _responseImage;
+
++ (UIImage *)imageWithData:(NSData *)data error:(NSError **)__unused error {
+    UIImage *image = nil;
+    if ([[UIScreen mainScreen] scale] == 2.0) {
+        CGImageRef imageRef = [[UIImage imageWithData:data] CGImage];
+        image = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
+    } else {
+        image = [UIImage imageWithData:data]; 
+    }
+    
+    return image;
+}
 
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(UIImage *image))success
@@ -64,24 +83,19 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                         failure(operation.request, operation.response, operation.error);
                     });
                 }
-            } else {
-                UIImage *image = nil;
-                if ([[UIScreen mainScreen] scale] == 2.0) {
-                    CGImageRef imageRef = [[UIImage imageWithData:operation.responseBody] CGImage];
-                    image = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
-                } else {
-                    image = [UIImage imageWithData:operation.responseBody]; 
-                }    
+            } else {                
+                UIImage *image = [[self class] imageWithData:operation.responseData error:nil];
                 
                 if (imageProcessingBlock) {
                     image = imageProcessingBlock(image);
                 }
                 
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if (success) {
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    
                         success(operation.request, operation.response, image);
-                    }
-                });
+                    });
+                }
                 
                 if ([operation.request cachePolicy] != NSURLCacheStorageNotAllowed) {
                     [[AFImageCache sharedImageCache] cacheImage:image forURL:[operation.request URL] cacheName:cacheNameOrNil];
@@ -102,6 +116,19 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     self.acceptableContentTypes = [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/bmp", @"image/x-xbitmap", nil];
     
     return self;
+}
+
+- (void)dealloc {
+    [_responseImage release];
+    [super dealloc];
+}
+
+- (UIImage *)responseImage {
+    if (!_responseImage && [self isFinished]) {
+        self.responseImage = [[self class] imageWithData:self.responseData error:nil];
+    }
+    
+    return _responseImage;
 }
 
 @end

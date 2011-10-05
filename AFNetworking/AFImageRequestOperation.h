@@ -30,7 +30,12 @@
  @see NSOperation
  @see AFHTTPRequestOperation
  */
-@interface AFImageRequestOperation : AFHTTPRequestOperation
+@interface AFImageRequestOperation : AFHTTPRequestOperation {
+@private
+    UIImage *_responseImage;
+}
+
+@property (readonly, nonatomic, retain) UIImage *responseImage;
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.

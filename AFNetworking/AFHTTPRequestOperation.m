@@ -27,10 +27,9 @@
 @end
 
 @implementation AFHTTPRequestOperation
-@dynamic error;
-@dynamic response;
 @synthesize acceptableStatusCodes = _acceptableStatusCodes;
 @synthesize acceptableContentTypes = _acceptableContentTypes;
+@synthesize error = _HTTPError;
 
 + (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                     success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data))success
@@ -51,7 +50,7 @@
         } else {
             if (success) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    success(operation.request, operation.response, operation.responseBody);
+                    success(operation.request, operation.response, operation.responseData);
                 });
             }
         }
@@ -81,7 +80,7 @@
 }
 
 - (NSError *)error {
-    if (self.response && ![super error]) {
+    if (self.response) {
         if (![self hasAcceptableStatusCode]) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code %@, got %d", nil), self.acceptableStatusCodes, [self.response statusCode]] forKey:NSLocalizedDescriptionKey];

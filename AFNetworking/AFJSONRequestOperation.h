@@ -31,11 +31,11 @@
  */
 @interface AFJSONRequestOperation : AFHTTPRequestOperation {
 @private
-    id _responseJSON;    
+    id _responseJSON;
+    NSError *_JSONError;
 }
 
 @property (readonly, nonatomic, retain) id responseJSON;
-
 
 ///---------------------------------------
 /// @name Creating JSON Request Operations

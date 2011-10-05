@@ -61,7 +61,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 @property (readonly, nonatomic, retain) NSURLResponse *response;
 @property (readonly, nonatomic, retain) NSError *error;
 
-@property (readonly, nonatomic, retain) NSData *responseBody;
+@property (readonly, nonatomic, retain) NSData *responseData;
 @property (readonly, nonatomic, copy) NSString *responseString;
 
 @property (nonatomic, retain) NSInputStream *inputStream;
