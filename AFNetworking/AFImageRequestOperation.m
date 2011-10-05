@@ -113,7 +113,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         return nil;
     }
     
-    self.acceptableContentTypes = [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/bmp", @"image/x-xbitmap", nil];
+    self.acceptableContentTypes = [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon" @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
     
     return self;
 }
