@@ -37,35 +37,17 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, retain) id responseJSON;
 @property (readwrite, nonatomic, retain) NSError *error;
-
-+ (id)JSONObjectWithData:(NSData *)data error:(NSError **)error;
 @end
 
 @implementation AFJSONRequestOperation
 @synthesize responseJSON = _responseJSON;
 @synthesize error = _JSONError;
 
-+ (id)JSONObjectWithData:(NSData *)data error:(NSError **)error {
-    id JSON = nil;
-    
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
-    if ([NSJSONSerialization class]) {
-        JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
-    } else {
-        JSON = [[JSONDecoder decoder] objectWithData:data error:error];
-    }
-#else
-    JSON = [[JSONDecoder decoder] objectWithData:data error:error];
-#endif
-
-    return JSON;
-}
-
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                     success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
                                                     failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    AFJSONRequestOperation *operation = [[[AFJSONRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+    AFJSONRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
     operation.completionBlock = ^ {
         if ([operation isCancelled]) {
             return;
@@ -80,13 +62,13 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
                 NSError *error = nil;
-                id JSON = [self JSONObjectWithData:operation.responseData error:&error];
+                id JSON = operation.responseJSON;
                 operation.error = error;
                 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (operation.error) {
                         if (failure) {
-                            failure(operation.request, operation.response, error);
+                            failure(operation.request, operation.response, operation.error);
                         }
                     } else {
                         if (success) {
@@ -114,13 +96,24 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 - (void)dealloc {
     [_responseJSON release];
+    [_JSONError release];
     [super dealloc];
 }
 
 - (id)responseJSON {
     if (!_responseJSON && [self isFinished]) {
         NSError *error = nil;
-        self.responseJSON = [[self class] JSONObjectWithData:self.responseData error:nil];
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
+        if ([NSJSONSerialization class]) {
+            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
+        } else {
+            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
+        }
+#else
+        self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
+#endif
+        
         self.error = error;
     }
     

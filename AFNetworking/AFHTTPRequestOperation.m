@@ -72,6 +72,7 @@
 
 - (void)dealloc {
     [_acceptableStatusCodes release];
+    [_HTTPError release];
     [super dealloc];
 }
 
