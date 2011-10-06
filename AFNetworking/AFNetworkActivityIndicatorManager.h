@@ -29,6 +29,7 @@
 @private
 	NSInteger _activityCount;
     BOOL _enabled;
+    NSTimer *_activityIndicatorVisibilityTimer;
 }
 
 /**
