@@ -271,6 +271,11 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 - (void)operationDidStart {
+    if ([self isCancelled]) {
+        [self finish];
+        return;
+    }
+    
     self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
     
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
