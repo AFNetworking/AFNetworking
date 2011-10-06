@@ -31,6 +31,7 @@
 		F8E469691395739D00DB05C8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469681395739D00DB05C8 /* CoreGraphics.framework */; };
 		F8E469DF13957DD500DB05C8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469DE13957DD500DB05C8 /* CoreLocation.framework */; };
 		F8F4B16E143CD1420064C9E6 /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8F4B16D143CD1410064C9E6 /* AFPropertyListRequestOperation.m */; };
+		F8F4B17F143E07030064C9E6 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8F4B17E143E07030064C9E6 /* AFXMLRequestOperation.m */; };
 		F8FBFA98142AA239001409DB /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FBFA97142AA238001409DB /* AFHTTPClient.m */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +78,8 @@
 		F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F8F4B16C143CD1410064C9E6 /* AFPropertyListRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFPropertyListRequestOperation.h; path = ../AFNetworking/AFPropertyListRequestOperation.h; sourceTree = "<group>"; };
 		F8F4B16D143CD1410064C9E6 /* AFPropertyListRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFPropertyListRequestOperation.m; path = ../AFNetworking/AFPropertyListRequestOperation.m; sourceTree = "<group>"; };
+		F8F4B17D143E07030064C9E6 /* AFXMLRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFXMLRequestOperation.h; path = ../AFNetworking/AFXMLRequestOperation.h; sourceTree = "<group>"; };
+		F8F4B17E143E07030064C9E6 /* AFXMLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFXMLRequestOperation.m; path = ../AFNetworking/AFXMLRequestOperation.m; sourceTree = "<group>"; };
 		F8FBFA96142AA237001409DB /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPClient.h; path = ../AFNetworking/AFHTTPClient.h; sourceTree = "<group>"; };
 		F8FBFA97142AA238001409DB /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPClient.m; path = ../AFNetworking/AFHTTPClient.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -235,6 +238,8 @@
 				F874B5CC13E0AA6500B28E3E /* AFJSONRequestOperation.m */,
 				F8F4B16C143CD1410064C9E6 /* AFPropertyListRequestOperation.h */,
 				F8F4B16D143CD1410064C9E6 /* AFPropertyListRequestOperation.m */,
+				F8F4B17D143E07030064C9E6 /* AFXMLRequestOperation.h */,
+				F8F4B17E143E07030064C9E6 /* AFXMLRequestOperation.m */,
 				F8FBFA96142AA237001409DB /* AFHTTPClient.h */,
 				F8FBFA97142AA238001409DB /* AFHTTPClient.m */,
 				F874B5D313E0AA6500B28E3E /* AFImageRequestOperation.h */,
@@ -347,6 +352,7 @@
 				F8FBFA98142AA239001409DB /* AFHTTPClient.m in Sources */,
 				F86E5529143A28F3002B438C /* AFURLConnectionOperation.m in Sources */,
 				F8F4B16E143CD1420064C9E6 /* AFPropertyListRequestOperation.m in Sources */,
+				F8F4B17F143E07030064C9E6 /* AFXMLRequestOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
