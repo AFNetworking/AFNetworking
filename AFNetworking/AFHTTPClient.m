@@ -22,6 +22,9 @@
 
 #import "AFHTTPClient.h"
 #import "AFJSONRequestOperation.h"
+#import "JSONKit.h"
+
+#include <Availability.h>
 
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
@@ -39,6 +42,8 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 @end
 
 #pragma mark -
+
+static NSUInteger const kAFHTTPClientDefaultMaxConcurrentOperationCount = 4;
 
 static NSString * AFBase64EncodedStringFromString(NSString *string) {
     NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string length]];
@@ -69,10 +74,52 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
     return [[[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding] autorelease];
 }
 
-static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
+static NSString * AFURLEncodedStringFromString(NSString *string) {
     static NSString * const kAFLegalCharactersToBeEscaped = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ ";
     
-	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
+	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding)) autorelease];
+}
+
+static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
+    NSMutableArray *mutableParameterComponents = [NSMutableArray array];
+    for (id key in [parameters allKeys]) {
+        NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromString([key description]), AFURLEncodedStringFromString([[parameters valueForKey:key] description])];
+        [mutableParameterComponents addObject:component];
+    }
+    
+    return [mutableParameterComponents componentsJoinedByString:@"&"];
+}
+
+static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
+    NSString *JSONString = nil;
+    
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
+    if ([NSJSONSerialization class]) {
+        NSError *error = nil;
+        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];
+        if (!error) {
+            JSONString = [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];
+        }
+    } else {
+        JSONString = [parameters JSONString];
+    }
+#else
+    JSONString = [parameters JSONString];
+#endif
+
+    return JSONString;
+}
+
+static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
+    NSString *propertyListString = nil;
+    NSError *error = nil;
+    
+    NSData *propertyListData = [NSPropertyListSerialization dataWithPropertyList:parameters format:NSPropertyListXMLFormat_v1_0 options:0 error:&error];
+    if (!error) {
+        propertyListString = [[[NSString alloc] initWithData:propertyListData encoding:NSUTF8StringEncoding] autorelease];
+    }
+    
+    return propertyListString;
 }
 
 @interface AFHTTPClient ()
@@ -85,6 +132,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 @implementation AFHTTPClient
 @synthesize baseURL = _baseURL;
 @synthesize stringEncoding = _stringEncoding;
+@synthesize parameterEncoding = _parameterEncoding;
 @synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
@@ -102,6 +150,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
     self.baseURL = url;
     
     self.stringEncoding = NSUTF8StringEncoding;
+    self.parameterEncoding = AFJSONParameterEncoding;
 	
     self.registeredHTTPOperationClassNames = [NSMutableArray array];
     
@@ -121,7 +170,7 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 	[self setDefaultHeader:@"User-Agent" value:[NSString stringWithFormat:@"%@/%@ (%@, %@ %@, %@, Scale/%f)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], @"unknown", [[UIDevice currentDevice] systemName], [[UIDevice currentDevice] systemVersion], [[UIDevice currentDevice] model], ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0)]];
     
     self.operationQueue = [[[NSOperationQueue alloc] init] autorelease];
-	[self.operationQueue setMaxConcurrentOperationCount:2];
+	[self.operationQueue setMaxConcurrentOperationCount:kAFHTTPClientDefaultMaxConcurrentOperationCount];
     
     return self;
 }
@@ -177,30 +226,33 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
                                       path:(NSString *)path 
                                 parameters:(NSDictionary *)parameters 
 {	
-	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
-	NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:self.defaultHeaders];
-	NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
+    NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
+	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
+    [request setHTTPMethod:method];
+    [request setAllHTTPHeaderFields:self.defaultHeaders];
 	
-    if (parameters) {
-        NSMutableArray *mutableParameterComponents = [NSMutableArray array];
-        for (id key in [parameters allKeys]) {
-            NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], self.stringEncoding), AFURLEncodedStringFromStringWithEncoding([[parameters valueForKey:key] description], self.stringEncoding)];
-            [mutableParameterComponents addObject:component];
-        }
-        NSString *queryString = [mutableParameterComponents componentsJoinedByString:@"&"];
-        
+    if (parameters) {        
         if ([method isEqualToString:@"GET"]) {
-            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", queryString]];
+            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParameters(parameters)]];
+            [request setURL:url];
         } else {
             NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-            [headers setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forKey:@"Content-Type"];
-            [request setHTTPBody:[queryString dataUsingEncoding:self.stringEncoding]];
+            switch (self.parameterEncoding) {
+                case AFFormURLParameterEncoding:;
+                    [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+                    [request setHTTPBody:[AFQueryStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+                    break;
+                case AFJSONParameterEncoding:;
+                    [request setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+                    [request setHTTPBody:[AFJSONStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+                    break;
+                case AFPropertyListParameterEncoding:;
+                    [request setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+                    [request setHTTPBody:[AFPropertyListStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+                    break;
+            }
         }
     }
-    
-	[request setURL:url];
-	[request setHTTPMethod:method];
-	[request setAllHTTPHeaderFields:headers];
     
 	return request;
 }
@@ -258,7 +310,15 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
             operation = [class HTTPRequestOperationWithRequest:urlRequest success:success failure:failure];
         }
     }
+    
+    if (!operation) {
+        operation = [AFHTTPRequestOperation HTTPRequestOperationWithRequest:urlRequest success:success failure:failure];
+    }
        
+    [self enqueueHTTPRequestOperation:operation];
+}
+
+- (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation {
     [self.operationQueue addOperation:operation];
 }
 

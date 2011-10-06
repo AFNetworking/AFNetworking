@@ -25,6 +25,12 @@
 
 @protocol AFMultipartFormData;
 
+typedef enum {
+    AFFormURLParameterEncoding,
+    AFJSONParameterEncoding,
+    AFPropertyListParameterEncoding,
+} AFHTTPClientParameterEncoding;
+
 /**
  `AFHTTPClient` objects encapsulates the common patterns of communicating with an application, webservice, or API. It encapsulates persistent information, like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
  
@@ -49,6 +55,7 @@
 @private
     NSURL *_baseURL;
     NSStringEncoding _stringEncoding;
+    AFHTTPClientParameterEncoding _parameterEncoding;
     NSMutableArray *_registeredHTTPOperationClassNames;
     NSMutableDictionary *_defaultHeaders;
     NSOperationQueue *_operationQueue;
@@ -67,6 +74,11 @@
  The string encoding used in constructing url requests. This is `NSUTF8StringEncoding` by default.
  */
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
+
+/**
+ 
+ */
+@property (nonatomic, assign) AFHTTPClientParameterEncoding parameterEncoding;
 
 /**
  The operation queue which manages operations enqueued by the HTTP client.
@@ -193,6 +205,9 @@
 - (void)enqueueHTTPRequestOperationWithRequest:(NSURLRequest *)request 
                                        success:(void (^)(id object))success 
                                        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
+/**
+ */
+- (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation;
 
 ///---------------------------------
 /// @name Cancelling HTTP Operations
