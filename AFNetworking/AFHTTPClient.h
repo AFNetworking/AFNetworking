@@ -43,7 +43,7 @@
  
  ## Methods to Override
  
- If an `AFHTTPClient` wishes to change the way request parameters are encoded, then the base implementation of `requestWithMethod:path:parameters: should be overridden. Otherwise, it should be sufficient to take the `super` implementation, and configure the resulting `NSMutableURLRequest` object accordingly.
+ If an `AFHTTPClient` wishes to change the way request parameters are encoded, then the base implementation of `requestWithMethod:path:parameters:` should be overridden. Otherwise, it should be sufficient to take the `super` implementation, and configure the resulting `NSMutableURLRequest` object accordingly.
  */
 @interface AFHTTPClient : NSObject {
 @private
@@ -140,6 +140,19 @@
 ///-------------------------------
 /// @name Creating Request Objects
 ///-------------------------------
+
+/**
+ Creates a `NSMutableURLRequest` object with the specified HTTP method, path, and string containing serialized JSON for the HTTP body. Because the JSON is used as the body, the HTTP method must be `POST`, `PUT`, or `DELETE`.
+ 
+ @param method The HTTP method for the request; must be one of `POST`, `PUT`, or `DELETE`.
+ @param path The path to be appended to the HTTP client's base URL and used as the request URL.
+ @param parameters The string containing serialized JSON to be used as the request HTTP body.
+ 
+ @return An `NSMutableURLRequest` object
+ */
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method
+                                      path:(NSString *)path
+                                  jsonBody:(NSString *)jsonBody;
 
 /**
  Creates an `NSMutableURLRequest` object with the specified HTTP method and path. If the HTTP method is `GET`, the parameters will be used to construct a url-encoded query string that is appended to the request's URL. If `POST`, `PUT`, or `DELETE`, the parameters will be encoded into a `application/x-www-form-urlencoded` HTTP body.

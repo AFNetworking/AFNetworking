@@ -152,14 +152,45 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
 
 #pragma mark -
 
+- (NSMutableURLRequest *) requestWithMethod:(NSString *)method
+                                        url:(NSURL *)url
+                                       body:(NSData *)body
+{
+    NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
+    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:self.defaultHeaders];
+  
+    [request setURL:url];
+    [request setHTTPMethod:method];
+    if (body != nil) {
+      [request setHTTPBody:body];
+    }
+    [request setAllHTTPHeaderFields:headers];
+  
+    return request;
+}
+
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method
+                                      path:(NSString *)path
+                                  jsonBody:(NSString *)jsonBody
+{
+    if ([method isEqualToString:@"GET"]) {
+      [NSException raise:@"Invalid HTTP Method" format:@"GET is not supported for requests with a JSON body"];
+    }
+
+    NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
+    NSMutableURLRequest *request = [self requestWithMethod:method
+                                                       url:url
+                                                      body:[jsonBody dataUsingEncoding:self.stringEncoding]];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    return request;
+}
+
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
                                       path:(NSString *)path 
                                 parameters:(NSDictionary *)parameters 
 {	
-	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
-	NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:self.defaultHeaders];
-	NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
-	
+    NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
+    NSData *body = nil;
     if (parameters) {
         NSMutableArray *mutableParameterComponents = [NSMutableArray array];
         for (id key in [parameters allKeys]) {
@@ -171,17 +202,19 @@ static NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
         if ([method isEqualToString:@"GET"]) {
             url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", queryString]];
         } else {
-            NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-            [headers setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forKey:@"Content-Type"];
-            [request setHTTPBody:[queryString dataUsingEncoding:self.stringEncoding]];
+            body = [queryString dataUsingEncoding:self.stringEncoding];
         }
     }
-    
-	[request setURL:url];
-	[request setHTTPMethod:method];
-	[request setAllHTTPHeaderFields:headers];
-    
-	return request;
+
+    NSMutableURLRequest *request = [self requestWithMethod:method
+                                                       url:url
+                                                      body:body];
+    if (body != nil) {
+      // If the parameters were encoded in the body, add the application/x-www-form-urlencoded header.
+      NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+      [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+    }
+    return request;
 }
 
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
