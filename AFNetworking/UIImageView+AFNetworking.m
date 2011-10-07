@@ -42,11 +42,11 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
 @implementation UIImageView (AFNetworking)
 
 - (AFHTTPRequestOperation *)imageRequestOperation {
-    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, kUIImageViewImageRequestObjectKey);
+    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kUIImageViewImageRequestObjectKey);
 }
 
 - (void)setImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
-    objc_setAssociatedObject(self, kUIImageViewImageRequestObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &kUIImageViewImageRequestObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 + (NSOperationQueue *)sharedImageRequestOperationQueue {
