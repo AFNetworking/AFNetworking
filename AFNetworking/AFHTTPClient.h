@@ -43,7 +43,7 @@
  
  ## Methods to Override
  
- If an `AFHTTPClient` wishes to change the way request parameters are encoded, then the base implementation of `requestWithMethod:path:parameters: should be overridden. Otherwise, it should be sufficient to take the `super` implementation, and configure the resulting `NSMutableURLRequest` object accordingly.
+ If an `AFHTTPClient` wishes to change the way request parameters are encoded, then the base implementation of `requestWithMethod:path:parameters:` should be overridden. Otherwise, it should be sufficient to take the `super` implementation, and configure the resulting `NSMutableURLRequest` object accordingly.
  */
 @interface AFHTTPClient : NSObject {
 @private
