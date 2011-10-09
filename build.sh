@@ -2,7 +2,7 @@
 set -ex
 
 INSTALL_PATH=$WORKSPACE/artifacts
-[ -z $WORKSPACE ] || INSTALL_PATH=$PWD/artifacts
+[ -z $WORKSPACE ] && INSTALL_PATH=$PWD/artifacts
 
 rm -rf $INSTALL_PATH
 mkdir -p $INSTALL_PATH
