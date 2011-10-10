@@ -94,28 +94,7 @@
                                                     success:(void (^)(id object))success 
                                                     failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    AFHTTPRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
-        }
-        
-        if (operation.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.response, operation.error);
-                });
-            }
-        } else {
-            if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    success(operation.responseData);
-                });
-            }
-        }
-    };
-    
-    return operation;
+    return nil;
 }        
 
 @end

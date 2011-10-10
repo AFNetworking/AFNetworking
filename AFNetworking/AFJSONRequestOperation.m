@@ -37,6 +37,9 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, retain) id responseJSON;
 @property (readwrite, nonatomic, retain) NSError *error;
+
++ (NSSet *)defaultAcceptableContentTypes;
++ (NSSet *)defaultAcceptablePathExtensions;
 @end
 
 @implementation AFJSONRequestOperation
@@ -83,13 +86,21 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     return operation;
 }
 
++ (NSSet *)defaultAcceptableContentTypes {
+    return [NSSet setWithObjects:@"application/json", @"application/x-javascript", @"text/javascript", @"text/x-javascript", @"text/x-json", @"text/json", @"text/plain", nil];
+}
+
++ (NSSet *)defaultAcceptablePathExtensions {
+    return [NSSet setWithObjects:@"json", nil];
+}
+
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
     self = [super initWithRequest:urlRequest];
     if (!self) {
         return nil;
     }
     
-    self.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"application/x-javascript", @"text/javascript", @"text/x-javascript", @"text/x-json", @"text/json", @"text/plain", nil];
+    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
     return self;
 }
@@ -123,12 +134,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 #pragma mark - AFHTTPClientOperation
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    NSSet *acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"application/x-javascript", @"text/javascript", @"text/x-javascript", @"text/x-json", @"text/json", @"text/plain", nil];
-    return [acceptableContentTypes containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[[request URL] pathExtension] isEqualToString:@"json"];
-}
-
-+ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
-    return request;
+    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
 }
 
 + (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest

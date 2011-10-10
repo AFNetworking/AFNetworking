@@ -26,6 +26,9 @@
 
 @interface AFXMLRequestOperation ()
 @property (readwrite, nonatomic, retain) NSXMLParser *responseXMLParser;
+
++ (NSSet *)defaultAcceptableContentTypes;
++ (NSSet *)defaultAcceptablePathExtensions;
 @end
 
 @implementation AFXMLRequestOperation
@@ -58,13 +61,21 @@
     return operation;
 }
 
++ (NSSet *)defaultAcceptableContentTypes {
+    return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
+}
+
++ (NSSet *)defaultAcceptablePathExtensions {
+    return [NSSet setWithObjects:@"xml", nil];
+}
+
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
     self = [super initWithRequest:urlRequest];
     if (!self) {
         return nil;
     }
     
-    self.acceptableContentTypes = [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
+    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
     return self;
 }
@@ -80,6 +91,23 @@
     }
     
     return _responseXMLParser;
+}
+
+#pragma mark - AFHTTPClientOperation
+
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+}
+
++ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                    success:(void (^)(id object))success 
+                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
+{
+    return [self XMLParserRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSXMLParser *XMLParser) {
+        success(XMLParser);
+    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
+        failure(response, error);
+    }];
 }
 
 @end

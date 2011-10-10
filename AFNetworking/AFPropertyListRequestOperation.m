@@ -35,6 +35,9 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 @property (readwrite, nonatomic, retain) id responsePropertyList;
 @property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
 @property (readwrite, nonatomic, retain) NSError *error;
+
++ (NSSet *)defaultAcceptableContentTypes;
++ (NSSet *)defaultAcceptablePathExtensions;
 @end
 
 @implementation AFPropertyListRequestOperation
@@ -81,6 +84,14 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     return operation;
 }
 
++ (NSSet *)defaultAcceptableContentTypes {
+    return [NSSet setWithObjects:@"application/x-plist", @"application/xml", nil];
+}
+
++ (NSSet *)defaultAcceptablePathExtensions {
+    return [NSSet setWithObjects:@"plist", nil];
+}
+
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
     self = [super initWithRequest:urlRequest];
     if (!self) {
@@ -116,12 +127,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 #pragma mark - AFHTTPClientOperation
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    NSSet *acceptableContentTypes = [NSSet setWithObjects:@"application/x-plist", @"application/xml", nil];
-    return [acceptableContentTypes containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[[request URL] pathExtension] isEqualToString:@"plist"];
-}
-
-+ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
-    return request;
+    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
 }
 
 + (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
