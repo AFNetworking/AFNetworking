@@ -21,8 +21,9 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPRequestOperation.h"
 
+@class AFHTTPRequestOperation;
+@protocol AFHTTPClientOperation;
 @protocol AFMultipartFormData;
 
 typedef enum {
@@ -284,6 +285,16 @@ typedef enum {
         parameters:(NSDictionary *)parameters 
            success:(void (^)(id object))success 
            failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
+@end
+
+#pragma mark -
+
+@protocol AFHTTPClientOperation <NSObject>
++ (BOOL)canProcessRequest:(NSURLRequest *)request;
++ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request;
++ (id)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
+                              success:(void (^)(id object))success 
+                              failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
 @end
 
 #pragma mark -

@@ -22,14 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AFURLConnectionOperation.h"
-
-@protocol AFHTTPClientOperation <NSObject>
-+ (BOOL)canProcessRequest:(NSURLRequest *)request;
-+ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request;
-+ (id)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
-                              success:(void (^)(id object))success 
-                              failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
-@end
+#import "AFHTTPClient.h"
 
 /**
   `AFHTTPRequestOperation` is an `NSOperation` subclass that implements the `NSURLConnection` delegate methods, and provides a simple block-based interface to asynchronously get the result and context of that operation finishes.
