@@ -93,6 +93,14 @@
     return _responseXMLParser;
 }
 
+#pragma mark - NSOperation
+
+- (void)cancel {
+    [super cancel];
+    
+    self.responseXMLParser.delegate = nil;
+}
+
 #pragma mark - AFHTTPClientOperation
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
