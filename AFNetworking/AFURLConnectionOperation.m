@@ -147,10 +147,10 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
         [super setCompletionBlock:nil];
     }
     
-    __block id _blockSelf = [self retain];
+    __block id _blockSelf = self;
     [super setCompletionBlock:^ {
         block();
-        [_blockSelf autorelease];
+        [_blockSelf setCompletionBlock:nil];
     }];
 }
 
