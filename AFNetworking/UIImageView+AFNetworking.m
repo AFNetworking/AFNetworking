@@ -81,7 +81,7 @@ static NSString * const kAFImageRequestOperationObjectKey = @"_af_imageRequestOp
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    if (![urlRequest URL] || (![self.af_imageRequestOperation isCancelled] && [[urlRequest URL] isEqual:self.af_imageRequestOperation.request.URL])) {
+    if (![urlRequest URL] || (![self.af_imageRequestOperation isCancelled] && [[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]])) {
         return;
     } else {
         [self cancelImageRequestOperation];
@@ -99,26 +99,22 @@ static NSString * const kAFImageRequestOperationObjectKey = @"_af_imageRequestOp
         
         self.af_imageRequestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
             if (self.af_imageRequestOperation && ![self.af_imageRequestOperation isCancelled]) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (success) {
-                        success(request, response, image);
-                    }
-                
-                    if ([[request URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
-                        self.image = image;
-                    } else {
-                        self.image = placeholderImage;
-                    }
-                });
+                if (success) {
+                    success(request, response, image);
+                }
+            
+                if ([[request URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
+                    self.image = image;
+                } else {
+                    self.image = placeholderImage;
+                }
             }
         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
             self.af_imageRequestOperation = nil;
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (failure) {
-                    failure(request, response, error);
-                } 
-            });
+            if (failure) {
+                failure(request, response, error);
+            } 
         }];
        
         [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
