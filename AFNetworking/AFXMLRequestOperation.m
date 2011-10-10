@@ -32,7 +32,6 @@
 @synthesize responseXMLParser = _responseXMLParser;
 
 + (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                       delegate:(id <NSXMLParserDelegate>)delegate
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
@@ -50,7 +49,6 @@
             }
         } else {
             NSXMLParser *XMLParser = operation.responseXMLParser;
-            XMLParser.delegate = delegate;
             if (success) {
                 success(operation.request, operation.response, XMLParser);
             }

@@ -31,7 +31,6 @@
 @property (readonly, nonatomic, retain) NSXMLParser *responseXMLParser;
 
 + (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                       delegate:(id <NSXMLParserDelegate>)delegate
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
