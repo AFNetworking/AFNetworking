@@ -226,7 +226,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
                                       path:(NSString *)path 
                                 parameters:(NSDictionary *)parameters 
 {	
-    NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
+    NSURL *url = [self.baseURL URLByAppendingPathComponent:path];
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
