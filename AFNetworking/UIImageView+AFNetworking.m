@@ -27,7 +27,7 @@
 
 #import "AFImageCache.h"
 
-static NSString * const kAFImageRequestOperationObjectKey = @"_af_imageRequestOperation";
+static char kAFImageRequestOperationObjectKey;
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, retain, setter = af_setImageRequestOperation:) AFImageRequestOperation *af_imageRequestOperation;
@@ -42,11 +42,11 @@ static NSString * const kAFImageRequestOperationObjectKey = @"_af_imageRequestOp
 @implementation UIImageView (AFNetworking)
 
 - (AFHTTPRequestOperation *)af_imageRequestOperation {
-    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, kAFImageRequestOperationObjectKey);
+    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFImageRequestOperationObjectKey);
 }
 
 - (void)af_setImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
-    objc_setAssociatedObject(self, kAFImageRequestOperationObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &kAFImageRequestOperationObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 + (NSOperationQueue *)af_sharedImageRequestOperationQueue {
@@ -97,7 +97,7 @@ static NSString * const kAFImageRequestOperationObjectKey = @"_af_imageRequestOp
     } else {
         self.image = placeholderImage;
         
-        self.af_imageRequestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        self.af_imageRequestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {            
             if (self.af_imageRequestOperation && ![self.af_imageRequestOperation isCancelled]) {
                 if (success) {
                     success(request, response, image);
@@ -108,7 +108,7 @@ static NSString * const kAFImageRequestOperationObjectKey = @"_af_imageRequestOp
                 } else {
                     self.image = placeholderImage;
                 }
-            }
+            }            
         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
             self.af_imageRequestOperation = nil;
             

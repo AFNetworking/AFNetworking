@@ -81,7 +81,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 
                 if (success) {
                     dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    
                         success(operation.request, operation.response, image);
                     });
                 }
@@ -90,7 +89,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                     [[AFImageCache sharedImageCache] cacheImage:image forURL:[operation.request URL] cacheName:cacheNameOrNil];
                 }
             }
-        });
+        });        
     };
     
     return operation;
