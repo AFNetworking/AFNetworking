@@ -44,6 +44,7 @@
 
 - (void)dealloc {
     [_acceptableStatusCodes release];
+    [_acceptableContentTypes release];
     [_HTTPError release];
     [super dealloc];
 }
