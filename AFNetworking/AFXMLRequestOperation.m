@@ -81,7 +81,9 @@
 }
 
 - (void)dealloc {
+    _responseXMLParser.delegate = nil;
     [_responseXMLParser release];
+    
     [super dealloc];
 }
 
