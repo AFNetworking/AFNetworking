@@ -145,6 +145,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 - (void)setCompletionBlock:(void (^)(void))block {
     if (!block) {
         [super setCompletionBlock:nil];
+        return;
     }
     
     __block id _blockSelf = self;
