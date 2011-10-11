@@ -23,6 +23,8 @@
 #import <Foundation/Foundation.h>
 #import <Availability.h>
 
+#import <AFNetworking/AFURLConnectionOperation.h>
+
 #import <AFNetworking/AFHTTPRequestOperation.h>
 #import <AFNetworking/AFJSONRequestOperation.h>
 #import <AFNetworking/AFXMLRequestOperation.h>
