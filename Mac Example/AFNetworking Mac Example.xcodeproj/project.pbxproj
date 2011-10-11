@@ -17,7 +17,6 @@
 		F897DE7C142CFEDC000DDD35 /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F897DE72142CFEDC000DDD35 /* AFJSONRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F897DE7D142CFEDC000DDD35 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F897DE74142CFEDC000DDD35 /* AFNetworkActivityIndicatorManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F897DE7E142CFEDC000DDD35 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F897DE77142CFEDC000DDD35 /* UIImageView+AFNetworking.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8A27AC6142CFE1300F5E0D6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F8A27AB1142CFE1300F5E0D6 /* Info.plist */; };
 		F8A27AC7142CFE1300F5E0D6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8A27AB2142CFE1300F5E0D6 /* AppDelegate.m */; };
 		F8A27AC8142CFE1300F5E0D6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8A27AB3142CFE1300F5E0D6 /* main.m */; };
 		F8A27AC9142CFE1300F5E0D6 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = F8A27AB9142CFE1300F5E0D6 /* Credits.rtf */; };
@@ -92,14 +91,14 @@
 				F87A15A41444927300318955 /* AFPropertyListRequestOperation.m */,
 				F897DE69142CFEDC000DDD35 /* AFHTTPClient.h */,
 				F897DE6A142CFEDC000DDD35 /* AFHTTPClient.m */,
-				F897DE6D142CFEDC000DDD35 /* AFImageCache.h */,
-				F897DE6E142CFEDC000DDD35 /* AFImageCache.m */,
 				F897DE6F142CFEDC000DDD35 /* AFImageRequestOperation.h */,
 				F897DE70142CFEDC000DDD35 /* AFImageRequestOperation.m */,
-				F897DE73142CFEDC000DDD35 /* AFNetworkActivityIndicatorManager.h */,
-				F897DE74142CFEDC000DDD35 /* AFNetworkActivityIndicatorManager.m */,
+				F897DE6D142CFEDC000DDD35 /* AFImageCache.h */,
+				F897DE6E142CFEDC000DDD35 /* AFImageCache.m */,
 				F897DE76142CFEDC000DDD35 /* UIImageView+AFNetworking.h */,
 				F897DE77142CFEDC000DDD35 /* UIImageView+AFNetworking.m */,
+				F897DE73142CFEDC000DDD35 /* AFNetworkActivityIndicatorManager.h */,
+				F897DE74142CFEDC000DDD35 /* AFNetworkActivityIndicatorManager.m */,
 			);
 			name = AFNetworking;
 			path = ../../AFNetworking;
@@ -257,7 +256,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8A27AC6142CFE1300F5E0D6 /* Info.plist in Resources */,
 				F8A27AC9142CFE1300F5E0D6 /* Credits.rtf in Resources */,
 				F8A27ACA142CFE1300F5E0D6 /* MainMenu.xib in Resources */,
 			);
