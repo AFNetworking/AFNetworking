@@ -145,17 +145,13 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 - (void)setCompletionBlock:(void (^)(void))block {
     if (!block) {
         [super setCompletionBlock:nil];
-        return;
-    }
-    
-    __block id _blockSelf = self;
-    [super setCompletionBlock:^ {
-        block();
-        
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
+    } else {
+        __block id _blockSelf = self;
+        [super setCompletionBlock:^ {
+            block();
             [_blockSelf setCompletionBlock:nil];
-        });
-    }];
+        }];
+    }
 }
 
 - (NSInputStream *)inputStream {
