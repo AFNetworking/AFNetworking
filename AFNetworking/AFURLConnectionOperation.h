@@ -42,7 +42,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /**
  `AFURLConnectionOperation` is an `NSOperation` that implements the NSURLConnection delegate methods, and provides a simple block-based interface to asynchronously get the result and context of that operation finishes.
  
- # Subclassing Notes
+ ## Subclassing Notes
  
  This is the base class of all network request operations. You may wish to create your own subclass in order to implement additional `NSURLConnection` delegate methods (see "`NSURLConnection` Delegate Methods" below), or to provide additional properties and/or class constructors.
  

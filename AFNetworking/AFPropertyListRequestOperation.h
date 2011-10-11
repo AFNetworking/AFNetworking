@@ -56,8 +56,8 @@
  Creates and returns an `AFPropertyListRequestOperation` object and sets the specified success and failure callbacks.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation
- @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the object deserialized from a plist constructed using the response data.
- @param failure A block object to be executed when the operation finishes unsuccessfully, or that finishes successfully, but encountered an error while deserializing the object from a property list. This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
+ @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the object deserialized from a plist constructed using the response data.
+ @param failure A block object to be executed when the operation finishes unsuccessfully, or that finishes successfully, but encountered an error while deserializing the object from a property list. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
  
  @return A new property list request operation
  */
