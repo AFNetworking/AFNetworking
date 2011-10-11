@@ -1,4 +1,4 @@
-// AFJSONRequestOperation.m
+// AFPropertyListRequestOperation.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,37 +20,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFJSONRequestOperation.h"
-#import "JSONKit.h"
+#import "AFPropertyListRequestOperation.h"
 
-#include <Availability.h>
-
-static dispatch_queue_t af_json_request_operation_processing_queue;
-static dispatch_queue_t json_request_operation_processing_queue() {
-    if (af_json_request_operation_processing_queue == NULL) {
-        af_json_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.json-request.processing", 0);
+static dispatch_queue_t af_property_list_request_operation_processing_queue;
+static dispatch_queue_t property_list_request_operation_processing_queue() {
+    if (af_property_list_request_operation_processing_queue == NULL) {
+        af_property_list_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.property-list-request.processing", 0);
     }
     
-    return af_json_request_operation_processing_queue;
+    return af_property_list_request_operation_processing_queue;
 }
 
-@interface AFJSONRequestOperation ()
-@property (readwrite, nonatomic, retain) id responseJSON;
+@interface AFPropertyListRequestOperation ()
+@property (readwrite, nonatomic, retain) id responsePropertyList;
+@property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
 @property (readwrite, nonatomic, retain) NSError *error;
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 @end
 
-@implementation AFJSONRequestOperation
-@synthesize responseJSON = _responseJSON;
-@synthesize error = _JSONError;
+@implementation AFPropertyListRequestOperation
+@synthesize responsePropertyList = _responsePropertyList;
+@synthesize propertyListReadOptions = _propertyListReadOptions;
+@synthesize propertyListFormat = _propertyListFormat;
+@synthesize error = _propertyListError;
 
-+ (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
-                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
++ (AFPropertyListRequestOperation *)propertyListRequestOperationWithRequest:(NSURLRequest *)request
+                                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id propertyList))success
+                                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    AFJSONRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    AFPropertyListRequestOperation *operation = [[[self alloc] initWithRequest:request] autorelease];
     operation.completionBlock = ^ {
         if ([operation isCancelled]) {
             return;
@@ -63,10 +63,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 });
             }
         } else {
-            dispatch_async(json_request_operation_processing_queue(), ^(void) {
-                NSError *error = nil;
-                id JSON = operation.responseJSON;
-                operation.error = error;
+            dispatch_async(property_list_request_operation_processing_queue(), ^(void) {
+                id propertyList = operation.responsePropertyList;
                 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (operation.error) {
@@ -75,7 +73,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                         }
                     } else {
                         if (success) {
-                            success(operation.request, operation.response, JSON);
+                            success(operation.request, operation.response, propertyList);
                         }
                     }
                 }); 
@@ -87,11 +85,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 }
 
 + (NSSet *)defaultAcceptableContentTypes {
-    return [NSSet setWithObjects:@"application/json", @"application/x-javascript", @"text/javascript", @"text/x-javascript", @"text/x-json", @"text/json", @"text/plain", nil];
+    return [NSSet setWithObjects:@"application/x-plist", @"application/xml", nil];
 }
 
 + (NSSet *)defaultAcceptablePathExtensions {
-    return [NSSet setWithObjects:@"json", nil];
+    return [NSSet setWithObjects:@"plist", nil];
 }
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
@@ -100,35 +98,30 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         return nil;
     }
     
-    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
+    self.acceptableContentTypes = [NSSet setWithObjects:@"application/x-plist", @"application/xml", nil];
+    
+    self.propertyListReadOptions = NSPropertyListImmutable;
+    self.propertyListFormat = NSPropertyListXMLFormat_v1_0;
     
     return self;
 }
 
 - (void)dealloc {
-    [_responseJSON release];
-    [_JSONError release];
+    [_responsePropertyList release];
+    [_propertyListError release];
     [super dealloc];
 }
 
-- (id)responseJSON {
-    if (!_responseJSON && [self isFinished]) {
+- (id)responsePropertyList {
+    if (!_responsePropertyList && [self isFinished]) {
+        NSPropertyListFormat format;
         NSError *error = nil;
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
-        if ([NSJSONSerialization class]) {
-            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
-        } else {
-            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-        }
-#else
-        self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-#endif
-        
+        self.responsePropertyList = [NSPropertyListSerialization propertyListWithData:self.responseData options:self.propertyListReadOptions format:&format error:&error];
+        self.propertyListFormat = format;
         self.error = error;
     }
     
-    return _responseJSON;
+    return _responsePropertyList;
 }
 
 #pragma mark - AFHTTPClientOperation
@@ -141,8 +134,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                                                     success:(void (^)(id object))success 
                                                     failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    return [self JSONRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, id JSON) {
-        success(JSON);
+    return [self propertyListRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, id propertyList) {
+        success(propertyList);
     } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
         failure(response, error);
     }];

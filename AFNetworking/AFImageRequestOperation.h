@@ -21,9 +21,8 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "AFHTTPRequestOperation.h"
-
-#import <Availability.h>
 
 /**
  `AFImageRequestOperation` is an `NSOperation` that wraps the callback from `AFHTTPRequestOperation` to create an image from the response body, and optionally cache the image to memory.
@@ -31,7 +30,12 @@
  @see NSOperation
  @see AFHTTPRequestOperation
  */
-@interface AFImageRequestOperation : AFHTTPRequestOperation
+@interface AFImageRequestOperation : AFHTTPRequestOperation {
+@private
+    UIImage *_responseImage;
+}
+
+@property (readonly, nonatomic, retain) UIImage *responseImage;
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -41,11 +45,8 @@
  
  @return A new image request operation
  */
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-+ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
-                                          success:(void (^)(UIImage *image))success;
-#endif
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
+                                                      success:(void (^)(UIImage *image))success;
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -58,13 +59,10 @@
  
  @return A new image request operation
  */
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-+ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
-                             imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
-                                        cacheName:(NSString *)cacheNameOrNil
-                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-#endif
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                         imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                                                    cacheName:(NSString *)cacheNameOrNil
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                                                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 @end

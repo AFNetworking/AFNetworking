@@ -26,67 +26,127 @@
 static dispatch_queue_t af_image_request_operation_processing_queue;
 static dispatch_queue_t image_request_operation_processing_queue() {
     if (af_image_request_operation_processing_queue == NULL) {
-        af_image_request_operation_processing_queue = dispatch_queue_create("com.alamofire.image-request.processing", 0);
+        af_image_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.image-request.processing", 0);
     }
     
     return af_image_request_operation_processing_queue;
 }
 
+@interface AFImageRequestOperation ()
+@property (readwrite, nonatomic, retain) UIImage *responseImage;
+
++ (NSSet *)defaultAcceptableContentTypes;
++ (NSSet *)defaultAcceptablePathExtensions;
+@end
+
 @implementation AFImageRequestOperation
+@synthesize responseImage = _responseImage;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-
-+ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest                
-                                          success:(void (^)(UIImage *image))success
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
+                                                      success:(void (^)(UIImage *image))success
 {
-    return [self operationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
         if (success) {
             success(image);
         }
     } failure:nil];
 }
 
-+ (AFImageRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
                              imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
                                         cacheName:(NSString *)cacheNameOrNil
                                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                           failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    return (AFImageRequestOperation *)[self operationWithRequest:urlRequest completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
+    AFImageRequestOperation *operation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+    
+    operation.completionBlock = ^ {
+        if ([operation isCancelled]) {
+            return;
+        }
+        
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
-            if (error) {
+            if (operation.error) {
                 if (failure) {
                     dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        failure(request, response, error);
+                        failure(operation.request, operation.response, operation.error);
                     });
                 }
-            } else {
-                UIImage *image = nil;    
-                if ([[UIScreen mainScreen] scale] == 2.0) {
-                    CGImageRef imageRef = [[UIImage imageWithData:data] CGImage];
-                    image = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
-                } else {
-                    image = [UIImage imageWithData:data]; 
-                }
+            } else {                
+                UIImage *image = operation.responseImage;
                 
                 if (imageProcessingBlock) {
                     image = imageProcessingBlock(image);
                 }
                 
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if (success) {
-                        success(request, response, image);
-                    }
-                });
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        success(operation.request, operation.response, image);
+                    });
+                }
                 
-                if ([request cachePolicy] != NSURLCacheStorageNotAllowed) {
-                    [[AFImageCache sharedImageCache] cacheImage:image forURL:[request URL] cacheName:cacheNameOrNil];
+                if ([operation.request cachePolicy] != NSURLCacheStorageNotAllowed) {
+                    [[AFImageCache sharedImageCache] cacheImage:image forURL:[operation.request URL] cacheName:cacheNameOrNil];
                 }
             }
-        });
-    }];
+        });        
+    };
+    
+    return operation;
 }
 
-#endif
++ (NSSet *)defaultAcceptableContentTypes {
+    return [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon" @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
+}
+
++ (NSSet *)defaultAcceptablePathExtensions {
+    return [NSSet setWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"ico", @"bmp", @"cur", nil];
+}
+
+- (id)initWithRequest:(NSURLRequest *)urlRequest {
+    self = [super initWithRequest:urlRequest];
+    if (!self) {
+        return nil;
+    }
+    
+    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
+    
+    return self;
+}
+
+- (void)dealloc {
+    [_responseImage release];
+    [super dealloc];
+}
+
+- (UIImage *)responseImage {
+    if (!_responseImage && [self isFinished]) {
+        if ([[UIScreen mainScreen] scale] == 2.0) {
+            CGImageRef imageRef = [[UIImage imageWithData:self.responseData] CGImage];
+            self.responseImage = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
+        } else {
+            self.responseImage = [UIImage imageWithData:self.responseData]; 
+        }
+    }
+    
+    return _responseImage;
+}
+
+#pragma mark - AFHTTPClientOperation
+
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+}
+
++ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                    success:(void (^)(id object))success 
+                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
+{
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
+        success(image);
+    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
+        failure(response, error);
+    }];
+}
 
 @end
