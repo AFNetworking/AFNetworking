@@ -115,7 +115,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     if (!_responseJSON && [self isFinished]) {
         NSError *error = nil;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
+#if __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6 || __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
         if ([NSJSONSerialization class]) {
             self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
         } else {
