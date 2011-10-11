@@ -21,8 +21,10 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import "AFHTTPRequestOperation.h"
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import <UIKit/UIKit.h>
 
 /**
  `AFImageRequestOperation` is an `NSOperation` that wraps the callback from `AFHTTPRequestOperation` to create an image from the response body, and optionally cache the image to memory.
@@ -66,3 +68,4 @@
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 @end
+#endif
