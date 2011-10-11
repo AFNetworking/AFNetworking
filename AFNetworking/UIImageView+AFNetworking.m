@@ -92,6 +92,7 @@ static char kAFImageRequestOperationObjectKey;
     UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForURL:[urlRequest URL] cacheName:nil];
     if (cachedImage) {
         self.image = cachedImage;
+        self.af_imageRequestOperation = nil;
         
         if (success) {
             success(nil, nil, cachedImage);
