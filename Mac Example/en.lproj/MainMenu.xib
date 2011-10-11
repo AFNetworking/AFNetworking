@@ -1364,9 +1364,9 @@
 											<object class="NSMutableArray" key="NSTableColumns">
 												<bool key="EncodedWithXMLCoder">YES</bool>
 												<object class="NSTableColumn" id="553559566">
-													<double key="NSWidth">129.5078125</double>
-													<double key="NSMinWidth">100</double>
-													<double key="NSMaxWidth">130</double>
+													<double key="NSWidth">70</double>
+													<double key="NSMinWidth">70</double>
+													<double key="NSMaxWidth">70</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
 														<int key="NSCellFlags">75628096</int>
 														<int key="NSCellFlags2">2048</int>
@@ -1393,6 +1393,10 @@
 													<object class="NSImageCell" key="NSDataCell" id="717955434">
 														<int key="NSCellFlags">67239424</int>
 														<int key="NSCellFlags2">33554432</int>
+														<object class="NSCustomResource" key="NSContents">
+															<string key="NSClassName">NSImage</string>
+															<string key="NSResourceName">placeholder-stamp</string>
+														</object>
 														<object class="NSFont" key="NSSupport">
 															<string key="NSName">LucidaGrande</string>
 															<double key="NSSize">13</double>
@@ -1543,7 +1547,7 @@
 			<object class="NSCustomObject" id="755631768">
 				<string key="NSClassName">NSFontManager</string>
 			</object>
-			<object class="NSCustomObject" id="815842389">
+			<object class="NSCustomObject" id="91820041">
 				<string key="NSClassName">NearbySpotsController</string>
 			</object>
 		</object>
@@ -2233,7 +2237,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">tableView</string>
-						<reference key="source" ref="815842389"/>
+						<reference key="source" ref="91820041"/>
 						<reference key="destination" ref="256434433"/>
 					</object>
 					<int key="connectionID">550</int>
@@ -2242,7 +2246,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="256434433"/>
-						<reference key="destination" ref="815842389"/>
+						<reference key="destination" ref="91820041"/>
 					</object>
 					<int key="connectionID">551</int>
 				</object>
@@ -2250,7 +2254,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="256434433"/>
-						<reference key="destination" ref="815842389"/>
+						<reference key="destination" ref="91820041"/>
 					</object>
 					<int key="connectionID">552</int>
 				</object>
@@ -3362,7 +3366,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">549</int>
-						<reference key="object" ref="815842389"/>
+						<reference key="object" ref="91820041"/>
 						<reference key="parent" ref="0"/>
 					</object>
 				</object>
@@ -3844,11 +3848,13 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>NSMenuCheckmark</string>
 				<string>NSMenuMixedState</string>
+				<string>placeholder-stamp</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{9, 8}</string>
 				<string>{7, 2}</string>
+				<string>{50, 50}</string>
 			</object>
 		</object>
 	</data>

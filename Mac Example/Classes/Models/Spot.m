@@ -49,9 +49,7 @@
     return [[CLLocation alloc] initWithLatitude:[self.latitude doubleValue] longitude:[self.longitude doubleValue]];
 }
 
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(void (^)(NSArray *records))block {
-    
-    NSLog(@"GET");
++ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(void (^)(NSArray *records))block {    
     NSDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
 	if (location) {
 		[mutableParameters setValue:[NSString stringWithFormat:@"%1.7f", location.coordinate.latitude] forKey:@"lat"];

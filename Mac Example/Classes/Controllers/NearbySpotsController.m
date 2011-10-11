@@ -103,8 +103,7 @@
         if (!image) {
             NSURLRequest *imageRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:spot.imageURLString]];
             AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:imageRequest success:^(NSImage *image) {
-                
-                [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
+                [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             }];
             [self.imageOperationQueue addOperation:operation];
             
