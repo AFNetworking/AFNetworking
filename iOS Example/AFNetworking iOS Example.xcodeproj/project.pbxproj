@@ -275,9 +275,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F8E4695F1395739C00DB05C8 /* AFNetworkingExample */ = {
+		F8E4695F1395739C00DB05C8 /* AFNetworking iOS Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworkingExample" */;
+			buildConfigurationList = F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworking iOS Example" */;
 			buildPhases = (
 				F8E4695C1395739C00DB05C8 /* Sources */,
 				F8E4695D1395739C00DB05C8 /* Frameworks */,
@@ -287,7 +287,7 @@
 			);
 			dependencies = (
 			);
-			name = AFNetworkingExample;
+			name = "AFNetworking iOS Example";
 			productName = AFNetworkingExample;
 			productReference = F8E469601395739C00DB05C8 /* AFNetworkingExample.app */;
 			productType = "com.apple.product-type.application";
@@ -301,7 +301,7 @@
 				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = Gowalla;
 			};
-			buildConfigurationList = F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking Example" */;
+			buildConfigurationList = F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking iOS Example" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -313,7 +313,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F8E4695F1395739C00DB05C8 /* AFNetworkingExample */,
+				F8E4695F1395739C00DB05C8 /* AFNetworking iOS Example */,
 			);
 		};
 /* End PBXProject section */
@@ -428,7 +428,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking Example" */ = {
+		F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking iOS Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8E4697F1395739D00DB05C8 /* Debug */,
@@ -437,7 +437,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworkingExample" */ = {
+		F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworking iOS Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8E469821395739D00DB05C8 /* Debug */,
