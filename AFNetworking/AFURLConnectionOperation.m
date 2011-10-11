@@ -159,11 +159,9 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 - (void)setInputStream:(NSInputStream *)inputStream {
-    if (inputStream) {
-        NSMutableURLRequest *mutableRequest = [[self.request mutableCopy] autorelease];
-        mutableRequest.HTTPBodyStream = inputStream;
-        self.request = mutableRequest;
-    }
+    NSMutableURLRequest *mutableRequest = [[self.request mutableCopy] autorelease];
+    mutableRequest.HTTPBodyStream = inputStream;
+    self.request = mutableRequest;
 }
 
 - (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))block {
