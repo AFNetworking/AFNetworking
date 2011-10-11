@@ -25,6 +25,8 @@
 
 #import <AFNetworking/AFHTTPRequestOperation.h>
 #import <AFNetworking/AFJSONRequestOperation.h>
+#import <AFNetworking/AFXMLRequestOperation.h>
+#import <AFNetworking/AFPropertyListRequestOperation.h>
 #import <AFNetworking/AFHTTPClient.h>
 
 #import <AFNetworking/AFImageRequestOperation.h>
