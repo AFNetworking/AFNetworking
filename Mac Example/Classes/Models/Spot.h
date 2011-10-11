@@ -31,10 +31,10 @@
     NSNumber *_longitude;
 }
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSNumber *latitude;
-@property (nonatomic, retain) NSNumber *longitude;
+@property (strong) NSString *name;
+@property (strong) NSString *imageURLString;
+@property (strong) NSNumber *latitude;
+@property (strong) NSNumber *longitude;
 @property (readonly) CLLocation *location;
 
 - (id)initWithAttributes:(NSDictionary *)attributes;

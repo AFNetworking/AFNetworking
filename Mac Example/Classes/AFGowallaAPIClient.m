@@ -54,9 +54,6 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 	
 	// X-Gowalla-API-Version HTTP Header; see http://api.gowalla.com/api/docs
 	[self setDefaultHeader:@"X-Gowalla-API-Version" value:@"1"];
-	
-	// X-UDID HTTP Header
-	[self setDefaultHeader:@"X-UDID" value:[[UIDevice currentDevice] uniqueIdentifier]];
         
     return self;
 }
