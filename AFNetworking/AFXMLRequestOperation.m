@@ -26,6 +26,10 @@
 
 @interface AFXMLRequestOperation ()
 @property (readwrite, nonatomic, retain) NSXMLParser *responseXMLParser;
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+@property (readwrite, nonatomic, retain) NSXMLDocument *responseXMLDocument;
+#endif
+@property (readwrite, nonatomic, retain) NSError *error;
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
@@ -33,6 +37,10 @@
 
 @implementation AFXMLRequestOperation
 @synthesize responseXMLParser = _responseXMLParser;
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+@synthesize responseXMLDocument = _responseXMLDocument;
+#endif
+@synthesize error = _XMLError;
 
 + (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
@@ -84,6 +92,12 @@
     _responseXMLParser.delegate = nil;
     [_responseXMLParser release];
     
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+    [_responseXMLDocument release];
+#endif
+    
+    [_XMLError release];
+    
     [super dealloc];
 }
 
@@ -94,6 +108,18 @@
     
     return _responseXMLParser;
 }
+
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+- (NSXMLDocument *)responseXMLDocument {
+    if (!_responseXMLDocument && [self isFinished]) {
+        NSError *error = nil;
+        self.responseXMLDocument = [[[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error] autorelease];
+        self.error = error;
+    }
+    
+    return _responseXMLDocument;
+}
+#endif
 
 #pragma mark - NSOperation
 

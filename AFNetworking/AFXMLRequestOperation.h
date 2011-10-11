@@ -23,15 +23,32 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
 
+#import <Availability.h>
+
 @interface AFXMLRequestOperation : AFHTTPRequestOperation {
 @private
     NSXMLParser *_responseXMLParser;
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+    NSXMLDocument *_responseXMLDocument;
+#endif
+    NSError *_XMLError;
 }
 
 @property (readonly, nonatomic, retain) NSXMLParser *responseXMLParser;
 
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+@property (readonly, nonatomic, retain) NSXMLDocument *responseXMLDocument;
+#endif
+
 + (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+
+
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
++ (AFXMLRequestOperation *)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
+                                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+#endif
 
 @end
