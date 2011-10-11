@@ -25,6 +25,9 @@
 
 #import <Availability.h>
 
+/**
+ `AFXMLRequestOperation` is a subclass of `AFHTTPRequestOperation` that provides functionality to work with XML response data.
+ */
 @interface AFXMLRequestOperation : AFHTTPRequestOperation {
 @private
     NSXMLParser *_responseXMLParser;
@@ -34,18 +37,46 @@
     NSError *_XMLError;
 }
 
+///----------------------------
+/// @name Getting Response Data
+///----------------------------
+
+/**
+ An `NSXMLParser` object constructed from the response data.
+ */
 @property (readonly, nonatomic, retain) NSXMLParser *responseXMLParser;
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
+/**
+ An `NSXMLDocument` object constructed from the response data. If an error occurs while parsing, `nil` will be returned, and the `error` property will be set to the error.
+ */
 @property (readonly, nonatomic, retain) NSXMLDocument *responseXMLDocument;
 #endif
 
+/**
+ Creates and returns an `AFXMLRequestOperation` object and sets the specified success and failure callbacks.
+ 
+ @param urlRequest The request object to be loaded asynchronously during execution of the operation
+ @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the XML parser constructed with the response data of request.
+ @param failure A block object to be executed when the operation finishes unsuccessfully. This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the error describing the network error that occurred.
+ 
+ @return A new XML request operation
+ */
 + (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
+/**
+ Creates and returns an `AFXMLRequestOperation` object and sets the specified success and failure callbacks.
+ 
+ @param urlRequest The request object to be loaded asynchronously during execution of the operation
+ @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the XML document created from the response data of request.
+ @param failure A block object to be executed when the operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as XML. This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
+ 
+ @return A new XML request operation
+ */
 + (AFXMLRequestOperation *)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
                                                           failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;

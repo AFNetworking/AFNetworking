@@ -24,10 +24,7 @@
 #import "AFHTTPRequestOperation.h"
 
 /**
- `AFJSONRequestOperation` is an `NSOperation` that wraps the callback from `AFHTTPRequestOperation` to determine the success or failure of a request based on its status code and response content type, and parse the response body into a JSON object.
- 
- @see NSOperation
- @see AFHTTPRequestOperation
+ `AFJSONRequestOperation` is a subclass of `AFHTTPRequestOperation` that provides functionality to work with JSON response data.
  */
 @interface AFJSONRequestOperation : AFHTTPRequestOperation {
 @private
@@ -35,20 +32,25 @@
     NSError *_JSONError;
 }
 
-@property (readonly, nonatomic, retain) id responseJSON;
-
-///---------------------------------------
-/// @name Creating JSON Request Operations
-///---------------------------------------
+///----------------------------
+/// @name Getting Response Data
+///----------------------------
 
 /**
- Creates and returns an `AFJSONRequestOperation` object and sets the specified success and failure callbacks, as well as the status codes and content types that are acceptable for a successful request.
+ A JSON object constructed from the response data. If an error occurs while parsing, `nil` will be returned, and the `error` property will be set to the error.
+ */
+@property (readonly, nonatomic, retain) id responseJSON;
+
+///----------------------------------
+/// @name Creating Request Operations
+///----------------------------------
+
+/**
+ Creates and returns an `AFJSONRequestOperation` object and sets the specified success and failure callbacks.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation
- @param acceptableStatusCodes An `NSIndexSet` object that specifies the ranges of acceptable status codes. If you specify nil, all status codes will be considered acceptable.
- @param acceptableContentTypes An `NSSet` object that specifies the acceptable content types. If you specify nil, all content types will be considered acceptable.
- @param success A block object to be executed when the JSON request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the JSON object created from the response data of request.
- @param failure A block object to be executed when the JSON request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
+ @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the JSON object created from the response data of request.
+ @param failure A block object to be executed when the operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes three arguments, the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
   
  @return A new JSON request operation
  */

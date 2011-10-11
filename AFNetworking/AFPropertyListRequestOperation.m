@@ -101,7 +101,6 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     self.acceptableContentTypes = [NSSet setWithObjects:@"application/x-plist", @"application/xml", nil];
     
     self.propertyListReadOptions = NSPropertyListImmutable;
-    self.propertyListFormat = NSPropertyListXMLFormat_v1_0;
     
     return self;
 }
