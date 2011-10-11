@@ -48,9 +48,24 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
  
  For instance, `AFJSONRequestOperation` makes a distinction between successful and unsuccessful requests by validating the HTTP status code and content type of the response, and provides separate callbacks for both the succeeding and failing cases. As another example, `AFImageRequestOperation` offers a pared-down callback, with a single block argument that is an image object that was created from the response data.
  
- ## Methods to subclass
+ ## Methods to Subclass
  
  Unless you need to override specific `NSURLConnection` delegate methods, you shouldn't need to subclass any methods. Instead, you should provide alternative constructor class methods, that are essentially wrappers around the callback from `AFHTTPRequestOperation`.
+ 
+ ### `NSURLConnection` Delegate Methods
+ 
+ Notably, `AFHTTPRequestOperation` does not implement any of the authentication challenge-related `NSURLConnection` delegate methods.
+ 
+ `AFHTTPRequestOperation` does implement the following `NSURLConnection` delegate methods:
+ 
+ - `connection:didReceiveResponse:`
+ - `connection:didReceiveData:`
+ - `connectionDidFinishLoading:`
+ - `connection:didFailWithError:`
+ - `connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:`
+ - `connection:willCacheResponse:`
+ 
+ If you overwrite any of the above methods, be sure to make the call to `super` first, or else it may cause unexpected results.
  
  @see NSOperation
  @see NSURLConnection
@@ -65,7 +80,7 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
     NSError *_error;
     
     NSData *_responseBody;
-    NSUInteger _totalBytesRead;
+    NSInteger _totalBytesRead;
     NSMutableData *_dataAccumulator;
     NSOutputStream *_outputStream;
 }
@@ -89,29 +104,27 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
  @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the request sent from the client, the response received from the server, the HTTP body received by the server during the execution of the request, and an error, which will have been set if an error occured while loading the request.
  
- @see operationWithRequest:inputStream:outputStream:completion
-  
  @return A new HTTP request operation
  */
 + (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest 
                                       completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error))completion;
 
 /**
- Creates and returns a streaming `AFHTTPRequestOperation` object and sets the specified input and output streams, and completion callback.
+ Creates and returns a streaming `AFHTTPRequestOperation` object and sets the specified input stream, output stream, and completion callback.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param inputStream The input stream object for reading data to be sent during the request. If set, the input stream is set as the HTTPBodyStream on the NSMutableURLRequest, and the request method is changed to `POST`. This argument may be `nil`.
+ @param inputStream The input stream object for reading data to be sent during the request. If set, the input stream is set as the `HTTPBodyStream` on the `NSMutableURLRequest`. If the request method is `GET`, it is changed to `POST`. This argument may be `nil`.
  @param outputStream The output stream object for writing data received during the request. If set, data accumulated in `NSURLConnectionDelegate` methods will be sent to the output stream, and the NSData parameter in the completion block will be `nil`. This argument may be `nil`.
- @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the request sent from the client, the response received from the server, the NSData received by the server during the execution of the request, and an error, which will have been set if an error occured while loading the request. This argument may be `nil`.
+ @param completion A block object to be executed when the HTTP request operation is finished. This block has no return value and takes four arguments: the request sent from the client, the response received from the server, the data received by the server during the execution of the request, and an error, which will have been set if an error occured while loading the request. This argument may be `nil`.
  
  @see operationWithRequest:completion
  
- @return A new HTTP request operation
+ @return A new streaming HTTP request operation
  */
-+ (AFHTTPRequestOperation *)operationWithRequest:(NSURLRequest *)urlRequest
-                                     inputStream:(NSInputStream *)inputStream
-                                    outputStream:(NSOutputStream *)outputStream
-                                      completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion;
++ (AFHTTPRequestOperation *)streamingOperationWithRequest:(NSURLRequest *)urlRequest
+                                              inputStream:(NSInputStream *)inputStream
+                                             outputStream:(NSOutputStream *)outputStream
+                                               completion:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))completion;
 
 ///---------------------------------
 /// @name Setting Progress Callbacks
@@ -120,19 +133,19 @@ extern NSString * const AFHTTPOperationDidFinishNotification;
 /**
  Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
  
- @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes two arguments: the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times.
+ @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes three arguments: the number of bytes written since the last time the upload progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times.
  
  @see setDownloadProgressBlock
  */
-- (void)setUploadProgressBlock:(void (^)(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite))block;
+- (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))block;
 
 /**
  Sets a callback to be called when an undetermined number of bytes have been uploaded to the server.
  
- @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes two arguments: the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times.
+ @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes three arguments: the number of bytes read since the last time the upload progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times.
  
  @see setUploadProgressBlock
  */
-- (void)setDownloadProgressBlock:(void (^)(NSUInteger totalBytesRead, NSUInteger totalBytesExpectedToRead))block;
+- (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead))block;
 
 @end

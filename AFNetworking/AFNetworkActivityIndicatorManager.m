@@ -22,22 +22,42 @@
 
 #import "AFNetworkActivityIndicatorManager.h"
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import "AFHTTPRequestOperation.h"
+
 @interface AFNetworkActivityIndicatorManager ()
 @property (readwrite, nonatomic, assign) NSInteger activityCount;
 @end
 
 @implementation AFNetworkActivityIndicatorManager
 @synthesize activityCount = _activityCount;
+@synthesize enabled = _enabled;
 
 + (AFNetworkActivityIndicatorManager *)sharedManager {
     static AFNetworkActivityIndicatorManager *_sharedManager = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
-        _sharedManager = [[AFNetworkActivityIndicatorManager alloc] init];
+        _sharedManager = [[self alloc] init];
     });
     
     return _sharedManager;
+}
+
+- (id)init {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementActivityCount) name:AFHTTPOperationDidStartNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(decrementActivityCount) name:AFHTTPOperationDidFinishNotification object:nil];
+    
+    return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [super dealloc];
 }
 
 - (void)setActivityCount:(NSInteger)activityCount {
@@ -45,7 +65,9 @@
     _activityCount = MAX(activityCount, 0);
     [self didChangeValueForKey:@"activityCount"];
 
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:self.activityCount > 0];
+    if (self.enabled) {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:self.activityCount > 0];
+    }
 }
 
 - (void)incrementActivityCount {
@@ -61,4 +83,3 @@
 }
 
 @end
-#endif
