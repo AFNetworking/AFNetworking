@@ -32,9 +32,12 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     return af_image_request_operation_processing_queue;
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 @interface AFImageRequestOperation ()
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 @property (readwrite, nonatomic, retain) UIImage *responseImage;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
+@property (readwrite, nonatomic, retain) NSImage *responseImage;
+#endif
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
@@ -43,6 +46,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 @implementation AFImageRequestOperation
 @synthesize responseImage = _responseImage;
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(UIImage *image))success
 {
@@ -52,12 +56,25 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         }
     } failure:nil];
 }
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
+                                                      success:(void (^)(NSImage *image))success
+{
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
+        if (success) {
+            success(image);
+        }
+    } failure:nil];
+}
+#endif
 
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                             imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
-                                        cacheName:(NSString *)cacheNameOrNil
-                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                                         imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                                                    cacheName:(NSString *)cacheNameOrNil
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                                                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     AFImageRequestOperation *operation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     
@@ -95,6 +112,50 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     
     return operation;
 }
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                         imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
+                                                    cacheName:(NSString *)cacheNameOrNil
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
+                                                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    AFImageRequestOperation *operation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+    
+    operation.completionBlock = ^ {
+        if ([operation isCancelled]) {
+            return;
+        }
+        
+        dispatch_async(image_request_operation_processing_queue(), ^(void) {
+            if (operation.error) {
+                if (failure) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        failure(operation.request, operation.response, operation.error);
+                    });
+                }
+            } else {                
+                NSImage *image = operation.responseImage;
+                
+                if (imageProcessingBlock) {
+                    image = imageProcessingBlock(image);
+                }
+                
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        success(operation.request, operation.response, image);
+                    });
+                }
+                
+                if ([operation.request cachePolicy] != NSURLCacheStorageNotAllowed) {
+                    [[AFImageCache sharedImageCache] cacheImage:image forURL:[operation.request URL] cacheName:cacheNameOrNil];
+                }
+            }
+        });        
+    };
+    
+    return operation;
+}
+#endif
 
 + (NSSet *)defaultAcceptableContentTypes {
     return [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon" @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
@@ -120,6 +181,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     [super dealloc];
 }
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (UIImage *)responseImage {
     if (!_responseImage && [self isFinished]) {
         if ([[UIScreen mainScreen] scale] == 2.0) {
@@ -132,6 +194,15 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     
     return _responseImage;
 }
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
+- (NSImage *)responseImage {
+    if (!_responseImage && [self isFinished]) {
+        self.responseImage = [[[NSImage alloc] initWithData:self.responseData] autorelease];
+    }
+    
+    return _responseImage;
+}
+#endif
 
 #pragma mark - AFHTTPClientOperation
 
@@ -139,6 +210,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
 }
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                     success:(void (^)(id object))success 
                                                     failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
@@ -149,6 +221,17 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         failure(response, error);
     }];
 }
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
++ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                    success:(void (^)(id object))success 
+                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
+{
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
+        success(image);
+    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
+        failure(response, error);
+    }];
+}
+#endif
 
 @end
-#endif

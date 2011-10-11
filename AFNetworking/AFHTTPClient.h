@@ -291,7 +291,6 @@ typedef enum {
 
 @protocol AFHTTPClientOperation <NSObject>
 + (BOOL)canProcessRequest:(NSURLRequest *)request;
-+ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request;
 + (id)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
                               success:(void (^)(id object))success 
                               failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;

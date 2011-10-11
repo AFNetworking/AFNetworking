@@ -23,8 +23,13 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
 
+#import <Availability.h>
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
+#import <Cocoa/Cocoa.h>
+#endif
 
 /**
  `AFImageRequestOperation` is an `NSOperation` that wraps the callback from `AFHTTPRequestOperation` to create an image from the response body, and optionally cache the image to memory.
@@ -34,10 +39,18 @@
  */
 @interface AFImageRequestOperation : AFHTTPRequestOperation {
 @private
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
     UIImage *_responseImage;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+    NSImage *_responseImage;
+#endif
 }
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 @property (readonly, nonatomic, retain) UIImage *responseImage;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+@property (readonly, nonatomic, retain) NSImage *responseImage;
+#endif
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -47,8 +60,13 @@
  
  @return A new image request operation
  */
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(UIImage *image))success;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
+                                                      success:(void (^)(NSImage *image))success;
+#endif
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -61,11 +79,18 @@
  
  @return A new image request operation
  */
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                          imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                         imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
+                                                    cacheName:(NSString *)cacheNameOrNil
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
+                                                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+#endif
 
 @end
-#endif

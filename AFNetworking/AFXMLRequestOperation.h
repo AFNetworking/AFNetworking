@@ -28,7 +28,7 @@
 @interface AFXMLRequestOperation : AFHTTPRequestOperation {
 @private
     NSXMLParser *_responseXMLParser;
-#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
     NSXMLDocument *_responseXMLDocument;
 #endif
     NSError *_XMLError;
@@ -36,7 +36,7 @@
 
 @property (readonly, nonatomic, retain) NSXMLParser *responseXMLParser;
 
-#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (readonly, nonatomic, retain) NSXMLDocument *responseXMLDocument;
 #endif
 
@@ -45,7 +45,7 @@
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 
-#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
 + (AFXMLRequestOperation *)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
                                                           failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;

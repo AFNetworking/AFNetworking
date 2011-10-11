@@ -51,6 +51,9 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (UIImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+- (NSImage *)cachedImageForURL:(NSURL *)url
+                     cacheName:(NSString *)cacheName;
 #endif
 
 /**
@@ -63,6 +66,10 @@
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)cacheImage:(UIImage *)image
+            forURL:(NSURL *)url
+         cacheName:(NSString *)cacheName;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+- (void)cacheImage:(NSImage *)image
             forURL:(NSURL *)url
          cacheName:(NSString *)cacheName;
 #endif

@@ -24,9 +24,18 @@
 
 #include <Availability.h>
 
+static dispatch_queue_t af_xml_request_operation_processing_queue;
+static dispatch_queue_t xml_request_operation_processing_queue() {
+    if (af_xml_request_operation_processing_queue == NULL) {
+        af_xml_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.xml-request.processing", 0);
+    }
+    
+    return af_xml_request_operation_processing_queue;
+}
+
 @interface AFXMLRequestOperation ()
 @property (readwrite, nonatomic, retain) NSXMLParser *responseXMLParser;
-#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (readwrite, nonatomic, retain) NSXMLDocument *responseXMLDocument;
 #endif
 @property (readwrite, nonatomic, retain) NSError *error;
@@ -37,7 +46,7 @@
 
 @implementation AFXMLRequestOperation
 @synthesize responseXMLParser = _responseXMLParser;
-#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
 @synthesize responseXMLDocument = _responseXMLDocument;
 #endif
 @synthesize error = _XMLError;
@@ -68,6 +77,39 @@
     
     return operation;
 }
+
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
++ (AFXMLRequestOperation *)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
+                                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    AFXMLRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    operation.completionBlock = ^ {
+        if ([operation isCancelled]) {
+            return;
+        }
+        
+        if (operation.error) {
+            if (failure) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    failure(operation.request, operation.response, operation.error);
+                });
+            }
+        } else {
+            dispatch_async(xml_request_operation_processing_queue(), ^(void) {
+                NSXMLDocument *XMLDocument = operation.responseXMLDocument;
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        success(operation.request, operation.response, XMLDocument);
+                    });
+                }
+            });
+        }
+    };
+    
+    return operation;
+}
+#endif
 
 + (NSSet *)defaultAcceptableContentTypes {
     return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
