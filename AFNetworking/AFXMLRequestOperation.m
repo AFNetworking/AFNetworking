@@ -134,7 +134,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     _responseXMLParser.delegate = nil;
     [_responseXMLParser release];
     
-#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
     [_responseXMLDocument release];
 #endif
     
@@ -151,7 +151,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     return _responseXMLParser;
 }
 
-#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
 - (NSXMLDocument *)responseXMLDocument {
     if (!_responseXMLDocument && [self isFinished]) {
         NSError *error = nil;
@@ -181,11 +181,19 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                                                     success:(void (^)(id object))success 
                                                     failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
 {
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
+    return [self XMLDocumentRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSXMLDocument *XMLDocument) {
+        success(XMLDocument);
+    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
+        failure(response, error);
+    }];
+#else
     return [self XMLParserRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSXMLParser *XMLParser) {
         success(XMLParser);
     } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
         failure(response, error);
     }];
+#endif
 }
 
 @end
