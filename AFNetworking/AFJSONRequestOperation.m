@@ -21,9 +21,10 @@
 // THE SOFTWARE.
 
 #import "AFJSONRequestOperation.h"
-#import "JSONKit.h"
 
 #include <Availability.h>
+
+#import "JSONKit.h"
 
 static dispatch_queue_t af_json_request_operation_processing_queue;
 static dispatch_queue_t json_request_operation_processing_queue() {
