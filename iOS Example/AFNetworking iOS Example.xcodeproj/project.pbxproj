@@ -68,7 +68,7 @@
 		F8DA09E51396AC220057D0CC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		F8DA09E61396AC220057D0CC /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
 		F8DA09E71396AC220057D0CC /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
-		F8E469601395739C00DB05C8 /* AFNetworkingExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AFNetworkingExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E469641395739D00DB05C8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F8E469661395739D00DB05C8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F8E469681395739D00DB05C8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -175,7 +175,7 @@
 		F8E469611395739C00DB05C8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F8E469601395739C00DB05C8 /* AFNetworkingExample.app */,
+				F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -289,7 +289,7 @@
 			);
 			name = "AFNetworking iOS Example";
 			productName = AFNetworkingExample;
-			productReference = F8E469601395739C00DB05C8 /* AFNetworkingExample.app */;
+			productReference = F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
