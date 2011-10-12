@@ -32,10 +32,22 @@
 #endif
 
 /**
- `AFImageRequestOperation` is an `NSOperation` that wraps the callback from `AFHTTPRequestOperation` to create an image from the response body, and optionally cache the image to memory.
+ `AFImageRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading an processing images.
  
- @see NSOperation
- @see AFHTTPRequestOperation
+ ## Acceptable Content Types
+ 
+ By default, `AFImageRequestOperation` accepts the following MIME types, which correspond to the image formats supported by UIImage or NSImage:
+ 
+ - `image/tiff`
+ - `image/jpeg`
+ - `image/gif`
+ - `image/png`
+ - `image/ico`
+ - `image/x-icon`
+ - `image/bmp`
+ - `image/x-bmp`
+ - `image/x-xbitmap`
+ - `image/x-win-bitmap`
  */
 @interface AFImageRequestOperation : AFHTTPRequestOperation {
 @private
@@ -56,7 +68,7 @@
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `image/png`). This block has no return value and takes a single arguments, the image created from the response data of the request.
+ @param success A block object to be executed when the request finishes successfully. This block has no return value and takes a single arguments, the image created from the response data of the request.
  
  @return A new image request operation
  */

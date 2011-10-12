@@ -26,7 +26,14 @@
 #import <Availability.h>
 
 /**
- `AFXMLRequestOperation` is a subclass of `AFHTTPRequestOperation` that provides functionality to work with XML response data.
+ `AFXMLRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and working with XML response data.
+ 
+ ## Acceptable Content Types
+ 
+ By default, `AFXMLRequestOperation` accepts the following MIME types, which includes the official standard, `application/xml`, as well as other commonly-used types:
+ 
+ - `application/xml`
+ - `text/xml`
  */
 @interface AFXMLRequestOperation : AFHTTPRequestOperation {
 @private

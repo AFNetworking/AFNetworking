@@ -85,7 +85,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 }
 
 + (NSSet *)defaultAcceptableContentTypes {
-    return [NSSet setWithObjects:@"application/x-plist", @"application/xml", nil];
+    return [NSSet setWithObjects:@"application/x-plist", nil];
 }
 
 + (NSSet *)defaultAcceptablePathExtensions {
@@ -98,7 +98,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
         return nil;
     }
     
-    self.acceptableContentTypes = [NSSet setWithObjects:@"application/x-plist", @"application/xml", nil];
+    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
     self.propertyListReadOptions = NSPropertyListImmutable;
     

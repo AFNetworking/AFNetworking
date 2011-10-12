@@ -39,7 +39,7 @@
 ///----------------------------------------------
 
 /**
- The last response received by the operation's connection.
+ The last HTTP response received by the operation's connection.
  */
 @property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
 

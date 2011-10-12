@@ -26,7 +26,7 @@
 #import <Availability.h>
 
 /**
- `AFImageCache` is a subclass of `NSCache` that stores and retrieves images from cache.
+ `AFImageCache` is an `NSCache` that stores and retrieves images from cache.
  
  @discussion `AFImageCache` is used to cache images for successful `AFImageRequestOperations` with the proper cache policy.
  */

@@ -40,7 +40,7 @@ extern NSString * const AFNetworkingOperationDidStartNotification;
 extern NSString * const AFNetworkingOperationDidFinishNotification;
 
 /**
- `AFURLConnectionOperation` is an `NSOperation` that implements the NSURLConnection delegate methods, and provides a simple block-based interface to asynchronously get the result and context of that operation finishes.
+ `AFURLConnectionOperation` is an `NSOperation` that implements NSURLConnection delegate methods.
  
  ## Subclassing Notes
  
@@ -65,13 +65,13 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  ## Class Constructors
  
- Class constructors, or methods that return a zero-retain-count instance, are the preferred way for subclasses to encapsulate any particular logic for handling the setup or parsing of response data. For instance, `AFJSONRequestOperation` provides `JSONRequestOperationWithRequest:success:failure:`, which takes block arguments, whose parameter on for a successful request is the JSON object initialized from the `response data`.
+ Class constructors, or methods that return an unowned (zero retain count) instance, are the preferred way for subclasses to encapsulate any particular logic for handling the setup or parsing of response data. For instance, `AFJSONRequestOperation` provides `JSONRequestOperationWithRequest:success:failure:`, which takes block arguments, whose parameter on for a successful request is the JSON object initialized from the `response data`.
  
  ## Callbacks and Completion Blocks
  
- The built-in `completionBlock` provided by `NSOperation` allows for custom behavior to be executed after the request finishes. It is a common pattern for class constructors in subclasses to take callback block parameters, and execute them conditionally in the body of its `completionBlock`. See the implementation of any of the `AFHTTPRequestOperation` subclasses for an example of this.
+ The built-in `completionBlock` provided by `NSOperation` allows for custom behavior to be executed after the request finishes. It is a common pattern for class constructors in subclasses to take callback block parameters, and execute them conditionally in the body of its `completionBlock`. Make sure to handle cancelled operations appropriately when setting a `completionBlock` (e.g. returning early before parsing response data). See the implementation of any of the `AFHTTPRequestOperation` subclasses for an example of this.
  
- One common oversight when setting completion blocks is to forget to check for whether the operation was cancelled. Be sure to handle called operations appropriately (e.g. returning early before parsing response data).
+ @warning Subclasses are strongly discouraged from overriding `setCompletionBlock:`, as `AFURLConnectionOperation`'s implementation includes a particular workaround to mitigate retain cycles, and what Apple rather ominously refers to as "The Deallocation Problem" (See http://developer.apple.com/library/ios/technotes/tn2109/_index.html#//apple_ref/doc/uid/DTS40010274-CH1-SUBSECTION11) 
  */
 @interface AFURLConnectionOperation : NSOperation {
 @private
