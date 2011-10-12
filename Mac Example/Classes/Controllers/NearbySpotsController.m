@@ -59,7 +59,11 @@
     return self;
 }
 
-- (void)awakeFromNib {    
+- (void)awakeFromNib {
+    // Load from a fixed location, in case location services are disabled or unavailable
+    CLLocation *austin = [[CLLocation alloc] initWithLatitude:30.2669444 longitude:-97.7427778];
+    [self loadSpotsForLocation:austin];
+    
     [self.locationManager startUpdatingLocation];
 }
 
