@@ -1,22 +1,18 @@
 # AFNetworking
-## A delightful iOS networking library with NSOperations and block-based callbacks
+## A delightful iOS and OS X networking framework
 ### There's a lot to be said for a networking library that you can wrap your head around. API design matters, too. Code at its best is poetry, and should be designed to delight (but never surprise).
 
-AFNetworking is lovingly crafted to make best use of our favorite parts of Apple's `Foundation` framework: `NSOperation` for managing multiple concurrent requests, `NSURLRequest` & `NSHTTPURLResponse` to encapsulate state, `NSCache` & `NSURLCache` for performant and compliant cacheing behavior, and blocks to keep request / response handling code in a single logical unit in code.
-
-At its core is `AFHTTPRequestOperation`, a thin wrapper around `NSURLConnection`, which provides a block callback for when the operation completes. Everything else is built on top of that in a way that's completely modular: take what you need, leave what you don't.
-
-If you're tired of massive libraries that try to do too much...  
-If you've taken it upon yourself to roll your own hacky solution...  
-If you want a library that _actually makes iOS networking code kinda fun_...  
-
-...try out AFNetworking
+AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of familiar Foundation network classes,  using `NSOperation` for scheduling and concurrency, and blocks for convenience and flexibility. It's designed to make common tasks easy, and to make complex tasks simple.
 
 ## Documentation
 
-Online documentation is available at http://gowalla.github.com/AFNetworking/. 
+Online documentation is available at http://gowalla.github.com/AFNetworking/.
 
 To install the docset directly into your local Xcode organizer, first [install `appledoc`](https://github.com/tomaz/appledoc), and then clone this project and run `appledoc -p AFNetworking -c "Gowalla" --company-id com.gowalla AFNetworking/*.h`
+
+## Example Projects
+
+Be sure to download and run the example projects for iOS and Mac. Both example projects serve as models of how one might integrate AFNetworking into their own project.
 
 ## Example Usage
 
@@ -24,9 +20,22 @@ To install the docset directly into your local Xcode organizer, first [install `
 
 ``` objective-c
 NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/users/mattt.json"]];
-AFJSONRequestOperation *operation = [AFJSONRequestOperation operationWithRequest:request success:^(id JSON) {
+AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
     NSLog(@"Name: %@ %@", [JSON valueForKeyPath:@"first_name"], [JSON valueForKeyPath:@"last_name"]);
-}];
+} failure:nil];
+
+NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+[queue addOperation:operation];
+```
+
+### XML Request
+
+``` objective-c
+NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://api.flickr.com/services/rest/?method=flickr.groups.browse&api_key=b6300e17ad3c506e706cb0072175d047&cat_id=34427469792%40N01&format=rest"]];
+AFXMLRequestOperation *operation = [AFXMLRequestOperation XMLParserRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser) {
+  XMLParser.delegate = self;
+  [XMLParser parse];
+} failure:nil];
 
 NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 [queue addOperation:operation];
@@ -36,7 +45,7 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 
 ``` objective-c
 UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 100.0f)];
-    [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
+[imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
 ```
 
 ### API Client Request
@@ -54,7 +63,7 @@ UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0
 ``` objective-c
 NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"avatar.jpg"], 0.5);
 NSMutableURLRequest *request = [[AFHTTPClient sharedClient] multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:nil constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
-  [formData appendPartWithFormData:data name:@"avatar"]; 
+  [formData appendPartWithFileData:data mimeType:@"image/jpeg" name:@"avatar"];
 }];
 
 AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
@@ -75,17 +84,14 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/friendships/request?user_id=1699"]];
 [request setHTTPMethod:@"POST"];
 
-NSDictionary *headers = [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Token token=\"%@\"", kOAuthToken] forKey:@"Authorization"];
-[request setAllHTTPHeaderFields:headers];
-
-AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
-    BOOL HTTPStatusCodeIsAcceptable = [[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)] containsIndex:[response statusCode]];
-    if (HTTPStatusCodeIsAcceptable) {
+AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
+operation.completionBlock = ^ {
+    if ([operation hasAcceptableStatusCode]) {
         NSLog(@"Friend Request Sent");
     } else {
-        NSLog(@"[Error]: (%@ %@) %@", [request HTTPMethod], [[request URL] relativePath], error);
+        NSLog(@"[Error]: (%@ %@) %@", [operation.request HTTPMethod], [[operation.request URL] relativePath], operation.error);
     }
-}];
+};
 
 NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 [queue addOperation:operation];
@@ -95,31 +101,28 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 
 ``` objective-c
 NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:8080/encode"]];
-NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:[[NSBundle mainBundle] pathForResource:@"large-image" ofType:@"tiff"]];
-NSOutputStream *outputStream = [NSOutputStream outputStreamToMemory];
-AFHTTPRequestOperation *operation = [AFHTTPRequestOperation streamingOperationWithRequest:request inputStream:inputStream outputStream:outputStream completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-    NSLog(@"Streaming operation complete");
-}];
+
+AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
+operation.inputStream = [NSInputStream inputStreamWithFileAtPath:[[NSBundle mainBundle] pathForResource:@"large-image" ofType:@"tiff"]];
+operation.outputStream = [NSOutputStream outputStreamToMemory];
+
+NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+[queue addOperation:operation];
 ```
 
-## Example Project
+## Requirements
 
-In order to demonstrate the power and flexibility of AFNetworking, we've included a small sample project, which asks for your current location and displays [Gowalla](http://gowalla.com/) spots nearby you. It uses `AFJSONRequestOperation` to load and parse the spots JSON, and a category on `UIImageView` to asynchronously load spot stamp images as you scroll.
-
-## Dependencies
-
-* [iOS 4.0+](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) - AFNetworking uses blocks, which were introduced in iOS 4.
-* If you're using iOS 5, AFJSONRequestOperation uses JSON will use the built-in NSJSONSerialization class to parse JSON responses. If this is not available, it falls back on [JSONKit](https://github.com/johnezang/JSONKit).
+AFNetworking requires either [iOS 4.0](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) and above, or [Mac OS 10.6](http://developer.apple.com/library/mac/#releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_6.html#//apple_ref/doc/uid/TP40008898-SW7) and above.
 
 ### ARC Support
 
-If you are including AFNetworking in a project with [Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html) enabled, you will need to set the `-fno-objc-arc` compiler flag on all of the AFNetworking source files. To do this in Xcode, go to your active target and select the "Build Phases" tab. In the "Compiler Flags" column, set `-fno-objc-arc` for each of the AFNetworking source files.
+If you are including AFNetworking in a project that uses [Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html) enabled, you will need to set the `-fno-objc-arc` compiler flag on all of the AFNetworking source files. To do this in Xcode, go to your active target and select the "Build Phases" tab. In the "Compiler Flags" column, set `-fno-objc-arc` for each of the AFNetworking source files.
 
-This is certainly suboptimal, forking the project into an ARC and non-ARC branch would be extremely difficult to maintain. On the bright side, we're very excited about [CocoaPods](https://github.com/alloy/cocoapods), which is a promising solution to this and many other pain points.
+Although this is suboptimal, forking the project into an ARC and non-ARC branch would be extremely difficult to maintain. On the bright side, we're very excited about [CocoaPods](https://github.com/alloy/cocoapods) as a potential solution.
 
-### Mac OS X Support
+## Dependencies
 
-Full support for OS X is planned for the very near future. In the meantime, you are perfectly safe to use `AFHTTPRequestOperation`, `AFJSONRequestOperation`, `AFHTTPClient`, and `AFNetworkActivityIndicatorManager`.
+* [JSONKit](https://github.com/johnezang/JSONKit)
 
 ## Credits
 
