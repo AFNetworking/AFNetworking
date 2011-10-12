@@ -57,8 +57,8 @@ typedef enum {
  By default, `AFHTTPClient` sets the following HTTP headers:
  
  - `Accept-Encoding: gzip`
- - `Accept-Language: #{[NSLocale preferredLanguages]}, en-us;q=0.8`
- - `User-Agent: #{generated user agent}`
+ - `Accept-Language: ([NSLocale preferredLanguages]), en-us;q=0.8`
+ - `User-Agent: (generated user agent)`
  
  You can override these HTTP headers or define new ones using `setDefaultHeader:value:`. 
  */
