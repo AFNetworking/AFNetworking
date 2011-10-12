@@ -54,7 +54,6 @@ typedef enum {
  
  By default, `AFHTTPClient` sets the following HTTP headers:
  
- - `Accept: application/json`
  - `Accept-Encoding: gzip`
  - `Accept-Language: #{[NSLocale preferredLanguages]}, en-us;q=0.8`
  - `User-Agent: #{generated user agent}`
@@ -86,7 +85,7 @@ typedef enum {
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 
 /**
- 
+ The `AFHTTPClientParameterEncoding` value corresponding to how parameters are encoded into a request body. This is `AFFormURLParameterEncoding` by default.
  */
 @property (nonatomic, assign) AFHTTPClientParameterEncoding parameterEncoding;
 
@@ -113,7 +112,7 @@ typedef enum {
  
  @param url The base URL for the HTTP client. This argument must not be nil.
  
- @discussion This is the designated initializer for `AFHTTPClient`
+ @discussion This is the designated initializer.
  
  @return The newly-initialized HTTP client
  */
@@ -123,7 +122,27 @@ typedef enum {
 /// @name Managing HTTP Operations
 ///----------------------------------
 
+/**
+ Attempts to register a class conforming to the `AFHTTPClientOperation` protocol, adding it to a chain to automatically generate request operations from a URL request.
+ 
+ @param The class conforming to the `AFHTTPClientOperation` protocol to register
+ 
+ @return `YES` if the registration is successful, `NO` otherwise. The only failure condition is if `operationClass` does not conform to the `AFHTTPCLientOperation` protocol.
+ 
+ @discussion When `requestWithMethod:path:parameters` is invoked, each registered class is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`. There is no guarantee that all registered classes will be consulted. Classes are consulted in the reverse order of their registration. Attempting to register an already-registered class will move it to the top of the chain.
+ 
+ @see `AFHTTPClientOperation`
+ */
 - (BOOL)registerHTTPOperationClass:(Class)operationClass;
+
+/**
+ Unregisteres the specified class conforming to the `AFHTTPClientOperation` protocol.
+ 
+ @param The class conforming to the `AFHTTPClientOperation` protocol to unregister
+ 
+ @discussion After this method is invoked, `operationClass` is no longer consulted when `requestWithMethod:path:parameters` is invoked.
+ */
+- (void)unregisterHTTPOperationClass:(Class)operationClass;
 
 ///----------------------------------
 /// @name Managing HTTP Header Values
@@ -366,16 +385,6 @@ typedef enum {
  @discussion The filename associated with this data in the form will be automatically generated using the parameter name specified and a unique timestamp-based hash.  
  */
 - (void)appendPartWithFileData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name;
-
-/**
- Appends the HTTP header `Content-Disposition: file; filename=#{filename}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
- 
- @param fileURL The URL for the local file to have its contents appended to the form data. This parameter must not be `nil`.
- @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
- @param fileName The filename to be associated with the file contents. This parameter must not be `nil`.
- @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
- */
-- (void)appendPartWithFile:(NSURL *)fileURL mimeType:(NSString *)mimeType fileName:(NSString *)fileName error:(NSError **)error;
 
 /**
  Appends encoded data to the form data.

@@ -49,6 +49,9 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
     
     [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
     
+    // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
+	[self setDefaultHeader:@"Accept" value:@"application/json"];
+    
     // X-Gowalla-API-Key HTTP Header; see http://api.gowalla.com/api/docs
 	[self setDefaultHeader:@"X-Gowalla-API-Key" value:kAFGowallaClientID];
 	

@@ -163,9 +163,6 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     
 	self.defaultHeaders = [NSMutableDictionary dictionary];
     
-    // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
-	[self setDefaultHeader:@"Accept" value:@"application/json"];
-    
 	// Accept-Encoding HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
 	[self setDefaultHeader:@"Accept-Encoding" value:@"gzip"];
 	
@@ -206,6 +203,11 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     [self.registeredHTTPOperationClassNames insertObject:className atIndex:0];
     
     return YES;
+}
+
+- (void)unregisterHTTPOperationClass:(Class)operationClass {
+    NSString *className = NSStringFromClass(operationClass);
+    [self.registeredHTTPOperationClassNames removeObject:className];
 }
 
 #pragma mark -
@@ -451,17 +453,6 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
     
     [self appendPartWithHeaders:mutableHeaders body:data];
-}
-
-- (void)appendPartWithFile:(NSURL *)fileURL mimeType:(NSString *)mimeType fileName:(NSString *)fileName error:(NSError **)error {
-    NSData *data = [NSData dataWithContentsOfFile:[fileURL absoluteString] options:0 error:error];
-    if (data) {
-        NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-        [mutableHeaders setValue:[NSString stringWithFormat:@"file; filename=\"%@\"", fileName] forKey:@"Content-Disposition"];
-        [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
-        
-        [self appendPartWithHeaders:mutableHeaders body:data];
-    }
 }
 
 - (void)appendData:(NSData *)data {
