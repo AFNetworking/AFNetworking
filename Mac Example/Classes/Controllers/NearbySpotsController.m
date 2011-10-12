@@ -98,6 +98,7 @@
     return [self.nearbySpots count];
 }
 
+// The following is what happens when a longtime iOS dev attempts to work with AppKit. I'm sure there's a _much_ better way to do this.
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     Spot *spot = [self.nearbySpots objectAtIndex:row];
     
