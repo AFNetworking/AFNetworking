@@ -1,4 +1,4 @@
-// Spot.h
+// AFNetworking.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -21,25 +21,20 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
+#import <Availability.h>
 
-typedef void (^AFRecordsBlock)(NSArray *records);
+#import <AFNetworking/AFURLConnectionOperation.h>
 
-@interface Spot : NSObject {
-@private
-    NSString *_name;
-    NSString *_imageURLString;
-    NSNumber *_latitude;
-    NSNumber *_longitude;
-}
+#import <AFNetworking/AFHTTPRequestOperation.h>
+#import <AFNetworking/AFJSONRequestOperation.h>
+#import <AFNetworking/AFXMLRequestOperation.h>
+#import <AFNetworking/AFPropertyListRequestOperation.h>
+#import <AFNetworking/AFHTTPClient.h>
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSNumber *latitude;
-@property (nonatomic, retain) NSNumber *longitude;
-@property (readonly) CLLocation *location;
+#import <AFNetworking/AFImageRequestOperation.h>
+#import <AFNetworking/AFImagecache.h>
 
-- (id)initWithAttributes:(NSDictionary *)attributes;
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block;
-
-@end
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
+#endif

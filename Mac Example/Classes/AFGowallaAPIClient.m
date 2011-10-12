@@ -22,6 +22,8 @@
 
 #import "AFGowallaAPIClient.h"
 
+#import "AFJSONRequestOperation.h"
+
 // Replace this with your own API Key, available at http://api.gowalla.com/api/keys/
 NSString * const kAFGowallaClientID = @"e7ccb7d3d2414eb2af4663fc91eb2793";
 
@@ -45,15 +47,17 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
         return nil;
     }
     
+    [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    
+    // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
+	[self setDefaultHeader:@"Accept" value:@"application/json"];
+    
     // X-Gowalla-API-Key HTTP Header; see http://api.gowalla.com/api/docs
 	[self setDefaultHeader:@"X-Gowalla-API-Key" value:kAFGowallaClientID];
 	
 	// X-Gowalla-API-Version HTTP Header; see http://api.gowalla.com/api/docs
 	[self setDefaultHeader:@"X-Gowalla-API-Version" value:@"1"];
-	
-	// X-UDID HTTP Header
-	[self setDefaultHeader:@"X-UDID" value:[[UIDevice currentDevice] uniqueIdentifier]];
-    
+        
     return self;
 }
 

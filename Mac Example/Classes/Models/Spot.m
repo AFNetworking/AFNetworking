@@ -45,19 +45,11 @@
     return self;
 }
 
-- (void)dealloc {
-    [_name release];
-    [_imageURLString release];
-    [_latitude release];
-    [_longitude release];
-    [super dealloc];
-}
-
 - (CLLocation *)location {
-    return [[[CLLocation alloc] initWithLatitude:[self.latitude doubleValue] longitude:[self.longitude doubleValue]] autorelease];
+    return [[CLLocation alloc] initWithLatitude:[self.latitude doubleValue] longitude:[self.longitude doubleValue]];
 }
 
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block {
++ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(void (^)(NSArray *records))block {    
     NSDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
 	if (location) {
 		[mutableParameters setValue:[NSString stringWithFormat:@"%1.7f", location.coordinate.latitude] forKey:@"lat"];
@@ -67,7 +59,7 @@
     [[AFGowallaAPIClient sharedClient] getPath:urlString parameters:mutableParameters success:^(id object) {
         NSMutableArray *mutableRecords = [NSMutableArray array];
         for (NSDictionary *attributes in [object valueForKeyPath:@"spots"]) {
-            Spot *spot = [[[Spot alloc] initWithAttributes:attributes] autorelease];
+            Spot *spot = [[Spot alloc] initWithAttributes:attributes];
             [mutableRecords addObject:spot];
         }
         
