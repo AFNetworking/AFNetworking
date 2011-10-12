@@ -58,6 +58,7 @@
 		F8D25D181396A9D300CF3BD6 /* placeholder-stamp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "placeholder-stamp@2x.png"; path = "Images/placeholder-stamp@2x.png"; sourceTree = SOURCE_ROOT; };
 		F8D25D1B1396A9DE00CF3BD6 /* AFGowallaAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGowallaAPIClient.h; path = Classes/AFGowallaAPIClient.h; sourceTree = "<group>"; };
 		F8D25D1D1396A9DE00CF3BD6 /* AFGowallaAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGowallaAPIClient.m; path = Classes/AFGowallaAPIClient.m; sourceTree = "<group>"; };
+		F8D7DE781445F354000EF2F3 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworking.h; path = ../AFNetworking/AFNetworking.h; sourceTree = "<group>"; };
 		F8DA09C71396AB690057D0CC /* NearbySpotsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NearbySpotsViewController.h; sourceTree = "<group>"; };
 		F8DA09C81396AB690057D0CC /* NearbySpotsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NearbySpotsViewController.m; sourceTree = "<group>"; };
 		F8DA09CA1396AB690057D0CC /* Spot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spot.h; sourceTree = "<group>"; };
@@ -101,15 +102,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F85CE2D613EC47BC00BFAE01 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				F874B5D813E0AA6500B28E3E /* UIImageView+AFNetworking.h */,
-				F874B5D013E0AA6500B28E3E /* UIImageView+AFNetworking.m */,
-			);
-			name = Categories;
-			sourceTree = "<group>";
-		};
 		F8D25D0F1396A9C400CF3BD6 /* JSONKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,6 +222,7 @@
 		F8E469941395744600DB05C8 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				F8D7DE781445F354000EF2F3 /* AFNetworking.h */,
 				F86E5527143A28F3002B438C /* AFURLConnectionOperation.h */,
 				F86E5528143A28F3002B438C /* AFURLConnectionOperation.m */,
 				F874B5D113E0AA6500B28E3E /* AFHTTPRequestOperation.h */,
@@ -246,9 +239,10 @@
 				F874B5CB13E0AA6500B28E3E /* AFImageRequestOperation.m */,
 				F874B5D213E0AA6500B28E3E /* AFImageCache.h */,
 				F874B5CA13E0AA6500B28E3E /* AFImageCache.m */,
+				F874B5D813E0AA6500B28E3E /* UIImageView+AFNetworking.h */,
+				F874B5D013E0AA6500B28E3E /* UIImageView+AFNetworking.m */,
 				F874B5D513E0AA6500B28E3E /* AFNetworkActivityIndicatorManager.h */,
 				F874B5CD13E0AA6500B28E3E /* AFNetworkActivityIndicatorManager.m */,
-				F85CE2D613EC47BC00BFAE01 /* Categories */,
 			);
 			name = AFNetworking;
 			sourceTree = "<group>";
