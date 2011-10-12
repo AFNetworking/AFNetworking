@@ -1,13 +1,13 @@
 Pod::Spec.new do
   name     'AFNetworking'
-  version  '0.6.1'
-  summary  'A delightful iOS networking library with NSOperations and block-based callbacks'
+  version  '0.7.0'
+  summary  'A delightful iOS and OS X networking framework'
   homepage 'https://github.com/gowalla/AFNetworking'
   authors  'Mattt Thompson' => 'm@mattt.me', 'Scott Raymond' => 'sco@gowalla.com'
   source   :git      => 'https://github.com/gowalla/AFNetworking.git',
-           :tag      => '0.6.1'
+           :tag      => '0.7.0'
   
-  platforms 'iOS'
+  platforms 'iOS', 'OSX'
   sdk '>= 4.0'
   
   source_files 'AFNetworking'
