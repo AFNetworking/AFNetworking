@@ -40,7 +40,7 @@ typedef enum {
  
  ## Automatic Content Parsing
  
- Instances of `AFHTTPClient` may specify which types of requests it expects and should handle by registering HTTP operation classes for automatic parsing. Registered classes will determine whether they can handle a particular request, and then construct a request operation accordingly. See `AFHTTPClientOperation` for further details.
+ Instances of `AFHTTPClient` may specify which types of requests it expects and should handle by registering HTTP operation classes for automatic parsing. Registered classes will determine whether they can handle a particular request, and then construct a request operation accordingly in `enqueueHTTPRequestOperationWithRequest:success:failure`. See `AFHTTPClientOperation` for further details.
  
  ## Subclassing Notes
  
@@ -48,7 +48,9 @@ typedef enum {
  
  ## Methods to Override
  
- To change the behavior of all url request construction for an `AFHTTPClient` subclass, override `requestWithMethod:path:parameters`. 
+ To change the behavior of all url request construction for an `AFHTTPClient` subclass, override `requestWithMethod:path:parameters`.
+ 
+ To change the behavior of all request operation construction for an `AFHTTPClient` subclass, override `enqueueHTTPRequestOperationWithRequest:success:failure`.
  
  ## Default Headers
  
@@ -129,7 +131,7 @@ typedef enum {
  
  @return `YES` if the registration is successful, `NO` otherwise. The only failure condition is if `operationClass` does not conform to the `AFHTTPCLientOperation` protocol.
  
- @discussion When `requestWithMethod:path:parameters` is invoked, each registered class is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`. There is no guarantee that all registered classes will be consulted. Classes are consulted in the reverse order of their registration. Attempting to register an already-registered class will move it to the top of the chain.
+ @discussion When `enqueueHTTPRequestOperationWithRequest:success:failure` is invoked, each registered class is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`. There is no guarantee that all registered classes will be consulted. Classes are consulted in the reverse order of their registration. Attempting to register an already-registered class will move it to the top of the chain.
  
  @see `AFHTTPClientOperation`
  */
@@ -233,14 +235,21 @@ typedef enum {
 /**
  Creates and enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue.
  
+ In order to determine what kind of operation is enqueued, each registered subclass conforming to the `AFHTTPClient` protocol is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`.
+  
  @param request The request object to be loaded asynchronously during execution of the operation.
- @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is an object created from the response data of request.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes a single argument, which is an object created from the response data of request.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ 
+ @see `AFHTTPClientOperation`
  */
 - (void)enqueueHTTPRequestOperationWithRequest:(NSURLRequest *)request 
                                        success:(void (^)(id object))success 
                                        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
 /**
+ Enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue.
+ 
+ @param operation The HTTP request operation to be enqueued.
  */
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation;
 
