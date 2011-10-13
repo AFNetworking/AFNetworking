@@ -81,6 +81,15 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
     return [[[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding] autorelease];
 }
 
+static NSURL * AFURLWithPathRelativeToURL(NSString *path, NSURL *baseURL) {
+    NSString *URLString = [[baseURL absoluteString] stringByAppendingPathComponent:path];
+    if ([path hasSuffix:@"/"]) {
+        URLString = [URLString stringByAppendingString:@"/"];
+    }
+
+    return [NSURL URLWithString:URLString];
+}
+
 static NSString * AFURLEncodedStringFromString(NSString *string) {
     static NSString * const kAFLegalCharactersToBeEscaped = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ ";
     
@@ -239,7 +248,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
                                       path:(NSString *)path 
                                 parameters:(NSDictionary *)parameters 
 {	
-    NSURL *url = [self.baseURL URLByAppendingPathComponent:path];
+    NSURL *url = AFURLWithPathRelativeToURL(path, self.baseURL);
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
