@@ -116,15 +116,20 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     if (!_responseJSON && [self isFinished]) {
         NSError *error = nil;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-        if ([NSJSONSerialization class]) {
-            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
+        if ([self.responseData length] == 0) {
+            self.responseJSON = nil;
         } else {
-            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-        }
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
+            if ([NSJSONSerialization class]) {
+                self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
+            } else {
+                self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
+            }
 #else
-        self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
+            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
 #endif
+        }
         
         self.error = error;
     }
