@@ -128,7 +128,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /**
  The string representation of the response data.
  
- @discussion This method uses the string encoding of the response to construct a string from the response data.
+ @discussion This method uses the string encoding of the response, or if UTF-8 if not specified, to construct a string from the response data.
  */
 @property (readonly, nonatomic, copy) NSString *responseString;
 

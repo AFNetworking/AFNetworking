@@ -233,7 +233,11 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 
 - (NSString *)responseString {
     if (!_responseString && self.response && self.responseData) {
-        NSStringEncoding textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.response.textEncodingName));
+        NSStringEncoding textEncoding = NSUTF8StringEncoding;
+        if (self.response.textEncodingName) {
+            textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.response.textEncodingName));
+        }
+        
         self.responseString = [[[NSString alloc] initWithData:self.responseData encoding:textEncoding] autorelease];
     }
     
