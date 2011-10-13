@@ -66,10 +66,7 @@ NSMutableURLRequest *request = [[AFHTTPClient sharedClient] multipartFormRequest
   [formData appendPartWithFileData:data mimeType:@"image/jpeg" name:@"avatar"];
 }];
 
-AFHTTPRequestOperation *operation = [AFHTTPRequestOperation operationWithRequest:request completion:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *data, NSError *error) {
-    NSLog(@"Upload Complete");
-}];
-
+AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
 [operation setUploadProgressBlock:^(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite) {
     NSLog(@"Sent %d of %d bytes", totalBytesWritten, totalBytesExpectedToWrite);
 }];
