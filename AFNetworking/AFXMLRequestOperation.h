@@ -35,14 +35,7 @@
  - `application/xml`
  - `text/xml`
  */
-@interface AFXMLRequestOperation : AFHTTPRequestOperation {
-@private
-    NSXMLParser *_responseXMLParser;
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
-    NSXMLDocument *_responseXMLDocument;
-#endif
-    NSError *_XMLError;
-}
+@interface AFXMLRequestOperation : AFHTTPRequestOperation
 
 ///----------------------------
 /// @name Getting Response Data

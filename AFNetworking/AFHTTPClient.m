@@ -37,7 +37,6 @@ static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
 
 @interface AFMultipartFormData : NSObject <AFMultipartFormData> {
-@private
     NSStringEncoding _stringEncoding;
     NSMutableData *_mutableData;
 }
@@ -146,6 +145,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @end
 
 @implementation AFHTTPClient
+
 @synthesize baseURL = _baseURL;
 @synthesize stringEncoding = _stringEncoding;
 @synthesize parameterEncoding = _parameterEncoding;

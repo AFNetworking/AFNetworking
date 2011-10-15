@@ -44,6 +44,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 @end
 
 @implementation AFImageRequestOperation
+
 @synthesize responseImage = _responseImage;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED

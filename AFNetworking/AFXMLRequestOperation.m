@@ -45,6 +45,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 @end
 
 @implementation AFXMLRequestOperation
+
 @synthesize responseXMLParser = _responseXMLParser;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 @synthesize responseXMLDocument = _responseXMLDocument;
