@@ -41,6 +41,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 @end
 
 @implementation AFPropertyListRequestOperation
+
 @synthesize responsePropertyList = _responsePropertyList;
 @synthesize propertyListReadOptions = _propertyListReadOptions;
 @synthesize propertyListFormat = _propertyListFormat;

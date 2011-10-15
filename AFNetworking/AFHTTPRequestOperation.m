@@ -27,6 +27,7 @@
 @end
 
 @implementation AFHTTPRequestOperation
+
 @synthesize acceptableStatusCodes = _acceptableStatusCodes;
 @synthesize acceptableContentTypes = _acceptableContentTypes;
 @synthesize error = _HTTPError;

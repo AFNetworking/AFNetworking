@@ -33,11 +33,7 @@
  - `application/json`
  - `text/json`
  */
-@interface AFJSONRequestOperation : AFHTTPRequestOperation {
-@private
-    id _responseJSON;
-    NSError *_JSONError;
-}
+@interface AFJSONRequestOperation : AFHTTPRequestOperation
 
 ///----------------------------
 /// @name Getting Response Data

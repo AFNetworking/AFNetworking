@@ -62,15 +62,7 @@ typedef enum {
  
  You can override these HTTP headers or define new ones using `setDefaultHeader:value:`. 
  */
-@interface AFHTTPClient : NSObject {
-@private
-    NSURL *_baseURL;
-    NSStringEncoding _stringEncoding;
-    AFHTTPClientParameterEncoding _parameterEncoding;
-    NSMutableArray *_registeredHTTPOperationClassNames;
-    NSMutableDictionary *_defaultHeaders;
-    NSOperationQueue *_operationQueue;
-}
+@interface AFHTTPClient : NSObject
 
 ///---------------------------------------
 /// @name Accessing HTTP Client Properties

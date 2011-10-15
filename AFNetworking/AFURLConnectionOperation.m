@@ -71,6 +71,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @end
 
 @implementation AFURLConnectionOperation
+
 @synthesize state = _state;
 @synthesize cancelled = _cancelled;
 @synthesize connection = _connection;

@@ -44,6 +44,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 @end
 
 @implementation AFJSONRequestOperation
+
 @synthesize responseJSON = _responseJSON;
 @synthesize error = _JSONError;
 
