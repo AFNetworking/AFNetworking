@@ -82,11 +82,12 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
 }
 
 static NSURL * AFURLWithPathRelativeToURL(NSString *path, NSURL *baseURL) {
-    NSString *URLString = [[baseURL absoluteString] stringByAppendingPathComponent:path];
+    NSURL *url = [baseURL URLByAppendingPathComponent:[path stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]]];
+    NSString *URLString = [url absoluteString];
     if ([path hasSuffix:@"/"]) {
         URLString = [URLString stringByAppendingString:@"/"];
     }
-
+    
     return [NSURL URLWithString:URLString];
 }
 
