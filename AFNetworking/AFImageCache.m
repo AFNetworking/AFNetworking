@@ -22,14 +22,14 @@
 
 #import "AFImageCache.h"
 
-static inline NSString * AFImageCacheKey(NSURLRequest *urlRequest, CGSize imageSize, AFImageRequestOptions options) {
-    return [[[urlRequest URL] absoluteString] stringByAppendingFormat:@"#%fx%f:%d", imageSize.width, imageSize.height, options];
+static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString *cacheName) {
+    return [[url absoluteString] stringByAppendingFormat:@"#%@", cacheName];
 }
 
 @implementation AFImageCache
 
-+ (id)sharedImageCache {
-    static NSCache *_sharedImageCache = nil;
++ (AFImageCache *)sharedImageCache {
+    static AFImageCache *_sharedImageCache = nil;
     static dispatch_once_t oncePredicate;
 
     dispatch_once(&oncePredicate, ^{
@@ -39,23 +39,42 @@ static inline NSString * AFImageCacheKey(NSURLRequest *urlRequest, CGSize imageS
     return _sharedImageCache;
 }
 
-- (UIImage *)cachedImageForRequest:(NSURLRequest *)urlRequest
-                         imageSize:(CGSize)imageSize
-                           options:(AFImageRequestOptions)options
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+- (UIImage *)cachedImageForURL:(NSURL *)url
+                     cacheName:(NSString *)cacheName
 {
-    return [self objectForKey:AFImageCacheKey(urlRequest, imageSize, options)];
+    return [self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
 }
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+- (NSImage *)cachedImageForURL:(NSURL *)url
+                     cacheName:(NSString *)cacheName
+{
+    return [self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
+}
+#endif
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)cacheImage:(UIImage *)image
-        forRequest:(NSURLRequest *)urlRequest
-         imageSize:(CGSize)imageSize
-           options:(AFImageRequestOptions)options
+            forURL:(NSURL *)url
+         cacheName:(NSString *)cacheName
 {
     if (!image) {
         return;
     }
     
-    [self setObject:image forKey:AFImageCacheKey(urlRequest, imageSize, options)];
+    [self setObject:image forKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
 }
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+- (void)cacheImage:(NSImage *)image
+            forURL:(NSURL *)url
+         cacheName:(NSString *)cacheName
+{
+    if (!image) {
+        return;
+    }
+    
+    [self setObject:image forKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
+}
+#endif
 
 @end
