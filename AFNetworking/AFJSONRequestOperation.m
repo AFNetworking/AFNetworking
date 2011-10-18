@@ -65,9 +65,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
             }
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
-                NSError *error = nil;
                 id JSON = operation.responseJSON;
-                operation.error = error;
                 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (operation.error) {
