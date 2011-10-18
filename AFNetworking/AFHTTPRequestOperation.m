@@ -70,7 +70,7 @@
         }
     }
     
-    return _HTTPError;
+    return [super error];
 }
 
 - (BOOL)hasAcceptableStatusCode {

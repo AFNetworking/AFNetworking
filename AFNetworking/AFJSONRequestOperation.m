@@ -24,7 +24,20 @@
 
 #include <Availability.h>
 
+#ifndef USE_FOUNDATION_JSON
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
+#define USE_FOUNDATION_JSON 1
+#else
+#define USE_FOUNDATION_JSON 0
+#endif
+#endif
+
+#if !USE_FOUNDATION_JSON
 #import "JSONKit.h"
+#endif
+
+
+
 
 static dispatch_queue_t af_json_request_operation_processing_queue;
 static dispatch_queue_t json_request_operation_processing_queue() {
@@ -64,10 +77,14 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 });
             }
         } else {
+            __block dispatch_queue_t caller_queue = dispatch_get_current_queue();
+            dispatch_retain(caller_queue); //retain calling queue
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
+                NSError *error = nil;
                 id JSON = operation.responseJSON;
+                operation.error = error;
                 
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                dispatch_sync(caller_queue, ^(void) {
                     if (operation.error) {
                         if (failure) {
                             failure(operation.request, operation.response, operation.error);
@@ -117,19 +134,13 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         if ([self.responseData length] == 0) {
             self.responseJSON = nil;
         } else {
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-            if ([NSJSONSerialization class]) {
-                self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
-            } else {
-                self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-            }
-#else
+    #if USE_FOUNDATION_JSON
+            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
+    #else
             self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-#endif
+    #endif
+            self.error = error;
         }
-        
-        self.error = error;
     }
     
     return _responseJSON;

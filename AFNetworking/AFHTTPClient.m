@@ -31,7 +31,17 @@
 #import <UIKit/UIKit.h>
 #endif
 
+#ifndef USE_FOUNDATION_JSON
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
+#define USE_FOUNDATION_JSON 1
+#else
+#define USE_FOUNDATION_JSON 0
+#endif
+#endif
+
+#if !USE_FOUNDATION_JSON
 #import "JSONKit.h"
+#endif
 
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
@@ -82,12 +92,11 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
 }
 
 static NSURL * AFURLWithPathRelativeToURL(NSString *path, NSURL *baseURL) {
-    NSURL *url = [baseURL URLByAppendingPathComponent:[path stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]]];
-    NSString *URLString = [url absoluteString];
+    NSString *URLString = [[baseURL absoluteString] stringByAppendingPathComponent:path];
     if ([path hasSuffix:@"/"]) {
         URLString = [URLString stringByAppendingString:@"/"];
     }
-    
+
     return [NSURL URLWithString:URLString];
 }
 
@@ -110,15 +119,11 @@ static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
 static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
     NSString *JSONString = nil;
     
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-    if ([NSJSONSerialization class]) {
-        NSError *error = nil;
-        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];
-        if (!error) {
-            JSONString = [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];
-        }
-    } else {
-        JSONString = [parameters JSONString];
+#if USE_FOUNDATION_JSON
+    NSError *error = nil;
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];
+    if (!error) {
+        JSONString = [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];
     }
 #else
     JSONString = [parameters JSONString];
