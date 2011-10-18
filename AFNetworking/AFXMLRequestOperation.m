@@ -70,7 +70,9 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
         } else {
             NSXMLParser *XMLParser = operation.responseXMLParser;
             if (success) {
-                success(operation.request, operation.response, XMLParser);
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    success(operation.request, operation.response, XMLParser);
+                });
             }
         }
     };
