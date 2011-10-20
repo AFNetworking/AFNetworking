@@ -78,7 +78,7 @@
 }
 
 - (BOOL)hasAcceptableContentType {
-    return !self.acceptableContentTypes || [self.response statusCode] == 204 || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
+    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]] || [self.response statusCode] == 204;
 }
 
 #pragma mark - AFHTTPClientOperation
