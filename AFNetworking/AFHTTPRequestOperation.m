@@ -78,7 +78,7 @@
 }
 
 - (BOOL)hasAcceptableContentType {
-    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
+    return !self.acceptableContentTypes || [self.responseData length] == 0 || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
 }
 
 #pragma mark - AFHTTPClientOperation
