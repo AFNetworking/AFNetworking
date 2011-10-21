@@ -23,6 +23,9 @@
 #import <Foundation/Foundation.h>
 #import <Availability.h>
 
+#ifndef _AFNETWORKING_
+#define _AFNETWORKING_
+
 #import <AFNetworking/AFURLConnectionOperation.h>
 
 #import <AFNetworking/AFHTTPRequestOperation.h>
@@ -38,3 +41,5 @@
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #endif
+
+#endif /* _AFNETWORKING_ */
