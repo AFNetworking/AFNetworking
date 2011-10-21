@@ -78,7 +78,10 @@
 }
 
 - (BOOL)hasAcceptableContentType {
-    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]] || [self.response statusCode] == 204;
+    // Don't invalidate content type if there is no content
+    BOOL hasNoContent = [self.responseData length] == 0 || [self.response statusCode] == 204;
+    
+    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]] || hasNoContent;
 }
 
 #pragma mark - AFHTTPClientOperation
