@@ -54,8 +54,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                                                     success:(AFJSONRequestOperationSuccessBlock)success
                                                     failure:(AFJSONRequestOperationFailureBlock)failure
 {
-    
-    AFJSONRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    AFJSONRequestOperation *operation = [[[AFNETWORKING_DEFAULT_JSON_OPERATION alloc] initWithRequest:urlRequest] autorelease];
     operation.successBlock = success;
     operation.failureBlock = failure;
     return operation;
@@ -172,3 +171,43 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 }
 
 @end
+
+#ifdef AF_INCLUDE_FOUNDATIONJSON
+@implementation AFFoundationJSONRequestOperation
+
+- (void) decodeJSON {
+    if (!self.responseJSON && [self isFinished]) {
+        NSError *error = nil;
+        
+        if ([self.responseData length] == 0) {
+            self.responseJSON = nil;
+        } else {
+            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
+            self.error = error;
+        }
+    }
+}
+
+@end
+#endif
+
+#ifdef AF_INCLUDE_JSONKIT
+#import "JSONKit.h"
+
+@implementation AFJSONKitJSONRequestOperation
+
+- (void) decodeJSON {
+    if (!self.responseJSON && [self isFinished]) {
+        NSError *error = nil;
+        if ([self.responseData length] == 0) {
+            self.responseJSON = nil;
+        } else {
+            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
+            self.error = error;
+        }
+    }
+}
+
+@end
+#endif
+

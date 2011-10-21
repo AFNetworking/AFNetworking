@@ -25,20 +25,6 @@
 
 #import <AFNetworking/AFURLConnectionOperation.h>
 
-#ifndef USE_FOUNDATION_JSON
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-#define USE_FOUNDATION_JSON 1
-#else
-#define USE_FOUNDATION_JSON 0
-#endif
-#endif
-
-#if USE_FOUNDATION_JSON
-#import "AFFoundationJSONRequestOperation.h"
-#else
-#import "AFJSONKitJSONRequestOperation.h"
-#endif
-
 #import <AFNetworking/AFHTTPRequestOperation.h>
 #import <AFNetworking/AFJSONRequestOperation.h>
 #import <AFNetworking/AFXMLRequestOperation.h>
