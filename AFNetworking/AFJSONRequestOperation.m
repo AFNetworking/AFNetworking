@@ -54,10 +54,26 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                                                     success:(AFJSONRequestOperationSuccessBlock)success
                                                     failure:(AFJSONRequestOperationFailureBlock)failure
 {
-    AFJSONRequestOperation *operation = [[[AFNETWORKING_DEFAULT_JSON_OPERATION alloc] initWithRequest:urlRequest] autorelease];
+    AFJSONRequestOperation *operation = [[[AFJSONRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     operation.successBlock = success;
     operation.failureBlock = failure;
     return operation;
+}
+
++ (id)alloc
+{
+    if ([AFJSONRequestOperation self] == self)
+        return [AFNETWORKING_DEFAULT_JSON_OPERATION alloc];
+    else
+        return [super alloc];
+}
+
++ (id)allocWithZone:(NSZone *)zone
+{
+    if ([AFJSONRequestOperation self] == self)
+        return [AFNETWORKING_DEFAULT_JSON_OPERATION allocWithZone:zone];
+    else
+        return [super allocWithZone:zone];
 }
 
 + (NSSet *)defaultAcceptableContentTypes {
@@ -69,6 +85,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 }
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
+    
     self = [super initWithRequest:urlRequest];
     if (!self) {
         return nil;
@@ -133,7 +150,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 }
                                                     
 - (void) decodeJSON {
-    // implemented by subclasses
+    //implement me in the subclass
+    [self doesNotRecognizeSelector: _cmd];
 }
 
 - (dispatch_queue_t)callbackQueue {
