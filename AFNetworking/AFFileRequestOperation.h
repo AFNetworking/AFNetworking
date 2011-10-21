@@ -8,6 +8,23 @@
 
 #import "AFHTTPRequestOperation.h"
 
+/**
+ `AFFileRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading an persisting arbitrary files.
+ 
+ ## Acceptable Content Types
+ 
+ By default, `AFImageRequestOperation` accepts the following 'safe' MIME types:
+ 
+ - `application/pdf`
+ - `application/xml` (for ePub)
+ - `audio/m4a-latm`
+ - `audio/mpeg`
+ - `video/x-m4v`
+ 
+ You can register any file type as acceptable with the `addAcceptableFilesWithMimeTypes:` instance method, passing a set of one or more file types you wish to support in the download operation.
+ 
+ This operation persists files relative the the NSDocumentDirectory path, and you can pass in a subdirectory into which to save the downloaded file, if you wish. The operation supports multiple files of the same name - it will add timestamps the filename and return the resulting new filename if a duplicate is located on the filesystem.
+ */
 @interface AFFileRequestOperation : AFHTTPRequestOperation {
 @private
     NSString *_filePath;

@@ -131,7 +131,7 @@ static dispatch_queue_t file_request_operation_processing_queue() {
 {
     if (!_filePath && [self isFinished]) {
         if (!_saveDirectory) {
-            _saveDirectory = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"my_files"];
+            _saveDirectory = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"files"];
         }
         
         NSString *filename = [self.response.URL lastPathComponent];
@@ -153,11 +153,11 @@ static dispatch_queue_t file_request_operation_processing_queue() {
         }
         
         if (![fm fileExistsAtPath:self.saveDirectory]) {
-            if ([fm createDirectoryAtPath:self.saveDirectory withIntermediateDirectories:YES attributes:nil error:nil]) {
-                if (![fm createFileAtPath:_filePath contents:self.responseData attributes:nil]) {
-                    NSLog(@"We didn't create the file. Why not?");
-                }
-            }
+            [fm createDirectoryAtPath:self.saveDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        
+        if (![fm createFileAtPath:_filePath contents:self.responseData attributes:nil]) {
+            NSLog(@"We didn't create the file. Why not?");
         }
         
     }
