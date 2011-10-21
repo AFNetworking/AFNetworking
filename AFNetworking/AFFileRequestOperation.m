@@ -1,3 +1,4 @@
+
 //
 //  YHTBTMediaFileRequestOperation.m
 //  YouHadToBeThere
@@ -121,6 +122,11 @@ static dispatch_queue_t file_request_operation_processing_queue() {
     return self;
 }
 
+- (void)setSaveDirectory:(NSString *)saveDirectory
+{
+    _saveDirectory = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:saveDirectory];
+}
+
 - (NSString *)filePath
 {
     if (!_filePath && [self isFinished]) {
@@ -139,12 +145,21 @@ static dispatch_queue_t file_request_operation_processing_queue() {
             NSDateFormatter *df = [[NSDateFormatter alloc] init];
             [df setDateFormat:@"_yyyy_MM_dd_hh_mm_ss"];
             NSString *newFilenameMinusExtension = [minusExtension stringByAppendingString:[df stringFromDate:[NSDate date]]];
-            self.filePath = [newFilenameMinusExtension stringByAppendingPathExtension:[absolutePath pathExtension]];
+            _filePath = [newFilenameMinusExtension stringByAppendingPathExtension:[absolutePath pathExtension]];
             
             [df release];
+        } else {
+            _filePath = absolutePath;
         }
         
-        [fm createFileAtPath:self.filePath contents:self.responseData attributes:nil];
+        if (![fm fileExistsAtPath:self.saveDirectory]) {
+            if ([fm createDirectoryAtPath:self.saveDirectory withIntermediateDirectories:YES attributes:nil error:nil]) {
+                if (![fm createFileAtPath:_filePath contents:self.responseData attributes:nil]) {
+                    NSLog(@"We didn't create the file. Why not?");
+                }
+            }
+        }
+        
     }
     
     return _filePath;
