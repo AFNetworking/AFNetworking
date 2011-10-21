@@ -24,21 +24,6 @@
 
 #include <Availability.h>
 
-#ifndef USE_FOUNDATION_JSON
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-#define USE_FOUNDATION_JSON 1
-#else
-#define USE_FOUNDATION_JSON 0
-#endif
-#endif
-
-#if !USE_FOUNDATION_JSON
-#import "JSONKit.h"
-#endif
-
-
-
-
 static dispatch_queue_t af_json_request_operation_processing_queue;
 static dispatch_queue_t json_request_operation_processing_queue() {
     if (af_json_request_operation_processing_queue == NULL) {
@@ -49,56 +34,30 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 }
 
 @interface AFJSONRequestOperation ()
-@property (readwrite, nonatomic, retain) id responseJSON;
 @property (readwrite, nonatomic, retain) NSError *error;
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
+
+- (void)processJSONResponseWithCompletion:(void (^)(void))complete;
+
 @end
 
 @implementation AFJSONRequestOperation
 @synthesize responseJSON = _responseJSON;
 @synthesize error = _JSONError;
+@synthesize successBlock = _successBlock;
+@synthesize failureBlock = _failureBlock;
+@dynamic callbackQueue;
 
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
-                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                                                    success:(AFJSONRequestOperationSuccessBlock)success
+                                                    failure:(AFJSONRequestOperationFailureBlock)failure
 {
-    AFJSONRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
-        }
-        
-        if (operation.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.request, operation.response, operation.error);
-                });
-            }
-        } else {
-            __block dispatch_queue_t caller_queue = dispatch_get_current_queue();
-            dispatch_retain(caller_queue); //retain calling queue
-            dispatch_async(json_request_operation_processing_queue(), ^(void) {
-                NSError *error = nil;
-                id JSON = operation.responseJSON;
-                operation.error = error;
-                
-                dispatch_sync(caller_queue, ^(void) {
-                    if (operation.error) {
-                        if (failure) {
-                            failure(operation.request, operation.response, operation.error);
-                        }
-                    } else {
-                        if (success) {
-                            success(operation.request, operation.response, JSON);
-                        }
-                    }
-                }); 
-            });
-        }
-    };
     
+    AFJSONRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    operation.successBlock = success;
+    operation.failureBlock = failure;
     return operation;
 }
 
@@ -115,35 +74,84 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     if (!self) {
         return nil;
     }
+    self.failureBlock = NULL;
+    self.successBlock = NULL;
+    
+    //by default we will use the queue that created the request.
+    self.callbackQueue = dispatch_get_current_queue();
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
+    
+    self.completionBlock = ^ {
+        if ([self isCancelled]) {
+            return;
+        }
+        
+        if (self.error) {
+            if (_failureBlock) {
+                dispatch_async(self.callbackQueue, ^(void) {
+                    _failureBlock(self.request, self.response, self.error);
+                });
+            }
+        } else {
+            [self processJSONResponseWithCompletion:^{
+                dispatch_async(self.callbackQueue, ^(void) {
+                    if (self.error) {
+                        if (_failureBlock) {
+                            _failureBlock(self.request, self.response, self.error);
+                        }
+                    } else {
+                        if (_successBlock) {
+                            _successBlock(self.request, self.response, self.responseJSON);
+                        }
+                    }
+                }); 
+            }];
+        }
+    };
+    
     
     return self;
 }
 
 - (void)dealloc {
+    [_successBlock release];
+    [_failureBlock release];
     [_responseJSON release];
     [_JSONError release];
+    
+    if (_callbackQueue) {
+        dispatch_release(_callbackQueue),_callbackQueue=NULL;
+    }
     [super dealloc];
 }
 
-- (id)responseJSON {
-    if (!_responseJSON && [self isFinished]) {
-        NSError *error = nil;
+- (void)processJSONResponseWithCompletion:(void (^)(void))complete {
+    dispatch_async(json_request_operation_processing_queue(), ^(void) {
+        [self decodeJSON];
+        complete();
+    });
+}
+                                                    
+- (void) decodeJSON {
+    // implemented by subclasses
+}
 
-        if ([self.responseData length] == 0) {
-            self.responseJSON = nil;
-        } else {
-    #if USE_FOUNDATION_JSON
-            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
-    #else
-            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-    #endif
-            self.error = error;
-        }
-    }
+- (dispatch_queue_t)callbackQueue {
+    return _callbackQueue;
+}
+
+- (void) setCallbackQueue:(dispatch_queue_t)callbackQueue {
+    if (_callbackQueue == callbackQueue) 
+        return;
     
-    return _responseJSON;
+    if (_callbackQueue)
+        dispatch_release(_callbackQueue);
+    
+    if (callbackQueue){
+        dispatch_retain(callbackQueue);
+        _callbackQueue = callbackQueue;
+    }
 }
 
 #pragma mark - AFHTTPClientOperation

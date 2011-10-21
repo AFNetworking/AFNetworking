@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D9CDB7311450958600321EDD /* AFFoundationJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CDB7301450958600321EDD /* AFFoundationJSONRequestOperation.m */; };
+		D9ED706F1452130600241060 /* AFJSONKitJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D9ED706E1452130600241060 /* AFJSONKitJSONRequestOperation.m */; };
 		F86E5529143A28F3002B438C /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F86E5528143A28F3002B438C /* AFURLConnectionOperation.m */; };
 		F874B5D913E0AA6500B28E3E /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5C913E0AA6500B28E3E /* AFHTTPRequestOperation.m */; };
 		F874B5DA13E0AA6500B28E3E /* AFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5CA13E0AA6500B28E3E /* AFImageCache.m */; };
@@ -36,6 +38,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D9CDB72F1450958600321EDD /* AFFoundationJSONRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFFoundationJSONRequestOperation.h; path = ../AFNetworking/AFFoundationJSONRequestOperation.h; sourceTree = "<group>"; };
+		D9CDB7301450958600321EDD /* AFFoundationJSONRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFFoundationJSONRequestOperation.m; path = ../AFNetworking/AFFoundationJSONRequestOperation.m; sourceTree = "<group>"; };
+		D9ED706D1452130600241060 /* AFJSONKitJSONRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFJSONKitJSONRequestOperation.h; path = ../AFNetworking/AFJSONKitJSONRequestOperation.h; sourceTree = "<group>"; };
+		D9ED706E1452130600241060 /* AFJSONKitJSONRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFJSONKitJSONRequestOperation.m; path = ../AFNetworking/AFJSONKitJSONRequestOperation.m; sourceTree = "<group>"; };
 		F86E5527143A28F3002B438C /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFURLConnectionOperation.h; path = ../AFNetworking/AFURLConnectionOperation.h; sourceTree = "<group>"; };
 		F86E5528143A28F3002B438C /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFURLConnectionOperation.m; path = ../AFNetworking/AFURLConnectionOperation.m; sourceTree = "<group>"; };
 		F874B5C913E0AA6500B28E3E /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPRequestOperation.m; path = ../AFNetworking/AFHTTPRequestOperation.m; sourceTree = "<group>"; };
@@ -102,6 +108,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D9CDB72814508F4A00321EDD /* JSON */ = {
+			isa = PBXGroup;
+			children = (
+				D9CDB72F1450958600321EDD /* AFFoundationJSONRequestOperation.h */,
+				D9CDB7301450958600321EDD /* AFFoundationJSONRequestOperation.m */,
+				D9ED706D1452130600241060 /* AFJSONKitJSONRequestOperation.h */,
+				D9ED706E1452130600241060 /* AFJSONKitJSONRequestOperation.m */,
+			);
+			name = JSON;
+			sourceTree = "<group>";
+		};
 		F8D25D0F1396A9C400CF3BD6 /* JSONKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,6 +239,7 @@
 		F8E469941395744600DB05C8 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				D9CDB72814508F4A00321EDD /* JSON */,
 				F8D7DE781445F354000EF2F3 /* AFNetworking.h */,
 				F86E5527143A28F3002B438C /* AFURLConnectionOperation.h */,
 				F86E5528143A28F3002B438C /* AFURLConnectionOperation.m */,
@@ -347,6 +365,8 @@
 				F86E5529143A28F3002B438C /* AFURLConnectionOperation.m in Sources */,
 				F8F4B16E143CD1420064C9E6 /* AFPropertyListRequestOperation.m in Sources */,
 				F8F4B17F143E07030064C9E6 /* AFXMLRequestOperation.m in Sources */,
+				D9CDB7311450958600321EDD /* AFFoundationJSONRequestOperation.m in Sources */,
+				D9ED706F1452130600241060 /* AFJSONKitJSONRequestOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

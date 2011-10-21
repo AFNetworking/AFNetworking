@@ -1,7 +1,9 @@
-// AFNetworking.h
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
-// 
+//  AFJSONKitJSONRequestOperation.m
+//
+//  Created by Zac Bowling on 10/20/11.
+//  Copyright (c) 2011 SeatMe, Inc All rights reserved.
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -20,35 +22,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <Availability.h>
-
-#import <AFNetworking/AFURLConnectionOperation.h>
-
-#ifndef USE_FOUNDATION_JSON
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-#define USE_FOUNDATION_JSON 1
-#else
-#define USE_FOUNDATION_JSON 0
-#endif
-#endif
-
-#if USE_FOUNDATION_JSON
-#import "AFFoundationJSONRequestOperation.h"
-#else
 #import "AFJSONKitJSONRequestOperation.h"
-#endif
+#import "JSONKit.h"
 
-#import <AFNetworking/AFHTTPRequestOperation.h>
-#import <AFNetworking/AFJSONRequestOperation.h>
-#import <AFNetworking/AFXMLRequestOperation.h>
-#import <AFNetworking/AFPropertyListRequestOperation.h>
-#import <AFNetworking/AFHTTPClient.h>
+@implementation AFJSONKitJSONRequestOperation
 
-#import <AFNetworking/AFImageRequestOperation.h>
-#import <AFNetworking/AFImagecache.h>
+- (void) decodeJSON {
+    if (!self.responseJSON && [self isFinished]) {
+        NSError *error = nil;
+        if ([self.responseData length] == 0) {
+            self.responseJSON = nil;
+        } else {
+            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
+            self.error = error;
+        }
+    }
+}
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#endif
+@end
