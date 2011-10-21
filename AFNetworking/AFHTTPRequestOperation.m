@@ -23,6 +23,7 @@
 #import "AFHTTPRequestOperation.h"
 
 @interface AFHTTPRequestOperation ()
+- (BOOL)hasContent;
 @property (readwrite, nonatomic, retain) NSError *error;
 @end
 
@@ -61,7 +62,7 @@
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
             self.error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
-        } else if (![self hasAcceptableContentType]) {
+        } else if ([self hasContent] && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), self.acceptableContentTypes, [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
@@ -73,15 +74,16 @@
     return _HTTPError;
 }
 
+- (BOOL)hasContent {
+    return [self.responseData length] > 0 && [self.response statusCode] != 204;
+}
+
 - (BOOL)hasAcceptableStatusCode {
     return !self.acceptableStatusCodes || [self.acceptableStatusCodes containsIndex:[self.response statusCode]];
 }
 
 - (BOOL)hasAcceptableContentType {
-    // Don't invalidate content type if there is no content
-    BOOL hasNoContent = [self.responseData length] == 0 || [self.response statusCode] == 204;
-    
-    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]] || hasNoContent;
+    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
 }
 
 #pragma mark - AFHTTPClientOperation
