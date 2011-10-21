@@ -23,8 +23,8 @@
 #import "AFHTTPRequestOperation.h"
 
 @interface AFHTTPRequestOperation ()
-- (BOOL)hasContent;
 @property (readwrite, nonatomic, retain) NSError *error;
+@property (readonly, nonatomic, assign) BOOL hasContent;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -75,7 +75,7 @@
 }
 
 - (BOOL)hasContent {
-    return [self.responseData length] > 0 && [self.response statusCode] != 204;
+    return [self.responseData length] > 0 || [self.response statusCode] != 204;
 }
 
 - (BOOL)hasAcceptableStatusCode {
