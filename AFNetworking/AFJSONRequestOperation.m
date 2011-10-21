@@ -54,7 +54,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                                                     success:(AFJSONRequestOperationSuccessBlock)success
                                                     failure:(AFJSONRequestOperationFailureBlock)failure
 {
-    AFJSONRequestOperation *operation = [[[AFJSONRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+    AFJSONRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
     operation.successBlock = success;
     operation.failureBlock = failure;
     return operation;
