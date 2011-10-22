@@ -24,22 +24,13 @@
 
 #include <Availability.h>
 
-static dispatch_queue_t af_xml_request_operation_processing_queue;
-static dispatch_queue_t xml_request_operation_processing_queue() {
-    if (af_xml_request_operation_processing_queue == NULL) {
-        af_xml_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.xml-request.processing", 0);
-    }
-    
-    return af_xml_request_operation_processing_queue;
-}
-
 @interface AFXMLRequestOperation ()
 @property (readwrite, nonatomic, retain) NSXMLParser *responseXMLParser;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (readwrite, nonatomic, retain) NSXMLDocument *responseXMLDocument;
 #endif
 @property (readwrite, nonatomic, retain) NSError *error;
-
+@property (readwrite, nonatomic, copy) void (^processResponseBlock)(void);
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 @end
@@ -50,65 +41,36 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 @synthesize responseXMLDocument = _responseXMLDocument;
 #endif
 @synthesize error = _XMLError;
+@synthesize processResponseBlock = _processResponseBlock;
 
 + (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
-                                                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                                                        success:(AFHTTPRequestOperationSuccessBlock)success
+                                                        failure:(AFHTTPRequestOperationFailureBlock)failure
 {
-    AFXMLRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
-        }
     
-        if (operation.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.request, operation.response, operation.error);
-                });
-            }
-        } else {
-            NSXMLParser *XMLParser = operation.responseXMLParser;
-            if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    success(operation.request, operation.response, XMLParser);
-                });
-            }
-        }
+    AFXMLRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    
+    operation.processResponseBlock = ^ {
+        operation.decodedResponse = operation.responseXMLParser;
     };
+    operation.successBlock = success;
+    operation.failureBlock = failure;
     
     return operation;
 }
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 + (AFXMLRequestOperation *)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
-                                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                                                          success:(AFHTTPRequestOperationSuccessBlock)success
+                                                          failure:(AFHTTPRequestOperationFailureBlock)failure
 {
     AFXMLRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
-        }
-        
-        if (operation.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.request, operation.response, operation.error);
-                });
-            }
-        } else {
-            dispatch_async(xml_request_operation_processing_queue(), ^(void) {
-                NSXMLDocument *XMLDocument = operation.responseXMLDocument;
-                if (success) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        success(operation.request, operation.response, XMLDocument);
-                    });
-                }
-            });
-        }
-    };
-    
+
+    operation.successBlock = success;
+    operation.failureBlock = failure;
+    operation.processResponseBlock = ^ {
+        operation.decodedResponse = operation.responseXMLDocument;
+    }
     return operation;
 }
 #endif
@@ -135,7 +97,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (void)dealloc {
     _responseXMLParser.delegate = nil;
     [_responseXMLParser release];
-    
+    [_processResponseBlock release];
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
     [_responseXMLDocument release];
 #endif
@@ -143,6 +105,13 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     [_XMLError release];
     
     [super dealloc];
+}
+
+- (void)processResponse {
+    if (self.processResponseBlock)
+    {
+        self.processResponseBlock();
+    }
 }
 
 - (NSXMLParser *)responseXMLParser {
@@ -190,8 +159,8 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
         failure(response, error);
     }];
 #else
-    return [self XMLParserRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSXMLParser *XMLParser) {
-        success(XMLParser);
+    return [self XMLParserRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, id XMLParser) {
+        success((NSXMLParser *)XMLParser);
     } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
         failure(response, error);
     }];

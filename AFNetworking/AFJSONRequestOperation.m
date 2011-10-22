@@ -24,35 +24,22 @@
 
 #include <Availability.h>
 
-static dispatch_queue_t af_json_request_operation_processing_queue;
-static dispatch_queue_t json_request_operation_processing_queue() {
-    if (af_json_request_operation_processing_queue == NULL) {
-        af_json_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.json-request.processing", 0);
-    }
-    
-    return af_json_request_operation_processing_queue;
-}
-
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, retain) NSError *error;
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 
-- (void)processJSONResponseWithCompletion:(void (^)(void))complete;
-
 @end
 
 @implementation AFJSONRequestOperation
-@synthesize responseJSON = _responseJSON;
+@dynamic responseJSON;
 @synthesize error = _JSONError;
-@synthesize successBlock = _successBlock;
-@synthesize failureBlock = _failureBlock;
-@dynamic callbackQueue;
+
 
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(AFJSONRequestOperationSuccessBlock)success
-                                                    failure:(AFJSONRequestOperationFailureBlock)failure
+                                                    success:(AFHTTPRequestOperationSuccessBlock)success
+                                                    failure:(AFHTTPRequestOperationFailureBlock)failure
 {
     AFJSONRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
     operation.successBlock = success;
@@ -90,86 +77,36 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     if (!self) {
         return nil;
     }
-    self.failureBlock = NULL;
-    self.successBlock = NULL;
-    
-    //by default we will use the queue that created the request.
-    self.callbackQueue = dispatch_get_current_queue();
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
-    
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
-        if (self.error) {
-            if (_failureBlock) {
-                dispatch_async(self.callbackQueue, ^(void) {
-                    _failureBlock(self.request, self.response, self.error);
-                });
-            }
-        } else {
-            [self processJSONResponseWithCompletion:^{
-                dispatch_async(self.callbackQueue, ^(void) {
-                    if (self.error) {
-                        if (_failureBlock) {
-                            _failureBlock(self.request, self.response, self.error);
-                        }
-                    } else {
-                        if (_successBlock) {
-                            _successBlock(self.request, self.response, self.responseJSON);
-                        }
-                    }
-                }); 
-            }];
-        }
-    };
-    
     
     return self;
 }
 
 - (void)dealloc {
-    [_successBlock release];
-    [_failureBlock release];
     [_responseJSON release];
     [_JSONError release];
-    
-    if (_callbackQueue) {
-        dispatch_release(_callbackQueue),_callbackQueue=NULL;
-    }
     [super dealloc];
 }
 
-- (void)processJSONResponseWithCompletion:(void (^)(void))complete {
-    dispatch_async(json_request_operation_processing_queue(), ^(void) {
-        [self decodeJSON];
-        complete();
-    });
-}
-                                                    
-- (void) decodeJSON {
-    //implement me in the subclass
-    [self doesNotRecognizeSelector: _cmd];
-}
-
-- (dispatch_queue_t)callbackQueue {
-    return _callbackQueue;
-}
-
-- (void) setCallbackQueue:(dispatch_queue_t)callbackQueue {
-    if (_callbackQueue == callbackQueue) 
-        return;
-    
-    if (_callbackQueue)
-        dispatch_release(_callbackQueue);
-    
-    if (callbackQueue){
-        dispatch_retain(callbackQueue);
-        _callbackQueue = callbackQueue;
+- (void)processResponse {    
+    if (!self.responseJSON && [self isFinished]) {
+        NSError *error;
+        self.decodedResponse = [[self class] decodeJSONObjectWithData:self.responseData error:&error];
+        self.error = error;
     }
 }
+                                                    
++ (id) decodeJSONObjectWithData:(NSData *)data error:(NSError **)error {
+    //implement me in the subclass
+    [self doesNotRecognizeSelector: _cmd];
+    return nil;
+}
+
+- (id)responseJSON {
+    return self.decodedResponse;
+}
+
 
 #pragma mark - AFHTTPClientOperation
 
@@ -193,16 +130,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 #ifdef AF_INCLUDE_FOUNDATIONJSON
 @implementation AFFoundationJSONRequestOperation
 
-- (void) decodeJSON {
-    if (!self.responseJSON && [self isFinished]) {
-        NSError *error = nil;
-        
-        if ([self.responseData length] == 0) {
-            self.responseJSON = nil;
-        } else {
-            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
-            self.error = error;
-        }
++ (id) decodeJSONObjectWithData:(NSData *)data error:(NSError **)error {
+    if ([data length] == 0) {
+        return nil;
+    } else {
+        return [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
     }
 }
 
@@ -214,15 +146,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 @implementation AFJSONKitJSONRequestOperation
 
-- (void) decodeJSON {
-    if (!self.responseJSON && [self isFinished]) {
-        NSError *error = nil;
-        if ([self.responseData length] == 0) {
-            self.responseJSON = nil;
-        } else {
-            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-            self.error = error;
-        }
++ (id) decodeJSONObjectWithData:(NSData *)data error:(NSError **)error {
+    if ([data length] == 0) {
+        return nil;
+    } else {
+        return [[JSONDecoder decoder] objectWithData:data error:error];
     }
 }
 

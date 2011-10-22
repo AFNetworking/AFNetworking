@@ -36,9 +36,6 @@
 #endif
 #endif
 
-typedef void (^AFJSONRequestOperationSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON);
-
-typedef void (^AFJSONRequestOperationFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error);
 
 /**
  `AFJSONRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and working with JSON response data.
@@ -54,9 +51,6 @@ typedef void (^AFJSONRequestOperationFailureBlock)(NSURLRequest *request, NSHTTP
 @private
     id _responseJSON;
     NSError *_JSONError;
-    dispatch_queue_t _callbackQueue;
-    AFJSONRequestOperationSuccessBlock _successBlock;
-    AFJSONRequestOperationFailureBlock _failureBlock;
 }
 
 ///------------------
@@ -66,24 +60,7 @@ typedef void (^AFJSONRequestOperationFailureBlock)(NSURLRequest *request, NSHTTP
 /**
  A JSON object constructed from the response data. If an error occurs while parsing, `nil` will be returned, and the `error` property will be set to the error.
  */
-@property (nonatomic, retain) id responseJSON;
-
-/** 
- The callback dispatch queue. By default this is the calling queue that created the operation. 
- */
-@property (nonatomic) dispatch_queue_t callbackQueue;
-
-/** 
- The success callback block. This is dispatched on the callbackQueue.
- @sa callbackQueue
- */
-@property (nonatomic, copy) AFJSONRequestOperationSuccessBlock successBlock;
-
-/** 
- The failure callback block. This is dispatched on the callbackQueue.
- @sa callbackQueue
- */
-@property (nonatomic, copy) AFJSONRequestOperationFailureBlock failureBlock;
+@property (nonatomic, retain, readonly) id responseJSON;
 
 ///----------------------------------
 /// @name Creating Request Operations
@@ -99,8 +76,8 @@ typedef void (^AFJSONRequestOperationFailureBlock)(NSURLRequest *request, NSHTTP
  @return A new JSON request operation
  */
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(AFJSONRequestOperationSuccessBlock)success
-                                                    failure:(AFJSONRequestOperationFailureBlock)failure;
+                                                    success:(AFHTTPRequestOperationSuccessBlock)success
+                                                    failure:(AFHTTPRequestOperationFailureBlock)failure;
 
 
 ///-------------------------------------------
@@ -110,7 +87,7 @@ typedef void (^AFJSONRequestOperationFailureBlock)(NSURLRequest *request, NSHTTP
 /**
  Subclasses should overload this function to provide their own JSON decoder for the `responseData` property and should set responseJSON and error when completed. This method will be called on a private background dispatch queue. 
  */
-- (void) decodeJSON;
++ (id)decodeJSONObjectWithData:(NSData *)data error:(NSError **)error;
 
 @end
 

@@ -42,6 +42,7 @@
     NSXMLDocument *_responseXMLDocument;
 #endif
     NSError *_XMLError;
+    void (^_processResponseBlock)(void);
 }
 
 ///----------------------------
@@ -70,8 +71,8 @@
  @return A new XML request operation
  */
 + (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
-                                                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                                                        success:(AFHTTPRequestOperationSuccessBlock)success
+                                                        failure:(AFHTTPRequestOperationFailureBlock)failure;
 
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
@@ -85,8 +86,8 @@
  @return A new XML request operation
  */
 + (AFXMLRequestOperation *)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
-                                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                                                          success:(AFHTTPRequestOperationSuccessBlock)success
+                                                          failure:(AFHTTPRequestOperationFailureBlock)failure;
 #endif
 
 @end

@@ -22,15 +22,6 @@
 
 #import "AFPropertyListRequestOperation.h"
 
-static dispatch_queue_t af_property_list_request_operation_processing_queue;
-static dispatch_queue_t property_list_request_operation_processing_queue() {
-    if (af_property_list_request_operation_processing_queue == NULL) {
-        af_property_list_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.property-list-request.processing", 0);
-    }
-    
-    return af_property_list_request_operation_processing_queue;
-}
-
 @interface AFPropertyListRequestOperation ()
 @property (readwrite, nonatomic, retain) id responsePropertyList;
 @property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
@@ -47,40 +38,12 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 @synthesize error = _propertyListError;
 
 + (AFPropertyListRequestOperation *)propertyListRequestOperationWithRequest:(NSURLRequest *)request
-                                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id propertyList))success
-                                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                                                                    success:(AFHTTPRequestOperationSuccessBlock)success
+                                                                    failure:(AFHTTPRequestOperationFailureBlock)failure
 {
     AFPropertyListRequestOperation *operation = [[[self alloc] initWithRequest:request] autorelease];
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
-        }
-        
-        if (operation.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.request, operation.response, operation.error);
-                });
-            }
-        } else {
-            dispatch_async(property_list_request_operation_processing_queue(), ^(void) {
-                id propertyList = operation.responsePropertyList;
-                
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if (operation.error) {
-                        if (failure) {
-                            failure(operation.request, operation.response, operation.error);
-                        }
-                    } else {
-                        if (success) {
-                            success(operation.request, operation.response, propertyList);
-                        }
-                    }
-                }); 
-            });
-        }
-    };
-    
+    operation.successBlock = success;
+    operation.failureBlock = failure;
     return operation;
 }
 
@@ -103,6 +66,10 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     self.propertyListReadOptions = NSPropertyListImmutable;
     
     return self;
+}
+
+- (void) processResponse {
+    self.decodedResponse = self.responsePropertyList;
 }
 
 - (void)dealloc {

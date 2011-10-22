@@ -22,6 +22,15 @@
 
 #import "AFHTTPRequestOperation.h"
 
+static dispatch_queue_t af_request_operation_processing_queue;
+static dispatch_queue_t request_operation_processing_queue() {
+    if (af_request_operation_processing_queue == NULL) {
+        af_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.request.processing", 0);
+    }
+    
+    return af_request_operation_processing_queue;
+}
+
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, retain) NSError *error;
 @end
@@ -30,6 +39,11 @@
 @synthesize acceptableStatusCodes = _acceptableStatusCodes;
 @synthesize acceptableContentTypes = _acceptableContentTypes;
 @synthesize error = _HTTPError;
+@synthesize successBlock = _successBlock;
+@synthesize failureBlock = _failureBlock;
+@synthesize decodedResponse = _decodedResponse;
+@dynamic callbackQueue;
+
 
 - (id)initWithRequest:(NSURLRequest *)request {
     self = [super initWithRequest:request];
@@ -37,16 +51,66 @@
         return nil;
     }
     
+    self.failureBlock = nil;
+    self.successBlock = nil;
+    
+    //by default we will use the queue that created the request.
+    self.callbackQueue = dispatch_get_current_queue();
+    
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
+    
+    self.completionBlock = ^ {
+        if ([self isCancelled]) {
+            return;
+        }
+        
+        if (self.error) {
+            if (self.failureBlock) {
+                dispatch_async(self.callbackQueue, ^(void) {
+                    self.failureBlock(self.request, self.response, self.error);
+                });
+            }
+        } else {
+            dispatch_async(request_operation_processing_queue(), ^(void) {
+                [self processResponse];
+                dispatch_async(self.callbackQueue, ^(void) {
+                    if (self.error) {
+                        if (self.failureBlock) {
+                            self.failureBlock(self.request, self.response, self.error);
+                        }
+                    } else {
+                        if (self.successBlock) {
+                            self.successBlock(self.request, self.response, self.decodedResponse);
+                        }
+                    }
+                });
+            });
+        }
+    };
     
     return self;
 }
 
 - (void)dealloc {
+    [_decodedResponse release];
+    [_successBlock release];
+    [_failureBlock release];
     [_acceptableStatusCodes release];
     [_acceptableContentTypes release];
     [_HTTPError release];
+    
+    if (_callbackQueue) {
+        dispatch_release(_callbackQueue),_callbackQueue=NULL;
+    }
+    
     [super dealloc];
+}
+
+- (void)processResponse {  
+    //This is normally overriden by subclasses
+    if (!self.decodedResponse && [self isFinished]) {
+        self.decodedResponse = self.responseData;
+    }
 }
 
 - (NSHTTPURLResponse *)response {
@@ -79,6 +143,23 @@
 
 - (BOOL)hasAcceptableContentType {
     return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
+}
+
+- (dispatch_queue_t)callbackQueue {
+    return _callbackQueue;
+}
+
+- (void) setCallbackQueue:(dispatch_queue_t)callbackQueue {
+    if (_callbackQueue == callbackQueue) 
+        return;
+    
+    if (_callbackQueue)
+        dispatch_release(_callbackQueue);
+    
+    if (callbackQueue){
+        dispatch_retain(callbackQueue);
+        _callbackQueue = callbackQueue;
+    }
 }
 
 #pragma mark - AFHTTPClientOperation

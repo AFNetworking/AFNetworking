@@ -24,6 +24,9 @@
 #import "AFURLConnectionOperation.h"
 #import "AFHTTPClient.h"
 
+typedef void (^AFHTTPRequestOperationSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id object);
+typedef void (^AFHTTPRequestOperationFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error);
+
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
  */
@@ -32,6 +35,10 @@
     NSIndexSet *_acceptableStatusCodes;
     NSSet *_acceptableContentTypes;
     NSError *_HTTPError;
+    dispatch_queue_t _callbackQueue;
+    AFHTTPRequestOperationSuccessBlock _successBlock;
+    AFHTTPRequestOperationFailureBlock _failureBlock;
+    id<NSObject> decodedResponse;
 }
 
 ///----------------------------------------------
@@ -71,5 +78,45 @@
  A Boolean value that corresponds to whether the MIME type of the response is among the specified set of acceptable content types. Returns `YES` if `acceptableContentTypes` is `nil`.
  */
 @property (readonly) BOOL hasAcceptableContentType;
+
+///-----------------------------------
+/// @name Handling the response
+///-----------------------------------
+
+/**
+ Returns the decode the response for the request operation.
+ */
+@property (nonatomic, retain) id<NSObject> decodedResponse;
+
+///--------------------------
+/// @name Completion handling
+///--------------------------
+
+
+/** 
+ The callback dispatch queue. By default this is the calling queue that created the operation. 
+ */
+@property (nonatomic) dispatch_queue_t callbackQueue;
+
+/** 
+ The success callback block. This is dispatched on the callbackQueue.
+ @sa callbackQueue
+ */
+@property (nonatomic, copy) AFHTTPRequestOperationSuccessBlock successBlock;
+
+/** 
+ The failure callback block. This is dispatched on the callbackQueue.
+ @sa callbackQueue
+ */
+@property (nonatomic, copy) AFHTTPRequestOperationFailureBlock failureBlock;
+
+
+///-----------------------
+/// @name Subclass methods
+///-----------------------
+
+/** responable for decoding the data and responding to it */
+
+- (void)processResponse;
 
 @end
