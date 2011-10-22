@@ -89,6 +89,8 @@
  */
 + (id)decodeJSONObjectWithData:(NSData *)data error:(NSError **)error;
 
++ (NSString *)JSONStringWithDictionary:(NSDictionary *)dictionary;
+
 @end
 
 #ifdef AF_INCLUDE_FOUNDATIONJSON

@@ -103,6 +103,11 @@
     return nil;
 }
 
++ (NSString *)JSONStringWithDictionary:(NSDictionary *)dictionary {
+    [self doesNotRecognizeSelector: _cmd];
+    return nil;
+}
+
 - (id)responseJSON {
     return self.decodedResponse;
 }
@@ -138,6 +143,16 @@
     }
 }
 
+
++ (NSString *)JSONStringWithDictionary:(NSDictionary *)dictionary {
+    NSError *error = nil;
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+    if (!error) {
+        return [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];
+    }
+    return nil;
+}
+
 @end
 #endif
 
@@ -153,6 +168,11 @@
         return [[JSONDecoder decoder] objectWithData:data error:error];
     }
 }
+
++ (NSString *)JSONStringWithDictionary:(NSDictionary *)dictionary {
+    return [dictionary JSONString];
+}
+
 
 @end
 #endif

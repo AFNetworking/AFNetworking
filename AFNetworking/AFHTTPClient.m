@@ -24,6 +24,7 @@
 
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
+#import "AFJSONRequestOperation.h"
 
 #import <Availability.h>
 
@@ -118,19 +119,7 @@ static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
 }
 
 static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
-    NSString *JSONString = nil;
-    
-#if USE_FOUNDATION_JSON
-    NSError *error = nil;
-    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];
-    if (!error) {
-        JSONString = [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];
-    }
-#else
-    JSONString = [parameters JSONString];
-#endif
-
-    return JSONString;
+    return [AFNETWORKING_DEFAULT_JSON_OPERATION JSONStringWithDictionary:parameters];
 }
 
 static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
