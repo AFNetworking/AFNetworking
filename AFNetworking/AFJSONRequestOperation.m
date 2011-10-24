@@ -21,10 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFJSONRequestOperation.h"
-
-#include <Availability.h>
-
-#import "JSONKit.h"
+#import "AFJSONUtilities.h"
 
 static dispatch_queue_t af_json_request_operation_processing_queue;
 static dispatch_queue_t json_request_operation_processing_queue() {
@@ -117,16 +114,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         if ([self.responseData length] == 0) {
             self.responseJSON = nil;
         } else {
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-            if ([NSJSONSerialization class]) {
-                self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
-            } else {
-                self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-            }
-#else
-            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-#endif
+            self.responseJSON = AFJSONDecode(self.responseData, &error);
         }
         
         self.JSONError = error;
