@@ -23,14 +23,14 @@
 #import "AFHTTPRequestOperation.h"
 
 @interface AFHTTPRequestOperation ()
-@property (readwrite, nonatomic, retain) NSError *error;
+@property (readwrite, nonatomic, retain) NSError *HTTPError;
 @property (readonly, nonatomic, assign) BOOL hasContent;
 @end
 
 @implementation AFHTTPRequestOperation
 @synthesize acceptableStatusCodes = _acceptableStatusCodes;
 @synthesize acceptableContentTypes = _acceptableContentTypes;
-@synthesize error = _HTTPError;
+@synthesize HTTPError = _HTTPError;
 
 - (id)initWithRequest:(NSURLRequest *)request {
     self = [super initWithRequest:request];
@@ -55,23 +55,27 @@
 }
 
 - (NSError *)error {
-    if (self.response) {
+    if (self.response && !self.HTTPError) {
         if (![self hasAcceptableStatusCode]) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code %@, got %d", nil), self.acceptableStatusCodes, [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
-            self.error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
+            self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
         } else if ([self hasContent] && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), self.acceptableContentTypes, [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
-            self.error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo] autorelease];
+            self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo] autorelease];
         }
     }
     
-    return _HTTPError;
+    if (_HTTPError) {
+        return _HTTPError;
+    } else {
+        return [super error];
+    }
 }
 
 - (BOOL)hasContent {
