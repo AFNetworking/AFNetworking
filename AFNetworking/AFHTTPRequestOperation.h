@@ -22,12 +22,11 @@
 
 #import <Foundation/Foundation.h>
 #import "AFURLConnectionOperation.h"
-#import "AFHTTPClient.h"
 
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
  */
-@interface AFHTTPRequestOperation : AFURLConnectionOperation <AFHTTPClientOperation> {
+@interface AFHTTPRequestOperation : AFURLConnectionOperation {
 @private
     NSIndexSet *_acceptableStatusCodes;
     NSSet *_acceptableContentTypes;
@@ -71,5 +70,22 @@
  A Boolean value that corresponds to whether the MIME type of the response is among the specified set of acceptable content types. Returns `YES` if `acceptableContentTypes` is `nil`.
  */
 @property (readonly) BOOL hasAcceptableContentType;
+
+/**
+ A Boolean value determining whether or not the class can process the specified request. For example, `AFJSONRequestOperation` may check to make sure the content type was `application/json` or the URL path extension was `.json`.
+ 
+ @param urlRequest The request that is determined to be supported or not supported for this class.
+ */
++ (BOOL)canProcessRequest:(NSURLRequest *)urlRequest;
+
+///-----------------------------------------------------------
+/// @name Setting Completion Block Success / Failure Callbacks
+///-----------------------------------------------------------
+
+/**
+ 
+ */
+- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 @end

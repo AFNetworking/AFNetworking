@@ -86,38 +86,34 @@
     return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
 }
 
-#pragma mark - AFHTTPClientOperation
-
-+ (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return NO;
-}
-
-+ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(id object))success 
-                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
+- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-    AFHTTPRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
+    self.completionBlock = ^ {
+        if ([self isCancelled]) {
             return;
         }
         
-        if (operation.error) {
+        if (self.error) {
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.response, operation.error);
+                    failure(self, self.error);
                 });
             }
         } else {
             if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    success(operation.responseData);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    success(self, self.responseData);
                 });
             }
         }
     };
-    
-    return operation;
-}        
+}
+
+#pragma mark - AFHTTPClientOperation
+
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    return YES;
+}     
 
 @end
