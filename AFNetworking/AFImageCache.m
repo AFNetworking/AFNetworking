@@ -43,38 +43,21 @@ static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString
 - (UIImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName
 {
-    return [self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
+    return [UIImage imageWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]];
 }
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
 - (NSImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName
 {
-    return [self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
+    return [[[NSImage alloc] initWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]] autorelease];
 }
 #endif
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-- (void)cacheImage:(UIImage *)image
-            forURL:(NSURL *)url
-         cacheName:(NSString *)cacheName
+- (void)cacheImageData:(NSData *)imageData
+                forURL:(NSURL *)url
+             cacheName:(NSString *)cacheName
 {
-    if (!image) {
-        return;
-    }
-    
-    [self setObject:image forKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
+    [self setObject:[NSPurgeableData dataWithData:imageData] forKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
 }
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-- (void)cacheImage:(NSImage *)image
-            forURL:(NSURL *)url
-         cacheName:(NSString *)cacheName
-{
-    if (!image) {
-        return;
-    }
-    
-    [self setObject:image forKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
-}
-#endif
 
 @end
