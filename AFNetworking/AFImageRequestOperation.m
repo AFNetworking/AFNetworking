@@ -104,7 +104,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 }
                 
                 if ([operation.request cachePolicy] != NSURLCacheStorageNotAllowed) {
-                    [[AFImageCache sharedImageCache] cacheImage:image forURL:[operation.request URL] cacheName:cacheNameOrNil];
+                    [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[operation.request URL] cacheName:cacheNameOrNil];
                 }
             }
         });        
@@ -147,7 +147,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 }
                 
                 if ([operation.request cachePolicy] != NSURLCacheStorageNotAllowed) {
-                    [[AFImageCache sharedImageCache] cacheImage:image forURL:[operation.request URL] cacheName:cacheNameOrNil];
+                    [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[operation.request URL] cacheName:cacheNameOrNil];
                 }
             }
         });        
