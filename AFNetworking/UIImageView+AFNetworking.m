@@ -23,40 +23,13 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
 #import "UIImageView+AFNetworking.h"
 
 #import "AFImageCache.h"
 
-static UIImage * AFImageByScalingAndCroppingImageToSize(UIImage *image, CGSize size) {
-    if (image == nil) {
-        return nil;
-    } else if (CGSizeEqualToSize(image.size, size) || CGSizeEqualToSize(size, CGSizeZero)) {
-        return image;
-    }
-    
-    CGSize scaledSize = size;
-	CGPoint thumbnailPoint = CGPointZero;
-    
-    CGFloat widthFactor = size.width / image.size.width;
-    CGFloat heightFactor = size.height / image.size.height;
-    CGFloat scaleFactor = (widthFactor > heightFactor) ? widthFactor : heightFactor;
-    scaledSize.width = image.size.width * scaleFactor;
-    scaledSize.height = image.size.height * scaleFactor;
-    if (widthFactor > heightFactor) {
-        thumbnailPoint.y = (size.height - scaledSize.height) * 0.5; 
-    } else if (widthFactor < heightFactor) {
-        thumbnailPoint.x = (size.width - scaledSize.width) * 0.5;
-    }
-    
-    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0); 
-    [image drawInRect:CGRectMake(thumbnailPoint.x, thumbnailPoint.y, scaledSize.width, scaledSize.height)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-	
-	return newImage;
-}
-
-static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOperation";
+static char kAFImageRequestOperationObjectKey;
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, retain, setter = af_setImageRequestOperation:) AFImageRequestOperation *af_imageRequestOperation;
@@ -71,11 +44,11 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
 @implementation UIImageView (AFNetworking)
 
 - (AFHTTPRequestOperation *)af_imageRequestOperation {
-    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, kUIImageViewImageRequestObjectKey);
+    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFImageRequestOperationObjectKey);
 }
 
 - (void)af_setImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
-    objc_setAssociatedObject(self, kUIImageViewImageRequestObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &kAFImageRequestOperationObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 + (NSOperationQueue *)af_sharedImageRequestOperationQueue {
@@ -107,23 +80,19 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
               placeholderImage:(UIImage *)placeholderImage 
-                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response,UIImage *image))success
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    if (![urlRequest URL] || (![self.af_imageRequestOperation isCancelled] && [[urlRequest URL] isEqual:self.af_imageRequestOperation.request.URL])) {
+    if (![urlRequest URL] || (![self.af_imageRequestOperation isCancelled] && [[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]])) {
         return;
     } else {
         [self cancelImageRequestOperation];
     }
     
-    NSString *cacheName = @"UIImageView";
-    if (placeholderImage) {
-        cacheName = [cacheName stringByAppendingFormat:@"(%@)", NSStringFromCGSize(placeholderImage.size)];
-    }
-    
-    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForURL:[urlRequest URL] cacheName:cacheName];
+    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForURL:[urlRequest URL] cacheName:nil];
     if (cachedImage) {
         self.image = cachedImage;
+        self.af_imageRequestOperation = nil;
         
         if (success) {
             success(nil, nil, cachedImage);
@@ -131,34 +100,24 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
     } else {
         self.image = placeholderImage;
         
-        self.af_imageRequestOperation = [AFImageRequestOperation operationWithRequest:urlRequest imageProcessingBlock:^UIImage *(UIImage *image) {
-            if (placeholderImage) {
-                image = AFImageByScalingAndCroppingImageToSize(image, placeholderImage.size);
-            }
-            
-            return image;
-        } cacheName:cacheName success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        self.af_imageRequestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {            
             if (self.af_imageRequestOperation && ![self.af_imageRequestOperation isCancelled]) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (success) {
-                        success(request, response, image);
-                    }
-                
-                    if ([[request URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
-                        self.image = image;
-                    } else {
-                        self.image = placeholderImage;
-                    }
-                });
-            }
+                if (success) {
+                    success(request, response, image);
+                }
+            
+                if ([[request URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
+                    self.image = image;
+                } else {
+                    self.image = placeholderImage;
+                }
+            }            
         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
             self.af_imageRequestOperation = nil;
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (failure) {
-                    failure(request, response, error);
-                } 
-            });
+            if (failure) {
+                failure(request, response, error);
+            } 
         }];
        
         [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
@@ -170,3 +129,4 @@ static NSString * const kUIImageViewImageRequestObjectKey = @"_af_imageRequestOp
 }
 
 @end
+#endif

@@ -43,6 +43,7 @@
     self.detailTextLabel.backgroundColor = self.backgroundColor;
 
     self.imageView.backgroundColor = self.backgroundColor;
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     
     self.selectionStyle = UITableViewCellSelectionStyleGray;
     
@@ -71,6 +72,26 @@
     [self.imageView cancelImageRequestOperation];
     self.textLabel.text = nil;
     self.detailTextLabel.text = nil;
+}
+
+#pragma mark - UIView
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    CGRect imageViewFrame = self.imageView.frame;
+    CGRect textLabelFrame = self.textLabel.frame;
+    CGRect detailTextLabelFrame = self.detailTextLabel.frame;
+    
+    imageViewFrame.origin = CGPointMake(10.0f, 10.0f);
+    imageViewFrame.size = CGSizeMake(50.0f, 50.0f);
+    textLabelFrame.origin.x = imageViewFrame.size.width + 25.0f;
+    detailTextLabelFrame.origin.x = textLabelFrame.origin.x;
+    textLabelFrame.size.width = 240.0f;
+    detailTextLabelFrame.size.width = textLabelFrame.size.width;
+    
+    self.textLabel.frame = textLabelFrame;
+    self.detailTextLabel.frame = detailTextLabelFrame;
+    self.imageView.frame = imageViewFrame;
 }
 
 @end

@@ -1,4 +1,4 @@
-// Spot.h
+// main.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
@@ -20,26 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
 
-typedef void (^AFRecordsBlock)(NSArray *records);
+#import <Cocoa/Cocoa.h>
 
-@interface Spot : NSObject {
-@private
-    NSString *_name;
-    NSString *_imageURLString;
-    NSNumber *_latitude;
-    NSNumber *_longitude;
+int main(int argc, char *argv[])
+{
+    return NSApplicationMain(argc, (const char **)argv);
 }
-
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSNumber *latitude;
-@property (nonatomic, retain) NSNumber *longitude;
-@property (readonly) CLLocation *location;
-
-- (id)initWithAttributes:(NSDictionary *)attributes;
-+ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(AFRecordsBlock)block;
-
-@end

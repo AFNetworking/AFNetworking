@@ -23,8 +23,10 @@
 #import <Foundation/Foundation.h>
 #import "AFImageRequestOperation.h"
 
+#import <Availability.h>
+
 /**
- `AFImageCache` is a subclass of `NSCache` that stores and retrieves images from cache.
+ `AFImageCache` is an `NSCache` that stores and retrieves images from cache.
  
  @discussion `AFImageCache` is used to cache images for successful `AFImageRequestOperations` with the proper cache policy.
  */
@@ -45,18 +47,24 @@
  
  @return The image associated with the URL and cache name, or `nil` if not image exists.
  */
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (UIImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+- (NSImage *)cachedImageForURL:(NSURL *)url
+                     cacheName:(NSString *)cacheName;
+#endif
 
 /**
- Stores an image into cache, associated with a given URL and cache name.
+ Stores image data into cache, associated with a given URL and cache name.
  
- @param image The image to be stored in cache.
+ @param imageData The image data to be stored in cache.
  @param url The URL to be associated with the image.
  @param cacheName The cache name to be associated with the image in the cache. This allows for multiple versions of an image to be associated for a single URL, such as image thumbnails, for instance.
  */
-- (void)cacheImage:(UIImage *)image
-            forURL:(NSURL *)url
-         cacheName:(NSString *)cacheName;
+- (void)cacheImageData:(NSData *)imageData
+                forURL:(NSURL *)url
+             cacheName:(NSString *)cacheName;
 
 @end
