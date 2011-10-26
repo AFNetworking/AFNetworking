@@ -69,6 +69,7 @@
 #pragma mark - UITableViewCell
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
     [self.imageView cancelImageRequestOperation];
     self.textLabel.text = nil;
     self.detailTextLabel.text = nil;
