@@ -122,7 +122,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
             if ([NSJSONSerialization class]) {
                 self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
             } else {
-                self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
+                Class jsonDecoder = NSClassFromString(@"JSONDecoder");
+                self.responseJSON = [[jsonDecoder decoder] objectWithData:self.responseData error:&error];
             }
 #else
             self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
