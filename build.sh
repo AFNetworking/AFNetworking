@@ -7,7 +7,7 @@ INSTALL_PATH=$WORKSPACE/artifacts
 rm -rf $INSTALL_PATH
 mkdir -p $INSTALL_PATH
 
-PROJ=AFNetworking/AFNetworking.xcodeproj 
+PROJ=AFNetworking.xcodeproj 
 
 xcodebuild -project $PROJ -sdk iphoneos INSTALL_ROOT=$INSTALL_PATH/device install
 xcodebuild -project $PROJ -sdk iphonesimulator INSTALL_ROOT=$INSTALL_PATH/simulator install
