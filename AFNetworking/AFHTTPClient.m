@@ -167,7 +167,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     self.baseURL = url;
     
     self.stringEncoding = NSUTF8StringEncoding;
-    self.parameterEncoding = AFJSONParameterEncoding;
+    self.parameterEncoding = AFFormURLParameterEncoding;
 	
     self.registeredHTTPOperationClassNames = [NSMutableArray array];
     
