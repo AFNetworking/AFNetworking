@@ -227,35 +227,33 @@ typedef enum {
                                              parameters:(NSDictionary *)parameters
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
 
-
-///--------------------------------
-/// @name Enqueuing HTTP Operations
-///--------------------------------
+///-------------------------------
+/// @name Creating HTTP Operations
+///-------------------------------
 
 /**
- Creates and enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue.
+ Creates an `AFHTTPRequestOperation`
  
  In order to determine what kind of operation is enqueued, each registered subclass conforming to the `AFHTTPClient` protocol is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`.
-  
+ 
  @param request The request object to be loaded asynchronously during execution of the operation.
  @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes a single argument, which is an object created from the response data of request.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
- 
- @see `AFHTTPClientOperation`
  */
-- (void)enqueueHTTPRequestOperationWithRequest:(NSURLRequest *)request 
-                                       success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                                       failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+- (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)request 
+                                                    success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                                                    failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+///----------------------------------------
+/// @name Managing Enqueued HTTP Operations
+///----------------------------------------
+
 /**
  Enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue.
  
  @param operation The HTTP request operation to be enqueued.
  */
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation;
-
-///---------------------------------
-/// @name Cancelling HTTP Operations
-///---------------------------------
 
 /**
  Cancels all operations in the HTTP client's operation queue that match the specified HTTP method and URL.

@@ -313,9 +313,9 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     return request;
 }
 
-- (void)enqueueHTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
-                                       success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                                       failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+- (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
+                                                    success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                                                    failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     AFHTTPRequestOperation *operation = nil;
     NSString *className = nil;
@@ -333,7 +333,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     
     [operation setCompletionBlockWithSuccess:success failure:failure];
        
-    [self enqueueHTTPRequestOperation:operation];
+    return operation;
 }
 
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation {
@@ -356,7 +356,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
-	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 - (void)postPath:(NSString *)path 
@@ -365,7 +366,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
-	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
+	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 - (void)putPath:(NSString *)path 
@@ -374,7 +376,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
-	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
+	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 - (void)deletePath:(NSString *)path 
@@ -383,7 +386,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
-	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
+	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 @end
