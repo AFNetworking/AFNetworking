@@ -355,15 +355,27 @@ typedef enum {
 - (void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
 
 /**
- Appends the HTTP header `Content-Disposition: file; filename=#{generated filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
+ Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
  
  @param data The data to be encoded and appended to the form data.
- @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
+ @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
+ @param name The filename to be associated with the specified data. This parameter must not be `nil`.
  
- @discussion The filename associated with this data in the form will be automatically generated using the parameter name specified and a unique timestamp-based hash.  
  */
-- (void)appendPartWithFileData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name;
+- (void)appendPartWithFileData:(NSData *)data name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType;
+
+
+/**
+ Appends the HTTP header `Content-Disposition: file; filename=#{generated filename}; name=#{name}"` and `Content-Type: #{generated mimeType}`, followed by the encoded file data and the multipart form boundary.
+ 
+ @param fileURL The URL corresponding to the file whose content will be appended to the form.
+ @param name The name to be associated with the specified data. This parameter must not be `nil`.
+ @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
+ 
+ @discussion The filename and MIME type for this data in the form will be automatically generated, using `NSURLResponse` `-MIMEType` and `-suggestedFilename`.
+ */
+- (void)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
 
 /**
  Appends encoded data to the form data.
