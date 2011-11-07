@@ -125,20 +125,20 @@ typedef enum {
 ///----------------------------------
 
 /**
- Attempts to register a class conforming to the `AFHTTPClientOperation` protocol, adding it to a chain to automatically generate request operations from a URL request.
+ Attempts to register a subclass of `AFHTTPRequestOperation`, adding it to a chain to automatically generate request operations from a URL request.
  
- @param The class conforming to the `AFHTTPClientOperation` protocol to register
+ @param The subclass of `AFHTTPRequestOperation` to register
  
- @return `YES` if the registration is successful, `NO` otherwise. The only failure condition is if `operationClass` does not conform to the `AFHTTPCLientOperation` protocol.
+ @return `YES` if the registration is successful, `NO` otherwise. The only failure condition is if `operationClass` does is not a subclass of `AFHTTPRequestOperation`.
  
- @discussion When `enqueueHTTPRequestOperationWithRequest:success:failure` is invoked, each registered class is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`. There is no guarantee that all registered classes will be consulted. Classes are consulted in the reverse order of their registration. Attempting to register an already-registered class will move it to the top of the chain.
+ @discussion When `enqueueHTTPRequestOperationWithRequest:success:failure` is invoked, each registered class is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to create an operation using `initWithURLRequest:` and do `setCompletionBlockWithSuccess:failure:`. There is no guarantee that all registered classes will be consulted. Classes are consulted in the reverse order of their registration. Attempting to register an already-registered class will move it to the top of the list.
  
  @see `AFHTTPClientOperation`
  */
 - (BOOL)registerHTTPOperationClass:(Class)operationClass;
 
 /**
- Unregisteres the specified class conforming to the `AFHTTPClientOperation` protocol.
+ Unregisters the specified subclass of `AFHTTPRequestOperation`.
  
  @param The class conforming to the `AFHTTPClientOperation` protocol to unregister
  
@@ -244,8 +244,8 @@ typedef enum {
  @see `AFHTTPClientOperation`
  */
 - (void)enqueueHTTPRequestOperationWithRequest:(NSURLRequest *)request 
-                                       success:(void (^)(id object))success 
-                                       failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
+                                       success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                                       failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 /**
  Enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue.
  
@@ -281,8 +281,8 @@ typedef enum {
  */
 - (void)getPath:(NSString *)path
      parameters:(NSDictionary *)parameters
-        success:(void (^)(id object))success 
-        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
  Creates an `AFHTTPRequestOperation` with a `POST` request, and enqueues it to the HTTP client's operation queue.
@@ -296,8 +296,8 @@ typedef enum {
  */
 - (void)postPath:(NSString *)path 
       parameters:(NSDictionary *)parameters 
-         success:(void (^)(id object))success 
-         failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
+         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
  Creates an `AFHTTPRequestOperation` with a `PUT` request, and enqueues it to the HTTP client's operation queue.
@@ -311,8 +311,8 @@ typedef enum {
  */
 - (void)putPath:(NSString *)path 
      parameters:(NSDictionary *)parameters 
-        success:(void (^)(id object))success 
-        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
  Creates an `AFHTTPRequestOperation` with a `DELETE` request, and enqueues it to the HTTP client's operation queue.
@@ -326,36 +326,8 @@ typedef enum {
  */
 - (void)deletePath:(NSString *)path 
         parameters:(NSDictionary *)parameters 
-           success:(void (^)(id object))success 
-           failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
-@end
-
-#pragma mark -
-
-/**
- The `AFHTTPClientOperation` protocol defines the methods used for the automatic content parsing functionality of `AFHTTPClient`.
- 
- @see `AFHTTPClient -registerHTTPOperationClass:`
- */
-@protocol AFHTTPClientOperation
-
-/**
- A Boolean value determining whether or not the class can process the specified request. For example, `AFJSONRequestOperation` may check to make sure the content type was `application/json` or the URL path extension was `.json`.
- 
- @param urlRequest The request that is determined to be supported or not supported for this class.
- */
-+ (BOOL)canProcessRequest:(NSURLRequest *)urlRequest;
-
-/**
- Constructs and initializes an operation with success and failure callbacks.
- 
- @param urlRequest The request used by the operation connection.
- @param success A block object to be executed when the operation finishes successfully. The block has no return value and takes a single argument, the response object from the request.
- @param failure A block object to be executed when the operation finishes unsuccessfully. The block has no return value and takes two arguments: the response received from the server, and the error describing the network or parsing error that occurred.
- */
-+ (id)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
-                              success:(void (^)(id object))success 
-                              failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
+           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 @end
 
 #pragma mark -
