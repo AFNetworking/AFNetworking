@@ -76,21 +76,10 @@
  @return A new JSON request operation
  */
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(AFHTTPRequestOperationSuccessBlock)success
-                                                    failure:(AFHTTPRequestOperationFailureBlock)failure;
+                                                    success:(void (^)(NSURLRequest *request, NSURLResponse *response, id JSON))success 
+                                                    failure:(void (^)(NSURLRequest *request, NSURLResponse *response, NSError *error, id JSON))failure;
 
-
-///-------------------------------------------
-/// @name Implementing JSON decoder subclasses
-///-------------------------------------------
-
-/**
- Subclasses should overload this function to provide their own JSON decoder for the `responseData` property and should set responseJSON and error when completed. This method will be called on a private background dispatch queue. 
- */
-+ (id)decodeJSONObjectWithData:(NSData *)data error:(NSError **)error;
-
-+ (NSString *)JSONStringWithDictionary:(NSDictionary *)dictionary;
-
+                                                    
 @end
 
 #ifdef AF_INCLUDE_FOUNDATIONJSON

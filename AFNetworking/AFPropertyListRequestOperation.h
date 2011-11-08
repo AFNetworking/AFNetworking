@@ -68,7 +68,7 @@
  @return A new property list request operation
  */
 + (AFPropertyListRequestOperation *)propertyListRequestOperationWithRequest:(NSURLRequest *)request
-                                                                    success:(AFHTTPRequestOperationSuccessBlock)success
-                                                                    failure:(AFHTTPRequestOperationFailureBlock)failure;
+                                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id propertyList))success
+                                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id propertyList))failure;
 
 @end

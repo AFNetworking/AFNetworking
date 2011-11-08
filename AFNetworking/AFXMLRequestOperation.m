@@ -44,25 +44,36 @@
 @synthesize processResponseBlock = _processResponseBlock;
 
 + (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                        success:(AFHTTPRequestOperationSuccessBlock)success
-                                                        failure:(AFHTTPRequestOperationFailureBlock)failure
+                                                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
+                                                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLParser *XMLParser))failure
 {
     
-    AFXMLRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    
-    operation.processResponseBlock = ^ {
-        operation.decodedResponse = operation.responseXMLParser;
+    AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    //need to really split this class up.
+    requestOperation.processResponseBlock = ^ {
+        requestOperation.decodedResponse = requestOperation.responseXMLParser;
     };
-    operation.successBlock = success;
-    operation.failureBlock = failure;
+    requestOperation.successBlock = success; // have to move these kind of properties up.
+    requestOperation.failureBlock = failure;
+
+    AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+
+        if (success) {
+            success(operation.request, operation.response, responseObject);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (failure) {
+            failure(operation.request, operation.response, error, [(AFXMLRequestOperation *)operation responseXMLParser]);
+        }
+    }];
     
-    return operation;
+    return requestOperation;
 }
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 + (AFXMLRequestOperation *)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                          success:(AFHTTPRequestOperationSuccessBlock)success
-                                                          failure:(AFHTTPRequestOperationFailureBlock)failure
+                                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
+                                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLDocument *document))failure
 {
     AFXMLRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
 
@@ -71,6 +82,31 @@
     operation.processResponseBlock = ^ {
         operation.decodedResponse = operation.responseXMLDocument;
     }
+    
+    operation.completionBlock = ^ {
+        if ([operation isCancelled]) {
+            return;
+        }
+        
+        if (operation.error) {
+            if (failure) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    failure(operation.request, operation.response, operation.error, [(AFXMLRequestOperation *)operation responseXMLDocument]);
+                });
+            }
+        } else {
+            dispatch_async(xml_request_operation_processing_queue(), ^(void) {
+                NSXMLDocument *XMLDocument = operation.responseXMLDocument;
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        success(operation.request, operation.response, XMLDocument);
+                    });
+                }
+            });
+        }
+    };
+    
+>>>>>>> 206f6ff1f62dde0bf4c57b89a95cb5d790293f43
     return operation;
 }
 #endif
@@ -134,6 +170,14 @@
 }
 #endif
 
+- (NSError *)error {
+    if (_XMLError) {
+        return _XMLError;
+    } else {
+        return [super error];
+    }
+}
+
 #pragma mark - NSOperation
 
 - (void)cancel {
@@ -142,29 +186,44 @@
     self.responseXMLParser.delegate = nil;
 }
 
-#pragma mark - AFHTTPClientOperation
-
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
     return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
 }
 
-+ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(id object))success 
-                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
+- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    self.completionBlock = ^ {
+        if ([self isCancelled]) {
+            return;
+        }
+        
+        if (self.error) {
+            if (failure) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    failure(self, self.error);
+                });
+            }
+        } else {
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
-    return [self XMLDocumentRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSXMLDocument *XMLDocument) {
-        success(XMLDocument);
-    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
-        failure(response, error);
-    }];
+            if (success) {
+                success(self, self.responseXMLDocument);
+            }
 #else
+<<<<<<< HEAD
     return [self XMLParserRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, id XMLParser) {
         success((NSXMLParser *)XMLParser);
     } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
         failure(response, error);
     }];
+=======
+            if (success) {
+                success(self, self.responseXMLParser);
+            }
+>>>>>>> 206f6ff1f62dde0bf4c57b89a95cb5d790293f43
 #endif
+        }
+    };    
 }
 
 @end
