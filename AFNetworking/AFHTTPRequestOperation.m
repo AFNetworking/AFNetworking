@@ -33,6 +33,7 @@ static dispatch_queue_t request_operation_processing_queue() {
 
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, retain) NSError *error;
+@property (readonly, nonatomic, assign) BOOL hasContent;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -125,7 +126,7 @@ static dispatch_queue_t request_operation_processing_queue() {
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
             self.error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
-        } else if (![self hasAcceptableContentType]) {
+        } else if ([self hasContent] && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), self.acceptableContentTypes, [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
@@ -135,6 +136,10 @@ static dispatch_queue_t request_operation_processing_queue() {
     }
     
     return [super error];
+}
+
+- (BOOL)hasContent {
+    return [self.responseData length] > 0;
 }
 
 - (BOOL)hasAcceptableStatusCode {
@@ -172,7 +177,28 @@ static dispatch_queue_t request_operation_processing_queue() {
                                                     success:(void (^)(id object))success 
                                                     failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    return nil;
+    AFHTTPRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    operation.completionBlock = ^ {
+        if ([operation isCancelled]) {
+            return;
+        }
+        
+        if (operation.error) {
+            if (failure) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    failure(operation.response, operation.error);
+                });
+            }
+        } else {
+            if (success) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    success(operation.responseData);
+                });
+            }
+        }
+    };
+    
+    return operation;
 }        
 
 @end

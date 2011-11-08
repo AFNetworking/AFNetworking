@@ -23,18 +23,29 @@
 #import <Foundation/Foundation.h>
 #import <Availability.h>
 
-#import <AFNetworking/AFURLConnectionOperation.h>
+#ifndef _AFNETWORKING_
+#define _AFNETWORKING_
 
-#import <AFNetworking/AFHTTPRequestOperation.h>
-#import <AFNetworking/AFJSONRequestOperation.h>
-#import <AFNetworking/AFXMLRequestOperation.h>
-#import <AFNetworking/AFPropertyListRequestOperation.h>
-#import <AFNetworking/AFHTTPClient.h>
+#import "AFURLConnectionOperation.h"
 
-#import <AFNetworking/AFImageRequestOperation.h>
-#import <AFNetworking/AFImagecache.h>
+#import "AFHTTPRequestOperation.h"
+#import "AFJSONRequestOperation.h"
+#import "AFXMLRequestOperation.h"
+#import "AFPropertyListRequestOperation.h"
+#import "AFHTTPClient.h"
+
+#import "AFImageRequestOperation.h"
+#import "AFImagecache.h"
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
+<<<<<<< HEAD
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #endif
+=======
+#import "AFNetworkActivityIndicatorManager.h"
+#import "UIImageView+AFNetworking.h"
+#endif
+
+#endif /* _AFNETWORKING_ */
+>>>>>>> 082f8319afaf9aeaf550fc1645b5be2b51140ab5

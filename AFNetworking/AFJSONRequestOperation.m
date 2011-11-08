@@ -25,7 +25,8 @@
 #include <Availability.h>
 
 @interface AFJSONRequestOperation ()
-@property (readwrite, nonatomic, retain) NSError *error;
+@property (readwrite, nonatomic, retain) id responseJSON;
+@property (readwrite, nonatomic, retain) NSError *JSONError;
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
@@ -34,7 +35,7 @@
 
 @implementation AFJSONRequestOperation
 @dynamic responseJSON;
-@synthesize error = _JSONError;
+@synthesize JSONError = _JSONError;
 
 
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
@@ -93,7 +94,7 @@
     if (!self.responseJSON && [self isFinished]) {
         NSError *error;
         self.decodedResponse = [[self class] decodeJSONObjectWithData:self.responseData error:&error];
-        self.error = error;
+        self.JSONError = error;
     }
 }
                                                     
@@ -112,6 +113,14 @@
     return self.decodedResponse;
 }
 
+
+- (NSError *)error {
+    if (_JSONError) {
+        return _JSONError;
+    } else {
+        return [super error];
+    }
+}
 
 #pragma mark - AFHTTPClientOperation
 
