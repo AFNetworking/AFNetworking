@@ -76,7 +76,7 @@ static dispatch_queue_t request_operation_processing_queue() {
     
     super.completionBlock = ^ {
         if (_completionBlock)
-            _completionBlock(); //call any super completion block that may have been passed in.
+            _completionBlock(); //call any child completion blocks that may have been passed in that they may want to run
         
         if ([self isCancelled]) {
             return;
