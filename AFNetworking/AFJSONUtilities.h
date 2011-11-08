@@ -24,69 +24,123 @@
 
 #include <Availability.h>
 
-#if defined(_AF_USE_JSONKIT)
-#import "JSONKit.h"
-#elif defined(_AF_USE_SBJSON)
-#import "SBJSON.h"
-
-static SBJsonParser * _SBJSONParser() {
-    static SBJsonParser *_af_SBJSONParser = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _af_SBJSONParser = [[SBJsonParser alloc] init];
-    });
-    
-    return _af_SBJSONParser;
-}
-
-static SBJsonWriter * _SBJSONWriter() {
-    static SBJsonWriter *_af_SBJSONWriter = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _af_SBJSONWriter = [[SBJsonWriter alloc] init];
-    });
-    
-    return _af_SBJSONWriter;
-}
-#elif defined(_AF_USE_YAJL)
-    #if __IPHONE_OS_VERSION_MIN_REQUIRED
-    #import <YAJL/YAJL.h>
-    #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
-    #import <YAJLiOS/YAJL.h>
-    #endif
-#endif
-
 static inline NSData * AFJSONEncode(id object, NSError **error) {
-#if defined(_AF_USE_JSONKIT)
-    return [object JSONData];
-#elif defined(_AF_USE_SBJSON)
-    SBJsonWriter *writer = _SBJSONWriter();
-    return [writer dataWithObject:object];
-#elif defined(_AF_USE_YAJL)
-    return [[object yajl_JSONString] dataUsingEncoding:NSUTF8StringEncoding]];
-#else
-    if ([NSJSONSerialization class]) {
-        return [NSJSONSerialization dataWithJSONObject:object options:0 error:error];
-    }    
-#endif
+    NSData *data = nil;
     
-    return nil;
+    id _NSJSONSerializationClass = NSClassFromString(@"NSJSONSerialization");
+    SEL _NSJSONSerializationSelector = NSSelectorFromString(@"dataWithJSONObject:options:error:");
+    SEL _JSONKitSelector = NSSelectorFromString(@"JSONDataWithOptions:error:"); 
+    SEL _SBJSONSelector = NSSelectorFromString(@"JSONRepresentation");
+    SEL _YAJLSelector = NSSelectorFromString(@"yajl_JSONString");
+    
+    if (_NSJSONSerializationClass && [_NSJSONSerializationClass respondsToSelector:_NSJSONSerializationSelector]) { 
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_NSJSONSerializationClass methodSignatureForSelector:_NSJSONSerializationSelector]];
+        invocation.target = _NSJSONSerializationClass;
+        invocation.selector = _NSJSONSerializationSelector;
+        
+        [invocation setArgument:&object atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
+        NSUInteger writeOptions = 0;
+        [invocation setArgument:&writeOptions atIndex:3];
+        [invocation setArgument:error atIndex:4];
+        
+        [invocation invoke];
+        [invocation getReturnValue:&data];
+    } else if (_JSONKitSelector && [data respondsToSelector:_JSONKitSelector]) {
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_JSONKitSelector]];
+        invocation.target = data;
+        invocation.selector = _JSONKitSelector;
+        
+        NSUInteger serializeOptionFlags = 0;
+        [invocation setArgument:&serializeOptionFlags atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
+        [invocation setArgument:error atIndex:3];
+        
+        [invocation invoke];
+        [invocation getReturnValue:&data];
+    } else if (_SBJSONSelector && [data respondsToSelector:_SBJSONSelector]) {
+        NSString *JSONString = nil;
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_SBJSONSelector]];
+        invocation.target = data;
+        invocation.selector = _SBJSONSelector;
+        
+        [invocation invoke];
+        [invocation getReturnValue:&data];
+        
+        data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
+    } else if (_YAJLSelector && [data respondsToSelector:_YAJLSelector]) {
+        @try {
+            NSString *JSONString = nil;
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_YAJLSelector]];
+            invocation.target = data;
+            invocation.selector = _YAJLSelector;
+            
+            [invocation invoke];
+            [invocation getReturnValue:&JSONString];
+            
+            data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
+        }
+        @catch (NSException *exception) {
+            *error = [[[NSError alloc] initWithDomain:NSStringFromClass([exception class]) code:0 userInfo:[exception userInfo]] autorelease];
+        }
+    }
+
+    return data;
 }
 
-static inline id AFJSONDecode(NSData *data, NSError **error) {
+static inline id AFJSONDecode(NSData *data, NSError **error) {    
+    id JSON = nil;
     
-#if defined(_AF_USE_JSONKIT)
-    return [[JSONDecoder decoder] objectWithData:data error:error];
-#elif defined(_AF_USE_SBJSON)
-    SBJsonParser *parser = _SBJsonParser();
-    return [parser objectWithData:data];
-#elif defined(_AF_USE_YAJL)
-    return [data yajl_JSON];
-#else
-    if ([NSJSONSerialization class]) {
-        return [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
-    }    
-#endif
+    id _NSJSONSerializationClass = NSClassFromString(@"NSJSONSerialization");
+    SEL _NSJSONSerializationSelector = NSSelectorFromString(@"JSONObjectWithData:options:error:");
+    SEL _JSONKitSelector = NSSelectorFromString(@"objectFromJSONDataWithParseOptions:error:"); 
+    SEL _SBJSONSelector = NSSelectorFromString(@"JSONValue");
+    SEL _YAJLSelector = NSSelectorFromString(@"yajl_JSONWithOptions:error:");
+    
+    if (_NSJSONSerializationClass && [_NSJSONSerializationClass respondsToSelector:_NSJSONSerializationSelector]) { 
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_NSJSONSerializationClass methodSignatureForSelector:_NSJSONSerializationSelector]];
+        invocation.target = _NSJSONSerializationClass;
+        invocation.selector = _NSJSONSerializationSelector;
         
-    return nil;
+        [invocation setArgument:&data atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
+        NSUInteger readOptions = 0;
+        [invocation setArgument:&readOptions atIndex:3];
+        [invocation setArgument:error atIndex:4];
+        
+        [invocation invoke];
+        [invocation getReturnValue:&JSON];
+    } else if (_JSONKitSelector && [data respondsToSelector:_JSONKitSelector]) {
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_JSONKitSelector]];
+        invocation.target = data;
+        invocation.selector = _JSONKitSelector;
+        
+        NSUInteger parseOptionFlags = 0;
+        [invocation setArgument:&parseOptionFlags atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
+        [invocation setArgument:error atIndex:3];
+        
+        [invocation invoke];
+        [invocation getReturnValue:&JSON];
+    } else if (_SBJSONSelector && [data respondsToSelector:_SBJSONSelector]) {
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_SBJSONSelector]];
+        invocation.target = data;
+        invocation.selector = _SBJSONSelector;
+        
+        [invocation invoke];
+        [invocation getReturnValue:&JSON];
+    } else if (_YAJLSelector && [data respondsToSelector:_YAJLSelector]) {
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_YAJLSelector]];
+        invocation.target = data;
+        invocation.selector = _YAJLSelector;
+        
+        NSUInteger yajlParserOptions = 0;
+        [invocation setArgument:&yajlParserOptions atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
+        [invocation setArgument:error atIndex:3];
+        
+        [invocation invoke];
+        [invocation getReturnValue:&JSON];
+    }
+        
+    return JSON;
 }
+
+
+
+

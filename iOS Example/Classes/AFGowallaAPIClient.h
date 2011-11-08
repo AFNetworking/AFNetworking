@@ -23,8 +23,6 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPClient.h"
 
-#define _AF_USE_JSONKIT
-
 extern NSString * const kAFGowallaClientID;
 extern NSString * const kAFGowallaBaseURLString;
 
