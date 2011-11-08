@@ -33,7 +33,6 @@
 
 @implementation AFXMLRequestOperation
 @synthesize responseXMLParser = _responseXMLParser;
-@synthesize error = _XMLError;
 
 + (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
@@ -94,10 +93,7 @@
 }
 
 - (void)dealloc {
-    [_responseXMLParser release];
-    
-    [_XMLError release];
-    
+    [_responseXMLParser release];    
     [super dealloc];
 }
 
@@ -109,15 +105,6 @@
 
 - (NSXMLParser *)responseXMLParser {
     return _responseXMLParser;
-}
-
-
-- (NSError *)error {
-    if (_XMLError) {
-        return _XMLError;
-    } else {
-        return [super error];
-    }
 }
 
 #pragma mark - NSOperation

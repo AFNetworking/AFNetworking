@@ -38,7 +38,6 @@
 @interface AFXMLRequestOperation : AFHTTPRequestOperation {
 @private
     NSXMLParser *_responseXMLParser;
-    NSError *_XMLError;
 }
 
 ///----------------------------
