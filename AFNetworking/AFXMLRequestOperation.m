@@ -26,7 +26,6 @@
 
 @interface AFXMLRequestOperation ()
 @property (readwrite, nonatomic, retain) NSXMLParser *responseXMLParser;
-@property (readwrite, nonatomic, retain) NSError *error;
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 @end
