@@ -23,8 +23,11 @@
 #import <Foundation/Foundation.h>
 #import "AFURLConnectionOperation.h"
 
-typedef void (^AFHTTPRequestOperationSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id object);
-typedef void (^AFHTTPRequestOperationFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error);
+@class AFHTTPRequestOperation;
+
+typedef void (^AFHTTPReponseProcessedBlock)(void);
+typedef void (^AFHTTPResponseSuccessBlock)(AFHTTPRequestOperation *operation, id responseObject);
+typedef void (^AFHTTPResponseFailureBlock)(AFHTTPRequestOperation *operation, NSError *error);
 
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
@@ -34,10 +37,11 @@ typedef void (^AFHTTPRequestOperationFailureBlock)(NSURLRequest *request, NSHTTP
     NSIndexSet *_acceptableStatusCodes;
     NSSet *_acceptableContentTypes;
     NSError *_HTTPError;
+    AFHTTPResponseSuccessBlock _successBlock;
+    AFHTTPResponseFailureBlock _failureBlock;
     dispatch_queue_t _callbackQueue;
-    AFHTTPRequestOperationSuccessBlock _successBlock;
-    AFHTTPRequestOperationFailureBlock _failureBlock;
-    id<NSObject> decodedResponse;
+    AFHTTPReponseProcessedBlock _responseProcessedBlock;
+    void (^_completionBlock)(void);
 }
 
 ///----------------------------------------------
@@ -48,6 +52,12 @@ typedef void (^AFHTTPRequestOperationFailureBlock)(NSURLRequest *request, NSHTTP
  The last HTTP response received by the operation's connection.
  */
 @property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
+
+/**
+ The last HTTP error received by the operation's connection.
+ */
+@property (readonly, nonatomic, retain) NSError *HTTPError;
+
 
 
 ///----------------------------------------------------------
@@ -78,32 +88,21 @@ typedef void (^AFHTTPRequestOperationFailureBlock)(NSURLRequest *request, NSHTTP
  */
 @property (readonly) BOOL hasAcceptableContentType;
 
-///--------------------------
-/// @name Completion handling
-///--------------------------
-
-
 /** 
  The callback dispatch queue. By default this is the calling queue that created the operation. 
  */
 @property (nonatomic) dispatch_queue_t callbackQueue;
 
-/** 
- The success callback block. This is dispatched on the callbackQueue.
- @sa callbackQueue
- */
-@property (nonatomic, copy) AFHTTPRequestOperationSuccessBlock successBlock;
-
-/** 
- The failure callback block. This is dispatched on the callbackQueue.
- @sa callbackQueue
- */
-@property (nonatomic, copy) AFHTTPRequestOperationFailureBlock failureBlock;
-
 
 ///-----------------------
 /// @name Subclass methods
 ///-----------------------
+
+/** 
+ The processed completion callback block. This is dispatched on the callbackQueue.
+ @sa callbackQueue
+ */
+@property (nonatomic, copy) AFHTTPReponseProcessedBlock responseProcessedBlock;
 
 /** responable for decoding the data and responding to it */
 
@@ -123,7 +122,10 @@ typedef void (^AFHTTPRequestOperationFailureBlock)(NSURLRequest *request, NSHTTP
 /**
  
  */
-- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+@property (nonatomic, copy) AFHTTPResponseSuccessBlock successBlock;
+@property (nonatomic, copy) AFHTTPResponseFailureBlock failureBlock;
+
+
 
 @end

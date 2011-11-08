@@ -36,32 +36,27 @@
 @synthesize responseJSON = _responseJSON;
 @synthesize JSONError = _JSONError;
 
-
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSURLResponse *response, id JSON))successs
-                                                    failure:(void (^)(NSURLRequest *request, NSURLResponse *response, NSError *error, id JSON))failure
+                                                    success:(AFJSONResponseSuccessBlock) success
+                                                    failure:(AFJSONResponseFailureBlock) failure
 {
     AFJSONRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    operation.successBlock = success; // have move these kinds of properties up
-    operation.failureBlock = failure; 
 
+    requestOperation.responseProcessedBlock = ^{
+        if (requestOperation.error) {
+            if (failure) {
+                failure(requestOperation.request,requestOperation.response,requestOperation.error,requestOperation.responseJSON);
+            }
+        }
+        else 
+        {
+            if (success) {
+                success(requestOperation.request,requestOperation.response,requestOperation.responseJSON);
+            }
+        }
+    };
+    
     return requestOperation;
-}
-
-+ (id)alloc
-{
-    if ([AFJSONRequestOperation self] == self)
-        return [AFNETWORKING_DEFAULT_JSON_OPERATION alloc];
-    else
-        return [super alloc];
-}
-
-+ (id)allocWithZone:(NSZone *)zone
-{
-    if ([AFJSONRequestOperation self] == self)
-        return [AFNETWORKING_DEFAULT_JSON_OPERATION allocWithZone:zone];
-    else
-        return [super allocWithZone:zone];
 }
 
 + (NSSet *)defaultAcceptableContentTypes {
@@ -85,6 +80,19 @@
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
+    self.responseProcessedBlock = ^{
+        if (self.error) {
+            if (self.failureBlock) {
+                self.failureBlock(self,self.error);
+            }
+        }
+        else {
+            if (self.successBlock) {
+                self.successBlock(self,self.responseJSON);
+            }
+        }
+    };
+    
     return self;
 }
 
@@ -97,7 +105,6 @@
 - (void)processResponse {    
     if (!_responseJSON && [self isFinished]) {
         NSError *error = nil;
-
         if ([self.responseData length] == 0) {
             self.responseJSON = nil;
         } else {
@@ -106,106 +113,14 @@
         self.JSONError = error;
     }
 }
-                                                    
-+ (id) decodeJSONObjectWithData:(NSData *)data error:(NSError **)error {
-    //implement me in the subclass
-    [self doesNotRecognizeSelector: _cmd];
-    return nil;
-}
-
-+ (NSString *)JSONStringWithDictionary:(NSDictionary *)dictionary {
-    [self doesNotRecognizeSelector: _cmd];
-    return nil;
-}
-
-
 
 - (NSError *)error {
     if (_JSONError) {
-        return _JSONError;
+        return [[_JSONError retain] autorelease];
     } else {
         return [super error];
     }
 }
 
-- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
-        if (self.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(self, self.error);
-                });
-            }
-        } else {
-            dispatch_async(json_request_operation_processing_queue(), ^(void) {
-                id JSON = self.responseJSON;
-                
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if (self.JSONError) {
-                        if (failure) {
-                            failure(self, self.JSONError);
-                        }
-                    } else {
-                        if (success) {
-                            success(self, JSON);
-                        }
-                    }
-                }); 
-            });
-        }
-    };    
-}
-
 @end
-
-#ifdef AF_INCLUDE_FOUNDATIONJSON
-@implementation AFFoundationJSONRequestOperation
-
-+ (id) decodeJSONObjectWithData:(NSData *)data error:(NSError **)error {
-    if ([data length] == 0) {
-        return nil;
-    } else {
-        return [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
-    }
-}
-
-
-+ (NSString *)JSONStringWithDictionary:(NSDictionary *)dictionary {
-    NSError *error = nil;
-    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
-    if (!error) {
-        return [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];
-    }
-    return nil;
-}
-
-@end
-#endif
-
-#ifdef AF_INCLUDE_JSONKIT
-#import "JSONKit.h"
-
-@implementation AFJSONKitJSONRequestOperation
-
-+ (id) decodeJSONObjectWithData:(NSData *)data error:(NSError **)error {
-    if ([data length] == 0) {
-        return nil;
-    } else {
-        return [[JSONDecoder decoder] objectWithData:data error:error];
-    }
-}
-
-+ (NSString *)JSONStringWithDictionary:(NSDictionary *)dictionary {
-    return [dictionary JSONString];
-}
-
-
-@end
-#endif
 

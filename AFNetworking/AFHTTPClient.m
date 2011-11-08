@@ -331,7 +331,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
         operation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
     }
     
-    [operation setCompletionBlockWithSuccess:success failure:failure];
+    operation.successBlock = success;
+    operation.failureBlock = failure;
        
     return operation;
 }

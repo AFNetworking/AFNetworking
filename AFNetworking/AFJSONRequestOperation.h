@@ -23,19 +23,10 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
 
-#define AF_FOUNDATIONJSON AFFoundationJSONRequestOperation
-#define AF_JSONKIT AFJSONKitJSONRequestOperation
 
-#ifndef AFNETWORKING_DEFAULT_JSON_OPERATION
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-#define AFNETWORKING_DEFAULT_JSON_OPERATION AF_FOUNDATIONJSON
-#define AF_INCLUDE_FOUNDATIONJSON
-#else
-#define AFNETWORKING_DEFAULT_JSON_OPERATION AF_JSONKIT
-#define AF_INCLUDE_JSONKIT
-#endif
-#endif
 
+typedef void (^AFJSONResponseSuccessBlock)(NSURLRequest *request, NSURLResponse *response, id JSON);
+typedef void (^AFJSONResponseFailureBlock)(NSURLRequest *request, NSURLResponse *response, NSError *error, id JSON);
 
 /**
  `AFJSONRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and working with JSON response data.
@@ -76,23 +67,8 @@
  @return A new JSON request operation
  */
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSURLResponse *response, id JSON))success 
-                                                    failure:(void (^)(NSURLRequest *request, NSURLResponse *response, NSError *error, id JSON))failure;
+                                                    success:(AFJSONResponseSuccessBlock)success 
+                                                    failure:(AFJSONResponseFailureBlock)failure;
 
                                                     
 @end
-
-#ifdef AF_INCLUDE_FOUNDATIONJSON
-/** Foundation JSON support */
-@interface AFFoundationJSONRequestOperation : AFJSONRequestOperation 
-
-@end
-#endif
-
-#ifdef AF_INCLUDE_JSONKIT
-@interface AFJSONKitJSONRequestOperation : AFJSONRequestOperation
-
-@end
-#endif
-
-

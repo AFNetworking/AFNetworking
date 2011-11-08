@@ -22,6 +22,7 @@
 
 #import "AFHTTPRequestOperation.h"
 
+
 static dispatch_queue_t af_request_operation_processing_queue;
 static dispatch_queue_t request_operation_processing_queue() {
     if (af_request_operation_processing_queue == NULL) {
@@ -40,10 +41,11 @@ static dispatch_queue_t request_operation_processing_queue() {
 @synthesize acceptableStatusCodes = _acceptableStatusCodes;
 @synthesize acceptableContentTypes = _acceptableContentTypes;
 @synthesize HTTPError = _HTTPError;
+@synthesize responseProcessedBlock = _responseProcessedBlock;
+@dynamic callbackQueue;
 @synthesize successBlock = _successBlock;
 @synthesize failureBlock = _failureBlock;
-@synthesize decodedResponse = _decodedResponse;
-@dynamic callbackQueue;
+
 
 - (id)initWithRequest:(NSURLRequest *)request {
     self = [super initWithRequest:request];
@@ -51,37 +53,47 @@ static dispatch_queue_t request_operation_processing_queue() {
         return nil;
     }
     
-    self.failureBlock = nil;
-    self.successBlock = nil;
+    self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
+    
+    //default implementation
+    self.responseProcessedBlock = ^{
+        //already in calling queue. no more work to do here
+        if (self.error) {
+            if (self.failureBlock) {
+                self.failureBlock(self,self.error);
+            }
+        }
+        else
+        {
+            if (self.successBlock) {
+                self.successBlock(self,self.responseData);
+            }
+        }
+    };
     
     //by default we will use the queue that created the request.
     self.callbackQueue = dispatch_get_current_queue();
     
-    self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-    
-    self.completionBlock = ^ {
+    super.completionBlock = ^ {
+        if (_completionBlock)
+            _completionBlock(); //call any super completion block that may have been passed in.
+        
         if ([self isCancelled]) {
             return;
         }
         
-        if (self.error) {
-            if (self.failureBlock) {
+        if (self.HTTPError) {
+            if (self.responseProcessedBlock) {
                 dispatch_async(self.callbackQueue, ^(void) {
-                    self.failureBlock(self.request, self.response, self.error);
+                    self.responseProcessedBlock();
                 });
             }
         } else {
             dispatch_async(request_operation_processing_queue(), ^(void) {
                 [self processResponse];
                 dispatch_async(self.callbackQueue, ^(void) {
-                    if (self.error) {
-                        if (self.failureBlock) {
-                            self.failureBlock(self.request, self.response, self.error);
-                        }
-                    } else {
-                        if (self.successBlock) {
-                            self.successBlock(self.request, self.response, self.decodedResponse);
-                        }
+                    if (self.responseProcessedBlock) {
+                        self.responseProcessedBlock();
                     }
                 });
             });
@@ -92,24 +104,16 @@ static dispatch_queue_t request_operation_processing_queue() {
 }
 
 - (void)dealloc {
-    [_successBlock release];
-    [_failureBlock release];
-    [_acceptableStatusCodes release];
-    [_acceptableContentTypes release];
-    [_HTTPError release];
+    [_completionBlock release];
     
     if (_callbackQueue) {
         dispatch_release(_callbackQueue),_callbackQueue=NULL;
     }
     
+    [_acceptableStatusCodes release];
+    [_acceptableContentTypes release];
+    [_HTTPError release];
     [super dealloc];
-}
-
-- (void)processResponse {  
-    //This is normally overriden by subclasses
-    if (!self.decodedResponse && [self isFinished]) {
-        self.decodedResponse = self.responseData;
-    }
 }
 
 - (NSHTTPURLResponse *)response {
@@ -134,7 +138,7 @@ static dispatch_queue_t request_operation_processing_queue() {
     }
     
     if (_HTTPError) {
-        return _HTTPError;
+        return [[_HTTPError retain] autorelease];
     } else {
         return [super error];
     }
@@ -151,7 +155,21 @@ static dispatch_queue_t request_operation_processing_queue() {
 - (BOOL)hasAcceptableContentType {
     return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
 }
- 
+
+#pragma mark - AFHTTPClientOperation
+
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    return YES;
+}
+
+- (void)setCompletionBlock:(void (^)(void))block
+{
+    if (block != _completionBlock){
+        [_completionBlock release];
+        _completionBlock = [block copy];
+    }
+}
+
 - (dispatch_queue_t)callbackQueue {
     return _callbackQueue;
 }
@@ -169,34 +187,9 @@ static dispatch_queue_t request_operation_processing_queue() {
     }
 }
 
-#pragma mark - AFHTTPClientOperation
-
-- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                 failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
-        if (self.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(self, self.error);
-                });
-            }
-        } else {
-            if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    success(self, self.responseData);
-                });
-            }
-        }
-    };
+- (void)processResponse {
+    //this is where subclasses will do all their dirty work
 }
 
-+ (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return YES;
-}     
 
 @end
