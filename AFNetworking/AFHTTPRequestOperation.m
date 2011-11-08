@@ -189,6 +189,7 @@ static dispatch_queue_t request_operation_processing_queue() {
 
 - (void)processResponse {
     //this is where subclasses will do all their dirty work
+    //base version doesn't have to do anything here but subclasses do.
 }
 
 
