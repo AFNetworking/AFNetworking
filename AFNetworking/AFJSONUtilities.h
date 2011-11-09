@@ -22,8 +22,6 @@
 
 #import <Foundation/Foundation.h>
 
-#include <Availability.h>
-
 static NSData * AFJSONEncode(id object, NSError **error) {
     NSData *data = nil;
     
