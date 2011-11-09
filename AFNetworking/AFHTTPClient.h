@@ -36,6 +36,30 @@ typedef enum {
 } AFHTTPClientParameterEncoding;
 
 /**
+ Returns a string, replacing certain characters with the equivalent percent escape sequence based on the specified encoding.
+ 
+ @param string The string to URL encode
+ @param encoding The encoding to use for the replacement. If you are uncertain of the correct encoding, you should use UTF-8 (NSUTF8StringEncoding), which is the encoding designated by RFC 3986 as the correct encoding for use in URLs.
+ 
+ @discussion The characters escaped are all characters that are not legal URL characters (based on RFC 3986), including any whitespace, punctuation, or special characters.
+ 
+ @return A URL-encoded string. If it does not need to be modified (no percent escape sequences are missing), this function may merely return string argument.
+ */
+extern NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEncoding encoding);
+
+/**
+ Returns a query string constructed by a set of parameters, using the specified encoding.
+ 
+ @param parameters The parameters used to construct the query string
+ @param encoding The encoding to use in constructing the query string. If you are uncertain of the correct encoding, you should use UTF-8 (NSUTF8StringEncoding), which is the encoding designated by RFC 3986 as the correct encoding for use in URLs.
+ 
+ @discussion Query strings are constructed by collecting each key-value pair, URL-encoding the string value of the key and value (by sending `-description` to each), constructing a string in the form "key=value", and then joining the components with "&". The constructed query string does not include the ? character used to delimit the query component.
+ 
+ @return A URL-encoded query string
+ */
+extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding);
+
+/**
  `AFHTTPClient` captures the common patterns of communicating with an web application over HTTP. It encapsulates information like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
  
  ## Automatic Content Parsing
