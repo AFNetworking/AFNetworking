@@ -24,7 +24,7 @@
 
 #include <Availability.h>
 
-static inline NSData * AFJSONEncode(id object, NSError **error) {
+static NSData * AFJSONEncode(id object, NSError **error) {
     NSData *data = nil;
     
     SEL _JSONKitSelector = NSSelectorFromString(@"JSONDataWithOptions:error:"); 
@@ -87,7 +87,7 @@ static inline NSData * AFJSONEncode(id object, NSError **error) {
     return data;
 }
 
-static inline id AFJSONDecode(NSData *data, NSError **error) {    
+static id AFJSONDecode(NSData *data, NSError **error) {    
     id JSON = nil;
     
     SEL _JSONKitSelector = NSSelectorFromString(@"objectFromJSONDataWithParseOptions:error:"); 
