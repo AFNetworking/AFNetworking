@@ -27,11 +27,12 @@
 static inline NSData * AFJSONEncode(id object, NSError **error) {
     NSData *data = nil;
     
-    id _NSJSONSerializationClass = NSClassFromString(@"NSJSONSerialization");
-    SEL _NSJSONSerializationSelector = NSSelectorFromString(@"dataWithJSONObject:options:error:");
     SEL _JSONKitSelector = NSSelectorFromString(@"JSONDataWithOptions:error:"); 
     SEL _SBJSONSelector = NSSelectorFromString(@"JSONRepresentation");
     SEL _YAJLSelector = NSSelectorFromString(@"yajl_JSONString");
+    
+    id _NSJSONSerializationClass = NSClassFromString(@"NSJSONSerialization");
+    SEL _NSJSONSerializationSelector = NSSelectorFromString(@"dataWithJSONObject:options:error:");
     
     if (_JSONKitSelector && [data respondsToSelector:_JSONKitSelector]) {
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_JSONKitSelector]];
@@ -89,11 +90,12 @@ static inline NSData * AFJSONEncode(id object, NSError **error) {
 static inline id AFJSONDecode(NSData *data, NSError **error) {    
     id JSON = nil;
     
-    id _NSJSONSerializationClass = NSClassFromString(@"NSJSONSerialization");
-    SEL _NSJSONSerializationSelector = NSSelectorFromString(@"JSONObjectWithData:options:error:");
     SEL _JSONKitSelector = NSSelectorFromString(@"objectFromJSONDataWithParseOptions:error:"); 
     SEL _SBJSONSelector = NSSelectorFromString(@"JSONValue");
     SEL _YAJLSelector = NSSelectorFromString(@"yajl_JSONWithOptions:error:");
+    
+    id _NSJSONSerializationClass = NSClassFromString(@"NSJSONSerialization");
+    SEL _NSJSONSerializationSelector = NSSelectorFromString(@"JSONObjectWithData:options:error:");
     
     if (_JSONKitSelector && [data respondsToSelector:_JSONKitSelector]) {
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_JSONKitSelector]];
@@ -140,7 +142,3 @@ static inline id AFJSONDecode(NSData *data, NSError **error) {
         
     return JSON;
 }
-
-
-
-
