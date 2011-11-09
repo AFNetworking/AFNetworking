@@ -1,4 +1,5 @@
-# AFNetworking
+![AFNetworking](http://engineering.gowalla.com/AFNetworking/afnetworking-logo.png "AFNetworking")
+
 ## A delightful iOS and OS X networking framework
 ### There's a lot to be said for a networking library that you can wrap your head around. API design matters, too. Code at its best is poetry, and should be designed to delight (but never surprise).
 
