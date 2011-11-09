@@ -60,7 +60,21 @@ typedef enum {
  - `Accept-Language: ([NSLocale preferredLanguages]), en-us;q=0.8`
  - `User-Agent: (generated user agent)`
  
- You can override these HTTP headers or define new ones using `setDefaultHeader:value:`. 
+ You can override these HTTP headers or define new ones using `setDefaultHeader:value:`.
+ 
+ ## URL Construction Using Relative Paths
+ 
+ Both `requestWithMethod:path:parameters` and `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `baseURL`, using `NSURL +URLWithString:relativeToURL:`. Below are a few examples of how `baseURL` and relative paths interract:
+ 
+ ```
+ NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
+ [NSURL URLWithString:@"foo" relativeToURL:baseURL]; // http://example.com/v1/foo
+ [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL]; // http://example.com/v1/foo?bar=baz
+ [NSURL URLWithString:@"/foo" relativeToURL:baseURL]; // http://example.com/foo
+ [NSURL URLWithString:@"foo/" relativeToURL:baseURL]; // http://example.com/v1/foo
+ [NSURL URLWithString:@"/foo/" relativeToURL:baseURL]; // http://example.com/foo/
+ [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL]; // http://example2.com/
+ ```
  */
 @interface AFHTTPClient : NSObject {
 @private
@@ -199,10 +213,8 @@ typedef enum {
  @param method The HTTP method for the request, such as `GET`, `POST`, `PUT`, or `DELETE`.
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be either set as a query string for `GET` requests, or the request HTTP body.
- 
- @return An `NSMutableURLRequest` object
- 
- @see AFHTTPClientOperation
+  
+ @return An `NSMutableURLRequest` object 
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
                                       path:(NSString *)path 
@@ -215,9 +227,7 @@ typedef enum {
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
- 
- @see AFMultipartFormData
- 
+  
  @warning An exception will be raised if the specified method is not `POST`, `PUT` or `DELETE`.
  
  @return An `NSMutableURLRequest` object
