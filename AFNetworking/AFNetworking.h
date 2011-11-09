@@ -38,10 +38,10 @@
 #import "AFImagecache.h"
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
-#import <AFNetworking/UIImageView+AFNetworking.h>
+#import "AFNetworkActivityIndicatorManager.h"
+#import "UIImageView+AFNetworking.h"
 #else
-#import <AFNetworking/AFXMLDocumentRequestOperation.h>
+#import "AFXMLDocumentRequestOperation.h"
 #endif
 
 #endif /* _AFNETWORKING_ */
