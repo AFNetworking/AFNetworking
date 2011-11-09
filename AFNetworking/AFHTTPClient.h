@@ -36,6 +36,30 @@ typedef enum {
 } AFHTTPClientParameterEncoding;
 
 /**
+ Returns a string, replacing certain characters with the equivalent percent escape sequence based on the specified encoding.
+ 
+ @param string The string to URL encode
+ @param encoding The encoding to use for the replacement. If you are uncertain of the correct encoding, you should use UTF-8 (NSUTF8StringEncoding), which is the encoding designated by RFC 3986 as the correct encoding for use in URLs.
+ 
+ @discussion The characters escaped are all characters that are not legal URL characters (based on RFC 3986), including any whitespace, punctuation, or special characters.
+ 
+ @return A URL-encoded string. If it does not need to be modified (no percent escape sequences are missing), this function may merely return string argument.
+ */
+extern NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEncoding encoding);
+
+/**
+ Returns a query string constructed by a set of parameters, using the specified encoding.
+ 
+ @param parameters The parameters used to construct the query string
+ @param encoding The encoding to use in constructing the query string. If you are uncertain of the correct encoding, you should use UTF-8 (NSUTF8StringEncoding), which is the encoding designated by RFC 3986 as the correct encoding for use in URLs.
+ 
+ @discussion Query strings are constructed by collecting each key-value pair, URL-encoding the string value of the key and value (by sending `-description` to each), constructing a string in the form "key=value", and then joining the components with "&". The constructed query string does not include the ? character used to delimit the query component.
+ 
+ @return A URL-encoded query string
+ */
+extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding);
+
+/**
  `AFHTTPClient` captures the common patterns of communicating with an web application over HTTP. It encapsulates information like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
  
  ## Automatic Content Parsing
@@ -60,7 +84,21 @@ typedef enum {
  - `Accept-Language: ([NSLocale preferredLanguages]), en-us;q=0.8`
  - `User-Agent: (generated user agent)`
  
- You can override these HTTP headers or define new ones using `setDefaultHeader:value:`. 
+ You can override these HTTP headers or define new ones using `setDefaultHeader:value:`.
+ 
+ ## URL Construction Using Relative Paths
+ 
+ Both `requestWithMethod:path:parameters` and `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `baseURL`, using `NSURL +URLWithString:relativeToURL:`. Below are a few examples of how `baseURL` and relative paths interract:
+ 
+ ```
+ NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
+ [NSURL URLWithString:@"foo" relativeToURL:baseURL]; // http://example.com/v1/foo
+ [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL]; // http://example.com/v1/foo?bar=baz
+ [NSURL URLWithString:@"/foo" relativeToURL:baseURL]; // http://example.com/foo
+ [NSURL URLWithString:@"foo/" relativeToURL:baseURL]; // http://example.com/v1/foo
+ [NSURL URLWithString:@"/foo/" relativeToURL:baseURL]; // http://example.com/foo/
+ [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL]; // http://example2.com/
+ ```
  */
 @interface AFHTTPClient : NSObject {
 @private
@@ -199,10 +237,8 @@ typedef enum {
  @param method The HTTP method for the request, such as `GET`, `POST`, `PUT`, or `DELETE`.
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be either set as a query string for `GET` requests, or the request HTTP body.
- 
- @return An `NSMutableURLRequest` object
- 
- @see AFHTTPClientOperation
+  
+ @return An `NSMutableURLRequest` object 
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
                                       path:(NSString *)path 
@@ -215,9 +251,7 @@ typedef enum {
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
- 
- @see AFMultipartFormData
- 
+  
  @warning An exception will be raised if the specified method is not `POST`, `PUT` or `DELETE`.
  
  @return An `NSMutableURLRequest` object
@@ -374,7 +408,7 @@ typedef enum {
  @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
  @return if the operation was successful or there is an error in NSError return value
  
- @discussion The filename and MIME type for this data in the form will be automatically generated, using `NSURLResponse` `-MIMEType` and `-suggestedFilename`.
+ @discussion The filename and MIME type for this data in the form will be automatically generated, using `NSURLResponse` `-suggestedFilename` and `-MIMEType`, respectively.
  */
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
 

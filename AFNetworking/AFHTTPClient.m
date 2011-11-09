@@ -80,30 +80,17 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
     return [[[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding] autorelease];
 }
 
-static NSURL * AFURLWithPathRelativeToURL(NSString *path, NSURL *baseURL) {
-    if (!path) {
-        return baseURL;
-    }
-    
-    NSURL *url = [baseURL URLByAppendingPathComponent:[path stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]]];
-    NSString *URLString = [url absoluteString];
-    if ([path hasSuffix:@"/"]) {
-        URLString = [URLString stringByAppendingString:@"/"];
-    }
-
-    return [NSURL URLWithString:URLString];
-}
-
-static NSString * AFURLEncodedStringFromString(NSString *string) {
+NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
     static NSString * const kAFLegalCharactersToBeEscaped = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ ";
     
-	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding)) autorelease];
+    // Following the suggestion in documentation for `CFURLCreateStringByAddingPercentEscapes` to "pre-process" URL strings (using stringByReplacingPercentEscapesUsingEncoding) with unpredictable sequences that may already contain percent escapes.
+	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)[string stringByReplacingPercentEscapesUsingEncoding:encoding], NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
 }
 
-static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
+NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
     NSMutableArray *mutableParameterComponents = [NSMutableArray array];
     for (id key in [parameters allKeys]) {
-        NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromString([key description]), AFURLEncodedStringFromString([[parameters valueForKey:key] description])];
+        NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([[parameters valueForKey:key] description], encoding)];
         [mutableParameterComponents addObject:component];
     }
     
@@ -242,21 +229,21 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
                                       path:(NSString *)path 
                                 parameters:(NSDictionary *)parameters 
 {	
-    NSURL *url = AFURLWithPathRelativeToURL(path, self.baseURL);
+    NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
 	
     if (parameters) {        
         if ([method isEqualToString:@"GET"]) {
-            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParameters(parameters)]];
+            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding)]];
             [request setURL:url];
         } else {
             NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
             switch (self.parameterEncoding) {
                 case AFFormURLParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFQueryStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+                    [request setHTTPBody:[AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding) dataUsingEncoding:self.stringEncoding]];
                     break;
                 case AFJSONParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];

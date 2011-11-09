@@ -22,9 +22,7 @@
 
 #import <Foundation/Foundation.h>
 
-#include <Availability.h>
-
-static inline NSData * AFJSONEncode(id object, NSError **error) {
+static NSData * AFJSONEncode(id object, NSError **error) {
     NSData *data = nil;
     
     SEL _JSONKitSelector = NSSelectorFromString(@"JSONDataWithOptions:error:"); 
@@ -82,12 +80,15 @@ static inline NSData * AFJSONEncode(id object, NSError **error) {
         
         [invocation invoke];
         [invocation getReturnValue:&data];
+    } else {
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Please either target a platform that supports NSJSONSerialization or add one of the following libraries to your project: JSONKit, SBJSON, or YAJL", nil) forKey:NSLocalizedRecoverySuggestionErrorKey];
+        [NSException exceptionWithName:NSInternalInconsistencyException reason:NSLocalizedString(@"No JSON generation functionality available", nil) userInfo:userInfo];
     }
 
     return data;
 }
 
-static inline id AFJSONDecode(NSData *data, NSError **error) {    
+static id AFJSONDecode(NSData *data, NSError **error) {    
     id JSON = nil;
     
     SEL _JSONKitSelector = NSSelectorFromString(@"objectFromJSONDataWithParseOptions:error:"); 
@@ -138,6 +139,9 @@ static inline id AFJSONDecode(NSData *data, NSError **error) {
         
         [invocation invoke];
         [invocation getReturnValue:&JSON];
+    } else {
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Please either target a platform that supports NSJSONSerialization or add one of the following libraries to your project: JSONKit, SBJSON, or YAJL", nil) forKey:NSLocalizedRecoverySuggestionErrorKey];
+        [NSException exceptionWithName:NSInternalInconsistencyException reason:NSLocalizedString(@"No JSON parsing functionality available", nil) userInfo:userInfo];
     }
         
     return JSON;
