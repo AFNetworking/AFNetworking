@@ -407,7 +407,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
  @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
  
- @discussion The filename and MIME type for this data in the form will be automatically generated, using `NSURLResponse` `-MIMEType` and `-suggestedFilename`.
+ @discussion The filename and MIME type for this data in the form will be automatically generated, using `NSURLResponse` `-suggestedFilename` and `-MIMEType`, respectively.
  */
 - (void)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
 
