@@ -74,27 +74,32 @@ static dispatch_queue_t request_operation_processing_queue() {
     //by default we will use the queue that created the request.
     self.callbackQueue = dispatch_get_current_queue();
     
+    __block AFHTTPRequestOperation *blockSelf = [self retain];
     super.completionBlock = ^ {
-        if (_completionBlock)
-            _completionBlock(); //call any child completion blocks that may have been passed in that they may want to run
+        if (blockSelf->_completionBlock) {
+            blockSelf->_completionBlock(); //call any child completion blocks that may have been passed in that they may want to run
+        }
         
-        if ([self isCancelled]) {
+        if ([blockSelf isCancelled]) {
+            [blockSelf release];
             return;
         }
         
-        if (self.HTTPError) {
-            if (self.responseProcessedBlock) {
-                dispatch_async(self.callbackQueue, ^(void) {
-                    self.responseProcessedBlock();
+        if (blockSelf.HTTPError) {
+            if (blockSelf.responseProcessedBlock) {
+                dispatch_async(blockSelf.callbackQueue, ^(void) {
+                    blockSelf.responseProcessedBlock();
+                    [blockSelf release];
                 });
             }
         } else {
             dispatch_async(request_operation_processing_queue(), ^(void) {
-                [self processResponse];
-                dispatch_async(self.callbackQueue, ^(void) {
-                    if (self.responseProcessedBlock) {
-                        self.responseProcessedBlock();
+                [blockSelf processResponse];
+                dispatch_async(blockSelf.callbackQueue, ^(void) {
+                    if (blockSelf.responseProcessedBlock) {
+                        blockSelf.responseProcessedBlock();
                     }
+                    [blockSelf release];
                 });
             });
         }

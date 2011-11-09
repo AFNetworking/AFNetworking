@@ -372,10 +372,11 @@ typedef enum {
  @param fileURL The URL corresponding to the file whose content will be appended to the form.
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
  @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
+ @return if the operation was successful or there is an error in NSError return value
  
  @discussion The filename and MIME type for this data in the form will be automatically generated, using `NSURLResponse` `-MIMEType` and `-suggestedFilename`.
  */
-- (void)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
+- (BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
 
 /**
  Appends encoded data to the form data.
