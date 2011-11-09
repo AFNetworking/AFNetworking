@@ -240,10 +240,11 @@ typedef enum {
  @param request The request object to be loaded asynchronously during execution of the operation.
  @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes a single argument, which is an object created from the response data of request.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @return The newly-created `AFHTTPRequestOperation`.
  
  @see `AFHTTPClientOperation`
  */
-- (void)enqueueHTTPRequestOperationWithRequest:(NSURLRequest *)request 
+- (AFHTTPRequestOperation *)enqueueHTTPRequestOperationWithRequest:(NSURLRequest *)request 
                                        success:(void (^)(id object))success 
                                        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
 /**
@@ -276,10 +277,11 @@ typedef enum {
  @param parameters The parameters to be encoded and appended as the query string for the request URL.
  @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the response object created from the response data of request.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @return The newly-created `AFHTTPRequestOperation`.
  
  @see enqueueHTTPOperationWithRequest:success:failure
  */
-- (void)getPath:(NSString *)path
+- (AFHTTPRequestOperation *)getPath:(NSString *)path
      parameters:(NSDictionary *)parameters
         success:(void (^)(id object))success 
         failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
@@ -291,10 +293,11 @@ typedef enum {
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the response object created from the response data of request.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @return The newly-created `AFHTTPRequestOperation`.
  
  @see enqueueHTTPOperationWithRequest:success:failure
  */
-- (void)postPath:(NSString *)path 
+- (AFHTTPRequestOperation *)postPath:(NSString *)path 
       parameters:(NSDictionary *)parameters 
          success:(void (^)(id object))success 
          failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
@@ -306,10 +309,11 @@ typedef enum {
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the response object created from the response data of request.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @return The newly-created `AFHTTPRequestOperation`.
  
  @see enqueueHTTPOperationWithRequest:success:failure
  */
-- (void)putPath:(NSString *)path 
+- (AFHTTPRequestOperation *)putPath:(NSString *)path 
      parameters:(NSDictionary *)parameters 
         success:(void (^)(id object))success 
         failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
@@ -321,10 +325,11 @@ typedef enum {
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the response object created from the response data of request.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @return The newly-created `AFHTTPRequestOperation`.
  
  @see enqueueHTTPOperationWithRequest:success:failure
  */
-- (void)deletePath:(NSString *)path 
+- (AFHTTPRequestOperation *)deletePath:(NSString *)path 
         parameters:(NSDictionary *)parameters 
            success:(void (^)(id object))success 
            failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure;
