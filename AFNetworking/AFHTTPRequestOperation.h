@@ -22,16 +22,26 @@
 
 #import <Foundation/Foundation.h>
 #import "AFURLConnectionOperation.h"
-#import "AFHTTPClient.h"
+
+@class AFHTTPRequestOperation;
+
+typedef void (^AFHTTPReponseProcessedBlock)(void);
+typedef void (^AFHTTPResponseSuccessBlock)(AFHTTPRequestOperation *operation, id responseObject);
+typedef void (^AFHTTPResponseFailureBlock)(AFHTTPRequestOperation *operation, NSError *error);
 
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
  */
-@interface AFHTTPRequestOperation : AFURLConnectionOperation <AFHTTPClientOperation> {
+@interface AFHTTPRequestOperation : AFURLConnectionOperation {
 @private
     NSIndexSet *_acceptableStatusCodes;
     NSSet *_acceptableContentTypes;
     NSError *_HTTPError;
+    AFHTTPResponseSuccessBlock _successBlock;
+    AFHTTPResponseFailureBlock _failureBlock;
+    dispatch_queue_t _callbackQueue;
+    AFHTTPReponseProcessedBlock _responseProcessedBlock;
+    void (^_completionBlock)(void);
 }
 
 ///----------------------------------------------
@@ -42,6 +52,12 @@
  The last HTTP response received by the operation's connection.
  */
 @property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
+
+/**
+ The last HTTP error received by the operation's connection.
+ */
+@property (readonly, nonatomic, retain) NSError *HTTPError;
+
 
 
 ///----------------------------------------------------------
@@ -71,5 +87,45 @@
  A Boolean value that corresponds to whether the MIME type of the response is among the specified set of acceptable content types. Returns `YES` if `acceptableContentTypes` is `nil`.
  */
 @property (readonly) BOOL hasAcceptableContentType;
+
+/** 
+ The callback dispatch queue. By default this is the calling queue that created the operation. 
+ */
+@property (nonatomic) dispatch_queue_t callbackQueue;
+
+
+///-----------------------
+/// @name Subclass methods
+///-----------------------
+
+/** 
+ The processed completion callback block. This is dispatched on the callbackQueue.
+ @sa callbackQueue
+ */
+@property (nonatomic, copy) AFHTTPReponseProcessedBlock responseProcessedBlock;
+
+/** responable for decoding the data and responding to it */
+
+- (void)processResponse;
+
+/**
+ A Boolean value determining whether or not the class can process the specified request. For example, `AFJSONRequestOperation` may check to make sure the content type was `application/json` or the URL path extension was `.json`.
+ 
+ @param urlRequest The request that is determined to be supported or not supported for this class.
+ */
++ (BOOL)canProcessRequest:(NSURLRequest *)urlRequest;
+
+///-----------------------------------------------------------
+/// @name Setting Completion Block Success / Failure Callbacks
+///-----------------------------------------------------------
+
+/**
+ 
+ */
+
+@property (nonatomic, copy) AFHTTPResponseSuccessBlock successBlock;
+@property (nonatomic, copy) AFHTTPResponseFailureBlock failureBlock;
+
+
 
 @end

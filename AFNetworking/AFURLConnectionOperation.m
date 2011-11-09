@@ -57,7 +57,6 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @property (readwrite, nonatomic, retain) NSURLConnection *connection;
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSURLResponse *response;
-@property (readwrite, nonatomic, retain) NSError *error;
 @property (readwrite, nonatomic, retain) NSData *responseData;
 @property (readwrite, nonatomic, copy) NSString *responseString;
 @property (readwrite, nonatomic, assign) NSInteger totalBytesRead;

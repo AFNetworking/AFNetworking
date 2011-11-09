@@ -114,7 +114,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /**
  The error, if any, that occured in the lifecycle of the request.
  */
-@property (readonly, nonatomic, retain) NSError *error;
+@property (nonatomic, retain) NSError *error;
 
 ///----------------------------
 /// @name Getting Response Data

@@ -29,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F8323C901455B4FE00190CCB /* AFJSONUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFJSONUtilities.h; sourceTree = "<group>"; };
 		F87A159D1444926300318955 /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLConnectionOperation.h; sourceTree = "<group>"; };
 		F87A159E1444926300318955 /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperation.m; sourceTree = "<group>"; };
 		F87A15A01444926900318955 /* AFXMLRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFXMLRequestOperation.h; sourceTree = "<group>"; };
@@ -140,6 +141,7 @@
 				F897DE70142CFEDC000DDD35 /* AFImageRequestOperation.m */,
 				F897DE6D142CFEDC000DDD35 /* AFImageCache.h */,
 				F897DE6E142CFEDC000DDD35 /* AFImageCache.m */,
+				F8323C901455B4FE00190CCB /* AFJSONUtilities.h */,
 			);
 			name = AFNetworking;
 			path = ../../AFNetworking;

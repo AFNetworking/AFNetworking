@@ -21,19 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFJSONRequestOperation.h"
-
-#include <Availability.h>
-
-#import "JSONKit.h"
-
-static dispatch_queue_t af_json_request_operation_processing_queue;
-static dispatch_queue_t json_request_operation_processing_queue() {
-    if (af_json_request_operation_processing_queue == NULL) {
-        af_json_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.json-request.processing", 0);
-    }
-    
-    return af_json_request_operation_processing_queue;
-}
+#import "AFJSONUtilities.h"
 
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, retain) id responseJSON;
@@ -41,6 +29,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
+
 @end
 
 @implementation AFJSONRequestOperation
@@ -48,41 +37,26 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 @synthesize JSONError = _JSONError;
 
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
-                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                                                    success:(AFJSONResponseSuccessBlock) success
+                                                    failure:(AFJSONResponseFailureBlock) failure
 {
-    AFJSONRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
-        }
-        
-        if (operation.error) {
+    AFJSONRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+
+    requestOperation.responseProcessedBlock = ^{
+        if (requestOperation.error) {
             if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.request, operation.response, operation.error);
-                });
+                failure(requestOperation.request,requestOperation.response,requestOperation.error,requestOperation.responseJSON);
             }
-        } else {
-            dispatch_async(json_request_operation_processing_queue(), ^(void) {
-                id JSON = operation.responseJSON;
-                
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if (operation.error) {
-                        if (failure) {
-                            failure(operation.request, operation.response, operation.error);
-                        }
-                    } else {
-                        if (success) {
-                            success(operation.request, operation.response, JSON);
-                        }
-                    }
-                }); 
-            });
+        }
+        else 
+        {
+            if (success) {
+                success(requestOperation.request,requestOperation.response,requestOperation.responseJSON);
+            }
         }
     };
     
-    return operation;
+    return requestOperation;
 }
 
 + (NSSet *)defaultAcceptableContentTypes {
@@ -93,13 +67,31 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     return [NSSet setWithObjects:@"json", nil];
 }
 
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+}
+
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
+    
     self = [super initWithRequest:urlRequest];
     if (!self) {
         return nil;
     }
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
+    
+    self.responseProcessedBlock = ^{
+        if (self.error) {
+            if (self.failureBlock) {
+                self.failureBlock(self,self.error);
+            }
+        }
+        else {
+            if (self.successBlock) {
+                self.successBlock(self,self.responseJSON);
+            }
+        }
+    };
     
     return self;
 }
@@ -110,54 +102,25 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     [super dealloc];
 }
 
-- (id)responseJSON {
+- (void)processResponse {    
     if (!_responseJSON && [self isFinished]) {
         NSError *error = nil;
-
         if ([self.responseData length] == 0) {
             self.responseJSON = nil;
         } else {
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-            if ([NSJSONSerialization class]) {
-                self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
-            } else {
-                self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-            }
-#else
-            self.responseJSON = [[JSONDecoder decoder] objectWithData:self.responseData error:&error];
-#endif
+            self.responseJSON = AFJSONDecode(self.responseData, &error);
         }
-        
         self.JSONError = error;
     }
-    
-    return _responseJSON;
 }
 
 - (NSError *)error {
     if (_JSONError) {
-        return _JSONError;
+        return [[_JSONError retain] autorelease];
     } else {
         return [super error];
     }
 }
 
-#pragma mark - AFHTTPClientOperation
-
-+ (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
-}
-
-+ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(id object))success 
-                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
-{
-    return [self JSONRequestOperationWithRequest:urlRequest success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, id JSON) {
-        success(JSON);
-    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
-        failure(response, error);
-    }];
-}
-
 @end
+

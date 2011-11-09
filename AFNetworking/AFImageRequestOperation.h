@@ -27,8 +27,12 @@
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+typedef UIImage *(^AFImageResponseProcessingBlock)(UIImage *image);
+
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 #import <Cocoa/Cocoa.h>
+
+typedef NSImage *(^AFImageResponseProcessingBlock)(NSImage *image);
 #endif
 
 /**
@@ -56,6 +60,9 @@
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
     NSImage *_responseImage;
 #endif
+    AFImageResponseProcessingBlock _imageProcessingBlock;
+    NSString *_cacheName;
+    
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -63,6 +70,16 @@
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (readonly, nonatomic, retain) NSImage *responseImage;
 #endif
+
+/*
+ Image processing block
+ */
+@property (nonatomic, copy) AFImageResponseProcessingBlock imageProcessingBlock;
+
+/*
+ Cache name (default is nil for no cache)
+ */
+@property (nonatomic, copy) NSString *cacheName;
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -93,13 +110,13 @@
  */
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                         imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                                         imageProcessingBlock:(AFImageResponseProcessingBlock)imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                         imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
+                                         imageProcessingBlock:(AFImageResponseProcessingBlock)imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;

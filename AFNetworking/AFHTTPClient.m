@@ -24,14 +24,13 @@
 
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
+#import "AFJSONUtilities.h"
 
 #import <Availability.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
 #endif
-
-#import "JSONKit.h"
 
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
@@ -81,30 +80,17 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
     return [[[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding] autorelease];
 }
 
-static NSURL * AFURLWithPathRelativeToURL(NSString *path, NSURL *baseURL) {
-    if (!path) {
-        return baseURL;
-    }
-    
-    NSURL *url = [baseURL URLByAppendingPathComponent:[path stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]]];
-    NSString *URLString = [url absoluteString];
-    if ([path hasSuffix:@"/"]) {
-        URLString = [URLString stringByAppendingString:@"/"];
-    }
-    
-    return [NSURL URLWithString:URLString];
-}
-
-static NSString * AFURLEncodedStringFromString(NSString *string) {
+NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
     static NSString * const kAFLegalCharactersToBeEscaped = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ ";
     
-	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding)) autorelease];
+    // Following the suggestion in documentation for `CFURLCreateStringByAddingPercentEscapes` to "pre-process" URL strings (using stringByReplacingPercentEscapesUsingEncoding) with unpredictable sequences that may already contain percent escapes.
+	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)[string stringByReplacingPercentEscapesUsingEncoding:encoding], NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
 }
 
-static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
+NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
     NSMutableArray *mutableParameterComponents = [NSMutableArray array];
     for (id key in [parameters allKeys]) {
-        NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromString([key description]), AFURLEncodedStringFromString([[parameters valueForKey:key] description])];
+        NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([[parameters valueForKey:key] description], encoding)];
         [mutableParameterComponents addObject:component];
     }
     
@@ -112,23 +98,13 @@ static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
 }
 
 static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
-    NSString *JSONString = nil;
-    
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3 || __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
-    if ([NSJSONSerialization class]) {
-        NSError *error = nil;
-        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];
-        if (!error) {
-            JSONString = [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];
-        }
+    NSError *error = nil;
+    NSData *JSONData = AFJSONEncode(parameters, &error);
+    if (!error) {
+        return [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];
     } else {
-        JSONString = [parameters JSONString];
+        return nil;
     }
-#else
-    JSONString = [parameters JSONString];
-#endif
-
-    return JSONString;
 }
 
 static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
@@ -208,7 +184,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 #pragma mark -
 
 - (BOOL)registerHTTPOperationClass:(Class)operationClass {
-    if (![operationClass conformsToProtocol:@protocol(AFHTTPClientOperation)]) {
+    if (![operationClass isSubclassOfClass:[AFHTTPRequestOperation class]]) {
         return NO;
     }
     
@@ -253,21 +229,21 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
                                       path:(NSString *)path 
                                 parameters:(NSDictionary *)parameters 
 {	
-    NSURL *url = AFURLWithPathRelativeToURL(path, self.baseURL);
+    NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
 	
     if (parameters) {        
         if ([method isEqualToString:@"GET"]) {
-            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParameters(parameters)]];
+            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding)]];
             [request setURL:url];
         } else {
             NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
             switch (self.parameterEncoding) {
                 case AFFormURLParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFQueryStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+                    [request setHTTPBody:[AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding) dataUsingEncoding:self.stringEncoding]];
                     break;
                 case AFJSONParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
@@ -324,9 +300,9 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     return request;
 }
 
-- (void)enqueueHTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
-                                       success:(void (^)(id object))success 
-                                       failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+- (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest 
+                                                    success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                                                    failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     AFHTTPRequestOperation *operation = nil;
     NSString *className = nil;
@@ -334,15 +310,18 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     while (!operation && (className = [enumerator nextObject])) {
         Class class = NSClassFromString(className);
         if (class && [class canProcessRequest:urlRequest]) {
-            operation = [class HTTPRequestOperationWithRequest:urlRequest success:success failure:failure];
+            operation = [[(AFHTTPRequestOperation *)[class alloc] initWithRequest:urlRequest] autorelease];
         }
     }
     
     if (!operation) {
-        operation = [AFHTTPRequestOperation HTTPRequestOperationWithRequest:urlRequest success:success failure:failure];
+        operation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
     }
+    
+    operation.successBlock = success;
+    operation.failureBlock = failure;
        
-    [self enqueueHTTPRequestOperation:operation];
+    return [operation autorelease];
 }
 
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation {
@@ -361,38 +340,42 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 
 - (void)getPath:(NSString *)path 
      parameters:(NSDictionary *)parameters 
-        success:(void (^)(id object))success 
-        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
-	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 - (void)postPath:(NSString *)path 
       parameters:(NSDictionary *)parameters 
-         success:(void (^)(id object))success 
-         failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
-	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
+	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 - (void)putPath:(NSString *)path 
      parameters:(NSDictionary *)parameters 
-        success:(void (^)(id object))success 
-        failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
-	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
+	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 - (void)deletePath:(NSString *)path 
         parameters:(NSDictionary *)parameters 
-           success:(void (^)(id object))success 
-           failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure 
+           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
-	[self enqueueHTTPRequestOperationWithRequest:request success:success failure:failure];
+	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 @end
@@ -459,14 +442,37 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
 
-- (void)appendPartWithFileData:(NSData *)data mimeType:(NSString *)mimeType name:(NSString *)name {
-    NSString *fileName = [[NSString stringWithFormat:@"%@-%d", name, [[NSDate date] hash]] stringByAppendingPathExtension:[mimeType lastPathComponent]];
-    
+- (void)appendPartWithFileData:(NSData *)data name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType {    
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"file; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
     
     [self appendPartWithHeaders:mutableHeaders body:data];
+}
+
+- (BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error {
+    if (![fileURL isFileURL]) {
+        NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+        [userInfo setValue:fileURL forKey:NSURLErrorFailingURLErrorKey];
+        [userInfo setValue:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
+        if (error){
+            *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo] autorelease];
+        }
+        return NO;
+    }
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:fileURL];
+    [request setCachePolicy:NSURLCacheStorageNotAllowed];
+    
+    NSURLResponse *response = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
+    
+    if (response && !error) {
+        [self appendPartWithFileData:data name:name fileName:[response suggestedFilename] mimeType:[response MIMEType]];
+        return YES;
+    }
+    return NO;
+
 }
 
 - (void)appendData:(NSData *)data {
