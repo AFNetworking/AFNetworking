@@ -22,9 +22,14 @@
 
 #import <Foundation/Foundation.h>
 
+#define AF_NATIVE_JSON_AVAILABLE __IPHONE_OS_VERSION_MIN_REQUIRED >= 50000 || __MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
+
 static NSData * AFJSONEncode(id object, NSError **error) {
     NSData *data = nil;
     
+#if AF_NATIVE_JSON_AVAILABLE
+    data = [NSJSONSerialization dataWithJSONObject:object options:0 error:error];
+#else
     SEL _JSONKitSelector = NSSelectorFromString(@"JSONDataWithOptions:error:"); 
     SEL _SBJSONSelector = NSSelectorFromString(@"JSONRepresentation");
     SEL _YAJLSelector = NSSelectorFromString(@"yajl_JSONString");
@@ -84,13 +89,17 @@ static NSData * AFJSONEncode(id object, NSError **error) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Please either target a platform that supports NSJSONSerialization or add one of the following libraries to your project: JSONKit, SBJSON, or YAJL", nil) forKey:NSLocalizedRecoverySuggestionErrorKey];
         [NSException exceptionWithName:NSInternalInconsistencyException reason:NSLocalizedString(@"No JSON generation functionality available", nil) userInfo:userInfo];
     }
+#endif
 
     return data;
 }
 
 static id AFJSONDecode(NSData *data, NSError **error) {    
     id JSON = nil;
-    
+
+#if AF_NATIVE_JSON_AVAILABLE
+    JSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
+#else
     SEL _JSONKitSelector = NSSelectorFromString(@"objectFromJSONDataWithParseOptions:error:"); 
     SEL _SBJSONSelector = NSSelectorFromString(@"JSONValue");
     SEL _YAJLSelector = NSSelectorFromString(@"yajl_JSONWithOptions:error:");
@@ -143,6 +152,7 @@ static id AFJSONDecode(NSData *data, NSError **error) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Please either target a platform that supports NSJSONSerialization or add one of the following libraries to your project: JSONKit, SBJSON, or YAJL", nil) forKey:NSLocalizedRecoverySuggestionErrorKey];
         [NSException exceptionWithName:NSInternalInconsistencyException reason:NSLocalizedString(@"No JSON parsing functionality available", nil) userInfo:userInfo];
     }
+#endif
         
     return JSON;
 }
