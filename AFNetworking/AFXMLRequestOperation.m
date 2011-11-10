@@ -122,7 +122,6 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 
 - (void)dealloc {
-    _responseXMLParser.delegate = nil;
     [_responseXMLParser release];
     
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
@@ -189,15 +188,9 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                 });
             }
         } else {
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
-            if (success) {
-                success(self, self.responseXMLDocument);
-            }
-#else
             if (success) {
                 success(self, self.responseXMLParser);
             }
-#endif
         }
     };    
 }
