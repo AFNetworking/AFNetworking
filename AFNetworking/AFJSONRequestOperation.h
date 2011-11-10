@@ -23,6 +23,11 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
 
+
+
+typedef void (^AFJSONResponseSuccessBlock)(NSURLRequest *request, NSURLResponse *response, id JSON);
+typedef void (^AFJSONResponseFailureBlock)(NSURLRequest *request, NSURLResponse *response, NSError *error, id JSON);
+
 /**
  `AFJSONRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and working with JSON response data.
  
@@ -39,14 +44,14 @@
     NSError *_JSONError;
 }
 
-///----------------------------
-/// @name Getting Response Data
-///----------------------------
+///------------------
+/// @name Properties
+///------------------
 
 /**
  A JSON object constructed from the response data. If an error occurs while parsing, `nil` will be returned, and the `error` property will be set to the error.
  */
-@property (readonly, nonatomic, retain) id responseJSON;
+@property (nonatomic, retain, readonly) id responseJSON;
 
 ///----------------------------------
 /// @name Creating Request Operations
@@ -62,6 +67,8 @@
  @return A new JSON request operation
  */
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSURLResponse *response, id JSON))success 
-                                                    failure:(void (^)(NSURLRequest *request, NSURLResponse *response, NSError *error, id JSON))failure;
+                                                    success:(AFJSONResponseSuccessBlock)success 
+                                                    failure:(AFJSONResponseFailureBlock)failure;
+
+                                                    
 @end

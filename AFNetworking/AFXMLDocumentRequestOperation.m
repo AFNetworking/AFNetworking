@@ -1,7 +1,9 @@
-// AFPropertyListRequestOperation.m
+//
+// AFXMLDocumentRequestOperation.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
-// 
+// Copyright (c) Zac Bowling (zac@zacbowling.com)
+
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -20,52 +22,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFPropertyListRequestOperation.h"
+#import "AFXMLDocumentRequestOperation.h"
 
-@interface AFPropertyListRequestOperation ()
-@property (readwrite, nonatomic, retain) id responsePropertyList;
-@property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
-@property (readwrite, nonatomic, retain) NSError *propertyListError;
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
+#include <Availability.h>
 
+@interface AFXMLDocumentRequestOperation ()
+@property (readwrite, nonatomic, retain) NSXMLDocument *responseXMLDocument;
+@property (readwrite, nonatomic, retain) NSError *error;
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 @end
 
-@implementation AFPropertyListRequestOperation
-@synthesize responsePropertyList = _responsePropertyList;
-@synthesize propertyListReadOptions = _propertyListReadOptions;
-@synthesize propertyListFormat = _propertyListFormat;
-@synthesize propertyListError = _propertyListError;
+@implementation AFXMLDocumentRequestOperation
+@synthesize responseXMLDocument = _responseXMLDocument;
+@synthesize error = _XMLError;
 
-+ (AFPropertyListRequestOperation *)propertyListRequestOperationWithRequest:(NSURLRequest *)request
-                                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id propertyList))success
-                                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id propertyList))failure
++ (AFXMLDocumentRequestOperation *)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
+                                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLDocument *document))failure
 {
-    AFPropertyListRequestOperation *requestOperation = [[[self alloc] initWithRequest:request] autorelease];
+    AFXMLDocumentRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
     
     requestOperation.responseProcessedBlock = ^{
-        if (requestOperation.error) {
+        if (requestOperation.error){
             if (failure) {
-                failure(requestOperation.request, requestOperation.response, requestOperation.error, requestOperation.responsePropertyList);
+                failure(requestOperation.request, requestOperation.response, requestOperation.error, requestOperation.responseXMLDocument);
             }
         }
-        else 
+        else
         {
             if (success) {
-                success(requestOperation.request, requestOperation.response, requestOperation.responsePropertyList);
+                success(requestOperation.request, requestOperation.response, requestOperation.responseXMLDocument);
             }
         }
+        
     };
     
     return requestOperation;
 }
 
 + (NSSet *)defaultAcceptableContentTypes {
-    return [NSSet setWithObjects:@"application/x-plist", nil];
+    return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
 }
 
 + (NSSet *)defaultAcceptablePathExtensions {
-    return [NSSet setWithObjects:@"plist", nil];
+    return [NSSet setWithObjects:@"xml", nil];
 }
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
@@ -76,8 +78,6 @@
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
-    self.propertyListReadOptions = NSPropertyListImmutable;
-    
     self.responseProcessedBlock = ^{
         if (self.error) {
             if (self.failureBlock) {
@@ -86,42 +86,54 @@
         }
         else {
             if (self.successBlock) {
-                self.successBlock(self,self.responsePropertyList);
+                self.successBlock(self,self.responseXMLDocument);
             }
         }
     };
-    
     
     return self;
 }
 
 - (void)dealloc {
-    [_responsePropertyList release];
-    [_propertyListError release];
+    [_responseXMLDocument release];
+    [_XMLError release];
+    
     [super dealloc];
 }
 
--(void)processResponse {
-    if (!_responsePropertyList && [self isFinished]) {
-        NSPropertyListFormat format;
+- (void)processResponse {
+    if (!_responseXMLDocument && [self isFinished]) {
         NSError *error = nil;
-        self.responsePropertyList = [NSPropertyListSerialization propertyListWithData:self.responseData options:self.propertyListReadOptions format:&format error:&error];
-        self.propertyListFormat = format;
-        self.propertyListError = error;
+        self.responseXMLDocument = [[[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error] autorelease];
+        self.error = error;
     }
 }
 
+
+- (NSXMLDocument *)responseXMLDocument {
+    
+    return [[_responseXMLDocument retain] autorelease];
+}
+
 - (NSError *)error {
-    if (_propertyListError) {
-        return _propertyListError;
+    if (_XMLError) {
+        return [[_XMLError retain] autorelease];
     } else {
         return [super error];
     }
+}
+
+#pragma mark - NSOperation
+
+- (void)cancel {
+    [super cancel];
+    
+    self.responseXMLParser.delegate = nil;
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
     return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
 }
 
-
 @end
+#endif

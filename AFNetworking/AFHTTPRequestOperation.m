@@ -22,6 +22,16 @@
 
 #import "AFHTTPRequestOperation.h"
 
+
+static dispatch_queue_t af_request_operation_processing_queue;
+static dispatch_queue_t request_operation_processing_queue() {
+    if (af_request_operation_processing_queue == NULL) {
+        af_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.request.processing", DISPATCH_QUEUE_CONCURRENT);
+    }
+    
+    return af_request_operation_processing_queue;
+}
+
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
 @property (readonly, nonatomic, assign) BOOL hasContent;
@@ -31,6 +41,11 @@
 @synthesize acceptableStatusCodes = _acceptableStatusCodes;
 @synthesize acceptableContentTypes = _acceptableContentTypes;
 @synthesize HTTPError = _HTTPError;
+@synthesize responseProcessedBlock = _responseProcessedBlock;
+@dynamic callbackQueue;
+@synthesize successBlock = _successBlock;
+@synthesize failureBlock = _failureBlock;
+
 
 - (id)initWithRequest:(NSURLRequest *)request {
     self = [super initWithRequest:request];
@@ -40,10 +55,66 @@
     
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
     
+    //default implementation
+    self.responseProcessedBlock = ^{
+        //already in calling queue. no more work to do here
+        if (self.error) {
+            if (self.failureBlock) {
+                self.failureBlock(self,self.error);
+            }
+        }
+        else
+        {
+            if (self.successBlock) {
+                self.successBlock(self,self.responseData);
+            }
+        }
+    };
+    
+    //by default we will use the queue that created the request.
+    self.callbackQueue = dispatch_get_current_queue();
+    
+    __block AFHTTPRequestOperation *blockSelf = [self retain];
+    super.completionBlock = ^ {
+        if (blockSelf->_completionBlock) {
+            blockSelf->_completionBlock(); //call any child completion blocks that may have been passed in that they may want to run
+        }
+        
+        if ([blockSelf isCancelled]) {
+            [blockSelf release];
+            return;
+        }
+        
+        if (blockSelf.HTTPError) {
+            if (blockSelf.responseProcessedBlock) {
+                dispatch_async(blockSelf.callbackQueue, ^(void) {
+                    blockSelf.responseProcessedBlock();
+                    [blockSelf release];
+                });
+            }
+        } else {
+            dispatch_async(request_operation_processing_queue(), ^(void) {
+                [blockSelf processResponse];
+                dispatch_async(blockSelf.callbackQueue, ^(void) {
+                    if (blockSelf.responseProcessedBlock) {
+                        blockSelf.responseProcessedBlock();
+                    }
+                    [blockSelf release];
+                });
+            });
+        }
+    };
+    
     return self;
 }
 
 - (void)dealloc {
+    [_completionBlock release];
+    
+    if (_callbackQueue) {
+        dispatch_release(_callbackQueue),_callbackQueue=NULL;
+    }
+    
     [_acceptableStatusCodes release];
     [_acceptableContentTypes release];
     [_HTTPError release];
@@ -72,7 +143,7 @@
     }
     
     if (_HTTPError) {
-        return _HTTPError;
+        return [[_HTTPError retain] autorelease];
     } else {
         return [super error];
     }
@@ -90,34 +161,41 @@
     return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
 }
 
-- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
-        if (self.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(self, self.error);
-                });
-            }
-        } else {
-            if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    success(self, self.responseData);
-                });
-            }
-        }
-    };
-}
-
 #pragma mark - AFHTTPClientOperation
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
     return YES;
-}     
+}
+
+- (void)setCompletionBlock:(void (^)(void))block
+{
+    if (block != _completionBlock){
+        [_completionBlock release];
+        _completionBlock = [block copy];
+    }
+}
+
+- (dispatch_queue_t)callbackQueue {
+    return _callbackQueue;
+}
+
+- (void) setCallbackQueue:(dispatch_queue_t)callbackQueue {
+    if (_callbackQueue == callbackQueue) 
+        return;
+    
+    if (_callbackQueue)
+        dispatch_release(_callbackQueue);
+    
+    if (callbackQueue){
+        dispatch_retain(callbackQueue);
+        _callbackQueue = callbackQueue;
+    }
+}
+
+- (void)processResponse {
+    //this is where subclasses will do all their dirty work
+    //base version doesn't have to do anything here but subclasses do.
+}
+
 
 @end
