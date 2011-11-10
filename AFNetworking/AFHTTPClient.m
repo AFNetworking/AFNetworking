@@ -449,13 +449,16 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
 
-- (void)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error {
+- (BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error {
     if (![fileURL isFileURL]) {
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
         [userInfo setValue:fileURL forKey:NSURLErrorFailingURLErrorKey];
         [userInfo setValue:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
-        *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo] autorelease];
-        return;
+        if (error != NULL) {
+          *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo] autorelease];  
+        }
+        
+        return NO;
     }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:fileURL];
@@ -466,6 +469,10 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     
     if (response && !error) {
         [self appendPartWithFileData:data name:name fileName:[response suggestedFilename] mimeType:[response MIMEType]];
+        
+        return YES;
+    } else {
+        return NO;
     }
 }
 
