@@ -59,23 +59,25 @@
 #endif
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
  */
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 @property (readonly, nonatomic, retain) UIImage *responseImage;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+@property (readonly, nonatomic, retain) NSImage *responseImage;
+#endif
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 /**
  The scale factor used when interpreting the image data to construct `responseImage`. Specifying a scale factor of 1.0 results in an image whose size matches the pixel-based dimensions of the image. Applying a different scale factor changes the size of the image as reported by the size property. This is set to the value of `[[UIScreen mainScreen] scale]` by default, which automatically scales images for retina displays, for instance.
  */
 @property (nonatomic, assign) CGFloat imageScale;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#endif
 
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
  */
-@property (readonly, nonatomic, retain) NSImage *responseImage;
-#endif
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.

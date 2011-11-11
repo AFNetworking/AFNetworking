@@ -306,8 +306,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and appended as the query string for the request URL.
- @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the response object created from the response data of request.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data. This block has no return value and takes two arguments:, the created request operation and the `NSError` object describing the network or parsing error that occurred.
  
  @see HTTPRequestOperationWithRequest:success:failure
  */
@@ -321,8 +321,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
- @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the response object created from the response data of request.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data. This block has no return value and takes two arguments:, the created request operation and the `NSError` object describing the network or parsing error that occurred.
  
  @see HTTPRequestOperationWithRequest:success:failure
  */
@@ -336,8 +336,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
- @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the response object created from the response data of request.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data. This block has no return value and takes two arguments:, the created request operation and the `NSError` object describing the network or parsing error that occurred.
  
  @see HTTPRequestOperationWithRequest:success:failure
  */
@@ -351,8 +351,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
- @param success A block object to be executed when the request operation finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `application/json`). This block has no return value and takes a single argument, which is the response object created from the response data of request.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes a single argument, which is the `NSError` object describing the network or parsing error that occurred.
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data. This block has no return value and takes two arguments:, the created request operation and the `NSError` object describing the network or parsing error that occurred.
  
  @see HTTPRequestOperationWithRequest:success:failure
  */
@@ -368,7 +368,6 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  The `AFMultipartFormData` protocol defines the methods supported by the parameter in the block argument of `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:`.
  
  @see `AFHTTPClient -multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:`
-
  */
 @protocol AFMultipartFormData
 
@@ -395,10 +394,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
  @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
  @param name The filename to be associated with the specified data. This parameter must not be `nil`.
- 
  */
 - (void)appendPartWithFileData:(NSData *)data name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType;
-
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{generated filename}; name=#{name}"` and `Content-Type: #{generated mimeType}`, followed by the encoded file data and the multipart form boundary.
@@ -426,5 +423,6 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param string The string to be encoded and appended to the form data.
  */
 - (void)appendString:(NSString *)string;
+
 @end
 

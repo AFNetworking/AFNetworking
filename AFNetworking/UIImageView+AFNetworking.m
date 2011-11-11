@@ -129,4 +129,5 @@ static char kAFImageRequestOperationObjectKey;
 }
 
 @end
+
 #endif

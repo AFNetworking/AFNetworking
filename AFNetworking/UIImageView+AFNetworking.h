@@ -71,4 +71,5 @@
 - (void)cancelImageRequestOperation;
 
 @end
+
 #endif
