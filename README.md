@@ -53,9 +53,9 @@ UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0
 
 ``` objective-c
 // AFGowallaAPIClient is a subclass of AFHTTPClient, which defines the base URL and default HTTP headers for NSURLRequests it creates
-[[AFGowallaAPIClient sharedClient] getPath:@"/spots/9223" parameters:nil success:^(id response) {
-    NSLog(@"Name: %@", [response valueForKeyPath:@"name"]);
-    NSLog(@"Address: %@", [response valueForKeyPath:@"address.street_address"]);
+[[AFGowallaAPIClient sharedClient] getPath:@"/spots/9223" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSLog(@"Name: %@", [responseObject valueForKeyPath:@"name"]);
+    NSLog(@"Address: %@", [responseObject valueForKeyPath:@"address.street_address"]);
 } failure:nil];
 ```
 
@@ -117,10 +117,6 @@ AFNetworking requires either [iOS 4.0](http://developer.apple.com/library/ios/#r
 If you are including AFNetworking in a project that uses [Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html) enabled, you will need to set the `-fno-objc-arc` compiler flag on all of the AFNetworking source files. To do this in Xcode, go to your active target and select the "Build Phases" tab. In the "Compiler Flags" column, set `-fno-objc-arc` for each of the AFNetworking source files.
 
 Although this is suboptimal, forking the project into an ARC and non-ARC branch would be extremely difficult to maintain. On the bright side, we're very excited about [CocoaPods](https://github.com/alloy/cocoapods) as a potential solution.
-
-## Dependencies
-
-* [JSONKit](https://github.com/johnezang/JSONKit)
 
 ## Credits
 
