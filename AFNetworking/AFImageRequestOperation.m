@@ -45,6 +45,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 @implementation AFImageRequestOperation
 @synthesize responseImage = _responseImage;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+@synthesize imageScale = _imageScale;
+#endif
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
@@ -173,6 +176,10 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    self.imageScale = [[UIScreen mainScreen] scale];
+#endif
+    
     return self;
 }
 
@@ -184,15 +191,23 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (UIImage *)responseImage {
     if (!_responseImage && [self isFinished]) {
-        if ([[UIScreen mainScreen] scale] == 2.0) {
-            CGImageRef imageRef = [[UIImage imageWithData:self.responseData] CGImage];
-            self.responseImage = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
-        } else {
-            self.responseImage = [UIImage imageWithData:self.responseData]; 
-        }
+        CGImageRef imageRef = [[UIImage imageWithData:self.responseData] CGImage];
+        self.responseImage = [UIImage imageWithCGImage:imageRef scale:self.imageScale orientation:UIImageOrientationUp];
     }
     
     return _responseImage;
+}
+
+- (void)setImageScale:(CGFloat)imageScale {
+    if (imageScale == _imageScale) {
+        return;
+    }
+    
+    [self willChangeValueForKey:@"imageScale"];
+    _imageScale = imageScale;
+    [self didChangeValueForKey:@"imageScale"];
+    
+    self.responseImage = nil;
 }
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 - (NSImage *)responseImage {
