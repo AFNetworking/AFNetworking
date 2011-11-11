@@ -393,7 +393,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param data The data to be encoded and appended to the form data.
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
  @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
- @param name The filename to be associated with the specified data. This parameter must not be `nil`.
+ @param filename The filename to be associated with the specified data. This parameter must not be `nil`.
  */
 - (void)appendPartWithFileData:(NSData *)data name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType;
 
