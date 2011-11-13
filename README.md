@@ -81,6 +81,7 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 ``` objective-c
 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/friendships/request?user_id=1699"]];
 [request setHTTPMethod:@"POST"];
+[request setValue:@"#{Base64-Encoded Credentials}" forHTTPHeaderField:@"Authorization"];
 
 AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
 operation.completionBlock = ^ {
