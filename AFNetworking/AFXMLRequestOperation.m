@@ -92,7 +92,7 @@
 }
 
 - (void)dealloc {
-    [_responseXMLParser release];    
+    [_responseXMLParser release];
     [super dealloc];
 }
 

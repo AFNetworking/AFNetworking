@@ -110,4 +110,5 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 }
 
 @end
+
 #endif

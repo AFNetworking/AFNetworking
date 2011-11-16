@@ -39,6 +39,9 @@ typedef NSImage AFImage;
 @synthesize responseImage = _responseImage;
 @synthesize imageProcessingBlock=_imageProcessingBlock;
 @synthesize cacheName=_cacheName;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+@synthesize imageScale = _imageScale;
+#endif
 
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(AFImage *image))success
@@ -97,15 +100,20 @@ typedef NSImage AFImage;
         
     };
     
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    self.imageScale = [[UIScreen mainScreen] scale];
+#endif
+    
     return self;
 }
 
 - (void)processResponse {
     if (!_responseImage && [self isFinished]) {
-        if ([[UIScreen mainScreen] scale] == 2.0) {
+		UIImage *image = [UIImage imageWithData:self.responseData];
+		if (self.imageScale != 1.0f) {
             CGImageRef imageRef = [[UIImage imageWithData:self.responseData] CGImage];
             //This seems like the wrong way to handle this. shouldn't the guy at the end handle this?
-            self.responseImage = [UIImage imageWithCGImage:imageRef scale:2.0 orientation:UIImageOrientationUp];
+            self.responseImage = [UIImage imageWithCGImage:imageRef scale:self.imageScale orientation:UIImageOrientationUp];
         } else {
             self.responseImage = [UIImage imageWithData:self.responseData]; 
         }
@@ -128,7 +136,19 @@ typedef NSImage AFImage;
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-//synthized method is enough
+
+- (void)setImageScale:(CGFloat)imageScale {
+    if (imageScale == _imageScale) {
+        return;
+    }
+    
+    [self willChangeValueForKey:@"imageScale"];
+    _imageScale = imageScale;
+    [self didChangeValueForKey:@"imageScale"];
+    
+    self.responseImage = nil;
+}
+
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 - (NSImage *)responseImage {
     if (!_responseImage && [self isFinished]) {

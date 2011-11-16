@@ -62,4 +62,5 @@
 - (void)decrementActivityCount;
 
 @end
+
 #endif
