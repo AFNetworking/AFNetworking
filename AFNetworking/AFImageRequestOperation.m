@@ -109,22 +109,39 @@ typedef NSImage AFImage;
 
 - (void)processResponse {
     if (!_responseImage && [self isFinished]) {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+        BOOL cacheResponseDataInsteadOfImage = YES; //converting to a PNG to put in the cache is costly so lets try and avoid it.
+        
 		UIImage *image = [UIImage imageWithData:self.responseData];
-		if (self.imageScale != 1.0f) {
-            CGImageRef imageRef = [[UIImage imageWithData:self.responseData] CGImage];
+		if (self.imageScale != 1.0f || image.imageOrientation != UIImageOrientationUp) {
+            CGImageRef imageRef = [image CGImage];
             //This seems like the wrong way to handle this. shouldn't the guy at the end handle this?
-            self.responseImage = [UIImage imageWithCGImage:imageRef scale:self.imageScale orientation:UIImageOrientationUp];
-        } else {
-            self.responseImage = [UIImage imageWithData:self.responseData]; 
+            image = [UIImage imageWithCGImage:imageRef scale:self.imageScale orientation:UIImageOrientationUp];
+            cacheResponseDataInsteadOfImage = NO;
         }
         
         if (self.imageProcessingBlock) {
-            self.responseImage = self.imageProcessingBlock(self.responseImage);
+            image = self.imageProcessingBlock(image);
+            cacheResponseDataInsteadOfImage = NO;
+        }
+        
+        self.responseImage = image;
+        
+        if ([self.request cachePolicy] != NSURLCacheStorageNotAllowed) {
+            [[AFImageCache sharedImageCache] cacheImageData:(cacheResponseDataInsteadOfImage?self.responseData:UIImagePNGRepresentation(image)) forURL:[self.request URL] cacheName:self.cacheName];
+        }
+        
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+        NSImage *image = [[[NSImage alloc] initWithData:self.responseData] autorelease];
+        
+        if (self.imageProcessingBlock) {
+            image = self.imageProcessingBlock(image);
         }
         
         if ([self.request cachePolicy] != NSURLCacheStorageNotAllowed) {
             [[AFImageCache sharedImageCache] cacheImageData:self.responseData forURL:[self.request URL] cacheName:self.cacheName];
         }
+#endif
     }
 }
 
