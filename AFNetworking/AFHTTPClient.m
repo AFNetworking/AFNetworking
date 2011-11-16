@@ -310,7 +310,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     while (!operation && (className = [enumerator nextObject])) {
         Class class = NSClassFromString(className);
         if (class && [class canProcessRequest:urlRequest]) {
-            operation = [[(AFHTTPRequestOperation *)[class alloc] initWithRequest:urlRequest] autorelease];
+            operation = [(AFHTTPRequestOperation *)[class alloc] initWithRequest:urlRequest];
         }
     }
     
