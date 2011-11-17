@@ -32,9 +32,9 @@ static NSData * AFJSONEncode(id object, NSError **error) {
     id _NSJSONSerializationClass = NSClassFromString(@"NSJSONSerialization");
     SEL _NSJSONSerializationSelector = NSSelectorFromString(@"dataWithJSONObject:options:error:");
     
-    if (_JSONKitSelector && [data respondsToSelector:_JSONKitSelector]) {
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_JSONKitSelector]];
-        invocation.target = data;
+    if (_JSONKitSelector && [object respondsToSelector:_JSONKitSelector]) {
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[object methodSignatureForSelector:_JSONKitSelector]];
+        invocation.target = object;
         invocation.selector = _JSONKitSelector;
         
         NSUInteger serializeOptionFlags = 0;
@@ -43,21 +43,21 @@ static NSData * AFJSONEncode(id object, NSError **error) {
         
         [invocation invoke];
         [invocation getReturnValue:&data];
-    } else if (_SBJSONSelector && [data respondsToSelector:_SBJSONSelector]) {
+    } else if (_SBJSONSelector && [object respondsToSelector:_SBJSONSelector]) {
         NSString *JSONString = nil;
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_SBJSONSelector]];
-        invocation.target = data;
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[object methodSignatureForSelector:_SBJSONSelector]];
+        invocation.target = object;
         invocation.selector = _SBJSONSelector;
         
         [invocation invoke];
         [invocation getReturnValue:&data];
         
         data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
-    } else if (_YAJLSelector && [data respondsToSelector:_YAJLSelector]) {
+    } else if (_YAJLSelector && [object respondsToSelector:_YAJLSelector]) {
         @try {
             NSString *JSONString = nil;
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_YAJLSelector]];
-            invocation.target = data;
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[object methodSignatureForSelector:_YAJLSelector]];
+            invocation.target = object;
             invocation.selector = _YAJLSelector;
             
             [invocation invoke];
