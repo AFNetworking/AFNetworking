@@ -60,4 +60,10 @@ static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString
     [self setObject:[NSPurgeableData dataWithData:imageData] forKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
 }
 
+- (void)removeCachedImageForURL:(NSURL *)url
+                      cacheName:(NSString *)cacheName
+{
+    [self removeObjectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
+}
+
 @end

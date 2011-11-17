@@ -66,4 +66,10 @@
                 forURL:(NSURL *)url
              cacheName:(NSString *)cacheName;
 
+/**
+ Removes the cached image for the given URL.
+ */
+- (void)removeCachedImageForURL:(NSURL *)url
+                      cacheName:(NSString *)cacheName;
+
 @end
