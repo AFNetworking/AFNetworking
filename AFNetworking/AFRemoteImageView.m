@@ -15,6 +15,7 @@ static NSUInteger const maxConcurrentOperationCount = 8;
 @property (nonatomic, retain) AFImageRequestOperation *af_imageRequestOperation;
 
 + (NSOperationQueue *)af_sharedImageRequestOperationQueue;
++ (NSMutableDictionary *)pendingRequestOperations;
 - (void)updateWithCurrentURL;
 - (void)updateActivityIndicatorState;
 @end
@@ -80,23 +81,16 @@ static NSUInteger const maxConcurrentOperationCount = 8;
 
 #pragma mark - Private
 
-+ (NSOperationQueue *)af_sharedImageRequestOperationQueue {
-    static NSOperationQueue *_imageRequestOperationQueue = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _imageRequestOperationQueue = [[NSOperationQueue alloc] init];
-        [_imageRequestOperationQueue setMaxConcurrentOperationCount:maxConcurrentOperationCount];
-    });
-    return _imageRequestOperationQueue;
-}
-
 - (void)updateWithCurrentURL {
-    if (!self.url) {
+    NSURL *url = self.url;
+    NSString *urlString = [url absoluteString];
+    
+    if (!url) {
         self.image = self.placeholderImage;
         return;
     }
     
-    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForURL:self.url cacheName:nil];
+    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForURL:url cacheName:nil];
     if (cachedImage) {
         if (self.successHandler) {
             self.successHandler(nil, nil, cachedImage);
@@ -110,6 +104,8 @@ static NSUInteger const maxConcurrentOperationCount = 8;
         self.image = self.placeholderImage;
     }
     
+    NSMutableDictionary *pendingRequestOperations = [[self class] pendingRequestOperations];
+    
     NSURLRequest *urlRequest = nil;
     if (self.urlRequestGenerator) {
         urlRequest = self.urlRequestGenerator(self.url);
@@ -117,8 +113,9 @@ static NSUInteger const maxConcurrentOperationCount = 8;
     NSAssert([urlRequest isKindOfClass:[NSURLRequest class]], @"URLRequestGenerator should return a NSURLRequest");
     
     AFNetworkingUIImageViewSuccessHandler succesHandler = ^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-        if (![request.URL isEqual:self.url]) {
+        if (![request.URL isEqual:url]) {
             // This request is not the latest
+            [pendingRequestOperations removeObjectForKey:request.URL];
             return;
         }
         if (self.successHandler) {
@@ -127,14 +124,32 @@ static NSUInteger const maxConcurrentOperationCount = 8;
     };
     
     AFNetworkingUIImageViewFailureHandler failureHandler = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-        if (![request.URL isEqual:self.url]) {
+        if (![request.URL isEqual:url]) {
             // This request is not the latest
+            [pendingRequestOperations removeObjectForKey:request.URL];
             return;
         }
         if (self.failureHandler) {
             self.failureHandler(request, response, error);
         }
     };
+    
+//    Currently, resuming a queued operation won't work because the
+//    success and failure handlers cannot be modified on an AFImageRequestOperation:
+//
+//    AFImageRequestOperation *pendingRequestOperation = [pendingRequestOperations valueForKey:urlString];
+//    if (    pendingRequestOperation
+//        && ![pendingRequestOperation isCancelled]
+//        && ![pendingRequestOperation isExecuting]) {
+//        [pendingRequestOperations removeObjectForKey:urlString];
+//        // Adjust the succes and failure handlers
+//        self.af_imageRequestOperation = pendingRequestOperation;
+//    } else {
+    
+    if (self.af_imageRequestOperation) {
+        [pendingRequestOperations setValue:self.af_imageRequestOperation forKey:urlString];
+        self.af_imageRequestOperation = nil;
+    }
     
     self.af_imageRequestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:urlRequest
                                                                          imageProcessingBlock:nil
@@ -146,12 +161,21 @@ static NSUInteger const maxConcurrentOperationCount = 8;
     
     // If there are a lot of operations in the queue, make the current operations of higher priority.
     NSUInteger operationCount = [imageRequestOperationQueue operationCount];
-    if (operationCount > 2 * maxConcurrentOperationCount) {
+    if (operationCount > maxConcurrentOperationCount) {
         self.af_imageRequestOperation.queuePriority = NSOperationQueuePriorityHigh;
     }
     
     [imageRequestOperationQueue addOperation:self.af_imageRequestOperation];
     [self.activityIndicatorView startAnimating];
+
+    while ([pendingRequestOperations count] > 2 * maxConcurrentOperationCount) {
+        NSString *key = [[pendingRequestOperations allKeys] lastObject];
+        AFImageRequestOperation *operation = (AFImageRequestOperation *)[pendingRequestOperations valueForKey:key];
+        [operation retain];
+        [pendingRequestOperations removeObjectForKey:key];
+        [operation cancel];
+        [operation release];
+    }
 }
 
 - (void)updateActivityIndicatorState {
@@ -175,6 +199,25 @@ static NSUInteger const maxConcurrentOperationCount = 8;
 
 #pragma mark - Property accessors
 
++ (NSOperationQueue *)af_sharedImageRequestOperationQueue {
+    static NSOperationQueue *_imageRequestOperationQueue = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _imageRequestOperationQueue = [[NSOperationQueue alloc] init];
+        [_imageRequestOperationQueue setMaxConcurrentOperationCount:maxConcurrentOperationCount];
+    });
+    return _imageRequestOperationQueue;
+}
+
++ (NSMutableDictionary *)pendingRequestOperations {
+    static NSMutableDictionary *pendingRequestOperations_ = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        pendingRequestOperations_ = [[NSMutableDictionary alloc] initWithCapacity:32];
+    });
+    return pendingRequestOperations_;
+}
+
 - (void)setUrl:(NSURL *)url {
     [self willChangeValueForKey:@"url"];
     [url_ autorelease];
@@ -193,12 +236,14 @@ static NSUInteger const maxConcurrentOperationCount = 8;
 }
 
 - (void)setPlaceholderImage:(UIImage *)placeholderImage {
+    UIImage *oldPlaceholderImage = placeholderImage_;
+
     [self willChangeValueForKey:@"placeholderImage"];
     [placeholderImage_ autorelease];
     placeholderImage_ = [placeholderImage retain];
     [self didChangeValueForKey:@"placeholderImage"];
     
-    if (!self.url) {
+    if ([self.image isEqual:oldPlaceholderImage]) {
         self.image = placeholderImage;
     }
 }
