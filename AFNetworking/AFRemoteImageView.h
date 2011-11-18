@@ -40,6 +40,11 @@ typedef NSURLRequest * (^AFNetworkingUIImageViewURLRequestGenerator)(NSURL *url)
 @property (nonatomic, assign) BOOL showsActivityIndicator;
 
 /**
+ When showActivityIndicator is set to YES, this property will contain the activityIndicatorView.
+ */
+@property (nonatomic, retain) UIActivityIndicatorView *activityIndicatorView;
+
+/**
  When progressiveLoading is set to YES, the placeholderImage will not be shown when reloading or changing the URL.
  For UIImageViews that are reused (for example within a UITableViewCell), this property should be NO.
  NO is the default value.

@@ -13,7 +13,6 @@ static NSUInteger const maxConcurrentOperationCount = 8;
 
 @interface AFRemoteImageView()
 @property (nonatomic, retain) AFImageRequestOperation *af_imageRequestOperation;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicatorView;
 
 + (NSOperationQueue *)af_sharedImageRequestOperationQueue;
 - (void)updateWithCurrentURL;
@@ -29,8 +28,8 @@ static NSUInteger const maxConcurrentOperationCount = 8;
 @synthesize failureHandler=failureHandler_;
 @synthesize urlRequestGenerator=urlRequestGenerator_;
 @synthesize progressiveLoading=progressiveLoading_;
-@synthesize activityIndicatorView=activityIndicatorView_;;
-@dynamic af_imageRequestOperation;
+@synthesize activityIndicatorView=activityIndicatorView_;
+@synthesize af_imageRequestOperation=af_imageRequestOperation_;
 
 #pragma mark - Object lifecycle
 
@@ -62,7 +61,7 @@ static NSUInteger const maxConcurrentOperationCount = 8;
     if (self.urlRequestGenerator) {
         urlRequest = self.urlRequestGenerator(self.url);
     }
-    NSAssert(urlRequest, @"URLRequestGenerator should return a NSURLRequest");
+    NSAssert([urlRequest isKindOfClass:[NSURLRequest class]], @"URLRequestGenerator should return a NSURLRequest");
     [[NSURLCache sharedURLCache] removeCachedResponseForRequest:urlRequest];
 }
 
@@ -115,7 +114,7 @@ static NSUInteger const maxConcurrentOperationCount = 8;
     if (self.urlRequestGenerator) {
         urlRequest = self.urlRequestGenerator(self.url);
     }
-    NSAssert(urlRequest, @"URLRequestGenerator should return a NSURLRequest");
+    NSAssert([urlRequest isKindOfClass:[NSURLRequest class]], @"URLRequestGenerator should return a NSURLRequest");
     
     AFNetworkingUIImageViewSuccessHandler succesHandler = ^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
         if (![request.URL isEqual:self.url]) {
@@ -161,7 +160,7 @@ static NSUInteger const maxConcurrentOperationCount = 8;
         activityIndicatorView.hidesWhenStopped = YES;
         
         [self addSubview:activityIndicatorView];
-        activityIndicatorView.center = self.center;
+        activityIndicatorView.center = CGPointMake(roundf(self.bounds.size.width / 2.0), roundf(self.bounds.size.height / 2.0));
         activityIndicatorView.autoresizingMask = (  UIViewAutoresizingFlexibleLeftMargin
                                                   | UIViewAutoresizingFlexibleRightMargin
                                                   | UIViewAutoresizingFlexibleTopMargin
@@ -181,6 +180,7 @@ static NSUInteger const maxConcurrentOperationCount = 8;
     [url_ autorelease];
     url_ = [url retain];
     [self didChangeValueForKey:@"url"];
+    
     [self updateWithCurrentURL];
 }
 
@@ -188,51 +188,54 @@ static NSUInteger const maxConcurrentOperationCount = 8;
     [self willChangeValueForKey:@"activityIndicatorView"];
     showsActivityIndicator_ = showsActivityIndicator;
     [self didChangeValueForKey:@"activityIndicatorView"];
+    
     [self updateActivityIndicatorState];
 }
 
+- (void)setPlaceholderImage:(UIImage *)placeholderImage {
+    [self willChangeValueForKey:@"placeholderImage"];
+    [placeholderImage_ autorelease];
+    placeholderImage_ = [placeholderImage retain];
+    [self didChangeValueForKey:@"placeholderImage"];
+    
+    if (!self.url) {
+        self.image = placeholderImage;
+    }
+}
+
 - (AFNetworkingUIImageViewSuccessHandler)successHandler {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        if (!successHandler_) {
-            __block AFRemoteImageView *blockSelf = self;
-            successHandler_ = Block_copy(^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                [blockSelf.activityIndicatorView stopAnimating];
-                blockSelf.image = image;
-            });
-        }
-    });
+    if (!successHandler_) {
+        __block AFRemoteImageView *blockSelf = self;
+        successHandler_ = Block_copy(^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+            [blockSelf.activityIndicatorView stopAnimating];
+            blockSelf.image = image;
+        });
+    }
     return successHandler_;
 }
 
 - (AFNetworkingUIImageViewFailureHandler)failureHandler {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        if (!failureHandler_) {
-            __block AFRemoteImageView *blockSelf = self;
-            failureHandler_ = Block_copy(^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                [blockSelf.activityIndicatorView stopAnimating];
-                blockSelf.image = blockSelf.failureImage ?: blockSelf.placeholderImage;
-            });
-        }
-    });
+    if (!failureHandler_) {
+        __block AFRemoteImageView *blockSelf = self;
+        failureHandler_ = Block_copy(^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+            [blockSelf.activityIndicatorView stopAnimating];
+            blockSelf.image = blockSelf.failureImage ?: blockSelf.placeholderImage;
+        });
+    }
     return failureHandler_;
 }
 
 - (AFNetworkingUIImageViewURLRequestGenerator)urlRequestGenerator {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        if (!urlRequestGenerator_) {
-            urlRequestGenerator_  = Block_copy(^NSURLRequest * (NSURL *url) {
-                NSMutableURLRequest *mutableURLRequest = [NSMutableURLRequest requestWithURL:url
-                                                                                 cachePolicy:NSURLCacheStorageAllowed
-                                                                             timeoutInterval:30.0];
-                mutableURLRequest.HTTPShouldHandleCookies = NO;
-                mutableURLRequest.HTTPShouldUsePipelining = YES;
-                return mutableURLRequest;
-            });
-        }
-    });
+    if (!urlRequestGenerator_) {
+        urlRequestGenerator_  = Block_copy(^NSURLRequest * (NSURL *url) {
+            NSMutableURLRequest *mutableURLRequest = [NSMutableURLRequest requestWithURL:url
+                                                                             cachePolicy:NSURLCacheStorageAllowed
+                                                                         timeoutInterval:30.0];
+            mutableURLRequest.HTTPShouldHandleCookies = NO;
+            mutableURLRequest.HTTPShouldUsePipelining = YES;
+            return mutableURLRequest;
+        });
+    }
     return urlRequestGenerator_;
 }
 
