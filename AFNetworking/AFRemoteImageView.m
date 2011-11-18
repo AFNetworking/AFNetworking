@@ -51,6 +51,7 @@ static NSUInteger const maxConcurrentOperationCount = 8;
 }
 
 - (void)dealloc {
+    [self.af_imageRequestOperation cancel];
     self.url = nil;
     self.placeholderImage = nil;
     self.failureImage = nil;
@@ -58,6 +59,7 @@ static NSUInteger const maxConcurrentOperationCount = 8;
     self.failureHandler = nil;
     self.urlRequestGenerator = nil;
     self.activityIndicatorView = nil;
+    self.af_imageRequestOperation = nil;
     [super dealloc];
 }
 
