@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B2983861476702C00B1D7AF /* AFRemoteImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B2983851476702B00B1D7AF /* AFRemoteImageView.m */; };
 		F86E5529143A28F3002B438C /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F86E5528143A28F3002B438C /* AFURLConnectionOperation.m */; };
 		F874B5D913E0AA6500B28E3E /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5C913E0AA6500B28E3E /* AFHTTPRequestOperation.m */; };
 		F874B5DA13E0AA6500B28E3E /* AFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5CA13E0AA6500B28E3E /* AFImageCache.m */; };
@@ -40,6 +41,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4B2983841476702B00B1D7AF /* AFRemoteImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFRemoteImageView.h; path = ../AFNetworking/AFRemoteImageView.h; sourceTree = "<group>"; };
+		4B2983851476702B00B1D7AF /* AFRemoteImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFRemoteImageView.m; path = ../AFNetworking/AFRemoteImageView.m; sourceTree = "<group>"; };
 		F8323C941455C03400190CCB /* AFJSONUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFJSONUtilities.h; path = ../AFNetworking/AFJSONUtilities.h; sourceTree = "<group>"; };
 		F86E5527143A28F3002B438C /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFURLConnectionOperation.h; path = ../AFNetworking/AFURLConnectionOperation.h; sourceTree = "<group>"; };
 		F86E5528143A28F3002B438C /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFURLConnectionOperation.m; path = ../AFNetworking/AFURLConnectionOperation.m; sourceTree = "<group>"; };
@@ -253,6 +256,8 @@
 				F874B5D513E0AA6500B28E3E /* AFNetworkActivityIndicatorManager.h */,
 				F874B5CD13E0AA6500B28E3E /* AFNetworkActivityIndicatorManager.m */,
 				F8323C941455C03400190CCB /* AFJSONUtilities.h */,
+				4B2983841476702B00B1D7AF /* AFRemoteImageView.h */,
+				4B2983851476702B00B1D7AF /* AFRemoteImageView.m */,
 			);
 			name = AFNetworking;
 			sourceTree = "<group>";
@@ -365,6 +370,7 @@
 				F86E5529143A28F3002B438C /* AFURLConnectionOperation.m in Sources */,
 				F8F4B16E143CD1420064C9E6 /* AFPropertyListRequestOperation.m in Sources */,
 				F8F4B17F143E07030064C9E6 /* AFXMLRequestOperation.m in Sources */,
+				4B2983861476702C00B1D7AF /* AFRemoteImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -25,9 +25,16 @@
 #import "Spot.h"
 
 #import "UIImageView+AFNetworking.h"
+#import "AFRemoteImageView.h"
+
+@interface SpotTableViewCell()
+@property (nonatomic, retain) AFRemoteImageView *remoteImageView;
+
+@end
 
 @implementation SpotTableViewCell
 @synthesize spot = _spot;
+@synthesize remoteImageView = _remoteImageView;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -41,16 +48,24 @@
     
     self.detailTextLabel.textColor = [UIColor grayColor];
     self.detailTextLabel.backgroundColor = self.backgroundColor;
-
-    self.imageView.backgroundColor = self.backgroundColor;
-    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     
     self.selectionStyle = UITableViewCellSelectionStyleGray;
+    
+    AFRemoteImageView *remoteImageView = [[AFRemoteImageView alloc] init];
+    remoteImageView.placeholderImage = [UIImage imageNamed:@"placeholder-stamp.png"];
+    remoteImageView.showsActivityIndicator = YES;
+    remoteImageView.backgroundColor = self.backgroundColor;
+    remoteImageView.contentMode = UIViewContentModeScaleAspectFit;
+    
+    [self.contentView addSubview:remoteImageView];
+    self.remoteImageView = remoteImageView;
+    [remoteImageView release];
     
     return self;
 }
 
 - (void)dealloc {
+    [_remoteImageView release];
     [_spot release];
     [super dealloc];
 }
@@ -61,7 +76,7 @@
     _spot = [spot retain];
     [self didChangeValueForKey:@"spot"];
 
-    [self.imageView setImageWithURL:[NSURL URLWithString:self.spot.imageURLString] placeholderImage:[UIImage imageNamed:@"placeholder-stamp.png"]];
+    self.remoteImageView.url = [NSURL URLWithString:self.spot.imageURLString];
      
     self.textLabel.text = spot.name;
 }
@@ -70,7 +85,7 @@
 
 - (void)prepareForReuse {
     [super prepareForReuse];
-    [self.imageView cancelImageRequestOperation];
+    self.remoteImageView.url = nil;
     self.textLabel.text = nil;
     self.detailTextLabel.text = nil;
 }
@@ -79,7 +94,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    CGRect imageViewFrame = self.imageView.frame;
+    CGRect imageViewFrame = self.remoteImageView.frame;
     CGRect textLabelFrame = self.textLabel.frame;
     CGRect detailTextLabelFrame = self.detailTextLabel.frame;
     
@@ -92,7 +107,7 @@
     
     self.textLabel.frame = textLabelFrame;
     self.detailTextLabel.frame = detailTextLabelFrame;
-    self.imageView.frame = imageViewFrame;
+    self.remoteImageView.frame = imageViewFrame;
 }
 
 @end

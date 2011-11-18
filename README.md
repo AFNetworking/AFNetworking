@@ -45,8 +45,9 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 ### Image Request
 
 ``` objective-c
-UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 100.0f)];
-[imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
+AFRemoteImageView *imageView = [[AFRemoteImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 100.0f)];
+imageView.placeholderImage = [UIImage imageNamed:@"placeholder-avatar"];
+imageView.url = [NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"];
 ```
 
 ### API Client Request
