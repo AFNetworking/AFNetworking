@@ -49,6 +49,15 @@ UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0
 [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
 ```
 
+``` objective-c
+NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://gowalla.com/images/web/logo.png"]];
+AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(NSImage *image){
+    NSLog(@"Image loaded: %@", image);
+}];
+NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+[queue addOperation:operation];
+```
+
 ### API Client Request
 
 ``` objective-c
@@ -112,6 +121,12 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 ## Requirements
 
 AFNetworking requires either [iOS 4.0](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) and above, or [Mac OS 10.6](http://developer.apple.com/library/mac/#releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_6.html#//apple_ref/doc/uid/TP40008898-SW7) and above.
+
+AFNetworking uses [`NSJSONSerialization`](http://developer.apple.com/library/mac/#documentation/Foundation/Reference/NSJSONSerialization_Class/Reference/Reference.html) if it is available. If your app targets a platform where this class is not available you can include one of the following JSON libraries to your project for AFNetworking to automaticly detect and use.
+
+* [JSONKit](https://github.com/johnezang/JSONKit)
+* [SBJson](http://stig.github.com/json-framework/)
+* [YAJL](http://lloyd.github.com/yajl/)
 
 ### ARC Support
 
