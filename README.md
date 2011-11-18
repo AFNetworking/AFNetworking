@@ -49,6 +49,15 @@ UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0
 [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
 ```
 
+``` objective-c
+NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://gowalla.com/images/web/logo.png"]];
+AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(NSImage *image){
+    NSLog(@"Image loaded: %@", image);
+}];
+NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+[queue addOperation:operation];
+```
+
 ### API Client Request
 
 ``` objective-c
