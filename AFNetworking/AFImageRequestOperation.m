@@ -213,6 +213,12 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 - (NSImage *)responseImage {
     if (!_responseImage && [self isFinished]) {
         self.responseImage = [[[NSImage alloc] initWithData:self.responseData] autorelease];
+        
+        // The size of an NSImage can sometimes be incorrect, so make a CGImage which is more
+        // like a single pixel-based representation so it is the correct size, and then
+        // set the size based on what the CGImage says it is.
+        CGImageRef cgimage = [[NSBitmapImageRep imageRepWithData:self.responseData] CGImage];
+        [self.responseImage setSize:NSMakeSize(CGImageGetWidth(cgimage), CGImageGetHeight(cgimage))];
     }
     
     return _responseImage;
