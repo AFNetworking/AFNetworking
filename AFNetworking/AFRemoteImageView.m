@@ -42,6 +42,14 @@ static NSUInteger const maxConcurrentOperationCount = 8;
     return self;
 }
 
+- (id)initWithImage:(UIImage *)image {
+    self = [super initWithImage:image];
+    if (self) {
+        self.placeholderImage = image;
+    }
+    return self;
+}
+
 - (void)dealloc {
     self.url = nil;
     self.placeholderImage = nil;
