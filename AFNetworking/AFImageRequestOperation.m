@@ -212,13 +212,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 - (NSImage *)responseImage {
     if (!_responseImage && [self isFinished]) {
-        self.responseImage = [[[NSImage alloc] initWithData:self.responseData] autorelease];
-        
-        // The size of an NSImage can sometimes be incorrect, so make a CGImage which is more
-        // like a single pixel-based representation so it is the correct size, and then
-        // set the size based on what the CGImage says it is.
-        CGImageRef cgimage = [[NSBitmapImageRep imageRepWithData:self.responseData] CGImage];
-        [self.responseImage setSize:NSMakeSize(CGImageGetWidth(cgimage), CGImageGetHeight(cgimage))];
+        // Ensure that the image is set to it's correct pixel width and height
+        NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
+        self.responseImage = [[[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])] autorelease];
+        [self.responseImage addRepresentation:bitimage];
+        [bitimage release];
     }
     
     return _responseImage;
