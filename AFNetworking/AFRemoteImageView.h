@@ -13,76 +13,79 @@ typedef void (^AFNetworkingUIImageViewFailureHandler)(NSURLRequest *request, NSH
 typedef NSURLRequest * (^AFNetworkingUIImageViewURLRequestGenerator)(NSURL *url);
 
 /**
- This category adds methods to the UIKit framework's `UIImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
+ `AFRemoteImageView` is an UIImageView subclass that supports loading images from `NSURL`s. `AFRemoteImageView` uses `AFImageRequestOperation` to fetch the image data.
  */
 @interface AFRemoteImageView : UIImageView
 
-#pragma mark - Properties
-
 /**
- Assigning to url will enqueue a new image request operation for that url. Previous requests will not be cancelled, their response will be cached but will not make the new image shown.
+ Assigning to `url` will enqueue a `AFImageReqeustOperation` for that url. On completion, the request will call the `successHandler` or `failureHandler`.
+ If the url has changed before the `AFImageRequestOperation` finishes, no completion handlers will be called.
  */
 @property (nonatomic, retain) NSURL *url;
 
 /**
- The placeholderImage is shown when no image is loaded. In case there is no failureImage defined, the placeholderImage will be shown in place of the failureImage also.
+ The `placeholderImage` is shown when no image is loaded. In case there is no failureImage defined, the placeholderImage will be shown in place of the failureImage also.
+ The placeholderImage will be set by `initWithCoder:` (for InterfaceBuilder support) and `initWithImage:'.
  */
 @property (nonatomic, retain) UIImage *placeholderImage;
 
 /**
- The failureImage will be shown when the image request operation fails to deliver an image.
+ The `failureImage` will be shown when the `AFImageRequestOperation` fails to deliver an image.
  */
 @property (nonatomic, retain) UIImage *failureImage;
 
 /**
- When showActivityIndicator is set to YES, a spinner will be shown while the image is loading.
+ When `showActivityIndicator` is set to YES, a spinner will be shown while the image is loading.
  */
 @property (nonatomic, assign) BOOL showsActivityIndicator;
 
 /**
- When showActivityIndicator is set to YES, this property will contain the activityIndicatorView.
+ When `showActivityIndicator` is set to YES, `activityIndicatorView` will contain the `UIActivityIndicatorView`.
  */
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicatorView;
 
 /**
- When progressiveLoading is set to YES, the placeholderImage will not be shown when reloading or changing the URL.
- For UIImageViews that are reused (for example within a UITableViewCell), this property should be NO.
+ When `progressiveLoading` is set to YES, the `placeholderImage` will not be shown when reloading or changing the URL.
+ When reusing `AFRemoteImageView`s that are reused (for example within a `UITableViewCell`), this property should be NO.
  NO is the default value.
  */
 @property (nonatomic, assign) BOOL progressiveLoading;
 
 /**
- The default success handler sets the begotten image in the UIImageView.
+ The `successHandler` is called by the `AFImageReqeustOperation` if it successfully loaded an image.
+ By default, the `successHandler` will set the fetched image as the current image.
  */
 @property (nonatomic, copy) AFNetworkingUIImageViewSuccessHandler successHandler;
 
 /**
- The default failure handler displays the failureImage in the UIImageView.
+ The `failureHandler` is called by the `AFImageReqeustOperation` if it did not succeed to load an image.
+ By default, the `failureHandler` displays the `failureImage` or the `placeholderImage` in case the `failureImage` is nil.
  */
 @property (nonatomic, copy) AFNetworkingUIImageViewFailureHandler failureHandler;
 
 /**
- The default urlRequestGenerator generates a URLRequest with a timeout of 30 seconds and a cache policy of 'NSURLCacheStorageAllowed'.
+ The `urlRequestGenerator` is called to transform an NSURL to a NSURLRequest.
+ By default, the `urlRequestGenerator` generates an `NSURLRequest` with a timeout of 30 seconds and a cache policy of `NSURLCacheStorageAllowed`.
  */
 @property (nonatomic, copy) AFNetworkingUIImageViewURLRequestGenerator urlRequestGenerator;
 
 /**
- Reloads the image from the current URL.
+ Clears the `AFImageCache` and reloads the image for the current URL.
  */
 - (void)reload;
 
 /**
- Clears the NSURLCache and teh AFImageCache for this url.
+ Clears the `NSURLCache` and the `AFImageCache` for the URL specified.
  */
 - (void)clearCacheForURL:(NSURL *)url;
 
 /**
- Cancel all queued request that are made through UIImageView+AFNetworking
+ `cancelAllImageRequestOperations` cancels all queued requests that are made through `AFRemoteImageView`.
  */
 + (void)cancelAllImageRequestOperations;
 
 /**
- Cancel the current request operation
+ `cancelImageRequestOperation` cancels the current request operation.
  */
 - (void)cancelImageRequestOperation;
 
