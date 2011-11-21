@@ -71,7 +71,7 @@ static char kAFImageRequestOperationObjectKey;
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage
 {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0];
     [request setHTTPShouldHandleCookies:NO];
     [request setHTTPShouldUsePipelining:YES];
     
