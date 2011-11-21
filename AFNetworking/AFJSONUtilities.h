@@ -110,8 +110,10 @@ static id AFJSONDecode(NSData *data, NSError **error) {
         [invocation invoke];
         [invocation getReturnValue:&JSON];
     } else if (_SBJSONSelector && [data respondsToSelector:_SBJSONSelector]) {
+        // Create a string representation of JSON, to use SBJSON -`JSONValue` category method
+        NSString *string = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_SBJSONSelector]];
-        invocation.target = data;
+        invocation.target = string;
         invocation.selector = _SBJSONSelector;
         
         [invocation invoke];
