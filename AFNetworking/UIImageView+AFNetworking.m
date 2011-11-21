@@ -100,26 +100,29 @@ static char kAFImageRequestOperationObjectKey;
     } else {
         self.image = placeholderImage;
         
-        self.af_imageRequestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {            
-            if (self.af_imageRequestOperation && ![self.af_imageRequestOperation isCancelled]) {
-                if (success) {
-                    success(request, response, image);
-                }
+        AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+        [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            if (success) {
+                success(operation.request, operation.response, responseObject);
+            }
             
-                if ([[request URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
-                    self.image = image;
-                } else {
-                    self.image = placeholderImage;
-                }
-            }            
-        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-            self.af_imageRequestOperation = nil;
+            if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
+                self.image = responseObject;
+            } else {
+                self.image = placeholderImage;
+            }
             
+            if ([urlRequest cachePolicy]) {
+                [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[urlRequest URL] cacheName:nil];
+            }
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if (failure) {
-                failure(request, response, error);
-            } 
+                failure(operation.request, operation.response, error);
+            }
         }];
-       
+        
+        self.af_imageRequestOperation = requestOperation;
+        
         [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
     }
 }
