@@ -27,6 +27,7 @@
 @implementation Spot
 @synthesize name = _name;
 @synthesize imageURLString = _imageURLString;
+@synthesize image = _image;
 @synthesize latitude = _latitude;
 @synthesize longitude = _longitude;
 @dynamic location;
