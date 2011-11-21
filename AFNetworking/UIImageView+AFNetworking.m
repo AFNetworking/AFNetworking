@@ -112,9 +112,7 @@ static char kAFImageRequestOperationObjectKey;
                 self.image = placeholderImage;
             }
             
-            if ([urlRequest cachePolicy]) {
-                [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[urlRequest URL] cacheName:nil];
-            }
+            [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[urlRequest URL] cacheName:nil];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if (failure) {
                 failure(operation.request, operation.response, error);
