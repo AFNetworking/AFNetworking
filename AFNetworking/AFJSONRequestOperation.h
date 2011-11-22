@@ -62,7 +62,7 @@
  @return A new JSON request operation
  */
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSURLResponse *response, id JSON))success 
-                                                    failure:(void (^)(NSURLRequest *request, NSURLResponse *response, NSError *error, id JSON))failure;
+                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success 
+                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure;
 
 @end
