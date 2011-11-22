@@ -3,13 +3,15 @@
 ## A delightful iOS and OS X networking framework
 ### There's a lot to be said for a networking library that you can wrap your head around. API design matters, too. Code at its best is poetry, and should be designed to delight (but never surprise).
 
-AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of familiar Foundation network classes,  using `NSOperation` for scheduling and concurrency, and blocks for convenience and flexibility. It's designed to make common tasks easy, and to make complex tasks simple.
+AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of familiar Foundation network classes, using `NSOperation` for scheduling and concurrency, and blocks for convenience and flexibility. It's designed to make common tasks easy, and to make complex tasks simple.
 
 ## Documentation
 
-Online documentation is available at http://gowalla.github.com/AFNetworking/.
+API documentation is available at [http://afnetworking.org/Documentation](http://afnetworking.org/Documentation).
 
-To install the docset directly into your local Xcode organizer, first [install `appledoc`](https://github.com/tomaz/appledoc), and then clone this project and run `appledoc -p AFNetworking -c "Gowalla" --company-id com.gowalla AFNetworking/*.h`
+To install the API docset directly into your local Xcode organizer, first [install `appledoc`](https://github.com/tomaz/appledoc), and then clone this project and run `appledoc -p AFNetworking -c "Alamofire" --company-id com.alamofire AFNetworking/*.h`
+
+If you're looking for something more human-friendly, or more conceptual in nature, be sure to [check out the Wiki](https://github.com/AFNetworking/AFNetworking/wiki). 
 
 ## Example Projects
 
@@ -139,6 +141,8 @@ Although this is suboptimal, forking the project into an ARC and non-ARC branch 
 AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://itunes.apple.com/us/app/gowalla/id304510106?mt=8).
 
 [TTTLocationFormatter](), used in the example project, is part of [FormatterKit](https://github.com/mattt/FormatterKit), created by [Mattt Thompson](https://github.com/mattt/).
+
+AFNetworking's logo was designed by the amazingly-talented [Alan Defibaugh](http://www.alandefibaugh.com/).
 
 ## Contact
 
