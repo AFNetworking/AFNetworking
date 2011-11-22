@@ -52,6 +52,9 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 @interface AFURLConnectionOperation ()
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+@property (readwrite, assign) UIBackgroundTaskIdentifier backgroundTask;
+#endif
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
 @property (readwrite, nonatomic, retain) NSURLConnection *connection;
@@ -85,6 +88,8 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @synthesize outputStream = _outputStream;
 @synthesize uploadProgress = _uploadProgress;
 @synthesize downloadProgress = _downloadProgress;
+@synthesize attemptToContinueWhenAppEntersBackground=_attemptToContinueWhenAppEntersBackground;
+@synthesize backgroundTask=_backgroundTask;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
@@ -118,6 +123,11 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     
     self.state = AFHTTPOperationReadyState;
 	
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    self.attemptToContinueWhenAppEntersBackground = NO;
+    self.backgroundTask = UIBackgroundTaskInvalid;
+#endif
+    
     return self;
 }
 
@@ -159,29 +169,39 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     self.downloadProgress = block;
 }
 
-- (void)setState:(AFOperationState)state {
-    if (![self shouldTransitionToState:state]) {
-        return;
+- (AFOperationState) state {
+    @synchronized(self)
+    {
+        return _state;
     }
-    
-    NSString *oldStateKey = AFKeyPathFromOperationState(self.state);
-    NSString *newStateKey = AFKeyPathFromOperationState(state);
-    
-    [self willChangeValueForKey:newStateKey];
-    [self willChangeValueForKey:oldStateKey];
-    _state = state;
-    [self didChangeValueForKey:oldStateKey];
-    [self didChangeValueForKey:newStateKey];
-    
-    switch (state) {
-        case AFHTTPOperationExecutingState:
-            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
-            break;
-        case AFHTTPOperationFinishedState:
-            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
-            break;
-        default:
-            break;
+}
+
+- (void)setState:(AFOperationState)state {
+    @synchronized(self)
+    {
+        if (![self shouldTransitionToState:state]) {
+            return;
+        }
+        
+        NSString *oldStateKey = AFKeyPathFromOperationState(self.state);
+        NSString *newStateKey = AFKeyPathFromOperationState(state);
+        
+        [self willChangeValueForKey:newStateKey];
+        [self willChangeValueForKey:oldStateKey];
+        _state = state;
+        [self didChangeValueForKey:oldStateKey];
+        [self didChangeValueForKey:newStateKey];
+        
+        switch (state) {
+            case AFHTTPOperationExecutingState:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
+                break;
+            case AFHTTPOperationFinishedState:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -256,6 +276,25 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     
     self.state = AFHTTPOperationExecutingState;
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+    BOOL multiTaskingSupported = NO;
+    if ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)]) {
+		multiTaskingSupported = [[UIDevice currentDevice] isMultitaskingSupported];
+	}
+    
+    if (multiTaskingSupported && _attemptToContinueWhenAppEntersBackground) {
+        self.backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            UIBackgroundTaskIdentifier task = self.backgroundTask;
+            if (task != UIBackgroundTaskInvalid)
+            {
+                [self cancel];
+                [[UIApplication sharedApplication] endBackgroundTask:task];
+                self.backgroundTask = UIBackgroundTaskInvalid;
+            }
+        }];
+    }
+#endif
+    
     [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
 }
 
@@ -277,6 +316,14 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 - (void)finish {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+    UIBackgroundTaskIdentifier task = self.backgroundTask;
+    if (task != UIBackgroundTaskInvalid) {
+        [[UIApplication sharedApplication] endBackgroundTask:task];
+        self.backgroundTask = UIBackgroundTaskInvalid;
+    }
+#endif
+    
     self.state = AFHTTPOperationFinishedState;
 }
 

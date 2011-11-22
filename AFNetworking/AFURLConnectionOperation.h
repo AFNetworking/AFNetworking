@@ -86,6 +86,11 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
     NSInteger _totalBytesRead;
     NSMutableData *_dataAccumulator;
     NSOutputStream *_outputStream;
+    
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    BOOL _attemptToContinueWhenAppEntersBackground;
+    UIBackgroundTaskIdentifier _backgroundTask;
+#endif
 }
 
 ///-------------------------------
@@ -153,6 +158,10 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 ///------------------------------------------------------
 /// @name Initializing an AFURLConnectionOperation Object
 ///------------------------------------------------------
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+@property (nonatomic, assign) BOOL attemptToContinueWhenAppEntersBackground;
+#endif
 
 /**
  Initializes and returns a newly allocated operation object with a url connection configured with the specified url request.
