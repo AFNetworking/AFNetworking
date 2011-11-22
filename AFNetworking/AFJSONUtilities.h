@@ -32,9 +32,9 @@ static NSData * AFJSONEncode(id object, NSError **error) {
     id _NSJSONSerializationClass = NSClassFromString(@"NSJSONSerialization");
     SEL _NSJSONSerializationSelector = NSSelectorFromString(@"dataWithJSONObject:options:error:");
     
-    if (_JSONKitSelector && [data respondsToSelector:_JSONKitSelector]) {
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_JSONKitSelector]];
-        invocation.target = data;
+    if (_JSONKitSelector && [object respondsToSelector:_JSONKitSelector]) {
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[object methodSignatureForSelector:_JSONKitSelector]];
+        invocation.target = object;
         invocation.selector = _JSONKitSelector;
         
         NSUInteger serializeOptionFlags = 0;
@@ -43,21 +43,21 @@ static NSData * AFJSONEncode(id object, NSError **error) {
         
         [invocation invoke];
         [invocation getReturnValue:&data];
-    } else if (_SBJSONSelector && [data respondsToSelector:_SBJSONSelector]) {
+    } else if (_SBJSONSelector && [object respondsToSelector:_SBJSONSelector]) {
         NSString *JSONString = nil;
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_SBJSONSelector]];
-        invocation.target = data;
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[object methodSignatureForSelector:_SBJSONSelector]];
+        invocation.target = object;
         invocation.selector = _SBJSONSelector;
         
         [invocation invoke];
         [invocation getReturnValue:&data];
         
         data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
-    } else if (_YAJLSelector && [data respondsToSelector:_YAJLSelector]) {
+    } else if (_YAJLSelector && [object respondsToSelector:_YAJLSelector]) {
         @try {
             NSString *JSONString = nil;
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_YAJLSelector]];
-            invocation.target = data;
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[object methodSignatureForSelector:_YAJLSelector]];
+            invocation.target = object;
             invocation.selector = _YAJLSelector;
             
             [invocation invoke];
@@ -82,7 +82,7 @@ static NSData * AFJSONEncode(id object, NSError **error) {
         [invocation getReturnValue:&data];
     } else {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Please either target a platform that supports NSJSONSerialization or add one of the following libraries to your project: JSONKit, SBJSON, or YAJL", nil) forKey:NSLocalizedRecoverySuggestionErrorKey];
-        [NSException exceptionWithName:NSInternalInconsistencyException reason:NSLocalizedString(@"No JSON generation functionality available", nil) userInfo:userInfo];
+        [[NSException exceptionWithName:NSInternalInconsistencyException reason:NSLocalizedString(@"No JSON generation functionality available", nil) userInfo:userInfo] raise];
     }
 
     return data;
@@ -110,8 +110,10 @@ static id AFJSONDecode(NSData *data, NSError **error) {
         [invocation invoke];
         [invocation getReturnValue:&JSON];
     } else if (_SBJSONSelector && [data respondsToSelector:_SBJSONSelector]) {
+        // Create a string representation of JSON, to use SBJSON -`JSONValue` category method
+        NSString *string = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_SBJSONSelector]];
-        invocation.target = data;
+        invocation.target = string;
         invocation.selector = _SBJSONSelector;
         
         [invocation invoke];

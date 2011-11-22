@@ -25,7 +25,6 @@
 #import "Spot.h"
 
 #import "AFImageRequestOperation.h"
-#import "AFImageCache.h"
 
 @interface NearbySpotsController ()
 @property (strong) NSArray *nearbySpots;
@@ -103,19 +102,18 @@
     Spot *spot = [self.nearbySpots objectAtIndex:row];
     
 	if ([[tableColumn dataCell] isMemberOfClass:[NSImageCell class]]) {
-        NSURL *imageURL = [NSURL URLWithString:spot.imageURLString];
-        NSImage *image = [[AFImageCache sharedImageCache] cachedImageForURL:imageURL cacheName:nil];
-        if (!image) {
+        if (spot.image) {
+            return spot.image;
+        } else {
             NSURLRequest *imageRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:spot.imageURLString]];
             AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:imageRequest success:^(NSImage *image) {
+                spot.image = image;
                 [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             }];
             [self.imageOperationQueue addOperation:operation];
             
-            image = [NSImage imageNamed:@"placeholder-stamp.png"];
+            return [NSImage imageNamed:@"placeholder-stamp.png"];
         }
-
-		return image;
 	} else {
 		return spot.name;
 	}

@@ -76,7 +76,7 @@ typedef NSImage AFImage;
         }   
     };
     
-    return operation;
+    return requestOperation;
 }
 
 
@@ -112,8 +112,8 @@ typedef NSImage AFImage;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
         BOOL cacheResponseDataInsteadOfImage = YES; //converting to a PNG to put in the cache is costly so lets try and avoid it.
         
-		UIImage *image = [UIImage imageWithData:self.responseData];
-		if (self.imageScale != 1.0f || image.imageOrientation != UIImageOrientationUp) {
+        UIImage *image = [UIImage imageWithData:self.responseData];
+        if (self.imageScale != 1.0f || image.imageOrientation != UIImageOrientationUp) {
             CGImageRef imageRef = [image CGImage];
             //This seems like the wrong way to handle this. shouldn't the guy at the end handle this?
             image = [UIImage imageWithCGImage:imageRef scale:self.imageScale orientation:UIImageOrientationUp];
@@ -153,7 +153,6 @@ typedef NSImage AFImage;
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-
 - (void)setImageScale:(CGFloat)imageScale {
     if (imageScale == _imageScale) {
         return;
@@ -162,14 +161,16 @@ typedef NSImage AFImage;
     [self willChangeValueForKey:@"imageScale"];
     _imageScale = imageScale;
     [self didChangeValueForKey:@"imageScale"];
-    
-    self.responseImage = nil;
 }
 
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 - (NSImage *)responseImage {
     if (!_responseImage && [self isFinished]) {
-        self.responseImage = [[[NSImage alloc] initWithData:self.responseData] autorelease];
+        // Ensure that the image is set to it's correct pixel width and height
+        NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
+        self.responseImage = [[[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])] autorelease];
+        [self.responseImage addRepresentation:bitimage];
+        [bitimage release];
     }
     
     return [[_responseImage retain] autorelease];
@@ -194,5 +195,31 @@ typedef NSImage AFImage;
     }];
 }
 
+
+- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    self.completionBlock = ^ {
+        if ([self isCancelled]) {
+            return;
+        }
+        
+        dispatch_async(image_request_operation_processing_queue(), ^(void) {
+            if (self.error) {
+                if (failure) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        failure(self, self.error);
+                    });
+                }
+            } else {                
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        success(self, self.responseImage);
+                    });
+                }
+            }
+        });        
+    };  
+}
 
 @end

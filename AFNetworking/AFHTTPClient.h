@@ -90,15 +90,14 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  Both `requestWithMethod:path:parameters` and `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `baseURL`, using `NSURL +URLWithString:relativeToURL:`. Below are a few examples of how `baseURL` and relative paths interract:
  
- ```
- NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
- [NSURL URLWithString:@"foo" relativeToURL:baseURL]; // http://example.com/v1/foo
- [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL]; // http://example.com/v1/foo?bar=baz
- [NSURL URLWithString:@"/foo" relativeToURL:baseURL]; // http://example.com/foo
- [NSURL URLWithString:@"foo/" relativeToURL:baseURL]; // http://example.com/v1/foo
- [NSURL URLWithString:@"/foo/" relativeToURL:baseURL]; // http://example.com/foo/
- [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL]; // http://example2.com/
- ```
+    NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
+    [NSURL URLWithString:@"foo" relativeToURL:baseURL];                     // http://example.com/v1/foo
+    [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL];             // http://example.com/v1/foo?bar=baz
+    [NSURL URLWithString:@"/foo" relativeToURL:baseURL];                    // http://example.com/foo
+    [NSURL URLWithString:@"foo/" relativeToURL:baseURL];                    // http://example.com/v1/foo
+    [NSURL URLWithString:@"/foo/" relativeToURL:baseURL];                   // http://example.com/foo/
+    [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL];    // http://example2.com/
+
  */
 @interface AFHTTPClient : NSObject {
 @private
