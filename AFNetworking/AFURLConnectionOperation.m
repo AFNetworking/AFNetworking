@@ -141,18 +141,6 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     [super dealloc];
 }
 
-- (void)setCompletionBlock:(void (^)(void))block {
-    if (!block) {
-        [super setCompletionBlock:nil];
-    } else {
-        __block id _blockSelf = self;
-        [super setCompletionBlock:^ {
-            block();
-            [_blockSelf setCompletionBlock:nil];
-        }];
-    }
-}
-
 - (NSInputStream *)inputStream {
     return self.request.HTTPBodyStream;
 }
@@ -246,7 +234,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 #pragma mark - NSOperation
 
 - (BOOL)isReady {
-    return self.state == AFHTTPOperationReadyState;
+    return (self.state == AFHTTPOperationReadyState && [super isReady]);
 }
 
 - (BOOL)isExecuting {
