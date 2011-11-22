@@ -9,7 +9,7 @@ A few of the improvements and changes over upstream include:
   * Better adherhance to the DRY (don't repeat yourself) principle. Operation classes inheirt background processing capabilty instead of having the same code across all the operations classes.
   * No reasonably unexpected behaviors or magic. Instead prefer explict configuration. 
     * ```AFImageRequestOperation``` does not automagically scale your images 2x if on retina devices on iOS by default. 
-    * <strike>The JSON library used to decode responses is configurable and doesn't fallback under different OS versions.</strike> (Integrated with upstream's solution to this.)
+    * ~~The JSON library used to decode responses is configurable and doesn't fallback under different OS versions.~~ (Integrated with upstream's solution to this.)
   * Many block declarations that used more than once have a `typedef`
   * Clearer seperation of networking and UI related code to make reusing code between Mac and iOS easier.
   * Less ifdefs to change behavior between Mac and iOS versions. 
