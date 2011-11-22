@@ -76,7 +76,7 @@ typedef NSImage AFImage;
         }   
     };
     
-    return requestOperation;
+    return operation;
 }
 
 
@@ -193,33 +193,6 @@ typedef NSImage AFImage;
     } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
         failure(response, error);
     }];
-}
-
-
-- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
-        dispatch_async(image_request_operation_processing_queue(), ^(void) {
-            if (self.error) {
-                if (failure) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        failure(self, self.error);
-                    });
-                }
-            } else {                
-                if (success) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        success(self, self.responseImage);
-                    });
-                }
-            }
-        });        
-    };  
 }
 
 @end
