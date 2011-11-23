@@ -35,6 +35,9 @@ static dispatch_queue_t request_operation_processing_queue() {
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
 @property (readonly, nonatomic, assign) BOOL hasContent;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+- (void)endBackgroundTask;
+#endif
 @end
 
 @implementation AFHTTPRequestOperation
@@ -46,6 +49,9 @@ static dispatch_queue_t request_operation_processing_queue() {
 @synthesize successBlock = _successBlock;
 @synthesize failureBlock = _failureBlock;
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+@synthesize attemptToContinueWhenAppEntersBackground=_attemptToContinueWhenAppEntersBackground;
+#endif
 
 - (id)initWithRequest:(NSURLRequest *)request {
     self = [super initWithRequest:request];
@@ -89,8 +95,16 @@ static dispatch_queue_t request_operation_processing_queue() {
             if (blockSelf.responseProcessedBlock) {
                 dispatch_async(blockSelf.callbackQueue, ^(void) {
                     blockSelf.responseProcessedBlock();
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+                    [blockSelf endBackgroundTask];
+#endif
                     [blockSelf release];
                 });
+            } else {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+                [blockSelf endBackgroundTask];
+#endif
+                [blockSelf release];
             }
         } else {
             dispatch_async(request_operation_processing_queue(), ^(void) {
@@ -99,18 +113,29 @@ static dispatch_queue_t request_operation_processing_queue() {
                     if (blockSelf.responseProcessedBlock) {
                         blockSelf.responseProcessedBlock();
                     }
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+                    [blockSelf endBackgroundTask];
+#endif
                     [blockSelf release];
                 });
             });
         }
     };
     
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    self.attemptToContinueWhenAppEntersBackground = NO;
+    _backgroundTask = UIBackgroundTaskInvalid;
+#endif
+    
     return self;
 }
 
 - (void)dealloc {
-    [_completionBlock release];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+    [self endBackgroundTask];
+#endif
     
+    [_completionBlock release];
     if (_callbackQueue) {
         dispatch_release(_callbackQueue),_callbackQueue=NULL;
     }
@@ -160,6 +185,52 @@ static dispatch_queue_t request_operation_processing_queue() {
 - (BOOL)hasAcceptableContentType {
     return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
 }
+
+#pragma mark - iOSMultitasking support 
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+- (void)endBackgroundTask {
+    if (_backgroundTask != UIBackgroundTaskInvalid) {
+        [[UIApplication sharedApplication] endBackgroundTask:_backgroundTask];
+        _backgroundTask = UIBackgroundTaskInvalid;
+    }
+}
+
+//override 
+- (void) start {
+    if (![self isReady]) {
+        return;
+    }
+    if (self.attemptToContinueWhenAppEntersBackground){
+        if (_backgroundTask != UIBackgroundTaskInvalid) {
+            [self endBackgroundTask];
+        }
+        
+        BOOL multiTaskingSupported = NO;
+        if ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)]) {
+            multiTaskingSupported = [[UIDevice currentDevice] isMultitaskingSupported];
+        }
+        
+        if (multiTaskingSupported && _attemptToContinueWhenAppEntersBackground) {
+            _backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+                if (_backgroundTask != UIBackgroundTaskInvalid)
+                {
+                    [self cancel];
+                    [[UIApplication sharedApplication] endBackgroundTask:_backgroundTask];
+                    _backgroundTask = UIBackgroundTaskInvalid;
+                }
+            }];
+        }
+    }
+    [super start];
+}
+
+- (void)cancel {
+    [super cancel];
+    [self endBackgroundTask];
+}
+#endif
+
 
 #pragma mark - AFHTTPClientOperation
 

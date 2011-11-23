@@ -87,10 +87,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
     NSMutableData *_dataAccumulator;
     NSOutputStream *_outputStream;
     
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-    BOOL _attemptToContinueWhenAppEntersBackground;
-    UIBackgroundTaskIdentifier _backgroundTask;
-#endif
+
 }
 
 ///-------------------------------
@@ -101,6 +98,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  The run loop modes in which the operation will run on the network thread. By default, this is a single-member set containing `NSRunLoopCommonModes`.
  */
 @property (nonatomic, retain) NSSet *runLoopModes;
+
 
 ///-----------------------------------------
 /// @name Getting URL Connection Information
@@ -158,10 +156,6 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 ///------------------------------------------------------
 /// @name Initializing an AFURLConnectionOperation Object
 ///------------------------------------------------------
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-@property (nonatomic, assign) BOOL attemptToContinueWhenAppEntersBackground;
-#endif
 
 /**
  Initializes and returns a newly allocated operation object with a url connection configured with the specified url request.

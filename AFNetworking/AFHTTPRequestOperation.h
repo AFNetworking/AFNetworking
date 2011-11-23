@@ -42,6 +42,12 @@ typedef void (^AFHTTPResponseFailureBlock)(AFHTTPRequestOperation *operation, NS
     dispatch_queue_t _callbackQueue;
     AFHTTPReponseProcessedBlock _responseProcessedBlock;
     void (^_completionBlock)(void);
+    
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    BOOL _attemptToContinueWhenAppEntersBackground;
+    UIBackgroundTaskIdentifier _backgroundTask;
+#endif
+    
 }
 
 ///----------------------------------------------
@@ -59,6 +65,19 @@ typedef void (^AFHTTPResponseFailureBlock)(AFHTTPRequestOperation *operation, NS
 @property (readonly, nonatomic, retain) NSError *HTTPError;
 
 
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+///-------------------------------
+/// @name iOS Multitasking Support
+///-------------------------------
+
+/**
+ Attempt to prevent the application from shutting down until the response has been completed. 
+ (You probably want to wrap your operation queue as well to stop when it;s completed.)
+ */
+
+@property (nonatomic, assign) BOOL attemptToContinueWhenAppEntersBackground;
+#endif
 
 ///----------------------------------------------------------
 /// @name Managing And Checking For Acceptable HTTP Responses
