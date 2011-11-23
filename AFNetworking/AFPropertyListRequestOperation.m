@@ -43,7 +43,7 @@
 {
     AFPropertyListRequestOperation *requestOperation = [[[self alloc] initWithRequest:request] autorelease];
     
-    requestOperation.responseProcessedBlock = ^{
+    requestOperation.finishedBlock = ^{
         if (requestOperation.error) {
             if (failure) {
                 failure(requestOperation.request, requestOperation.response, requestOperation.error, requestOperation.responsePropertyList);
@@ -78,19 +78,6 @@
     
     self.propertyListReadOptions = NSPropertyListImmutable;
     
-    self.responseProcessedBlock = ^{
-        if (self.error) {
-            if (self.failureBlock) {
-                self.failureBlock(self,self.error);
-            }
-        }
-        else {
-            if (self.successBlock) {
-                self.successBlock(self,self.responsePropertyList);
-            }
-        }
-    };
-    
     
     return self;
 }
@@ -99,6 +86,10 @@
     [_responsePropertyList release];
     [_propertyListError release];
     [super dealloc];
+}
+
+- (id)responseObject {
+    return [self responsePropertyList];
 }
 
 -(void)processResponse {

@@ -66,7 +66,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 
 - (BOOL)shouldTransitionToState:(AFOperationState)state;
 - (void)operationDidStart;
-- (void)finish;
+
 @end
 
 @implementation AFURLConnectionOperation
@@ -286,6 +286,10 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     }
     
     [self.connection start];
+}
+
+- (void)connectionDidFinish {
+    [self finish];
 }
 
 - (void)finish {

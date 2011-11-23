@@ -42,7 +42,7 @@
 {
     AFJSONRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
 
-    requestOperation.responseProcessedBlock = ^{
+    requestOperation.finishedBlock = ^{
         if (requestOperation.error) {
             if (failure) {
                 failure(requestOperation.request,requestOperation.response,requestOperation.error,requestOperation.responseJSON);
@@ -80,19 +80,6 @@
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
-    self.responseProcessedBlock = ^{
-        if (self.error) {
-            if (self.failureBlock) {
-                self.failureBlock(self,self.error);
-            }
-        }
-        else {
-            if (self.successBlock) {
-                self.successBlock(self,self.responseJSON);
-            }
-        }
-    };
-    
     return self;
 }
 
@@ -100,6 +87,10 @@
     [_responseJSON release];
     [_JSONError release];
     [super dealloc];
+}
+
+- (id)responseObject {
+    return [self responseJSON];
 }
 
 - (void)processResponse {    

@@ -44,10 +44,9 @@ static dispatch_queue_t request_operation_processing_queue() {
 @synthesize acceptableStatusCodes = _acceptableStatusCodes;
 @synthesize acceptableContentTypes = _acceptableContentTypes;
 @synthesize HTTPError = _HTTPError;
-@synthesize responseProcessedBlock = _responseProcessedBlock;
 @dynamic callbackQueue;
-@synthesize successBlock = _successBlock;
-@synthesize failureBlock = _failureBlock;
+@dynamic responseObject;
+@synthesize finishedBlock = finishedBlock;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
 @synthesize attemptToContinueWhenAppEntersBackground=_attemptToContinueWhenAppEntersBackground;
@@ -60,23 +59,7 @@ static dispatch_queue_t request_operation_processing_queue() {
     }
     
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-    
-    //default implementation
-    self.responseProcessedBlock = ^{
-        //already in calling queue. no more work to do here
-        if (self.error) {
-            if (self.failureBlock) {
-                self.failureBlock(self,self.error);
-            }
-        }
-        else
-        {
-            if (self.successBlock) {
-                self.successBlock(self,self.responseData);
-            }
-        }
-    };
-    
+
     //by default we will use the queue that created the request.
     self.callbackQueue = dispatch_get_current_queue();
     
@@ -87,42 +70,30 @@ static dispatch_queue_t request_operation_processing_queue() {
         }
         
         if ([blockSelf isCancelled]) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+            [blockSelf endBackgroundTask];
+#endif
             [blockSelf release];
             return;
         }
         
-        if (blockSelf.HTTPError) {
-            if (blockSelf.responseProcessedBlock) {
-                dispatch_async(blockSelf.callbackQueue, ^(void) {
-                    blockSelf.responseProcessedBlock();
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
-                    [blockSelf endBackgroundTask];
-#endif
-                    [blockSelf release];
-                });
-            } else {
+        if (blockSelf.finishedBlock) {
+            dispatch_async(blockSelf.callbackQueue, ^(void) {
+                blockSelf.finishedBlock();
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
                 [blockSelf endBackgroundTask];
 #endif
                 [blockSelf release];
-            }
-        } else {
-            dispatch_async(request_operation_processing_queue(), ^(void) {
-                [blockSelf processResponse];
-                dispatch_async(blockSelf.callbackQueue, ^(void) {
-                    if (blockSelf.responseProcessedBlock) {
-                        blockSelf.responseProcessedBlock();
-                    }
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
-                    [blockSelf endBackgroundTask];
-#endif
-                    [blockSelf release];
-                });
             });
+        } else {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+            [blockSelf endBackgroundTask];
+#endif
+            [blockSelf release];
         }
     };
     
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
     self.attemptToContinueWhenAppEntersBackground = NO;
     _backgroundTask = UIBackgroundTaskInvalid;
 #endif
@@ -268,5 +239,22 @@ static dispatch_queue_t request_operation_processing_queue() {
     //base version doesn't have to do anything here but subclasses do.
 }
 
+- (void)connectionDidFinish {
+    if (!self.error) {
+        __block AFHTTPRequestOperation *blockSelf = [self retain];
+        dispatch_async(request_operation_processing_queue(), ^(void) {
+            [blockSelf processResponse];
+            [self finish];
+        });
+    }
+    else
+    {
+        [self finish];
+    }
+}
+
+- (id) responseObject {
+    return [self responseData];
+}
 
 @end

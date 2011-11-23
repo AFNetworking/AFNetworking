@@ -26,8 +26,8 @@
 @class AFHTTPRequestOperation;
 
 typedef void (^AFHTTPReponseProcessedBlock)(void);
-typedef void (^AFHTTPResponseSuccessBlock)(AFHTTPRequestOperation *operation, id responseObject);
-typedef void (^AFHTTPResponseFailureBlock)(AFHTTPRequestOperation *operation, NSError *error);
+
+typedef void (^AFHTTPResponseOperationFinishedBlock)(void);
 
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
@@ -37,8 +37,6 @@ typedef void (^AFHTTPResponseFailureBlock)(AFHTTPRequestOperation *operation, NS
     NSIndexSet *_acceptableStatusCodes;
     NSSet *_acceptableContentTypes;
     NSError *_HTTPError;
-    AFHTTPResponseSuccessBlock _successBlock;
-    AFHTTPResponseFailureBlock _failureBlock;
     dispatch_queue_t _callbackQueue;
     AFHTTPReponseProcessedBlock _responseProcessedBlock;
     void (^_completionBlock)(void);
@@ -107,21 +105,10 @@ typedef void (^AFHTTPResponseFailureBlock)(AFHTTPRequestOperation *operation, NS
  */
 @property (readonly) BOOL hasAcceptableContentType;
 
-/** 
- The callback dispatch queue. By default this is the calling queue that created the operation. 
- */
-@property (nonatomic) dispatch_queue_t callbackQueue;
-
 
 ///-----------------------
 /// @name Subclass methods
 ///-----------------------
-
-/** 
- The processed completion callback block. This is dispatched on the callbackQueue.
- @sa callbackQueue
- */
-@property (nonatomic, copy) AFHTTPReponseProcessedBlock responseProcessedBlock;
 
 /** responable for decoding the data and responding to it */
 
@@ -134,22 +121,33 @@ typedef void (^AFHTTPResponseFailureBlock)(AFHTTPRequestOperation *operation, NS
  */
 + (BOOL)canProcessRequest:(NSURLRequest *)urlRequest;
 
-///-----------------------------------------------------------
-/// @name Setting Completion Block Success / Failure Callbacks
-///-----------------------------------------------------------
+
+///------------------------------
+/// @name Getting response object
+///------------------------------
+
+/** 
+ Returns decoded response as an object.
+ */
+ 
+@property (readonly, nonatomic) id responseObject;
+
+
+///-------------------------------
+/// @name Operation Finished Block
+///-------------------------------
 
 /**
- Sets the `completionBlock` property with a block that executes either the specified success or failure block, depending on the state of the request on completion. If `error` returns a value, which can be caused by an unacceptable status code or content type, then `failure` is executed. Otherwise, `success` is executed.
- 
- @param success The block to be executed on the completion of a successful request. This block has no return value and takes two arguments: the receiver operation and the object constructed from the response data of the request.
- @param failure The block to be executed on the completion of an unsuccessful request. This block has no return value and takes two arguments: the receiver operation and the error that occured during the request.
- 
- @discussion This method should be overridden in subclasses in order to specify the response object passed into the success block.
+ finishBlock is similar to the completetionBlock except that the response is returned on the queue specified in the callbackQueue property.
  */
 
-@property (nonatomic, copy) AFHTTPResponseSuccessBlock successBlock;
-@property (nonatomic, copy) AFHTTPResponseFailureBlock failureBlock;
+@property (nonatomic, copy) AFHTTPResponseOperationFinishedBlock finishedBlock;
 
+
+/** 
+ The callback dispatch queue. By default this is the calling queue that created the operation. 
+ */
+@property (nonatomic) dispatch_queue_t callbackQueue;
 
 
 @end

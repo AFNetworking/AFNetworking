@@ -318,8 +318,16 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
         operation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
     }
     
-    operation.successBlock = success;
-    operation.failureBlock = failure;
+    operation.finishedBlock = ^{
+        if (operation.error) {
+            failure(operation,operation.error);
+        }
+        else
+        {
+            success(operation,operation.responseObject);
+        }
+    };
+
        
     return [operation autorelease];
 }

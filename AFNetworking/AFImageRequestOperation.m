@@ -63,7 +63,8 @@ typedef NSImage AFImage;
     AFImageRequestOperation *operation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     
     operation.cacheName = cacheNameOrNil;
-    operation.responseProcessedBlock  = ^ {
+    
+    operation.finishedBlock = ^{
         if (operation.error) {
             if (failure) {
                 failure(operation.request, operation.response, operation.error);
@@ -96,15 +97,22 @@ typedef NSImage AFImage;
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
-    self.responseProcessedBlock = ^{
-        
-    };
-    
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     self.imageScale = [[UIScreen mainScreen] scale];
 #endif
     
     return self;
+}
+
+- (void)dealloc {
+    [_imageProcessingBlock release];
+    [_cacheName release];
+    [_responseImage release];
+    [super dealloc];
+}
+
+- (id)responseObject {
+    return [self responseImage];
 }
 
 - (void)processResponse {
@@ -145,12 +153,6 @@ typedef NSImage AFImage;
     }
 }
 
-- (void)dealloc {
-    [_imageProcessingBlock release];
-    [_cacheName release];
-    [_responseImage release];
-    [super dealloc];
-}
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)setImageScale:(CGFloat)imageScale {

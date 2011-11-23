@@ -101,6 +101,10 @@
     [super dealloc];
 }
 
+- (id)responseObject {
+    return [self responseXMLDocument];
+}
+
 - (void)processResponse {
     if (!_responseXMLDocument && [self isFinished]) {
         NSError *error = nil;

@@ -40,7 +40,7 @@
     
     AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
     //need to really split this class up.
-    requestOperation.responseProcessedBlock = ^{
+    requestOperation.finishedBlock = ^{
         if (requestOperation.error){
             if (failure) {
                 failure(requestOperation.request, requestOperation.response, requestOperation.error, requestOperation.responseXMLParser);
@@ -75,25 +75,16 @@
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
-    self.responseProcessedBlock = ^{
-        if (self.error) {
-            if (self.failureBlock) {
-                self.failureBlock(self,self.error);
-            }
-        }
-        else {
-            if (self.successBlock) {
-                self.successBlock(self,self.responseXMLParser);
-            }
-        }
-    };
-    
     return self;
 }
 
 - (void)dealloc {
     [_responseXMLParser release];
     [super dealloc];
+}
+
+- (id)responseObject {
+    return [self responseXMLParser];
 }
 
 - (void)processResponse {

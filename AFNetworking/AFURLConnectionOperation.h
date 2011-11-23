@@ -215,4 +215,20 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  */
 - (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead))block;
 
+
+///--------------------------
+/// @name Subclassing support
+///--------------------------
+
+/** 
+ The connection has finished. The default implemention calls -[self finish]. Subclasses should override and call finish when they are done processing the operation.
+ */
+
+- (void)connectionDidFinish;
+
+/** 
+ Mark the operation as finished. This called by the default implementation of 
+ */
+- (void)finish;
+
 @end
