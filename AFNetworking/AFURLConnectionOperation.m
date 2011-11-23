@@ -54,7 +54,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
-@property (readwrite, nonatomic, retain) NSURLConnection *connection;
+@property (readwrite, nonatomic, assign) NSURLConnection *connection;
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSURLResponse *response;
 @property (readwrite, nonatomic, retain) NSError *error;
@@ -133,9 +133,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     [_responseString release];
     [_dataAccumulator release];
     [_outputStream release]; _outputStream = nil;
-    
-    [_connection release]; _connection = nil;
-	
+    	
     [_uploadProgress release];
     [_downloadProgress release];
 
