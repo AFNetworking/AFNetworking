@@ -25,8 +25,8 @@
 
 
 
-typedef void (^AFJSONResponseSuccessBlock)(NSURLRequest *request, NSURLResponse *response, id JSON);
-typedef void (^AFJSONResponseFailureBlock)(NSURLRequest *request, NSURLResponse *response, NSError *error, id JSON);
+typedef void (^AFJSONResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON);
+typedef void (^AFJSONResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON);
 
 /**
  `AFJSONRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and working with JSON response data.
