@@ -85,6 +85,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @synthesize outputStream = _outputStream;
 @synthesize uploadProgress = _uploadProgress;
 @synthesize downloadProgress = _downloadProgress;
+@synthesize cacheStoragePolicy = _cacheStoragePolicy;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
@@ -112,6 +113,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 		return nil;
     }
     
+    self.cacheStoragePolicy = AFURLCacheStorageDefault;
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
     
     self.request = urlRequest;
@@ -379,7 +381,18 @@ didReceiveResponse:(NSURLResponse *)response
         return nil;
     }
     
-    return cachedResponse;
+    if (self.cacheStoragePolicy == AFURLCacheStorageDefault 
+        || self.cacheStoragePolicy == cachedResponse.storagePolicy) {
+        return cachedResponse;
+    }
+    else {
+        NSCachedURLResponse *alternativeCachedResponse = 
+        [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response
+                                                 data:cachedResponse.data
+                                             userInfo:cachedResponse.userInfo
+                                        storagePolicy:self.cacheStoragePolicy];
+        return [alternativeCachedResponse autorelease];
+    }
 }
 
 @end

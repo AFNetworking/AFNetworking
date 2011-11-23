@@ -22,6 +22,22 @@
 
 #import <Foundation/Foundation.h>
 
+
+/**
+ Cache policy configuration.
+ */
+
+//This enumeration tries to match the default cache policy options but adds a special state for allowing 
+//the default behavior to take over. 
+enum _AURLCacheStoragePolicy{
+    AFURLCacheStorageAllowed                = NSURLCacheStorageAllowed,
+    AFURLCacheStorageAllowedInMemoryOnly    = NSURLCacheStorageAllowedInMemoryOnly,
+    AFURLCacheStorageNotAllowed             = NSURLCacheStorageNotAllowed,
+    AFURLCacheStorageDefault                = 0x1000000
+};
+
+typedef NSUInteger AURLCacheStoragePolicy;
+
 /**
  Indicates an error occured in AFNetworking.
  
@@ -87,6 +103,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
     NSMutableData *_dataAccumulator;
     NSOutputStream *_outputStream;
     
+    AURLCacheStoragePolicy _cacheStoragePolicy;
 
 }
 
@@ -98,6 +115,16 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  The run loop modes in which the operation will run on the network thread. By default, this is a single-member set containing `NSRunLoopCommonModes`.
  */
 @property (nonatomic, retain) NSSet *runLoopModes;
+
+
+///---------------------------
+/// @name Cache storage policy
+///---------------------------
+
+/**
+ Configure the cache policy 
+ */
+@property (nonatomic, assign) AURLCacheStoragePolicy cacheStoragePolicy;
 
 
 ///-----------------------------------------
