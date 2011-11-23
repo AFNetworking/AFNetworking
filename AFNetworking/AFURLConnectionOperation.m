@@ -245,7 +245,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 #pragma mark - NSOperation
 
 - (BOOL)isReady {
-    return self.state == AFHTTPOperationReadyState;
+    return self.state == AFHTTPOperationReadyState && [super isReady];
 }
 
 - (BOOL)isExecuting {
