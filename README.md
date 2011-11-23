@@ -6,6 +6,7 @@ This is a maintained fork of the popular AFNetworking library.
 
 A few of the improvements and changes over upstream include:
 
+  * **Ability to override the cache storage policy** (this improves support for NSURLCache and replacements like SDURLCache)
   * **iOS Multitasking support built in.**
   * **Allows configuration of the callback queue used to return asynchronous responses** instead of hard coding to `main_queue`. (The queue usedf by default is the queue used to create the operation). 
   * **Better adherhance to the DRY (don't repeat yourself) principle**. Operation classes inheirt background processing capabilty instead of having the same code across all the operations classes.
