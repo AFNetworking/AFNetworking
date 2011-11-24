@@ -93,16 +93,11 @@
 }
 
 - (NSXMLParser *)responseXMLParser {
-    return _responseXMLParser;
+    return [[_responseXMLParser retain] autorelease];
 }
 
 #pragma mark - NSOperation
 
-- (void)cancel {
-    [super cancel];
-    
-    self.responseXMLParser.delegate = nil;
-}
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
     return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
