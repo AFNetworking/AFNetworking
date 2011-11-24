@@ -13,7 +13,6 @@ A few of the improvements and changes over upstream include:
   * **No reasonably unexpected behaviors or magic**. Instead prefer explict configuration. 
     * ```AFImageRequestOperation``` does not automagically scale your images 2x if on retina devices on iOS by default. 
     * ~~The JSON library used to decode responses is configurable and doesn't fallback under different OS versions.~~ (Integrated with upstream's solution to this.)
-  * **Typedef'd blocks** - Many block declarations that used more than once have a `typedef`
   * **UI/Networking seperation** - Clearer seperation of networking and UI related code to make reusing code between Mac and iOS easier.
   * **More uniform across platforms** - Less ifdefs to change behavior between Mac and iOS versions. 
     * AFXMLRequestOperation is spilt into two classes (one that returns NSXMLParser that is avalaible on both iOS and Mac OSX, and one that returns an NSXMLDocument for only Mac OSX).
