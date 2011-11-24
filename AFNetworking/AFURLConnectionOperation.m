@@ -264,7 +264,10 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     if (![self isReady]) {
         return;
     }
-    
+	if (![NSURLConnection canHandleRequest:self.request]) {
+		return;
+	}
+	
     self.state = AFHTTPOperationExecutingState;
     
     [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
@@ -275,9 +278,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
         [self finish];
         return;
     }
-    if (![NSURLRequest canHandleRequest:self.request]) {
-		[self cancel];
-	}
+	
     self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
     
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
