@@ -275,7 +275,13 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     return YES;
 }
 
-- (void)start {  
+- (void)start { 
+    if ([self isCancelled])
+    {
+        [self finish];
+        return;
+    }
+    
     if (![self isReady]) {
         return;
     }
