@@ -101,6 +101,47 @@ typedef NSImage AFImage;
     self.imageScale = [[UIScreen mainScreen] scale];
 #endif
     
+    __block AFImageRequestOperation *blockSelf = self;
+    [self addExecutionBlock:^{
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+        BOOL cacheResponseDataInsteadOfImage = YES; //converting to a PNG to put in the cache is costly so lets try and avoid it.
+        
+        UIImage *image = [UIImage imageWithData:blockSelf.responseData];
+        if (blockSelf.imageScale != 1.0f || image.imageOrientation != UIImageOrientationUp) {
+            CGImageRef imageRef = [image CGImage];
+            //This seems like the wrong way to handle this. shouldn't the guy at the end handle this?
+            image = [UIImage imageWithCGImage:imageRef scale:blockSelf.imageScale orientation:UIImageOrientationUp];
+            cacheResponseDataInsteadOfImage = NO;
+        }
+        
+        if (blockSelf.imageProcessingBlock) {
+            image = blockSelf.imageProcessingBlock(image);
+            cacheResponseDataInsteadOfImage = NO;
+        }
+        
+        blockSelf.responseImage = image;
+        
+        if ([blockSelf.request cachePolicy] != NSURLCacheStorageNotAllowed) {
+            [[AFImageCache sharedImageCache] cacheImageData:(cacheResponseDataInsteadOfImage?blockSelf.responseData:UIImagePNGRepresentation(image)) 
+                                                     forURL:[blockSelf.request URL] 
+                                                  cacheName:blockSelf.cacheName];
+        }
+        
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+        NSImage *image = [[[NSImage alloc] initWithData:self.responseData] autorelease];
+        
+        if (blockSelf.imageProcessingBlock) {
+            image = blockSelf.imageProcessingBlock(image);
+        }
+        
+        if ([blockSelf.request cachePolicy] != NSURLCacheStorageNotAllowed) {
+            [[AFImageCache sharedImageCache] cacheImageData:blockSelf.responseData 
+                                                     forURL:[blockSelf.request URL] 
+                                                  cacheName:blockSelf.cacheName];
+        }
+#endif 
+    }];
+    
     return self;
 }
 
@@ -113,44 +154,6 @@ typedef NSImage AFImage;
 
 - (id)responseObject {
     return [self responseImage];
-}
-
-- (void)processResponse {
-    if (!_responseImage && [self isFinished]) {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-        BOOL cacheResponseDataInsteadOfImage = YES; //converting to a PNG to put in the cache is costly so lets try and avoid it.
-        
-        UIImage *image = [UIImage imageWithData:self.responseData];
-        if (self.imageScale != 1.0f || image.imageOrientation != UIImageOrientationUp) {
-            CGImageRef imageRef = [image CGImage];
-            //This seems like the wrong way to handle this. shouldn't the guy at the end handle this?
-            image = [UIImage imageWithCGImage:imageRef scale:self.imageScale orientation:UIImageOrientationUp];
-            cacheResponseDataInsteadOfImage = NO;
-        }
-        
-        if (self.imageProcessingBlock) {
-            image = self.imageProcessingBlock(image);
-            cacheResponseDataInsteadOfImage = NO;
-        }
-        
-        self.responseImage = image;
-        
-        if ([self.request cachePolicy] != NSURLCacheStorageNotAllowed) {
-            [[AFImageCache sharedImageCache] cacheImageData:(cacheResponseDataInsteadOfImage?self.responseData:UIImagePNGRepresentation(image)) forURL:[self.request URL] cacheName:self.cacheName];
-        }
-        
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-        NSImage *image = [[[NSImage alloc] initWithData:self.responseData] autorelease];
-        
-        if (self.imageProcessingBlock) {
-            image = self.imageProcessingBlock(image);
-        }
-        
-        if ([self.request cachePolicy] != NSURLCacheStorageNotAllowed) {
-            [[AFImageCache sharedImageCache] cacheImageData:self.responseData forURL:[self.request URL] cacheName:self.cacheName];
-        }
-#endif
-    }
 }
 
 

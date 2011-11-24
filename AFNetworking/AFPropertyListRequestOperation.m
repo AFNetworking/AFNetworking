@@ -74,6 +74,18 @@
         return nil;
     }
     
+    __block AFPropertyListRequestOperation *blockSelf = self;
+    [self addExecutionBlock:^{
+        NSPropertyListFormat format;
+        NSError *error = nil;
+        blockSelf.responsePropertyList = [NSPropertyListSerialization propertyListWithData:blockSelf.responseData 
+                                                                                   options:blockSelf.propertyListReadOptions 
+                                                                                    format:&format 
+                                                                                     error:&error];
+        blockSelf.propertyListFormat = format;
+        blockSelf.propertyListError = error; 
+    }];
+    
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
     self.propertyListReadOptions = NSPropertyListImmutable;
@@ -90,16 +102,6 @@
 
 - (id)responseObject {
     return [self responsePropertyList];
-}
-
--(void)processResponse {
-    if (!_responsePropertyList && [self isFinished]) {
-        NSPropertyListFormat format;
-        NSError *error = nil;
-        self.responsePropertyList = [NSPropertyListSerialization propertyListWithData:self.responseData options:self.propertyListReadOptions format:&format error:&error];
-        self.propertyListFormat = format;
-        self.propertyListError = error;
-    }
 }
 
 - (NSError *)error {

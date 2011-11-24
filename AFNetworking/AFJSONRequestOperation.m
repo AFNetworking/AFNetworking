@@ -78,6 +78,17 @@
         return nil;
     }
     
+    __block AFJSONRequestOperation *blockSelf = self;
+    [self addExecutionBlock:^{
+        NSError *error = nil;
+        if ([blockSelf.responseData length] == 0) {
+            blockSelf.responseJSON = nil;
+        } else {
+            blockSelf.responseJSON = AFJSONDecode(blockSelf.responseData, &error);
+        }
+        blockSelf.JSONError = error;
+    }];
+    
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
     return self;
@@ -91,18 +102,6 @@
 
 - (id)responseObject {
     return [self responseJSON];
-}
-
-- (void)processResponse {    
-    if (!_responseJSON && [self isFinished]) {
-        NSError *error = nil;
-        if ([self.responseData length] == 0) {
-            self.responseJSON = nil;
-        } else {
-            self.responseJSON = AFJSONDecode(self.responseData, &error);
-        }
-        self.JSONError = error;
-    }
 }
 
 - (NSError *)error {

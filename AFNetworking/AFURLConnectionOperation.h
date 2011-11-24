@@ -105,6 +105,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
     
     AURLCacheStoragePolicy _cacheStoragePolicy;
 
+    NSMutableArray *_executionBlocks;
 }
 
 ///-------------------------------
@@ -216,19 +217,18 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 - (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead))block;
 
 
-///--------------------------
-/// @name Subclassing support
-///--------------------------
+///------------------------------------------
+/// @name Setting Additional Execution Blocks
+///------------------------------------------
 
-/** 
- The connection has finished. The default implemention calls -[self finish]. Subclasses should override and call finish when they are done processing the operation.
+/**
+ Add an execution block that will be ran during the operation after the connection has successfully completed downloading the response.
+ If the operation is canceled or the connection does not download successfully, execution blocks are not called. 
  */
 
-- (void)connectionDidFinish;
+- (void)addExecutionBlock:(void(^)(void))executionBlock;
 
-/** 
- Mark the operation as finished. This called by the default implementation of 
- */
-- (void)finish;
+@property (readonly, retain) NSArray *executionBlocks;
+
 
 @end

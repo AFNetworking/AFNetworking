@@ -73,6 +73,11 @@
         return nil;
     }
     
+    __block AFXMLRequestOperation *blockSelf = self;
+    [self addExecutionBlock:^{
+         blockSelf.responseXMLParser = [[[NSXMLParser alloc] initWithData:blockSelf.responseData] autorelease];
+    }];
+    
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
     return self;
@@ -85,12 +90,6 @@
 
 - (id)responseObject {
     return [self responseXMLParser];
-}
-
-- (void)processResponse {
-    if (!_responseXMLParser && [self isFinished]) {
-        self.responseXMLParser = [[[NSXMLParser alloc] initWithData:self.responseData] autorelease];
-    }
 }
 
 - (NSXMLParser *)responseXMLParser {

@@ -78,18 +78,12 @@
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
-    self.responseProcessedBlock = ^{
-        if (self.error) {
-            if (self.failureBlock) {
-                self.failureBlock(self,self.error);
-            }
-        }
-        else {
-            if (self.successBlock) {
-                self.successBlock(self,self.responseXMLDocument);
-            }
-        }
-    };
+    __block AFXMLDocumentRequestOperation *blockSelf = self;
+    [self addExecutionBlock:^{
+        NSError *error = nil;
+        blockSelf.responseXMLDocument = [[[NSXMLDocument alloc] initWithData:blockSelf.responseData options:0 error:&error] autorelease];
+        blockSelf.error = error;
+    }];
     
     return self;
 }
@@ -103,14 +97,6 @@
 
 - (id)responseObject {
     return [self responseXMLDocument];
-}
-
-- (void)processResponse {
-    if (!_responseXMLDocument && [self isFinished]) {
-        NSError *error = nil;
-        self.responseXMLDocument = [[[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error] autorelease];
-        self.error = error;
-    }
 }
 
 

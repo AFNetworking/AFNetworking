@@ -25,10 +25,6 @@
 
 @class AFHTTPRequestOperation;
 
-typedef void (^AFHTTPReponseProcessedBlock)(void);
-
-typedef void (^AFHTTPResponseOperationFinishedBlock)(void);
-
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
  */
@@ -38,7 +34,8 @@ typedef void (^AFHTTPResponseOperationFinishedBlock)(void);
     NSSet *_acceptableContentTypes;
     NSError *_HTTPError;
     dispatch_queue_t _callbackQueue;
-    AFHTTPReponseProcessedBlock _responseProcessedBlock;
+    
+    void (^_finishBlock)(void);
     void (^_completionBlock)(void);
     
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -110,10 +107,6 @@ typedef void (^AFHTTPResponseOperationFinishedBlock)(void);
 /// @name Subclass methods
 ///-----------------------
 
-/** responable for decoding the data and responding to it */
-
-- (void)processResponse;
-
 /**
  A Boolean value determining whether or not the class can process the specified request. For example, `AFJSONRequestOperation` may check to make sure the content type was `application/json` or the URL path extension was `.json`.
  
@@ -122,26 +115,22 @@ typedef void (^AFHTTPResponseOperationFinishedBlock)(void);
 + (BOOL)canProcessRequest:(NSURLRequest *)urlRequest;
 
 
-///------------------------------
-/// @name Getting response object
-///------------------------------
-
 /** 
- Returns decoded response as an object.
+ Returns decoded response as a generic object.
  */
- 
+
 @property (readonly, nonatomic) id responseObject;
 
 
 ///-------------------------------
-/// @name Operation Finished Block
+/// @name Operation callbacks
 ///-------------------------------
 
 /**
- finishBlock is similar to the completetionBlock except that the response is returned on the queue specified in the callbackQueue property.
+ Similar to the completetionBlock except that the response is returned on the queue specified in the callbackQueue property.
  */
 
-@property (nonatomic, copy) AFHTTPResponseOperationFinishedBlock finishedBlock;
+@property (nonatomic, copy) void(^finishedBlock)(void);
 
 
 /** 
