@@ -265,6 +265,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
         return;
     }
 	if (![NSURLConnection canHandleRequest:self.request]) {
+		[self finish];
 		return;
 	}
 	
