@@ -172,6 +172,7 @@
 				F8E469611395739C00DB05C8 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		F8E469611395739C00DB05C8 /* Products */ = {
 			isa = PBXGroup;
