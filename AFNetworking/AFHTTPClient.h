@@ -107,6 +107,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
     NSMutableArray *_registeredHTTPOperationClassNames;
     NSMutableDictionary *_defaultHeaders;
     NSOperationQueue *_operationQueue;
+    NSTimeInterval _timeoutInterval;
 }
 
 ///---------------------------------------
@@ -132,6 +133,11 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  The operation queue which manages operations enqueued by the HTTP client.
  */
 @property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;
+
+/**
+ Timeout for NSURLRequests
+ */
+@property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients

@@ -133,6 +133,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
+@synthesize timeoutInterval = _timeoutInterval;
 
 + (AFHTTPClient *)clientWithBaseURL:(NSURL *)url {
     return [[[self alloc] initWithBaseURL:url] autorelease];
@@ -233,6 +234,9 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
+    if (self.timeoutInterval > 0) {
+        [request setTimeoutInterval:self.timeoutInterval];
+    }
 	
     if (parameters) {        
         if ([method isEqualToString:@"GET"]) {
