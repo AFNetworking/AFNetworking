@@ -39,19 +39,15 @@ static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString
     return _sharedImageCache;
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-- (UIImage *)cachedImageForURL:(NSURL *)url
+- (AFImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName
 {
-    return [UIImage imageWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]];
-}
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-- (NSImage *)cachedImageForURL:(NSURL *)url
-                     cacheName:(NSString *)cacheName
-{
+#if TARGET_OS_IPHONE
+    return [UIImage imageWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]];    
+#else
     return [[[NSImage alloc] initWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]] autorelease];
-}
 #endif
+}
 
 - (void)cacheImageData:(NSData *)imageData
                 forURL:(NSURL *)url

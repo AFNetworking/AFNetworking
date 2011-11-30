@@ -47,13 +47,8 @@
  
  @return The image associated with the URL and cache name, or `nil` if not image exists.
  */
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-- (UIImage *)cachedImageForURL:(NSURL *)url
+- (AFImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-- (NSImage *)cachedImageForURL:(NSURL *)url
-                     cacheName:(NSString *)cacheName;
-#endif
 
 /**
  Stores image data into cache, associated with a given URL and cache name.

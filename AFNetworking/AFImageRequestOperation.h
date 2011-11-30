@@ -25,9 +25,11 @@
 
 #import <Availability.h>
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IPHONE
+#define AFImage UIImage
 #import <UIKit/UIKit.h>
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
+#else
+#define AFImage NSImage
 #import <Cocoa/Cocoa.h>
 #endif
 
@@ -51,24 +53,18 @@
  */
 @interface AFImageRequestOperation : AFHTTPRequestOperation {
 @private
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-    UIImage *_responseImage;
+AFImage *_responseImage;    
+#if TARGET_OS_IPHONE
     CGFloat _imageScale;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-    NSImage *_responseImage;
 #endif
 }
 
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
  */
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-@property (readonly, nonatomic, retain) UIImage *responseImage;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-@property (readonly, nonatomic, retain) NSImage *responseImage;
-#endif
+@property (readonly, nonatomic, retain) AFImage *responseImage;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IPHONE
 /**
  The scale factor used when interpreting the image data to construct `responseImage`. Specifying a scale factor of 1.0 results in an image whose size matches the pixel-based dimensions of the image. Applying a different scale factor changes the size of the image as reported by the size property. This is set to the value of `[[UIScreen mainScreen] scale]` by default, which automatically scales images for retina displays, for instance.
  */
@@ -87,13 +83,8 @@
  
  @return A new image request operation
  */
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
-                                                      success:(void (^)(UIImage *image))success;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-+ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
-                                                      success:(void (^)(NSImage *image))success;
-#endif
+                                                      success:(void (^)(AFImage *image))success;
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -106,18 +97,10 @@
  
  @return A new image request operation
  */
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                         imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                                         imageProcessingBlock:(AFImage *(^)(AFImage *))imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
-                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, AFImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-+ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                         imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
-                                                    cacheName:(NSString *)cacheNameOrNil
-                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
-                                                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-#endif
 
 @end
