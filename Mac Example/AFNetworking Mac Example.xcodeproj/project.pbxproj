@@ -190,6 +190,7 @@
 				F8CEEB6B142CEC6E00247B03 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		F8CEEB6B142CEC6E00247B03 /* Products */ = {
 			isa = PBXGroup;
