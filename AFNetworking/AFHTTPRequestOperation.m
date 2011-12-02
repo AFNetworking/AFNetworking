@@ -26,7 +26,7 @@
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
 @property (readonly, nonatomic, assign) BOOL hasContent;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
 - (void)endBackgroundTask;
 #endif
 @end
@@ -49,38 +49,38 @@
         return nil;
     }
     
+    _finishedBlock = nil; 
+    _completionBlock = nil;
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-
+    
     //by default we will use the queue that created the request.
     self.callbackQueue = dispatch_get_current_queue();
     
-    __block AFHTTPRequestOperation *blockSelf = [self retain];
     super.completionBlock = ^ {
-        if (blockSelf->_completionBlock) {
-            blockSelf->_completionBlock(); //call any child completion blocks that may have been passed in that they may want to run
+        if (_completionBlock) {
+            _completionBlock(); //call any child completion blocks that may have been passed in that they may want to run
         }
         
-        if ([blockSelf isCancelled]) {
+        if ([self isCancelled]) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
-            [blockSelf endBackgroundTask];
+            [self endBackgroundTask];
 #endif
-            [blockSelf release];
+            self.finishedBlock = nil;
             return;
         }
         
-        if (blockSelf.finishedBlock) {
-            dispatch_async(blockSelf.callbackQueue, ^(void) {
-                blockSelf.finishedBlock();
+        if (self.finishedBlock) {
+            dispatch_async(self.callbackQueue, ^(void) {
+                self.finishedBlock();
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
-                [blockSelf endBackgroundTask];
+                [self endBackgroundTask];
 #endif
-                [blockSelf release];
+                self.finishedBlock = nil;
             });
         } else {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
-            [blockSelf endBackgroundTask];
+            [self endBackgroundTask];
 #endif
-            [blockSelf release];
         }
     };
     
@@ -97,7 +97,8 @@
     [self endBackgroundTask];
 #endif
     
-    [_completionBlock release];
+    [_completionBlock release], _completionBlock=nil;
+    
     if (_callbackQueue) {
         dispatch_release(_callbackQueue),_callbackQueue=NULL;
     }
@@ -105,6 +106,7 @@
     [_acceptableStatusCodes release];
     [_acceptableContentTypes release];
     [_HTTPError release];
+    [_finishedBlock release], _finishedBlock = nil;
     [super dealloc];
 }
 

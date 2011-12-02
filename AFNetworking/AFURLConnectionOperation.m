@@ -62,7 +62,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
-@property (readwrite, nonatomic, retain) NSURLConnection *connection;
+@property (readwrite, nonatomic, assign) NSURLConnection *connection;
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSURLResponse *response;
 @property (readwrite, nonatomic, retain) NSData *responseData;
@@ -275,7 +275,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     return YES;
 }
 
-- (void)start { 
+- (void)start {     
     if ([self isCancelled])
     {
         [self finish];
@@ -374,7 +374,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     if ([_executionBlocks count] > 0) {
-        dispatch_async(af_request_operation_execution_block_queue, ^{
+        dispatch_async(request_operation_execution_block_queue(), ^{
             NSArray *_executionBlocksCopy;
             @synchronized(_executionBlocks) {
                 //handle a potential race

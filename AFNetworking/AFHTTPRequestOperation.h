@@ -35,9 +35,8 @@
     NSError *_HTTPError;
     dispatch_queue_t _callbackQueue;
     
-    void (^_finishBlock)(void);
     void (^_completionBlock)(void);
-    
+    void (^finishedBlock)(void);
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     BOOL _attemptToContinueWhenAppEntersBackground;
     UIBackgroundTaskIdentifier _backgroundTask;
