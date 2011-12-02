@@ -47,8 +47,13 @@
  
  @return The image associated with the URL and cache name, or `nil` if not image exists.
  */
-- (AFImage *)cachedImageForURL:(NSURL *)url
+#if TARGET_OS_IPHONE
+- (UIImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName;
+#else
+- (NSImage *)cachedImageForURL:(NSURL *)url
+                     cacheName:(NSString *)cacheName;
+#endif
 
 /**
  Stores image data into cache, associated with a given URL and cache name.

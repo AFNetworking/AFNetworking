@@ -26,10 +26,8 @@
 #import <Availability.h>
 
 #if TARGET_OS_IPHONE
-#define AFImage UIImage
 #import <UIKit/UIKit.h>
 #else
-#define AFImage NSImage
 #import <Cocoa/Cocoa.h>
 #endif
 
@@ -52,17 +50,23 @@
  - `image/x-win-bitmap`
  */
 @interface AFImageRequestOperation : AFHTTPRequestOperation {
-@private
-AFImage *_responseImage;    
+@private   
 #if TARGET_OS_IPHONE
     CGFloat _imageScale;
+    UIImage *_responseImage;
+#else
+    NSImage *_responseImage;
 #endif
 }
 
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
  */
-@property (readonly, nonatomic, retain) AFImage *responseImage;
+#if TARGET_OS_IPHONE
+@property (readonly, nonatomic, retain) UIImage *responseImage;
+#else
+@property (readonly, nonatomic, retain) NSImage *responseImage;
+#endif
 
 #if TARGET_OS_IPHONE
 /**
@@ -83,8 +87,13 @@ AFImage *_responseImage;
  
  @return A new image request operation
  */
+#if TARGET_OS_IPHONE
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
-                                                      success:(void (^)(AFImage *image))success;
+                                                      success:(void (^)(UIImage *image))success;
+#else
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest        
+                                                      success:(void (^)(NSImage *image))success;
+#endif
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -97,10 +106,18 @@ AFImage *_responseImage;
  
  @return A new image request operation
  */
+#if TARGET_OS_IPHONE
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                         imageProcessingBlock:(AFImage *(^)(AFImage *))imageProcessingBlock
+                                         imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
-                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, AFImage *image))success
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+#else
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                         imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
+                                                    cacheName:(NSString *)cacheNameOrNil
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
+                                                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+#endif
 
 @end

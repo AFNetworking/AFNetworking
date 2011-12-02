@@ -33,8 +33,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 
 @interface AFImageRequestOperation ()
-@property (readwrite, nonatomic, retain) AFImage *responseImage;
-
+#if TARGET_OS_IPHONE
+@property (readwrite, nonatomic, retain) UIImage *responseImage;
+#else
+@property (readwrite, nonatomic, retain) NSImage *responseImage;
+#endif
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 @end
@@ -45,26 +48,50 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 @synthesize imageScale = _imageScale;
 #endif
 
+#if TARGET_OS_IPHONE
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
-                                                      success:(void (^)(AFImage *image))success
+                                                      success:(void (^)(UIImage *image))success
 {
-    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, AFImage *image) {
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
         if (success) {
             success(image);
         }
     } failure:nil];
 }
+#else
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
+                                                      success:(void (^)(NSImage *image))success
+{
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
+        if (success) {
+            success(image);
+        }
+    } failure:nil];
+}
+#endif
 
+#if TARGET_OS_IPHONE
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                         imageProcessingBlock:(AFImage *(^)(AFImage *))imageProcessingBlock
+                                         imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
-                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, AFImage *image))success
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+#else
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                         imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
+                                                    cacheName:(NSString *)cacheNameOrNil
+                                                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
+                                                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+#endif
 {
     AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
-            AFImage *image = responseObject;
+#if TARGET_OS_IPHONE
+            UIImage *image = responseObject;
+#else
+            NSImage *image = responseObject;
+#endif
             
             if (imageProcessingBlock) {
                 image = imageProcessingBlock(image);
@@ -110,22 +137,26 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     [super dealloc];
 }
 
-- (AFImage *)responseImage {
-    if (!_responseImage && [self isFinished]) {
 #if TARGET_OS_IPHONE
+- (UIImage *)responseImage {
+    if (!_responseImage && [self isFinished]) {
         UIImage *image = [UIImage imageWithData:self.responseData];
         self.responseImage = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
+    }
+    return _responseImage;    
+}
 #else
+- (NSImage *)responseImage {
+    if (!_responseImage && [self isFinished]) {        
         // Ensure that the image is set to it's correct pixel width and height
         NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
         self.responseImage = [[[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])] autorelease];
         [self.responseImage addRepresentation:bitimage];
         [bitimage release];
-#endif
     }
-    
     return _responseImage;
 }
+#endif
 
 #if TARGET_OS_IPHONE
 - (void)setImageScale:(CGFloat)imageScale {
@@ -151,7 +182,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                                                     success:(void (^)(id object))success 
                                                     failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, AFImage *image) {
+#if TARGET_OS_IPHONE
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
+#else
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
+#endif
         success(image);
     } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
         failure(response, error);
