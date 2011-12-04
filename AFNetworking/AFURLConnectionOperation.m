@@ -305,6 +305,31 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 
 #pragma mark - NSURLConnectionDelegate
 
+- (void)connection:(NSURLConnection *)connection 
+didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge 
+{
+    if ([challenge previousFailureCount] == 0) {
+        NSURLCredential *credential = nil;
+        
+        NSString *username = [(NSString *)CFURLCopyUserName((CFURLRef)[self.request URL]) autorelease];
+        NSString *password = [(NSString *)CFURLCopyPassword((CFURLRef)[self.request URL]) autorelease];
+        
+        if (username && password) {
+            credential = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceNone];
+        } else if (username) {
+            credential = [[[NSURLCredentialStorage sharedCredentialStorage] credentialsForProtectionSpace:[challenge protectionSpace]] objectForKey:username];
+        } else {
+            credential = [[NSURLCredentialStorage sharedCredentialStorage] defaultCredentialForProtectionSpace:[challenge protectionSpace]];
+        }
+        
+        if (credential) {
+            [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+        }
+    } else {
+        [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+    }
+}
+
 - (void)connection:(NSURLConnection *)__unused connection 
    didSendBodyData:(NSInteger)bytesWritten 
  totalBytesWritten:(NSInteger)totalBytesWritten 
