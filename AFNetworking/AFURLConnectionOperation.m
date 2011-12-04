@@ -37,6 +37,7 @@ NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.net
 NSString * const AFNetworkingOperationDidFinishNotification = @"com.alamofire.networking.operation.finish";
 
 typedef void (^AFURLConnectionOperationProgressBlock)(NSInteger bytes, NSInteger totalBytes, NSInteger totalBytesExpected);
+typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
 
 static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     switch (state) {
@@ -64,6 +65,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock downloadProgress;
+@property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationChallengeBlock authenticationBlock;
 
 - (BOOL)shouldTransitionToState:(AFOperationState)state;
 - (void)operationDidStart;
@@ -86,6 +88,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @synthesize outputStream = _outputStream;
 @synthesize uploadProgress = _uploadProgress;
 @synthesize downloadProgress = _downloadProgress;
+@synthesize authenticationBlock = _authenticationBlock;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
@@ -136,6 +139,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     	
     [_uploadProgress release];
     [_downloadProgress release];
+    [_authenticationBlock release];
 
     [super dealloc];
 }
@@ -168,6 +172,10 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 
 - (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead))block {
     self.downloadProgress = block;
+}
+
+- (void)setAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block {
+    self.authenticationBlock = block;
 }
 
 - (void)setState:(AFOperationState)state {
@@ -308,6 +316,11 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 - (void)connection:(NSURLConnection *)connection 
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge 
 {
+    if (self.authenticationBlock) {
+        self.authenticationBlock(connection, challenge);
+        return;
+    }
+    
     if ([challenge previousFailureCount] == 0) {
         NSURLCredential *credential = nil;
         
