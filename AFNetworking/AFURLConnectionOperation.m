@@ -119,9 +119,18 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        [[NSRunLoop currentRunLoop] run];
-        [pool drain];
+        NSAutoreleasePool *exceptionPool = [[NSAutoreleasePool alloc] init];
+        NSException *caughtException = nil;
+        @try {
+            NSAutoreleasePool *runLoopPool = [[NSAutoreleasePool alloc] init];
+            [[NSRunLoop currentRunLoop] run];
+            [runLoopPool drain];
+        }
+        @catch(NSException *e) { caughtException = e; }
+        if(caughtException) { 
+            NSLog(NSLocalizedString(@"Unhandled exception on %@ networking thread: %@, userInfo: %@", nil), NSStringFromClass([self class]), caughtException, [caughtException userInfo]); 
+        }
+        [exceptionPool drain];
     } while (YES);
 }
 
@@ -279,14 +288,14 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     return YES;
 }
 
-- (void)start {  
-    if (![self isReady]) {
-        return;
+- (void)start {
+    [self.lock lock];
+    if ([self isReady]) {
+        self.state = AFHTTPOperationExecutingState;
+        
+        [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
     }
-    
-    self.state = AFHTTPOperationExecutingState;
-    
-    [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:YES modes:[self.runLoopModes allObjects]];
+    [self.lock unlock];
 }
 
 - (void)operationDidStart {
@@ -318,11 +327,13 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         
         self.cancelled = YES;
         
-        [self.connection cancel];
-        
-        // We must send this delegate protcol message ourselves since the above [self.connection cancel] causes the connection to never send another message to its delegate.
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
-        [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo]];
+        if (self.connection) {
+            [self.connection cancel];
+            
+            // We must send this delegate protcol message ourselves since the above [self.connection cancel] causes the connection to never send another message to its delegate.
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
+            [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo]];
+        }
     }
     [self.lock unlock];
 }
