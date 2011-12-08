@@ -108,8 +108,6 @@ static char kAFImageRequestOperationObjectKey;
             
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
                 self.image = responseObject;
-            } else {
-                self.image = placeholderImage;
             }
             
             [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[urlRequest URL] cacheName:nil];
