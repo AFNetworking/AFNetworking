@@ -22,14 +22,18 @@
 
 #import "AFURLConnectionOperation.h"
 
-static NSUInteger const kAFHTTPMinimumInitialDataCapacity = 1024;
-static NSUInteger const kAFHTTPMaximumInitialDataCapacity = 1024 * 1024 * 8;
-
 typedef enum {
     AFHTTPOperationReadyState       = 1,
     AFHTTPOperationExecutingState   = 2,
     AFHTTPOperationFinishedState    = 3,
-} AFOperationState;
+} _AFOperationState;
+
+typedef unsigned short AFOperationState;
+
+static NSUInteger const kAFHTTPMinimumInitialDataCapacity = 1024;
+static NSUInteger const kAFHTTPMaximumInitialDataCapacity = 1024 * 1024 * 8;
+
+static NSString * const kAFNetworkingLockName = @"com.alamofire.networking.operation.lock";
 
 NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
 
@@ -51,9 +55,35 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     }
 }
 
+static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperationState toState, BOOL isCancelled) {
+    switch (fromState) {
+        case AFHTTPOperationReadyState:
+            switch (toState) {
+                case AFHTTPOperationExecutingState:
+                    return YES;
+                case AFHTTPOperationFinishedState:
+                    return isCancelled;
+                default:
+                    return NO;
+            }
+        case AFHTTPOperationExecutingState:
+            switch (toState) {
+                case AFHTTPOperationFinishedState:
+                    return YES;
+                default:
+                    return NO;
+            }
+        case AFHTTPOperationFinishedState:
+            return NO;
+        default:
+            return YES;
+    }
+}
+
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
+@property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
 @property (readwrite, nonatomic, assign) NSURLConnection *connection;
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSURLResponse *response;
@@ -65,7 +95,6 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock downloadProgress;
 
-- (BOOL)shouldTransitionToState:(AFOperationState)state;
 - (void)operationDidStart;
 - (void)finish;
 @end
@@ -86,6 +115,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @synthesize outputStream = _outputStream;
 @synthesize uploadProgress = _uploadProgress;
 @synthesize downloadProgress = _downloadProgress;
+@synthesize lock = _lock;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
@@ -113,6 +143,9 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 		return nil;
     }
     
+    self.lock = [[[NSRecursiveLock alloc] init] autorelease];
+    self.lock.name = kAFNetworkingLockName;
+    
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
     
     self.request = urlRequest;
@@ -123,6 +156,8 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 - (void)dealloc {
+    [_lock release];
+        
     [_runLoopModes release];
     
     [_request release];
@@ -132,7 +167,12 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     [_responseData release];
     [_responseString release];
     [_dataAccumulator release];
-    [_outputStream release]; _outputStream = nil;
+    
+    if (_outputStream) {
+        [_outputStream close];
+        [_outputStream release];
+        _outputStream = nil;
+    }
     	
     [_uploadProgress release];
     [_downloadProgress release];
@@ -141,6 +181,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 - (void)setCompletionBlock:(void (^)(void))block {
+    [self.lock lock];
     if (!block) {
         [super setCompletionBlock:nil];
     } else {
@@ -150,6 +191,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
             [_blockSelf setCompletionBlock:nil];
         }];
     }
+    [self.lock unlock];
 }
 
 - (NSInputStream *)inputStream {
@@ -171,65 +213,41 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 - (void)setState:(AFOperationState)state {
-    if (![self shouldTransitionToState:state]) {
-        return;
+    [self.lock lock];
+    if (AFStateTransitionIsValid(self.state, state, [self isCancelled])) {
+        NSString *oldStateKey = AFKeyPathFromOperationState(self.state);
+        NSString *newStateKey = AFKeyPathFromOperationState(state);
+        
+        [self willChangeValueForKey:newStateKey];
+        [self willChangeValueForKey:oldStateKey];
+        _state = state;
+        [self didChangeValueForKey:oldStateKey];
+        [self didChangeValueForKey:newStateKey];
+        
+        switch (state) {
+            case AFHTTPOperationExecutingState:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
+                break;
+            case AFHTTPOperationFinishedState:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+                break;
+            default:
+                break;
+        }
     }
-    
-    NSString *oldStateKey = AFKeyPathFromOperationState(self.state);
-    NSString *newStateKey = AFKeyPathFromOperationState(state);
-    
-    [self willChangeValueForKey:newStateKey];
-    [self willChangeValueForKey:oldStateKey];
-    _state = state;
-    [self didChangeValueForKey:oldStateKey];
-    [self didChangeValueForKey:newStateKey];
-    
-    switch (state) {
-        case AFHTTPOperationExecutingState:
-            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
-            break;
-        case AFHTTPOperationFinishedState:
-            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
-            break;
-        default:
-            break;
-    }
-}
-
-- (BOOL)shouldTransitionToState:(AFOperationState)state {    
-    switch (self.state) {
-        case AFHTTPOperationReadyState:
-            switch (state) {
-                case AFHTTPOperationExecutingState:
-                    return YES;
-                default:
-                    return NO;
-            }
-        case AFHTTPOperationExecutingState:
-            switch (state) {
-                case AFHTTPOperationFinishedState:
-                    return YES;
-                default:
-                    return NO;
-            }
-        case AFHTTPOperationFinishedState:
-            return NO;
-        default:
-            return YES;
-    }
+    [self.lock unlock];
 }
 
 - (void)setCancelled:(BOOL)cancelled {
+    [self.lock lock];
     [self willChangeValueForKey:@"isCancelled"];
     _cancelled = cancelled;
     [self didChangeValueForKey:@"isCancelled"];
-    
-    if ([self isCancelled]) {
-        self.state = AFHTTPOperationFinishedState;
-    }
+    [self.lock unlock];
 }
 
 - (NSString *)responseString {
+    [self.lock lock];
     if (!_responseString && self.response && self.responseData) {
         NSStringEncoding textEncoding = NSUTF8StringEncoding;
         if (self.response.textEncodingName) {
@@ -238,6 +256,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
         
         self.responseString = [[[NSString alloc] initWithData:self.responseData encoding:textEncoding] autorelease];
     }
+    [self.lock unlock];
     
     return _responseString;
 }
@@ -271,20 +290,21 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 - (void)operationDidStart {
+    [self.lock lock];
     if ([self isCancelled]) {
         [self finish];
-        return;
+    } else {
+        self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
+        
+        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+        for (NSString *runLoopMode in self.runLoopModes) {
+            [self.connection scheduleInRunLoop:runLoop forMode:runLoopMode];
+            [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
+        }
+        
+        [self.connection start];  
     }
-    
-    self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
-    
-    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-    for (NSString *runLoopMode in self.runLoopModes) {
-        [self.connection scheduleInRunLoop:runLoop forMode:runLoopMode];
-        [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
-    }
-    
-    [self.connection start];
+    [self.lock unlock];
 }
 
 - (void)finish {
@@ -292,15 +312,19 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 }
 
 - (void)cancel {
-    if ([self isFinished]) {
-        return;
+    [self.lock lock];
+    if (![self isFinished] && ![self isCancelled]) {
+        [super cancel];
+        
+        self.cancelled = YES;
+        
+        [self.connection cancel];
+        
+        // We must send this delegate protcol message ourselves since the above [self.connection cancel] causes the connection to never send another message to its delegate.
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
+        [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo]];
     }
-    
-    [super cancel];
-    
-    self.cancelled = YES;
-    
-    [self.connection cancel];
+    [self.lock unlock];
 }
 
 #pragma mark - NSURLConnectionDelegate
@@ -361,7 +385,7 @@ didReceiveResponse:(NSURLResponse *)response
 
 - (void)connection:(NSURLConnection *)__unused connection 
   didFailWithError:(NSError *)error 
-{      
+{    
     self.error = error;
     
     if (self.outputStream) {

@@ -75,6 +75,10 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  */
 @interface AFURLConnectionOperation : NSOperation {
 @private
+    unsigned short _state;
+    BOOL _cancelled;
+    NSRecursiveLock *_lock;
+    
     NSSet *_runLoopModes;
     
     NSURLConnection *_connection;
