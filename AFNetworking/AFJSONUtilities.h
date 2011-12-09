@@ -43,15 +43,16 @@ static NSData * AFJSONEncode(id object, NSError **error) {
         
         [invocation invoke];
         [invocation getReturnValue:&data];
-    } else if (_SBJSONSelector && [NSString instancesRespondToSelector:_SBJSONSelector]) {
-        // Create a string representation of JSON, to use SBJSON -`JSONValue` category method
-        NSString *string = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[string methodSignatureForSelector:_SBJSONSelector]];
-        invocation.target = string;
+    } else if (_SBJSONSelector && [object respondsToSelector:_SBJSONSelector]) {
+        NSString *JSONString = nil;
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[object methodSignatureForSelector:_SBJSONSelector]];
+        invocation.target = object;
         invocation.selector = _SBJSONSelector;
         
         [invocation invoke];
-        [invocation getReturnValue:&JSON];
+        [invocation getReturnValue:&data];
+        
+        data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
     } else if (_YAJLSelector && [object respondsToSelector:_YAJLSelector]) {
         @try {
             NSString *JSONString = nil;
@@ -108,10 +109,10 @@ static id AFJSONDecode(NSData *data, NSError **error) {
         
         [invocation invoke];
         [invocation getReturnValue:&JSON];
-    } else if (_SBJSONSelector && [data respondsToSelector:_SBJSONSelector]) {
+    } else if (_SBJSONSelector && [NSString instancesRespondToSelector:_SBJSONSelector]) {
         // Create a string representation of JSON, to use SBJSON -`JSONValue` category method
         NSString *string = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_SBJSONSelector]];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[string methodSignatureForSelector:_SBJSONSelector]];
         invocation.target = string;
         invocation.selector = _SBJSONSelector;
         
