@@ -102,16 +102,16 @@ static char kAFImageRequestOperationObjectKey;
         
         AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            if (success) {
-                success(operation.request, operation.response, responseObject);
-            }
-            
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
                 self.image = responseObject;
             } else {
                 self.image = placeholderImage;
             }
-            
+
+            if (success) {
+                success(operation.request, operation.response, responseObject);
+            }
+
             [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[urlRequest URL] cacheName:nil];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if (failure) {
