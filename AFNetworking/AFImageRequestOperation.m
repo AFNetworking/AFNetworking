@@ -33,23 +33,22 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 
 @interface AFImageRequestOperation ()
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IPHONE
 @property (readwrite, nonatomic, retain) UIImage *responseImage;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
+#else
 @property (readwrite, nonatomic, retain) NSImage *responseImage;
 #endif
-
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 @end
 
 @implementation AFImageRequestOperation
 @synthesize responseImage = _responseImage;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IPHONE
 @synthesize imageScale = _imageScale;
 #endif
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IPHONE
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(UIImage *image))success
 {
@@ -59,7 +58,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         }
     } failure:nil];
 }
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
+#else
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(NSImage *image))success
 {
@@ -71,50 +70,33 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 #endif
 
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IPHONE
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                          imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
-{
-    AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
-    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        if (success) {
-            UIImage *image = responseObject;
-            
-            if (imageProcessingBlock) {
-                image = imageProcessingBlock(image);
-            }
-            
-            success(operation.request, operation.response, image);
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (failure) {
-            failure(operation.request, operation.response, error);
-        }
-    }];
-    
-    
-    return requestOperation;
-}
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
+#else
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                          imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+#endif
 {
     AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
+#if TARGET_OS_IPHONE
+            UIImage *image = responseObject;
+#else
             NSImage *image = responseObject;
+#endif
             
             if (imageProcessingBlock) {
                 image = imageProcessingBlock(image);
             }
-                        
+            
             success(operation.request, operation.response, image);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -123,9 +105,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         }
     }];
     
+    
     return requestOperation;
 }
-#endif
 
 + (NSSet *)defaultAcceptableContentTypes {
     return [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon" @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
@@ -143,7 +125,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
     
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IPHONE
     self.imageScale = [[UIScreen mainScreen] scale];
 #endif
     
@@ -155,17 +137,28 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     [super dealloc];
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IPHONE
 - (UIImage *)responseImage {
     if (!_responseImage && [self isFinished]) {
         UIImage *image = [UIImage imageWithData:self.responseData];
-        
         self.responseImage = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
     }
-    
+    return _responseImage;    
+}
+#else
+- (NSImage *)responseImage {
+    if (!_responseImage && [self isFinished]) {        
+        // Ensure that the image is set to it's correct pixel width and height
+        NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
+        self.responseImage = [[[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])] autorelease];
+        [self.responseImage addRepresentation:bitimage];
+        [bitimage release];
+    }
     return _responseImage;
 }
+#endif
 
+#if TARGET_OS_IPHONE
 - (void)setImageScale:(CGFloat)imageScale {
     if (imageScale == _imageScale) {
         return;
@@ -177,18 +170,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     
     self.responseImage = nil;
 }
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
-- (NSImage *)responseImage {
-    if (!_responseImage && [self isFinished]) {
-        // Ensure that the image is set to it's correct pixel width and height
-        NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
-        self.responseImage = [[[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])] autorelease];
-        [self.responseImage addRepresentation:bitimage];
-        [bitimage release];
-    }
-    
-    return _responseImage;
-}
 #endif
 
 #pragma mark - AFHTTPClientOperation
@@ -197,29 +178,20 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                                     success:(void (^)(id object))success 
                                                     failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
 {
+#if TARGET_OS_IPHONE
     return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
-        success(image);
-    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
-        failure(response, error);
-    }];
-}
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
-+ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(id object))success 
-                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
-{
+#else
     return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
+#endif
         success(image);
     } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
         failure(response, error);
     }];
 }
-#endif
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure

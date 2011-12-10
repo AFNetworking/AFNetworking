@@ -47,10 +47,10 @@
  
  @return The image associated with the URL and cache name, or `nil` if not image exists.
  */
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IPHONE
 - (UIImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#else
 - (NSImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName;
 #endif
