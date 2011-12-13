@@ -28,6 +28,10 @@ static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString
 
 @implementation AFImageCache
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+@synthesize imageScale = _imageScale;
+#endif
+
 + (AFImageCache *)sharedImageCache {
     static AFImageCache *_sharedImageCache = nil;
     static dispatch_once_t oncePredicate;
@@ -39,11 +43,26 @@ static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString
     return _sharedImageCache;
 }
 
+- (id)init {
+	self = [super init];
+	if (self) {
+		#if __IPHONE_OS_VERSION_MIN_REQUIRED
+		self.imageScale = [[UIScreen mainScreen] scale];
+		#endif
+	}
+	
+	return self;
+}
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (UIImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName
 {
-    return [UIImage imageWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]];
+	UIImage *image = [UIImage imageWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]];
+	if (image) {
+		return [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
+	}
+    return image;
 }
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
 - (NSImage *)cachedImageForURL:(NSURL *)url
