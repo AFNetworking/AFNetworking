@@ -35,7 +35,6 @@ static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString
 + (AFImageCache *)sharedImageCache {
     static AFImageCache *_sharedImageCache = nil;
     static dispatch_once_t oncePredicate;
-
     dispatch_once(&oncePredicate, ^{
         _sharedImageCache = [[self alloc] init];
     });
@@ -45,11 +44,13 @@ static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString
 
 - (id)init {
 	self = [super init];
-	if (self) {
-		#if __IPHONE_OS_VERSION_MIN_REQUIRED
-		self.imageScale = [[UIScreen mainScreen] scale];
-		#endif
+	if (!self) {
+		return nil;
 	}
+    
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    self.imageScale = [[UIScreen mainScreen] scale];
+#endif
 	
 	return self;
 }
