@@ -93,11 +93,14 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 
 - (id)responsePropertyList {
     if (!_responsePropertyList && [self isFinished]) {
-        NSPropertyListFormat format;
-        NSError *error = nil;
-        self.responsePropertyList = [NSPropertyListSerialization propertyListWithData:self.responseData options:self.propertyListReadOptions format:&format error:&error];
-        self.propertyListFormat = format;
-        self.propertyListError = error;
+        NSData* data = self.responseData;
+        if (data && [data length] > 0) {
+            NSError *error = nil;
+            NSPropertyListFormat format;
+            self.responsePropertyList = [NSPropertyListSerialization propertyListWithData:data options:self.propertyListReadOptions format:&format error:&error];
+            self.propertyListFormat = format;
+            self.propertyListError = error;
+        }
     }
     
     return _responsePropertyList;
