@@ -50,7 +50,7 @@ static NSData * AFJSONEncode(id object, NSError **error) {
         invocation.selector = _SBJSONSelector;
         
         [invocation invoke];
-        [invocation getReturnValue:&data];
+        [invocation getReturnValue:&JSONString];
         
         data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
     } else if (_YAJLSelector && [object respondsToSelector:_YAJLSelector]) {
