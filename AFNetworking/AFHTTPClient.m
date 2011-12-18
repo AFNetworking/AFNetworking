@@ -49,6 +49,8 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 
 #pragma mark -
 
+typedef void (^_AFCompletionBlock)(void);
+
 static NSUInteger const kAFHTTPClientDefaultMaxConcurrentOperationCount = 4;
 
 static NSString * AFBase64EncodedStringFromString(NSString *string) {
@@ -332,6 +334,50 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
         if ([[[operation request] HTTPMethod] isEqualToString:method] && [[[operation request] URL] isEqual:url]) {
             [operation cancel];
         }
+    }
+}
+
+- (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests 
+                                          progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                                        completionBlock:(void (^)(NSArray *operations))completionBlock
+{
+    NSMutableArray *mutableOperations = [NSMutableArray array];
+    for (NSURLRequest *request in requests) {
+        AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:nil failure:nil];
+        [mutableOperations addObject:operation];
+    }
+    
+    [self enqueueBatchOfHTTPRequestOperations:mutableOperations progressBlock:progressBlock completionBlock:completionBlock];
+}
+
+- (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations 
+                              progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                            completionBlock:(void (^)(NSArray *operations))completionBlock
+{
+    NSBlockOperation *batchedOperation = [NSBlockOperation blockOperationWithBlock:^{
+        if (completionBlock) {
+            completionBlock(operations);
+        }
+    }];
+    
+    [self.operationQueue addOperation:batchedOperation];
+    
+    NSPredicate *finishedOperationPredicate = [NSPredicate predicateWithFormat:@"isFinished == YES"];
+    
+    for (AFHTTPRequestOperation *operation in operations) {
+        _AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
+        operation.completionBlock = ^{
+            if (progressBlock) {
+                progressBlock([[batchedOperation.dependencies filteredArrayUsingPredicate:finishedOperationPredicate] count], [batchedOperation.dependencies count]);
+            }
+            
+            if (originalCompletionBlock) {
+                originalCompletionBlock();
+            }
+        };
+        
+        [batchedOperation addDependency:operation];
+        [self enqueueHTTPRequestOperation:operation];
     }
 }
 
