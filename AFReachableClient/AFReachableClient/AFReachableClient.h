@@ -24,7 +24,7 @@
 #import "Reachability.h"
 
 /**
- `AFReachableClient` is a subclass of `AFHTTPClient`, and is designed to encapsulate monitoring the network connection status of a specific URL. This ensures that when requests are in process or started, they will immediately fail with error.  Requests that are executing will be cancelled.
+ `AFReachableClient` is a subclass of `AFHTTPClient`, and is designed to encapsulate monitoring the network connection status of a specific URL. This ensures that when requests are in process or started, they will immediately fail with error if the reachable host URL is not currently reachable by the device.  Requests that are executing when a connection to the reachable host URL is lost will be cancelled.
  
  `AFReachableClient` depends on the `Reachability` class provided by Apple.
  
@@ -52,7 +52,7 @@
 @property (nonatomic,readonly) NSURL * reachableHostURL;
 
 /**
- The Reachability object that contains the network connectivity status for the `reachableHostURL`.
+ The `Reachability` object that contains the network connectivity status for the `reachableHostURL`.
  */
 @property (nonatomic,readonly) Reachability * reachableHost;
 
