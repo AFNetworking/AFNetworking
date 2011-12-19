@@ -24,19 +24,19 @@
 #import "Reachability.h"
 
 /**
- `AFReachableClient` is a subclass of 'AFHTTPClient', and is designed to encapsulate monitoring the network connection status of a specific URL. This ensures that when requests are in process or started, they will immediately fail with error.  Requests that are executing will be cancelled.
+ `AFReachableClient` is a subclass of `AFHTTPClient`, and is designed to encapsulate monitoring the network connection status of a specific URL. This ensures that when requests are in process or started, they will immediately fail with error.  Requests that are executing will be cancelled.
  
- 'AFReachableClient' depends on the 'Reachability' class provided by Apple.
+ `AFReachableClient` depends on the `Reachability` class provided by Apple.
  
  ## Network Error Handling
  
  One of two errors will be returned by the operation if network connectivity is lost:
  
-    - *Executing Requests*: Requests that are in process will return error code 'NSURLErrorNetworkConnectionLost' to the failure block.
-    - *Pending Requests*: Requests that have yet to start will return error code 'NSURLErrorCannotConnectToHost' to the failure block.
+ - *Executing Requests*: Requests that are in process will return error code `NSURLErrorNetworkConnectionLost` to the failure block.
+ - *Pending Requests*: Requests that have yet to start will return error code `NSURLErrorCannotConnectToHost` to the failure block.
  
  ## Subclassing Notes
- 'AFReachableClient' is designed to be subclassed exactly like 'AFHTTPClient' with one exception - if the subclass invokes 'initWithBaseURL:', 'AFReachableClient' will use the base URL as the reachable host URL.  If a different reachable host URL is needed, use 'initWithBaseURL:reachableHostURL:'.
+ `AFReachableClient` is designed to be subclassed exactly like `AFHTTPClient` with one exception - if the subclass invokes `initWithBaseURL:`, `AFReachableClient` will use the base URL as the reachable host URL.  If a different reachable host URL is needed, use `initWithBaseURL:reachableHostURL:`.
  
  */
 
@@ -47,12 +47,12 @@
 ///---------------------------------------
 
 /**
- The url used as the reachable host URL for the 'reachableHost'. 
+ The url used as the reachable host URL for the `reachableHost`. 
  */
 @property (nonatomic,readonly) NSURL * reachableHostURL;
 
 /**
- The Reachability object that contains the network connectivity status for the 'reachableHostURL'.
+ The Reachability object that contains the network connectivity status for the `reachableHostURL`.
  */
 @property (nonatomic,readonly) Reachability * reachableHost;
 
