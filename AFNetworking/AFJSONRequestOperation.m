@@ -119,7 +119,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([self isCancelled] && 
+            self.error == nil) {
             return;
         }
         
