@@ -27,7 +27,8 @@
 }
 
 - (void)reachabilityChanged:(NSNotification*)notification;
-- (void)failOperation:(AFHTTPRequestOperation*)operation;
+- (void)failOperation:(AFHTTPRequestOperation*)operation 
+      cancelOperation:(BOOL)cancelOperation;
 
 @end
 
@@ -76,7 +77,7 @@
     if((_hasEstablishedReachability) &&
        reachableHost_.currentReachabilityStatus == NotReachable){
         //No reason to kick off a request.  Fail immediately.
-        [self failOperation:operation];
+        [self failOperation:operation cancelOperation:NO];
     }
     else {
         [super enqueueHTTPRequestOperation:operation];
@@ -88,12 +89,12 @@
     _hasEstablishedReachability = YES;
     if(reachableHost_.currentReachabilityStatus == NotReachable){
         for(AFHTTPRequestOperation *operation in self.operationQueue.operations){
-            [self failOperation:operation];
+            [self failOperation:operation cancelOperation:YES];
         }
     }
 }
 
-- (void)failOperation:(AFHTTPRequestOperation*)operation{
+- (void)failOperation:(AFHTTPRequestOperation*)operation cancelOperation:(BOOL)cancelOperation{
     if(operation.isExecuting){
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
         [userInfo setValue:[NSString stringWithString:NSLocalizedString(@"Network Connection Lost","Network Connection Lost")] forKey:NSLocalizedDescriptionKey];
@@ -103,7 +104,11 @@
                                          userInfo:userInfo];
         
         [operation setHTTPError:error];
-        [operation cancel];
+        if(cancelOperation)
+            [operation cancel];
+        else 
+            operation.completionBlock();
+        
     }
     else {
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
@@ -114,8 +119,10 @@
                                          userInfo:userInfo];
         
         [operation setHTTPError:error];
-        [operation cancel];
-        operation.completionBlock();
+        if(cancelOperation)
+            [operation cancel];
+        else 
+            operation.completionBlock();    
     }
 }
 
