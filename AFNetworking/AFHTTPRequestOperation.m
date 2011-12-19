@@ -23,7 +23,6 @@
 #import "AFHTTPRequestOperation.h"
 
 @interface AFHTTPRequestOperation ()
-@property (readwrite, nonatomic, retain) NSError *HTTPError;
 @property (readonly, nonatomic, assign) BOOL hasContent;
 @end
 
@@ -94,7 +93,8 @@
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([self isCancelled] &&
+            self.error == nil) {
             return;
         }
         
