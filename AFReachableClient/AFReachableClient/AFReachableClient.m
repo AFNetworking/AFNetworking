@@ -27,8 +27,7 @@
 }
 
 - (void)reachabilityChanged:(NSNotification*)notification;
-- (void)failOperation:(AFHTTPRequestOperation*)operation 
-      cancelOperation:(BOOL)cancelOperation;
+- (void)failOperation:(AFHTTPRequestOperation*)operation;
 
 @end
 
@@ -77,7 +76,7 @@
     if((_hasEstablishedReachability) &&
        reachableHost_.currentReachabilityStatus == NotReachable){
         //No reason to kick off a request.  Fail immediately.
-        [self failOperation:operation cancelOperation:NO];
+        [self failOperation:operation];
     }
     else {
         [super enqueueHTTPRequestOperation:operation];
@@ -89,41 +88,45 @@
     _hasEstablishedReachability = YES;
     if(reachableHost_.currentReachabilityStatus == NotReachable){
         for(AFHTTPRequestOperation *operation in self.operationQueue.operations){
-            [self failOperation:operation cancelOperation:YES];
+            [self failOperation:operation];
         }
     }
 }
 
-- (void)failOperation:(AFHTTPRequestOperation*)operation cancelOperation:(BOOL)cancelOperation{
+- (void)failOperation:(AFHTTPRequestOperation*)operation{
+    NSString * localizedErrorDescription;
+    NSInteger errorCode;
+    
     if(operation.isExecuting){
-        NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-        [userInfo setValue:[NSString stringWithString:NSLocalizedString(@"Network Connection Lost","Network Connection Lost")] forKey:NSLocalizedDescriptionKey];
-        [userInfo setValue:[operation.request URL] forKey:NSURLErrorFailingURLErrorKey];
-        NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain
-                                             code:NSURLErrorNetworkConnectionLost
-                                         userInfo:userInfo];
-        
-        [operation setHTTPError:error];
-        if(cancelOperation)
-            [operation cancel];
-        else 
-            operation.completionBlock();
-        
+        localizedErrorDescription = NSLocalizedString(@"Network Connection Lost","Network Connection Lost");
+        errorCode = NSURLErrorNetworkConnectionLost;
     }
     else {
-        NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-        [userInfo setValue:[NSString stringWithString:NSLocalizedString(@"Unable to connect to Host","Unable to connect to Host")] forKey:NSLocalizedDescriptionKey];
-        [userInfo setValue:[operation.request URL] forKey:NSURLErrorFailingURLErrorKey];
-        NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain
-                                             code:NSURLErrorCannotConnectToHost
-                                         userInfo:userInfo];
-        
-        [operation setHTTPError:error];
-        if(cancelOperation)
-            [operation cancel];
-        else 
-            operation.completionBlock();    
+        localizedErrorDescription = NSLocalizedString(@"Unable to connect to Host","Unable to connect to Host");
+        errorCode = NSURLErrorCannotConnectToHost;
     }
+    
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+    [userInfo setValue:localizedErrorDescription
+                forKey:NSLocalizedDescriptionKey];
+    [userInfo setValue:[operation.request URL] 
+                forKey:NSURLErrorFailingURLErrorKey];
+    NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain
+                                         code:errorCode
+                                     userInfo:userInfo];
+    
+    [operation setHTTPError:error];
+    
+    //If the operation is already in the operation queue, we can
+    //simply cancel it.  If it has not yet been added to the operation
+    //queue, we must invoke the completion block ourselves
+    if([self.operationQueue.operations containsObject:operation]){
+        [operation cancel];
+    }
+    else{
+        operation.completionBlock();
+    }
+    
 }
 
 @end
