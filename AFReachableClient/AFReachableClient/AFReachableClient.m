@@ -32,8 +32,8 @@
 @end
 
 @implementation AFReachableClient
-@synthesize reachableHostURL = reachableHostURL_;
-@synthesize reachableHost = reachableHost_;
+@synthesize reachableHostURL = _reachableHostURL;
+@synthesize reachableHost = _reachableHost;
 
 - (id)initWithBaseURL:(NSURL *)url 
      reachableHostURL:(NSURL *)reachableHostURL{
@@ -41,15 +41,15 @@
     
     self = [super initWithBaseURL:url];
     if (self != nil){
-        reachableHostURL_ = reachableHostURL;
-        [reachableHostURL_ retain];
+        _reachableHostURL = reachableHostURL;
+        [_reachableHostURL retain];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:) 
                                                      name:kReachabilityChangedNotification 
                                                    object:nil];
-        reachableHost_ = [[Reachability reachabilityWithHostName:[reachableHostURL_ absoluteString]] retain];
-        [reachableHost_ startNotifier];
+        _reachableHost = [[Reachability reachabilityWithHostName:[_reachableHostURL absoluteString]] retain];
+        [_reachableHost startNotifier];
     }
     return self;
     
@@ -57,9 +57,9 @@
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [reachableHost_ stopNotifier];
-    [reachableHost_ release], reachableHost_ = nil;
-    [reachableHostURL_ release], reachableHostURL_ = nil;
+    [_reachableHost stopNotifier];
+    [_reachableHost release], _reachableHost = nil;
+    [_reachableHostURL release], _reachableHostURL = nil;
     [super dealloc];
 }
 
@@ -75,7 +75,7 @@
 
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation{
     if((_hasEstablishedReachability) &&
-       reachableHost_.currentReachabilityStatus == NotReachable){
+       (_reachableHost.currentReachabilityStatus == NotReachable)){
         //No reason to kick off a request.  Fail immediately.
         [self failOperation:operation];
     }
@@ -87,10 +87,18 @@
 #pragma mark - Private
 - (void)reachabilityChanged:(NSNotification *)notification{
     _hasEstablishedReachability = YES;
-    if(reachableHost_.currentReachabilityStatus == NotReachable){
-        for(AFHTTPRequestOperation *operation in self.operationQueue.operations){
+    if(_reachableHost.currentReachabilityStatus == NotReachable){
+        
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        
+        __block NSArray * operations = self.operationQueue.operations;
+        
+        size_t totalOperations = [operations count];
+        
+        dispatch_apply(totalOperations, queue, ^(size_t index) {
+            AFHTTPRequestOperation *operation = [operations objectAtIndex:index];
             [self failOperation:operation];
-        }
+        });
     }
 }
 
