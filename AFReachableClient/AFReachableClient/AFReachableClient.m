@@ -111,6 +111,9 @@
                 forKey:NSLocalizedDescriptionKey];
     [userInfo setValue:[operation.request URL] 
                 forKey:NSURLErrorFailingURLErrorKey];
+    [userInfo setValue:NSLocalizedString(@"Ensure you are connected to the network and try again.", @"Network Lost Recovery Suggestion")
+                 forKey:NSLocalizedRecoverySuggestionErrorKey];
+    
     NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain
                                          code:errorCode
                                      userInfo:userInfo];
