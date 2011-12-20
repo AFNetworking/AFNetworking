@@ -58,7 +58,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
-            success(operation.request, operation.response, responseObject);
+            success(operation.request, operation.response, [(AFXMLRequestOperation *)operation responseXMLParser]);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (failure) {
@@ -74,41 +74,21 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                                                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
                                                           failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLDocument *document))failure
 {
-    AFXMLRequestOperation *operation = [[[self alloc] initWithRequest:urlRequest] autorelease];
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
     AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
     
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success( operation.request, operation.response, [(AFXMLRequestOperation *) operation responseXMLDocument] );
         }
-        
-        if (operation.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.request, operation.response, operation.error, [(AFXMLRequestOperation *)operation responseXMLDocument]);
-                });
-            }
-        } else {
-            dispatch_async(xml_request_operation_processing_queue(), ^(void) {
-                NSXMLDocument *XMLDocument = operation.responseXMLDocument;
-                if (success) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        success(operation.request, operation.response, XMLDocument);
-                    });
-                }
-            });
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (failure) {
             failure( operation.request, operation.response, error, [(AFXMLRequestOperation *) operation responseXMLDocument] );
         }
-    };
     }];
     
     
-    return operation;
+    
+    return requestOperation;
 }
 #endif
 
