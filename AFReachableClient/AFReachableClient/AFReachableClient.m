@@ -57,6 +57,7 @@
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [reachableHost_ stopNotifier];
     [reachableHost_ release], reachableHost_ = nil;
     [reachableHostURL_ release], reachableHostURL_ = nil;
     [super dealloc];
