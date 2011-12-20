@@ -78,6 +78,11 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     operation.completionBlock = ^ {
         if ([operation isCancelled]) {
             return;
+    AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if (success) {
+            success( operation.request, operation.response, [(AFXMLRequestOperation *) operation responseXMLDocument] );
         }
         
         if (operation.error) {
@@ -95,8 +100,13 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                     });
                 }
             });
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (failure) {
+            failure( operation.request, operation.response, error, [(AFXMLRequestOperation *) operation responseXMLDocument] );
         }
     };
+    }];
+    
     
     return operation;
 }
