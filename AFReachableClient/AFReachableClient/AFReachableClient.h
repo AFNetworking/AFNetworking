@@ -36,7 +36,7 @@
  - *Pending Requests*: Requests that have yet to start will return error code `NSURLErrorCannotConnectToHost` to the failure block.
  
  ## Subclassing Notes
- `AFReachableClient` is designed to be subclassed exactly like `AFHTTPClient` with one exception - if the subclass invokes `initWithBaseURL:`, `AFReachableClient` will use the base URL as the reachable host URL.  If a different reachable host URL is needed, use `initWithBaseURL:reachableHostURL:`.
+ `AFReachableClient` is designed to be subclassed exactly like `AFHTTPClient` with one exception - if the subclass invokes `initWithBaseURL:`, `AFReachableClient` will use 'www.apple.com' as as the reachable host URL.  If a different reachable host URL is needed, use `initWithBaseURL:reachableHostURL:`.
  
  */
 

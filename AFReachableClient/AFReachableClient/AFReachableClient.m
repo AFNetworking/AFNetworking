@@ -22,6 +22,8 @@
 
 #import "AFReachableClient.h"
 
+NSString * const kAFReachableClientDefaultReachableHostURL = @"www.apple.com";
+
 @interface AFReachableClient(){
     BOOL _hasEstablishedReachability;
 }
@@ -66,7 +68,7 @@
 #pragma mark - AFHTTPClient Subclassed Methods
 - (id)initWithBaseURL:(NSURL *)url{
     self = [self initWithBaseURL:url 
-                reachableHostURL:url];
+                reachableHostURL:[NSURL URLWithString:kAFReachableClientDefaultReachableHostURL]];
     if (self != nil){
         
     }
