@@ -337,6 +337,8 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
         
         if (credential) {
             [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+        } else {
+            [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
         }
     } else {
         [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
