@@ -328,11 +328,24 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 }
 
 - (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url {
+    [self cancelHTTPOperationsWithMethod:method andURL:url ignoreURLParameters:NO];
+}
+
+- (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url ignoreURLParameters:(BOOL)ignoreURLParmeters{
     for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
-        if ([[[operation request] HTTPMethod] isEqualToString:method] && [[[operation request] URL] isEqual:url]) {
+        NSString * operationURLString = [[[operation request] URL] absoluteString];
+        if(ignoreURLParmeters == YES){
+            NSRange parameterDelimeterRange = [operationURLString rangeOfString:@"?" options:NSBackwardsSearch];
+            if(parameterDelimeterRange.location != NSNotFound){
+                NSRange parameterRange = NSMakeRange(parameterDelimeterRange.location, [operationURLString length] - parameterDelimeterRange.length);
+                operationURLString = [operationURLString stringByReplacingCharactersInRange:parameterRange withString:@""];
+            }
+        }
+        
+        if ([[[operation request] HTTPMethod] isEqualToString:method] && [operationURLString isEqual:[url absoluteString]]) {
             [operation cancel];
         }
-    }
+    }    
 }
 
 #pragma mark -
