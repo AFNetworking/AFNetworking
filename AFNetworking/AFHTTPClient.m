@@ -328,24 +328,30 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 }
 
 - (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url {
-    [self cancelHTTPOperationsWithMethod:method andURL:url ignoreURLParameters:NO];
-}
-
-- (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url ignoreURLParameters:(BOOL)ignoreURLParmeters{
     for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
-        NSString * operationURLString = [[[operation request] URL] absoluteString];
-        if(ignoreURLParmeters == YES){
-            NSRange parameterDelimeterRange = [operationURLString rangeOfString:@"?" options:NSBackwardsSearch];
-            if(parameterDelimeterRange.location != NSNotFound){
-                NSRange parameterRange = NSMakeRange(parameterDelimeterRange.location, [operationURLString length] - parameterDelimeterRange.length);
-                operationURLString = [operationURLString stringByReplacingCharactersInRange:parameterRange withString:@""];
-            }
-        }
-        
-        if ([[[operation request] HTTPMethod] isEqualToString:method] && [operationURLString isEqual:[url absoluteString]]) {
+        if ([[[operation request] HTTPMethod] isEqualToString:method] && [[[operation request] URL] isEqual:url]) {
             [operation cancel];
         }
     }    
+}
+
+- (void)cancelHTTPOperationsWithMethod:(NSString *)method andPath:(NSString*)path{
+    NSURL * URLToCancel = [NSURL URLWithString:path relativeToURL:self.baseURL];
+    
+    for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
+        NSString * operationURLString = [[[operation request] URL] absoluteString];
+        
+        NSRange parameterDelimeter = [operationURLString rangeOfString:@"?" options:NSBackwardsSearch];
+        if(parameterDelimeter.location != NSNotFound){
+            NSRange parameterRange = NSMakeRange(parameterDelimeter.location, [operationURLString length]-parameterDelimeter.location);
+            
+            operationURLString = [operationURLString stringByReplacingCharactersInRange:parameterRange withString:@""];
+        }
+        
+        if([[[operation request] HTTPMethod] isEqualToString:method] && [operationURLString isEqualToString:[URLToCancel absoluteString]]){
+            [operation cancel];
+        }
+    }
 }
 
 #pragma mark -

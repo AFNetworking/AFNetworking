@@ -297,13 +297,12 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 - (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url;
 
 /**
- Cancels all operations in the HTTP client's operation queue that match the specified HTTP method and URL.  You can also ignore URL parameters to cancel generic methods that are currently executing with specifc parameters that may know be known to the object requesting the cancel.
+ Cancels all operations in the HTTP client's operation queue that match the specified HTTP method and Path. In addition, it will ignore URL parameters.  For example, if a GET operation with URL parameters is executing, this method will ignore the parameters and simply look for a match on the Path. If a match is found, the operation is cancelled.
  
  @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`.
- @param url The URL to match for the cancelled requests.
- @param ignoreURLParameters A boolean indicating if URL parameters should be ignored when attempting to match the URL of the requests.
+ @param path The API path to match for the cancelled requests.
  */
-- (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url ignoreURLParameters:(BOOL)ignoreURLParmeters;
+- (void)cancelHTTPOperationsWithMethod:(NSString *)method andPath:(NSString*)path;
 
 ///---------------------------
 /// @name Making HTTP Requests
