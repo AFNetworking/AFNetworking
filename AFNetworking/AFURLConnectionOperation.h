@@ -185,10 +185,4 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  */
 - (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead))block;
 
-///-------------------------------------------------
-/// @name Setting Authentication Challenge Callbacks
-///-------------------------------------------------
-
-- (void)setAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block;
-
 @end
