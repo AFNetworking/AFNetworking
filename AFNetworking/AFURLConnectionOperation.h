@@ -86,6 +86,8 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
     NSInteger _totalBytesRead;
     NSMutableData *_dataAccumulator;
     NSOutputStream *_outputStream;
+    
+    NSDictionary *_userInfo;
 }
 
 ///-------------------------------
@@ -115,6 +117,16 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  The error, if any, that occured in the lifecycle of the request.
  */
 @property (readonly, nonatomic, retain) NSError *error;
+
+///----------------------------
+/// @name Getting Operation Metadata
+///----------------------------
+
+/**
+ A User Info dictionary
+ */
+@property (readwrite, nonatomic, retain) NSDictionary *userInfo;
+
 
 ///----------------------------
 /// @name Getting Response Data

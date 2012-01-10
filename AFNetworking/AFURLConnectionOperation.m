@@ -86,6 +86,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 @synthesize outputStream = _outputStream;
 @synthesize uploadProgress = _uploadProgress;
 @synthesize downloadProgress = _downloadProgress;
+@synthesize userInfo = _userInfo;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
@@ -137,6 +138,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     [_uploadProgress release];
     [_downloadProgress release];
 
+    [_userInfo release];
     [super dealloc];
 }
 
