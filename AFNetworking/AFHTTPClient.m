@@ -27,6 +27,7 @@
 #import "AFJSONUtilities.h"
 
 #import <Availability.h>
+#import <SystemConfiguration/SystemConfiguration.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
@@ -48,6 +49,16 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 @end
 
 #pragma mark -
+
+typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus reachabilityStatus);
+
+static AFNetworkReachabilityStatus AFNetworkReachabilityStatusFromFlags(SCNetworkReachabilityFlags flags) {
+    if ((flags & kSCNetworkReachabilityFlagsReachable) == 0) {
+		return AFNetworkNotReachable;
+	} else {
+        return AFNetworkReachable;
+    }
+}
 
 static NSUInteger const kAFHTTPClientDefaultMaxConcurrentOperationCount = 4;
 
@@ -124,6 +135,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @property (readwrite, nonatomic, retain) NSMutableArray *registeredHTTPOperationClassNames;
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
+@property (readwrite, nonatomic, assign) SCNetworkReachabilityRef networkReachability;
+@property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
 @end
 
 @implementation AFHTTPClient
@@ -133,6 +146,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
+@synthesize networkReachability = _networkReachability;
+@synthesize networkReachabilityStatusBlock = _networkReachabilityStatusBlock;
 
 + (AFHTTPClient *)clientWithBaseURL:(NSURL *)url {
     return [[[self alloc] initWithBaseURL:url] autorelease];
@@ -178,7 +193,34 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     [_registeredHTTPOperationClassNames release];
     [_defaultHeaders release];
     [_operationQueue release];
+    [_networkReachabilityStatusBlock release];
+    if (_networkReachability) {
+        CFRelease(_networkReachability);
+    }
+    
     [super dealloc];
+}
+
+#pragma mark -
+
+static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
+    if (info) {
+        AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
+        block(AFNetworkReachabilityStatusFromFlags(flags));
+    }
+}
+
+- (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus reachabilityStatus))block {
+    if (_networkReachability) {
+        SCNetworkReachabilityUnscheduleFromRunLoop(_networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+        CFRelease(_networkReachability);
+    }
+    
+    self.networkReachabilityStatusBlock = block;
+    self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
+    SCNetworkReachabilityContext context = {0, self.networkReachabilityStatusBlock, NULL, NULL, NULL};
+    SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
+    SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
 }
 
 #pragma mark -
