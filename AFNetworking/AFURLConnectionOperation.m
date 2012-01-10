@@ -318,28 +318,27 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
     if (self.authenticationBlock) {
         self.authenticationBlock(connection, challenge);
-        return;
-    }
-    
-    if ([challenge previousFailureCount] == 0) {
-        NSURLCredential *credential = nil;
-        
-        NSString *username = [(NSString *)CFURLCopyUserName((CFURLRef)[self.request URL]) autorelease];
-        NSString *password = [(NSString *)CFURLCopyPassword((CFURLRef)[self.request URL]) autorelease];
-        
-        if (username && password) {
-            credential = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceNone];
-        } else if (username) {
-            credential = [[[NSURLCredentialStorage sharedCredentialStorage] credentialsForProtectionSpace:[challenge protectionSpace]] objectForKey:username];
-        } else {
-            credential = [[NSURLCredentialStorage sharedCredentialStorage] defaultCredentialForProtectionSpace:[challenge protectionSpace]];
-        }
-        
-        if (credential) {
-            [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-        }
     } else {
-        [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+        if ([challenge previousFailureCount] == 0) {
+            NSURLCredential *credential = nil;
+            
+            NSString *username = [(NSString *)CFURLCopyUserName((CFURLRef)[self.request URL]) autorelease];
+            NSString *password = [(NSString *)CFURLCopyPassword((CFURLRef)[self.request URL]) autorelease];
+            
+            if (username && password) {
+                credential = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceNone];
+            } else if (username) {
+                credential = [[[NSURLCredentialStorage sharedCredentialStorage] credentialsForProtectionSpace:[challenge protectionSpace]] objectForKey:username];
+            } else {
+                credential = [[NSURLCredentialStorage sharedCredentialStorage] defaultCredentialForProtectionSpace:[challenge protectionSpace]];
+            }
+            
+            if (credential) {
+                [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+            }
+        } else {
+            [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+        }
     }
 }
 
