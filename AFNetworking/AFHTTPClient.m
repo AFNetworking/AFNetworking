@@ -50,15 +50,7 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 
 #pragma mark -
 
-typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus reachabilityStatus);
-
-static AFNetworkReachabilityStatus AFNetworkReachabilityStatusFromFlags(SCNetworkReachabilityFlags flags) {
-    if ((flags & kSCNetworkReachabilityFlagsReachable) == 0) {
-		return AFNetworkNotReachable;
-	} else {
-        return AFNetworkReachable;
-    }
-}
+typedef void (^AFNetworkReachabilityStatusBlock)(BOOL isNetworkReachable);
 
 static NSUInteger const kAFHTTPClientDefaultMaxConcurrentOperationCount = 4;
 
@@ -206,11 +198,12 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
     if (info) {
         AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
-        block(AFNetworkReachabilityStatusFromFlags(flags));
+        BOOL isNetworkReachable = (flags & kSCNetworkReachabilityFlagsReachable);
+        block(isNetworkReachable);
     }
 }
 
-- (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus reachabilityStatus))block {
+- (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block {
     if (_networkReachability) {
         SCNetworkReachabilityUnscheduleFromRunLoop(_networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
         CFRelease(_networkReachability);

@@ -36,13 +36,6 @@ typedef enum {
 } AFHTTPClientParameterEncoding;
 
 /**
- */
-typedef enum {
-    AFNetworkNotReachable,
-    AFNetworkReachable,
-} AFNetworkReachabilityStatus;
-
-/**
  Returns a string, replacing certain characters with the equivalent percent escape sequence based on the specified encoding.
  
  @param string The string to URL encode
@@ -170,7 +163,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 
 /**
  */
-- (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus reachabilityStatus))block;
+- (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block;
 
 ///-------------------------------
 /// @name Managing HTTP Operations
