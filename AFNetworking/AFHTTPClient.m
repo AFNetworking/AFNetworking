@@ -329,11 +329,20 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 
 - (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url {
     for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
-        if ([[[operation request] HTTPMethod] isEqualToString:method] && [[[operation request] URL] isEqual:url]) {
+        if ((!method || [[[operation request] HTTPMethod] isEqualToString:method]) && [[[operation request] URL] isEqual:url]) {
             [operation cancel];
         }
     }
 }
+
+- (void)cancelHTTPOperationsWithMethod:(NSString *)method andStartOfURL:(NSString *)string{
+    for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
+        if ((!method || [[[operation request] HTTPMethod] isEqualToString:method]) && (!string || ([[[[operation request] URL] absoluteString] rangeOfString:string].location == 0))) {
+            [operation cancel];
+        }
+    }
+}
+
 
 #pragma mark -
 
