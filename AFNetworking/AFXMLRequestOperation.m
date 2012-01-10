@@ -82,14 +82,17 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
         
         if (operation.error) {
             if (failure) {
+                NSXMLDocument *XMLDocument = operation.responseXMLDocument;
+                
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(operation.request, operation.response, operation.error, [(AFXMLRequestOperation *)operation responseXMLDocument]);
+                    failure(operation.request, operation.response, operation.error, XMLDocument);
                 });
             }
         } else {
             dispatch_async(xml_request_operation_processing_queue(), ^(void) {
-                NSXMLDocument *XMLDocument = operation.responseXMLDocument;
                 if (success) {
+                    NSXMLDocument *XMLDocument = operation.responseXMLDocument;
+
                     dispatch_async(dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, XMLDocument);
                     });
