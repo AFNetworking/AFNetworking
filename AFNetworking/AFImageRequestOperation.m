@@ -179,7 +179,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 - (NSImage *)responseImage {
-    if (!_responseImage && [self isFinished]) {
+    if (!_responseImage && [self isFinished] && self.responseData) {
         // Ensure that the image is set to it's correct pixel width and height
         NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
         self.responseImage = [[[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])] autorelease];
