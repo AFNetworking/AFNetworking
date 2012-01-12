@@ -63,13 +63,13 @@
 #endif
 
 /**
- Stores image data into cache, associated with a given URL and cache name.
+ Stores image into cache, associated with a given URL and cache name.
  
- @param imageData The image data to be stored in cache.
+ @param image The image to be stored in cache.
  @param url The URL to be associated with the image.
  @param cacheName The cache name to be associated with the image in the cache. This allows for multiple versions of an image to be associated for a single URL, such as image thumbnails, for instance.
  */
-- (void)cacheImageData:(NSData *)imageData
+- (void)cacheImage:(id)image
                 forURL:(NSURL *)url
              cacheName:(NSString *)cacheName;
 
