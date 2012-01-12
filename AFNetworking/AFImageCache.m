@@ -59,7 +59,7 @@ static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString
 - (UIImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName
 {
-	UIImage *image = [UIImage imageWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]];
+	UIImage *image = [self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
 	if (image) {
 		return [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
 	}
@@ -69,15 +69,15 @@ static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString
 - (NSImage *)cachedImageForURL:(NSURL *)url
                      cacheName:(NSString *)cacheName
 {
-    return [[[NSImage alloc] initWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]] autorelease];
+    return [self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
 }
 #endif
 
-- (void)cacheImageData:(NSData *)imageData
+- (void)cacheImage:(id)image
                 forURL:(NSURL *)url
              cacheName:(NSString *)cacheName
 {
-    [self setObject:[NSPurgeableData dataWithData:imageData] forKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
+    [self setObject:image forKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
 }
 
 @end
