@@ -194,7 +194,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #pragma mark - AFHTTPClientOperation
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+    NSSet *requestAceptableTypes = [NSSet setWithArray:[[request valueForHTTPHeaderField:@"Accept"] componentsSeparatedByString:@","]];
+    BOOL canProcess = [[self defaultAcceptableContentTypes] intersectsSet:requestAceptableTypes] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+    return canProcess;
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
