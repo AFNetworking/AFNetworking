@@ -229,7 +229,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 ///-------------------------------
 
 /**
- Creates an `NSMutableURLRequest` object with the specified HTTP method and path. By default, this method scans through the registered operation classes (in reverse order of when they were specified), until finding one that can handle the specified request.
+ Creates an `NSMutableURLRequest` object with the specified HTTP method and path.
  
  If the HTTP method is `GET`, the parameters will be used to construct a url-encoded query string that is appended to the request's URL. Otherwise, the parameters will be encoded according to the value of the `parameterEncoding` property, and set as the request body.
  
@@ -267,9 +267,9 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 ///-------------------------------
 
 /**
- Creates an `AFHTTPRequestOperation`
+ Creates an `AFHTTPRequestOperation`.
  
- In order to determine what kind of operation is created, each registered subclass conforming to the `AFHTTPClient` protocol is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`.
+ In order to determine what kind of operation is created, each registered subclass conforming to the `AFHTTPClient` protocol is consulted (in reverse order of when they were specified) to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`.
  
  @param request The request object to be loaded asynchronously during execution of the operation.
  @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
