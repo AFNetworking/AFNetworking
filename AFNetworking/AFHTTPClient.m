@@ -52,7 +52,7 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 static NSUInteger const kAFHTTPClientDefaultMaxConcurrentOperationCount = 4;
 
 static NSString * AFBase64EncodedStringFromString(NSString *string) {
-    NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string length]];
+    NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
     NSUInteger length = [data length];
     NSMutableData *mutableData = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
     
@@ -381,6 +381,10 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 
 #pragma mark -
 
+static inline NSString * AFMultipartFormInitialBoundary() {
+    return [NSString stringWithFormat:@"--%@%@", kAFMultipartFormBoundary, kAFMultipartFormLineDelimiter];
+}
+
 static inline NSString * AFMultipartFormEncapsulationBoundary() {
     return [NSString stringWithFormat:@"%@--%@%@", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary, kAFMultipartFormLineDelimiter];
 }
@@ -424,7 +428,11 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 #pragma mark - AFMultipartFormData
 
 - (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body {
-    [self appendString:AFMultipartFormEncapsulationBoundary()];
+    if ([self.mutableData length] == 0) {
+        [self appendString:AFMultipartFormInitialBoundary()];
+    } else {
+        [self appendString:AFMultipartFormEncapsulationBoundary()];
+    }
     
     for (NSString *field in [headers allKeys]) {
         [self appendString:[NSString stringWithFormat:@"%@: %@%@", field, [headers valueForKey:field], kAFMultipartFormLineDelimiter]];
@@ -443,7 +451,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 
 - (void)appendPartWithFileData:(NSData *)data name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType {    
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"file; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
     
     [self appendPartWithHeaders:mutableHeaders body:data];
@@ -467,7 +475,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     NSURLResponse *response = nil;
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
     
-    if (response && !error) {
+    if (data && response) {
         [self appendPartWithFileData:data name:name fileName:[response suggestedFilename] mimeType:[response MIMEType]];
         
         return YES;

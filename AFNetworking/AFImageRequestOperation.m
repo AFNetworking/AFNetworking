@@ -79,41 +79,25 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    AFImageRequestOperation *operation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
-    
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
-        }
-        
-        dispatch_async(image_request_operation_processing_queue(), ^(void) {
-            if (operation.error) {
-                if (failure) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        failure(operation.request, operation.response, operation.error);
-                    });
-                }
-            } else {                
-                UIImage *image = operation.responseImage;
-                
-                if (imageProcessingBlock) {
-                    image = imageProcessingBlock(image);
-                }
-                
-                if (success) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        success(operation.request, operation.response, image);
-                    });
-                }
-                
-                if ([operation.request cachePolicy] != NSURLCacheStorageNotAllowed) {
-                    [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[operation.request URL] cacheName:cacheNameOrNil];
-                }
+    AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if (success) {
+            UIImage *image = responseObject;
+            
+            if (imageProcessingBlock) {
+                image = imageProcessingBlock(image);
             }
-        });        
-    };
+            
+            success(operation.request, operation.response, image);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (failure) {
+            failure(operation.request, operation.response, error);
+        }
+    }];
     
-    return operation;
+    
+    return requestOperation;
 }
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
@@ -122,41 +106,24 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    AFImageRequestOperation *operation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
-    
-    operation.completionBlock = ^ {
-        if ([operation isCancelled]) {
-            return;
-        }
-        
-        dispatch_async(image_request_operation_processing_queue(), ^(void) {
-            if (operation.error) {
-                if (failure) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        failure(operation.request, operation.response, operation.error);
-                    });
-                }
-            } else {                
-                NSImage *image = operation.responseImage;
-                
-                if (imageProcessingBlock) {
-                    image = imageProcessingBlock(image);
-                }
-                
-                if (success) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        success(operation.request, operation.response, image);
-                    });
-                }
-                
-                if ([operation.request cachePolicy] != NSURLCacheStorageNotAllowed) {
-                    [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[operation.request URL] cacheName:cacheNameOrNil];
-                }
+    AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if (success) {
+            NSImage *image = responseObject;
+            
+            if (imageProcessingBlock) {
+                image = imageProcessingBlock(image);
             }
-        });        
-    };
+                        
+            success(operation.request, operation.response, image);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (failure) {
+            failure(operation.request, operation.response, error);
+        }
+    }];
     
-    return operation;
+    return requestOperation;
 }
 #endif
 
@@ -191,8 +158,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (UIImage *)responseImage {
     if (!_responseImage && [self isFinished]) {
-        CGImageRef imageRef = [[UIImage imageWithData:self.responseData] CGImage];
-        self.responseImage = [UIImage imageWithCGImage:imageRef scale:self.imageScale orientation:UIImageOrientationUp];
+        UIImage *image = [UIImage imageWithData:self.responseData];
+        
+        self.responseImage = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
     }
     
     return _responseImage;
@@ -212,7 +180,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 - (NSImage *)responseImage {
     if (!_responseImage && [self isFinished]) {
-        self.responseImage = [[[NSImage alloc] initWithData:self.responseData] autorelease];
+        // Ensure that the image is set to it's correct pixel width and height
+        NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
+        self.responseImage = [[[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])] autorelease];
+        [self.responseImage addRepresentation:bitimage];
+        [bitimage release];
     }
     
     return _responseImage;
@@ -248,5 +220,31 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     }];
 }
 #endif
+
+- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    self.completionBlock = ^ {
+        if ([self isCancelled]) {
+            return;
+        }
+        
+        dispatch_async(image_request_operation_processing_queue(), ^(void) {
+            if (self.error) {
+                if (failure) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        failure(self, self.error);
+                    });
+                }
+            } else {                
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        success(self, self.responseImage);
+                    });
+                }
+            }
+        });        
+    };  
+}
 
 @end

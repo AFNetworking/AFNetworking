@@ -90,15 +90,14 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  Both `requestWithMethod:path:parameters` and `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `baseURL`, using `NSURL +URLWithString:relativeToURL:`. Below are a few examples of how `baseURL` and relative paths interract:
  
- ```
- NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
- [NSURL URLWithString:@"foo" relativeToURL:baseURL]; // http://example.com/v1/foo
- [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL]; // http://example.com/v1/foo?bar=baz
- [NSURL URLWithString:@"/foo" relativeToURL:baseURL]; // http://example.com/foo
- [NSURL URLWithString:@"foo/" relativeToURL:baseURL]; // http://example.com/v1/foo
- [NSURL URLWithString:@"/foo/" relativeToURL:baseURL]; // http://example.com/foo/
- [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL]; // http://example2.com/
- ```
+    NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
+    [NSURL URLWithString:@"foo" relativeToURL:baseURL];                     // http://example.com/v1/foo
+    [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL];             // http://example.com/v1/foo?bar=baz
+    [NSURL URLWithString:@"/foo" relativeToURL:baseURL];                    // http://example.com/foo
+    [NSURL URLWithString:@"foo/" relativeToURL:baseURL];                    // http://example.com/v1/foo
+    [NSURL URLWithString:@"/foo/" relativeToURL:baseURL];                   // http://example.com/foo/
+    [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL];    // http://example2.com/
+
  */
 @interface AFHTTPClient : NSObject {
 @private
@@ -230,7 +229,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 ///-------------------------------
 
 /**
- Creates an `NSMutableURLRequest` object with the specified HTTP method and path. By default, this method scans through the registered operation classes (in reverse order of when they were specified), until finding one that can handle the specified request.
+ Creates an `NSMutableURLRequest` object with the specified HTTP method and path.
  
  If the HTTP method is `GET`, the parameters will be used to construct a url-encoded query string that is appended to the request's URL. Otherwise, the parameters will be encoded according to the value of the `parameterEncoding` property, and set as the request body.
  
@@ -252,6 +251,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
   
+ @discussion The multipart form data is constructed synchronously in the specified block, so in cases where large amounts of data are being added to the request, you should consider performing this method in the background. Likewise, the form data is constructed in-memory, so it may be advantageous to instead write parts of the form data to a file and stream the request body using the `HTTPBodyStream` property of `NSURLRequest`.
+ 
  @warning An exception will be raised if the specified method is not `POST`, `PUT` or `DELETE`.
  
  @return An `NSMutableURLRequest` object
@@ -266,9 +267,9 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 ///-------------------------------
 
 /**
- Creates an `AFHTTPRequestOperation`
+ Creates an `AFHTTPRequestOperation`.
  
- In order to determine what kind of operation is created, each registered subclass conforming to the `AFHTTPClient` protocol is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`.
+ In order to determine what kind of operation is created, each registered subclass conforming to the `AFHTTPClient` protocol is consulted (in reverse order of when they were specified) to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to generate an operation using `HTTPRequestOperationWithRequest:success:failure:`.
  
  @param request The request object to be loaded asynchronously during execution of the operation.
  @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
