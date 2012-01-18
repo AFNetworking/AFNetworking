@@ -308,9 +308,9 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     NSString *className = nil;
     NSEnumerator *enumerator = [self.registeredHTTPOperationClassNames reverseObjectEnumerator];
     while (!operation && (className = [enumerator nextObject])) {
-        Class class = NSClassFromString(className);
-        if (class && [class canProcessRequest:urlRequest]) {
-            operation = [[(AFHTTPRequestOperation *)[class alloc] initWithRequest:urlRequest] autorelease];
+        Class op_class = NSClassFromString(className);
+        if (op_class && [op_class canProcessRequest:urlRequest]) {
+            operation = [[(AFHTTPRequestOperation *)[op_class alloc] initWithRequest:urlRequest] autorelease];
         }
     }
     
