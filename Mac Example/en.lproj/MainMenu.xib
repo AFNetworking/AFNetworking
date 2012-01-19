@@ -251,7 +251,7 @@
 			<object class="NSWindowTemplate" id="972006081">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{50, 538}, {375, 500}}</string>
+				<string key="NSWindowRect">{{60, 295}, {375, 500}}</string>
 				<int key="NSWTFlags">1954021376</int>
 				<string key="NSWindowTitle">AFNetworking Mac Example</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -439,7 +439,6 @@
 									<string key="NSFrame">{{1, 526}, {374, 15}}</string>
 									<reference key="NSSuperview" ref="905625827"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:1216</string>
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="905625827"/>
