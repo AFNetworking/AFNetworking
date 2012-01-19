@@ -24,10 +24,20 @@
 #import <objc/runtime.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-
 #import "UIImageView+AFNetworking.h"
 
-#import "AFImageCache.h"
+@interface AFImageCache : NSCache
+@property (nonatomic, assign) CGFloat imageScale;
+
+- (UIImage *)cachedImageForURL:(NSURL *)url
+                     cacheName:(NSString *)cacheName;
+
+- (void)cacheImageData:(NSData *)imageData
+                forURL:(NSURL *)url
+             cacheName:(NSString *)cacheName;
+@end
+
+#pragma mark -
 
 static char kAFImageRequestOperationObjectKey;
 
@@ -52,14 +62,24 @@ static char kAFImageRequestOperationObjectKey;
 }
 
 + (NSOperationQueue *)af_sharedImageRequestOperationQueue {
-    static NSOperationQueue *_imageRequestOperationQueue = nil;
+    static NSOperationQueue *_af_imageRequestOperationQueue = nil;
     
-    if (!_imageRequestOperationQueue) {
-        _imageRequestOperationQueue = [[NSOperationQueue alloc] init];
-        [_imageRequestOperationQueue setMaxConcurrentOperationCount:8];
+    if (!_af_imageRequestOperationQueue) {
+        _af_imageRequestOperationQueue = [[NSOperationQueue alloc] init];
+        [_af_imageRequestOperationQueue setMaxConcurrentOperationCount:8];
     }
     
-    return _imageRequestOperationQueue;
+    return _af_imageRequestOperationQueue;
+}
+
++ (AFImageCache *)af_sharedImageCache {
+    static AFImageCache *_af_imageCache = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _af_imageCache = [[AFImageCache alloc] init];
+    });
+    
+    return _af_imageCache;
 }
 
 #pragma mark -
@@ -89,7 +109,7 @@ static char kAFImageRequestOperationObjectKey;
         [self cancelImageRequestOperation];
     }
     
-    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForURL:[urlRequest URL] cacheName:nil];
+    UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForURL:[urlRequest URL] cacheName:nil];
     if (cachedImage) {
         self.image = cachedImage;
         self.af_imageRequestOperation = nil;
@@ -112,7 +132,7 @@ static char kAFImageRequestOperationObjectKey;
                 success(operation.request, operation.response, responseObject);
             }
 
-            [[AFImageCache sharedImageCache] cacheImageData:operation.responseData forURL:[urlRequest URL] cacheName:nil];
+            [[[self class] af_sharedImageCache] cacheImageData:operation.responseData forURL:[urlRequest URL] cacheName:nil];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if (failure) {
                 failure(operation.request, operation.response, error);
@@ -127,6 +147,45 @@ static char kAFImageRequestOperationObjectKey;
 
 - (void)cancelImageRequestOperation {
     [self.af_imageRequestOperation cancel];
+}
+
+@end
+
+#pragma mark -
+
+static inline NSString * AFImageCacheKeyFromURLAndCacheName(NSURL *url, NSString *cacheName) {
+    return [[url absoluteString] stringByAppendingFormat:@"#%@", cacheName];
+}
+
+@implementation AFImageCache
+@synthesize imageScale = _imageScale;
+
+- (id)init {
+	self = [super init];
+	if (!self) {
+		return nil;
+	}
+    
+    self.imageScale = [[UIScreen mainScreen] scale];
+	
+	return self;
+}
+
+- (UIImage *)cachedImageForURL:(NSURL *)url
+                     cacheName:(NSString *)cacheName
+{
+	UIImage *image = [UIImage imageWithData:[self objectForKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)]];
+	if (image) {
+		return [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
+	}
+    return image;
+}
+
+- (void)cacheImageData:(NSData *)imageData
+                forURL:(NSURL *)url
+             cacheName:(NSString *)cacheName
+{
+    [self setObject:[NSPurgeableData dataWithData:imageData] forKey:AFImageCacheKeyFromURLAndCacheName(url, cacheName)];
 }
 
 @end
