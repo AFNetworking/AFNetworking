@@ -335,6 +335,25 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
         if ([[[operation request] HTTPMethod] isEqualToString:method] && [[[operation request] URL] isEqual:url]) {
             [operation cancel];
         }
+    }    
+}
+
+- (void)cancelHTTPOperationsWithMethod:(NSString *)method andPath:(NSString*)path{
+    NSURL * URLToCancel = [NSURL URLWithString:path relativeToURL:self.baseURL];
+    
+    for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
+        NSString * operationURLString = [[[operation request] URL] absoluteString];
+        
+        NSRange parameterDelimeter = [operationURLString rangeOfString:@"?" options:NSBackwardsSearch];
+        if(parameterDelimeter.location != NSNotFound){
+            NSRange parameterRange = NSMakeRange(parameterDelimeter.location, [operationURLString length]-parameterDelimeter.location);
+            
+            operationURLString = [operationURLString stringByReplacingCharactersInRange:parameterRange withString:@""];
+        }
+        
+        if([[[operation request] HTTPMethod] isEqualToString:method] && [operationURLString isEqualToString:[URLToCancel absoluteString]]){
+            [operation cancel];
+        }
     }
 }
 
