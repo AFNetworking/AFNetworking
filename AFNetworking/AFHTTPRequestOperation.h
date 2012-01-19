@@ -32,6 +32,14 @@
     NSSet *_acceptableContentTypes;
     NSError *_HTTPError;
 }
+///----------------------------------------------
+/// @name HTTP Operation Information
+///----------------------------------------------
+
+/**
+ The last HTTP error for the operation's connection
+ */
+@property (readwrite, nonatomic, retain) NSError *HTTPError;
 
 ///----------------------------------------------
 /// @name Getting HTTP URL Connection Information
