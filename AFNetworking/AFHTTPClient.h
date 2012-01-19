@@ -53,7 +53,10 @@ extern NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
  @param parameters The parameters used to construct the query string
  @param encoding The encoding to use in constructing the query string. If you are uncertain of the correct encoding, you should use UTF-8 (NSUTF8StringEncoding), which is the encoding designated by RFC 3986 as the correct encoding for use in URLs.
  
- @discussion Query strings are constructed by collecting each key-value pair, URL-encoding the string value of the key and value (by sending `-description` to each), constructing a string in the form "key=value", and then joining the components with "&". The constructed query string does not include the ? character used to delimit the query component.
+ @discussion Query strings are constructed by collecting each key-value pair, URL-encoding a string representation of the key-value pair, and then joining the components with "&". 
+ 
+ 
+ If a key-value pair has a an `NSArray` for its value, each member of the array will be represented in the format `key[]=value1&key[]value2`. Otherwise, the key-value pair will be formatted as "key=value". String representations of both keys and values are derived using the `-description` method. The constructed query string does not include the ? character used to delimit the query component.
  
  @return A URL-encoded query string
  */

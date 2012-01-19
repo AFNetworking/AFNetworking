@@ -89,19 +89,19 @@ NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEn
 NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
     NSMutableArray *mutableParameterComponents = [NSMutableArray array];
     for (id key in [parameters allKeys]) {
-        id arg = [parameters valueForKey:key];
-        if ([arg isKindOfClass:[NSArray class]]) {
-            // For arrays, we add each item to the query string
-            NSString *keyComponent = AFURLEncodedStringFromStringWithEncoding([NSString stringWithFormat:@"%@[]", [key description]], encoding);
-            for (id obj in (NSArray *)arg) {
-                NSString *component = [NSString stringWithFormat:@"%@=%@", keyComponent, AFURLEncodedStringFromStringWithEncoding([obj description], encoding)];
+        id value = [parameters valueForKey:key];
+        if ([value isKindOfClass:[NSArray class]]) {
+            NSString *arrayKey = AFURLEncodedStringFromStringWithEncoding([NSString stringWithFormat:@"%@[]", [key description]], encoding);
+            for (id arrayValue in value) {
+                NSString *component = [NSString stringWithFormat:@"%@=%@", arrayKey, AFURLEncodedStringFromStringWithEncoding([arrayValue description], encoding)];
                 [mutableParameterComponents addObject:component];
             }
         } else {
-            NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([arg description], encoding)];
+            NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([value description], encoding)];
             [mutableParameterComponents addObject:component];
         }
     }    
+    
     return [mutableParameterComponents componentsJoinedByString:@"&"];
 }
 
