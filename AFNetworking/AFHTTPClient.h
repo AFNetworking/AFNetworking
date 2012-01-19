@@ -296,10 +296,18 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 /**
  Cancels all operations in the HTTP client's operation queue that match the specified HTTP method and URL.
  
- @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`.
+ @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, `DELETE` or nil if you want to match all the methods
  @param url The URL to match for the cancelled requests.
  */
 - (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url;
+
+/**
+ Cancels all operations in the HTTP client's operation queue that match the specified HTTP method and has URL starts with specified string.
+ 
+ @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, `DELETE` or nil if you want to match all the methods
+ @param url The string that URL has to starts with or nil if any URL.
+ */
+- (void)cancelHTTPOperationsWithMethod:(NSString *)method andStartOfURL:(NSString *)string;
 
 ///---------------------------
 /// @name Making HTTP Requests
