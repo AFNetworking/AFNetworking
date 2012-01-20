@@ -27,10 +27,13 @@
 #import "AFJSONUtilities.h"
 
 #import <Availability.h>
-#import <SystemConfiguration/SystemConfiguration.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+#endif
+
+#ifdef _SYSTEMCONFIGURATION_H
+#import <SystemConfiguration/SystemConfiguration.h>
 #endif
 
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
@@ -49,6 +52,12 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 @end
 
 #pragma mark -
+
+#ifdef _SYSTEMCONFIGURATION_H
+typedef SCNetworkReachabilityRef AFNetworkReachabilityRef;
+#else
+typedef id AFNetworkReachabilityRef;
+#endif
 
 typedef void (^AFNetworkReachabilityStatusBlock)(BOOL isNetworkReachable);
 
@@ -127,7 +136,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @property (readwrite, nonatomic, retain) NSMutableArray *registeredHTTPOperationClassNames;
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
-@property (readwrite, nonatomic, assign) SCNetworkReachabilityRef networkReachability;
+@property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
 @property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
 @end
 
@@ -195,6 +204,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 
 #pragma mark -
 
+#ifdef _SYSTEMCONFIGURATION_H
 static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
     if (info) {
         AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
@@ -215,6 +225,7 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
     SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
 }
+#endif
 
 #pragma mark -
 

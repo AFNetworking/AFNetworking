@@ -164,9 +164,13 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 /**
  Sets a callback to be executed when the network availability of the `baseURL` host changes.
  
- @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument, which is `YES` if the host is available, otherwise `NO`. 
+ @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument, which is `YES` if the host is available, otherwise `NO`.
+ 
+ @warning This method requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
  */
+#ifdef _SYSTEMCONFIGURATION_H
 - (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block;
+#endif
 
 ///-------------------------------
 /// @name Managing HTTP Operations
