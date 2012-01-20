@@ -140,7 +140,10 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 
 - (NSXMLParser *)responseXMLParser {
     if (!_responseXMLParser && [self isFinished]) {
-        self.responseXMLParser = [[[NSXMLParser alloc] initWithData:self.responseData] autorelease];
+        NSData* data = self.responseData;
+        if (data && [data length] > 0) {
+            self.responseXMLParser = [[[NSXMLParser alloc] initWithData:data] autorelease];
+        }
     }
     
     return _responseXMLParser;
@@ -149,9 +152,12 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 - (NSXMLDocument *)responseXMLDocument {
     if (!_responseXMLDocument && [self isFinished]) {
-        NSError *error = nil;
-        self.responseXMLDocument = [[[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error] autorelease];
-        self.error = error;
+        NSData* data = self.responseData;
+        if (data && [data length] > 0) {
+            NSError *error = nil;
+            self.responseXMLDocument = [[[NSXMLDocument alloc] initWithData:data options:0 error:&error] autorelease];
+            self.error = error;
+        }
     }
     
     return _responseXMLDocument;

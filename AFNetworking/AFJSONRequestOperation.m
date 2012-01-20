@@ -93,15 +93,12 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 - (id)responseJSON {
     if (!_responseJSON && [self isFinished]) {
-        NSError *error = nil;
-
-        if ([self.responseData length] == 0) {
-            self.responseJSON = nil;
-        } else {
-            self.responseJSON = AFJSONDecode(self.responseData, &error);
+        NSData* data = self.responseData;
+        if (data && [data length] > 0) {
+            NSError *error = nil;
+            self.responseJSON = AFJSONDecode(data, &error);
+            self.JSONError = error;
         }
-        
-        self.JSONError = error;
     }
     
     return _responseJSON;
