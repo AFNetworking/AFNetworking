@@ -75,19 +75,20 @@ static NSData * AFJSONEncode(id object, NSError **error) {
             *error = [[[NSError alloc] initWithDomain:NSStringFromClass([exception class]) code:0 userInfo:[exception userInfo]] autorelease];
         }
     } else if (_NSJSONSerializationClass && [_NSJSONSerializationClass respondsToSelector:_NSJSONSerializationSelector]) {
-        _af_nsjson_encode: {
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_NSJSONSerializationClass methodSignatureForSelector:_NSJSONSerializationSelector]];
-            invocation.target = _NSJSONSerializationClass;
-            invocation.selector = _NSJSONSerializationSelector;
-            
-            [invocation setArgument:&object atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
-            NSUInteger writeOptions = 0;
-            [invocation setArgument:&writeOptions atIndex:3];
-            [invocation setArgument:error atIndex:4];
-            
-            [invocation invoke];
-            [invocation getReturnValue:&data];
-        }
+#ifdef _AFNETWORKING_PREFER_NSJSONSERIALIZATION_
+    _af_nsjson_encode:
+#endif
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_NSJSONSerializationClass methodSignatureForSelector:_NSJSONSerializationSelector]];
+        invocation.target = _NSJSONSerializationClass;
+        invocation.selector = _NSJSONSerializationSelector;
+
+        [invocation setArgument:&object atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
+        NSUInteger writeOptions = 0;
+        [invocation setArgument:&writeOptions atIndex:3];
+        [invocation setArgument:error atIndex:4];
+
+        [invocation invoke];
+        [invocation getReturnValue:&data];
     } else {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Please either target a platform that supports NSJSONSerialization or add one of the following libraries to your project: JSONKit, SBJSON, or YAJL", nil) forKey:NSLocalizedRecoverySuggestionErrorKey];
         [[NSException exceptionWithName:NSInternalInconsistencyException reason:NSLocalizedString(@"No JSON generation functionality available", nil) userInfo:userInfo] raise];
@@ -145,19 +146,20 @@ static id AFJSONDecode(NSData *data, NSError **error) {
         [invocation invoke];
         [invocation getReturnValue:&JSON];
     } else if (_NSJSONSerializationClass && [_NSJSONSerializationClass respondsToSelector:_NSJSONSerializationSelector]) {
-        _af_nsjson_decode: {
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_NSJSONSerializationClass methodSignatureForSelector:_NSJSONSerializationSelector]];
-            invocation.target = _NSJSONSerializationClass;
-            invocation.selector = _NSJSONSerializationSelector;
-            
-            [invocation setArgument:&data atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
-            NSUInteger readOptions = 0;
-            [invocation setArgument:&readOptions atIndex:3];
-            [invocation setArgument:error atIndex:4];
-            
-            [invocation invoke];
-            [invocation getReturnValue:&JSON];
-        }
+#ifdef _AFNETWORKING_PREFER_NSJSONSERIALIZATION_
+    _af_nsjson_decode:
+#endif
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_NSJSONSerializationClass methodSignatureForSelector:_NSJSONSerializationSelector]];
+        invocation.target = _NSJSONSerializationClass;
+        invocation.selector = _NSJSONSerializationSelector;
+
+        [invocation setArgument:&data atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
+        NSUInteger readOptions = 0;
+        [invocation setArgument:&readOptions atIndex:3];
+        [invocation setArgument:error atIndex:4];
+
+        [invocation invoke];
+        [invocation getReturnValue:&JSON];
     } else {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Please either target a platform that supports NSJSONSerialization or add one of the following libraries to your project: JSONKit, SBJSON, or YAJL", nil) forKey:NSLocalizedRecoverySuggestionErrorKey];
         [[NSException exceptionWithName:NSInternalInconsistencyException reason:NSLocalizedString(@"No JSON parsing functionality available", nil) userInfo:userInfo] raise];
