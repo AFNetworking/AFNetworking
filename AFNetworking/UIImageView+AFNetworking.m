@@ -124,8 +124,6 @@ static char kAFImageRequestOperationObjectKey;
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
                 self.image = responseObject;
-            } else {
-                self.image = placeholderImage;
             }
 
             if (success) {
