@@ -22,5 +22,5 @@
 
 #import <Foundation/Foundation.h>
 
-NSData * AFJSONEncode(id object, NSError **error);
-id AFJSONDecode(NSData *data, NSError **error);
+extern NSData * AFJSONEncode(id object, NSError **error);
+extern id AFJSONDecode(NSData *data, NSError **error);
