@@ -48,7 +48,7 @@ AFNetworking is architected to be as small and modular as possible, in order to 
   </tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Classes/AFPropertyListRequestOperation.html">AFPropertyListRequestOperation</a></td>
-    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and deserializing objects with [property list](http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/PropertyLists/index.html) response data.</td>
+    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and deserializing objects with <a href="http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/PropertyLists/index.html">property list</a> response data.</td>
   </tr>
 
   <tr><th colspan="2" style="text-align:center;">HTTP Client</th></tr>
