@@ -1,6 +1,6 @@
-![AFNetworking](https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-logo.png "AFNetworking")
+<img src="https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking" style="display:block; margin: 10px auto 30px auto;" class="center">
 
-AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of [`NSURLConnection`](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/Reference/Reference.html), [`NSOperation`](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/NSOperation_class/Reference/Reference.html), and other familiar Foundation technologies. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use. For example, here's how easy it is to get JSON from a URL:
+AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of [NSURLConnection](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/Reference/Reference.html), [NSOperation](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/NSOperation_class/Reference/Reference.html), and other familiar Foundation technologies. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use. For example, here's how easy it is to get JSON from a URL:
 
 ``` objective-c
 NSURL *url = [NSURL URLWithString:@"https://gowalla.com/users/mattt.json"];
@@ -13,7 +13,7 @@ AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperation
 
 Perhaps the most important feature of all, however, is the amazing community of developers who use and contribute to AFNetworking every day. AFNetworking powers some of the most popular and critically-acclaimed apps on the iPhone, iPad, and Mac. 
 
-Choose AFNetworking for your next project, or migrate over your existing projects--you'll be happy you did!
+Choose AFNetworking for your next project, or migrate over your existing projects—you'll be happy you did!
 
 ## How To Get Started
 
@@ -26,13 +26,13 @@ Choose AFNetworking for your next project, or migrate over your existing project
 AFNetworking is architected to be as small and modular as possible, in order to make it simple to use and extend.
 
 <table>
-  <tr><th colspan="2">Core</th></tr>
+  <tr><th colspan="2" style="text-align:center;">Core</th></tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Classes/AFURLConnectionOperation.html">AFURLConnectionOperation</a></td>
-    <td>An <tt>NSOperation</tt> subclass that implements the <tt>NSURLConnection</tt> delegate methods.</td>
+    <td>An <tt>NSOperation</tt> that implements the <tt>NSURLConnection</tt> delegate methods.</td>
   </tr>
 
-  <tr><th colspan="2">HTTP Requests</th></tr>
+  <tr><th colspan="2" style="text-align:center;">HTTP Requests</th></tr>
 
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Classes/AFHTTPRequestOperation.html">AFHTTPRequestOperation</a></td>
@@ -48,10 +48,10 @@ AFNetworking is architected to be as small and modular as possible, in order to 
   </tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Classes/AFPropertyListRequestOperation.html">AFPropertyListRequestOperation</a></td>
-    <td>A subclass of AFHTTPRequestOperation for downloading and deserializing objects with property list (plist) response data.</td>
+    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and deserializing objects with [property list](http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/PropertyLists/index.html) response data.</td>
   </tr>
 
-  <tr><th colspan="2">HTTP Client</th></tr>
+  <tr><th colspan="2" style="text-align:center;">HTTP Client</th></tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Classes/AFHTTPClient.html">AFHTTPClient</a></td>
     <td>
@@ -70,14 +70,14 @@ AFNetworking is architected to be as small and modular as possible, in order to 
     </td>
   </tr>
 
-  <tr><th colspan="2">Images</th></tr>
+  <tr><th colspan="2" style="text-align:center;">Images</th></tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Classes/AFImageRequestOperation.html">AFImageRequestOperation</a></td>
     <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading an processing images.</td>
   </tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Classes/UIImageView(AFNetworking).html">UIImageView+AFNetworking</a></td>
-    <td>Adds methods to the UIKit framework’s UIImageView class. The methods in this category provide support for loading remote images asynchronously from a URL.</td>
+    <td>Adds methods to `UIImageView` for loading remote images asynchronously from a URL.</td>
   </tr>
 </table>
 
@@ -99,14 +99,6 @@ AFXMLRequestOperation *operation = [AFXMLRequestOperation XMLParserRequestOperat
 ``` objective-c
 UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 100.0f)];
 [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
-```
-
-``` objective-c
-NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://gowalla.com/images/web/logo.png"]];
-AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(NSImage *image){
-    NSLog(@"Image loaded: %@", image);
-}];
-[operation start];
 ```
 
 ### API Client Request
@@ -133,24 +125,6 @@ AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithReq
 [operation setUploadProgressBlock:^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
     NSLog(@"Sent %d of %d bytes", totalBytesWritten, totalBytesExpectedToWrite);
 }];
-[operation start];
-```
-
-### Request With HTTP Authorization Header
-
-``` objective-c
-NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/friendships/request?user_id=1699"]];
-[request setHTTPMethod:@"POST"];
-[request setValue:@"#{Base64-Encoded Credentials}" forHTTPHeaderField:@"Authorization"];
-
-AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
-operation.completionBlock = ^ {
-    if ([operation hasAcceptableStatusCode]) {
-        NSLog(@"Friend Request Sent");
-    } else {
-        NSLog(@"[Error]: (%@ %@) %@", [operation.request HTTPMethod], [[operation.request URL] relativePath], operation.error);
-    }
-};
 [operation start];
 ```
 
