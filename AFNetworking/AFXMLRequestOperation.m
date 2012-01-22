@@ -24,6 +24,7 @@
 
 #include <Availability.h>
 
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
 static dispatch_queue_t af_xml_request_operation_processing_queue;
 static dispatch_queue_t xml_request_operation_processing_queue() {
     if (af_xml_request_operation_processing_queue == NULL) {
@@ -32,6 +33,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     
     return af_xml_request_operation_processing_queue;
 }
+#endif
 
 @interface AFXMLRequestOperation ()
 @property (readwrite, nonatomic, retain) NSXMLParser *responseXMLParser;
