@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F8689A9C14CC9F780087F357 /* AFJSONUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = F8689A9B14CC9F780087F357 /* AFJSONUtilities.m */; };
+		F8689A9C14CC9F780087F357 /* AFJSONUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = F8689A9B14CC9F780087F357 /* AFJSONUtilities.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F87A159F1444926300318955 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F87A159E1444926300318955 /* AFURLConnectionOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F87A15A21444926A00318955 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F87A15A11444926900318955 /* AFXMLRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F87A15A51444927300318955 /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F87A15A41444927300318955 /* AFPropertyListRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -291,10 +291,10 @@
 				F87A159F1444926300318955 /* AFURLConnectionOperation.m in Sources */,
 				F87A15A21444926A00318955 /* AFXMLRequestOperation.m in Sources */,
 				F87A15A51444927300318955 /* AFPropertyListRequestOperation.m in Sources */,
+				F8689A9C14CC9F780087F357 /* AFJSONUtilities.m in Sources */,
 				F87A15CD1444A30800318955 /* AFGowallaAPIClient.m in Sources */,
 				F87A15CE1444A30800318955 /* NearbySpotsController.m in Sources */,
 				F87A15CF1444A30800318955 /* Spot.m in Sources */,
-				F8689A9C14CC9F780087F357 /* AFJSONUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
