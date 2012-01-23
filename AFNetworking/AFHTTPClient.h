@@ -316,6 +316,34 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  */
 - (void)cancelAllHTTPOperationsWithMethod:(NSString *)method path:(NSString *)path;
 
+///---------------------------------------
+/// @name Batching HTTP Request Operations
+///---------------------------------------
+
+/**
+ Creates and enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue for each specified request object into a batch. When each request operation finishes, the specified progress block is executed, until all of the request operations have finished, at which point the completion block also executes.
+ 
+ @param requests The `NSURLRequest` objects used to create and enqueue operations.
+ @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations. 
+ 
+ @discussion Operations are created by passing the specified `NSURLRequest` objects in `requests`, using `-HTTPRequestOperationWithRequest:success:failure:`, with `nil` for both the `success` and `failure` parameters.
+ */
+- (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests 
+                                          progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                                        completionBlock:(void (^)(NSArray *operations))completionBlock;
+
+/**
+ Enqueues the specified request operations into a batch. When each request operation finishes, the specified progress block is executed, until all of the request operations have finished, at which point the completion block also executes.
+ 
+ @param operations The request operations used to be batched and enqueued.
+ @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations. 
+ */
+- (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations 
+                              progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                            completionBlock:(void (^)(NSArray *operations))completionBlock;
+
 ///---------------------------
 /// @name Making HTTP Requests
 ///---------------------------
