@@ -211,6 +211,10 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     [super dealloc];
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, defaultHeaders: %@, registeredOperationClasses: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.defaultHeaders, self.registeredHTTPOperationClassNames, self.operationQueue];
+}
+
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
