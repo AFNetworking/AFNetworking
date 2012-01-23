@@ -159,7 +159,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
     
     self.request = urlRequest;
-    
+     
     self.state = AFHTTPOperationReadyState;
 	
     return self;
@@ -189,6 +189,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [_authenticationBlock release];
 
     [super dealloc];
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, state: %@, cancelled: %@ request: %@, response: %@>", NSStringFromClass([self class]), self, AFKeyPathFromOperationState(self.state), ([self isCancelled] ? @"YES" : @"NO"), self.request, self.response];
 }
 
 - (void)setCompletionBlock:(void (^)(void))block {
