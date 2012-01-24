@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface NSData (ZLib)
-
+- (NSData*) compress;
 @end
