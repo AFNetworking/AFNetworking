@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE9D925E14D16B4200E40857 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE9D925D14D16B4200E40857 /* libz.dylib */; };
+		DE9D926A14D16B8B00E40857 /* NSData+ZLib.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9D926914D16B8B00E40857 /* NSData+ZLib.m */; };
 		F8689A9C14CC9F780087F357 /* AFJSONUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = F8689A9B14CC9F780087F357 /* AFJSONUtilities.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F87A159F1444926300318955 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F87A159E1444926300318955 /* AFURLConnectionOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F87A15A21444926A00318955 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F87A15A11444926900318955 /* AFXMLRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -29,6 +31,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DE9D925D14D16B4200E40857 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		DE9D926814D16B8B00E40857 /* NSData+ZLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ZLib.h"; sourceTree = "<group>"; };
+		DE9D926914D16B8B00E40857 /* NSData+ZLib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ZLib.m"; sourceTree = "<group>"; };
 		F8323C901455B4FE00190CCB /* AFJSONUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFJSONUtilities.h; sourceTree = "<group>"; };
 		F8689A9B14CC9F780087F357 /* AFJSONUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONUtilities.m; sourceTree = "<group>"; };
 		F87A159D1444926300318955 /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLConnectionOperation.h; sourceTree = "<group>"; };
@@ -77,6 +82,7 @@
 			files = (
 				F87A15D11444A3EB00318955 /* CoreLocation.framework in Frameworks */,
 				F8CEEB6F142CEC6E00247B03 /* Cocoa.framework in Frameworks */,
+				DE9D925E14D16B4200E40857 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +146,8 @@
 				F897DE70142CFEDC000DDD35 /* AFImageRequestOperation.m */,
 				F8323C901455B4FE00190CCB /* AFJSONUtilities.h */,
 				F8689A9B14CC9F780087F357 /* AFJSONUtilities.m */,
+				DE9D926814D16B8B00E40857 /* NSData+ZLib.h */,
+				DE9D926914D16B8B00E40857 /* NSData+ZLib.m */,
 			);
 			name = AFNetworking;
 			path = ../../AFNetworking;
@@ -200,6 +208,7 @@
 		F8CEEB6D142CEC6E00247B03 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DE9D925D14D16B4200E40857 /* libz.dylib */,
 				F87A15D01444A3EB00318955 /* CoreLocation.framework */,
 				F8CEEB6E142CEC6E00247B03 /* Cocoa.framework */,
 				F8CEEB70142CEC6E00247B03 /* Other Frameworks */,
@@ -295,6 +304,7 @@
 				F87A15CD1444A30800318955 /* AFGowallaAPIClient.m in Sources */,
 				F87A15CE1444A30800318955 /* NearbySpotsController.m in Sources */,
 				F87A15CF1444A30800318955 /* Spot.m in Sources */,
+				DE9D926A14D16B8B00E40857 /* NSData+ZLib.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
