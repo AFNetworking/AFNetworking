@@ -113,9 +113,10 @@ static NSString * AFQueryStringComponentFromParametersWithEncodingForKey(id valu
             [mutableParameterComponents addObject:AFQueryStringComponentFromParametersWithEncodingForKey(childValue, encoding, nestedKey)];
         }
     } else if ([value isKindOfClass:[NSArray class]]) {
-        for (id childValue in value) {
-            NSString *nestedKey = [NSString stringWithFormat:@"%@[]", AFURLEncodedStringFromStringWithEncoding([parentKey description], encoding)];
-            [mutableParameterComponents addObject:AFQueryStringComponentFromParametersWithEncodingForKey(childValue, encoding, nestedKey)];
+        NSString *arrayKey = AFURLEncodedStringFromStringWithEncoding([NSString stringWithFormat:@"%@[]", [parentKey description]], encoding);
+        for (id arrayValue in value) {
+            NSString *component = [NSString stringWithFormat:@"%@=%@", arrayKey, AFURLEncodedStringFromStringWithEncoding([arrayValue description], encoding)];
+            [mutableParameterComponents addObject:component];
         }
     } else {
         NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([parentKey description], encoding), AFURLEncodedStringFromStringWithEncoding([value description], encoding)];
