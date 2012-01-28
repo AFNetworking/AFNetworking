@@ -223,10 +223,10 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     if (info) {
         AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
         
-        BOOL isReachable = ((flags & kSCNetworkFlagsReachable) != 0);
-        BOOL needsConnection = ((flags & kSCNetworkFlagsConnectionRequired) != 0);
-        
+        BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
+        BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
         BOOL isNetworkReachable = (isReachable && !needsConnection);
+        
         block(isNetworkReachable);
     }
 }
