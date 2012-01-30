@@ -222,7 +222,11 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
     if (info) {
         AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
-        BOOL isNetworkReachable = (flags & kSCNetworkReachabilityFlagsReachable);
+        
+        BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
+        BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
+        BOOL isNetworkReachable = (isReachable && !needsConnection);
+        
         block(isNetworkReachable);
     }
 }
