@@ -24,7 +24,6 @@
 
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
-@property (readonly, nonatomic, assign) BOOL hasContent;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -62,7 +61,7 @@
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
-        } else if ([self hasContent] && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
+        } else if ([self.responseData length] > 0 && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), self.acceptableContentTypes, [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
@@ -71,15 +70,11 @@
         }
     }
     
-    if (_HTTPError) {
-        return _HTTPError;
+    if (self.HTTPError) {
+        return self.HTTPError;
     } else {
         return [super error];
     }
-}
-
-- (BOOL)hasContent {
-    return [self.responseData length] > 0;
 }
 
 - (BOOL)hasAcceptableStatusCode {

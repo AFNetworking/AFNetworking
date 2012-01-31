@@ -27,7 +27,6 @@
 #import "SpotTableViewCell.h"
 
 #import "TTTLocationFormatter.h"
-#import "AFImageCache.h"
 #import "UIImageView+AFNetworking.h"
 
 @interface NearbySpotsViewController ()
@@ -123,7 +122,6 @@
     self.nearbySpots = [NSArray array];
     [self.tableView reloadData];
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
-    [[AFImageCache sharedImageCache] removeAllObjects];
     
     if (self.locationManager.location) {
         [self loadSpotsForLocation:self.locationManager.location];

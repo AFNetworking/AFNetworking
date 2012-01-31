@@ -23,8 +23,8 @@
 #import <Cocoa/Cocoa.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface NearbySpotsController : NSObject <CLLocationManagerDelegate, NSTableViewDataSource, NSTableViewDelegate>
+@interface NearbySpotsController : NSObject <CLLocationManagerDelegate>
 
-@property (strong) IBOutlet NSTableView *tableView;
+@property (strong) NSArray *nearbySpots;
 
 @end

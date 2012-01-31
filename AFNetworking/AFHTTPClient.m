@@ -32,6 +32,10 @@
 #import <UIKit/UIKit.h>
 #endif
 
+#ifdef _SYSTEMCONFIGURATION_H
+#import <SystemConfiguration/SystemConfiguration.h>
+#endif
+
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
 
@@ -48,6 +52,15 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 @end
 
 #pragma mark -
+
+#ifdef _SYSTEMCONFIGURATION_H
+typedef SCNetworkReachabilityRef AFNetworkReachabilityRef;
+#else
+typedef id AFNetworkReachabilityRef;
+#endif
+
+typedef void (^AFNetworkReachabilityStatusBlock)(BOOL isNetworkReachable);
+typedef void (^AFCompletionBlock)(void);
 
 static NSUInteger const kAFHTTPClientDefaultMaxConcurrentOperationCount = 4;
 
@@ -90,9 +103,18 @@ NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEn
 NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
     NSMutableArray *mutableParameterComponents = [NSMutableArray array];
     for (id key in [parameters allKeys]) {
-        NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([[parameters valueForKey:key] description], encoding)];
-        [mutableParameterComponents addObject:component];
-    }
+        id value = [parameters valueForKey:key];
+        if ([value isKindOfClass:[NSArray class]]) {
+            NSString *arrayKey = AFURLEncodedStringFromStringWithEncoding([NSString stringWithFormat:@"%@[]", [key description]], encoding);
+            for (id arrayValue in value) {
+                NSString *component = [NSString stringWithFormat:@"%@=%@", arrayKey, AFURLEncodedStringFromStringWithEncoding([arrayValue description], encoding)];
+                [mutableParameterComponents addObject:component];
+            }
+        } else {
+            NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([value description], encoding)];
+            [mutableParameterComponents addObject:component];
+        }
+    }    
     
     return [mutableParameterComponents componentsJoinedByString:@"&"];
 }
@@ -124,6 +146,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @property (readwrite, nonatomic, retain) NSMutableArray *registeredHTTPOperationClassNames;
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
+@property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
+@property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
 @end
 
 @implementation AFHTTPClient
@@ -133,6 +157,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
+@synthesize networkReachability = _networkReachability;
+@synthesize networkReachabilityStatusBlock = _networkReachabilityStatusBlock;
 
 + (AFHTTPClient *)clientWithBaseURL:(NSURL *)url {
     return [[[self alloc] initWithBaseURL:url] autorelease];
@@ -178,8 +204,46 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     [_registeredHTTPOperationClassNames release];
     [_defaultHeaders release];
     [_operationQueue release];
+    [_networkReachabilityStatusBlock release];
+    if (_networkReachability) {
+        CFRelease(_networkReachability);
+    }
+    
     [super dealloc];
 }
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, defaultHeaders: %@, registeredOperationClasses: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.defaultHeaders, self.registeredHTTPOperationClassNames, self.operationQueue];
+}
+
+#pragma mark -
+
+#ifdef _SYSTEMCONFIGURATION_H
+static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
+    if (info) {
+        AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
+        
+        BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
+        BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
+        BOOL isNetworkReachable = (isReachable && !needsConnection);
+        
+        block(isNetworkReachable);
+    }
+}
+
+- (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block {
+    if (_networkReachability) {
+        SCNetworkReachabilityUnscheduleFromRunLoop(_networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+        CFRelease(_networkReachability);
+    }
+    
+    self.networkReachabilityStatusBlock = block;
+    self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
+    SCNetworkReachabilityContext context = {0, self.networkReachabilityStatusBlock, NULL, NULL, NULL};
+    SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
+    SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+}
+#endif
 
 #pragma mark -
 
@@ -229,15 +293,13 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
                                       path:(NSString *)path 
                                 parameters:(NSDictionary *)parameters 
 {	
-  // cw
     NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
-//  NSURL *url = [NSURL URLWithString:path];
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
 	
     if (parameters) {        
-        if ([method isEqualToString:@"GET"]) {
+        if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"] || [method isEqualToString:@"DELETE"]) {
             url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding)]];
             [request setURL:url];
         } else {
@@ -267,11 +329,6 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
                                              parameters:(NSDictionary *)parameters
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData>formData))block
 {
-    if (!([method isEqualToString:@"POST"] || [method isEqualToString:@"PUT"] || [method isEqualToString:@"DELETE"])) {
-        [NSException raise:@"Invalid HTTP Method" format:@"%@ is not supported for multipart form requests; must be either POST, PUT, or DELETE", method];
-        return nil;
-    }
-    
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
     __block AFMultipartFormData *formData = [[AFMultipartFormData alloc] initWithStringEncoding:self.stringEncoding];
     
@@ -310,12 +367,10 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     NSString *className = nil;
     NSEnumerator *enumerator = [self.registeredHTTPOperationClassNames reverseObjectEnumerator];
     while (!operation && (className = [enumerator nextObject])) {
-      
-        Class my_class = NSClassFromString(className);
-        if (my_class && [my_class canProcessRequest:urlRequest]) {
-            operation = [[(AFHTTPRequestOperation *)[my_class alloc] initWithRequest:urlRequest] autorelease];
+        Class op_class = NSClassFromString(className);
+        if (op_class && [op_class canProcessRequest:urlRequest]) {
+            operation = [[(AFHTTPRequestOperation *)[op_class alloc] initWithRequest:urlRequest] autorelease];
         }
-       
     }
     
     if (!operation) {
@@ -327,15 +382,61 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     return operation;
 }
 
+#pragma mark -
+
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation {
     [self.operationQueue addOperation:operation];
 }
 
-- (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url {
+- (void)cancelAllHTTPOperationsWithMethod:(NSString *)method path:(NSString *)path {
     for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
-        if ([[[operation request] HTTPMethod] isEqualToString:method] && [[[operation request] URL] isEqual:url]) {
+        if ((!method || [method isEqualToString:[[operation request] HTTPMethod]]) && [path isEqualToString:[[[operation request] URL] path]]) {
             [operation cancel];
         }
+    }
+}
+
+- (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests 
+                                          progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                                        completionBlock:(void (^)(NSArray *operations))completionBlock
+{
+    NSMutableArray *mutableOperations = [NSMutableArray array];
+    for (NSURLRequest *request in requests) {
+        AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:nil failure:nil];
+        [mutableOperations addObject:operation];
+    }
+    
+    [self enqueueBatchOfHTTPRequestOperations:mutableOperations progressBlock:progressBlock completionBlock:completionBlock];
+}
+
+- (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations 
+                              progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                            completionBlock:(void (^)(NSArray *operations))completionBlock
+{
+    NSBlockOperation *batchedOperation = [NSBlockOperation blockOperationWithBlock:^{
+        if (completionBlock) {
+            completionBlock(operations);
+        }
+    }];
+    
+    [self.operationQueue addOperation:batchedOperation];
+    
+    NSPredicate *finishedOperationPredicate = [NSPredicate predicateWithFormat:@"isFinished == YES"];
+    
+    for (AFHTTPRequestOperation *operation in operations) {
+        AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
+        operation.completionBlock = ^{
+            if (progressBlock) {
+                progressBlock([[batchedOperation.dependencies filteredArrayUsingPredicate:finishedOperationPredicate] count], [batchedOperation.dependencies count]);
+            }
+            
+            if (originalCompletionBlock) {
+                originalCompletionBlock();
+            }
+        };
+        
+        [batchedOperation addDependency:operation];
+        [self enqueueHTTPRequestOperation:operation];
     }
 }
 
@@ -385,16 +486,18 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 
 #pragma mark -
 
+static NSString * const kAFMultipartFormCRLF = @"\r\n";
+
 static inline NSString * AFMultipartFormInitialBoundary() {
-    return [NSString stringWithFormat:@"--%@%@", kAFMultipartFormBoundary, kAFMultipartFormLineDelimiter];
+    return [NSString stringWithFormat:@"--%@%@", kAFMultipartFormBoundary, kAFMultipartFormCRLF];
 }
 
 static inline NSString * AFMultipartFormEncapsulationBoundary() {
-    return [NSString stringWithFormat:@"%@--%@%@", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary, kAFMultipartFormLineDelimiter];
+    return [NSString stringWithFormat:@"%@--%@%@", kAFMultipartFormCRLF, kAFMultipartFormBoundary, kAFMultipartFormCRLF];
 }
 
 static inline NSString * AFMultipartFormFinalBoundary() {
-    return [NSString stringWithFormat:@"%@--%@--", kAFMultipartFormLineDelimiter, kAFMultipartFormBoundary];
+    return [NSString stringWithFormat:@"%@--%@--%@%@", kAFMultipartFormCRLF, kAFMultipartFormBoundary, kAFMultipartFormCRLF, kAFMultipartFormCRLF];
 }
 
 @interface AFMultipartFormData ()
@@ -439,10 +542,10 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     }
     
     for (NSString *field in [headers allKeys]) {
-        [self appendString:[NSString stringWithFormat:@"%@: %@%@", field, [headers valueForKey:field], kAFMultipartFormLineDelimiter]];
+        [self appendString:[NSString stringWithFormat:@"%@: %@%@", field, [headers valueForKey:field], kAFMultipartFormCRLF]];
     }
     
-    [self appendString:kAFMultipartFormLineDelimiter];
+    [self appendString:kAFMultipartFormCRLF];
     [self appendData:body];
 }
 

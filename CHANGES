@@ -1,0 +1,102 @@
+= 0.9.0 / 2012-01-23
+
+ * Add thread-safe behavior to `AFURLConnectionOperation` 
+(Mattt Thompson)
+
+ * Add batching of operations for `AFHTTPClient` (Mattt 
+Thompson)
+
+ * Add authentication challenge callback block to override 
+default implementation of 
+`connection:didReceiveAuthenticationChallenge:` in 
+`AFURLConnectionOperation` (Mattt Thompson)
+
+ * Add `_AFNETWORKING_PREFER_NSJSONSERIALIZATION_`, which, 
+when defined, short-circuits the standard preference 
+ordering used in `AFJSONEncode` and `AFJSONDecode` to use 
+`NSJSONSerialization` when available, falling back on 
+third-party-libraries. (Mattt Thompson, Shane Vitarana)
+
+ * Add custom `description` for `AFURLConnectionOperation` 
+and `AFHTTPClient` (Mattt Thompson)
+
+ * Add `text/javascript` to default acceptable content 
+types for `AFJSONRequestOperation` (Jake Boxer)
+
+ * Add `imageScale` property to change resolution of images 
+constructed from cached data (Štěpán Petrů)
+
+ * Add note about third party JSON libraries in README 
+(David Keegan)
+
+ * `AFQueryStringFromParametersWithEncoding` formats 
+`NSArray` values in the form `key[]=value1&key[]=value2` 
+instead of `key=(value1,value2)` (Dan Thorpe)
+
+ * `AFImageRequestOperation -responseImage` on OS X uses 
+`NSBitmapImageRep` to determine the correct pixel 
+dimensions of the image (David Keegan)
+
+ * `AFURLConnectionOperation` `connection` has memory 
+management policy `assign` to avoid retain cycles caused by 
+`NSURLConnection` retaining its delegate (Mattt Thompson)
+
+ * `AFURLConnectionOperation` calls super implementation 
+for `-isReady`, following the guidelines for `NSOperation` 
+subclasses (Mattt Thompson)
+
+ * `UIImageView -setImageWithURL:` and related methods call 
+success callback after setting image (Cameron Boehmer)
+
+ * Cancel request if an authentication challenge has no 
+suitable credentials in `AFURLConnectionOperation 
+-connection:didReceiveAuthenticationChallenge:` (Jorge 
+Bernal)
+
+ * Remove exception from 
+`multipartFormRequestWithMethod:path:parameters:constructing
+BodyWithBlock:` raised when certain HTTP methods are used. 
+(Mattt Thompson)
+
+ * Remove `AFImageCache` from public API, moving it into 
+private implementation of `UIImageView+AFNetworking` (Mattt 
+Thompson)
+
+  * Mac example application makes better use of AppKit 
+technologies and conventions (Mattt Thompson)
+
+ * Fix issue with multipart form boundaries in 
+`AFHTTPClient 
+-multipartFormRequestWithMethod:path:parameters:constructing
+BodyWithBlock:` (Ray Morgan, Mattt Thompson, Sam Soffes)
+
+ * Fix "File Upload with Progress Callback" code snippet in 
+README (Larry Legend)
+
+ * Fix to SBJSON invocations in `AFJSONEncode` and 
+`AFJSONDecode` (Matthias Tretter, James Frye)
+
+ * Fix documentation for `AFHTTPClient 
+requestWithMethod:path:parameters:` (Michael Parker)
+
+ * Fix `Content-Disposition` headers used for multipart 
+form construction (Michael Parker)
+
+ * Add network reachability status change callback property 
+to `AFHTTPClient`. (Mattt Thompson, Kevin Harwood)
+
+ * Fix exception handling in `AFJSONEncode` and 
+`AFJSONDecode` (David Keegan)
+
+ * Fix `NSData` initialization with string in 
+`AFBase64EncodedStringFromString` (Adam Ernst, Mattt 
+Thompson)
+
+ * Fix error check in `appendPartWithFileURL:name:error:` 
+(Warren Moore, Baldoph, Mattt Thompson)
+
+ * Fix compiler warnings for certain configurations 
+(Charlie Williams)
+
+ * Fix bug caused by passing zero-length `responseData` to 
+response object initializers (Mattt Thompson, Serge Paquet)

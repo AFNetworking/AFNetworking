@@ -53,7 +53,10 @@ extern NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
  @param parameters The parameters used to construct the query string
  @param encoding The encoding to use in constructing the query string. If you are uncertain of the correct encoding, you should use UTF-8 (NSUTF8StringEncoding), which is the encoding designated by RFC 3986 as the correct encoding for use in URLs.
  
- @discussion Query strings are constructed by collecting each key-value pair, URL-encoding the string value of the key and value (by sending `-description` to each), constructing a string in the form "key=value", and then joining the components with "&". The constructed query string does not include the ? character used to delimit the query component.
+ @discussion Query strings are constructed by collecting each key-value pair, URL-encoding a string representation of the key-value pair, and then joining the components with "&". 
+ 
+ 
+ If a key-value pair has a an `NSArray` for its value, each member of the array will be represented in the format `key[]=value1&key[]value2`. Otherwise, the key-value pair will be formatted as "key=value". String representations of both keys and values are derived using the `-description` method. The constructed query string does not include the ? character used to delimit the query component.
  
  @return A URL-encoded query string
  */
@@ -157,9 +160,24 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  */
 - (id)initWithBaseURL:(NSURL *)url;
 
-///----------------------------------
+///-----------------------------------
+/// @name Managing Reachability Status
+///-----------------------------------
+
+/**
+ Sets a callback to be executed when the network availability of the `baseURL` host changes.
+ 
+ @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument, which is `YES` if the host is available, otherwise `NO`.
+ 
+ @warning This method requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
+ */
+#ifdef _SYSTEMCONFIGURATION_H
+- (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block;
+#endif
+
+///-------------------------------
 /// @name Managing HTTP Operations
-///----------------------------------
+///-------------------------------
 
 /**
  Attempts to register a subclass of `AFHTTPRequestOperation`, adding it to a chain to automatically generate request operations from a URL request.
@@ -291,12 +309,40 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation;
 
 /**
- Cancels all operations in the HTTP client's operation queue that match the specified HTTP method and URL.
+ Cancels all operations in the HTTP client's operation queue whose URLs match the specified HTTP method and path.
  
- @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`.
- @param url The URL to match for the cancelled requests.
+ @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`. If `nil`, all request operations with URLs matching the path will be cancelled. 
+ @param url The path to match for the cancelled requests.
  */
-- (void)cancelHTTPOperationsWithMethod:(NSString *)method andURL:(NSURL *)url;
+- (void)cancelAllHTTPOperationsWithMethod:(NSString *)method path:(NSString *)path;
+
+///---------------------------------------
+/// @name Batching HTTP Request Operations
+///---------------------------------------
+
+/**
+ Creates and enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue for each specified request object into a batch. When each request operation finishes, the specified progress block is executed, until all of the request operations have finished, at which point the completion block also executes.
+ 
+ @param requests The `NSURLRequest` objects used to create and enqueue operations.
+ @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations. 
+ 
+ @discussion Operations are created by passing the specified `NSURLRequest` objects in `requests`, using `-HTTPRequestOperationWithRequest:success:failure:`, with `nil` for both the `success` and `failure` parameters.
+ */
+- (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests 
+                                          progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                                        completionBlock:(void (^)(NSArray *operations))completionBlock;
+
+/**
+ Enqueues the specified request operations into a batch. When each request operation finishes, the specified progress block is executed, until all of the request operations have finished, at which point the completion block also executes.
+ 
+ @param operations The request operations used to be batched and enqueued.
+ @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations. 
+ */
+- (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations 
+                              progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                            completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 ///---------------------------
 /// @name Making HTTP Requests

@@ -24,12 +24,8 @@
 
 #import "Spot.h"
 
-#import "AFImageRequestOperation.h"
-
 @interface NearbySpotsController ()
-@property (strong) NSArray *nearbySpots;
 @property (strong) CLLocationManager *locationManager;
-@property (strong) NSOperationQueue *imageOperationQueue;
 
 - (void)loadSpotsForLocation:(CLLocation *)location;
 @end
@@ -37,8 +33,6 @@
 @implementation NearbySpotsController
 @synthesize nearbySpots = _nearbySpots;
 @synthesize locationManager = _locationManager;
-@synthesize imageOperationQueue = _imageOperationQueue;
-@synthesize tableView = _tableView;
 
 - (id)init {
     self = [super init];
@@ -51,9 +45,6 @@
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     self.locationManager.distanceFilter = 80.0;
-    
-    self.imageOperationQueue = [[NSOperationQueue alloc] init];
-    self.imageOperationQueue.maxConcurrentOperationCount = 8;
     
     return self;
 }
@@ -79,9 +70,7 @@
             } else {
                 return NSOrderedSame;
             }
-        }];
-                
-        [self.tableView reloadData];
+        }];      
     }];
 }
 
@@ -89,34 +78,6 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     [self loadSpotsForLocation:newLocation];
-}
-
-#pragma mark - NSTableViewDataSource
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return [self.nearbySpots count];
-}
-
-// The following is what happens when a longtime iOS dev attempts to work with AppKit. I'm sure there's a _much_ better way to do this.
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    Spot *spot = [self.nearbySpots objectAtIndex:row];
-    
-	if ([[tableColumn dataCell] isMemberOfClass:[NSImageCell class]]) {
-        if (spot.image) {
-            return spot.image;
-        } else {
-            NSURLRequest *imageRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:spot.imageURLString]];
-            AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:imageRequest success:^(NSImage *image) {
-                spot.image = image;
-                [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-            }];
-            [self.imageOperationQueue addOperation:operation];
-            
-            return [NSImage imageNamed:@"placeholder-stamp.png"];
-        }
-	} else {
-		return spot.name;
-	}
 }
 
 @end

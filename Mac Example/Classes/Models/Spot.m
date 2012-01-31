@@ -26,8 +26,7 @@
 
 @implementation Spot
 @synthesize name = _name;
-@synthesize imageURLString = _imageURLString;
-@synthesize image = _image;
+@synthesize imageURL = _imageURL;
 @synthesize latitude = _latitude;
 @synthesize longitude = _longitude;
 @dynamic location;
@@ -39,7 +38,7 @@
     }
     
     self.name = [attributes valueForKeyPath:@"name"];
-    self.imageURLString = [attributes valueForKeyPath:@"image_url"];
+    self.imageURL = [NSURL URLWithString:[attributes valueForKeyPath:@"image_url"]];
     self.latitude = [attributes valueForKeyPath:@"lat"];
     self.longitude = [attributes valueForKeyPath:@"lng"];
     
