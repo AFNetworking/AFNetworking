@@ -27,7 +27,18 @@
 @protocol AFMultipartFormData;
 
 /**
- Method used to encode parameters into request body 
+ Posted when network reachability changes.
+ The notification object is an `NSNumber` object containing the boolean value for the current network reachability.
+ This notification contains no information in the `userInfo` dictionary.
+ 
+ @warning In order for network reachability to be monitored, include the `SystemConfiguration` framework in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
+ */
+#ifdef _SYSTEMCONFIGURATION_H
+extern NSString * const AFNetworkingReachabilityDidChangeNotification;
+#endif
+
+/**
+ Method used to encode parameters into request body. 
  */
 typedef enum {
     AFFormURLParameterEncoding,
