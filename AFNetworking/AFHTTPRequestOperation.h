@@ -31,6 +31,8 @@
     NSIndexSet *_acceptableStatusCodes;
     NSSet *_acceptableContentTypes;
     NSError *_HTTPError;
+    dispatch_queue_t _successCallbackQueue;
+    dispatch_queue_t _failureCallbackQueue;
 }
 
 ///----------------------------------------------
@@ -70,6 +72,17 @@
  A Boolean value that corresponds to whether the MIME type of the response is among the specified set of acceptable content types. Returns `YES` if `acceptableContentTypes` is `nil`.
  */
 @property (readonly) BOOL hasAcceptableContentType;
+
+/** 
+ The callback dispatch queue on success. If this is NULL (default), the main queue is used.
+ */
+@property (nonatomic) dispatch_queue_t successCallbackQueue;
+
+/** 
+ The callback dispatch queue on failure. If this is NULL (default), the main queue is used.
+ */
+@property (nonatomic) dispatch_queue_t failureCallbackQueue;
+
 
 /**
  A Boolean value determining whether or not the class can process the specified request. For example, `AFJSONRequestOperation` may check to make sure the content type was `application/json` or the URL path extension was `.json`.
