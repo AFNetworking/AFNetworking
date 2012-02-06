@@ -187,17 +187,9 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
         }
         
         if (self.error) {
-            if (failure) {
-                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                    failure(self, self.error);
-                });
-            }
+            [self dispatchFailureBlock:failure error:self.error];
         } else {
-            if (success) {
-                dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                    success(self, self.responseXMLParser);
-                });
-            }
+            [self dispatchSuccessBlock:success responseObject:self.responseXMLParser];
         }
     };    
 }

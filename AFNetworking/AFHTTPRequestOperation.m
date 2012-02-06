@@ -127,17 +127,9 @@
         }
         
         if (self.error) {
-            if (failure) {
-                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                    failure(self, self.error);
-                });
-            }
+            [self dispatchFailureBlock:failure error:self.error];
         } else {
-            if (success) {
-                dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                    success(self, self.responseData);
-                });
-            }
+            [self dispatchSuccessBlock:success responseObject:self.responseString];
         }
     };
 }
@@ -146,6 +138,25 @@
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
     return YES;
-}     
+}
+
+#pragma mark - AFInternal
+
+- (void)dispatchSuccessBlock:(void (^)(AFHTTPRequestOperation *operation, id responseObject))successBlock responseObject:(id)responseObject {
+    if (successBlock) {
+        dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+            successBlock(self, responseObject);
+        });
+    }
+}
+
+- (void)dispatchFailureBlock:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failureBlock error:(NSError *)error {
+    if (failureBlock) {
+        dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+            failureBlock(self, error);
+        });
+
+    }
+}
 
 @end

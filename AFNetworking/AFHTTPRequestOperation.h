@@ -107,3 +107,18 @@
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 @end
+
+
+@interface AFHTTPRequestOperation (AFInternal)
+
+/**
+ Executes the successBlock on the corresponding successCallbackQueue.
+ */
+- (void)dispatchSuccessBlock:(void (^)(AFHTTPRequestOperation *operation, id responseObject))successBlock responseObject:(id)responseObject;
+
+/**
+ Executes the failureBlock on the corresponding failureCallbackQueue.
+ */
+- (void)dispatchFailureBlock:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failureBlock error:(NSError *)error;
+
+@end
