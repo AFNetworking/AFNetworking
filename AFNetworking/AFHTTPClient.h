@@ -30,9 +30,9 @@
  Method used to encode parameters into request body 
  */
 typedef enum {
-    AFFormURLParameterEncoding,
-    AFJSONParameterEncoding,
-    AFPropertyListParameterEncoding,
+    AFFormURLParameterEncoding      = 1 << 0,
+    AFJSONParameterEncoding         = 1 << 1,
+    AFPropertyListParameterEncoding = 1 << 2
 } AFHTTPClientParameterEncoding;
 
 /**
@@ -260,6 +260,15 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
                                       path:(NSString *)path 
                                 parameters:(NSDictionary *)parameters;
+
+/**
+ Encodes the parameters according to the value of the `parameterEncoding` property and sets the request's body.
+ 
+ @param request A mutable URL request, most likely created from the -requestWithMethod:path:parameters: method, above.
+ @param parameters The parameters to be set as the HTTP body.
+ @param charset The IANA charset name from the `stringEncoding` property. This is usually used to set the 'Content-Type' header.
+ */
+- (void)addHTTPBodyToRequest:(NSMutableURLRequest *)request withParameters:(NSDictionary *)parameters charset:(NSString *)charset;
 
 /**
  Creates an `NSMutableURLRequest` object with the specified HTTP method and path, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block. See http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
