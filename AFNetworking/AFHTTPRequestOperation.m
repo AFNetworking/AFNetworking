@@ -127,7 +127,7 @@
         }
         
         if (self.error) {
-            [self dispatchFailureBlock:failure error:self.error];
+            [self dispatchFailureBlock:failure];
         } else {
             [self dispatchSuccessBlock:success responseObject:self.responseString];
         }
@@ -150,12 +150,11 @@
     }
 }
 
-- (void)dispatchFailureBlock:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failureBlock error:(NSError *)error {
+- (void)dispatchFailureBlock:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failureBlock {
     if (failureBlock) {
         dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-            failureBlock(self, error);
+            failureBlock(self, self.error);
         });
-
     }
 }
 

@@ -230,7 +230,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (self.error) {
-                [self dispatchFailureBlock:failure error:self.error];
+                [self dispatchFailureBlock:failure];
             } else {            
                 [self dispatchSuccessBlock:success responseObject:self.responseImage];
             }

@@ -119,6 +119,6 @@
 /**
  Executes the failureBlock on the corresponding failureCallbackQueue.
  */
-- (void)dispatchFailureBlock:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failureBlock error:(NSError *)error;
+- (void)dispatchFailureBlock:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failureBlock;
 
 @end

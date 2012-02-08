@@ -187,7 +187,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
         }
         
         if (self.error) {
-            [self dispatchFailureBlock:failure error:self.error];
+            [self dispatchFailureBlock:failure];
         } else {
             [self dispatchSuccessBlock:success responseObject:self.responseXMLParser];
         }

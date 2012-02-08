@@ -134,7 +134,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 id JSON = self.responseJSON;
                 
                 if (self.JSONError) {
-                    [self dispatchFailureBlock:failure error:self.JSONError];
+                    [self dispatchFailureBlock:failure];
                 } else {
                     [self dispatchSuccessBlock:success responseObject:JSON];
                 }
