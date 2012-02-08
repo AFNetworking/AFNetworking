@@ -30,9 +30,9 @@
  Method used to encode parameters into request body 
  */
 typedef enum {
-    AFFormURLParameterEncoding      = 1 << 0,
-    AFJSONParameterEncoding         = 1 << 1,
-    AFPropertyListParameterEncoding = 1 << 2
+    AFFormURLParameterEncoding = 0,
+    AFJSONParameterEncoding,
+    AFPropertyListParameterEncoding
 } AFHTTPClientParameterEncoding;
 
 /**
