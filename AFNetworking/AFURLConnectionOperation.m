@@ -347,33 +347,47 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 #pragma mark - NSURLConnectionDelegate
 
+// with defining this constant, AFNetworking will accept invalid/unknown SSL certificates without any warning. Use this only for debugging!
+#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
+- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
+    return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
+}
+#endif
+
 - (void)connection:(NSURLConnection *)connection 
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge 
 {
     if (self.authenticationBlock) {
         self.authenticationBlock(connection, challenge);
     } else {
-        if ([challenge previousFailureCount] == 0) {
-            NSURLCredential *credential = nil;
-            
-            NSString *username = [(NSString *)CFURLCopyUserName((CFURLRef)[self.request URL]) autorelease];
-            NSString *password = [(NSString *)CFURLCopyPassword((CFURLRef)[self.request URL]) autorelease];
-            
-            if (username && password) {
-                credential = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceNone];
-            } else if (username) {
-                credential = [[[NSURLCredentialStorage sharedCredentialStorage] credentialsForProtectionSpace:[challenge protectionSpace]] objectForKey:username];
-            } else {
-                credential = [[NSURLCredentialStorage sharedCredentialStorage] defaultCredentialForProtectionSpace:[challenge protectionSpace]];
-            }
-            
-            if (credential) {
-                [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
+        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+        }else
+#endif        
+        {
+            if ([challenge previousFailureCount] == 0) {
+                NSURLCredential *credential = nil;
+                
+                NSString *username = [(NSString *)CFURLCopyUserName((CFURLRef)[self.request URL]) autorelease];
+                NSString *password = [(NSString *)CFURLCopyPassword((CFURLRef)[self.request URL]) autorelease];
+                
+                if (username && password) {
+                    credential = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceNone];
+                } else if (username) {
+                    credential = [[[NSURLCredentialStorage sharedCredentialStorage] credentialsForProtectionSpace:[challenge protectionSpace]] objectForKey:username];
+                } else {
+                    credential = [[NSURLCredentialStorage sharedCredentialStorage] defaultCredentialForProtectionSpace:[challenge protectionSpace]];
+                }
+                
+                if (credential) {
+                    [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+                } else {
+                    [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+                }
             } else {
                 [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
             }
-        } else {
-            [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
         }
     }
 }
