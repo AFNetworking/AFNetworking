@@ -304,24 +304,29 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
             [request setURL:url];
         } else {
             NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-            switch (self.parameterEncoding) {
-                case AFFormURLParameterEncoding:;
-                    [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding) dataUsingEncoding:self.stringEncoding]];
-                    break;
-                case AFJSONParameterEncoding:;
-                    [request setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFJSONStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
-                    break;
-                case AFPropertyListParameterEncoding:;
-                    [request setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFPropertyListStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
-                    break;
-            }
+            [self addHTTPBodyToRequest:request withParameters:(NSDictionary *)parameters charset:charset];
         }
     }
     
 	return request;
+}
+
+- (void)addHTTPBodyToRequest:(NSMutableURLRequest *)request withParameters:(NSDictionary *)parameters charset:(NSString *)charset
+{
+    switch (self.parameterEncoding) {
+        case AFFormURLParameterEncoding:;
+            [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+            [request setHTTPBody:[AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding) dataUsingEncoding:self.stringEncoding]];
+            break;
+        case AFJSONParameterEncoding:;
+            [request setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+            [request setHTTPBody:[AFJSONStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+            break;
+        case AFPropertyListParameterEncoding:;
+            [request setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+            [request setHTTPBody:[AFPropertyListStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+            break;
+    }
 }
 
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
