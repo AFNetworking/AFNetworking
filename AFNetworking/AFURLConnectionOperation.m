@@ -39,6 +39,8 @@ NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
 
 NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.networking.operation.start";
 NSString * const AFNetworkingOperationDidFinishNotification = @"com.alamofire.networking.operation.finish";
+NSString * const AFNetworkingOperationWillStartNotification = @"com.alamofire.networking.operation.willstart";
+NSString * const AFNetworkingOperationWillFinishNotification = @"com.alamofire.networking.operation.willfinish";
 
 typedef void (^AFURLConnectionOperationProgressBlock)(NSInteger bytes, NSInteger totalBytes, NSInteger totalBytesExpected);
 typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
@@ -236,6 +238,17 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (AFStateTransitionIsValid(self.state, state, [self isCancelled])) {
         NSString *oldStateKey = AFKeyPathFromOperationState(self.state);
         NSString *newStateKey = AFKeyPathFromOperationState(state);
+        
+        switch (state) {
+            case AFHTTPOperationExecutingState:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationWillStartNotification object:self];
+                break;
+            case AFHTTPOperationFinishedState:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationWillFinishNotification object:self];
+                break;
+            default:
+                break;
+        }
         
         [self willChangeValueForKey:newStateKey];
         [self willChangeValueForKey:oldStateKey];

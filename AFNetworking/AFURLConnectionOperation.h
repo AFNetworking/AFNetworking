@@ -35,9 +35,19 @@ extern NSString * const AFNetworkingErrorDomain;
 extern NSString * const AFNetworkingOperationDidStartNotification;
 
 /**
+ Posted just before an operation begins executing.
+ */
+extern NSString * const AFNetworkingOperationWillStartNotification;
+
+/**
  Posted when an operation finishes.
  */
 extern NSString * const AFNetworkingOperationDidFinishNotification;
+
+/**
+ Posted just before an operation finishes.
+ */
+extern NSString * const AFNetworkingOperationWillFinishNotification;
 
 /**
  `AFURLConnectionOperation` is an `NSOperation` that implements NSURLConnection delegate methods.
