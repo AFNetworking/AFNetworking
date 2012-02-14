@@ -25,6 +25,7 @@
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
 #import "AFJSONUtilities.h"
+#import "NSData+ZLib.h"
 
 #import <Availability.h>
 
@@ -154,6 +155,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @synthesize baseURL = _baseURL;
 @synthesize stringEncoding = _stringEncoding;
 @synthesize parameterEncoding = _parameterEncoding;
+@synthesize shouldCompressRequestBody = _shouldCompressRequestBody;
 @synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
@@ -174,6 +176,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     
     self.stringEncoding = NSUTF8StringEncoding;
     self.parameterEncoding = AFFormURLParameterEncoding;
+    self.shouldCompressRequestBody = NO;
 	
     self.registeredHTTPOperationClassNames = [NSMutableArray array];
     
@@ -304,20 +307,27 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
             [request setURL:url];
         } else {
             NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+            NSData *body = nil;
             switch (self.parameterEncoding) {
                 case AFFormURLParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding) dataUsingEncoding:self.stringEncoding]];
+                    body = [AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding) dataUsingEncoding:self.stringEncoding];
                     break;
                 case AFJSONParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFJSONStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+                    body = [AFJSONStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding];
                     break;
                 case AFPropertyListParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFPropertyListStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+                    body =[AFPropertyListStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding];
                     break;
             }
+            if(body && [self shouldCompressRequestBody]) {
+                body = [body compress];
+                [request addValue:@"gzip" forHTTPHeaderField:@"Content-Encoding"];
+            }
+            
+            [request setHTTPBody:body];
         }
     }
     

@@ -107,6 +107,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
     NSURL *_baseURL;
     NSStringEncoding _stringEncoding;
     AFHTTPClientParameterEncoding _parameterEncoding;
+    BOOL _shouldCompressRequestBody;
     NSMutableArray *_registeredHTTPOperationClassNames;
     NSMutableDictionary *_defaultHeaders;
     NSOperationQueue *_operationQueue;
@@ -130,6 +131,11 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  The `AFHTTPClientParameterEncoding` value corresponding to how parameters are encoded into a request body. This is `AFFormURLParameterEncoding` by default.
  */
 @property (nonatomic, assign) AFHTTPClientParameterEncoding parameterEncoding;
+
+/**
+ Enable to compress the post body using zlib inflate. Defaults to false
+ */
+@property (nonatomic, assign) BOOL shouldCompressRequestBody;
 
 /**
  The operation queue which manages operations enqueued by the HTTP client.
