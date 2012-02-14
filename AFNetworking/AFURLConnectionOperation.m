@@ -232,11 +232,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)setAuthenticationAgainstProtectionSpaceBlock:(BOOL (^)(NSURLConnection *, NSURLProtectionSpace *))block {
-    self.authenticationAgainstProtectionSpaceBlock = block;
+    self.authenticationAgainstProtectionSpace = block;
 }
 
 - (void)setAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block {
-    self.authenticationChallengeBlock = block;
+    self.authenticationChallenge = block;
 }
 
 - (void)setState:(AFOperationState)state {
