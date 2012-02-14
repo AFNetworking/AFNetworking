@@ -41,6 +41,7 @@ NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.net
 NSString * const AFNetworkingOperationDidFinishNotification = @"com.alamofire.networking.operation.finish";
 
 typedef void (^AFURLConnectionOperationProgressBlock)(NSInteger bytes, NSInteger totalBytes, NSInteger totalBytesExpected);
+typedef BOOL (^AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock)(NSURLConnection *connection, NSURLProtectionSpace *protectionSpace);
 typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
 
 static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
@@ -94,7 +95,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock downloadProgress;
-@property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationChallengeBlock authenticationBlock;
+@property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock authenticationAgainstProtectionSpace;
+@property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationChallengeBlock authenticationChallenge;
 
 - (void)operationDidStart;
 - (void)finish;
@@ -115,7 +117,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize outputStream = _outputStream;
 @synthesize uploadProgress = _uploadProgress;
 @synthesize downloadProgress = _downloadProgress;
-@synthesize authenticationBlock = _authenticationBlock;
+@synthesize authenticationAgainstProtectionSpace = _authenticationAgainstProtectionSpace;
+@synthesize authenticationChallenge = _authenticationChallenge;
 @synthesize lock = _lock;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
@@ -186,8 +189,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     	
     [_uploadProgress release];
     [_downloadProgress release];
-    [_authenticationBlock release];
-
+    [_authenticationChallenge release];
+    [_authenticationAgainstProtectionSpace release];
+    
     [super dealloc];
 }
 
@@ -227,8 +231,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.downloadProgress = block;
 }
 
+- (void)setAuthenticationAgainstProtectionSpaceBlock:(BOOL (^)(NSURLConnection *, NSURLProtectionSpace *))block {
+    self.authenticationAgainstProtectionSpaceBlock = block;
+}
+
 - (void)setAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block {
-    self.authenticationBlock = block;
+    self.authenticationChallengeBlock = block;
 }
 
 - (void)setState:(AFOperationState)state {
@@ -347,12 +355,35 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 #pragma mark - NSURLConnectionDelegate
 
+- (BOOL)connection:(NSURLConnection *)connection 
+canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
+{
+#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
+    if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        return YES;
+    }
+#endif
+    if (self.authenticationAgainstProtectionSpace) {
+        return self.authenticationAgainstProtectionSpace(connection, protectionSpace);
+    } else if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust] || [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodClientCertificate]) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
 - (void)connection:(NSURLConnection *)connection 
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge 
 {
-    if (self.authenticationBlock) {
-        self.authenticationBlock(connection, challenge);
+    if (self.authenticationChallenge) {
+        self.authenticationChallenge(connection, challenge);
     } else {
+#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
+        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+            return;
+        }
+#endif        
         if ([challenge previousFailureCount] == 0) {
             NSURLCredential *credential = nil;
             
