@@ -57,7 +57,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLParser *XMLParser))failure
 {
-    AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -127,20 +127,14 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 
 - (void)dealloc {
-    [_responseXMLParser release];
-    
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
     [_responseXMLDocument release];
 #endif
-    
-    [_XMLError release];
-    
-    [super dealloc];
 }
 
 - (NSXMLParser *)responseXMLParser {
     if (!_responseXMLParser && [self.responseData length] > 0 && [self isFinished]) {
-        self.responseXMLParser = [[[NSXMLParser alloc] initWithData:self.responseData] autorelease];
+        self.responseXMLParser = [[NSXMLParser alloc] initWithData:self.responseData];
     }
     
     return _responseXMLParser;
@@ -181,20 +175,21 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    __block typeof(self) bself = self;
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([bself isCancelled]) {
             return;
         }
         
         if (self.error) {
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(self, self.error);
+                    failure(bself, self.error);
                 });
             }
         } else {
             if (success) {
-                success(self, self.responseXMLParser);
+                success(bself, self.responseXMLParser);
             }
         }
     };    

@@ -78,7 +78,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+    AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             UIImage *image = responseObject;
@@ -147,11 +147,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #endif
     
     return self;
-}
-
-- (void)dealloc {
-    [_responseImage release];
-    [super dealloc];
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -223,8 +218,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    __block typeof(self) bself = self;
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([bself isCancelled]) {
             return;
         }
         
@@ -232,13 +228,13 @@ static dispatch_queue_t image_request_operation_processing_queue() {
             if (self.error) {
                 if (failure) {
                     dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        failure(self, self.error);
+                        failure(bself, self.error);
                     });
                 }
             } else {                
                 if (success) {
                     dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        success(self, self.responseImage);
+                        success(bself, self.responseImage);
                     });
                 }
             }

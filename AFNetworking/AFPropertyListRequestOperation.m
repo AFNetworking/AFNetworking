@@ -50,7 +50,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
                                                                     success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id propertyList))success
                                                                     failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id propertyList))failure
 {
-    AFPropertyListRequestOperation *requestOperation = [[[self alloc] initWithRequest:request] autorelease];
+    AFPropertyListRequestOperation *requestOperation = [[self alloc] initWithRequest:request];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -85,12 +85,6 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     return self;
 }
 
-- (void)dealloc {
-    [_responsePropertyList release];
-    [_propertyListError release];
-    [super dealloc];
-}
-
 - (id)responsePropertyList {
     if (!_responsePropertyList && [self.responseData length] > 0 && [self isFinished]) {
         NSPropertyListFormat format;
@@ -118,15 +112,16 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    __block typeof(self) bself = self;
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([bself isCancelled]) {
             return;
         }
         
         if (self.error) {
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(self, self.error);
+                    failure(bself, self.error);
                 });
             }
         } else {
@@ -136,11 +131,11 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (self.propertyListError) {
                         if (failure) {
-                            failure(self, self.propertyListError);
+                            failure(bself, self.propertyListError);
                         }
                     } else {
                         if (success) {
-                            success(self, propertyList);
+                            success(bself, propertyList);
                         }
                     }
                 }); 

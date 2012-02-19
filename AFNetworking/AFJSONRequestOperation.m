@@ -48,7 +48,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                                                     success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success 
                                                     failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure
 {
-    AFJSONRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    AFJSONRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -85,12 +85,6 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     return self;
 }
 
-- (void)dealloc {
-    [_responseJSON release];
-    [_JSONError release];
-    [super dealloc];
-}
-
 - (id)responseJSON {
     if (!_responseJSON && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
@@ -118,15 +112,16 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    __block typeof(self) bself = self;
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([bself isCancelled]) {
             return;
         }
         
         if (self.error) {
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(self, self.error);
+                    failure(bself, self.error);
                 });
             }
         } else {
@@ -136,11 +131,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (self.JSONError) {
                         if (failure) {
-                            failure(self, self.JSONError);
+                            failure(bself, self.JSONError);
                         }
                     } else {
                         if (success) {
-                            success(self, JSON);
+                            success(bself, JSON);
                         }
                     }
                 }); 
