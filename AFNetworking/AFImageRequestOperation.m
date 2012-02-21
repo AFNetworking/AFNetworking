@@ -230,17 +230,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (self.error) {
-                if (failure) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        failure(self, self.error);
-                    });
-                }
-            } else {                
-                if (success) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        success(self, self.responseImage);
-                    });
-                }
+                [self dispatchFailureBlock:failure];
+            } else {            
+                [self dispatchSuccessBlock:success responseObject:self.responseImage];
             }
         });        
     };  
