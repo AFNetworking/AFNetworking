@@ -109,11 +109,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             NSImage *image = responseObject;
-            
+
             if (imageProcessingBlock) {
                 image = imageProcessingBlock(image);
             }
-                        
+            
             success(operation.request, operation.response, image);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -230,9 +230,17 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (self.error) {
-                [self dispatchFailureBlock:failure];
+                if (failure) {
+                    dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                        failure(self, self.error);
+                    });
+                }
             } else {            
-                [self dispatchSuccessBlock:success responseObject:self.responseImage];
+                if (success) {
+                    dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                        success(self, self.responseImage);
+                    });
+                }
             }
         });        
     };  

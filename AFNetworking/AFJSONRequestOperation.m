@@ -124,15 +124,27 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         }
         
         if (self.error) {
-            [self dispatchFailureBlock:failure];
+            if (failure) {
+                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                    failure(self, self.error);
+                });
+            }
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
                 id JSON = self.responseJSON;
                 
                 if (self.JSONError) {
-                    [self dispatchFailureBlock:failure];
+                    if (failure) {
+                        dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                            failure(self, self.error);
+                        });
+                    }
                 } else {
-                    [self dispatchSuccessBlock:success responseObject:JSON];
+                    if (success) {
+                        dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                            success(self, JSON);
+                        });
+                    }                    
                 }
             });
         }
