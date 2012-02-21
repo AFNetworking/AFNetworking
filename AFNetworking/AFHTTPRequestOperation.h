@@ -31,6 +31,8 @@
     NSIndexSet *_acceptableStatusCodes;
     NSSet *_acceptableContentTypes;
     NSError *_HTTPError;
+    dispatch_queue_t _successCallbackQueue;
+    dispatch_queue_t _failureCallbackQueue;
 }
 
 ///----------------------------------------------
@@ -71,6 +73,17 @@
  */
 @property (readonly) BOOL hasAcceptableContentType;
 
+/** 
+ The callback dispatch queue on success. If this is NULL (default), the main queue is used.
+ */
+@property (nonatomic) dispatch_queue_t successCallbackQueue;
+
+/** 
+ The callback dispatch queue on failure. If this is NULL (default), the main queue is used.
+ */
+@property (nonatomic) dispatch_queue_t failureCallbackQueue;
+
+
 /**
  A Boolean value determining whether or not the class can process the specified request. For example, `AFJSONRequestOperation` may check to make sure the content type was `application/json` or the URL path extension was `.json`.
  
@@ -92,5 +105,20 @@
  */
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+@end
+
+
+@interface AFHTTPRequestOperation (AFInternal)
+
+/**
+ Executes the successBlock on the corresponding successCallbackQueue.
+ */
+- (void)dispatchSuccessBlock:(void (^)(AFHTTPRequestOperation *operation, id responseObject))successBlock responseObject:(id)responseObject;
+
+/**
+ Executes the failureBlock on the corresponding failureCallbackQueue.
+ */
+- (void)dispatchFailureBlock:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failureBlock;
 
 @end

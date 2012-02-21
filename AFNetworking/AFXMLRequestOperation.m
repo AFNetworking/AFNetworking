@@ -187,15 +187,9 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
         }
         
         if (self.error) {
-            if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(self, self.error);
-                });
-            }
+            [self dispatchFailureBlock:failure];
         } else {
-            if (success) {
-                success(self, self.responseXMLParser);
-            }
+            [self dispatchSuccessBlock:success responseObject:self.responseXMLParser];
         }
     };    
 }
