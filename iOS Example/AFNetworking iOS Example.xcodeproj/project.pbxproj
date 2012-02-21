@@ -22,7 +22,7 @@
 		F8DA09D41396ABED0057D0CC /* NearbySpotsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09C81396AB690057D0CC /* NearbySpotsViewController.m */; };
 		F8DA09D51396ABED0057D0CC /* Spot.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09CB1396AB690057D0CC /* Spot.m */; };
 		F8DA09D61396ABED0057D0CC /* SpotTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09CE1396AB690057D0CC /* SpotTableViewCell.m */; };
-		F8DA09E11396ABED0057D0CC /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25D111396A9C400CF3BD6 /* JSONKit.m */; };
+		F8DA09E11396ABED0057D0CC /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25D111396A9C400CF3BD6 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer"; }; };
 		F8DA09E21396ABED0057D0CC /* TTTLocationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25D141396A9C400CF3BD6 /* TTTLocationFormatter.m */; };
 		F8DA09E41396AC040057D0CC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09E31396AC040057D0CC /* main.m */; };
 		F8DA09E81396AC220057D0CC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09E71396AC220057D0CC /* AppDelegate.m */; };
@@ -349,7 +349,6 @@
 				F8DA09D41396ABED0057D0CC /* NearbySpotsViewController.m in Sources */,
 				F8DA09D51396ABED0057D0CC /* Spot.m in Sources */,
 				F8DA09D61396ABED0057D0CC /* SpotTableViewCell.m in Sources */,
-				F8DA09E11396ABED0057D0CC /* JSONKit.m in Sources */,
 				F8DA09E21396ABED0057D0CC /* TTTLocationFormatter.m in Sources */,
 				F8DA09E41396AC040057D0CC /* main.m in Sources */,
 				F8DA09E81396AC220057D0CC /* AppDelegate.m in Sources */,
@@ -363,6 +362,7 @@
 				F8F4B16E143CD1420064C9E6 /* AFPropertyListRequestOperation.m in Sources */,
 				F8F4B17F143E07030064C9E6 /* AFXMLRequestOperation.m in Sources */,
 				F8689A9914CC9F5E0087F357 /* AFJSONUtilities.m in Sources */,
+				F8DA09E11396ABED0057D0CC /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
