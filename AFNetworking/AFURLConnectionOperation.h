@@ -108,17 +108,17 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /**
  The request used by the operation's connection.
  */
-@property (readonly, nonatomic, retain) NSURLRequest *request;
+@property (readonly, nonatomic, strong) NSURLRequest *request;
 
 /**
  The last response received by the operation's connection.
  */
-@property (readonly, nonatomic, retain) NSURLResponse *response;
+@property (readonly, nonatomic, strong) NSURLResponse *response;
 
 /**
  The error, if any, that occured in the lifecycle of the request.
  */
-@property (readonly, nonatomic, retain) NSError *error;
+@property (readonly, nonatomic, strong) NSError *error;
 
 ///----------------------------
 /// @name Getting Response Data
@@ -127,7 +127,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /**
  The data received during the request. 
  */
-@property (readonly, nonatomic, retain) NSData *responseData;
+@property (readonly, nonatomic, strong) NSData *responseData;
 
 /**
  The string representation of the response data.
@@ -145,14 +145,14 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @discussion This property acts as a proxy to the `HTTPBodyStream` property of `request`.
  */
-@property (nonatomic, retain) NSInputStream *inputStream;
+@property (nonatomic, strong) NSInputStream *inputStream;
 
 /**
  The output stream that is used to write data received until the request is finished.
  
  @discussion By default, data is accumulated into a buffer that is stored into `responseData` upon completion of the request. When `outputStream` is set, the data will not be accumulated into an internal buffer, and as a result, the `responseData` property of the completed request will be `nil`.
  */
-@property (nonatomic, retain) NSOutputStream *outputStream;
+@property (nonatomic, strong) NSOutputStream *outputStream;
 
 ///------------------------------------------------------
 /// @name Initializing an AFURLConnectionOperation Object

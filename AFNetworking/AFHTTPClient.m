@@ -144,10 +144,10 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 }
 
 @interface AFHTTPClient ()
-@property (readwrite, nonatomic, retain) NSURL *baseURL;
-@property (readwrite, nonatomic, retain) NSMutableArray *registeredHTTPOperationClassNames;
-@property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
-@property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
+@property (readwrite, nonatomic, strong) NSURL *baseURL;
+@property (readwrite, nonatomic, strong) NSMutableArray *registeredHTTPOperationClassNames;
+@property (readwrite, nonatomic, strong) NSMutableDictionary *defaultHeaders;
+@property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
 @property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
 

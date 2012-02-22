@@ -32,9 +32,9 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 }
 
 @interface AFPropertyListRequestOperation ()
-@property (readwrite, nonatomic, retain) id responsePropertyList;
+@property (readwrite, nonatomic, strong) id responsePropertyList;
 @property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
-@property (readwrite, nonatomic, retain) NSError *propertyListError;
+@property (readwrite, nonatomic, strong) NSError *propertyListError;
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
