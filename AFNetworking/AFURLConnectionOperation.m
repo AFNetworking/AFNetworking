@@ -334,27 +334,30 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.state = AFHTTPOperationFinishedState;
 }
 
--(void)cancelConnection {
-    [self willChangeValueForKey:@"isCancelled"];
-    _cancelled = YES;
-
-    if (self.connection) {
-        [self.connection cancel];
-        //We must send this delegate protcol message ourselves since the above [self.connection cancel] causes the connection to never send another message to its delegate.
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
-        [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo]];
-    }
-
-    [self didChangeValueForKey:@"isCancelled"];
-}
-
 - (void)cancel {
     [self.lock lock];
     if (![self isFinished] && ![self isCancelled]) {
-      [super cancel];
-      [self performSelector:@selector(cancelConnection) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
+        [super cancel];
+        
+        // Cancel the connection on the thread it runs on to prevent race conditions 
+        [self performSelector:@selector(cancelConnection) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
     }
+    
     [self.lock unlock];
+}
+
+- (void)cancelConnection {
+    [self willChangeValueForKey:@"isCancelled"];
+    _cancelled = YES;
+    
+    if (self.connection) {
+        [self.connection cancel];
+        
+        // Manually send this delegate message since `[self.connection cancel]` causes the connection to never send another message to its delegate
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
+        [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo]];
+    }
+    [self didChangeValueForKey:@"isCancelled"];
 }
 
 #pragma mark - NSURLConnectionDelegate
