@@ -442,7 +442,9 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
 {
     NSBlockOperation *batchedOperation = [NSBlockOperation blockOperationWithBlock:^{
         if (completionBlock) {
-            completionBlock(operations);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock(operations);
+            });
         }
     }];
     
