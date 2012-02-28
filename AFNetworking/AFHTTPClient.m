@@ -456,7 +456,9 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
         AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
         operation.completionBlock = ^{
             if (progressBlock) {
-                progressBlock([[batchedOperation.dependencies filteredArrayUsingPredicate:finishedOperationPredicate] count], [batchedOperation.dependencies count]);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    progressBlock([[batchedOperation.dependencies filteredArrayUsingPredicate:finishedOperationPredicate] count], [batchedOperation.dependencies count]);
+                });
             }
             
             if (originalCompletionBlock) {
