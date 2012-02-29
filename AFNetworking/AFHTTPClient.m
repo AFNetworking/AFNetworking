@@ -36,6 +36,8 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #endif
 
+NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
+
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
 
@@ -96,8 +98,15 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
 NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
     static NSString * const kAFLegalCharactersToBeEscaped = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ ";
     
-    // Following the suggestion in documentation for `CFURLCreateStringByAddingPercentEscapes` to "pre-process" URL strings (using stringByReplacingPercentEscapesUsingEncoding) with unpredictable sequences that may already contain percent escapes.
-	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)[string stringByReplacingPercentEscapesUsingEncoding:encoding], NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
+    /* 
+     The documentation for `CFURLCreateStringByAddingPercentEscapes` suggests that one should "pre-process" URL strings with unpredictable sequences that may already contain percent escapes.       However, if the string contains an unescaped sequence with '%' appearing without an escape code (such as when representing percentages like "42%"), `stringByReplacingPercentEscapesUsingEncoding` will return `nil`. Thus, the string is only unescaped if there are no invalid percent-escaped sequences. 
+    */
+    NSString *unescapedString = [string stringByReplacingPercentEscapesUsingEncoding:encoding];
+    if (unescapedString) {
+        string = unescapedString;
+    }
+    
+	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
 }
 
 NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
@@ -148,6 +157,11 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
 @property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
+
+#ifdef _SYSTEMCONFIGURATION_H
+- (void)startMonitoringNetworkReachability;
+- (void)stopMonitoringNetworkReachability;
+#endif
 @end
 
 @implementation AFHTTPClient
@@ -193,6 +207,10 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     [self setDefaultHeader:@"User-Agent" value:[NSString stringWithFormat:@"%@/%@ (%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], @"unknown"]];
 #endif
     
+#ifdef _SYSTEMCONFIGURATION_H
+    [self startMonitoringNetworkReachability];
+#endif
+    
     self.operationQueue = [[[NSOperationQueue alloc] init] autorelease];
 	[self.operationQueue setMaxConcurrentOperationCount:kAFHTTPClientDefaultMaxConcurrentOperationCount];
     
@@ -200,14 +218,15 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 }
 
 - (void)dealloc {
+#ifdef _SYSTEMCONFIGURATION_H
+    [self stopMonitoringNetworkReachability];
+#endif
+    
     [_baseURL release];
     [_registeredHTTPOperationClassNames release];
     [_defaultHeaders release];
     [_operationQueue release];
     [_networkReachabilityStatusBlock release];
-    if (_networkReachability) {
-        CFRelease(_networkReachability);
-    }
     
     [super dealloc];
 }
@@ -220,28 +239,36 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 
 #ifdef _SYSTEMCONFIGURATION_H
 static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
-    if (info) {
-        AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
+    BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
+    BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
+    BOOL isNetworkReachable = (isReachable && !needsConnection);
         
-        BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
-        BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
-        BOOL isNetworkReachable = (isReachable && !needsConnection);
-        
+    AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
+    if (block) {
         block(isNetworkReachable);
     }
+        
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:[NSNumber numberWithBool:isNetworkReachable]];
 }
 
-- (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block {
-    if (_networkReachability) {
-        SCNetworkReachabilityUnscheduleFromRunLoop(_networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
-        CFRelease(_networkReachability);
-    }
-    
-    self.networkReachabilityStatusBlock = block;
+- (void)startMonitoringNetworkReachability {
+    [self stopMonitoringNetworkReachability];
     self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
     SCNetworkReachabilityContext context = {0, self.networkReachabilityStatusBlock, NULL, NULL, NULL};
     SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
     SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+}
+
+- (void)stopMonitoringNetworkReachability {
+    if (_networkReachability) {
+        SCNetworkReachabilityUnscheduleFromRunLoop(_networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+        CFRelease(_networkReachability);
+    }
+}
+
+- (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block {
+    self.networkReachabilityStatusBlock = block;
+    [self startMonitoringNetworkReachability];
 }
 #endif
 
@@ -415,7 +442,9 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
 {
     NSBlockOperation *batchedOperation = [NSBlockOperation blockOperationWithBlock:^{
         if (completionBlock) {
-            completionBlock(operations);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock(operations);
+            });
         }
     }];
     
@@ -427,7 +456,9 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
         AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
         operation.completionBlock = ^{
             if (progressBlock) {
-                progressBlock([[batchedOperation.dependencies filteredArrayUsingPredicate:finishedOperationPredicate] count], [batchedOperation.dependencies count]);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    progressBlock([[batchedOperation.dependencies filteredArrayUsingPredicate:finishedOperationPredicate] count], [batchedOperation.dependencies count]);
+                });
             }
             
             if (originalCompletionBlock) {
