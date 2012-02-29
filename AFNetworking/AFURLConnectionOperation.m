@@ -85,7 +85,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
-@property (readwrite, nonatomic, assign) NSURLConnection *connection;
+@property (readwrite, nonatomic, retain) NSURLConnection *connection;
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSURLResponse *response;
 @property (readwrite, nonatomic, retain) NSError *error;
@@ -351,6 +351,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 - (void)cancelConnection {
     if (self.connection) {
         [self.connection cancel];
+        self.connection = nil;
         
         // Manually send this delegate message since `[self.connection cancel]` causes the connection to never send another message to its delegate
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
@@ -466,6 +467,8 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     [self finish];
+
+    self.connection = nil;
 }
 
 - (void)connection:(NSURLConnection *)__unused connection 
@@ -480,6 +483,8 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     [self finish];
+
+    self.connection = nil;
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)__unused connection 
