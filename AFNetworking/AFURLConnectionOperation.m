@@ -345,13 +345,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         // Cancel the connection on the thread it runs on to prevent race conditions 
         [self performSelector:@selector(cancelConnection) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
     }
-    
     [self.lock unlock];
 }
 
 - (void)cancelConnection {
-
-    
     if (self.connection) {
         [self.connection cancel];
         
@@ -359,7 +356,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
         [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo]];
     }
-
 }
 
 #pragma mark - NSURLConnectionDelegate
