@@ -1,0 +1,51 @@
+From 15d5ad995c3ee26e7d92bd7a806912b29ea3362d Mon Sep 17 00:00:00 2001
+From: Charlie Williams <charlie@ickydog.com>
+Date: Wed, 18 Jan 2012 19:46:11 +0000
+Subject: [PATCH] Class in AFHTTPClient.m named 'class' (311) causes build
+ problems in some configurations (i.e. mine); changed name
+ to my_class which is, you know, not as snappy but at least
+ now it builds. AFURLConnectionOperation.m required an
+ explicit cast (378) to uint8_t* to build in my
+ configuration also.
+
+---
+ AFNetworking/AFHTTPClient.m             |    8 +++++---
+ AFNetworking/AFURLConnectionOperation.m |    2 +-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/AFNetworking/AFHTTPClient.m b/AFNetworking/AFHTTPClient.m
+index 32f2dbc..de8bd37 100644
+--- a/AFNetworking/AFHTTPClient.m
++++ b/AFNetworking/AFHTTPClient.m
+@@ -308,10 +308,12 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
+     NSString *className = nil;
+     NSEnumerator *enumerator = [self.registeredHTTPOperationClassNames reverseObjectEnumerator];
+     while (!operation && (className = [enumerator nextObject])) {
+-        Class class = NSClassFromString(className);
+-        if (class && [class canProcessRequest:urlRequest]) {
+-            operation = [[(AFHTTPRequestOperation *)[class alloc] initWithRequest:urlRequest] autorelease];
++      
++        Class my_class = NSClassFromString(className);
++        if (my_class && [my_class canProcessRequest:urlRequest]) {
++            operation = [[(AFHTTPRequestOperation *)[my_class alloc] initWithRequest:urlRequest] autorelease];
+         }
++       
+     }
+     
+     if (!operation) {
+diff --git a/AFNetworking/AFURLConnectionOperation.m b/AFNetworking/AFURLConnectionOperation.m
+index 114cec2..4b90765 100644
+--- a/AFNetworking/AFURLConnectionOperation.m
++++ b/AFNetworking/AFURLConnectionOperation.m
+@@ -375,7 +375,7 @@ didReceiveResponse:(NSURLResponse *)response
+     
+     if (self.outputStream) {
+         if ([self.outputStream hasSpaceAvailable]) {
+-            const uint8_t *dataBuffer = [data bytes];
++            const uint8_t *dataBuffer = (uint8_t *) [data bytes]; // cw cast
+             [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
+         }
+     } else {
+-- 
+1.7.5.4
+
