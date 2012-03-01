@@ -191,6 +191,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [_downloadProgress release];
     [_authenticationChallenge release];
     [_authenticationAgainstProtectionSpace release];
+    [_connection release];
     
     [_connection release];
     
@@ -334,6 +335,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)finish {
     self.state = AFHTTPOperationFinishedState;
+    self.connection = nil;
 }
 
 - (void)cancel {
