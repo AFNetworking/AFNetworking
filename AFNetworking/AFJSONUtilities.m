@@ -72,7 +72,7 @@ NSData * AFJSONEncode(id object, NSError **error) {
             data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
         }
         @catch (NSException *exception) {
-            *error = [[[NSError alloc] initWithDomain:NSStringFromClass([exception class]) code:0 userInfo:[exception userInfo]] autorelease];
+					*error = [[NSError alloc] initWithDomain:NSStringFromClass([exception class]) code:0 userInfo:[exception userInfo]];
         }
     } else if (_NSJSONSerializationClass && [_NSJSONSerializationClass respondsToSelector:_NSJSONSerializationSelector]) {
 #ifdef _AFNETWORKING_PREFER_NSJSONSERIALIZATION_
@@ -126,14 +126,14 @@ id AFJSONDecode(NSData *data, NSError **error) {
         [invocation invoke];
         [invocation getReturnValue:&JSON];
     } else if (_SBJSONSelector && [NSString instancesRespondToSelector:_SBJSONSelector]) {
-        // Create a string representation of JSON, to use SBJSON -`JSONValue` category method
-        NSString *string = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[string methodSignatureForSelector:_SBJSONSelector]];
-        invocation.target = string;
-        invocation.selector = _SBJSONSelector;
-        
-        [invocation invoke];
-        [invocation getReturnValue:&JSON];
+			// Create a string representation of JSON, to use SBJSON -`JSONValue` category method
+			NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+			NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[string methodSignatureForSelector:_SBJSONSelector]];
+			invocation.target = string;
+			invocation.selector = _SBJSONSelector;
+			
+			[invocation invoke];
+			[invocation getReturnValue:&JSON];
     } else if (_YAJLSelector && [data respondsToSelector:_YAJLSelector]) {
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_YAJLSelector]];
         invocation.target = data;

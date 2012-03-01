@@ -130,7 +130,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 /**
  The url used as the base for paths specified in methods such as `getPath:parameteres:success:failure`
  */
-@property (readonly, nonatomic, retain) NSURL *baseURL;
+@property (readonly, nonatomic, strong) NSURL *baseURL;
 
 /**
  The string encoding used in constructing url requests. This is `NSUTF8StringEncoding` by default.
@@ -145,7 +145,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 /**
  The operation queue which manages operations enqueued by the HTTP client.
  */
-@property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;
+@property (readonly, nonatomic, strong) NSOperationQueue *operationQueue;
 
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients

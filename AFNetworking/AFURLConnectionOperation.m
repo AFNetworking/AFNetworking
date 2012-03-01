@@ -84,15 +84,15 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
-@property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
-@property (readwrite, nonatomic, assign) NSURLConnection *connection;
-@property (readwrite, nonatomic, retain) NSURLRequest *request;
-@property (readwrite, nonatomic, retain) NSURLResponse *response;
-@property (readwrite, nonatomic, retain) NSError *error;
-@property (readwrite, nonatomic, retain) NSData *responseData;
+@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
+@property (readwrite, nonatomic, weak) NSURLConnection *connection;
+@property (readwrite, nonatomic, strong) NSURLRequest *request;
+@property (readwrite, nonatomic, strong) NSURLResponse *response;
+@property (readwrite, nonatomic, strong) NSError *error;
+@property (readwrite, nonatomic, strong) NSData *responseData;
 @property (readwrite, nonatomic, copy) NSString *responseString;
 @property (readwrite, nonatomic, assign) NSInteger totalBytesRead;
-@property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
+@property (readwrite, nonatomic, strong) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock downloadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock authenticationAgainstProtectionSpace;
@@ -123,18 +123,17 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
-        NSAutoreleasePool *exceptionPool = [[NSAutoreleasePool alloc] init];
-        NSException *caughtException = nil;
-        @try {
-            NSAutoreleasePool *runLoopPool = [[NSAutoreleasePool alloc] init];
-            [[NSRunLoop currentRunLoop] run];
-            [runLoopPool drain];
-        }
-        @catch(NSException *e) { caughtException = e; }
-        if(caughtException) { 
-            NSLog(NSLocalizedString(@"Unhandled exception on %@ networking thread: %@, userInfo: %@", nil), NSStringFromClass([self class]), caughtException, [caughtException userInfo]); 
-        }
-        [exceptionPool drain];
+			@autoreleasepool {
+				@try {
+					[[NSRunLoop currentRunLoop] run];
+				}
+				@catch  (NSException * exception){
+					NSLog(NSLocalizedString(@"Unhandled exception on %@ networking thread: %@, userInfo: %@", nil), NSStringFromClass([self class]), exception, [exception userInfo]);
+				}
+				@finally {
+					
+				}
+			}
     } while (YES);
 }
 
@@ -156,43 +155,22 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 		return nil;
     }
     
-    self.lock = [[[NSRecursiveLock alloc] init] autorelease];
-    self.lock.name = kAFNetworkingLockName;
-    
-    self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
-    
-    self.request = urlRequest;
-     
-    self.state = AFHTTPOperationReadyState;
+	self.lock = [[NSRecursiveLock alloc] init];
+	self.lock.name = kAFNetworkingLockName;
 	
-    return self;
+	self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
+	
+	self.request = urlRequest;
+	
+	self.state = AFHTTPOperationReadyState;
+	
+	return self;
 }
 
 - (void)dealloc {
-    [_lock release];
-        
-    [_runLoopModes release];
-    
-    [_request release];
-    [_response release];
-    [_error release];
-    
-    [_responseData release];
-    [_responseString release];
-    [_dataAccumulator release];
-    
-    if (_outputStream) {
-        [_outputStream close];
-        [_outputStream release];
-        _outputStream = nil;
-    }
-    	
-    [_uploadProgress release];
-    [_downloadProgress release];
-    [_authenticationChallenge release];
-    [_authenticationAgainstProtectionSpace release];
-    
-    [super dealloc];
+	if (_outputStream) {
+		[_outputStream close];
+	}
 }
 
 - (NSString *)description {
@@ -204,7 +182,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (!block) {
         [super setCompletionBlock:nil];
     } else {
-        __block id _blockSelf = self;
+        __weak id _blockSelf = self;
         [super setCompletionBlock:^ {
             block();
             [_blockSelf setCompletionBlock:nil];
@@ -218,9 +196,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)setInputStream:(NSInputStream *)inputStream {
-    NSMutableURLRequest *mutableRequest = [[self.request mutableCopy] autorelease];
-    mutableRequest.HTTPBodyStream = inputStream;
-    self.request = mutableRequest;
+	NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
+	mutableRequest.HTTPBodyStream = inputStream;
+	self.request = mutableRequest;
 }
 
 - (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))block {
@@ -270,10 +248,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (!_responseString && self.response && self.responseData) {
         NSStringEncoding textEncoding = NSUTF8StringEncoding;
         if (self.response.textEncodingName) {
-            textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.response.textEncodingName));
+            textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((__bridge CFStringRef)self.response.textEncodingName));
         }
         
-        self.responseString = [[[NSString alloc] initWithData:self.responseData encoding:textEncoding] autorelease];
+			self.responseString = [[NSString alloc] initWithData:self.responseData encoding:textEncoding];
     }
     [self.lock unlock];
     
@@ -317,7 +295,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if ([self isCancelled]) {
         [self finish];
     } else {
-        self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
+        self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
         
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         for (NSString *runLoopMode in self.runLoopModes) {
@@ -392,8 +370,8 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
         if ([challenge previousFailureCount] == 0) {
             NSURLCredential *credential = nil;
             
-            NSString *username = [(NSString *)CFURLCopyUserName((CFURLRef)[self.request URL]) autorelease];
-            NSString *password = [(NSString *)CFURLCopyPassword((CFURLRef)[self.request URL]) autorelease];
+            NSString *username = (__bridge NSString *)CFURLCopyUserName((__bridge CFURLRef)[self.request URL]);
+            NSString *password = (__bridge NSString *)CFURLCopyPassword((__bridge CFURLRef)[self.request URL]);
             
             if (username && password) {
                 credential = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceNone];
@@ -462,7 +440,7 @@ didReceiveResponse:(NSURLResponse *)response
         [self.outputStream close];
     } else {
         self.responseData = [NSData dataWithData:self.dataAccumulator];
-        [_dataAccumulator release]; _dataAccumulator = nil;
+        _dataAccumulator = nil;
     }
     
     [self finish];
@@ -476,7 +454,7 @@ didReceiveResponse:(NSURLResponse *)response
     if (self.outputStream) {
         [self.outputStream close];
     } else {
-        [_dataAccumulator release]; _dataAccumulator = nil;
+        _dataAccumulator = nil;
     }
     
     [self finish];
