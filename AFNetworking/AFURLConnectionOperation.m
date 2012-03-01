@@ -85,7 +85,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
-@property (readwrite, nonatomic, assign) NSURLConnection *connection;
+@property (readwrite, nonatomic, retain) NSURLConnection *connection;
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSURLResponse *response;
 @property (readwrite, nonatomic, retain) NSError *error;
@@ -191,6 +191,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [_downloadProgress release];
     [_authenticationChallenge release];
     [_authenticationAgainstProtectionSpace release];
+    [_connection release];
     
     [super dealloc];
 }
@@ -332,6 +333,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)finish {
     self.state = AFHTTPOperationFinishedState;
+    self.connection = nil;
 }
 
 - (void)cancel {
@@ -352,6 +354,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     if (self.connection) {
         [self.connection cancel];
+        self.connection = nil;
         
         // Manually send this delegate message since `[self.connection cancel]` causes the connection to never send another message to its delegate
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
