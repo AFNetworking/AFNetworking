@@ -85,7 +85,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
-@property (readwrite, nonatomic, assign) NSURLConnection *connection;
+@property (readwrite, nonatomic, retain) NSURLConnection *connection;
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSURLResponse *response;
 @property (readwrite, nonatomic, retain) NSError *error;
@@ -191,6 +191,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [_downloadProgress release];
     [_authenticationChallenge release];
     [_authenticationAgainstProtectionSpace release];
+    
+    [_connection release];
     
     [super dealloc];
 }
@@ -466,6 +468,8 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     [self finish];
+
+    self.connection = nil;
 }
 
 - (void)connection:(NSURLConnection *)__unused connection 
@@ -480,6 +484,8 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     [self finish];
+
+    self.connection = nil;
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)__unused connection 
