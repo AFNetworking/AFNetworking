@@ -416,8 +416,12 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
 }
 
 - (void)cancelAllHTTPOperationsWithMethod:(NSString *)method path:(NSString *)path {
-    for (AFHTTPRequestOperation *operation in [self.operationQueue operations]) {
-        if ((!method || [method isEqualToString:[[operation request] HTTPMethod]]) && [path isEqualToString:[[[operation request] URL] path]]) {
+    for (NSOperation *operation in [self.operationQueue operations]) {
+        if (![operation isKindOfClass:[AFHTTPRequestOperation class]]) {
+            continue;
+        }
+        
+        if ((!method || [method isEqualToString:[[(AFHTTPRequestOperation *)operation request] HTTPMethod]]) && [path isEqualToString:[[[(AFHTTPRequestOperation *)operation request] URL] path]]) {
             [operation cancel];
         }
     }
