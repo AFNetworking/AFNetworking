@@ -192,6 +192,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [_authenticationChallenge release];
     [_authenticationAgainstProtectionSpace release];
     
+    [_connection release];
+    
     [super dealloc];
 }
 
