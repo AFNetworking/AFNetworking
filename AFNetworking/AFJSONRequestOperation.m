@@ -63,7 +63,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 }
 
 + (NSSet *)defaultAcceptableContentTypes {
-    return [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", nil];
+    return [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", @"application/javascript", nil];
 }
 
 + (NSSet *)defaultAcceptablePathExtensions {
