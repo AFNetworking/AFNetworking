@@ -42,7 +42,6 @@
  */
 @property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
 
-
 ///----------------------------------------------------------
 /// @name Managing And Checking For Acceptable HTTP Responses
 ///----------------------------------------------------------
@@ -79,7 +78,9 @@
 + (NSIndexSet *)acceptableStatusCodes;
 
 /**
+ Adds status codes to the set of acceptable HTTP status codes returned by `+acceptableStatusCodes` in subsequent calls by this class and its descendents.
  
+ @param statusCodes The status codes to be added to the set of acceptable HTTP status codes
  */
 + (void)addAcceptableStatusCodes:(NSIndexSet *)statusCodes;
 
@@ -91,7 +92,9 @@
 + (NSSet *)acceptableContentTypes;
 
 /**
- 
+ Adds content types to the set of acceptable MIME types returned by `+acceptableContentTypes` in subsequent calls by this class and its descendents. 
+
+ @param contentTypes The content types to be added to the set of acceptable MIME types
  */
 + (void)addAcceptableContentTypes:(NSSet *)contentTypes;
 
