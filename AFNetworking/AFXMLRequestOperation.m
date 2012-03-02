@@ -40,7 +40,6 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 #endif
 @property (readwrite, nonatomic, retain) NSError *XMLError;
 
-+ (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 @end
 
@@ -91,23 +90,12 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 #endif
 
-+ (NSSet *)defaultAcceptableContentTypes {
++ (NSSet *)acceptableContentTypes {
     return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
 }
 
 + (NSSet *)defaultAcceptablePathExtensions {
     return [NSSet setWithObjects:@"xml", nil];
-}
-
-- (id)initWithRequest:(NSURLRequest *)urlRequest {
-    self = [super initWithRequest:urlRequest];
-    if (!self) {
-        return nil;
-    }
-    
-    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
-    
-    return self;
 }
 
 - (void)dealloc {
@@ -159,7 +147,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+    return [[[self class] acceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
 }
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success

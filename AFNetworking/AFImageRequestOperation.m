@@ -38,7 +38,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 @property (readwrite, nonatomic, retain) NSImage *responseImage;
 #endif
 
-+ (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 @end
 
@@ -126,7 +125,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 #endif
 
-+ (NSSet *)defaultAcceptableContentTypes {
++ (NSSet *)acceptableContentTypes {
     return [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon", @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
 }
 
@@ -139,9 +138,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     if (!self) {
         return nil;
     }
-    
-    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
-    
+        
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     self.imageScale = [[UIScreen mainScreen] scale];
 #endif
@@ -193,7 +190,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #pragma mark - AFHTTPClientOperation
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+    return [[[self class] acceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED

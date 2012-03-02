@@ -36,7 +36,6 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 @property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
 @property (readwrite, nonatomic, retain) NSError *propertyListError;
 
-+ (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
 @end
 
@@ -64,7 +63,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     return requestOperation;
 }
 
-+ (NSSet *)defaultAcceptableContentTypes {
++ (NSSet *)acceptableContentTypes {
     return [NSSet setWithObjects:@"application/x-plist", nil];
 }
 
@@ -77,9 +76,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     if (!self) {
         return nil;
     }
-    
-    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
-    
+        
     self.propertyListReadOptions = NSPropertyListImmutable;
     
     return self;
@@ -112,7 +109,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+    return [[[self class] acceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
 }
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success

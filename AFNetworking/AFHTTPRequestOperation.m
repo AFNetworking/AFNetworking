@@ -22,6 +22,15 @@
 
 #import "AFHTTPRequestOperation.h"
 
+#import <objc/runtime.h>
+
+static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL selector, void *block) {
+    Method originalMethod = class_getClassMethod(klass, selector);
+    IMP implementation = imp_implementationWithBlock(block);
+    class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) cStringUsingEncoding:NSUTF8StringEncoding]), selector, implementation, method_getTypeEncoding(originalMethod));
+    
+}
+
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     NSMutableString *string = [NSMutableString string];
 
@@ -59,27 +68,11 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 @end
 
 @implementation AFHTTPRequestOperation
-@synthesize acceptableStatusCodes = _acceptableStatusCodes;
-@synthesize acceptableContentTypes = _acceptableContentTypes;
 @synthesize HTTPError = _HTTPError;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
 
-
-- (id)initWithRequest:(NSURLRequest *)request {
-    self = [super initWithRequest:request];
-    if (!self) {
-        return nil;
-    }
-    
-    self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-    
-    return self;
-}
-
 - (void)dealloc {
-    [_acceptableStatusCodes release];
-    [_acceptableContentTypes release];
     [_HTTPError release];
     
     if (_successCallbackQueue) { 
@@ -103,13 +96,13 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     if (self.response && !self.HTTPError) {
         if (![self hasAcceptableStatusCode]) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet(self.acceptableStatusCodes), [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
+            [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
         } else if ([self.responseData length] > 0 && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), self.acceptableContentTypes, [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
+            [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), [[self class] acceptableContentTypes], [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo] autorelease];
@@ -124,11 +117,11 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 }
 
 - (BOOL)hasAcceptableStatusCode {
-    return !self.acceptableStatusCodes || [self.acceptableStatusCodes containsIndex:[self.response statusCode]];
+    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:[self.response statusCode]];
 }
 
 - (BOOL)hasAcceptableContentType {
-    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
+    return ![[self class] acceptableContentTypes] || [[[self class] acceptableContentTypes] containsObject:[self.response MIMEType]];
 }
 
 - (void)setSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue {
@@ -182,6 +175,30 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 }
 
 #pragma mark - AFHTTPClientOperation
+
++ (NSIndexSet *)acceptableStatusCodes {
+    return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
+}
+
++ (void)addAcceptableStatusCodes:(NSIndexSet *)statusCodes {
+    NSMutableIndexSet *mutableStatusCodes = [[[NSMutableIndexSet alloc] initWithIndexSet:[self acceptableStatusCodes]] autorelease];
+    [mutableStatusCodes addIndexes:statusCodes];
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableStatusCodes), ^(id _self) {
+        return mutableStatusCodes;
+    });
+}
+
++ (NSSet *)acceptableContentTypes {
+    return nil;
+}
+
++ (void)addAcceptableContentTypes:(NSSet *)contentTypes {
+    NSMutableSet *mutableContentTypes = [[[NSMutableSet alloc] initWithSet:[self acceptableContentTypes] copyItems:YES] autorelease];
+    [mutableContentTypes unionSet:contentTypes];
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableContentTypes), ^(id _self) {
+        return mutableContentTypes;
+    });
+}
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
     return YES;
