@@ -24,6 +24,31 @@
 
 #import <objc/runtime.h>
 
+NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
+    static NSCharacterSet *_skippedCharacterSet = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _skippedCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@" ,"];
+    });
+    
+    NSScanner *scanner = [NSScanner scannerWithString:string];
+    scanner.charactersToBeSkipped = _skippedCharacterSet;
+    
+    NSMutableSet *mutableContentTypes = [NSMutableSet set];
+    while (![scanner isAtEnd]) {
+        NSString *contentType = nil;
+        if ([scanner scanUpToString:@";" intoString:&contentType]) {
+            [scanner scanUpToString:@"," intoString:nil];
+        }
+        
+        if (contentType) {
+            [mutableContentTypes addObject:contentType];
+        }
+    }
+    
+    return [NSSet setWithSet:mutableContentTypes];
+}
+
 static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL selector, void *block) {
     Method originalMethod = class_getClassMethod(klass, selector);
     IMP implementation = imp_implementationWithBlock(block);
