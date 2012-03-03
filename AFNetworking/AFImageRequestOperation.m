@@ -37,8 +37,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 @property (readwrite, nonatomic, retain) NSImage *responseImage;
 #endif
-
-+ (NSSet *)defaultAcceptablePathExtensions;
 @end
 
 @implementation AFImageRequestOperation
@@ -125,14 +123,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 #endif
 
-+ (NSSet *)acceptableContentTypes {
-    return [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon", @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
-}
-
-+ (NSSet *)defaultAcceptablePathExtensions {
-    return [NSSet setWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"ico", @"bmp", @"cur", nil];
-}
-
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
     self = [super initWithRequest:urlRequest];
     if (!self) {
@@ -189,9 +179,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 #pragma mark - AFHTTPClientOperation
 
-+ (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[[self class] acceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
-}
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
@@ -216,6 +203,20 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     }];
 }
 #endif
+
++ (NSSet *)acceptableContentTypes {
+    return [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon", @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
+}
+
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    static NSSet * _acceptablePathExtension = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _acceptablePathExtension = [[NSSet alloc] initWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"ico", @"bmp", @"cur", nil];
+    });
+    
+    return [_acceptablePathExtension containsObject:[[request URL] pathExtension]] || [super canProcessRequest:request];    
+}
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure

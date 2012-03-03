@@ -39,8 +39,6 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 @property (readwrite, nonatomic, retain) NSXMLDocument *responseXMLDocument;
 #endif
 @property (readwrite, nonatomic, retain) NSError *XMLError;
-
-+ (NSSet *)defaultAcceptablePathExtensions;
 @end
 
 @implementation AFXMLRequestOperation
@@ -90,14 +88,6 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 #endif
 
-+ (NSSet *)acceptableContentTypes {
-    return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
-}
-
-+ (NSSet *)defaultAcceptablePathExtensions {
-    return [NSSet setWithObjects:@"xml", nil];
-}
-
 - (void)dealloc {
     [_responseXMLParser release];
     
@@ -146,8 +136,14 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     self.responseXMLParser.delegate = nil;
 }
 
+#pragma mark - AFHTTPRequestOperation
+
++ (NSSet *)acceptableContentTypes {
+    return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
+}
+
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[[self class] acceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+    return [[[request URL] pathExtension] isEqualToString:@"xml"] || [super canProcessRequest:request];
 }
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success

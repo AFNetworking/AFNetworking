@@ -31,6 +31,10 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
         _skippedCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@" ,"];
     });
     
+    if (!string) {
+        return nil;
+    }
+    
     NSScanner *scanner = [NSScanner scannerWithString:string];
     scanner.charactersToBeSkipped = _skippedCharacterSet;
     
@@ -226,7 +230,11 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return YES;
+    if (![[self class] isEqual:[AFHTTPRequestOperation class]]) {
+        return YES;
+    }
+    
+    return [[self acceptableContentTypes] intersectsSet:AFContentTypesFromHTTPHeader([request valueForHTTPHeaderField:@"Accept"])];
 }
 
 @end
