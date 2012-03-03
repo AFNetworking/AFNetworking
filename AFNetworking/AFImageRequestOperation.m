@@ -179,31 +179,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 #pragma mark - AFHTTPClientOperation
 
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-+ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(id object))success 
-                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
-{
-    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
-        success(image);
-    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
-        failure(response, error);
-    }];
-}
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
-+ (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(id object))success 
-                                                    failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
-{
-    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
-        success(image);
-    } failure:^(NSURLRequest __unused *request, NSHTTPURLResponse *response, NSError *error) {
-        failure(response, error);
-    }];
-}
-#endif
-
 + (NSSet *)acceptableContentTypes {
     return [NSSet setWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon", @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
 }
