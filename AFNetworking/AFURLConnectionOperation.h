@@ -81,7 +81,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
     
     NSSet *_runLoopModes;
     
-    NSURLConnection __weak *_connection;
+    NSURLConnection *_connection;
     NSURLRequest *_request;
     NSHTTPURLResponse *_response;
     NSError *_error;
