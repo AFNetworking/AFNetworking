@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3ACFD83B1503784600FF5F0F /* NSError+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFD8331503784600FF5F0F /* NSError+Extensions.m */; };
-		3ACFD83C1503784600FF5F0F /* NXDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFD8351503784600FF5F0F /* NXDebug.m */; };
-		3ACFD83D1503784600FF5F0F /* NXJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFD8371503784600FF5F0F /* NXJsonParser.m */; };
-		3ACFD83E1503784600FF5F0F /* NXJsonSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFD8391503784600FF5F0F /* NXJsonSerializer.m */; };
 		3ACFD84015037DAB00FF5F0F /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D25D111396A9C400CF3BD6 /* JSONKit.m */; };
 		F8689A9914CC9F5E0087F357 /* AFJSONUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = F8689A9814CC9F5E0087F357 /* AFJSONUtilities.m */; };
 		F86E5529143A28F3002B438C /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F86E5528143A28F3002B438C /* AFURLConnectionOperation.m */; };
@@ -44,15 +40,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3ACFD8321503784600FF5F0F /* NSError+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+Extensions.h"; sourceTree = "<group>"; };
-		3ACFD8331503784600FF5F0F /* NSError+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+Extensions.m"; sourceTree = "<group>"; };
-		3ACFD8341503784600FF5F0F /* NXDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NXDebug.h; sourceTree = "<group>"; };
-		3ACFD8351503784600FF5F0F /* NXDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NXDebug.m; sourceTree = "<group>"; };
-		3ACFD8361503784600FF5F0F /* NXJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NXJsonParser.h; sourceTree = "<group>"; };
-		3ACFD8371503784600FF5F0F /* NXJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NXJsonParser.m; sourceTree = "<group>"; };
-		3ACFD8381503784600FF5F0F /* NXJsonSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NXJsonSerializer.h; sourceTree = "<group>"; };
-		3ACFD8391503784600FF5F0F /* NXJsonSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NXJsonSerializer.m; sourceTree = "<group>"; };
-		3ACFD83A1503784600FF5F0F /* NXSerializable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NXSerializable.h; sourceTree = "<group>"; };
 		F8323C941455C03400190CCB /* AFJSONUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFJSONUtilities.h; path = ../AFNetworking/AFJSONUtilities.h; sourceTree = "<group>"; };
 		F8689A9814CC9F5E0087F357 /* AFJSONUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFJSONUtilities.m; path = ../AFNetworking/AFJSONUtilities.m; sourceTree = "<group>"; };
 		F86E5527143A28F3002B438C /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFURLConnectionOperation.h; path = ../AFNetworking/AFURLConnectionOperation.h; sourceTree = "<group>"; };
@@ -123,22 +110,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3ACFD8311503784600FF5F0F /* NextiveJson */ = {
-			isa = PBXGroup;
-			children = (
-				3ACFD8321503784600FF5F0F /* NSError+Extensions.h */,
-				3ACFD8331503784600FF5F0F /* NSError+Extensions.m */,
-				3ACFD8341503784600FF5F0F /* NXDebug.h */,
-				3ACFD8351503784600FF5F0F /* NXDebug.m */,
-				3ACFD8361503784600FF5F0F /* NXJsonParser.h */,
-				3ACFD8371503784600FF5F0F /* NXJsonParser.m */,
-				3ACFD8381503784600FF5F0F /* NXJsonSerializer.h */,
-				3ACFD8391503784600FF5F0F /* NXJsonSerializer.m */,
-				3ACFD83A1503784600FF5F0F /* NXSerializable.h */,
-			);
-			path = NextiveJson;
-			sourceTree = "<group>";
-		};
 		F8D25D0F1396A9C400CF3BD6 /* JSONKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -249,7 +220,6 @@
 		F8E469931395743A00DB05C8 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				3ACFD8311503784600FF5F0F /* NextiveJson */,
 				F8E469941395744600DB05C8 /* AFNetworking */,
 				F8D25D0F1396A9C400CF3BD6 /* JSONKit */,
 				F8D25D121396A9C400CF3BD6 /* FormatterKit */,
@@ -392,10 +362,6 @@
 				F8F4B16E143CD1420064C9E6 /* AFPropertyListRequestOperation.m in Sources */,
 				F8F4B17F143E07030064C9E6 /* AFXMLRequestOperation.m in Sources */,
 				F8689A9914CC9F5E0087F357 /* AFJSONUtilities.m in Sources */,
-				3ACFD83B1503784600FF5F0F /* NSError+Extensions.m in Sources */,
-				3ACFD83C1503784600FF5F0F /* NXDebug.m in Sources */,
-				3ACFD83D1503784600FF5F0F /* NXJsonParser.m in Sources */,
-				3ACFD83E1503784600FF5F0F /* NXJsonSerializer.m in Sources */,
 				3ACFD84015037DAB00FF5F0F /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
