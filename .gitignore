@@ -1,0 +1,11 @@
+Documentation
+build
+*.pbxuser
+*.mode2v3
+*.mode1v3
+.DS_Store
+
+*.perspectivev3
+xcuserdata
+project.xcworkspace
+
