@@ -43,9 +43,9 @@ extern NSString * const AFNetworkingReachabilityDidChangeNotification;
 #ifdef _SYSTEMCONFIGURATION_H
 typedef enum{
     AFReachabilityStatusUnknown = 0,
-    AFReachabilityStatusUnavilable,
-    AFReachabilityStatusAvailableViaWWAN,
-    AFReachabilityStatusAvailableViaWiFi,
+    AFReachabilityStatusNotReachable,
+    AFReachabilityStatusReachableViaWWAN,
+    AFReachabilityStatusReachableViaWiFi,
 }AFReachabilityStatus;
 #endif
 

@@ -248,20 +248,20 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
     BOOL isNetworkReachable = (isReachable && !needsConnection);
     
-    AFReachabilityStatus status = AFReachabilityStatusUnavilable;
+    AFReachabilityStatus status = AFReachabilityStatusUnknown;
     if(isNetworkReachable == NO){
-        status = AFReachabilityStatusUnavilable;
+        status = AFReachabilityStatusNotReachable;
     }
 #if	TARGET_OS_IPHONE
     else if((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0){
-        status = AFReachabilityStatusAvailableViaWWAN;
+        status = AFReachabilityStatusReachableViaWWAN;
     }
     else{
-        status = AFReachabilityStatusAvailableViaWiFi;
+        status = AFReachabilityStatusReachableViaWiFi;
     }
 #else
     else {
-        status = AFReachabilityStatusAvailableViaWiFi;
+        status = AFReachabilityStatusReachableViaWiFi;
     }
 #endif
     AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
