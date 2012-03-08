@@ -497,7 +497,11 @@ didReceiveResponse:(NSURLResponse *)response
     if ([self isCancelled]) {
         return nil;
     }
-    
+
+    if ((self.request) && (self.request.cachePolicy==NSURLRequestReloadIgnoringLocalCacheData)) {
+        return nil;
+    }
+
     return cachedResponse;
 }
 
