@@ -90,7 +90,7 @@ NSData * AFJSONEncode(id object, NSError **error) {
         data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
     } else if (_NSJSONSerializationClass && [_NSJSONSerializationClass respondsToSelector:_NSJSONSerializationSelector]) {
 #ifdef _AFNETWORKING_PREFER_NSJSONSERIALIZATION_
-    _af_nsjson_encode:
+    _af_nsjson_encode:;
 #endif
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_NSJSONSerializationClass methodSignatureForSelector:_NSJSONSerializationSelector]];
         invocation.target = _NSJSONSerializationClass;
@@ -176,7 +176,7 @@ id AFJSONDecode(NSData *data, NSError **error) {
         [invocation getReturnValue:&JSON];
     } else if (_NSJSONSerializationClass && [_NSJSONSerializationClass respondsToSelector:_NSJSONSerializationSelector]) {
 #ifdef _AFNETWORKING_PREFER_NSJSONSERIALIZATION_
-    _af_nsjson_decode:
+    _af_nsjson_decode:;
 #endif
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_NSJSONSerializationClass methodSignatureForSelector:_NSJSONSerializationSelector]];
         invocation.target = _NSJSONSerializationClass;
