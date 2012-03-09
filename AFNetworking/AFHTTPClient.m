@@ -99,7 +99,7 @@ NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEn
     static NSString * const kAFLegalCharactersToBeEscaped = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ ";
     
     /* 
-     The documentation for `CFURLCreateStringByAddingPercentEscapes` suggests that one should "pre-process" URL strings with unpredictable sequences that may already contain percent escapes.       However, if the string contains an unescaped sequence with '%' appearing without an escape code (such as when representing percentages like "42%"), `stringByReplacingPercentEscapesUsingEncoding` will return `nil`. Thus, the string is only unescaped if there are no invalid percent-escaped sequences. 
+     The documentation for `CFURLCreateStringByAddingPercentEscapes` suggests that one should "pre-process" URL strings with unpredictable sequences that may already contain percent escapes. However, if the string contains an unescaped sequence with '%' appearing without an escape code (such as when representing percentages like "42%"), `stringByReplacingPercentEscapesUsingEncoding` will return `nil`. Thus, the string is only unescaped if there are no invalid percent-escaped sequences. 
     */
     NSString *unescapedString = [string stringByReplacingPercentEscapesUsingEncoding:encoding];
     if (unescapedString) {
@@ -116,64 +116,60 @@ extern NSDictionary * AFQueryStringComponentFromParameterAtBaseKeyWithEncoding(i
 
 NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
     NSMutableString *mutableQueryString = [NSMutableString string];
-    [AFQueryParametersFromParametersAtBaseKeyWithEncoding(parameters,nil) enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    
+    [AFQueryParametersFromParametersAtBaseKeyWithEncoding(parameters, nil) enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         [mutableQueryString appendFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([obj description], encoding)];   
     }];
+    
     return mutableQueryString;
 }
 
-NSDictionary * AFQueryParametersFromParametersAtBaseKeyWithEncoding(id parameters, NSString *baseKey)
-{
+NSDictionary * AFQueryParametersFromParametersAtBaseKeyWithEncoding(id parameters, NSString *baseKey) {
     NSMutableDictionary *mutableParameterComponents = [NSMutableDictionary dictionary];
     
     if([parameters isKindOfClass:[NSDictionary class]]) {
-        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersDictionaryAtBaseKeyWithEncoding(parameters,baseKey)];
-    }
-    else if([parameters isKindOfClass:[NSArray class]]) {
-        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersArrayAtBaseKeyWithEncoding(parameters,baseKey)];
-    }
-    else {
-        [mutableParameterComponents addEntriesFromDictionary:AFQueryStringComponentFromParameterAtBaseKeyWithEncoding(parameters,baseKey)];
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersDictionaryAtBaseKeyWithEncoding(parameters, baseKey)];
+    } else if([parameters isKindOfClass:[NSArray class]]) {
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersArrayAtBaseKeyWithEncoding(parameters, baseKey)];
+    } else {
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryStringComponentFromParameterAtBaseKeyWithEncoding(parameters, baseKey)];
     } 
     
     return mutableParameterComponents;
 }
 
-NSDictionary * AFQueryParametersFromParametersDictionaryAtBaseKeyWithEncoding(NSDictionary *parameters, NSString *baseKey)
-{
+NSDictionary * AFQueryParametersFromParametersDictionaryAtBaseKeyWithEncoding(NSDictionary *parameters, NSString *baseKey){
     NSMutableDictionary *mutableParameterComponents = [NSMutableDictionary dictionary];
-    
+
     id key = nil;
-    
     NSEnumerator *enumerator = [parameters keyEnumerator];
     while ((key = [enumerator nextObject])) {
-        NSString *newKey = baseKey?[NSString stringWithFormat:@"%@[%@]",baseKey,key]:key;
-        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersAtBaseKeyWithEncoding([parameters valueForKey:key],newKey)];
+        NSString *nextKey = baseKey ? [NSString stringWithFormat:@"%@[%@]", baseKey, key] : key;
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersAtBaseKeyWithEncoding([parameters valueForKey:key], nextKey)];
     }
     
     return mutableParameterComponents;
 }
 
-NSDictionary * AFQueryParametersFromParametersArrayAtBaseKeyWithEncoding(NSArray *parameters, NSString *baseKey)
-{
+NSDictionary * AFQueryParametersFromParametersArrayAtBaseKeyWithEncoding(NSArray *parameters, NSString *baseKey) {
     NSMutableDictionary *mutableParameterComponents = [NSMutableDictionary dictionary];
     
     for (id value in parameters) {
-        NSString* newKey = [NSString stringWithFormat:@"%@[]",baseKey];
-        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersAtBaseKeyWithEncoding(value,newKey)];
+        NSString *nextKey = [NSString stringWithFormat:@"%@[]", baseKey];
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersAtBaseKeyWithEncoding(value, nextKey)];
     }
     
     return mutableParameterComponents;
 }
 
-NSDictionary * AFQueryStringComponentFromParameterAtBaseKeyWithEncoding(id parameter, NSString *key)
-{
+NSDictionary * AFQueryStringComponentFromParameterAtBaseKeyWithEncoding(id parameter, NSString *key) {
     return [NSDictionary dictionaryWithObject:parameter forKey:key];
 }
 
 static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
     NSError *error = nil;
     NSData *JSONData = AFJSONEncode(parameters, &error);
+    
     if (!error) {
         return [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];
     } else {
