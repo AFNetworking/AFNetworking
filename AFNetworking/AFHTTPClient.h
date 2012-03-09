@@ -38,6 +38,18 @@ extern NSString * const AFNetworkingReachabilityDidChangeNotification;
 #endif
 
 /**
+ Enum representing the reachability states to the `baseURL` of the `AFHTTPClient.`
+ */
+#ifdef _SYSTEMCONFIGURATION_H
+typedef enum{
+    AFReachabilityStatusUnknown = 0,
+    AFReachabilityStatusNotReachable,
+    AFReachabilityStatusReachableViaWWAN,
+    AFReachabilityStatusReachableViaWiFi,
+}AFReachabilityStatus;
+#endif
+
+/**
  Method used to encode parameters into request body. 
  */
 typedef enum {
@@ -147,6 +159,15 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  */
 @property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;
 
+/**
+ The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
+
+  @warning This property requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
+ */
+#ifdef _SYSTEMCONFIGURATION_H
+@property (readonly, nonatomic) AFReachabilityStatus reachabilityStatus;
+#endif
+
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
 ///---------------------------------------------
@@ -178,12 +199,12 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 /**
  Sets a callback to be executed when the network availability of the `baseURL` host changes.
  
- @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument, which is `YES` if the host is available, otherwise `NO`.
+ @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument which represents the various reachability states from the device to the `baseURL`.
  
  @warning This method requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
  */
 #ifdef _SYSTEMCONFIGURATION_H
-- (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block;
+- (void)setReachabilityStatusChangeBlock:(void (^)(AFReachabilityStatus reachabilityStatus))block;
 #endif
 
 ///-------------------------------

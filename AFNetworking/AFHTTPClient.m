@@ -57,11 +57,11 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 
 #ifdef _SYSTEMCONFIGURATION_H
 typedef SCNetworkReachabilityRef AFNetworkReachabilityRef;
+typedef void (^AFNetworkReachabilityStatusBlock)(AFReachabilityStatus reachabilityStatus);
 #else
 typedef id AFNetworkReachabilityRef;
 #endif
 
-typedef void (^AFNetworkReachabilityStatusBlock)(BOOL isNetworkReachable);
 typedef void (^AFCompletionBlock)(void);
 
 static NSUInteger const kAFHTTPClientDefaultMaxConcurrentOperationCount = 4;
@@ -194,8 +194,10 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @property (readwrite, nonatomic, retain) NSMutableArray *registeredHTTPOperationClassNames;
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
+#ifdef _SYSTEMCONFIGURATION_H
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
 @property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
+#endif
 
 #ifdef _SYSTEMCONFIGURATION_H
 - (void)startMonitoringNetworkReachability;
@@ -210,8 +212,11 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
+#ifdef _SYSTEMCONFIGURATION_H
 @synthesize networkReachability = _networkReachability;
 @synthesize networkReachabilityStatusBlock = _networkReachabilityStatusBlock;
+@synthesize reachabilityStatus = _reachabilityStatus;
+#endif
 
 + (AFHTTPClient *)clientWithBaseURL:(NSURL *)url {
     return [[[self alloc] initWithBaseURL:url] autorelease];
@@ -259,13 +264,13 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 - (void)dealloc {
 #ifdef _SYSTEMCONFIGURATION_H
     [self stopMonitoringNetworkReachability];
+    [_networkReachabilityStatusBlock release];
 #endif
     
     [_baseURL release];
     [_registeredHTTPOperationClassNames release];
     [_defaultHeaders release];
     [_operationQueue release];
-    [_networkReachabilityStatusBlock release];
     
     [super dealloc];
 }
@@ -281,13 +286,29 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
     BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
     BOOL isNetworkReachable = (isReachable && !needsConnection);
-        
+    
+    AFReachabilityStatus status = AFReachabilityStatusUnknown;
+    if(isNetworkReachable == NO){
+        status = AFReachabilityStatusNotReachable;
+    }
+#if	TARGET_OS_IPHONE
+    else if((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0){
+        status = AFReachabilityStatusReachableViaWWAN;
+    }
+    else{
+        status = AFReachabilityStatusReachableViaWiFi;
+    }
+#else
+    else {
+        status = AFReachabilityStatusReachableViaWiFi;
+    }
+#endif
     AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
     if (block) {
-        block(isNetworkReachable);
+        block(status);
     }
         
-    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:[NSNumber numberWithBool:isNetworkReachable]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:[NSNumber numberWithBool:status]];
 }
 
 - (void)startMonitoringNetworkReachability {
@@ -305,8 +326,13 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     }
 }
 
-- (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block {
-    self.networkReachabilityStatusBlock = block;
+- (void)setReachabilityStatusChangeBlock:(void (^)(AFReachabilityStatus reachabilityStatus))block {
+    void (^reachabilityCallback)(AFReachabilityStatus reachabilityStatus) = ^(AFReachabilityStatus reachabilityStatus){
+        _reachabilityStatus = reachabilityStatus;
+        if(block)
+            block(reachabilityStatus);
+    };
+    self.networkReachabilityStatusBlock = reachabilityCallback;
     [self startMonitoringNetworkReachability];
 }
 #endif
