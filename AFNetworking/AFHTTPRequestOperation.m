@@ -174,7 +174,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         } else {
             if (success) {
                 dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                    success(self, self.responseString);
+                    success(self, self.responseData);
                 });
             }
         }
