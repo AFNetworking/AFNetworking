@@ -38,19 +38,19 @@ extern NSString * const AFNetworkingReachabilityDidChangeNotification;
 #endif
 
 /**
- Enum representing the reachability states to the `baseURL` of the `AFHTTPClient.`
+ Specifies network reachability of the client to its `baseURL` domain.
  */
 #ifdef _SYSTEMCONFIGURATION_H
-typedef enum{
-    AFReachabilityStatusUnknown = 0,
-    AFReachabilityStatusNotReachable,
-    AFReachabilityStatusReachableViaWWAN,
-    AFReachabilityStatusReachableViaWiFi,
-}AFReachabilityStatus;
+typedef enum {
+    AFNetworkReachabilityStatusUnknown          = -1,
+    AFNetworkReachabilityStatusNotReachable     = 0,
+    AFNetworkReachabilityStatusReachableViaWWAN = 1 << 0,
+    AFNetworkReachabilityStatusReachableViaWiFi = 1 << 1,
+} AFNetworkReachabilityStatus;
 #endif
 
 /**
- Method used to encode parameters into request body. 
+ Specifies the method used to encode parameters into request body. 
  */
 typedef enum {
     AFFormURLParameterEncoding,
@@ -165,7 +165,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
   @warning This property requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
  */
 #ifdef _SYSTEMCONFIGURATION_H
-@property (readonly, nonatomic) AFReachabilityStatus reachabilityStatus;
+@property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
 #endif
 
 ///---------------------------------------------
@@ -204,7 +204,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @warning This method requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
  */
 #ifdef _SYSTEMCONFIGURATION_H
-- (void)setReachabilityStatusChangeBlock:(void (^)(AFReachabilityStatus reachabilityStatus))block;
+- (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block;
 #endif
 
 ///-------------------------------
