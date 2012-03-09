@@ -109,23 +109,66 @@ NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEn
 	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
 }
 
+extern NSDictionary * AFQueryParametersFromParametersAtBaseKeyWithEncoding(id parameters, NSString *baseKey);
+extern NSDictionary * AFQueryParametersFromParametersDictionaryAtBaseKeyWithEncoding(NSDictionary *parameters, NSString *baseKey);
+extern NSDictionary * AFQueryParametersFromParametersArrayAtBaseKeyWithEncoding(NSArray *parameters, NSString *baseKey);
+extern NSDictionary * AFQueryStringComponentFromParameterAtBaseKeyWithEncoding(id parameter, NSString *key);
+
 NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
-    NSMutableArray *mutableParameterComponents = [NSMutableArray array];
-    for (id key in [parameters allKeys]) {
-        id value = [parameters valueForKey:key];
-        if ([value isKindOfClass:[NSArray class]]) {
-            NSString *arrayKey = AFURLEncodedStringFromStringWithEncoding([NSString stringWithFormat:@"%@[]", [key description]], encoding);
-            for (id arrayValue in value) {
-                NSString *component = [NSString stringWithFormat:@"%@=%@", arrayKey, AFURLEncodedStringFromStringWithEncoding([arrayValue description], encoding)];
-                [mutableParameterComponents addObject:component];
-            }
-        } else {
-            NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([value description], encoding)];
-            [mutableParameterComponents addObject:component];
-        }
-    }    
+    NSMutableString *mutableQueryString = [NSMutableString string];
+    [AFQueryParametersFromParametersAtBaseKeyWithEncoding(parameters,nil) enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [mutableQueryString appendFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([obj description], encoding)];   
+    }];
+    return mutableQueryString;
+}
+
+NSDictionary * AFQueryParametersFromParametersAtBaseKeyWithEncoding(id parameters, NSString *baseKey)
+{
+    NSMutableDictionary *mutableParameterComponents = [NSMutableDictionary dictionary];
     
-    return [mutableParameterComponents componentsJoinedByString:@"&"];
+    if([parameters isKindOfClass:[NSDictionary class]]) {
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersDictionaryAtBaseKeyWithEncoding(parameters,baseKey)];
+    }
+    else if([parameters isKindOfClass:[NSArray class]]) {
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersArrayAtBaseKeyWithEncoding(parameters,baseKey)];
+    }
+    else {
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryStringComponentFromParameterAtBaseKeyWithEncoding(parameters,baseKey)];
+    } 
+    
+    return mutableParameterComponents;
+}
+
+NSDictionary * AFQueryParametersFromParametersDictionaryAtBaseKeyWithEncoding(NSDictionary *parameters, NSString *baseKey)
+{
+    NSMutableDictionary *mutableParameterComponents = [NSMutableDictionary dictionary];
+    
+    id key = nil;
+    
+    NSEnumerator *enumerator = [parameters keyEnumerator];
+    while ((key = [enumerator nextObject])) {
+        NSString *newKey = baseKey?[NSString stringWithFormat:@"%@[%@]",baseKey,key]:key;
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersAtBaseKeyWithEncoding([parameters valueForKey:key],newKey)];
+    }
+    
+    return mutableParameterComponents;
+}
+
+NSDictionary * AFQueryParametersFromParametersArrayAtBaseKeyWithEncoding(NSArray *parameters, NSString *baseKey)
+{
+    NSMutableDictionary *mutableParameterComponents = [NSMutableDictionary dictionary];
+    
+    for (id value in parameters) {
+        NSString* newKey = [NSString stringWithFormat:@"%@[]",baseKey];
+        [mutableParameterComponents addEntriesFromDictionary:AFQueryParametersFromParametersAtBaseKeyWithEncoding(value,newKey)];
+    }
+    
+    return mutableParameterComponents;
+}
+
+NSDictionary * AFQueryStringComponentFromParameterAtBaseKeyWithEncoding(id parameter, NSString *key)
+{
+    return [NSDictionary dictionaryWithObject:parameter forKey:key];
 }
 
 static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
@@ -359,10 +402,7 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
     __block AFMultipartFormData *formData = [[AFMultipartFormData alloc] initWithStringEncoding:self.stringEncoding];
     
-    id key = nil;
-	NSEnumerator *enumerator = [parameters keyEnumerator];
-	while ((key = [enumerator nextObject])) {
-        id value = [parameters valueForKey:key];
+    [AFQueryParametersFromParametersDictionaryAtBaseKeyWithEncoding(parameters, nil) enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
         NSData *data = nil;
         
         if ([value isKindOfClass:[NSData class]]) {
@@ -372,7 +412,7 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
         }
         
         [formData appendPartWithFormData:data name:[key description]];
-    }
+    }];
     
     if (block) {
         block(formData);
