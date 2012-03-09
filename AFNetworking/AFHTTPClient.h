@@ -67,7 +67,11 @@ extern NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSS
  @discussion Query strings are constructed by collecting each key-value pair, URL-encoding a string representation of the key-value pair, and then joining the components with "&". 
  
  
- If a key-value pair has a an `NSArray` for its value, each member of the array will be represented in the format `key[]=value1&key[]value2`. Otherwise, the key-value pair will be formatted as "key=value". String representations of both keys and values are derived using the `-description` method. The constructed query string does not include the ? character used to delimit the query component.
+ If a key-value pair has an `NSArray` for its value, each member of the array will be represented in the format `key[]=value1&key[]=value2`. 
+ 
+ If a key-value pair has an `NSDictionary` for its value, each member will be represented in the format `key[childkey]=value1&key[array][]=value2&key[array][]=value3`.
+ 
+ Otherwise, the key-value pair will be formatted as "key=value". String representations of both keys and values are derived using the `-description` method. The constructed query string does not include the ? character used to delimit the query component.
  
  @return A URL-encoded query string
  */

@@ -109,23 +109,34 @@ NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEn
 	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, (CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease];
 }
 
-NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
+static NSString * AFQueryStringComponentFromParametersWithEncodingForKey(id value, NSStringEncoding encoding, NSString *parentKey) {
     NSMutableArray *mutableParameterComponents = [NSMutableArray array];
-    for (id key in [parameters allKeys]) {
-        id value = [parameters valueForKey:key];
-        if ([value isKindOfClass:[NSArray class]]) {
-            NSString *arrayKey = AFURLEncodedStringFromStringWithEncoding([NSString stringWithFormat:@"%@[]", [key description]], encoding);
-            for (id arrayValue in value) {
-                NSString *component = [NSString stringWithFormat:@"%@=%@", arrayKey, AFURLEncodedStringFromStringWithEncoding([arrayValue description], encoding)];
-                [mutableParameterComponents addObject:component];
+
+    if ([value isKindOfClass:[NSDictionary class]]) {
+        for (id key in [value allKeys]) {
+            id childValue = [value objectForKey:key];
+            NSString *nestedKey = AFURLEncodedStringFromStringWithEncoding([key description], encoding);
+            if (parentKey) {
+                nestedKey = [NSString stringWithFormat:@"%@[%@]", AFURLEncodedStringFromStringWithEncoding([parentKey description], encoding), AFURLEncodedStringFromStringWithEncoding([key description], encoding)];
             }
-        } else {
-            NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([value description], encoding)];
+            [mutableParameterComponents addObject:AFQueryStringComponentFromParametersWithEncodingForKey(childValue, encoding, nestedKey)];
+        }
+    } else if ([value isKindOfClass:[NSArray class]]) {
+        NSString *arrayKey = AFURLEncodedStringFromStringWithEncoding([NSString stringWithFormat:@"%@[]", [parentKey description]], encoding);
+        for (id arrayValue in value) {
+            NSString *component = [NSString stringWithFormat:@"%@=%@", arrayKey, AFURLEncodedStringFromStringWithEncoding([arrayValue description], encoding)];
             [mutableParameterComponents addObject:component];
         }
-    }    
+    } else {
+        NSString *component = [NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([parentKey description], encoding), AFURLEncodedStringFromStringWithEncoding([value description], encoding)];
+        [mutableParameterComponents addObject:component];
+    }
     
     return [mutableParameterComponents componentsJoinedByString:@"&"];
+}
+
+NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
+    return AFQueryStringComponentFromParametersWithEncodingForKey(parameters, encoding, nil);
 }
 
 static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
