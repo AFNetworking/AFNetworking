@@ -159,7 +159,9 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+    NSSet *requestAceptableTypes = [NSSet setWithArray:[[request valueForHTTPHeaderField:@"Accept"] componentsSeparatedByString:@","]];
+    BOOL canProcess = [[self defaultAcceptableContentTypes] intersectsSet:requestAceptableTypes] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+    return canProcess;
 }
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
