@@ -40,6 +40,7 @@ NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
 NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.networking.operation.start";
 NSString * const AFNetworkingOperationDidFinishNotification = @"com.alamofire.networking.operation.finish";
 
+typedef void (^AFURLConnectionOperationDataReceivedBlock)(NSData *data);
 typedef void (^AFURLConnectionOperationProgressBlock)(NSInteger bytes, NSInteger totalBytes, NSInteger totalBytesExpected);
 typedef BOOL (^AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock)(NSURLConnection *connection, NSURLProtectionSpace *protectionSpace);
 typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
@@ -99,6 +100,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock authenticationAgainstProtectionSpace;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationChallengeBlock authenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationCacheResponseBlock cacheResponse;
+@property (readwrite, nonatomic, copy) AFURLConnectionOperationDataReceivedBlock dataReceived;
 
 - (void)operationDidStart;
 - (void)finish;
@@ -123,6 +125,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize authenticationChallenge = _authenticationChallenge;
 @synthesize cacheResponse = _cacheResponse;
 @synthesize lock = _lock;
+@synthesize dataReceived = _dataReceived;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
@@ -195,6 +198,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [_authenticationChallenge release];
     [_authenticationAgainstProtectionSpace release];
     [_cacheResponse release];
+    [_dataReceived release];
     
     [_connection release];
     
@@ -247,6 +251,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block {
     self.cacheResponse = block;
+}
+
+- (void) setDataReceivedBlock:(void (^)(NSData *data))block {
+    self.dataReceived = block;
 }
 
 - (void)setState:(AFOperationState)state {
@@ -442,12 +450,14 @@ didReceiveResponse:(NSURLResponse *)response
 {
     self.response = (NSHTTPURLResponse *)response;
     
-    if (self.outputStream) {
-        [self.outputStream open];
-    } else {
-        NSUInteger maxCapacity = MAX((NSUInteger)llabs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity);
-        NSUInteger capacity = MIN(maxCapacity, kAFHTTPMaximumInitialDataCapacity);
-        self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
+    if (!self.dataReceived) {        
+        if (self.outputStream) {
+            [self.outputStream open];
+        } else {
+            NSUInteger maxCapacity = MAX((NSUInteger)llabs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity);
+            NSUInteger capacity = MIN(maxCapacity, kAFHTTPMaximumInitialDataCapacity);
+            self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
+        }
     }
 }
 
@@ -456,13 +466,17 @@ didReceiveResponse:(NSURLResponse *)response
 {
     self.totalBytesRead += [data length];
     
-    if (self.outputStream) {
-        if ([self.outputStream hasSpaceAvailable]) {
-            const uint8_t *dataBuffer = (uint8_t *) [data bytes];
-            [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
-        }
+    if (self.dataReceived) {
+        self.dataReceived(data);
     } else {
-        [self.dataAccumulator appendData:data];
+        if (self.outputStream) {
+            if ([self.outputStream hasSpaceAvailable]) {
+                const uint8_t *dataBuffer = (uint8_t *) [data bytes];
+                [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
+            }
+        } else {
+            [self.dataAccumulator appendData:data];
+        }
     }
     
     if (self.downloadProgress) {
