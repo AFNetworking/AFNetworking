@@ -115,13 +115,13 @@ extern NSDictionary * AFQueryParametersFromParametersArrayAtBaseKeyWithEncoding(
 extern NSDictionary * AFQueryStringComponentFromParameterAtBaseKeyWithEncoding(id parameter, NSString *key);
 
 NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding) {
-    NSMutableString *mutableQueryString = [NSMutableString string];
-    
+    NSMutableArray *queryStringArray = [NSMutableArray array];
+  
     [AFQueryParametersFromParametersAtBaseKeyWithEncoding(parameters, nil) enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        [mutableQueryString appendFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([obj description], encoding)];   
+      [queryStringArray addObject:[NSString stringWithFormat:@"%@=%@", AFURLEncodedStringFromStringWithEncoding([key description], encoding), AFURLEncodedStringFromStringWithEncoding([obj description], encoding)]];
     }];
-    
-    return mutableQueryString;
+  
+    return [queryStringArray componentsJoinedByString:@"&"];
 }
 
 NSDictionary * AFQueryParametersFromParametersAtBaseKeyWithEncoding(id parameters, NSString *baseKey) {
