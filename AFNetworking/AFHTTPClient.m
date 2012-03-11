@@ -259,7 +259,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     
 #ifdef _SYSTEMCONFIGURATION_H
     self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
-    [self setReachabilityStatusChangeBlock:nil];
+    [self startMonitoringNetworkReachability];
 #endif
     
     self.operationQueue = [[[NSOperationQueue alloc] init] autorelease];
@@ -324,10 +324,25 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:[NSNumber numberWithBool:status]];
 }
 
+static const void * AFReachabilityRetainCallback(const void *info) {
+    return [(AFNetworkReachabilityStatusBlock)info copy];
+}
+
+static void AFReachabilityReleaseCallback(const void *info) {
+    [(AFNetworkReachabilityStatusBlock)info release];
+}
+
 - (void)startMonitoringNetworkReachability {
     [self stopMonitoringNetworkReachability];
     self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
-    SCNetworkReachabilityContext context = {0, self.networkReachabilityStatusBlock, NULL, NULL, NULL};
+    
+    AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
+        self.networkReachabilityStatus = status;
+        if (self.networkReachabilityStatusBlock) {
+            self.networkReachabilityStatusBlock(status);
+        }
+    };
+    SCNetworkReachabilityContext context = {0, callback, AFReachabilityRetainCallback, AFReachabilityReleaseCallback, NULL};
     SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
     SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
 }
@@ -340,14 +355,7 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
 }
 
 - (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block {
-    AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
-        self.networkReachabilityStatus = status;
-        if (block) {
-            block(status);
-        }
-    };
-    
-    self.networkReachabilityStatusBlock = callback;
+    self.networkReachabilityStatusBlock = block;
     [self startMonitoringNetworkReachability];
 }
 #endif
