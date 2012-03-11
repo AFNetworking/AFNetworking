@@ -300,7 +300,7 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     } else {
     #if	TARGET_OS_IPHONE
         if((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0){
-            status |= AFNetworkReachabilityStatusReachableViaWWAN;
+            status = AFNetworkReachabilityStatusReachableViaWWAN;
         }
     #endif
         
@@ -312,7 +312,7 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
 
         SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr *)&localWiFiAddress);
         if (reachability != NULL) {
-            status |= AFNetworkReachabilityStatusReachableViaWiFi;
+            status = AFNetworkReachabilityStatusReachableViaWiFi;
         }
     }
     
