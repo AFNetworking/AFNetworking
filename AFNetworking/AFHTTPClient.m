@@ -259,7 +259,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     
 #ifdef _SYSTEMCONFIGURATION_H
     self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
-    [self startMonitoringNetworkReachability];
+    [self setReachabilityStatusChangeBlock:nil];
 #endif
     
     self.operationQueue = [[[NSOperationQueue alloc] init] autorelease];
