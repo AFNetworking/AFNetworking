@@ -210,8 +210,16 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 }
             } else {            
                 if (success) {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+                    UIImage *image = nil;
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+                    NSImage *image = nil;
+#endif
+
+                    image = self.responseImage;
+
                     dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                        success(self, self.responseImage);
+                        success(self, image);
                     });
                 }
             }
