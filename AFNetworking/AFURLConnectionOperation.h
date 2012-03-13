@@ -58,11 +58,11 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  - `connection:didFailWithError:`
  - `connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:`
  - `connection:willCacheResponse:`
+ - `connection:canAuthenticateAgainstProtectionSpace:`
+ - `connection:didReceiveAuthenticationChallenge:`
  
  If any of these methods are overriden in a subclass, they _must_ call the `super` implementation first.
- 
- Notably, `AFHTTPRequestOperation` does not implement any of the authentication challenge-related `NSURLConnection` delegate methods, and are thus safe to override without a call to `super`.
- 
+  
  ## Class Constructors
  
  Class constructors, or methods that return an unowned (zero retain count) instance, are the preferred way for subclasses to encapsulate any particular logic for handling the setup or parsing of response data. For instance, `AFJSONRequestOperation` provides `JSONRequestOperationWithRequest:success:failure:`, which takes block arguments, whose parameter on for a successful request is the JSON object initialized from the `response data`.
