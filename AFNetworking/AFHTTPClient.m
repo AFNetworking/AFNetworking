@@ -208,6 +208,8 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 #ifdef _SYSTEMCONFIGURATION_H
 - (void)startMonitoringNetworkReachability;
 - (void)stopMonitoringNetworkReachability;
++ (AFNetworkReachabilityStatus)reachabilityStatusForFlags:(SCNetworkReachabilityFlags)flags;
++ (BOOL)addressFromString:(NSString *)IPAddress address:(struct sockaddr_in *)address;
 #endif
 @end
 
@@ -289,39 +291,15 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
-static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
-    BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
-    BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
-    BOOL isNetworkReachable = (isReachable && !needsConnection);
-    
-    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusNotReachable;
-    if(isNetworkReachable == NO) {
-        status = AFNetworkReachabilityStatusNotReachable;
-    } else {
-    #if	TARGET_OS_IPHONE
-        if((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0){
-            status = AFNetworkReachabilityStatusReachableViaWWAN;
-        }
-    #endif
-        
-        struct sockaddr_in localWiFiAddress;
-        memset(&localWiFiAddress, '\0', sizeof(localWiFiAddress));
-        localWiFiAddress.sin_len = sizeof(localWiFiAddress);
-        localWiFiAddress.sin_family = AF_INET;
-        localWiFiAddress.sin_addr.s_addr = htonl(IN_LINKLOCALNETNUM);
-
-        SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr *)&localWiFiAddress);
-        if (reachability != NULL) {
-            status = AFNetworkReachabilityStatusReachableViaWiFi;
-        }
-    }
+static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {    
+    AFNetworkReachabilityStatus status = [AFHTTPClient reachabilityStatusForFlags:flags];
     
     AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
     if (block) {
         block(status);
     }
         
-    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:[NSNumber numberWithBool:status]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:[NSNumber numberWithInt:status]];
 }
 
 static const void * AFReachabilityRetainCallback(const void *info) {
@@ -333,8 +311,24 @@ static void AFReachabilityReleaseCallback(const void *info) {
 }
 
 - (void)startMonitoringNetworkReachability {
-    [self stopMonitoringNetworkReachability];
-    self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
+    [self stopMonitoringNetworkReachability];    
+    
+    //In order to handle all Reachability cases, we must determine if the Host URL is an IP Address 
+    //or a Host Name. We must then use the appropriate SCNetworkReachabilityCreateWith... function 
+    //based on the result.
+    NSString * ipMatch = @"^[0-9]{1,3}(.[0-9]{1,3}){3}$";
+    NSRegularExpression *ipRegex = [NSRegularExpression regularExpressionWithPattern:ipMatch options:NSRegularExpressionCaseInsensitive error:nil];
+    
+    BOOL isIPAddress = [ipRegex numberOfMatchesInString:[self.baseURL host] options:NSMatchingReportProgress range:NSMakeRange(0, [[self.baseURL host] length])];
+    
+    if(isIPAddress == YES){
+        struct sockaddr_in address;
+        [AFHTTPClient addressFromString:[self.baseURL host] address:&address];
+        self.networkReachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault,  (struct sockaddr *)&address);
+    }
+    else {
+        self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
+    }
     
     AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
         self.networkReachabilityStatus = status;
@@ -342,9 +336,22 @@ static void AFReachabilityReleaseCallback(const void *info) {
             self.networkReachabilityStatusBlock(status);
         }
     };
+    
     SCNetworkReachabilityContext context = {0, callback, AFReachabilityRetainCallback, AFReachabilityReleaseCallback, NULL};
     SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
     SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+    
+    if(isIPAddress == YES){
+        //For SCNetworkReachabilityCreateWithAddress, the callback block is not immediately called.
+        //In order to duplicate the immediate callback behavior of SCNetworkReachabilityCreateWithName,
+        //we must pull the current status, and then manually call the block
+        SCNetworkReachabilityFlags flags;
+        SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            AFNetworkReachabilityStatus status = [AFHTTPClient reachabilityStatusForFlags:flags];
+            callback(status);        
+        });
+    }
 }
 
 - (void)stopMonitoringNetworkReachability {
@@ -354,9 +361,53 @@ static void AFReachabilityReleaseCallback(const void *info) {
     }
 }
 
++ (AFNetworkReachabilityStatus)reachabilityStatusForFlags:(SCNetworkReachabilityFlags)flags{
+    BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
+    BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
+    BOOL isNetworkReachable = (isReachable && !needsConnection);
+    
+    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusNotReachable;
+    if(isNetworkReachable == NO) {
+        status = AFNetworkReachabilityStatusNotReachable;
+    } else {
+#if	TARGET_OS_IPHONE
+        if((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0){
+            status = AFNetworkReachabilityStatusReachableViaWWAN;
+        }
+#endif
+        
+        struct sockaddr_in localWiFiAddress;
+        memset(&localWiFiAddress, '\0', sizeof(localWiFiAddress));
+        localWiFiAddress.sin_len = sizeof(localWiFiAddress);
+        localWiFiAddress.sin_family = AF_INET;
+        localWiFiAddress.sin_addr.s_addr = htonl(IN_LINKLOCALNETNUM);
+        
+        SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr *)&localWiFiAddress);
+        if (reachability != NULL) {
+            status = AFNetworkReachabilityStatusReachableViaWiFi;
+        }
+    }
+    return status;
+}
+
++ (BOOL)addressFromString:(NSString *)IPAddress address:(struct sockaddr_in *)address{
+    if (!IPAddress || ![IPAddress length]) {
+        return NO;
+    }
+    
+    memset((char *) address, sizeof(struct sockaddr_in), 0);
+    address->sin_family = AF_INET;
+    address->sin_len = sizeof(struct sockaddr_in);
+    
+    int conversionResult = inet_aton([IPAddress UTF8String], &address->sin_addr);
+    if (conversionResult == 0) {
+        return NO;
+    }    
+    return YES;
+}
+                                      
 - (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block {
     self.networkReachabilityStatusBlock = block;
-    [self startMonitoringNetworkReachability];
 }
 #endif
 
