@@ -381,6 +381,7 @@ canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
         return YES;
     }
 #endif
+    
     if (self.authenticationAgainstProtectionSpace) {
         return self.authenticationAgainstProtectionSpace(connection, protectionSpace);
     } else if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust] || [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodClientCertificate]) {
@@ -393,15 +394,16 @@ canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 - (void)connection:(NSURLConnection *)connection 
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge 
 {
+#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+        return;
+    }
+#endif
+    
     if (self.authenticationChallenge) {
         self.authenticationChallenge(connection, challenge);
     } else {
-#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
-        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
-            return;
-        }
-#endif        
         if ([challenge previousFailureCount] == 0) {
             NSURLCredential *credential = nil;
             
