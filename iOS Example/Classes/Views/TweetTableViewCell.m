@@ -63,6 +63,7 @@
 
 + (CGFloat)heightForCellWithTweet:(Tweet *)tweet {
     CGSize sizeToFit = [tweet.text sizeWithFont:[UIFont systemFontOfSize:12.0f] constrainedToSize:CGSizeMake(220.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap];
+    
     return fmaxf(70.0f, sizeToFit.height + 45.0f);
 }
 
@@ -70,8 +71,8 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.imageView.frame = CGRectMake(10.0f, 10.0f, 50.0f, 50.0f);
     
+    self.imageView.frame = CGRectMake(10.0f, 10.0f, 50.0f, 50.0f);
     self.textLabel.frame = CGRectMake(70.0f, 10.0f, 240.0f, 20.0f);
     
     CGRect detailTextLabelFrame = CGRectOffset(self.textLabel.frame, 0.0f, 25.0f);
