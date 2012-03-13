@@ -29,9 +29,7 @@
 
 @implementation TweetTableViewCell {
 @private
-    __strong Tweet *_tweet;
-    
-    __strong UIImageView *_maskImageView;
+    __strong Tweet *_tweet;    
 }
 
 @synthesize tweet = _tweet;
@@ -47,9 +45,6 @@
     self.detailTextLabel.font = [UIFont systemFontOfSize:12.0f];
     self.detailTextLabel.numberOfLines = 0;
     self.selectionStyle = UITableViewCellSelectionStyleGray;
-    
-    _maskImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"profile-image-mask"]];
-    [self addSubview:_maskImageView];
     
     return self;
 }
@@ -76,7 +71,6 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.imageView.frame = CGRectMake(10.0f, 10.0f, 50.0f, 50.0f);
-    _maskImageView.frame = self.imageView.frame;
     
     self.textLabel.frame = CGRectMake(70.0f, 10.0f, 240.0f, 20.0f);
     
