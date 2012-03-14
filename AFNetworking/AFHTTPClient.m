@@ -209,7 +209,6 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 - (void)startMonitoringNetworkReachability;
 - (void)stopMonitoringNetworkReachability;
 + (AFNetworkReachabilityStatus)reachabilityStatusForFlags:(SCNetworkReachabilityFlags)flags;
-+ (BOOL)addressFromString:(NSString *)IPAddress address:(struct sockaddr_in *)address;
 #endif
 @end
 
@@ -312,23 +311,8 @@ static void AFReachabilityReleaseCallback(const void *info) {
 
 - (void)startMonitoringNetworkReachability {
     [self stopMonitoringNetworkReachability];    
-    
-    //In order to handle all Reachability cases, we must determine if the Host URL is an IP Address 
-    //or a Host Name. We must then use the appropriate SCNetworkReachabilityCreateWith... function 
-    //based on the result.
-    NSString * ipMatch = @"^[0-9]{1,3}(.[0-9]{1,3}){3}$";
-    NSRegularExpression *ipRegex = [NSRegularExpression regularExpressionWithPattern:ipMatch options:NSRegularExpressionCaseInsensitive error:nil];
-    
-    BOOL isIPAddress = [ipRegex numberOfMatchesInString:[self.baseURL host] options:NSMatchingReportProgress range:NSMakeRange(0, [[self.baseURL host] length])];
-    
-    if(isIPAddress == YES){
-        struct sockaddr_in address;
-        [AFHTTPClient addressFromString:[self.baseURL host] address:&address];
-        self.networkReachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault,  (struct sockaddr *)&address);
-    }
-    else {
-        self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
-    }
+
+    self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
     
     AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
         self.networkReachabilityStatus = status;
@@ -341,10 +325,14 @@ static void AFReachabilityReleaseCallback(const void *info) {
     SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
     SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
     
+    //If the [self.baseURL host] is an IP Address, the reachability callback function will not be
+    //called until an actual change occurs. In order to duplicate the immediate callback behavior
+    //when using a host name instead of an IP Address, the call must manually be made below.
+    NSString * ipMatch = @"^[0-9]{1,3}(.[0-9]{1,3}){3}$";
+    NSRegularExpression *ipRegex = [NSRegularExpression regularExpressionWithPattern:ipMatch options:NSRegularExpressionCaseInsensitive error:nil];
+    
+    BOOL isIPAddress = [ipRegex numberOfMatchesInString:[self.baseURL host] options:NSMatchingReportProgress range:NSMakeRange(0, [[self.baseURL host] length])];
     if(isIPAddress == YES){
-        //For SCNetworkReachabilityCreateWithAddress, the callback block is not immediately called.
-        //In order to duplicate the immediate callback behavior of SCNetworkReachabilityCreateWithName,
-        //we must pull the current status, and then manually call the block
         SCNetworkReachabilityFlags flags;
         SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -390,22 +378,6 @@ static void AFReachabilityReleaseCallback(const void *info) {
     return status;
 }
 
-+ (BOOL)addressFromString:(NSString *)IPAddress address:(struct sockaddr_in *)address{
-    if (!IPAddress || ![IPAddress length]) {
-        return NO;
-    }
-    
-    memset((char *) address, sizeof(struct sockaddr_in), 0);
-    address->sin_family = AF_INET;
-    address->sin_len = sizeof(struct sockaddr_in);
-    
-    int conversionResult = inet_aton([IPAddress UTF8String], &address->sin_addr);
-    if (conversionResult == 0) {
-        return NO;
-    }    
-    return YES;
-}
-                                      
 - (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block {
     self.networkReachabilityStatusBlock = block;
 }
