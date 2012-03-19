@@ -154,55 +154,49 @@ NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEn
 
 #pragma mark -
 
-extern NSArray * AFQueryStringComponentsFromParametersAtBaseKeyWithEncoding(id parameters, NSString *baseKey, NSStringEncoding stringEncoding);
-extern NSArray * AFQueryStringComponentsFromParametersDictionaryAtBaseKeyWithEncoding(NSDictionary *parameters, NSString *baseKey, NSStringEncoding stringEncoding);
-extern NSArray * AFQueryStringComponentsFromParametersArrayAtBaseKeyWithEncoding(NSArray *parameters, NSString *baseKey, NSStringEncoding stringEncoding);
+extern NSArray * AFQueryStringComponentsFromKeyAndValueWithEncoding(NSString *key, id value, NSStringEncoding stringEncoding);
+extern NSArray * AFQueryStringComponentsFromKeyAndDictionaryValueWithEncoding(NSString *key, NSDictionary *value, NSStringEncoding stringEncoding);
+extern NSArray * AFQueryStringComponentsFromKeyAndArrayValueWithEncoding(NSString *key, NSArray *value, NSStringEncoding stringEncoding);
 
-NSString * AFQueryStringFromParametersWithEncoding(id parameters, NSStringEncoding stringEncoding) {    
-    return [[AFQueryStringComponentsFromParametersAtBaseKeyWithEncoding(parameters, nil, stringEncoding) valueForKeyPath:@"description"] componentsJoinedByString:@"&"];
+NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding stringEncoding) {    
+    return [[AFQueryStringComponentsFromKeyAndValueWithEncoding(nil, parameters, stringEncoding) valueForKeyPath:@"description"] componentsJoinedByString:@"&"];
 }
 
 AFQueryStringComponent * AFQueryStringComponentFromKeyAndValueWithEncoding(id key, id value, NSStringEncoding stringEncoding) {
     return [[[AFQueryStringComponent alloc] initWithKey:AFURLEncodedStringFromStringWithEncoding([key description], stringEncoding) value:AFURLEncodedStringFromStringWithEncoding([value description], stringEncoding)] autorelease];
 }
 
-NSArray * AFQueryStringComponentsFromParametersAtBaseKeyWithEncoding(id parameters, NSString *baseKey,  NSStringEncoding stringEncoding) {
+NSArray * AFQueryStringComponentsFromKeyAndValueWithEncoding(NSString *key, id value,  NSStringEncoding stringEncoding) {
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
     
-    if([parameters isKindOfClass:[NSDictionary class]]) {
-        [mutableQueryStringComponents addObjectsFromArray:AFQueryStringComponentsFromParametersDictionaryAtBaseKeyWithEncoding(parameters, baseKey, stringEncoding)];
-    } else if([parameters isKindOfClass:[NSArray class]]) {
-        [mutableQueryStringComponents addObjectsFromArray:AFQueryStringComponentsFromParametersArrayAtBaseKeyWithEncoding(parameters, baseKey, stringEncoding)];
+    if([value isKindOfClass:[NSDictionary class]]) {
+        [mutableQueryStringComponents addObjectsFromArray:AFQueryStringComponentsFromKeyAndDictionaryValueWithEncoding(key, value, stringEncoding)];
+    } else if([value isKindOfClass:[NSArray class]]) {
+        [mutableQueryStringComponents addObjectsFromArray:AFQueryStringComponentsFromKeyAndArrayValueWithEncoding(key, value, stringEncoding)];
     } else {
-        [mutableQueryStringComponents addObject:AFQueryStringComponentFromKeyAndValueWithEncoding(baseKey, parameters, stringEncoding)];
+        [mutableQueryStringComponents addObject:AFQueryStringComponentFromKeyAndValueWithEncoding(key, value, stringEncoding)];
     } 
     
     return mutableQueryStringComponents;
 }
 
-NSArray * AFQueryStringComponentsFromParametersDictionaryAtBaseKeyWithEncoding(NSDictionary *parameters, NSString *baseKey, NSStringEncoding stringEncoding){
+NSArray * AFQueryStringComponentsFromKeyAndDictionaryValueWithEncoding(NSString *key, NSDictionary *value, NSStringEncoding stringEncoding){
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
-
-    [parameters enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        NSString *nextKey = baseKey ? [NSString stringWithFormat:@"%@[%@]", baseKey, key] : key;
-        if (nextKey && value) {
-            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringComponentsFromParametersAtBaseKeyWithEncoding(value, nextKey, stringEncoding)];
-        }
+    
+    [value enumerateKeysAndObjectsUsingBlock:^(id k, id v, BOOL *stop) {
+        [mutableQueryStringComponents addObjectsFromArray:AFQueryStringComponentsFromKeyAndValueWithEncoding((key ? [NSString stringWithFormat:@"%@[%@]", key, k] : k), v, stringEncoding)];
     }];
-   
+    
     return mutableQueryStringComponents;
 }
 
-NSArray * AFQueryStringComponentsFromParametersArrayAtBaseKeyWithEncoding(NSArray *parameters, NSString *baseKey, NSStringEncoding stringEncoding) {
+NSArray * AFQueryStringComponentsFromKeyAndArrayValueWithEncoding(NSString *key, NSArray *value, NSStringEncoding stringEncoding) {
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
     
-    [parameters enumerateObjectsUsingBlock:^(id value, NSUInteger idx, BOOL *stop) {
-        NSString *nextKey = [NSString stringWithFormat:@"%@[]", baseKey];
-        if (nextKey && value) {
-            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringComponentsFromParametersAtBaseKeyWithEncoding(value, nextKey, stringEncoding)];
-        }
+    [value enumerateObjectsUsingBlock:^(id v, NSUInteger idx, BOOL *stop) {
+        [mutableQueryStringComponents addObjectsFromArray:AFQueryStringComponentsFromKeyAndValueWithEncoding([NSString stringWithFormat:@"%@[]", key], v, stringEncoding)];
     }];
-
+    
     return mutableQueryStringComponents;
 }
 
@@ -438,7 +432,7 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
     __block AFMultipartFormData *formData = [[AFMultipartFormData alloc] initWithStringEncoding:self.stringEncoding];
     
-    for (AFQueryStringComponent *component in AFQueryStringComponentsFromParametersAtBaseKeyWithEncoding(parameters, nil, self.stringEncoding)) {
+    for (AFQueryStringComponent *component in AFQueryStringComponentsFromKeyAndValueWithEncoding(nil, parameters, self.stringEncoding)) {
         [formData appendPartWithFormData:[component.value dataUsingEncoding:self.stringEncoding] name:component.key];
     }
 
