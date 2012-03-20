@@ -239,9 +239,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)setInputStream:(NSInputStream *)inputStream {
+    [self.lock lock];
     NSMutableURLRequest *mutableRequest = [[self.request mutableCopy] autorelease];
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
+    [self.lock unlock];
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
