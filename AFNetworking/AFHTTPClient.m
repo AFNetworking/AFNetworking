@@ -354,27 +354,19 @@ static void AFReachabilityReleaseCallback(const void *info) {
     BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
     BOOL isNetworkReachable = (isReachable && !needsConnection);
     
-    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusNotReachable;
-    if(isNetworkReachable == NO) {
+    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusUnknown;
+    if(isNetworkReachable == NO){
         status = AFNetworkReachabilityStatusNotReachable;
-    } else {
-#if	TARGET_OS_IPHONE
-        if((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0){
-            status = AFNetworkReachabilityStatusReachableViaWWAN;
-        }
-#endif
-        
-        struct sockaddr_in localWiFiAddress;
-        memset(&localWiFiAddress, '\0', sizeof(localWiFiAddress));
-        localWiFiAddress.sin_len = sizeof(localWiFiAddress);
-        localWiFiAddress.sin_family = AF_INET;
-        localWiFiAddress.sin_addr.s_addr = htonl(IN_LINKLOCALNETNUM);
-        
-        SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr *)&localWiFiAddress);
-        if (reachability != NULL) {
-            status = AFNetworkReachabilityStatusReachableViaWiFi;
-        }
     }
+#if	TARGET_OS_IPHONE
+    else if((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0){
+        status = AFNetworkReachabilityStatusReachableViaWWAN;
+    }
+#endif
+    else {
+        status = AFNetworkReachabilityStatusReachableViaWiFi;
+    }
+
     return status;
 }
 
