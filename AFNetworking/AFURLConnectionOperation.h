@@ -58,11 +58,11 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  - `connection:didFailWithError:`
  - `connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:`
  - `connection:willCacheResponse:`
+ - `connection:canAuthenticateAgainstProtectionSpace:`
+ - `connection:didReceiveAuthenticationChallenge:`
  
  If any of these methods are overriden in a subclass, they _must_ call the `super` implementation first.
- 
- Notably, `AFHTTPRequestOperation` does not implement any of the authentication challenge-related `NSURLConnection` delegate methods, and are thus safe to override without a call to `super`.
- 
+  
  ## Class Constructors
  
  Class constructors, or methods that return an unowned (zero retain count) instance, are the preferred way for subclasses to encapsulate any particular logic for handling the setup or parsing of response data. For instance, `AFJSONRequestOperation` provides `JSONRequestOperationWithRequest:success:failure:`, which takes block arguments, whose parameter on for a successful request is the JSON object initialized from the `response data`.
@@ -174,18 +174,18 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 ///---------------------------------
 
 /**
- Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
+ Sets a callback to be called when an undetermined number of bytes have been uploaded to the server.
  
- @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes three arguments: the number of bytes written since the last time the upload progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times.
+ @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes three arguments: the number of bytes written since the last time the upload progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times.
  
  @see setDownloadProgressBlock
  */
 - (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))block;
 
 /**
- Sets a callback to be called when an undetermined number of bytes have been uploaded to the server.
+ Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
  
- @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes three arguments: the number of bytes read since the last time the upload progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times.
+ @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes three arguments: the number of bytes read since the last time the download progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times.
  
  @see setUploadProgressBlock
  */
