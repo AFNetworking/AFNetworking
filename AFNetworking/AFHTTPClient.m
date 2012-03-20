@@ -242,7 +242,6 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 #ifdef _SYSTEMCONFIGURATION_H
 - (void)startMonitoringNetworkReachability;
 - (void)stopMonitoringNetworkReachability;
-+ (AFNetworkReachabilityStatus)reachabilityStatusForFlags:(SCNetworkReachabilityFlags)flags;
 #endif
 @end
 
@@ -324,66 +323,14 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
-static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {    
-    AFNetworkReachabilityStatus status = [AFHTTPClient reachabilityStatusForFlags:flags];
+static BOOL AFURLHostIsIPAddress(NSURL *url) {
+    struct sockaddr_in sa_in;
+    struct sockaddr_in6 sa_in6;
     
-    AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
-    if (block) {
-        block(status);
-    }
-        
-    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:[NSNumber numberWithInt:status]];
+    return [url host] && (inet_pton(AF_INET, [[url host] UTF8String], &sa_in) == 1 || inet_pton(AF_INET6, [[url host] UTF8String], &sa_in6) == 1);
 }
 
-static const void * AFReachabilityRetainCallback(const void *info) {
-    return [(AFNetworkReachabilityStatusBlock)info copy];
-}
-
-static void AFReachabilityReleaseCallback(const void *info) {
-    [(AFNetworkReachabilityStatusBlock)info release];
-}
-
-- (void)startMonitoringNetworkReachability {
-    [self stopMonitoringNetworkReachability];    
-
-    self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
-    
-    AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
-        self.networkReachabilityStatus = status;
-        if (self.networkReachabilityStatusBlock) {
-            self.networkReachabilityStatusBlock(status);
-        }
-    };
-    
-    SCNetworkReachabilityContext context = {0, callback, AFReachabilityRetainCallback, AFReachabilityReleaseCallback, NULL};
-    SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
-    SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
-    
-    //If the [self.baseURL host] is an IP Address, the reachability callback function will not be
-    //called until an actual change occurs. In order to duplicate the immediate callback behavior
-    //when using a host name instead of an IP Address, the call must manually be made below.
-    NSString * ipMatch = @"^[0-9]{1,3}(.[0-9]{1,3}){3}$";
-    NSRegularExpression *ipRegex = [NSRegularExpression regularExpressionWithPattern:ipMatch options:NSRegularExpressionCaseInsensitive error:nil];
-    
-    BOOL isIPAddress = [ipRegex numberOfMatchesInString:[self.baseURL host] options:NSMatchingReportProgress range:NSMakeRange(0, [[self.baseURL host] length])];
-    if(isIPAddress == YES){
-        SCNetworkReachabilityFlags flags;
-        SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            AFNetworkReachabilityStatus status = [AFHTTPClient reachabilityStatusForFlags:flags];
-            callback(status);        
-        });
-    }
-}
-
-- (void)stopMonitoringNetworkReachability {
-    if (_networkReachability) {
-        SCNetworkReachabilityUnscheduleFromRunLoop(_networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
-        CFRelease(_networkReachability);
-    }
-}
-
-+ (AFNetworkReachabilityStatus)reachabilityStatusForFlags:(SCNetworkReachabilityFlags)flags{
+static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
     BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
     BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
     BOOL isNetworkReachable = (isReachable && !needsConnection);
@@ -400,8 +347,61 @@ static void AFReachabilityReleaseCallback(const void *info) {
     else {
         status = AFNetworkReachabilityStatusReachableViaWiFi;
     }
-
+    
     return status;
+}
+
+static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {    
+    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
+    AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
+    if (block) {
+        block(status);
+    }
+        
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:[NSNumber numberWithInt:status]];
+}
+
+static const void * AFNetworkReachabilityRetainCallback(const void *info) {
+    return [(AFNetworkReachabilityStatusBlock)info copy];
+}
+
+static void AFNetworkReachabilityReleaseCallback(const void *info) {
+    [(AFNetworkReachabilityStatusBlock)info release];
+}
+
+- (void)startMonitoringNetworkReachability {
+    [self stopMonitoringNetworkReachability];    
+
+    self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
+    
+    AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
+        self.networkReachabilityStatus = status;
+        if (self.networkReachabilityStatusBlock) {
+            self.networkReachabilityStatusBlock(status);
+        }
+    };
+    
+    SCNetworkReachabilityContext context = {0, callback, AFNetworkReachabilityRetainCallback, AFNetworkReachabilityReleaseCallback, NULL};
+    SCNetworkReachabilitySetCallback(self.networkReachability, AFNetworkReachabilityCallback, &context);
+    SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+    
+    /* Network reachability monitoring does not establish a baseline for IP addresses as it does for hostnames, so if the base URL host is an IP address, the initial reachability callback is manually triggered.
+     */
+    if (AFURLHostIsIPAddress(self.baseURL)) {
+        SCNetworkReachabilityFlags flags;
+        SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
+            callback(status);
+        });
+    }
+}
+
+- (void)stopMonitoringNetworkReachability {
+    if (_networkReachability) {
+        SCNetworkReachabilityUnscheduleFromRunLoop(_networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+        CFRelease(_networkReachability);
+    }
 }
 
 - (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block {
