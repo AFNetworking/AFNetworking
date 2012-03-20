@@ -66,6 +66,7 @@ NSData * AFJSONEncode(id object, NSError **error) {
         
         [invocation invoke];
         [invocation getReturnValue:&data];
+        [writer release];
     } else if (_YAJLSelector && [object respondsToSelector:_YAJLSelector]) {
         @try {
             NSString *JSONString = nil;
@@ -162,6 +163,7 @@ id AFJSONDecode(NSData *data, NSError **error) {
 
         [invocation invoke];
         [invocation getReturnValue:&JSON];
+        [parser release];
     } else if (_YAJLSelector && [data respondsToSelector:_YAJLSelector]) {
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_YAJLSelector]];
         invocation.target = data;
