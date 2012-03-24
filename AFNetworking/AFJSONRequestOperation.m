@@ -35,9 +35,6 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, retain) id responseJSON;
 @property (readwrite, nonatomic, retain) NSError *JSONError;
-
-+ (NSSet *)defaultAcceptableContentTypes;
-+ (NSSet *)defaultAcceptablePathExtensions;
 @end
 
 @implementation AFJSONRequestOperation
@@ -60,29 +57,6 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     }];
     
     return requestOperation;
-}
-
-+ (NSSet *)defaultAcceptableContentTypes {
-    return [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", nil];
-}
-
-+ (NSSet *)defaultAcceptablePathExtensions {
-    return [NSSet setWithObjects:@"json", nil];
-}
-
-+ (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
-}
-
-- (id)initWithRequest:(NSURLRequest *)urlRequest {
-    self = [super initWithRequest:urlRequest];
-    if (!self) {
-        return nil;
-    }
-    
-    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
-    
-    return self;
 }
 
 - (void)dealloc {
@@ -113,6 +87,16 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     } else {
         return [super error];
     }
+}
+
+#pragma mark - AFHTTPRequestOperation
+
++ (NSSet *)acceptableContentTypes {
+    return [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", nil];
+}
+
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    return [[[request URL] pathExtension] isEqualToString:@"json"] || [super canProcessRequest:request];
 }
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
