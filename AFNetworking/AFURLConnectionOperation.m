@@ -30,9 +30,6 @@ typedef enum {
 
 typedef unsigned short AFOperationState;
 
-static NSUInteger const kAFHTTPMinimumInitialDataCapacity = 1024;
-static NSUInteger const kAFHTTPMaximumInitialDataCapacity = 1024 * 1024 * 8;
-
 static NSString * const kAFNetworkingLockName = @"com.alamofire.networking.operation.lock";
 
 NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
@@ -128,7 +125,6 @@ static NSString * AFIncompleteDownloadDirectory() {
 @property (readwrite, nonatomic, copy) NSString *responseString;
 @property (readwrite, nonatomic, copy) NSString *responseFilePath;
 @property (readwrite, nonatomic, assign) long long totalBytesRead;
-@property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock downloadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock authenticationAgainstProtectionSpace;
@@ -150,7 +146,6 @@ static NSString * AFIncompleteDownloadDirectory() {
 @synthesize responseString = _responseString;
 @synthesize responseFilePath = _responseFilePath;
 @synthesize totalBytesRead = _totalBytesRead;
-@synthesize dataAccumulator = _dataAccumulator;
 @dynamic inputStream;
 @synthesize outputStream = _outputStream;
 @synthesize uploadProgress = _uploadProgress;
@@ -201,7 +196,10 @@ static NSString * AFIncompleteDownloadDirectory() {
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
     
     self.request = urlRequest;
-     
+    
+    self.outputStream = [NSOutputStream outputStreamToMemory];
+    self.outputStream.delegate = self;
+    
     self.state = AFHTTPOperationReadyState;
 	
     return self;
@@ -218,7 +216,6 @@ static NSString * AFIncompleteDownloadDirectory() {
     
     [_responseData release];
     [_responseString release];
-    [_dataAccumulator release];
     
     if (_outputStream) {
         [_outputStream close];
@@ -289,9 +286,7 @@ static NSString * AFIncompleteDownloadDirectory() {
             self.request = mutableURLRequest;
         }
     }
-    
-    NSLog(@"Request: %@", [self.request allHTTPHeaderFields]);
-    
+        
     self.outputStream = [NSOutputStream outputStreamToFileAtPath:temporaryFilePath append:!![self.request valueForHTTPHeaderField:@"Range"]];
 }
 
@@ -516,10 +511,6 @@ didReceiveResponse:(NSURLResponse *)response
     
     if (self.outputStream) {
         [self.outputStream open];
-    } else {
-        NSUInteger maxCapacity = MAX((NSUInteger)llabs(response.expectedContentLength), kAFHTTPMinimumInitialDataCapacity);
-        NSUInteger capacity = MIN(maxCapacity, kAFHTTPMaximumInitialDataCapacity);
-        self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
     }
     
     NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
@@ -550,13 +541,9 @@ didReceiveResponse:(NSURLResponse *)response
 {
     self.totalBytesRead += [data length];
     
-    if (self.outputStream) {
-        if ([self.outputStream hasSpaceAvailable]) {
-            const uint8_t *dataBuffer = (uint8_t *) [data bytes];
-            [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
-        }
-    } else {
-        [self.dataAccumulator appendData:data];
+    if ([self.outputStream hasSpaceAvailable]) {
+        const uint8_t *dataBuffer = (uint8_t *) [data bytes];
+        [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
     }
     
     if (self.downloadProgress) {
@@ -565,26 +552,17 @@ didReceiveResponse:(NSURLResponse *)response
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)__unused connection {        
-    if (self.outputStream) {
-        
-        if (self.responseFilePath) {
-            NSLog(@"responseFilePath");
-            @synchronized(self) {
-                NSString *temporaryFilePath = [AFIncompleteDownloadDirectory() stringByAppendingPathComponent:[[NSNumber numberWithInteger:[self.responseFilePath hash]] stringValue]];
-                NSLog(@"temporaryFilePath: %@", temporaryFilePath);
-
-                NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-                [fileManager moveItemAtPath:temporaryFilePath toPath:self.responseFilePath error:&_error];
-                NSLog(@"Error: %@", _error);
-            }
+    if (self.responseFilePath) {
+        @synchronized(self) {
+            NSString *temporaryFilePath = [AFIncompleteDownloadDirectory() stringByAppendingPathComponent:[[NSNumber numberWithInteger:[self.responseFilePath hash]] stringValue]];
+            NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+            [fileManager moveItemAtPath:temporaryFilePath toPath:self.responseFilePath error:&_error];
         }
-        
-        [self.outputStream close];
-
-    } else {
-        self.responseData = [NSData dataWithData:self.dataAccumulator];
-        [_dataAccumulator release]; _dataAccumulator = nil;
     }
+    
+    self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+    
+    [self.outputStream close];
     
     [self finish];
 
@@ -596,11 +574,7 @@ didReceiveResponse:(NSURLResponse *)response
 {    
     self.error = error;
     
-    if (self.outputStream) {
-        [self.outputStream close];
-    } else {
-        [_dataAccumulator release]; _dataAccumulator = nil;
-    }
+    [self.outputStream close];
     
     [self finish];
 
@@ -618,6 +592,19 @@ didReceiveResponse:(NSURLResponse *)response
         }
         
         return cachedResponse; 
+    }
+}
+
+#pragma mark - NSStreamDelegate
+
+- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode {
+    switch (eventCode) {
+        case NSStreamEventErrorOccurred:
+            self.error = [stream streamError];
+            [self cancel];
+            break;
+        default:
+            break;
     }
 }
 
