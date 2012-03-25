@@ -40,6 +40,8 @@ NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
 NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.networking.operation.start";
 NSString * const AFNetworkingOperationDidFinishNotification = @"com.alamofire.networking.operation.finish";
 
+NSString * const kAFNetworkingIncompleteDownloadDirectoryName = @"Incomplete";
+
 typedef void (^AFURLConnectionOperationProgressBlock)(NSInteger bytes, long long totalBytes, long long totalBytesExpected);
 typedef BOOL (^AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock)(NSURLConnection *connection, NSURLProtectionSpace *protectionSpace);
 typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
@@ -83,6 +85,38 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
 }
 
+static unsigned long long AFFileSizeForPath(NSString *path) {
+    unsigned long long fileSize = 0;
+    
+    NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+    if ([fileManager fileExistsAtPath:path]) {
+        NSError *error = nil;
+        NSDictionary *attributes = [fileManager attributesOfItemAtPath:path error:&error];
+        if (!error && attributes) {
+            fileSize = [attributes fileSize];
+        }
+    }
+
+    return fileSize;
+}
+
+static NSString * AFIncompleteDownloadDirectory() {
+    static NSString *_af_incompleteDownloadDirectory = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString *temporaryDirectory = NSTemporaryDirectory();
+        _af_incompleteDownloadDirectory = [[temporaryDirectory stringByAppendingPathComponent:kAFNetworkingIncompleteDownloadDirectoryName] retain];
+        
+        NSError *error = nil;
+        NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+        if(![fileManager createDirectoryAtPath:_af_incompleteDownloadDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
+            NSLog(NSLocalizedString(@"Failed to create incomplete download directory at %@", nil), _af_incompleteDownloadDirectory);
+        }
+    });
+    
+    return _af_incompleteDownloadDirectory;
+}
+
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
@@ -92,6 +126,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @property (readwrite, nonatomic, retain) NSError *error;
 @property (readwrite, nonatomic, retain) NSData *responseData;
 @property (readwrite, nonatomic, copy) NSString *responseString;
+@property (readwrite, nonatomic, copy) NSString *responseFilePath;
 @property (readwrite, nonatomic, assign) long long totalBytesRead;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
@@ -113,6 +148,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize error = _error;
 @synthesize responseData = _responseData;
 @synthesize responseString = _responseString;
+@synthesize responseFilePath = _responseFilePath;
 @synthesize totalBytesRead = _totalBytesRead;
 @synthesize dataAccumulator = _dataAccumulator;
 @dynamic inputStream;
@@ -227,6 +263,40 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     NSMutableURLRequest *mutableRequest = [[self.request mutableCopy] autorelease];
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
+}
+
+- (void)setOutputStreamDownloadingToFile:(NSString *)path 
+                            shouldResume:(BOOL)shouldResume
+{
+    BOOL isDirectory;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
+        isDirectory = NO;
+    }
+    
+    if (isDirectory) {
+        self.responseFilePath = [NSString pathWithComponents:[NSArray arrayWithObjects:path, [[self.request URL] lastPathComponent], nil]];
+    } else {
+        self.responseFilePath = path;
+    }
+    
+    NSString *temporaryFilePath = [AFIncompleteDownloadDirectory() stringByAppendingPathComponent:[[NSNumber numberWithInteger:[self.responseFilePath hash]] stringValue]];
+    
+    if (shouldResume) {
+        unsigned long long downloadedBytes = AFFileSizeForPath(temporaryFilePath);
+        if (downloadedBytes > 0) {
+            NSMutableURLRequest *mutableURLRequest = [[self.request mutableCopy] autorelease];
+            [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", downloadedBytes] forHTTPHeaderField:@"Range"];
+            self.request = mutableURLRequest;
+        }
+    }
+    
+    NSLog(@"Request: %@", [self.request allHTTPHeaderFields]);
+    
+    self.outputStream = [NSOutputStream outputStreamToFileAtPath:temporaryFilePath append:!![self.request valueForHTTPHeaderField:@"Range"]];
+}
+
+- (BOOL)deleteTemporaryFileWithError:(NSError **)error {
+    return NO;
 }
 
 - (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block {
@@ -451,6 +521,28 @@ didReceiveResponse:(NSURLResponse *)response
         NSUInteger capacity = MIN(maxCapacity, kAFHTTPMaximumInitialDataCapacity);
         self.dataAccumulator = [NSMutableData dataWithCapacity:capacity];
     }
+    
+    NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
+    if (![HTTPResponse isKindOfClass:[NSHTTPURLResponse class]]) {
+        return;
+    }
+    
+    // check for valid response to resume the download if possible
+    long long totalContentLength = self.response.expectedContentLength;
+    long long fileOffset = 0;
+    if([HTTPResponse statusCode] == 206) {
+        NSString *contentRange = [[HTTPResponse allHeaderFields] valueForKey:@"Content-Range"];
+        if ([contentRange hasPrefix:@"bytes"]) {
+            NSArray *bytes = [contentRange componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -/"]];
+            if ([bytes count] == 4) {
+                fileOffset = [[bytes objectAtIndex:1] longLongValue];
+                totalContentLength = [[bytes objectAtIndex:2] longLongValue]; // if this is *, it's converted to 0
+            }
+        }
+    }
+    
+    unsigned long long offsetContentLength = MAX(fileOffset, 0);
+    [self.outputStream setProperty:[NSNumber numberWithLongLong:offsetContentLength] forKey:NSStreamFileCurrentOffsetKey];
 }
 
 - (void)connection:(NSURLConnection *)__unused connection 
@@ -474,7 +566,21 @@ didReceiveResponse:(NSURLResponse *)response
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)__unused connection {        
     if (self.outputStream) {
+        
+        if (self.responseFilePath) {
+            NSLog(@"responseFilePath");
+            @synchronized(self) {
+                NSString *temporaryFilePath = [AFIncompleteDownloadDirectory() stringByAppendingPathComponent:[[NSNumber numberWithInteger:[self.responseFilePath hash]] stringValue]];
+                NSLog(@"temporaryFilePath: %@", temporaryFilePath);
+
+                NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+                [fileManager moveItemAtPath:temporaryFilePath toPath:self.responseFilePath error:&_error];
+                NSLog(@"Error: %@", _error);
+            }
+        }
+        
         [self.outputStream close];
+
     } else {
         self.responseData = [NSData dataWithData:self.dataAccumulator];
         [_dataAccumulator release]; _dataAccumulator = nil;
