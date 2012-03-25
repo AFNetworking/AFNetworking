@@ -60,7 +60,7 @@ typedef void (^AFURLConnectionProgressiveOperationProgressBlock)(NSInteger bytes
                                                      success:(void (^)(NSURLRequest *request, NSString *filePath))success 
                                                      failure:(void (^)(NSURLRequest *request, NSError *error))failure
 {
-    AFDownloadRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest targetPath:(NSString *)targetPath shouldResume:shouldResume];
+    AFDownloadRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest targetPath:(NSString *)targetPath shouldResume:shouldResume] autorelease];
     
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
@@ -87,8 +87,8 @@ typedef void (^AFURLConnectionProgressiveOperationProgressBlock)(NSInteger bytes
         NSFileManager *fileMan = [[NSFileManager alloc] init];
         if(![fileMan createDirectoryAtPath:cacheFolder withIntermediateDirectories:YES attributes:nil error:&error]) {
             NSLog(@"Failed to create cache directory at %@", cacheFolder);
-            [fileMan release];
         }
+        [fileMan release];
     });
     return cacheFolder;
 }
@@ -146,7 +146,7 @@ typedef void (^AFURLConnectionProgressiveOperationProgressBlock)(NSInteger bytes
         if (shouldResume) {
             unsigned long long downloadedBytes = [self fileSizeForPath:tempPath];
             if (downloadedBytes > 0) {
-                NSMutableURLRequest *mutableURLRequest = [urlRequest mutableCopy];
+                NSMutableURLRequest *mutableURLRequest = [[urlRequest mutableCopy] autorelease];
                 NSString *requestRange = [NSString stringWithFormat:@"bytes=%llu-", downloadedBytes];
                 [mutableURLRequest setValue:requestRange forHTTPHeaderField:@"Range"];
                 self.request = mutableURLRequest;
