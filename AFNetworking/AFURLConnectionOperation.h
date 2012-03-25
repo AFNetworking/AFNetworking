@@ -142,11 +142,6 @@ extern NSString * const kAFNetworkingIncompleteDownloadDirectoryName;
  */
 @property (readonly, nonatomic, copy) NSString *responseString;
 
-/**
- 
- */
-@property (readonly, nonatomic, copy) NSString *responseFilePath;
-
 ///------------------------
 /// @name Accessing Streams
 ///------------------------
@@ -177,23 +172,6 @@ extern NSString * const kAFNetworkingIncompleteDownloadDirectoryName;
  @discussion This is the designated initializer.
  */
 - (id)initWithRequest:(NSURLRequest *)urlRequest;
-
-///-------------------------------------------------
-/// @name Configuring Resumeable Streaming Downloads
-///-------------------------------------------------
-
-/**
- 
- */
-- (void)setOutputStreamDownloadingToFile:(NSString *)path 
-                            shouldResume:(BOOL)shouldResume;
-
-/** 
- Deletes the temporary file.
- 
- @return `YES` if the file is successfully removed or did not exist in the first place, otherwise `NO`.
- */
-- (BOOL)deleteTemporaryFileWithError:(NSError **)error;
 
 ///---------------------------------
 /// @name Setting Progress Callbacks

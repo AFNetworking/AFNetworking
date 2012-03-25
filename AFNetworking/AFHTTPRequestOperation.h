@@ -44,6 +44,10 @@
  */
 @property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
 
+/**
+ 
+ */
+@property (readonly, nonatomic, copy) NSString *responseFilePath;
 
 ///----------------------------------------------------------
 /// @name Managing And Checking For Acceptable HTTP Responses
@@ -90,6 +94,23 @@
  @param urlRequest The request that is determined to be supported or not supported for this class.
  */
 + (BOOL)canProcessRequest:(NSURLRequest *)urlRequest;
+
+///-------------------------------------------------
+/// @name Configuring Resumeable Streaming Downloads
+///-------------------------------------------------
+
+/**
+ 
+ */
+- (void)setOutputStreamDownloadingToFile:(NSString *)path 
+                            shouldResume:(BOOL)shouldResume;
+
+/** 
+ Deletes the temporary file.
+ 
+ @return `YES` if the file is successfully removed or did not exist in the first place, otherwise `NO`.
+ */
+- (BOOL)deleteTemporaryFileWithError:(NSError **)error;
 
 ///-----------------------------------------------------------
 /// @name Setting Completion Block Success / Failure Callbacks
