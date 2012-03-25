@@ -40,7 +40,7 @@ NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
 NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.networking.operation.start";
 NSString * const AFNetworkingOperationDidFinishNotification = @"com.alamofire.networking.operation.finish";
 
-typedef void (^AFURLConnectionOperationProgressBlock)(NSInteger bytes, NSInteger totalBytes, NSInteger totalBytesExpected);
+typedef void (^AFURLConnectionOperationProgressBlock)(NSInteger bytes, long long totalBytes, long long totalBytesExpected);
 typedef BOOL (^AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock)(NSURLConnection *connection, NSURLProtectionSpace *protectionSpace);
 typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
 typedef NSCachedURLResponse * (^AFURLConnectionOperationCacheResponseBlock)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse);
@@ -92,7 +92,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @property (readwrite, nonatomic, retain) NSError *error;
 @property (readwrite, nonatomic, retain) NSData *responseData;
 @property (readwrite, nonatomic, copy) NSString *responseString;
-@property (readwrite, nonatomic, assign) NSInteger totalBytesRead;
+@property (readwrite, nonatomic, assign) long long totalBytesRead;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock downloadProgress;
@@ -229,11 +229,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.request = mutableRequest;
 }
 
-- (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))block {
+- (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block {
     self.uploadProgress = block;
 }
 
-- (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead))block {
+- (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block {
     self.downloadProgress = block;
 }
 
@@ -468,7 +468,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     if (self.downloadProgress) {
-        self.downloadProgress([data length], self.totalBytesRead, (NSInteger)self.response.expectedContentLength);
+        self.downloadProgress((long long)[data length], self.totalBytesRead, self.response.expectedContentLength);
     }
 }
 
