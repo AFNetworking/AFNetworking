@@ -92,6 +92,7 @@ static NSString * AFIncompleteDownloadDirectory() {
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
 @property (readwrite, nonatomic, copy) NSString *responseFilePath;
+@property (readonly) NSString *temporaryFilePath;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -204,11 +205,9 @@ static NSString * AFIncompleteDownloadDirectory() {
     } else {
         self.responseFilePath = path;
     }
-    
-    NSString *temporaryFilePath = [AFIncompleteDownloadDirectory() stringByAppendingPathComponent:[[NSNumber numberWithInteger:[self.responseFilePath hash]] stringValue]];
-    
+        
     if (shouldResume) {
-        unsigned long long downloadedBytes = AFFileSizeForPath(temporaryFilePath);
+        unsigned long long downloadedBytes = AFFileSizeForPath(self.temporaryFilePath);
         if (downloadedBytes > 0) {
             NSMutableURLRequest *mutableURLRequest = [[self.request mutableCopy] autorelease];
             [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", downloadedBytes] forHTTPHeaderField:@"Range"];
@@ -216,7 +215,11 @@ static NSString * AFIncompleteDownloadDirectory() {
         }
     }
     
-    self.outputStream = [NSOutputStream outputStreamToFileAtPath:temporaryFilePath append:!![self.request valueForHTTPHeaderField:@"Range"]];
+    self.outputStream = [NSOutputStream outputStreamToFileAtPath:self.temporaryFilePath append:!![self.request valueForHTTPHeaderField:@"Range"]];
+}
+
+- (NSString *)temporaryFilePath {
+    return [AFIncompleteDownloadDirectory() stringByAppendingPathComponent:[[NSNumber numberWithInteger:[self.responseFilePath hash]] stringValue]];
 }
 
 - (BOOL)deleteTemporaryFileWithError:(NSError **)error {
