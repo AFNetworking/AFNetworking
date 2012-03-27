@@ -58,7 +58,6 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
     Method originalMethod = class_getClassMethod(klass, selector);
     IMP implementation = imp_implementationWithBlock(block);
     class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
-    
 }
 
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
@@ -127,6 +126,7 @@ static NSString * AFIncompleteDownloadDirectory() {
 
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
+@property (readwrite, nonatomic, retain) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
 @property (readwrite, nonatomic, copy) NSString *responseFilePath;
 @property (readonly) NSString *temporaryFilePath;
@@ -180,6 +180,24 @@ static NSString * AFIncompleteDownloadDirectory() {
     }
 }
 
+- (void)pause {
+    unsigned long long offset = 0; 
+    if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
+        offset = [[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
+    } else {
+        offset = [[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
+    }
+        
+    NSMutableURLRequest *mutableURLRequest = [[self.request mutableCopy] autorelease];
+    if ([[self.response allHeaderFields] valueForKey:@"ETag"]) {
+        [mutableURLRequest setValue:[[self.response allHeaderFields] valueForKey:@"ETag"] forHTTPHeaderField:@"If-Range"];
+    }
+    [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", offset] forHTTPHeaderField:@"Range"];
+    self.request = mutableURLRequest;
+    
+    [super pause];
+}
+
 - (BOOL)hasAcceptableStatusCode {
     return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:[self.response statusCode]];
 }
@@ -228,14 +246,14 @@ static NSString * AFIncompleteDownloadDirectory() {
         self.responseFilePath = path;
     }
         
-    if (shouldResume) {
-        unsigned long long downloadedBytes = AFFileSizeForPath(self.temporaryFilePath);
-        if (downloadedBytes > 0) {
-            NSMutableURLRequest *mutableURLRequest = [[self.request mutableCopy] autorelease];
-            [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", downloadedBytes] forHTTPHeaderField:@"Range"];
-            self.request = mutableURLRequest;
-        }
-    }
+//    if (shouldResume) {
+//        unsigned long long downloadedBytes = AFFileSizeForPath(self.temporaryFilePath);
+//        if (downloadedBytes > 0) {
+//            NSMutableURLRequest *mutableURLRequest = [[self.request mutableCopy] autorelease];
+//            [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", downloadedBytes] forHTTPHeaderField:@"Range"];
+//            self.request = mutableURLRequest;
+//        }
+//    }
     
     self.outputStream = [NSOutputStream outputStreamToFileAtPath:self.temporaryFilePath append:!![self.request valueForHTTPHeaderField:@"Range"]];
 }
@@ -311,34 +329,25 @@ static NSString * AFIncompleteDownloadDirectory() {
 - (void)connection:(NSURLConnection *)connection 
 didReceiveResponse:(NSURLResponse *)response 
 {
-    [super connection:connection didReceiveResponse:response];
+    self.response = (NSHTTPURLResponse *)response;
     
-    if (![self.response isKindOfClass:[NSHTTPURLResponse class]]) {
-        return;
-    }
-    
-    // check for valid response to resume the download if possible
-    long long totalContentLength = self.response.expectedContentLength;
-    long long fileOffset = 0;
-    if ([self.response statusCode] == 206) {
-        NSString *contentRange = [[self.response allHeaderFields] valueForKey:@"Content-Range"];
-        if ([contentRange hasPrefix:@"bytes"]) {
-            NSArray *bytes = [contentRange componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -/"]];
-            if ([bytes count] == 4) {
-                fileOffset = [[bytes objectAtIndex:1] longLongValue];
-                totalContentLength = [[bytes objectAtIndex:2] longLongValue]; // if this is *, it's converted to 0
+    if ([self.response statusCode] != 206) {
+        if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
+            [self.outputStream setProperty:[NSNumber numberWithInteger:0] forKey:NSStreamFileCurrentOffsetKey];
+        } else {
+            if ([[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length] > 0) {
+                self.outputStream = [NSOutputStream outputStreamToMemory];
             }
         }
     }
     
-    unsigned long long offsetContentLength = MAX(fileOffset, 0);
-    [self.outputStream setProperty:[NSNumber numberWithLongLong:offsetContentLength] forKey:NSStreamFileCurrentOffsetKey];
+    [self.outputStream open];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     [super connectionDidFinishLoading:connection];
-    
-    if (self.responseFilePath) {
+
+    if (self.responseFilePath && ![self isCancelled]) {
         @synchronized(self) {
             NSString *temporaryFilePath = [AFIncompleteDownloadDirectory() stringByAppendingPathComponent:[[NSNumber numberWithInteger:[self.responseFilePath hash]] stringValue]];
             NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];

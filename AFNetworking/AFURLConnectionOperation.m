@@ -23,12 +23,13 @@
 #import "AFURLConnectionOperation.h"
 
 typedef enum {
+    AFHTTPOperationPausedState      = -1,
     AFHTTPOperationReadyState       = 1,
     AFHTTPOperationExecutingState   = 2,
     AFHTTPOperationFinishedState    = 3,
 } _AFOperationState;
 
-typedef unsigned short AFOperationState;
+typedef signed short AFOperationState;
 
 static NSString * const kAFNetworkingLockName = @"com.alamofire.networking.operation.lock";
 
@@ -50,6 +51,8 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
             return @"isExecuting";
         case AFHTTPOperationFinishedState:
             return @"isFinished";
+        case AFHTTPOperationPausedState:
+            return @"isPaused";
         default:
             return @"state";
     }
@@ -59,6 +62,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     switch (fromState) {
         case AFHTTPOperationReadyState:
             switch (toState) {
+                case AFHTTPOperationPausedState:
                 case AFHTTPOperationExecutingState:
                     return YES;
                 case AFHTTPOperationFinishedState:
@@ -68,6 +72,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             }
         case AFHTTPOperationExecutingState:
             switch (toState) {
+                case AFHTTPOperationPausedState:
                 case AFHTTPOperationFinishedState:
                     return YES;
                 default:
@@ -75,6 +80,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             }
         case AFHTTPOperationFinishedState:
             return NO;
+        case AFHTTPOperationPausedState:
+            return toState == AFHTTPOperationReadyState;
         default:
             return YES;
     }
@@ -164,6 +171,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.outputStream = [NSOutputStream outputStreamToMemory];
     self.outputStream.delegate = self;
     
+    [self.outputStream setProperty:@"Foo bar" forKey:@"Test"];
+    
     self.state = AFHTTPOperationReadyState;
 	
     return self;
@@ -221,9 +230,24 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)setInputStream:(NSInputStream *)inputStream {
+    [self willChangeValueForKey:@"inputStream"];
     NSMutableURLRequest *mutableRequest = [[self.request mutableCopy] autorelease];
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
+    [self didChangeValueForKey:@"inputStream"];
+}
+
+- (void)setOutputStream:(NSOutputStream *)outputStream {
+    [self willChangeValueForKey:@"outputStream"];
+    [outputStream retain];
+    [_outputStream release];
+    _outputStream = outputStream;
+    [self didChangeValueForKey:@"outputStream"];
+    
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    for (NSString *runLoopMode in self.runLoopModes) {
+        [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
+    }
 }
 
 - (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block {
@@ -285,6 +309,35 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [self.lock unlock];
     
     return _responseString;
+}
+
+- (void)pause {
+    if ([self isPaused]) {
+        return;
+    }
+    
+    [self.lock lock];
+    self.state = AFHTTPOperationPausedState;
+    
+    [self.connection performSelector:@selector(cancel) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+    [self.lock unlock];
+}
+
+- (BOOL)isPaused {
+    return self.state == AFHTTPOperationPausedState;
+}
+
+- (void)resume {
+    if (![self isPaused]) {
+        return;
+    }
+    
+    [self.lock lock];
+    self.state = AFHTTPOperationReadyState;
+    
+    [self start];
+    [self.lock unlock];
 }
 
 #pragma mark - NSOperation
@@ -439,15 +492,13 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 - (void)connection:(NSURLConnection *)__unused connection 
 didReceiveResponse:(NSURLResponse *)response 
 {
-    self.response = (NSHTTPURLResponse *)response;
+    self.response = response;
     
-    if (self.outputStream) {
-        [self.outputStream open];
-    }
+    [self.outputStream open];
 }
 
 - (void)connection:(NSURLConnection *)__unused connection 
-    didReceiveData:(NSData *)data 
+    didReceiveData:(NSData *)data
 {
     self.totalBytesRead += [data length];
     
