@@ -90,38 +90,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return string;
 }
 
-static unsigned long long AFFileSizeForPath(NSString *path) {
-    unsigned long long fileSize = 0;
-    
-    NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-    if ([fileManager fileExistsAtPath:path]) {
-        NSError *error = nil;
-        NSDictionary *attributes = [fileManager attributesOfItemAtPath:path error:&error];
-        if (!error && attributes) {
-            fileSize = [attributes fileSize];
-        }
-    }
-    
-    return fileSize;
-}
-
-static NSString * AFIncompleteDownloadDirectory() {
-    static NSString *_af_incompleteDownloadDirectory = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSString *temporaryDirectory = NSTemporaryDirectory();
-        _af_incompleteDownloadDirectory = [[temporaryDirectory stringByAppendingPathComponent:kAFNetworkingIncompleteDownloadDirectoryName] retain];
-        
-        NSError *error = nil;
-        NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-        if(![fileManager createDirectoryAtPath:_af_incompleteDownloadDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(NSLocalizedString(@"Failed to create incomplete download directory at %@", nil), _af_incompleteDownloadDirectory);
-        }
-    });
-    
-    return _af_incompleteDownloadDirectory;
-}
-
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()
@@ -129,7 +97,6 @@ static NSString * AFIncompleteDownloadDirectory() {
 @property (readwrite, nonatomic, retain) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
 @property (readwrite, nonatomic, copy) NSString *responseFilePath;
-@property (readonly) NSString *temporaryFilePath;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -232,40 +199,6 @@ static NSString * AFIncompleteDownloadDirectory() {
     }    
 }
 
-- (void)setOutputStreamDownloadingToFile:(NSString *)path 
-                            shouldResume:(BOOL)shouldResume
-{
-    BOOL isDirectory;
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
-        isDirectory = NO;
-    }
-    
-    if (isDirectory) {
-        self.responseFilePath = [NSString pathWithComponents:[NSArray arrayWithObjects:path, [[self.request URL] lastPathComponent], nil]];
-    } else {
-        self.responseFilePath = path;
-    }
-        
-//    if (shouldResume) {
-//        unsigned long long downloadedBytes = AFFileSizeForPath(self.temporaryFilePath);
-//        if (downloadedBytes > 0) {
-//            NSMutableURLRequest *mutableURLRequest = [[self.request mutableCopy] autorelease];
-//            [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", downloadedBytes] forHTTPHeaderField:@"Range"];
-//            self.request = mutableURLRequest;
-//        }
-//    }
-    
-    self.outputStream = [NSOutputStream outputStreamToFileAtPath:self.temporaryFilePath append:!![self.request valueForHTTPHeaderField:@"Range"]];
-}
-
-- (NSString *)temporaryFilePath {
-    return [AFIncompleteDownloadDirectory() stringByAppendingPathComponent:[[NSNumber numberWithInteger:[self.responseFilePath hash]] stringValue]];
-}
-
-- (BOOL)deleteTemporaryFileWithError:(NSError **)error {
-    return NO;
-}
-
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
@@ -342,18 +275,6 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     [self.outputStream open];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    [super connectionDidFinishLoading:connection];
-
-    if (self.responseFilePath && ![self isCancelled]) {
-        @synchronized(self) {
-            NSString *temporaryFilePath = [AFIncompleteDownloadDirectory() stringByAppendingPathComponent:[[NSNumber numberWithInteger:[self.responseFilePath hash]] stringValue]];
-            NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-            [fileManager moveItemAtPath:temporaryFilePath toPath:self.responseFilePath error:&_HTTPError];
-        }
-    }
 }
 
 @end

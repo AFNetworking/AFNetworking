@@ -169,10 +169,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.request = urlRequest;
     
     self.outputStream = [NSOutputStream outputStreamToMemory];
-    self.outputStream.delegate = self;
-    
-    [self.outputStream setProperty:@"Foo bar" forKey:@"Test"];
-    
+        
     self.state = AFHTTPOperationReadyState;
 	
     return self;
@@ -545,19 +542,6 @@ didReceiveResponse:(NSURLResponse *)response
         }
         
         return cachedResponse; 
-    }
-}
-
-#pragma mark - NSStreamDelegate
-
-- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode {
-    switch (eventCode) {
-        case NSStreamEventErrorOccurred:
-            self.error = [stream streamError];
-            [self cancel];
-            break;
-        default:
-            break;
     }
 }
 

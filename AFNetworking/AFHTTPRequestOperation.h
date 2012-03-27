@@ -120,23 +120,6 @@ extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
  */
 + (BOOL)canProcessRequest:(NSURLRequest *)urlRequest;
 
-///-------------------------------------------------
-/// @name Configuring Resumeable Streaming Downloads
-///-------------------------------------------------
-
-/**
- 
- */
-- (void)setOutputStreamDownloadingToFile:(NSString *)path 
-                            shouldResume:(BOOL)shouldResume;
-
-/** 
- Deletes the temporary file.
- 
- @return `YES` if the file is successfully removed or did not exist in the first place, otherwise `NO`.
- */
-- (BOOL)deleteTemporaryFileWithError:(NSError **)error;
-
 ///-----------------------------------------------------------
 /// @name Setting Completion Block Success / Failure Callbacks
 ///-----------------------------------------------------------

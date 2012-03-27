@@ -40,11 +40,6 @@ extern NSString * const AFNetworkingOperationDidStartNotification;
 extern NSString * const AFNetworkingOperationDidFinishNotification;
 
 /**
- 
- */
-extern NSString * const kAFNetworkingIncompleteDownloadDirectoryName;
-
-/**
  `AFURLConnectionOperation` is an `NSOperation` that implements NSURLConnection delegate methods.
  
  ## Subclassing Notes
@@ -80,7 +75,7 @@ extern NSString * const kAFNetworkingIncompleteDownloadDirectoryName;
  
  @warning Attempting to load a `file://` URL in iOS 4 may result in an `NSInvalidArgumentException`, caused by the connection returning `NSURLResponse` rather than `NSHTTPURLResponse`, which is the behavior as of iOS 5.
  */
-@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDataDelegate, NSStreamDelegate> {
+@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDataDelegate> {
 @private
     signed short _state;
     BOOL _cancelled;
@@ -172,6 +167,10 @@ extern NSString * const kAFNetworkingIncompleteDownloadDirectoryName;
  @discussion This is the designated initializer.
  */
 - (id)initWithRequest:(NSURLRequest *)urlRequest;
+
+///----------------------------------
+/// @name Pausing / Resuming Requests
+///----------------------------------
 
 - (void)pause;
 - (BOOL)isPaused;
