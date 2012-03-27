@@ -157,6 +157,7 @@ NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEn
 extern NSArray * AFQueryStringComponentsFromKeyAndValueWithEncoding(NSString *key, id value, NSStringEncoding stringEncoding);
 extern NSArray * AFQueryStringComponentsFromKeyAndDictionaryValueWithEncoding(NSString *key, NSDictionary *value, NSStringEncoding stringEncoding);
 extern NSArray * AFQueryStringComponentsFromKeyAndArrayValueWithEncoding(NSString *key, NSArray *value, NSStringEncoding stringEncoding);
+extern AFQueryStringComponent * AFQueryStringComponentFromKeyAndValueWithEncoding(id key, id value, NSStringEncoding stringEncoding);
 
 NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding stringEncoding) {    
     return [[AFQueryStringComponentsFromKeyAndValueWithEncoding(nil, parameters, stringEncoding) valueForKeyPath:@"description"] componentsJoinedByString:@"&"];
