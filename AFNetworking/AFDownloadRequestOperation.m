@@ -55,9 +55,6 @@
 
 #pragma mark -
 
-/**
- 
- */
 - (void)setDestination:(NSString *)path allowOverwrite:(BOOL)allowOverwrite {
     [self willChangeValueForKey:@"isReady"];
     self.destination = path;
@@ -80,17 +77,10 @@
     }
 }
 
-
 #pragma mark -
 
-///**
-// 
-// */
 //- (void)setDecideDestinationWithSuggestedFilenameBlock:(void (^)(NSString *filename))block;
 //
-///**
-// 
-// */
 //- (void)setShouldDecodeSourceDataOfMimeTypeBlock:(BOOL (^)(NSString *encodingType))block;
 
 @end

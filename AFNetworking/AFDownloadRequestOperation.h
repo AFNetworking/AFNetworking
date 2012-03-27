@@ -22,12 +22,10 @@
 
 #import "AFHTTPRequestOperation.h"
 
-#define kAFNetworkingIncompleteDownloadFolderName @"Incomplete"
-
 /**
- `AFDownloadRequestOperation` is a subclass of `AFHTTPRequestOperation` for streamed file downloading. Supports Content-Range. (http://tools.ietf.org/html/rfc2616#section-14.16)
+ 
  */
-@interface AFDownloadRequestOperation : AFURLConnectionOperation {
+@interface AFDownloadRequestOperation : AFHTTPRequestOperation {
 @private
     NSString *_responsePath;
     NSError *_downloadError;
