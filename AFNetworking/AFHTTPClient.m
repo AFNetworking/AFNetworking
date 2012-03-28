@@ -435,7 +435,14 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     __block AFMultipartFormData *formData = [[AFMultipartFormData alloc] initWithStringEncoding:self.stringEncoding];
     
     for (AFQueryStringComponent *component in AFQueryStringComponentsFromKeyAndValue(nil, parameters)) {
-        [formData appendPartWithFormData:[component.value dataUsingEncoding:self.stringEncoding] name:component.key];
+        NSData *data = nil;
+        if ([component.value isKindOfClass:[NSData class]]) {
+            data = component.value;
+        } else {
+            data = [[component.value description] dataUsingEncoding:self.stringEncoding];
+        }
+        
+        [formData appendPartWithFormData:data name:[component.key description]];
     }
 
     if (block) {
