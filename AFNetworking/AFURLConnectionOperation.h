@@ -220,4 +220,13 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  */
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block;
 
+/**
+ Sets a block to be executed when the connection receives incoming data, as handled by the `NSURLConnectionDelegate` method `connection:didReceiveData:`.
+ 
+ @param block A block object to be executed when the connection receives incoming data. The block has no return type and takes one argument: the NSData object.
+ 
+ @discussion If this block is implemented, then the user assumes all responsibility for processing the incoming data. In particular, AFURLConnectionOperation will not write to the `outputStream` ivar, nor store the `response` ivar.  
+ */
+- (void) setDataReceivedBlock:(void (^)(NSData *data))block;
+
 @end
