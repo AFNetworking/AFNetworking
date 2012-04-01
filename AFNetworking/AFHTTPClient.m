@@ -328,10 +328,13 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
 
 - (void)startMonitoringNetworkReachability {
     [self stopMonitoringNetworkReachability];
-    self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
-    SCNetworkReachabilityContext context = {0, self.networkReachabilityStatusBlock, NULL, NULL, NULL};
-    SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
-    SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+    const char *baseURLHost = [[self.baseURL host] UTF8String];
+    if (baseURLHost) {
+        self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, baseURLHost);
+        SCNetworkReachabilityContext context = {0, self.networkReachabilityStatusBlock, NULL, NULL, NULL};
+        SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
+        SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+    }
 }
 
 - (void)stopMonitoringNetworkReachability {
