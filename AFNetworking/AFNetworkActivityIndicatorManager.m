@@ -30,6 +30,7 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 @interface AFNetworkActivityIndicatorManager ()
 @property (readwrite, nonatomic, assign) NSInteger activityCount;
 @property (readwrite, nonatomic, retain) NSTimer *activityIndicatorVisibilityTimer;
+@property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
 @property (readonly, getter = isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
 
 - (void)updateNetworkActivityIndicatorVisibility;
@@ -38,6 +39,7 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 @implementation AFNetworkActivityIndicatorManager
 @synthesize activityCount = _activityCount;
 @synthesize activityIndicatorVisibilityTimer = _activityIndicatorVisibilityTimer;
+@synthesize lock = _lock;
 @synthesize enabled = _enabled;
 @dynamic networkActivityIndicatorVisible;
 
@@ -56,6 +58,8 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
     if (!self) {
         return nil;
     }
+    
+    self.lock = [[[NSRecursiveLock alloc] init] autorelease];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementActivityCount) name:AFNetworkingOperationDidStartNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(decrementActivityCount) name:AFNetworkingOperationDidFinishNotification object:nil];
@@ -69,10 +73,13 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
     [_activityIndicatorVisibilityTimer invalidate];
     [_activityIndicatorVisibilityTimer release]; _activityIndicatorVisibilityTimer = nil;
     
+    [_lock release];
+    
     [super dealloc];
 }
 
 - (void)setActivityCount:(NSInteger)activityCount {
+    [self.lock lock];
     [self willChangeValueForKey:@"activityCount"];
     _activityCount = MAX(activityCount, 0);
     [self didChangeValueForKey:@"activityCount"];
@@ -87,6 +94,7 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
             [self updateNetworkActivityIndicatorVisibility];
         }
     }
+    [self.lock unlock];
 }
 
 - (BOOL)isNetworkActivityIndicatorVisible {
@@ -94,19 +102,21 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 }
 
 - (void)updateNetworkActivityIndicatorVisibility {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:[self isNetworkActivityIndicatorVisible]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:[self isNetworkActivityIndicatorVisible]];
+    });
 }
 
 - (void)incrementActivityCount {
-    @synchronized(self) {
-        self.activityCount += 1;
-    }
+    [self.lock lock];
+    self.activityCount += 1;
+    [self.lock unlock];
 }
 
 - (void)decrementActivityCount {
-    @synchronized(self) {
-        self.activityCount -= 1;
-    }
+    [self.lock lock];
+    self.activityCount -= 1;
+    [self.lock unlock];
 }
 
 @end
