@@ -128,7 +128,8 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 }
 
 - (BOOL)hasAcceptableContentType {
-    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:[self.response MIMEType]];
+    NSString *contentType = [[[self.response MIMEType] componentsSeparatedByString:@";"] objectAtIndex:0];
+    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:contentType];
 }
 
 - (void)setSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue {
