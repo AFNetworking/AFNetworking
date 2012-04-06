@@ -23,6 +23,7 @@
 #import "AFNetworkActivityIndicatorManager.h"
 
 #import "AFHTTPRequestOperation.h"
+#import <libkern/OSAtomic.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
@@ -30,7 +31,6 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 @interface AFNetworkActivityIndicatorManager ()
 @property (readwrite, nonatomic, assign) NSInteger activityCount;
 @property (readwrite, nonatomic, retain) NSTimer *activityIndicatorVisibilityTimer;
-@property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
 @property (readonly, getter = isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
 
 - (void)updateNetworkActivityIndicatorVisibility;
@@ -39,7 +39,6 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 @implementation AFNetworkActivityIndicatorManager
 @synthesize activityCount = _activityCount;
 @synthesize activityIndicatorVisibilityTimer = _activityIndicatorVisibilityTimer;
-@synthesize lock = _lock;
 @synthesize enabled = _enabled;
 @dynamic networkActivityIndicatorVisible;
 
@@ -59,8 +58,6 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
         return nil;
     }
     
-    self.lock = [[[NSRecursiveLock alloc] init] autorelease];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementActivityCount) name:AFNetworkingOperationDidStartNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(decrementActivityCount) name:AFNetworkingOperationDidFinishNotification object:nil];
         
@@ -73,17 +70,10 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
     [_activityIndicatorVisibilityTimer invalidate];
     [_activityIndicatorVisibilityTimer release]; _activityIndicatorVisibilityTimer = nil;
     
-    [_lock release];
-    
     [super dealloc];
 }
 
-- (void)setActivityCount:(NSInteger)activityCount {
-    [self.lock lock];
-    [self willChangeValueForKey:@"activityCount"];
-    _activityCount = MAX(activityCount, 0);
-    [self didChangeValueForKey:@"activityCount"];
-
+- (void)updateNetworkActivityIndicatorVisibilityDelayed {
     if (self.enabled) {
         // Delay hiding of activity indicator for a short interval, to avoid flickering
         if (![self isNetworkActivityIndicatorVisible]) {
@@ -94,11 +84,10 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
             [self updateNetworkActivityIndicatorVisibility];
         }
     }
-    [self.lock unlock];
 }
 
 - (BOOL)isNetworkActivityIndicatorVisible {
-    return self.activityCount > 0;
+    return _activityCount > 0;
 }
 
 - (void)updateNetworkActivityIndicatorVisibility {
@@ -107,16 +96,28 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
     });
 }
 
+// not actually exposed, but will be used if someone tries to set activityCount via KVC.
+- (void)setActivityCount:(NSInteger)activityCount {
+    __sync_swap(&_activityCount, activityCount);
+    [self updateNetworkActivityIndicatorVisibilityDelayed];
+}
+
 - (void)incrementActivityCount {
-    [self.lock lock];
-    self.activityCount += 1;
-    [self.lock unlock];
+    [self willChangeValueForKey:@"activityCount"];
+    OSAtomicIncrement32((int32_t*)&_activityCount);
+    [self didChangeValueForKey:@"activityCount"];
+    [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
 
 - (void)decrementActivityCount {
-    [self.lock lock];
-    self.activityCount -= 1;
-    [self.lock unlock];
+    [self willChangeValueForKey:@"activityCount"];
+    OSAtomicDecrement32((int32_t*)&_activityCount);
+    [self didChangeValueForKey:@"activityCount"];
+    [self updateNetworkActivityIndicatorVisibilityDelayed];
+}
+
++ (NSSet *)keyPathsForValuesAffectingIsNetworkActivityIndicatorVisible {
+    return [NSSet setWithObject:@"activityCount"];
 }
 
 @end
