@@ -25,14 +25,7 @@
 /**
  
  */
-@interface AFDownloadRequestOperation : AFHTTPRequestOperation {
-@private
-    NSString *_responsePath;
-    NSError *_downloadError;
-    NSString *_destination;
-    BOOL _allowOverwrite;
-    BOOL _deletesFileUponFailure;
-}
+@interface AFDownloadRequestOperation : AFHTTPRequestOperation;
 
 @property (readonly, nonatomic, copy) NSString *responsePath;
 
