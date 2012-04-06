@@ -90,6 +90,24 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return string;
 }
 
+NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
+    static NSString *incompleteDownloadPath;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString *tempDirectory = NSTemporaryDirectory();
+        incompleteDownloadPath = [[tempDirectory stringByAppendingPathComponent:kAFNetworkingIncompleteDownloadDirectoryName] retain];
+
+        NSError *error = nil;
+        NSFileManager *fileMan = [[NSFileManager alloc] init];
+        if(![fileMan createDirectoryAtPath:incompleteDownloadPath withIntermediateDirectories:YES attributes:nil error:&error]) {
+            NSLog(@"Failed to create incomplete downloads directory at %@", incompleteDownloadPath);
+        }
+        [fileMan release];
+    });
+
+    return incompleteDownloadPath;
+}
+
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()
@@ -154,7 +172,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     } else {
         offset = [[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
     }
-        
+
     NSMutableURLRequest *mutableURLRequest = [[self.request mutableCopy] autorelease];
     if ([[self.response allHeaderFields] valueForKey:@"ETag"]) {
         [mutableURLRequest setValue:[[self.response allHeaderFields] valueForKey:@"ETag"] forHTTPHeaderField:@"If-Range"];
@@ -178,7 +196,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         if (_successCallbackQueue) {
             dispatch_release(_successCallbackQueue);
         }
-     
+
         if (successCallbackQueue) {
             dispatch_retain(successCallbackQueue);
             _successCallbackQueue = successCallbackQueue;
@@ -264,6 +282,7 @@ didReceiveResponse:(NSURLResponse *)response
 {
     self.response = (NSHTTPURLResponse *)response;
     
+    // 206 = Partial Content.
     if ([self.response statusCode] != 206) {
         if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
             [self.outputStream setProperty:[NSNumber numberWithInteger:0] forKey:NSStreamFileCurrentOffsetKey];

@@ -53,13 +53,21 @@
     }
 }
 
+
+- (NSString *)temporaryPath {
+    NSString *temporaryPath = nil;
+    if (self.destination) {
+        NSString *hashString = [NSString stringWithFormat:@"%d", [self.destination hash]];
+        temporaryPath = [AFCreateIncompleteDownloadDirectoryPath() stringByAppendingPathComponent:hashString];
+    }
+    return temporaryPath;
+}
+
 #pragma mark -
 
 - (void)setDestination:(NSString *)path allowOverwrite:(BOOL)allowOverwrite {
-    [self willChangeValueForKey:@"isReady"];
     self.destination = path;
     self.allowOverwrite = allowOverwrite;
-    [self didChangeValueForKey:@"isReady"];
 }
 
 #pragma mark - NSOperation
@@ -70,8 +78,8 @@
 
 - (void)start {
     if ([self isReady]) {
-        // TODO Create temporary path
-        self.outputStream = [NSOutputStream outputStreamToFileAtPath:self.destination append:NO];
+        NSString *temporaryPath = [self temporaryPath];
+        self.outputStream = [NSOutputStream outputStreamToFileAtPath:temporaryPath append:NO];
         
         [super start];
     }
