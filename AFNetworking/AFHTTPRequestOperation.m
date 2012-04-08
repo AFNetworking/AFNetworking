@@ -57,7 +57,6 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
     Method originalMethod = class_getClassMethod(klass, selector);
     IMP implementation = imp_implementationWithBlock(block);
     class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
-    
 }
 
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
