@@ -42,8 +42,10 @@
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
     [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets) {
-        _tweets = tweets;
-        [self.tableView reloadData];
+        if (tweets) {
+            _tweets = tweets;
+            [self.tableView reloadData];
+        }
         
         [_activityIndicatorView stopAnimating];
         self.navigationItem.rightBarButtonItem.enabled = YES;
