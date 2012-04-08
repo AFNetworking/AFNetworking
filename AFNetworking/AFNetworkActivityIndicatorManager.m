@@ -96,7 +96,7 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
     });
 }
 
-// not actually exposed, but will be used if someone tries to set activityCount via KVC.
+// Not exposed, but used if activityCount is set via KVC.
 - (void)setActivityCount:(NSInteger)activityCount {
     __sync_swap(&_activityCount, activityCount);
     [self updateNetworkActivityIndicatorVisibilityDelayed];
@@ -113,8 +113,8 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
     [self willChangeValueForKey:@"activityCount"];
     bool success;
     do {
-        int32_t orig = _activityCount;
-        success = OSAtomicCompareAndSwap32(orig, MIN(orig - 1, orig), &_activityCount);
+        int32_t currentCount = _activityCount;
+        success = OSAtomicCompareAndSwap32(currentCount, MIN(currentCount - 1, currentCount), &_activityCount);
     } while(!success);
     [self didChangeValueForKey:@"activityCount"];
     [self updateNetworkActivityIndicatorVisibilityDelayed];
