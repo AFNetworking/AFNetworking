@@ -30,6 +30,12 @@ typedef enum {
 
 typedef unsigned short AFOperationState;
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+typedef UIBackgroundTaskIdentifier AFBackgroundTaskIdentifier;
+#else
+typedef id AFBackgroundTaskIdentifier;
+#endif
+
 static NSUInteger const kAFHTTPMinimumInitialDataCapacity = 1024;
 static NSUInteger const kAFHTTPMaximumInitialDataCapacity = 1024 * 1024 * 8;
 
@@ -94,6 +100,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @property (readwrite, nonatomic, copy) NSString *responseString;
 @property (readwrite, nonatomic, assign) NSInteger totalBytesRead;
 @property (readwrite, nonatomic, retain) NSMutableData *dataAccumulator;
+@property (readwrite, nonatomic, assign) AFBackgroundTaskIdentifier backgroundTaskIdentifier;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock downloadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock authenticationAgainstProtectionSpace;
@@ -117,6 +124,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize dataAccumulator = _dataAccumulator;
 @dynamic inputStream;
 @synthesize outputStream = _outputStream;
+@synthesize backgroundTaskIdentifier = _backgroundTaskIdentifier;
 @synthesize uploadProgress = _uploadProgress;
 @synthesize downloadProgress = _downloadProgress;
 @synthesize authenticationAgainstProtectionSpace = _authenticationAgainstProtectionSpace;
@@ -189,6 +197,13 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         [_outputStream release];
         _outputStream = nil;
     }
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    if (_backgroundTaskIdentifier) {
+        [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
+        _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+    }
+#endif
     	
     [_uploadProgress release];
     [_downloadProgress release];
@@ -224,10 +239,32 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)setInputStream:(NSInputStream *)inputStream {
+    [self.lock lock];
     NSMutableURLRequest *mutableRequest = [[self.request mutableCopy] autorelease];
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
+    [self.lock unlock];
 }
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+- (void)setShouldExecuteAsBackgroundTaskWithExpirationHandler:(void (^)(void))handler {
+    [self.lock lock];
+    if (!self.backgroundTaskIdentifier) {    
+        UIApplication *application = [UIApplication sharedApplication];
+        self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:^{
+            if (handler) {
+                handler();
+            }
+            
+            [self cancel];
+            
+            [application endBackgroundTask:self.backgroundTaskIdentifier];
+            self.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+        }];
+    }
+    [self.lock unlock];
+}
+#endif
 
 - (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))block {
     self.uploadProgress = block;

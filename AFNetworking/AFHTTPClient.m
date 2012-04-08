@@ -159,6 +159,7 @@ NSString * AFURLEncodedStringFromStringWithEncoding(NSString *string, NSStringEn
 
 #pragma mark -
 
+extern AFQueryStringComponent * AFQueryStringComponentFromKeyAndValueWithEncoding(id key, id value, NSStringEncoding stringEncoding);
 extern NSArray * AFQueryStringComponentsFromKeyAndValueWithEncoding(NSString *key, id value, NSStringEncoding stringEncoding);
 extern NSArray * AFQueryStringComponentsFromKeyAndDictionaryValueWithEncoding(NSString *key, NSDictionary *value, NSStringEncoding stringEncoding);
 extern NSArray * AFQueryStringComponentsFromKeyAndArrayValueWithEncoding(NSString *key, NSArray *value, NSStringEncoding stringEncoding);
@@ -529,9 +530,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     if (!operation) {
         operation = [[[AFHTTPRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     }
-    
+
     [operation setCompletionBlockWithSuccess:success failure:failure];
-       
+
     return operation;
 }
 
