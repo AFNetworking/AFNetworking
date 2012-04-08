@@ -30,12 +30,7 @@
 /**
  `AFNetworkActivityIndicatorManager` manages the state of the network activity indicator in the status bar. When enabled, it will listen for notifications indicating that a network request operation has started or finished, and start or stop animating the indicator accordingly. The number of active requests is incremented and decremented much like a stack or a semaphore, and the activity indicator will animate so long as that number is greater than zero.
  */
-@interface AFNetworkActivityIndicatorManager : NSObject {
-@private
-	NSInteger _activityCount;
-    BOOL _enabled;
-    NSTimer *_activityIndicatorVisibilityTimer;
-}
+@interface AFNetworkActivityIndicatorManager : NSObject
 
 /**
  A Boolean value indicating whether the manager is enabled. 
@@ -43,6 +38,11 @@
  @discussion If YES, the manager will change status bar network activity indicator according to network operation notifications it receives. The default value is NO.
  */
 @property (nonatomic, assign, getter = isEnabled) BOOL enabled;
+
+/**
+ A Boolean value indicating whether the network activity indicator is currently displayed in the status bar.
+ */
+@property (readonly, nonatomic, assign) BOOL isNetworkActivityIndicatorVisible; 
 
 /**
  Returns the shared network activity indicator manager object for the system.
