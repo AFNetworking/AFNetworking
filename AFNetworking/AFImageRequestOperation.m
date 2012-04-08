@@ -157,9 +157,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         return;
     }
     
-    [self willChangeValueForKey:@"imageScale"];
     _imageScale = imageScale;
-    [self didChangeValueForKey:@"imageScale"];
     
     self.responseImage = nil;
 }

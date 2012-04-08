@@ -178,7 +178,6 @@ Scott Raymond
 
 - http://github.com/sco
 - http://twitter.com/sco
-- sco@gowalla.com
 
 ## License
 
