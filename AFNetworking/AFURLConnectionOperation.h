@@ -75,7 +75,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @warning Attempting to load a `file://` URL in iOS 4 may result in an `NSInvalidArgumentException`, caused by the connection returning `NSURLResponse` rather than `NSHTTPURLResponse`, which is the behavior as of iOS 5.
  */
-@interface AFURLConnectionOperation : NSOperation {
+@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDataDelegate> {
 @private
     unsigned short _state;
     BOOL _cancelled;
@@ -89,7 +89,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
     NSError *_error;
 
     NSData *_responseData;
-    NSInteger _totalBytesRead;
+    long long _totalBytesRead;
     NSMutableData *_dataAccumulator;
     NSOutputStream *_outputStream;
 }
@@ -180,7 +180,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @see setDownloadProgressBlock
  */
-- (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))block;
+- (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block;
 
 /**
  Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
@@ -189,7 +189,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @see setUploadProgressBlock
  */
-- (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead))block;
+- (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block;
 
 ///-------------------------------------------------
 /// @name Setting NSURLConnection Delegate Callbacks
