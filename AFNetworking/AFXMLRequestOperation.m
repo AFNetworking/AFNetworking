@@ -170,18 +170,18 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
             return;
         }
         
-        dispatch_async(xml_request_operation_processing_queue(), ^(void) {
+        dispatch_group_async(self.dispatchGroup, xml_request_operation_processing_queue(), ^(void) {
             NSXMLParser *XMLParser = self.responseXMLParser;
             
             if (self.error) {
                 if (failure) {
-                    dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                    dispatch_group_async(self.dispatchGroup, self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                         failure(self, self.error);
                     });
                 }
             } else {
                 if (success) {
-                    dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                    dispatch_group_async(self.dispatchGroup, self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
                         success(self, XMLParser);
                     });
                 } 

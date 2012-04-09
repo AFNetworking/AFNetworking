@@ -515,24 +515,17 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
                               progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
                             completionBlock:(void (^)(NSArray *operations))completionBlock
 {
-    NSBlockOperation *batchedOperation = [NSBlockOperation blockOperationWithBlock:^{
-        if (completionBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock(operations);
-            });
-        }
-    }];
-    
-    [self.operationQueue addOperation:batchedOperation];
+    dispatch_group_t dispatchGroup = dispatch_group_create();
     
     NSPredicate *finishedOperationPredicate = [NSPredicate predicateWithFormat:@"isFinished == YES"];
     
     for (AFHTTPRequestOperation *operation in operations) {
         AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
+        operation.dispatchGroup = dispatchGroup;
         operation.completionBlock = ^{
             if (progressBlock) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    progressBlock([[batchedOperation.dependencies filteredArrayUsingPredicate:finishedOperationPredicate] count], [batchedOperation.dependencies count]);
+                dispatch_group_async(dispatchGroup, dispatch_get_main_queue(), ^{
+                    progressBlock([[operations filteredArrayUsingPredicate:finishedOperationPredicate] count], [operations count]);
                 });
             }
             
@@ -540,10 +533,16 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
                 originalCompletionBlock();
             }
         };
-        
-        [batchedOperation addDependency:operation];
         [self enqueueHTTPRequestOperation:operation];
     }
+    
+    if (completionBlock) {
+        dispatch_group_notify(dispatchGroup, dispatch_get_main_queue(), ^{
+            completionBlock(operations);
+        });
+    }
+    
+    dispatch_release(dispatchGroup);
 }
 
 #pragma mark -
