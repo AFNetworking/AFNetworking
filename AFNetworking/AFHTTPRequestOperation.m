@@ -79,6 +79,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
     self.dispatchSemaphore = dispatch_semaphore_create(1);
+    self.completionBlock = NULL;
     
     return self;
 }
