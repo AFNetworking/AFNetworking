@@ -56,6 +56,8 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
+@property (nonatomic) dispatch_once_t onceToken;
+@property (atomic) dispatch_semaphore_t dispatchSemaphore;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -64,6 +66,9 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 @synthesize HTTPError = _HTTPError;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
+@synthesize dispatchGroup = _dispatchGroup;
+@synthesize onceToken = _onceToken;
+@synthesize dispatchSemaphore = _dispatchSemaphore;
 
 
 - (id)initWithRequest:(NSURLRequest *)request {
@@ -73,6 +78,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     }
     
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
+    self.dispatchSemaphore = dispatch_semaphore_create(1);
     
     return self;
 }
@@ -90,6 +96,16 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     if (_failureCallbackQueue) { 
         dispatch_release(_failureCallbackQueue); 
         _failureCallbackQueue = NULL;
+    }
+    
+    if (_dispatchGroup) {
+        dispatch_release(_dispatchGroup);
+        _dispatchGroup = NULL;
+    }
+    
+    if (_dispatchSemaphore) {
+        dispatch_release(_dispatchSemaphore);
+        _dispatchSemaphore = NULL;
     }
     
     [super dealloc];
@@ -157,6 +173,46 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     }    
 }
 
+- (void)setDispatchGroup:(dispatch_group_t)dispatchGroup {
+    dispatch_semaphore_wait(self.dispatchSemaphore, DISPATCH_TIME_FOREVER);
+    if (dispatchGroup != _dispatchGroup) {
+        if (_dispatchGroup) {
+            dispatch_group_leave(_dispatchGroup);
+            dispatch_release(_dispatchGroup);
+            _dispatchGroup = NULL;
+        }
+        
+        if (dispatchGroup) {
+            dispatch_retain(dispatchGroup);
+            _dispatchGroup = dispatchGroup;
+            dispatch_group_enter(_dispatchGroup);
+        }
+    } 
+    dispatch_semaphore_signal(self.dispatchSemaphore);
+}
+
+- (dispatch_group_t)dispatchGroup {
+    dispatch_semaphore_wait(self.dispatchSemaphore, DISPATCH_TIME_FOREVER);
+    if(_dispatchGroup == NULL) {
+        _dispatchGroup = dispatch_group_create();
+        dispatch_group_enter(_dispatchGroup);
+    }
+    dispatch_semaphore_signal(self.dispatchSemaphore);
+    return _dispatchGroup;
+}
+
+- (void)setCompletionBlock:(void (^)(void))block {
+    [super setCompletionBlock:^{
+        if(block) {
+            block();
+        }
+        // Dispatch once is used to ensure that setting the block with this block will not cause multiple calls to 'dispatch_group_leave'
+        dispatch_once(&_onceToken, ^{
+            dispatch_group_leave(self.dispatchGroup);
+        });
+    }];
+}
+
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
@@ -167,13 +223,13 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         
         if (self.error) {
             if (failure) {
-                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                dispatch_group_async(self.dispatchGroup, self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                     failure(self, self.error);
                 });
             }
         } else {
             if (success) {
-                dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                dispatch_group_async(self.dispatchGroup, self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
                     success(self, self.responseData);
                 });
             }
