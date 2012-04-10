@@ -32,10 +32,12 @@
  
  - `application/json`
  - `text/json`
-
- @warning JSON parsing will automatically use JSONKit, SBJSON, YAJL, or NextiveJSON, if provided. Otherwise, the built-in `NSJSONSerialization` class is used, if available (iOS 5.0 and Mac OS 10.7). If the build target does not either support `NSJSONSerialization` or include a third-party JSON library, a runtime exception will be thrown when attempting to parse a JSON request. 
  */
-@interface AFJSONRequestOperation : AFHTTPRequestOperation
+@interface AFJSONRequestOperation : AFHTTPRequestOperation {
+@private
+    id _responseJSON;
+    NSError *_JSONError;
+}
 
 ///----------------------------
 /// @name Getting Response Data
@@ -44,7 +46,7 @@
 /**
  A JSON object constructed from the response data. If an error occurs while parsing, `nil` will be returned, and the `error` property will be set to the error.
  */
-@property (readonly, nonatomic, retain) id responseJSON;
+@property (readonly, nonatomic, strong) id responseJSON;
 
 ///----------------------------------
 /// @name Creating Request Operations

@@ -1,6 +1,6 @@
-// PublicTimelineViewController.h
+// AFGowallaAPI.h
 //
-// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
+// Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "AFHTTPClient.h"
 
-@interface PublicTimelineViewController : UITableViewController
+extern NSString * const kAFGowallaClientID;
+extern NSString * const kAFGowallaBaseURLString;
 
+@interface AFGowallaAPIClient : AFHTTPClient
++ (AFGowallaAPIClient *)sharedClient;
 @end

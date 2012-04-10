@@ -1,6 +1,6 @@
-// AppDelegate.m
+// AFNetworkingExampleAppDelegate.m
 //
-// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
+// Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import "AppDelegate.h"
-#import "PublicTimelineViewController.h"
+#import "NearbySpotsViewController.h"
 
 #import "AFNetworkActivityIndicatorManager.h"
 
@@ -30,16 +30,15 @@
 @synthesize navigationController = _navigationController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil];
+    NSURLCache *URLCache = [[[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil] autorelease];
 	[NSURLCache setSharedURLCache:URLCache];
     
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     
-    UITableViewController *viewController = [[PublicTimelineViewController alloc] initWithStyle:UITableViewStylePlain];
-    self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
-    self.navigationController.navigationBar.tintColor = [UIColor darkGrayColor];
+    UITableViewController *viewController = [[[NearbySpotsViewController alloc] init] autorelease];
+    self.navigationController = [[[UINavigationController alloc] initWithRootViewController:viewController] autorelease];
     
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];  
+    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];  
     self.window.backgroundColor = [UIColor whiteColor];
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
@@ -47,5 +46,10 @@
     return YES;
 }
 
+- (void)dealloc {
+    [_window release];
+    [_navigationController release];
+    [super dealloc];
+}
 
 @end
