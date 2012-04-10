@@ -27,22 +27,27 @@
  */
 @interface AFDownloadRequestOperation : AFHTTPRequestOperation;
 
-@property (readonly, nonatomic, copy) NSString *responsePath;
+/** 
+ A Boolean value that indicates if we should try to resume the download. Defaults is `YES`.
+ 
+ Can only be set while creating the request.
+ 
+ Note: This allows long-lasting resumes between app-starts. Use this for content that doesn't change.
+ If the file changed in the meantime, you'll end up with a broken file.
+ */
+@property (assign, readonly) BOOL shouldResume;
 
 /**
- 
+ Set a destination. If you don't manually set one, this defaults to the documents directory.
+ Note: This can point to a path or a file. If this is a path, response.suggestedFilename will be used for the filename.
  */
 - (void)setDestination:(NSString *)path allowOverwrite:(BOOL)allowOverwrite;
 
-/**
- 
- */
-- (BOOL)deletesFileUponFailure;
 
-/**
- 
+/** 
+ Deletes the temporary file if operation fails/is cancelled. Defaults to `NO`.
  */
-- (void)setDeletesFileUponFailure:(BOOL)deletesFileUponFailure;
+@property (assign) BOOL deletesFileUponFailure;
 
 
 ///**
