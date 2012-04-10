@@ -28,6 +28,8 @@
  */
 extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
 
+extern NSString * AFCreateIncompleteDownloadDirectoryPath(void);
+
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
  */
@@ -43,9 +45,28 @@ extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
 @property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
 
 /**
- 
+ Set a target file for the response, will stream directly into this destination.
+ Defaults to nil, which will use a memory stream. Will create a new outputStream on change.
+
+ Note: Changing this while the request is not in ready state will be ignored.
  */
-@property (readonly, nonatomic, copy) NSString *responseFilePath;
+@property (nonatomic, copy) NSString *responseFilePath;
+
+
+/** 
+ Expected total length. This is different than expectedContentLength if the file is resumed.
+ On regular requests, this is equal to self.response.expectedContentLength unless we resume a request.
+ 
+ Note: this can also be -1 if the file size is not sent (*)
+ */
+@property (assign, readonly) long long totalContentLength;
+
+/** 
+ Indicator for the file offset on partial/resumed downloads.
+ This is greater than zero if the file download is resumed.
+ */
+@property (assign, readonly) long long offsetContentLength;
+
 
 ///----------------------------------------------------------
 /// @name Managing And Checking For Acceptable HTTP Responses
