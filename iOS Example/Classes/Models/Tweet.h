@@ -1,4 +1,4 @@
-// AppDelegate.h
+// Tweet.h
 //
 // Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
@@ -20,13 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-@interface AppDelegate : NSObject <UIApplicationDelegate> {
+@class User;
 
-}
+@interface Tweet : NSObject
 
-@property (nonatomic, strong) UIWindow *window;
-@property (nonatomic, strong) UINavigationController *navigationController;
+@property (readonly) NSUInteger tweetID;
+@property (readonly) NSString *text;
+
+@property (readonly) User *user;
+
+- (id)initWithAttributes:(NSDictionary *)attributes;
+
++ (void)publicTimelineTweetsWithBlock:(void (^)(NSArray *tweets))block;
 
 @end

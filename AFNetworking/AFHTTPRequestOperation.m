@@ -1,17 +1,17 @@
 // AFHTTPOperation.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -71,9 +71,9 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     if (!self) {
         return nil;
     }
-    
+
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-    
+
     return self;
 }
 
@@ -87,17 +87,17 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet(self.acceptableStatusCodes), [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
-            
+
             self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
         } else if ([self.responseData length] > 0 && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), self.acceptableContentTypes, [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
-            
+
             self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
         }
     }
-    
+
     if (self.HTTPError) {
         return self.HTTPError;
     } else {
@@ -118,12 +118,12 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         if (_successCallbackQueue) {
             dispatch_release(_successCallbackQueue);
         }
-     
+
         if (successCallbackQueue) {
             dispatch_retain(successCallbackQueue);
             _successCallbackQueue = successCallbackQueue;
         }
-    }    
+    }
 }
 
 - (void)setFailureCallbackQueue:(dispatch_queue_t)failureCallbackQueue {
@@ -131,38 +131,38 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         if (_failureCallbackQueue) {
             dispatch_release(_failureCallbackQueue);
         }
-        
+
         if (failureCallbackQueue) {
             dispatch_retain(failureCallbackQueue);
             _failureCallbackQueue = failureCallbackQueue;
         }
-    }    
+    }
 }
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
 	__weak AFHTTPRequestOperation *weakSelf = self;
-	self.completionBlock = ^ {
+    self.completionBlock = ^ {
 		AFHTTPRequestOperation *strongSelf = weakSelf;
 		if ([strongSelf isCancelled]) {
-			return;
-		}
-		
+            return;
+        }
+
 		if (strongSelf.error) {
-			if (failure) {
+            if (failure) {
 				dispatch_async(strongSelf.failureCallbackQueue ? strongSelf.failureCallbackQueue : dispatch_get_main_queue(), ^{
 					failure(strongSelf, strongSelf.error);
-				});
-			}
-		} else {
-			if (success) {
+                });
+            }
+        } else {
+            if (success) {
 				dispatch_async(strongSelf.successCallbackQueue ? strongSelf.successCallbackQueue : dispatch_get_main_queue(), ^{
 					success(strongSelf, strongSelf.responseString);
-				});
-			}
-		}
-	};
+                });
+            }
+        }
+    };
 }
 
 #pragma mark - AFHTTPClientOperation
