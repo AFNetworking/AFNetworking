@@ -42,17 +42,17 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 }
 
 - (id)initWithBaseURL:(NSURL *)url {
-    self = [super initWithBaseURL:url];
-    if (!self) {
-        return nil;
-    }
-    
-    [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
-    
-    // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
+	self = [super initWithBaseURL:url];
+	if (!self) {
+		return nil;
+	}
+	
+	[self registerHTTPOperationClass:[AFJSONRequestOperation class]];
+	
+	// Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
 	[self setDefaultHeader:@"Accept" value:@"application/json"];
-    
-    // X-Gowalla-API-Key HTTP Header; see http://api.gowalla.com/api/docs
+	
+	// X-Gowalla-API-Key HTTP Header; see http://api.gowalla.com/api/docs
 	[self setDefaultHeader:@"X-Gowalla-API-Key" value:kAFGowallaClientID];
 	
 	// X-Gowalla-API-Version HTTP Header; see http://api.gowalla.com/api/docs
@@ -60,8 +60,8 @@ NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 	
 	// X-UDID HTTP Header
 	[self setDefaultHeader:@"X-UDID" value:[[UIDevice currentDevice] uniqueIdentifier]];
-        
-    return self;
+	
+	return self;
 }
 
 @end
