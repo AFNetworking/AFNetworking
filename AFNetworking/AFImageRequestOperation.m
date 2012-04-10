@@ -179,7 +179,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
         self.responseImage = [[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])];
         [self.responseImage addRepresentation:bitimage];
-        [bitimage release];
     }
     
     return _responseImage;
