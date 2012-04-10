@@ -1,6 +1,6 @@
-// User.m
+// SpotTableViewCell.h
 //
-// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
+// Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,33 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "User.h"
+#import <UIKit/UIKit.h>
 
-@implementation User {
-@private
-    NSUInteger _userID;
-    __strong NSString *_username;
-    __strong NSString *_profileImageURLString;
-}
+@class Spot;
 
-@synthesize userID = _userID;
-@synthesize username = _username;
+@interface SpotTableViewCell : UITableViewCell
 
-- (id)initWithAttributes:(NSDictionary *)attributes {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    
-    _userID = [[attributes valueForKeyPath:@"id"] integerValue];
-    _username = [attributes valueForKeyPath:@"screen_name"];
-    _profileImageURLString = [attributes valueForKeyPath:@"profile_image_url_https"];
-    
-    return self;
-}
-
-- (NSURL *)profileImageURL {
-    return [NSURL URLWithString:_profileImageURLString];
-}
+@property (nonatomic, retain) Spot *spot;
 
 @end

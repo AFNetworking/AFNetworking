@@ -1,6 +1,6 @@
 // main.m
 //
-// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
+// Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
 #import <UIKit/UIKit.h>
 
 int main(int argc, char *argv[]) {
-    @autoreleasepool {
-        int retVal = UIApplicationMain(argc, argv, @"UIApplication", @"AppDelegate");
-        return retVal;
-    }
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    int retVal = UIApplicationMain(argc, argv, @"UIApplication", @"AppDelegate");
+    [pool release];
+    return retVal;
 }

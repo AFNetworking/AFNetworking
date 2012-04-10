@@ -113,7 +113,15 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
     [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL];    // http://example2.com/
 
  */
-@interface AFHTTPClient : NSObject
+@interface AFHTTPClient : NSObject {
+@private
+    NSURL *_baseURL;
+    NSStringEncoding _stringEncoding;
+    AFHTTPClientParameterEncoding _parameterEncoding;
+    NSMutableArray *_registeredHTTPOperationClassNames;
+    NSMutableDictionary *_defaultHeaders;
+    NSOperationQueue *_operationQueue;
+}
 
 ///---------------------------------------
 /// @name Accessing HTTP Client Properties
@@ -131,8 +139,6 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 
 /**
  The `AFHTTPClientParameterEncoding` value corresponding to how parameters are encoded into a request body. This is `AFFormURLParameterEncoding` by default.
-
- @warning JSON encoding will automatically use JSONKit, SBJSON, YAJL, or NextiveJSON, if provided. Otherwise, the built-in `NSJSONSerialization` class is used, if available (iOS 5.0 and Mac OS 10.7). If the build target does not either support `NSJSONSerialization` or include a third-party JSON library, a runtime exception will be thrown when attempting to encode parameters as JSON.
  */
 @property (nonatomic, assign) AFHTTPClientParameterEncoding parameterEncoding;
 

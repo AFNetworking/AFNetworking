@@ -1,17 +1,17 @@
 // AFImageRequestOperation.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,14 +27,14 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     if (af_image_request_operation_processing_queue == NULL) {
         af_image_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.image-request.processing", 0);
     }
-
+    
     return af_image_request_operation_processing_queue;
 }
 
 @interface AFImageRequestOperation ()
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 @property (readwrite, nonatomic, strong) UIImage *responseImage;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 @property (readwrite, nonatomic, retain) NSImage *responseImage;
 #endif
 
@@ -49,7 +49,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #endif
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-+ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(UIImage *image))success
 {
     return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
@@ -58,8 +58,8 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         }
     } failure:nil];
 }
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-+ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
++ (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(NSImage *image))success
 {
     return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
@@ -82,11 +82,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             UIImage *image = responseObject;
-
+            
             if (imageProcessingBlock) {
                 image = imageProcessingBlock(image);
             }
-
+            
             success(operation.request, operation.response, image);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -94,11 +94,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
             failure(operation.request, operation.response, error);
         }
     }];
-
-
+    
+    
     return requestOperation;
 }
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                          imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
@@ -113,7 +113,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
             if (imageProcessingBlock) {
                 image = imageProcessingBlock(image);
             }
-
+            
             success(operation.request, operation.response, image);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -121,7 +121,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
             failure(operation.request, operation.response, error);
         }
     }];
-
+    
     return requestOperation;
 }
 #endif
@@ -139,13 +139,13 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     if (!self) {
         return nil;
     }
-
+    
     self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
-
+    
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     self.imageScale = [[UIScreen mainScreen] scale];
 #endif
-
+    
     return self;
 }
 
@@ -153,10 +153,10 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 - (UIImage *)responseImage {
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
         UIImage *image = [UIImage imageWithData:self.responseData];
-
+        
         self.responseImage = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
     }
-
+    
     return _responseImage;
 }
 
@@ -164,14 +164,14 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     if (imageScale == _imageScale) {
         return;
     }
-
+    
     [self willChangeValueForKey:@"imageScale"];
     _imageScale = imageScale;
     [self didChangeValueForKey:@"imageScale"];
-
+    
     self.responseImage = nil;
 }
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 - (NSImage *)responseImage {
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
         // Ensure that the image is set to it's correct pixel width and height
@@ -180,7 +180,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         [self.responseImage addRepresentation:bitimage];
         [bitimage release];
     }
-
+    
     return _responseImage;
 }
 #endif
@@ -193,7 +193,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(id object))success
+                                                    success:(void (^)(id object))success 
                                                     failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
 {
     return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
@@ -202,9 +202,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         failure(response, error);
     }];
 }
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 + (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(id object))success
+                                                    success:(void (^)(id object))success 
                                                     failure:(void (^)(NSHTTPURLResponse *response, NSError *error))failure
 {
     return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
@@ -224,7 +224,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 		if ([strongSelf isCancelled]) {
 			return;
 		}
-
+		
 		dispatch_async(image_request_operation_processing_queue(), ^(void) {
 			if (strongSelf.error) {
 				if (failure) {
@@ -232,15 +232,15 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 						failure(strongSelf, strongSelf.error);
 					});
 				}
-			} else {
+			} else {            
 				if (success) {
 					dispatch_async(strongSelf.successCallbackQueue ? strongSelf.successCallbackQueue : dispatch_get_main_queue(), ^{
 						success(strongSelf, strongSelf.responseImage);
 					});
 				}
 			}
-		});
-	};
+		});        
+	};  
 }
 
 @end

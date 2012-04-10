@@ -1,6 +1,6 @@
-// AFTwitterAPIClient.h
+// AFGowallaAPI.m
 //
-// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
+// Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,19 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFTwitterAPIClient.h"
+#import "AFGowallaAPIClient.h"
 
 #import "AFJSONRequestOperation.h"
 
-static NSString * const kAFTwitterAPIBaseURLString = @"http://api.twitter.com/1/";
+// Replace this with your own API Key, available at http://api.gowalla.com/api/keys/
+NSString * const kAFGowallaClientID = @"e7ccb7d3d2414eb2af4663fc91eb2793";
 
-@implementation AFTwitterAPIClient
+NSString * const kAFGowallaBaseURLString = @"https://api.gowalla.com/";
 
-+ (AFTwitterAPIClient *)sharedClient {
-    static AFTwitterAPIClient *_sharedClient = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sharedClient = [[AFTwitterAPIClient alloc] initWithBaseURL:[NSURL URLWithString:kAFTwitterAPIBaseURLString]];
+@implementation AFGowallaAPIClient
+
++ (AFGowallaAPIClient *)sharedClient {
+    static AFGowallaAPIClient *_sharedClient = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _sharedClient = [[self alloc] initWithBaseURL:[NSURL URLWithString:kAFGowallaBaseURLString]];
     });
     
     return _sharedClient;
@@ -49,6 +52,15 @@ static NSString * const kAFTwitterAPIBaseURLString = @"http://api.twitter.com/1/
     // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
 	[self setDefaultHeader:@"Accept" value:@"application/json"];
     
+    // X-Gowalla-API-Key HTTP Header; see http://api.gowalla.com/api/docs
+	[self setDefaultHeader:@"X-Gowalla-API-Key" value:kAFGowallaClientID];
+	
+	// X-Gowalla-API-Version HTTP Header; see http://api.gowalla.com/api/docs
+	[self setDefaultHeader:@"X-Gowalla-API-Version" value:@"1"];
+	
+	// X-UDID HTTP Header
+	[self setDefaultHeader:@"X-UDID" value:[[UIDevice currentDevice] uniqueIdentifier]];
+        
     return self;
 }
 

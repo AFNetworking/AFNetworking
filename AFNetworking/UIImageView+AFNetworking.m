@@ -28,8 +28,8 @@
 
 @interface AFImageCache : NSCache
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
-- (void)cacheImage:(UIImage *)image
-        forRequest:(NSURLRequest *)request;
+- (void)cacheImageData:(NSData *)imageData
+            forRequest:(NSURLRequest *)request;
 @end
 
 #pragma mark -
@@ -58,11 +58,11 @@ static char kAFImageRequestOperationObjectKey;
 
 + (NSOperationQueue *)af_sharedImageRequestOperationQueue {
     static NSOperationQueue *_af_imageRequestOperationQueue = nil;
-    
-    if (!_af_imageRequestOperationQueue) {
-        _af_imageRequestOperationQueue = [[NSOperationQueue alloc] init];
-        [_af_imageRequestOperationQueue setMaxConcurrentOperationCount:8];
-    }
+		static dispatch_once_t oncePredicate;
+		dispatch_once(&oncePredicate, ^{
+			_af_imageRequestOperationQueue = [[NSOperationQueue alloc] init];
+			[_af_imageRequestOperationQueue setMaxConcurrentOperationCount:8];
+		});
     
     return _af_imageRequestOperationQueue;
 }
@@ -121,7 +121,7 @@ static char kAFImageRequestOperationObjectKey;
                 success(operation.request, operation.response, responseObject);
             }
 
-            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
+            [[[self class] af_sharedImageCache] cacheImageData:operation.responseData forRequest:urlRequest];
             
             self.af_imageRequestOperation = nil;
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -134,7 +134,11 @@ static char kAFImageRequestOperationObjectKey;
         
         self.af_imageRequestOperation = requestOperation;
         
-        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
+				// Guard against already-added membership
+				NSArray *ops = [[[self class] af_sharedImageRequestOperationQueue] operations];
+				if ([ops indexOfObject:self.af_imageRequestOperation] == NSNotFound) {
+					[[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
+			}
     }
 }
 
@@ -162,13 +166,18 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
             break;
     }
     
-	return [self objectForKey:AFImageCacheKeyFromURLRequest(request)];
+	UIImage *image = [UIImage imageWithData:[self objectForKey:AFImageCacheKeyFromURLRequest(request)]];
+	if (image) {
+		return [UIImage imageWithCGImage:[image CGImage] scale:[[UIScreen mainScreen] scale] orientation:image.imageOrientation];
+	}
+    
+    return image;
 }
 
-- (void)cacheImage:(UIImage *)image
-        forRequest:(NSURLRequest *)request
+- (void)cacheImageData:(NSData *)imageData
+            forRequest:(NSURLRequest *)request
 {
-    [self setObject:image forKey:AFImageCacheKeyFromURLRequest(request)];
+    [self setObject:[NSPurgeableData dataWithData:imageData] forKey:AFImageCacheKeyFromURLRequest(request)];
 }
 
 @end
