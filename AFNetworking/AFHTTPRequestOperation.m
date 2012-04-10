@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFHTTPRequestOperation.h"
+#import "AFNetworking-Constants.h"
 
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     NSMutableString *string = [NSMutableString string];
@@ -142,7 +143,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-	__weak AFHTTPRequestOperation *weakSelf = self;
+	__af_weak AFHTTPRequestOperation *weakSelf = self;
 	self.completionBlock = ^ {
 		AFHTTPRequestOperation *strongSelf = weakSelf;
 		if ([strongSelf isCancelled]) {

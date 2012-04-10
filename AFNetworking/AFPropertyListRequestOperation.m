@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFPropertyListRequestOperation.h"
+#import "AFNetworking-Constants.h"
 
 static dispatch_queue_t af_property_list_request_operation_processing_queue;
 static dispatch_queue_t property_list_request_operation_processing_queue() {
@@ -112,7 +113,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-	__weak AFPropertyListRequestOperation *weakSelf = self;
+	__af_weak AFPropertyListRequestOperation *weakSelf = self;
     self.completionBlock = ^ {
 			AFPropertyListRequestOperation *strongSelf = weakSelf;
         if ([strongSelf isCancelled]) {

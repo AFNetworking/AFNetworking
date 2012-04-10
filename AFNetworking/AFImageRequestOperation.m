@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFImageRequestOperation.h"
+#import "AFNetworking-Constants.h"
 
 static dispatch_queue_t af_image_request_operation_processing_queue;
 static dispatch_queue_t image_request_operation_processing_queue() {
@@ -218,7 +219,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-	__weak AFImageRequestOperation *weakSelf = self;
+	__af_weak AFImageRequestOperation *weakSelf = self;
 	self.completionBlock = ^ {
 		AFImageRequestOperation *strongSelf = weakSelf;
 		if ([strongSelf isCancelled]) {

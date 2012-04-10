@@ -25,6 +25,7 @@
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
 #import "AFJSONUtilities.h"
+#import "AFNetworking-Constants.h"
 
 #import <Availability.h>
 
@@ -47,7 +48,7 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
     NSMutableData *_mutableData;
 }
 
-@property (weak, readonly) NSData *data;
+@property (af_weak, readonly) NSData *data;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
 
@@ -229,7 +230,7 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
     BOOL isNetworkReachable = (isReachable && !needsConnection);
         
-    AFNetworkReachabilityStatusBlock block = (AFNetworkReachabilityStatusBlock)info;
+    AFNetworkReachabilityStatusBlock block = (__bridge AFNetworkReachabilityStatusBlock)info;
     if (block) {
         block(isNetworkReachable);
     }
@@ -240,7 +241,7 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
 - (void)startMonitoringNetworkReachability {
     [self stopMonitoringNetworkReachability];
     self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
-    SCNetworkReachabilityContext context = {0, self.networkReachabilityStatusBlock, NULL, NULL, NULL};
+    SCNetworkReachabilityContext context = {0, (__bridge void *)self.networkReachabilityStatusBlock, NULL, NULL, NULL};
     SCNetworkReachabilitySetCallback(self.networkReachability, AFReachabilityCallback, &context);
     SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
 }

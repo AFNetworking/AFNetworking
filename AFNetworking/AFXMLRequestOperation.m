@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFXMLRequestOperation.h"
+#import "AFNetworking-Constants.h"
 
 #include <Availability.h>
 
@@ -153,7 +154,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-	__weak AFXMLRequestOperation *weakSelf = self;
+	__af_weak AFXMLRequestOperation *weakSelf = self;
 	self.completionBlock = ^ {
 		AFXMLRequestOperation *strongSelf = weakSelf;
 		if ([strongSelf isCancelled]) {

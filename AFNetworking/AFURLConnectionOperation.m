@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFURLConnectionOperation.h"
+#import "AFNetworking-Constants.h"
 
 typedef enum {
     AFHTTPOperationReadyState       = 1,
@@ -182,7 +183,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (!block) {
         [super setCompletionBlock:nil];
     } else {
-        __weak id _blockSelf = self;
+        __af_weak id _blockSelf = self;
         [super setCompletionBlock:^ {
             block();
             [_blockSelf setCompletionBlock:nil];

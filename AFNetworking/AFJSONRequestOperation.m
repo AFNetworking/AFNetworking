@@ -22,6 +22,7 @@
 
 #import "AFJSONRequestOperation.h"
 #import "AFJSONUtilities.h"
+#import "AFNetworking-Constants.h"
 
 static dispatch_queue_t af_json_request_operation_processing_queue;
 static dispatch_queue_t json_request_operation_processing_queue() {
@@ -112,7 +113,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-	__weak AFJSONRequestOperation *weakSelf = self;
+	__af_weak AFJSONRequestOperation *weakSelf = self;
 	self.completionBlock = ^ {
 		AFJSONRequestOperation *strongSelf = weakSelf;
 		if ([strongSelf isCancelled]) {
