@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFHTTPRequestOperation.h"
+#import "AFNetworking-Constants.h"
 
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     NSMutableString *string = [NSMutableString string];
@@ -77,24 +78,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return self;
 }
 
-- (void)dealloc {
-    [_acceptableStatusCodes release];
-    [_acceptableContentTypes release];
-    [_HTTPError release];
-    
-    if (_successCallbackQueue) { 
-        dispatch_release(_successCallbackQueue);
-        _successCallbackQueue = NULL;
-    }
-    
-    if (_failureCallbackQueue) { 
-        dispatch_release(_failureCallbackQueue); 
-        _failureCallbackQueue = NULL;
-    }
-    
-    [super dealloc];
-}
-
 - (NSHTTPURLResponse *)response {
     return (NSHTTPURLResponse *)[super response];
 }
@@ -106,13 +89,13 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet(self.acceptableStatusCodes), [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
-            self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
+            self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
         } else if ([self.responseData length] > 0 && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), self.acceptableContentTypes, [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
-            self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo] autorelease];
+            self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
         }
     }
     
@@ -160,25 +143,27 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
-        if (self.error) {
-            if (failure) {
-                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                    failure(self, self.error);
-                });
-            }
-        } else {
-            if (success) {
-                dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                    success(self, self.responseData);
-                });
-            }
-        }
-    };
+	__af_weak AFHTTPRequestOperation *weakSelf = self;
+	self.completionBlock = ^ {
+		AFHTTPRequestOperation *strongSelf = weakSelf;
+		if ([strongSelf isCancelled]) {
+			return;
+		}
+		
+		if (strongSelf.error) {
+			if (failure) {
+				dispatch_async(strongSelf.failureCallbackQueue ? strongSelf.failureCallbackQueue : dispatch_get_main_queue(), ^{
+					failure(strongSelf, strongSelf.error);
+				});
+			}
+		} else {
+			if (success) {
+				dispatch_async(strongSelf.successCallbackQueue ? strongSelf.successCallbackQueue : dispatch_get_main_queue(), ^{
+					success(strongSelf, strongSelf.responseString);
+				});
+			}
+		}
+	};
 }
 
 #pragma mark - AFHTTPClientOperation

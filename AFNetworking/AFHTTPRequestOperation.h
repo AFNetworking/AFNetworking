@@ -26,7 +26,14 @@
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
  */
-@interface AFHTTPRequestOperation : AFURLConnectionOperation
+@interface AFHTTPRequestOperation : AFURLConnectionOperation {
+@private
+    NSIndexSet *_acceptableStatusCodes;
+    NSSet *_acceptableContentTypes;
+    NSError *_HTTPError;
+    dispatch_queue_t _successCallbackQueue;
+    dispatch_queue_t _failureCallbackQueue;
+}
 
 ///----------------------------------------------
 /// @name Getting HTTP URL Connection Information
@@ -35,7 +42,7 @@
 /**
  The last HTTP response received by the operation's connection.
  */
-@property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
+@property (readonly, nonatomic, strong) NSHTTPURLResponse *response;
 
 
 ///----------------------------------------------------------
@@ -47,7 +54,7 @@
  
  By default, this is the range 200 to 299, inclusive.
  */
-@property (nonatomic, retain) NSIndexSet *acceptableStatusCodes;
+@property (nonatomic, strong) NSIndexSet *acceptableStatusCodes;
 
 /**
  A Boolean value that corresponds to whether the status code of the response is within the specified set of acceptable status codes. Returns `YES` if `acceptableStatusCodes` is `nil`.
@@ -59,7 +66,7 @@
  
  By default, this is `nil`.
  */
-@property (nonatomic, retain) NSSet *acceptableContentTypes;
+@property (nonatomic, strong) NSSet *acceptableContentTypes;
 
 /**
  A Boolean value that corresponds to whether the MIME type of the response is among the specified set of acceptable content types. Returns `YES` if `acceptableContentTypes` is `nil`.

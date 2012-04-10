@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFXMLRequestOperation.h"
+#import "AFNetworking-Constants.h"
 
 #include <Availability.h>
 
@@ -34,11 +35,11 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 
 @interface AFXMLRequestOperation ()
-@property (readwrite, nonatomic, retain) NSXMLParser *responseXMLParser;
+@property (readwrite, nonatomic, strong) NSXMLParser *responseXMLParser;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
-@property (readwrite, nonatomic, retain) NSXMLDocument *responseXMLDocument;
+@property (readwrite, nonatomic, strong) NSXMLDocument *responseXMLDocument;
 #endif
-@property (readwrite, nonatomic, retain) NSError *XMLError;
+@property (readwrite, nonatomic, strong) NSError *XMLError;
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
@@ -55,7 +56,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLParser *XMLParser))failure
 {
-    AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -74,7 +75,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                                                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
                                                           failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLDocument *document))failure
 {
-    AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, __unused id responseObject) {
         if (success) {
             NSXMLDocument *XMLDocument = [(AFXMLRequestOperation *)operation responseXMLDocument];            
@@ -110,21 +111,9 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     return self;
 }
 
-- (void)dealloc {
-    [_responseXMLParser release];
-    
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
-    [_responseXMLDocument release];
-#endif
-    
-    [_XMLError release];
-    
-    [super dealloc];
-}
-
 - (NSXMLParser *)responseXMLParser {
     if (!_responseXMLParser && [self.responseData length] > 0 && [self isFinished]) {
-        self.responseXMLParser = [[[NSXMLParser alloc] initWithData:self.responseData] autorelease];
+        self.responseXMLParser = [[NSXMLParser alloc] initWithData:self.responseData];
     }
     
     return _responseXMLParser;
@@ -134,7 +123,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (NSXMLDocument *)responseXMLDocument {
     if (!_responseXMLDocument && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
-        self.responseXMLDocument = [[[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error] autorelease];
+        self.responseXMLDocument = [[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error];
         self.XMLError = error;
     }
     
@@ -165,29 +154,31 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
-        dispatch_async(xml_request_operation_processing_queue(), ^(void) {
-            NSXMLParser *XMLParser = self.responseXMLParser;
-            
-            if (self.error) {
-                if (failure) {
-                    dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                        failure(self, self.error);
-                    });
-                }
-            } else {
-                if (success) {
-                    dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                        success(self, XMLParser);
-                    });
-                } 
-            }
-        });
-    };    
+	__af_weak AFXMLRequestOperation *weakSelf = self;
+	self.completionBlock = ^ {
+		AFXMLRequestOperation *strongSelf = weakSelf;
+		if ([strongSelf isCancelled]) {
+			return;
+		}
+		
+		dispatch_async(xml_request_operation_processing_queue(), ^(void) {
+			NSXMLParser *XMLParser = strongSelf.responseXMLParser;
+			
+			if (strongSelf.error) {
+				if (failure) {
+					dispatch_async(strongSelf.failureCallbackQueue ? strongSelf.failureCallbackQueue : dispatch_get_main_queue(), ^{
+						failure(strongSelf, strongSelf.error);
+					});
+				}
+			} else {
+				if (success) {
+					dispatch_async(strongSelf.successCallbackQueue ? strongSelf.successCallbackQueue : dispatch_get_main_queue(), ^{
+						success(strongSelf, XMLParser);
+					});
+				} 
+			}
+		});
+	};    
 }
 
 @end

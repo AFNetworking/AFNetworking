@@ -1,6 +1,6 @@
-// AFTwitterAPIClient.h
+// Spot.h
 //
-// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
+// Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,23 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPClient.h"
+#import <CoreLocation/CoreLocation.h>
 
-@interface AFTwitterAPIClient : AFHTTPClient
+@interface Spot : NSObject {
+@private
+    NSString *_name;
+    NSString *_imageURLString;
+    NSNumber *_latitude;
+    NSNumber *_longitude;
+}
 
-+ (AFTwitterAPIClient *)sharedClient;
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *imageURLString;
+@property (nonatomic, retain) NSNumber *latitude;
+@property (nonatomic, retain) NSNumber *longitude;
+@property (readonly) CLLocation *location;
+
+- (id)initWithAttributes:(NSDictionary *)attributes;
++ (void)spotsWithURLString:(NSString *)urlString near:(CLLocation *)location parameters:(NSDictionary *)parameters block:(void (^)(NSArray *records))block;
 
 @end

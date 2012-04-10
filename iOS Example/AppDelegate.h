@@ -1,6 +1,6 @@
-// AppDelegate.h
+// AFNetworkingExampleAppDelegate.h
 //
-// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
+// Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 
 }
 
-@property (nonatomic, strong) UIWindow *window;
-@property (nonatomic, strong) UINavigationController *navigationController;
+@property (nonatomic, retain) UIWindow *window;
+@property (nonatomic, retain) UINavigationController *navigationController;
 
 @end

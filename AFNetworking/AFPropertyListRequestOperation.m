@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFPropertyListRequestOperation.h"
+#import "AFNetworking-Constants.h"
 
 static dispatch_queue_t af_property_list_request_operation_processing_queue;
 static dispatch_queue_t property_list_request_operation_processing_queue() {
@@ -32,9 +33,9 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 }
 
 @interface AFPropertyListRequestOperation ()
-@property (readwrite, nonatomic, retain) id responsePropertyList;
+@property (readwrite, nonatomic, strong) id responsePropertyList;
 @property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
-@property (readwrite, nonatomic, retain) NSError *propertyListError;
+@property (readwrite, nonatomic, strong) NSError *propertyListError;
 
 + (NSSet *)defaultAcceptableContentTypes;
 + (NSSet *)defaultAcceptablePathExtensions;
@@ -50,7 +51,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
                                                                     success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id propertyList))success
                                                                     failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id propertyList))failure
 {
-    AFPropertyListRequestOperation *requestOperation = [[[self alloc] initWithRequest:request] autorelease];
+	AFPropertyListRequestOperation *requestOperation = [[self alloc] initWithRequest:request];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -85,12 +86,6 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     return self;
 }
 
-- (void)dealloc {
-    [_responsePropertyList release];
-    [_propertyListError release];
-    [super dealloc];
-}
-
 - (id)responsePropertyList {
     if (!_responsePropertyList && [self.responseData length] > 0 && [self isFinished]) {
         NSPropertyListFormat format;
@@ -118,31 +113,33 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+	__af_weak AFPropertyListRequestOperation *weakSelf = self;
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+			AFPropertyListRequestOperation *strongSelf = weakSelf;
+        if ([strongSelf isCancelled]) {
             return;
         }
         
-        if (self.error) {
+        if (strongSelf.error) {
             if (failure) {
-                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                    failure(self, self.error);
+                dispatch_async(strongSelf.failureCallbackQueue ? strongSelf.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                    failure(strongSelf, strongSelf.error);
                 });
             }
         } else {
             dispatch_async(property_list_request_operation_processing_queue(), ^(void) {
-                id propertyList = self.responsePropertyList;
+                id propertyList = strongSelf.responsePropertyList;
                 
-                if (self.propertyListError) {
+                if (strongSelf.propertyListError) {
                     if (failure) {
-                        dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                            failure(self, self.error);
+                        dispatch_async(strongSelf.failureCallbackQueue ? strongSelf.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                            failure(strongSelf, strongSelf.error);
                         });
                     }
                 } else {
                     if (success) {
-                        dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                            success(self, propertyList);
+                        dispatch_async(strongSelf.successCallbackQueue ? strongSelf.successCallbackQueue : dispatch_get_main_queue(), ^{
+                            success(strongSelf, propertyList);
                         });
                     } 
                 }
