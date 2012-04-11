@@ -693,7 +693,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:fileURL];
-    [request setCachePolicy:NSURLCacheStorageNotAllowed];
+    [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     
     NSURLResponse *response = nil;
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
