@@ -509,7 +509,11 @@ didReceiveResponse:(NSURLResponse *)response
             return nil;
         }
         
-        return cachedResponse; 
+        if ([[[[cachedResponse response] URL] scheme] isEqual:@"https"]) {
+            return nil;
+        }else {
+            return cachedResponse; 
+        }
     }
 }
 
