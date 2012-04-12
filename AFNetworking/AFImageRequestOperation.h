@@ -67,6 +67,11 @@
 @property (nonatomic, assign) CGFloat imageScale;
 #endif
 
+/** 
+ The dispatch queue used for image processing. If `NULL` (default), the successCallbackQueue is used.
+ */
+@property (nonatomic) dispatch_queue_t imageProcessingQueue;
+
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
  */
