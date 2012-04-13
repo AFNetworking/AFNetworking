@@ -257,7 +257,7 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
     }
 }
 
-#pragma mark - AFHTTPClientOperation
+#pragma mark - AFHTTPRequestOperation
 
 + (NSIndexSet *)acceptableStatusCodes {
     return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
