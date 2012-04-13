@@ -44,6 +44,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 @implementation AFImageRequestOperation
 @synthesize responseImage = _responseImage;
+@synthesize imageProcessingQueue = _imageProcessingQueue;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 @synthesize imageScale = _imageScale;
 #endif
@@ -81,13 +82,27 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
+            dispatch_queue_t successQueue = dispatch_get_current_queue();
+            dispatch_queue_t imageProcessingQueue = requestOperation.imageProcessingQueue ? requestOperation.imageProcessingQueue : successQueue;
             UIImage *image = responseObject;
-            
-            if (imageProcessingBlock) {
-                image = imageProcessingBlock(image);
+            if (imageProcessingBlock && (successQueue != imageProcessingQueue)) {
+                [image retain];
+                dispatch_async(imageProcessingQueue, ^{
+                    UIImage* processedImage = imageProcessingBlock(image);
+                    [image release];
+                    [processedImage retain];
+                    dispatch_async(successQueue, ^{
+                        success(operation.request, operation.response, processedImage);
+                        [processedImage release];
+                    });
+                });                
             }
-            
-            success(operation.request, operation.response, image);
+            else {
+                if (imageProcessingBlock) {
+                    image = imageProcessingBlock(image);
+                }
+                success(operation.request, operation.response, image);                    
+            }
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (failure) {
