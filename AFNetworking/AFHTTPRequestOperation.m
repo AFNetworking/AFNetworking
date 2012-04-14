@@ -203,13 +203,16 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 }
 
 - (void)setCompletionBlock:(void (^)(void))block {
+    __block AFHTTPRequestOperation *blockSelf = self;
+    dispatch_once_t *blockOnceToken = &_onceToken;
+    
     [super setCompletionBlock:^{
         if(block) {
             block();
         }
         // Dispatch once is used to ensure that setting the block with this block will not cause multiple calls to 'dispatch_group_leave'
-        dispatch_once(&_onceToken, ^{
-            dispatch_group_leave(self.dispatchGroup);
+        dispatch_once(blockOnceToken, ^{
+            dispatch_group_leave(blockSelf.dispatchGroup);
         });
     }];
 }
