@@ -172,7 +172,9 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
 - (void)cacheImage:(UIImage *)image
         forRequest:(NSURLRequest *)request
 {
-    [self setObject:image forKey:AFImageCacheKeyFromURLRequest(request)];
+    if (image && request) {
+        [self setObject:image forKey:AFImageCacheKeyFromURLRequest(request)];
+    }
 }
 
 @end
