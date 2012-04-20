@@ -128,18 +128,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
-        NSAutoreleasePool *exceptionPool = [[NSAutoreleasePool alloc] init];
-        NSException *caughtException = nil;
-        @try {
-            NSAutoreleasePool *runLoopPool = [[NSAutoreleasePool alloc] init];
-            [[NSRunLoop currentRunLoop] run];
-            [runLoopPool drain];
-        }
-        @catch(NSException *e) { caughtException = e; }
-        if(caughtException) { 
-            NSLog(NSLocalizedString(@"Unhandled exception on %@ networking thread: %@, userInfo: %@", nil), NSStringFromClass([self class]), caughtException, [caughtException userInfo]); 
-        }
-        [exceptionPool drain];
+        NSAutoreleasePool *runLoopPool = [[NSAutoreleasePool alloc] init];
+        [[NSRunLoop currentRunLoop] run];
+        [runLoopPool drain];
     } while (YES);
 }
 
