@@ -236,10 +236,10 @@ static dispatch_queue_t image_request_operation_processing_queue() {
             return;
         }
         
-        dispatch_group_async(self.dispatchGroup, image_request_operation_processing_queue(), ^(void) {
+        dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (self.error) {
                 if (failure) {
-                    dispatch_group_async(self.dispatchGroup, self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                    dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                         failure(self, self.error);
                     });
                 }
@@ -253,7 +253,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
                     image = self.responseImage;
 
-                    dispatch_group_async(self.dispatchGroup, self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                    dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
                         success(self, image);
                     });
                 }

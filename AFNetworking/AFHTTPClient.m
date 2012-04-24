@@ -41,6 +41,14 @@ NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire
 static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
 
+@interface AFBatchedOperation : NSBlockOperation
+@property (readwrite, nonatomic, assign) dispatch_group_t dispatchGroup;
+@end
+
+@implementation AFBatchedOperation
+@synthesize dispatchGroup = _dispatchGroup;
+@end
+
 @interface AFMultipartFormData : NSObject <AFMultipartFormData> {
 @private
     NSStringEncoding _stringEncoding;
@@ -515,34 +523,40 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
                               progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
                             completionBlock:(void (^)(NSArray *operations))completionBlock
 {
-    dispatch_group_t dispatchGroup = dispatch_group_create();
+    AFBatchedOperation *batchedOperation = [[[AFBatchedOperation alloc] init] autorelease];
+    batchedOperation.dispatchGroup = dispatch_group_create();
+    [batchedOperation addExecutionBlock:^{
+        if (completionBlock) {
+            dispatch_group_notify(batchedOperation.dispatchGroup, dispatch_get_main_queue(), ^{
+                completionBlock(operations);
+            });
+        }
+    }];
     
     NSPredicate *finishedOperationPredicate = [NSPredicate predicateWithFormat:@"isFinished == YES"];
     
     for (AFHTTPRequestOperation *operation in operations) {
         AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
-        operation.dispatchGroup = dispatchGroup;
         operation.completionBlock = ^{
-            if (progressBlock) {
-                dispatch_group_async(dispatchGroup, dispatch_get_main_queue(), ^{
+            dispatch_group_async(batchedOperation.dispatchGroup, dispatch_get_main_queue(), ^{
+                if (originalCompletionBlock) {
+                    originalCompletionBlock();
+                }
+                
+                if (progressBlock) {
                     progressBlock([[operations filteredArrayUsingPredicate:finishedOperationPredicate] count], [operations count]);
-                });
-            }
-            
-            if (originalCompletionBlock) {
-                originalCompletionBlock();
-            }
+                }
+                
+                dispatch_group_leave(batchedOperation.dispatchGroup);
+            });
         };
+        
+        dispatch_group_enter(batchedOperation.dispatchGroup);
+        [batchedOperation addDependency:operation];
+        
         [self enqueueHTTPRequestOperation:operation];
     }
-    
-    if (completionBlock) {
-        dispatch_group_notify(dispatchGroup, dispatch_get_main_queue(), ^{
-            completionBlock(operations);
-        });
-    }
-    
-    dispatch_release(dispatchGroup);
+    [self.operationQueue addOperation:batchedOperation];
 }
 
 #pragma mark -

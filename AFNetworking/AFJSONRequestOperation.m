@@ -130,7 +130,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 });
             }
         } else {
-            dispatch_group_async(self.dispatchGroup, json_request_operation_processing_queue(), ^(void) {
+            dispatch_async(json_request_operation_processing_queue(), ^{
                 id JSON = self.responseJSON;
                 
                 if (self.JSONError) {
@@ -141,7 +141,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                     }
                 } else {
                     if (success) {
-                        dispatch_group_async(self.dispatchGroup, self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                        dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
                             success(self, JSON);
                         });
                     }                    
