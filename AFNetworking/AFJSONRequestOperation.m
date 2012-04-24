@@ -122,6 +122,9 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         if ([self isCancelled]) {
             return;
         }
+#if DEBUG       
+        NSLog(@"%@", self); // trigger the description method
+#endif
         
         if (self.error) {
             if (failure) {

@@ -187,4 +187,43 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return YES;
 }
 
+#pragma mark - Output curl statement to match request and response
+
+- (NSString*)description {
+    
+    NSMutableString *displayString = [NSMutableString stringWithFormat:@"\n%@\n--------\nRequest\n-------\n%@", 
+                                      [[NSDate date] descriptionWithLocale:[NSLocale currentLocale]],
+                                      [self curlCommandLineString]];
+    
+    NSString *responseString = [self responseString];    
+    if([responseString length] > 0) {
+        [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", responseString];
+    }
+    
+    return displayString;
+}
+
+
+- (NSString*)curlCommandLineString {
+    // doesn't handle case of posting files...
+    
+    __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"curl -X %@", self.request.HTTPMethod];
+    
+    [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
+     {
+         [displayString appendFormat:@" -H \"%@: %@\"", key, val];
+     }];
+    
+    [displayString appendFormat:@" \"%@\"",  self.request.URL];
+    
+    if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
+        
+        NSString *dataString = [[NSString alloc] initWithData:self.request.HTTPBody encoding:NSUTF8StringEncoding];
+        
+        [displayString appendFormat:@" -d \'%@\'\n", dataString];
+    }
+    return displayString;
+}
+
+
 @end
