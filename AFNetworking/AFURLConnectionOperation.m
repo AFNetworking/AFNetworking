@@ -85,6 +85,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
+@property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
 @property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
 @property (readwrite, nonatomic, retain) NSURLConnection *connection;
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
@@ -106,6 +107,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 @implementation AFURLConnectionOperation
 @synthesize state = _state;
+@synthesize cancelled = _cancelled;
 @synthesize connection = _connection;
 @synthesize runLoopModes = _runLoopModes;
 @synthesize request = _request;
@@ -126,18 +128,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
-        NSAutoreleasePool *exceptionPool = [[NSAutoreleasePool alloc] init];
-        NSException *caughtException = nil;
-        @try {
-            NSAutoreleasePool *runLoopPool = [[NSAutoreleasePool alloc] init];
-            [[NSRunLoop currentRunLoop] run];
-            [runLoopPool drain];
-        }
-        @catch(NSException *e) { caughtException = e; }
-        if(caughtException) { 
-            NSLog(NSLocalizedString(@"Unhandled exception on %@ networking thread: %@, userInfo: %@", nil), NSStringFromClass([self class]), caughtException, [caughtException userInfo]); 
-        }
-        [exceptionPool drain];
+        NSAutoreleasePool *runLoopPool = [[NSAutoreleasePool alloc] init];
+        [[NSRunLoop currentRunLoop] run];
+        [runLoopPool drain];
     } while (YES);
 }
 
@@ -302,10 +295,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (BOOL)isFinished {
     return self.state == AFHTTPOperationFinishedState;
-}
-
-- (BOOL)isCancelled {
-    return _cancelled;
 }
 
 - (BOOL)isConcurrent {

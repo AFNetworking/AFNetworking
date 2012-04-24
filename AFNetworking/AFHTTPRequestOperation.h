@@ -26,14 +26,7 @@
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
  */
-@interface AFHTTPRequestOperation : AFURLConnectionOperation {
-@private
-    NSIndexSet *_acceptableStatusCodes;
-    NSSet *_acceptableContentTypes;
-    NSError *_HTTPError;
-    dispatch_queue_t _successCallbackQueue;
-    dispatch_queue_t _failureCallbackQueue;
-}
+@interface AFHTTPRequestOperation : AFURLConnectionOperation
 
 ///----------------------------------------------
 /// @name Getting HTTP URL Connection Information
@@ -83,6 +76,10 @@
  */
 @property (nonatomic) dispatch_queue_t failureCallbackQueue;
 
+/**
+ The dispatch group on which to call the completion/failure block
+ */
+@property (nonatomic) dispatch_group_t dispatchGroup;
 
 /**
  A Boolean value determining whether or not the class can process the specified request. For example, `AFJSONRequestOperation` may check to make sure the content type was `application/json` or the URL path extension was `.json`.
