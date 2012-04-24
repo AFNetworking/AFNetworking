@@ -125,23 +125,23 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
         
         if (self.error) {
             if (failure) {
-                dispatch_group_async(self.dispatchGroup, self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                     failure(self, self.error);
                 });
             }
         } else {
-            dispatch_group_async(self.dispatchGroup, property_list_request_operation_processing_queue(), ^(void) {
+            dispatch_async(property_list_request_operation_processing_queue(), ^(void) {
                 id propertyList = self.responsePropertyList;
                 
                 if (self.propertyListError) {
                     if (failure) {
-                        dispatch_group_async(self.dispatchGroup, self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                        dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                             failure(self, self.error);
                         });
                     }
                 } else {
                     if (success) {
-                        dispatch_group_async(self.dispatchGroup, self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                        dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
                             success(self, propertyList);
                         });
                     } 

@@ -77,11 +77,6 @@
 @property (nonatomic) dispatch_queue_t failureCallbackQueue;
 
 /**
- The dispatch group on which to call the completion/failure block
- */
-@property (nonatomic) dispatch_group_t dispatchGroup;
-
-/**
  A Boolean value determining whether or not the class can process the specified request. For example, `AFJSONRequestOperation` may check to make sure the content type was `application/json` or the URL path extension was `.json`.
  
  @param urlRequest The request that is determined to be supported or not supported for this class.

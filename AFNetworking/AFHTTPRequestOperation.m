@@ -56,7 +56,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
-@property (readwrite, nonatomic, assign) dispatch_semaphore_t dispatchSemaphore;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -65,8 +64,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 @synthesize HTTPError = _HTTPError;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
-@synthesize dispatchGroup = _dispatchGroup;
-@synthesize dispatchSemaphore = _dispatchSemaphore;
 
 - (id)initWithRequest:(NSURLRequest *)request {
     self = [super initWithRequest:request];
@@ -75,7 +72,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     }
     
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-    self.dispatchSemaphore = dispatch_semaphore_create(1);
     self.completionBlock = NULL;
     
     return self;
@@ -173,13 +169,13 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         
         if (self.error) {
             if (failure) {
-                dispatch_group_async(self.dispatchGroup, self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                     failure(self, self.error);
                 });
             }
         } else {
             if (success) {
-                dispatch_group_async(self.dispatchGroup, self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
                     success(self, self.responseData);
                 });
             }
