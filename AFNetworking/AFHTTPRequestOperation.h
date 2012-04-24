@@ -103,4 +103,13 @@
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
+
+/**
+ Outputs the request as an equivalent `curl` command and echos the response as a string.
+ 
+ @discussion If `_AFNETWORKING_OUTPUT_CURL_AND_ECHO_RESPONSE_` is defined, `setCompletionBlockWithSuccess:failure:` will output a curl equivalent and echo the response for every AFHTTPRequestOperation.
+ 
+ */
+- (NSString*)description;
+
 @end
