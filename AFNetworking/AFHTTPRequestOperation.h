@@ -103,7 +103,10 @@
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
+
+/**
+ Outputs the request as an equivalent `curl` command and echos the response as a string.
+ */
 - (NSString*)description;
-- (NSString*)curlCommandLineString;
 
 @end

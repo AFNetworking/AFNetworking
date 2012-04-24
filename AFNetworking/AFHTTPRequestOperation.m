@@ -58,6 +58,9 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
 @property (nonatomic) dispatch_once_t onceToken;
 @property (atomic) dispatch_semaphore_t dispatchSemaphore;
+
+- (NSString*)curlCommandLineString;
+
 @end
 
 @implementation AFHTTPRequestOperation
@@ -267,21 +270,16 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 
 - (NSString*)curlCommandLineString {
-    // doesn't handle case of posting files...
     
     __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"curl -X %@", self.request.HTTPMethod];
     
-    [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
-     {
+    [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop) {
          [displayString appendFormat:@" -H \"%@: %@\"", key, val];
-     }];
-    
+    }];
     [displayString appendFormat:@" \"%@\"",  self.request.URL];
     
     if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
-        
         NSString *dataString = [[NSString alloc] initWithData:self.request.HTTPBody encoding:NSUTF8StringEncoding];
-        
         [displayString appendFormat:@" -d \'%@\'\n", dataString];
     }
     return displayString;
