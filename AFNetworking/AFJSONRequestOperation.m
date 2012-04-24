@@ -122,8 +122,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         if ([self isCancelled]) {
             return;
         }
-#if DEBUG       
-        NSLog(@"%@", self); // trigger the description method
+#ifdef _AFNETWORKING_OUTPUT_CURL_AND_ECHO_RESPONSE_
+        NSLog(@"%@", self); // trigger the description method to see curl and response
 #endif
         
         if (self.error) {
