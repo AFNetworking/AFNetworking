@@ -372,10 +372,14 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 - (void)startMonitoringNetworkReachability {
-    [self stopMonitoringNetworkReachability];    
+    [self stopMonitoringNetworkReachability];
+    
+    if (!self.baseURL) {
+        return;
+    }
 
     self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
-    
+
     AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
         self.networkReachabilityStatus = status;
         if (self.networkReachabilityStatusBlock) {
