@@ -156,9 +156,25 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /// @name Pausing / Resuming Requests
 ///----------------------------------
 
+/**
+ Pauses the execution of the request operation.
+ 
+ @discussion A paused operation returns `NO` for `-isReady`, `-isExecuting`, and `-isFinished`. As such, it will remain in an `NSOperationQueue` until it is either cancelled or resumed. Pausing a finished or cancelled operation has no effect.
+ */
 - (void)pause;
+
+/**
+ Whether the request operation is currently paused.
+ 
+ @return `YES` if the operation is currently paused, otherwise `NO`.
+ */
 - (BOOL)isPaused;
 
+/**
+ Resumes the execution of the paused request operation.
+ 
+ @discussion Pause/Resume behavior varies depending on the underlying implementation for the operation class. In its base implementation, resuming a paused requests restarts the original request. However, since HTTP defines a specification for how to request a specific content range, `AFHTTPRequestOperation` will resume downloading the request from where it left off, instead of restarting the original request.
+ */
 - (void)resume;
 
 ///----------------------------------------------
