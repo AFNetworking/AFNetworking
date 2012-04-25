@@ -531,7 +531,8 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
     for (AFHTTPRequestOperation *operation in operations) {
         AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
         operation.completionBlock = ^{
-            dispatch_group_async(dispatchGroup, dispatch_get_main_queue(), ^{
+            dispatch_queue_t queue = operation.successCallbackQueue ? operation.successCallbackQueue : dispatch_get_main_queue();
+            dispatch_group_async(dispatchGroup, queue, ^{
                 if (originalCompletionBlock) {
                     originalCompletionBlock();
                 }
