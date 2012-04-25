@@ -538,9 +538,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     if (!operation) {
         operation = [[[AFHTTPRequestOperation alloc] initWithRequest:urlRequest] autorelease];
     }
-    
+
     [operation setCompletionBlockWithSuccess:success failure:failure];
-       
+
     return operation;
 }
 
