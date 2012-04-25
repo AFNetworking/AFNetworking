@@ -79,12 +79,17 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             UIImage *image = responseObject;
-            
             if (imageProcessingBlock) {
-                image = imageProcessingBlock(image);
+                dispatch_async(image_request_operation_processing_queue(), ^(void) {
+                    UIImage *processedImage = imageProcessingBlock(image);
+
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        success(operation.request, operation.response, processedImage);
+                    });
+                });
+            } else {
+                success(operation.request, operation.response, image);
             }
-            
-            success(operation.request, operation.response, image);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (failure) {
@@ -106,12 +111,17 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             NSImage *image = responseObject;
-
             if (imageProcessingBlock) {
-                image = imageProcessingBlock(image);
+                dispatch_async(image_request_operation_processing_queue(), ^(void) {
+                    NSImage *processedImage = imageProcessingBlock(image);
+
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        success(operation.request, operation.response, processedImage);
+                    });
+                });
+            } else {
+                success(operation.request, operation.response, image);
             }
-            
-            success(operation.request, operation.response, image);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (failure) {
@@ -157,9 +167,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         return;
     }
     
-    [self willChangeValueForKey:@"imageScale"];
     _imageScale = imageScale;
-    [self didChangeValueForKey:@"imageScale"];
     
     self.responseImage = nil;
 }

@@ -114,7 +114,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 });
             }
         } else {
-            dispatch_async(json_request_operation_processing_queue(), ^(void) {
+            dispatch_async(json_request_operation_processing_queue(), ^{
                 id JSON = self.responseJSON;
                 
                 if (self.JSONError) {

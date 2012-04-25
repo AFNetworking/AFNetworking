@@ -50,9 +50,7 @@
 }
 
 - (void)setTweet:(Tweet *)tweet {
-    [self willChangeValueForKey:@"tweet"];
     _tweet = tweet;
-    [self didChangeValueForKey:@"tweet"];
 
     self.textLabel.text = _tweet.user.username;
     self.detailTextLabel.text = _tweet.text;

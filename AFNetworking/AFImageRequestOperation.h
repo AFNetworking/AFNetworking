@@ -49,15 +49,7 @@
  - `image/x-xbitmap`
  - `image/x-win-bitmap`
  */
-@interface AFImageRequestOperation : AFHTTPRequestOperation {
-@private
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-    UIImage *_responseImage;
-    CGFloat _imageScale;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-    NSImage *_responseImage;
-#endif
-}
+@interface AFImageRequestOperation : AFHTTPRequestOperation
 
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
