@@ -39,9 +39,6 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 @property (readwrite, nonatomic, retain) NSXMLDocument *responseXMLDocument;
 #endif
 @property (readwrite, nonatomic, retain) NSError *XMLError;
-
-+ (NSSet *)defaultAcceptableContentTypes;
-+ (NSSet *)defaultAcceptablePathExtensions;
 @end
 
 @implementation AFXMLRequestOperation
@@ -91,25 +88,6 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 #endif
 
-+ (NSSet *)defaultAcceptableContentTypes {
-    return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
-}
-
-+ (NSSet *)defaultAcceptablePathExtensions {
-    return [NSSet setWithObjects:@"xml", nil];
-}
-
-- (id)initWithRequest:(NSURLRequest *)urlRequest {
-    self = [super initWithRequest:urlRequest];
-    if (!self) {
-        return nil;
-    }
-    
-    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
-    
-    return self;
-}
-
 - (void)dealloc {
     [_responseXMLParser release];
     
@@ -158,8 +136,14 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     self.responseXMLParser.delegate = nil;
 }
 
+#pragma mark - AFHTTPRequestOperation
+
++ (NSSet *)acceptableContentTypes {
+    return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
+}
+
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
+    return [[[request URL] pathExtension] isEqualToString:@"xml"] || [super canProcessRequest:request];
 }
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
@@ -170,18 +154,18 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
             return;
         }
         
-        dispatch_group_async(self.dispatchGroup, xml_request_operation_processing_queue(), ^(void) {
+        dispatch_async(xml_request_operation_processing_queue(), ^(void) {
             NSXMLParser *XMLParser = self.responseXMLParser;
             
             if (self.error) {
                 if (failure) {
-                    dispatch_group_async(self.dispatchGroup, self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                    dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                         failure(self, self.error);
                     });
                 }
             } else {
                 if (success) {
-                    dispatch_group_async(self.dispatchGroup, self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                    dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
                         success(self, XMLParser);
                     });
                 } 

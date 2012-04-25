@@ -35,9 +35,6 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, retain) id responseJSON;
 @property (readwrite, nonatomic, retain) NSError *JSONError;
-
-+ (NSSet *)defaultAcceptableContentTypes;
-+ (NSSet *)defaultAcceptablePathExtensions;
 @end
 
 @implementation AFJSONRequestOperation
@@ -60,29 +57,6 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     }];
     
     return requestOperation;
-}
-
-+ (NSSet *)defaultAcceptableContentTypes {
-    return [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", nil];
-}
-
-+ (NSSet *)defaultAcceptablePathExtensions {
-    return [NSSet setWithObjects:@"json", nil];
-}
-
-+ (BOOL)canProcessRequest:(NSURLRequest *)request {
-    return [[self defaultAcceptableContentTypes] containsObject:[request valueForHTTPHeaderField:@"Accept"]] || [[self defaultAcceptablePathExtensions] containsObject:[[request URL] pathExtension]];
-}
-
-- (id)initWithRequest:(NSURLRequest *)urlRequest {
-    self = [super initWithRequest:urlRequest];
-    if (!self) {
-        return nil;
-    }
-    
-    self.acceptableContentTypes = [[self class] defaultAcceptableContentTypes];
-    
-    return self;
 }
 
 - (void)dealloc {
@@ -115,6 +89,16 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     }
 }
 
+#pragma mark - AFHTTPRequestOperation
+
++ (NSSet *)acceptableContentTypes {
+    return [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", nil];
+}
+
++ (BOOL)canProcessRequest:(NSURLRequest *)request {
+    return [[[request URL] pathExtension] isEqualToString:@"json"] || [super canProcessRequest:request];
+}
+
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
@@ -125,23 +109,23 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         
         if (self.error) {
             if (failure) {
-                dispatch_group_async(self.dispatchGroup, self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                     failure(self, self.error);
                 });
             }
         } else {
-            dispatch_group_async(self.dispatchGroup, json_request_operation_processing_queue(), ^(void) {
+            dispatch_async(json_request_operation_processing_queue(), ^{
                 id JSON = self.responseJSON;
                 
                 if (self.JSONError) {
                     if (failure) {
-                        dispatch_group_async(self.dispatchGroup, self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                        dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                             failure(self, self.error);
                         });
                     }
                 } else {
                     if (success) {
-                        dispatch_group_async(self.dispatchGroup, self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                        dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
                             success(self, JSON);
                         });
                     }                    
