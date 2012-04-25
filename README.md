@@ -3,10 +3,10 @@
 AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of [NSURLConnection](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/Reference/Reference.html), [NSOperation](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/NSOperation_class/Reference/Reference.html), and other familiar Foundation technologies. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use. For example, here's how easy it is to get JSON from a URL:
 
 ``` objective-c
-NSURL *url = [NSURL URLWithString:@"https://gowalla.com/users/mattt.json"];
+NSURL *url = [NSURL URLWithString:@"http://api.twitter.com/1/statuses/public_timeline.json"];
 NSURLRequest *request = [NSURLRequest requestWithURL:url];
 AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-    NSLog(@"Name: %@ %@", [JSON valueForKeyPath:@"first_name"], [JSON valueForKeyPath:@"last_name"]);
+    NSLog(@"Public Timeline: %@", JSON);
 } failure:nil];
 [operation start];
 ```
@@ -20,7 +20,8 @@ Choose AFNetworking for your next project, or migrate over your existing project
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/zipball/master) and try out the included Mac and iPhone example apps
 - Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles in the wiki](https://github.com/AFNetworking/AFNetworking/wiki)
 - Check out the [complete documentation](http://afnetworking.org/Documentation/) for a comprehensive look at the APIs available in AFNetworking
-- Watch the [NSScreencast episode about AFNetworking](http://nsscreencast.com/episodes/6-afnetworking) for a quick introduction to how to use it in your application.
+- Watch the [NSScreencast episode about AFNetworking](http://nsscreencast.com/episodes/6-afnetworking) for a quick introduction to how to use it in your application
+- Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
 
 ## Overview
 
@@ -147,8 +148,9 @@ AFNetworking requires either [iOS 4.0](http://developer.apple.com/library/ios/#r
 AFNetworking uses [`NSJSONSerialization`](http://developer.apple.com/library/mac/#documentation/Foundation/Reference/NSJSONSerialization_Class/Reference/Reference.html) if it is available. If your app targets a platform where this class is not available you can include one of the following JSON libraries to your project for AFNetworking to automatically detect and use.
 
 * [JSONKit](https://github.com/johnezang/JSONKit)
-* [SBJson](http://stig.github.com/json-framework/)
-* [YAJL](http://lloyd.github.com/yajl/)
+* [SBJson](https://stig.github.com/json-framework/)
+* [YAJL](https://lloyd.github.com/yajl/)
+* [NextiveJson](https://github.com/nextive/NextiveJson)
 
 ### ARC Support
 
@@ -158,7 +160,7 @@ If you are including AFNetworking in a project that uses [Automatic Reference Co
 
 ## Credits
 
-AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://itunes.apple.com/us/app/gowalla/id304510106?mt=8).
+AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
 
 [TTTLocationFormatter](https://github.com/mattt/FormatterKit/tree/master/TTTLocationFormatter), used in the example project, is part of [FormatterKit](https://github.com/mattt/FormatterKit), created by [Mattt Thompson](https://github.com/mattt/).
 
