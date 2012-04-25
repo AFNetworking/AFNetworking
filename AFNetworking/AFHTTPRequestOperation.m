@@ -119,7 +119,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         dispatch_release(_failureCallbackQueue); 
         _failureCallbackQueue = NULL;
     }
-    
+
     [super dealloc];
 }
 
@@ -177,6 +177,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     if (successCallbackQueue != _successCallbackQueue) {
         if (_successCallbackQueue) {
             dispatch_release(_successCallbackQueue);
+            _successCallbackQueue = NULL;
         }
      
         if (successCallbackQueue) {
@@ -190,6 +191,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     if (failureCallbackQueue != _failureCallbackQueue) {
         if (_failureCallbackQueue) {
             dispatch_release(_failureCallbackQueue);
+            _failureCallbackQueue = NULL;
         }
         
         if (failureCallbackQueue) {

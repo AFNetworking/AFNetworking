@@ -579,35 +579,42 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                               progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
                             completionBlock:(void (^)(NSArray *operations))completionBlock
 {
+    __block dispatch_group_t dispatchGroup = dispatch_group_create();
+    dispatch_retain(dispatchGroup);
     NSBlockOperation *batchedOperation = [NSBlockOperation blockOperationWithBlock:^{
-        if (completionBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_group_notify(dispatchGroup, dispatch_get_main_queue(), ^{
+            if (completionBlock) {
                 completionBlock(operations);
-            });
-        }
+            }
+        });
+        dispatch_release(dispatchGroup);
     }];
-    
-    [self.operationQueue addOperation:batchedOperation];
-    
+
     NSPredicate *finishedOperationPredicate = [NSPredicate predicateWithFormat:@"isFinished == YES"];
     
     for (AFHTTPRequestOperation *operation in operations) {
         AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
         operation.completionBlock = ^{
-            if (progressBlock) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    progressBlock([[batchedOperation.dependencies filteredArrayUsingPredicate:finishedOperationPredicate] count], [batchedOperation.dependencies count]);
-                });
-            }
-            
-            if (originalCompletionBlock) {
-                originalCompletionBlock();
-            }
+            dispatch_queue_t queue = operation.successCallbackQueue ? operation.successCallbackQueue : dispatch_get_main_queue();
+            dispatch_group_async(dispatchGroup, queue, ^{
+                if (originalCompletionBlock) {
+                    originalCompletionBlock();
+                }
+                
+                if (progressBlock) {
+                    progressBlock([[operations filteredArrayUsingPredicate:finishedOperationPredicate] count], [operations count]);
+                }
+                
+                dispatch_group_leave(dispatchGroup);
+            });
         };
         
+        dispatch_group_enter(dispatchGroup);
         [batchedOperation addDependency:operation];
+        
         [self enqueueHTTPRequestOperation:operation];
     }
+    [self.operationQueue addOperation:batchedOperation];
 }
 
 #pragma mark -
@@ -757,7 +764,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:fileURL];
-    [request setCachePolicy:NSURLCacheStorageNotAllowed];
+    [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     
     NSURLResponse *response = nil;
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
