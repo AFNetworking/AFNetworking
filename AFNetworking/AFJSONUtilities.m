@@ -195,19 +195,24 @@ id AFJSONDecode(NSData *data, NSError **error) {
 #ifdef _AFNETWORKING_PREFER_NSJSONSERIALIZATION_
     _af_nsjson_decode:;
 #endif
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_5_0
+        [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
+#else
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_NSJSONSerializationClass methodSignatureForSelector:_NSJSONSerializationSelector]];
         invocation.target = _NSJSONSerializationClass;
         invocation.selector = _NSJSONSerializationSelector;
-
+        
         [invocation setArgument:&data atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
         NSUInteger readOptions = 0;
         [invocation setArgument:&readOptions atIndex:3];
         if (error != NULL) {
             [invocation setArgument:&error atIndex:4];
         }
-
+        
         [invocation invoke];
         [invocation getReturnValue:&JSON];
+#endif
     } else {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Please either target a platform that supports NSJSONSerialization or add one of the following libraries to your project: JSONKit, SBJSON, or YAJL", nil) forKey:NSLocalizedRecoverySuggestionErrorKey];
         [[NSException exceptionWithName:NSInternalInconsistencyException reason:NSLocalizedString(@"No JSON parsing functionality available", nil) userInfo:userInfo] raise];
