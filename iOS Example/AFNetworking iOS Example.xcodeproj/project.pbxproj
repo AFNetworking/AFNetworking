@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F8BF7FE0153234AE00885289 /* AFDownloadRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BF7FDF153234AE00885289 /* AFDownloadRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F8D0701B14310F4A00653FD3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */; };
 		F8D0701C14310F4F00653FD3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E013957DF100DB05C8 /* Security.framework */; };
 		F8DA09E41396AC040057D0CC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09E31396AC040057D0CC /* main.m */; };
@@ -40,8 +39,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F8BF7FDE153234AE00885289 /* AFDownloadRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFDownloadRequestOperation.h; sourceTree = "<group>"; };
-		F8BF7FDF153234AE00885289 /* AFDownloadRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFDownloadRequestOperation.m; sourceTree = "<group>"; };
 		F8DA09E31396AC040057D0CC /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = SOURCE_ROOT; };
 		F8DA09E51396AC220057D0CC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		F8DA09E61396AC220057D0CC /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
@@ -238,8 +235,6 @@
 				F8FA94AC150EFEC100ED4EAD /* AFURLConnectionOperation.m */,
 				F8FA949E150EFEC100ED4EAD /* AFHTTPRequestOperation.h */,
 				F8FA949F150EFEC100ED4EAD /* AFHTTPRequestOperation.m */,
-				F8BF7FDE153234AE00885289 /* AFDownloadRequestOperation.h */,
-				F8BF7FDF153234AE00885289 /* AFDownloadRequestOperation.m */,
 				F8FA94A2150EFEC100ED4EAD /* AFJSONRequestOperation.h */,
 				F8FA94A3150EFEC100ED4EAD /* AFJSONRequestOperation.m */,
 				F8FA94AD150EFEC100ED4EAD /* AFXMLRequestOperation.h */,
@@ -336,7 +331,6 @@
 				F8FA949A150EF9DA00ED4EAD /* PublicTimelineViewController.m in Sources */,
 				F8FA94B1150EFEC100ED4EAD /* AFHTTPClient.m in Sources */,
 				F8FA94B2150EFEC100ED4EAD /* AFHTTPRequestOperation.m in Sources */,
-				F8BF7FE0153234AE00885289 /* AFDownloadRequestOperation.m in Sources */,
 				F8FA94B3150EFEC100ED4EAD /* AFImageRequestOperation.m in Sources */,
 				F8FA94B4150EFEC100ED4EAD /* AFJSONRequestOperation.m in Sources */,
 				F8FA94B5150EFEC100ED4EAD /* AFJSONUtilities.m in Sources */,
