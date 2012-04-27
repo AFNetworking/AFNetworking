@@ -1,5 +1,7 @@
 = 1.0RC1 / 2012-04-25
 
+ * Note: 1.0RC1 Deprecates iOS < 4.3 compatibility because of the addition of `AFHTTPRequestOperation +addAcceptableStatusCodes / +addAcceptableContentTypes`
+
  * Add `AFHTTPRequestOperation +addAcceptableStatusCodes / 
 +addAcceptableContentTypes` to dynamically add acceptable status codes and 
 content types on the class level (Mattt Thompson)
