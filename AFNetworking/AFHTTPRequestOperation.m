@@ -29,7 +29,7 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     static NSCharacterSet *_skippedCharacterSet = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _skippedCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@" ,"];
+        _skippedCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@" ,"] retain];
     });
     
     if (!string) {
