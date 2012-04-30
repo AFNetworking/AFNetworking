@@ -56,8 +56,9 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
 
 static void AFSwizzleClassMethodWithImplementation(Class klass, SEL selector, IMP implementation) {
     Method originalMethod = class_getClassMethod(klass, selector);
-	if (method_getImplementation(originalMethod) != implementation)
+	if (method_getImplementation(originalMethod) != implementation) {
 		class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
+    }
 }
 
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
