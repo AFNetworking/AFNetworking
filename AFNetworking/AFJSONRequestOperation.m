@@ -120,16 +120,19 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 {
     self.completionBlock = ^ {
         if ([self isCancelled]) {
+            DebugLog(@"Request cancelled");
             return;
         }
         
         if (self.error) {
+            DebugLog(@"Operation error: %@ %@", self.request.URL, self.error);
             if (failure) {
                 dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
                     failure(self, self.error);
                 });
             }
         } else {
+            DebugLog(@"Operation success: %@", self.request.URL);
             dispatch_async(json_request_operation_processing_queue(), ^(void) {
                 id JSON = self.responseJSON;
                 
@@ -142,6 +145,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 } else {
                     if (success) {
                         dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+//                            DebugLog(@"Success: %@", JSON);
                             success(self, JSON);
                         });
                     }                    

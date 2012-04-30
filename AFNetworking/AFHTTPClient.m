@@ -423,6 +423,9 @@ static void AFReachabilityCallback(SCNetworkReachabilityRef __unused target, SCN
         }
     }
     
+//    DebugLog(@"requestWithMethod: %@ path: %@ parameters: %@ headers: %@", method, path, parameters, self.defaultHeaders);
+    DebugLog(@"requestWithMethod: %@ path: %@ parameters: %@", method, path, parameters);
+    
 	return request;
 }
 
