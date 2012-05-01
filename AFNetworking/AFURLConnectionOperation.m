@@ -248,7 +248,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 - (void)setOutputStream:(NSOutputStream *)outputStream {
     [self willChangeValueForKey:@"outputStream"];
     [outputStream retain];
-    [_outputStream release];
+    
+    if (_outputStream) {
+        [_outputStream close];
+        [_outputStream release];
+    }
     _outputStream = outputStream;
     [self didChangeValueForKey:@"outputStream"];
     
