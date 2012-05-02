@@ -1,4 +1,4 @@
-// AFHTTPOperation.h
+// AFHTTPRequestOperation.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
 // 
