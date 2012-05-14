@@ -509,7 +509,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
             data = [[component.value description] dataUsingEncoding:self.stringEncoding];
         }
         
-        [formData appendPartWithFormData:data name:[component.key description]];
+        if (data) {
+            [formData appendPartWithFormData:data name:[component.key description]];
+        }
     }
 
     if (block) {
