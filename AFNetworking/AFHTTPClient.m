@@ -43,7 +43,6 @@
 
 NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
 
-static NSString * const kAFMultipartFormLineDelimiter = @"\r\n"; // CRLF
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
 
 @interface AFMultipartFormData : NSObject <AFMultipartFormData> {
@@ -510,7 +509,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
             data = [[component.value description] dataUsingEncoding:self.stringEncoding];
         }
         
-        [formData appendPartWithFormData:data name:[component.key description]];
+        if (data) {
+            [formData appendPartWithFormData:data name:[component.key description]];
+        }
     }
 
     if (block) {
