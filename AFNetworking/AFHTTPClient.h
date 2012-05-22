@@ -100,7 +100,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  To change the behavior of all url request construction for an `AFHTTPClient` subclass, override `requestWithMethod:path:parameters`.
  
- To change the behavior of all request operation construction for an `AFHTTPClient` subclass, override `enqueueHTTPRequestOperationWithRequest:success:failure`.
+ To change the behavior of all request operation construction for an `AFHTTPClient` subclass, override `HTTPRequestOperationWithRequest:success:failure`.
  
  ## Default Headers
  
