@@ -50,6 +50,15 @@ typedef enum {
 #endif
 
 /**
+ Specifies the format used for the Authorization header when using a token
+ */
+typedef enum {
+	AFNetworkAuthorizationTokenFormatUnkown     = -1,
+    AFNetworkAuthorizationTokenFormatDefault    = 0,  // "Authorization: token token=\"xxx\""
+    AFNetworkAuthorizationTokenFormatSlim     = 1,	  // "Authorization: token xxx"
+} AFNetworkAuthorizationTokenFormat;
+
+/**
  Specifies the method used to encode parameters into request body. 
  */
 typedef enum {
@@ -262,6 +271,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param token The authentication token
  */
 - (void)setAuthorizationHeaderWithToken:(NSString *)token;
+
+- (void)setAuthorizationHeaderWithToken:(NSString *)token valueFormat:(AFNetworkAuthorizationTokenFormat)format;
 
 /**
  Clears any existing value for the "Authorization" HTTP header.

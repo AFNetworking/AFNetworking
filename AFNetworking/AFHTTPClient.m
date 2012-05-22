@@ -449,7 +449,21 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 - (void)setAuthorizationHeaderWithToken:(NSString *)token {
-    [self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Token token=\"%@\"", token]];
+	[self setAuthorizationHeaderWithToken:token valueFormat:AFNetworkAuthorizationTokenFormatDefault];
+}
+
+- (void)setAuthorizationHeaderWithToken:(NSString *)token valueFormat:(AFNetworkAuthorizationTokenFormat)format
+{
+	switch (format) {
+		case AFNetworkAuthorizationTokenFormatDefault:
+			[self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Token token=\"%@\"", token]];
+			break;
+		case AFNetworkAuthorizationTokenFormatSlim:
+			[self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Token %@", token]];
+			return;
+		default:
+			return;
+	}
 }
 
 - (void)clearAuthorizationHeader {
