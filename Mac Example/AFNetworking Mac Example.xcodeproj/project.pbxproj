@@ -25,7 +25,6 @@
 		F8A27AC9142CFE1300F5E0D6 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = F8A27AB9142CFE1300F5E0D6 /* Credits.rtf */; };
 		F8A27ACA142CFE1300F5E0D6 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8A27ABB142CFE1300F5E0D6 /* MainMenu.xib */; };
 		F8A27ACB142CFE1300F5E0D6 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F8A27AC0142CFE1300F5E0D6 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w -Xanalyzer -analyzer-disable-checker"; }; };
-		F8BF7FE4153234BB00885289 /* AFDownloadRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BF7FE3153234BB00885289 /* AFDownloadRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F8CEEB6F142CEC6E00247B03 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CEEB6E142CEC6E00247B03 /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -64,8 +63,6 @@
 		F8A27AC0142CFE1300F5E0D6 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		F8A27AC4142CFE1300F5E0D6 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		F8A27AC5142CFE1300F5E0D6 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		F8BF7FE2153234BB00885289 /* AFDownloadRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFDownloadRequestOperation.h; sourceTree = "<group>"; };
-		F8BF7FE3153234BB00885289 /* AFDownloadRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFDownloadRequestOperation.m; sourceTree = "<group>"; };
 		F8CEEB6A142CEC6E00247B03 /* AFNetworking Mac Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking Mac Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8CEEB6E142CEC6E00247B03 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F8CEEB71142CEC6E00247B03 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -131,8 +128,6 @@
 				F87A159E1444926300318955 /* AFURLConnectionOperation.m */,
 				F897DE6B142CFEDC000DDD35 /* AFHTTPRequestOperation.h */,
 				F897DE6C142CFEDC000DDD35 /* AFHTTPRequestOperation.m */,
-				F8BF7FE2153234BB00885289 /* AFDownloadRequestOperation.h */,
-				F8BF7FE3153234BB00885289 /* AFDownloadRequestOperation.m */,
 				F897DE71142CFEDC000DDD35 /* AFJSONRequestOperation.h */,
 				F897DE72142CFEDC000DDD35 /* AFJSONRequestOperation.m */,
 				F87A15A01444926900318955 /* AFXMLRequestOperation.h */,
@@ -292,7 +287,6 @@
 				F87A159F1444926300318955 /* AFURLConnectionOperation.m in Sources */,
 				F897DE78142CFEDC000DDD35 /* AFHTTPClient.m in Sources */,
 				F897DE79142CFEDC000DDD35 /* AFHTTPRequestOperation.m in Sources */,
-				F8BF7FE4153234BB00885289 /* AFDownloadRequestOperation.m in Sources */,
 				F897DE7B142CFEDC000DDD35 /* AFImageRequestOperation.m in Sources */,
 				F897DE7C142CFEDC000DDD35 /* AFJSONRequestOperation.m in Sources */,
 				F87A15A21444926A00318955 /* AFXMLRequestOperation.m in Sources */,
