@@ -1,4 +1,4 @@
-// AppDelegate.h
+// TweetTableViewCell.h
 //
 // Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
@@ -22,11 +22,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : NSObject <UIApplicationDelegate> {
+@class Tweet;
 
-}
+@interface TweetTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) UIWindow *window;
-@property (nonatomic, strong) UINavigationController *navigationController;
+@property (nonatomic, strong) Tweet *tweet;
+
++ (CGFloat)heightForCellWithTweet:(Tweet *)tweet;
 
 @end

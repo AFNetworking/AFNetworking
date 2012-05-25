@@ -38,7 +38,19 @@ extern NSString * const AFNetworkingReachabilityDidChangeNotification;
 #endif
 
 /**
- Method used to encode parameters into request body. 
+ Specifies network reachability of the client to its `baseURL` domain.
+ */
+#ifdef _SYSTEMCONFIGURATION_H
+typedef enum {
+    AFNetworkReachabilityStatusUnknown          = -1,
+    AFNetworkReachabilityStatusNotReachable     = 0,
+    AFNetworkReachabilityStatusReachableViaWWAN = 1,
+    AFNetworkReachabilityStatusReachableViaWiFi = 2,
+} AFNetworkReachabilityStatus;
+#endif
+
+/**
+ Specifies the method used to encode parameters into request body. 
  */
 typedef enum {
     AFFormURLParameterEncoding,
@@ -88,7 +100,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  To change the behavior of all url request construction for an `AFHTTPClient` subclass, override `requestWithMethod:path:parameters`.
  
- To change the behavior of all request operation construction for an `AFHTTPClient` subclass, override `enqueueHTTPRequestOperationWithRequest:success:failure`.
+ To change the behavior of all request operation construction for an `AFHTTPClient` subclass, override `HTTPRequestOperationWithRequest:success:failure`.
  
  ## Default Headers
  
@@ -113,15 +125,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
     [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL];    // http://example2.com/
 
  */
-@interface AFHTTPClient : NSObject {
-@private
-    NSURL *_baseURL;
-    NSStringEncoding _stringEncoding;
-    AFHTTPClientParameterEncoding _parameterEncoding;
-    NSMutableArray *_registeredHTTPOperationClassNames;
-    NSMutableDictionary *_defaultHeaders;
-    NSOperationQueue *_operationQueue;
-}
+@interface AFHTTPClient : NSObject
 
 ///---------------------------------------
 /// @name Accessing HTTP Client Properties
@@ -139,6 +143,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 
 /**
  The `AFHTTPClientParameterEncoding` value corresponding to how parameters are encoded into a request body. This is `AFFormURLParameterEncoding` by default.
+
+ @warning JSON encoding will automatically use JSONKit, SBJSON, YAJL, or NextiveJSON, if provided. Otherwise, the built-in `NSJSONSerialization` class is used, if available (iOS 5.0 and Mac OS 10.7). If the build target does not either support `NSJSONSerialization` or include a third-party JSON library, a runtime exception will be thrown when attempting to encode parameters as JSON.
  */
 @property (nonatomic, assign) AFHTTPClientParameterEncoding parameterEncoding;
 
@@ -146,6 +152,15 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  The operation queue which manages operations enqueued by the HTTP client.
  */
 @property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;
+
+/**
+ The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
+
+  @warning This property requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
+ */
+#ifdef _SYSTEMCONFIGURATION_H
+@property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
+#endif
 
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
@@ -178,12 +193,12 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 /**
  Sets a callback to be executed when the network availability of the `baseURL` host changes.
  
- @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument, which is `YES` if the host is available, otherwise `NO`.
+ @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument which represents the various reachability states from the device to the `baseURL`.
  
  @warning This method requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
  */
 #ifdef _SYSTEMCONFIGURATION_H
-- (void)setReachabilityStatusChangeBlock:(void (^)(BOOL isNetworkReachable))block;
+- (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block;
 #endif
 
 ///-------------------------------
@@ -418,6 +433,21 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
         parameters:(NSDictionary *)parameters 
            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+/**
+ Creates an `AFHTTPRequestOperation` with a `PATCH` request, and enqueues it to the HTTP client's operation queue.
+ 
+ @param path The path to be appended to the HTTP client's base URL and used as the request URL.
+ @param parameters The parameters to be encoded and set in the request HTTP body.
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data. This block has no return value and takes two arguments:, the created request operation and the `NSError` object describing the network or parsing error that occurred.
+ 
+ @see HTTPRequestOperationWithRequest:success:failure
+ */
+- (void)patchPath:(NSString *)path
+       parameters:(NSDictionary *)parameters 
+          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 @end
 
 #pragma mark -

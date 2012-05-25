@@ -49,15 +49,7 @@
  - `image/x-xbitmap`
  - `image/x-win-bitmap`
  */
-@interface AFImageRequestOperation : AFHTTPRequestOperation {
-@private
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-    UIImage *_responseImage;
-    CGFloat _imageScale;
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-    NSImage *_responseImage;
-#endif
-}
+@interface AFImageRequestOperation : AFHTTPRequestOperation
 
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
@@ -108,13 +100,13 @@
  */
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                         imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                                         imageProcessingBlock:(UIImage *(^)(UIImage *image))imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                         imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
+                                         imageProcessingBlock:(NSImage *(^)(NSImage *image))imageProcessingBlock
                                                     cacheName:(NSString *)cacheNameOrNil
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;

@@ -1,6 +1,6 @@
-// NearbySpotsViewController.h
+// User.h
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,13 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
-#import <CoreLocation/CoreLocation.h>
+#import <Foundation/Foundation.h>
 
-@interface NearbySpotsViewController : UITableViewController <CLLocationManagerDelegate> {
-    NSArray *_nearbySpots;
-    CLLocationManager *_locationManager;
-    UIActivityIndicatorView *_activityIndicatorView;
-}
+@interface User : NSObject
+
+@property (readonly) NSUInteger userID;
+@property (readonly) NSString *username;
+@property (unsafe_unretained, readonly) NSURL *profileImageURL;
+
+- (id)initWithAttributes:(NSDictionary *)attributes;
 
 @end
