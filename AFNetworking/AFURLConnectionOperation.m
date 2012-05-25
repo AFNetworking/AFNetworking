@@ -54,7 +54,7 @@ typedef void (^AFURLConnectionOperationProgressBlock)(NSInteger bytes, long long
 typedef BOOL (^AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock)(NSURLConnection *connection, NSURLProtectionSpace *protectionSpace);
 typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
 typedef NSCachedURLResponse * (^AFURLConnectionOperationCacheResponseBlock)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse);
-typedef NSURLRequest * (^AFURLConnectionOperationRedirectResponseBlock)(NSURLConnection *inConnection, NSURLRequest *inRequest, NSURLResponse*inRedirectResponse);
+typedef NSURLRequest * (^AFURLConnectionOperationRedirectResponseBlock)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse);
 
 static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     switch (state) {
@@ -309,7 +309,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.cacheResponse = block;
 }
 
-- (void)setURLRedirectResponseBlock:(NSURLRequest *(^)(NSURLConnection *, NSURLRequest *, NSURLResponse *))block{
+- (void)setRedirectResponseBlock:(NSURLRequest * (^)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse))block {
     self.redirectResponse = block;
 }
 
@@ -518,6 +518,17 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
+- (NSURLRequest *)connection:(NSURLConnection *)connection
+             willSendRequest:(NSURLRequest *)request
+            redirectResponse:(NSURLResponse *)redirectResponse;
+{
+    if (self.redirectResponse) {
+        return self.redirectResponse(connection, request, redirectResponse);
+    } else {
+        return request;
+    }
+}
+
 - (void)connection:(NSURLConnection *)__unused connection 
    didSendBodyData:(NSInteger)bytesWritten 
  totalBytesWritten:(NSInteger)totalBytesWritten 
@@ -584,17 +595,6 @@ didReceiveResponse:(NSURLResponse *)response
         }
         
         return cachedResponse; 
-    }
-}
-
-- (NSURLRequest *)connection:(NSURLConnection *)inConnection
-             willSendRequest:(NSURLRequest *)inRequest
-            redirectResponse:(NSURLResponse *)inRedirectResponse;
-{
-    if(self.redirectResponse)
-        return self.redirectResponse(inConnection, inRequest, inRedirectResponse);
-    else {
-        return inRequest;
     }
 }
 

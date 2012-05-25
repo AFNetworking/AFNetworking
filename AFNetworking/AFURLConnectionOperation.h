@@ -235,17 +235,18 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 - (void)setAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block;
 
 /**
+ Sets a block to be executed when the server redirects the request from one URL to another URL, or when the request URL changed by the `NSURLProtocol` subclass handling the request in order to standardize its format, as handled by the `NSURLConnectionDelegate` method `connection:willSendRequest:redirectResponse:`.
+ 
+ @param block A block object to be executed when the request URL was changed. The block returns an `NSURLRequest` object, the URL request to redirect, and takes three arguments: the URL connection object, the the proposed redirected request, and the URL response that caused the redirect.
+ */
+- (void)setRedirectResponseBlock:(NSURLRequest * (^)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse))block;
+
+
+/**
  Sets a block to be executed to modify the response a connection will cache, if any, as handled by the `NSURLConnectionDelegate` method `connection:willCacheResponse:`.
  
  @param block A block object to be executed to determine what response a connection will cache, if any. The block returns an `NSCachedURLResponse` object, the cached response to store in memory or `nil` to prevent the response from being cached, and takes two arguments: the URL connection object, and the cached response provided for the request.
  */
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block;
-
-/**
- Sets a block to be executed to modify the URL request when a redirct is encountered as handled by the `NSURLConnectionDelegate` method `connection:willSendRequest:redirectResponse:`.
- 
- @param block A block object to be executed to determine the properties of a redirected URL request. The block returns an `NSURLRequest` object, the URL request to redirect, and takes three arguments: the URL connection object, the new URL request, the URL redirect response.
- */
-- (void)setURLRedirectResponseBlock:(NSURLRequest * (^)(NSURLConnection *inConnection, NSURLRequest *inRequest, NSURLResponse*inRedirectResponse))block;
 
 @end
