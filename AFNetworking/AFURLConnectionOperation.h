@@ -241,4 +241,11 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  */
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block;
 
+/**
+ Sets a block to be executed to modify the URL request when a redirct is encountered as handled by the `NSURLConnectionDelegate` method `connection:willSendRequest:redirectResponse:`.
+ 
+ @param block A block object to be executed to determine the properties of a redirected URL request. The block returns an `NSURLRequest` object, the URL request to redirect, and takes three arguments: the URL connection object, the new URL request, the URL redirect response.
+ */
+- (void)setURLRedirectResponseBlock:(NSURLRequest * (^)(NSURLConnection *inConnection, NSURLRequest *inRequest, NSURLResponse*inRedirectResponse))block;
+
 @end
