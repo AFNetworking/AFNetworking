@@ -49,7 +49,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(UIImage *image))success
 {
-    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
         if (success) {
             success(image);
         }
@@ -59,7 +59,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
                                                       success:(void (^)(NSImage *image))success
 {
-    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil cacheName:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
         if (success) {
             success(image);
         }
@@ -71,7 +71,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                          imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
-                                                    cacheName:(NSString *)cacheNameOrNil
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
@@ -103,7 +102,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
                                          imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
-                                                    cacheName:(NSString *)cacheNameOrNil
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
