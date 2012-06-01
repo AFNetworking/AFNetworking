@@ -90,17 +90,18 @@ static char kAFImageRequestOperationObjectKey;
     [request setHTTPShouldHandleCookies:NO];
     [request setHTTPShouldUsePipelining:YES];
     
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage useCache:YES success:nil failure:nil];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
               placeholderImage:(UIImage *)placeholderImage 
+                      useCache:(BOOL)useCache
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     [self cancelImageRequestOperation];
     
-    UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
+    UIImage *cachedImage = useCache ? [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest] : nil;
     if (cachedImage) {
         self.image = cachedImage;
         self.af_imageRequestOperation = nil;
@@ -122,8 +123,9 @@ static char kAFImageRequestOperationObjectKey;
                 success(operation.request, operation.response, responseObject);
             }
 
-            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
-            
+            if (useCache) {
+                [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
+            }
 
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
