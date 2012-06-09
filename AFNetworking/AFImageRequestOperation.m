@@ -82,7 +82,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 dispatch_async(image_request_operation_processing_queue(), ^(void) {
                     UIImage *processedImage = imageProcessingBlock(image);
 
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    dispatch_async(requestOperation.successCallbackQueue ? requestOperation.successCallbackQueue : dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, processedImage);
                     });
                 });
@@ -113,9 +113,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 dispatch_async(image_request_operation_processing_queue(), ^(void) {
                     NSImage *processedImage = imageProcessingBlock(image);
 
-                    dispatch_async(requestOperation.successCallbackQueue?
-                                   requestOperation.successCallbackQueue:
-                                   dispatch_get_main_queue(), ^(void) {
+                    dispatch_async(requestOperation.successCallbackQueue ? requestOperation.successCallbackQueue : dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, processedImage);
                     });
                 });
