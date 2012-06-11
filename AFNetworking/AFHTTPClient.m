@@ -43,13 +43,7 @@
 
 NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
 
-@interface AFMultipartFormData : NSObject <AFMultipartFormData> {
-@private
-    NSMutableURLRequest *_request;
-    NSStringEncoding _stringEncoding;
-    NSOutputStream *_outputStream;
-    NSString *_temporaryFilePath;
-}
+@interface AFMultipartFormData : NSObject <AFMultipartFormData>
 
 - (id)initWithURLRequest:(NSMutableURLRequest *)request 
           stringEncoding:(NSStringEncoding)encoding;
