@@ -740,6 +740,13 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 }
 
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData {
+    // Close the stream and return the original request if no data has been written
+    if ([[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] integerValue] == 0) {
+        [self.outputStream close];
+        
+        return self.request;
+    }
+
     [self appendData:[AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding]];
     
     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", kAFMultipartFormBoundary] forHTTPHeaderField:@"Content-Type"];
