@@ -104,7 +104,7 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 	#else
 		#ifdef __GNUC__
 			// use GCC's builtin atomic-swap method
-			__sync_val_compare_and_swap(&_activityCount, _activityCount, activityCount)
+			__sync_val_compare_and_swap(&_activityCount, _activityCount, activityCount);
 		#else
 			// hope for the best
 			#warning Unsupported compiler. AFNetworkActivityIndicatorManager.activityCount may not be set atomically.
