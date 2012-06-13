@@ -98,7 +98,19 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 
 // Not exposed, but used if activityCount is set via KVC.
 - (void)setActivityCount:(NSInteger)activityCount {
-    __sync_swap(&_activityCount, activityCount);
+	#ifdef __clang__
+		// use clang's builtin atomic-swap method
+		__sync_swap(&_activityCount, activityCount);
+	#else
+		#ifdef __GNUC__
+			// use GCC's builtin atomic-swap method
+			__sync_val_compare_and_swap(&_activityCount, _activityCount, activityCount)
+		#else
+			// hope for the best
+			#warning Unsupported compiler. AFNetworkActivityIndicatorManager.activityCount may not be set atomically.
+			_activityCount = activityCount;
+		#endif
+	#endif
     [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
 
