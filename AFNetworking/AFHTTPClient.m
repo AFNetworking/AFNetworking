@@ -837,6 +837,10 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 }
 
 - (void)appendData:(NSData *)data {
+    if ([data length] == 0) {
+        return;
+    }
+
     if ([self.outputStream hasSpaceAvailable]) {
         const uint8_t *dataBuffer = (uint8_t *) [data bytes];
         [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
