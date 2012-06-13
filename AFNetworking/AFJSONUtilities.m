@@ -200,7 +200,7 @@ id AFJSONDecode(NSData *data, NSError **error) {
         invocation.selector = _NSJSONSerializationSelector;
 
         [invocation setArgument:&data atIndex:2]; // arguments 0 and 1 are self and _cmd respectively, automatically set by NSInvocation
-        NSUInteger readOptions = 0;
+        NSUInteger readOptions = NSJSONReadingAllowFragments;
         [invocation setArgument:&readOptions atIndex:3];
         if (error != NULL) {
             [invocation setArgument:&error atIndex:4];
