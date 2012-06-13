@@ -499,6 +499,19 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
 
 /**
+ Appends the HTTP header `Content-Disposition: file; filename=#{generated filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary, using NSInputStream to read input.
+ 
+ @param fileURL The URL corresponding to the file whose content will be appended to the form.
+ @param name The name to be associated with the specified data. This parameter must not be `nil`.
+ @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
+  
+ @discussion The filename is generated from the last component of the streamingURL parameter. The size of the buffer used to copy from streamingURL to the output stream is defined by the constant kAFStreamToStreamBufferSize.
+ */
+- (void)appendPartWithStreamingURL:(NSURL *)streamingURL
+                              name:(NSString *)name 
+                          mimeType:(NSString *)mimeType;
+
+/**
  Appends encoded data to the form data.
  
  @param data The data to be encoded and appended to the form data.

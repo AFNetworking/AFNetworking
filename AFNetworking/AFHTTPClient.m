@@ -680,6 +680,8 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 
 static NSString * const kAFMultipartFormCRLF = @"\r\n";
 
+static NSInteger const kAFStreamToStreamBufferSize = 1024*1024; //1 meg default
+
 static inline NSString * AFMultipartFormInitialBoundary() {
     return [NSString stringWithFormat:@"--%@%@", kAFMultipartFormBoundary, kAFMultipartFormCRLF];
 }
@@ -751,10 +753,10 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     
     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", kAFMultipartFormBoundary] forHTTPHeaderField:@"Content-Type"];
     [self.request setValue:[[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] stringValue] forHTTPHeaderField:@"Content-Length"];
-    [self.request setHTTPBodyStream:[NSInputStream inputStreamWithFileAtPath:self.temporaryFilePath]];
     
     [self.outputStream close];
-    
+    [self.request setHTTPBodyStream:[NSInputStream inputStreamWithFileAtPath:self.temporaryFilePath]];
+
     return self.request;
 }
 
@@ -790,16 +792,45 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
 
+- (NSMutableDictionary *)fileHeadersWithName:(NSString *)name 
+                                    fileName:(NSString *)fileName 
+                                    mimeType:(NSString *)mimeType {
+  NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+  [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+  [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+  return mutableHeaders;
+}
+
 - (void)appendPartWithFileData:(NSData *)data 
                           name:(NSString *)name 
                       fileName:(NSString *)fileName 
                       mimeType:(NSString *)mimeType
 {    
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
     
-    [self appendPartWithHeaders:mutableHeaders body:data];
+  [self appendPartWithHeaders:[self fileHeadersWithName:name fileName:fileName mimeType:mimeType] body:data];
+}
+
+- (void)appendPartWithStreamingURL:(NSURL *)streamingURL
+                              name:(NSString *)name 
+                          mimeType:(NSString *)mimeType
+{
+  
+  NSString * fileName = [[streamingURL pathComponents] objectAtIndex:([[streamingURL pathComponents] count] - 1)];
+  [self appendPartWithHeaders:[self fileHeadersWithName:name fileName:fileName mimeType:mimeType] body:nil];
+
+  NSInputStream * inputStream = [NSInputStream inputStreamWithURL:streamingURL];
+  [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] 
+                         forMode:NSRunLoopCommonModes];
+  [inputStream open];
+
+  void * dataBuffer = malloc(kAFStreamToStreamBufferSize);
+  NSInteger bytesRead = [inputStream read:dataBuffer maxLength:kAFStreamToStreamBufferSize];
+  while (bytesRead > 0) {
+    NSData * tempData = [NSData dataWithBytesNoCopy:dataBuffer length:bytesRead freeWhenDone:NO];
+    [self appendData:tempData];
+    bytesRead = [inputStream read:dataBuffer maxLength:kAFStreamToStreamBufferSize];
+  }  
+  free(dataBuffer);
 }
 
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL 
@@ -837,9 +868,14 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 }
 
 - (void)appendData:(NSData *)data {
+    if ([data length] == 0) {
+      return;
+    }
     if ([self.outputStream hasSpaceAvailable]) {
         const uint8_t *dataBuffer = (uint8_t *) [data bytes];
         [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
+    } else {
+      NSLog(@"Failed to append to outputStream!");
     }
 }
 
