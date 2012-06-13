@@ -829,7 +829,9 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     NSData * tempData = [NSData dataWithBytesNoCopy:dataBuffer length:bytesRead freeWhenDone:NO];
     [self appendData:tempData];
     bytesRead = [inputStream read:dataBuffer maxLength:kAFStreamToStreamBufferSize];
-  }  
+  }
+  
+  [inputStream close];
   free(dataBuffer);
 }
 
