@@ -29,7 +29,7 @@
 static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 
 @interface AFNetworkActivityIndicatorManager ()
-@property (readwrite, nonatomic, assign) NSInteger activityCount;
+@property (readwrite, atomic, assign) NSInteger activityCount;
 @property (readwrite, nonatomic, retain) NSTimer *activityIndicatorVisibilityTimer;
 @property (readonly, getter = isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
 
@@ -97,37 +97,31 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 }
 
 // Not exposed, but used if activityCount is set via KVC.
+- (NSInteger)activityCount {
+	return _activityCount;
+}
+
 - (void)setActivityCount:(NSInteger)activityCount {
-	#ifdef __clang__
-		// use clang's builtin atomic-swap method
-		__sync_swap(&_activityCount, activityCount);
-	#else
-		#ifdef __GNUC__
-			// use GCC's builtin atomic-swap method
-			__sync_val_compare_and_swap(&_activityCount, _activityCount, activityCount)
-		#else
-			// hope for the best
-			#warning Unsupported compiler. AFNetworkActivityIndicatorManager.activityCount may not be set atomically.
-			_activityCount = activityCount;
-		#endif
-	#endif
+	@synchronized(self) {
+		_activityCount = activityCount;
+	}
     [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
 
 - (void)incrementActivityCount {
     [self willChangeValueForKey:@"activityCount"];
-    OSAtomicIncrement32((int32_t*)&_activityCount);
+	@synchronized(self) {
+		_activityCount++;
+	}
     [self didChangeValueForKey:@"activityCount"];
     [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
 
 - (void)decrementActivityCount {
     [self willChangeValueForKey:@"activityCount"];
-    bool success;
-    do {
-        int32_t currentCount = _activityCount;
-        success = OSAtomicCompareAndSwap32(currentCount, MIN(currentCount - 1, currentCount), &_activityCount);
-    } while(!success);
+	@synchronized(self) {
+		_activityCount--;
+	}
     [self didChangeValueForKey:@"activityCount"];
     [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
