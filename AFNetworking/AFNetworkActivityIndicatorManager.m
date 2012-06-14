@@ -23,13 +23,12 @@
 #import "AFNetworkActivityIndicatorManager.h"
 
 #import "AFHTTPRequestOperation.h"
-#import <libkern/OSAtomic.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 
 @interface AFNetworkActivityIndicatorManager ()
-@property (readwrite, nonatomic, assign) NSInteger activityCount;
+@property (readwrite, atomic, assign) NSInteger activityCount;
 @property (readwrite, nonatomic, retain) NSTimer *activityIndicatorVisibilityTimer;
 @property (readonly, getter = isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
 
@@ -97,25 +96,31 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 }
 
 // Not exposed, but used if activityCount is set via KVC.
+- (NSInteger)activityCount {
+	return _activityCount;
+}
+
 - (void)setActivityCount:(NSInteger)activityCount {
-    __sync_swap(&_activityCount, activityCount);
+	@synchronized(self) {
+		_activityCount = activityCount;
+	}
     [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
 
 - (void)incrementActivityCount {
     [self willChangeValueForKey:@"activityCount"];
-    OSAtomicIncrement32((int32_t*)&_activityCount);
+	@synchronized(self) {
+		_activityCount++;
+	}
     [self didChangeValueForKey:@"activityCount"];
     [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
 
 - (void)decrementActivityCount {
     [self willChangeValueForKey:@"activityCount"];
-    bool success;
-    do {
-        int32_t currentCount = _activityCount;
-        success = OSAtomicCompareAndSwap32(currentCount, MIN(currentCount - 1, currentCount), &_activityCount);
-    } while(!success);
+	@synchronized(self) {
+		_activityCount--;
+	}
     [self didChangeValueForKey:@"activityCount"];
     [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
