@@ -119,9 +119,7 @@
 			children = (
 				F8129C311591073C009BFE23 /* AFTwitterAPIClient.h */,
 				F8129C251591073C009BFE23 /* AFTwitterAPIClient.m */,
-				F8129C261591073C009BFE23 /* Controllers */,
 				F8129C291591073C009BFE23 /* Models */,
-				F8129C2E1591073C009BFE23 /* Views */,
 				F8129C061591061B009BFE23 /* Supporting Files */,
 			);
 			name = Classes;
@@ -139,14 +137,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		F8129C261591073C009BFE23 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Controllers;
-			path = Classes/Controllers;
-			sourceTree = SOURCE_ROOT;
-		};
 		F8129C291591073C009BFE23 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -157,14 +147,6 @@
 			);
 			name = Models;
 			path = Classes/Models;
-			sourceTree = SOURCE_ROOT;
-		};
-		F8129C2E1591073C009BFE23 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Views;
-			path = Classes/Views;
 			sourceTree = SOURCE_ROOT;
 		};
 		F8129C4C15910901009BFE23 /* Vendor */ = {

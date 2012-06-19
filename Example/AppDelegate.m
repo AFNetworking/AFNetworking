@@ -33,8 +33,8 @@
 @synthesize navigationController = _navigationController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil];
-[NSURLCache setSharedURLCache:URLCache];
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
 
   [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 
@@ -55,6 +55,7 @@
 #else
 
 #import "Tweet.h"
+#import "User.h"
 
 @implementation AppDelegate
 
@@ -62,6 +63,9 @@
 @synthesize tweetsArrayController = _tweetsArrayController;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
+    
     [self.window makeKeyAndOrderFront:self];
     
     [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets) {
