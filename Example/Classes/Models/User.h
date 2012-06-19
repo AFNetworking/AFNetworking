@@ -22,6 +22,8 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const kUserProfileImageDidLoadNotification;
+
 @interface User : NSObject
 
 @property (readonly) NSUInteger userID;

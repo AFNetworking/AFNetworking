@@ -60,6 +60,7 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
+@synthesize tableView = _tableView;
 @synthesize tweetsArrayController = _tweetsArrayController;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
@@ -70,6 +71,10 @@
     
     [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets) {
         self.tweetsArrayController.content = tweets;
+    }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:kUserProfileImageDidLoadNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+        [self.tableView reloadData];
     }];
 }
 

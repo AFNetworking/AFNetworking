@@ -42,6 +42,7 @@
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
 @property (strong) IBOutlet NSWindow *window;
+@property (weak) IBOutlet NSTableView *tableView;
 @property (strong) IBOutlet NSArrayController *tweetsArrayController;
 
 @end

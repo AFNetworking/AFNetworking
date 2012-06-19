@@ -23,6 +23,8 @@
 #import "User.h"
 #import "AFImageRequestOperation.h"
 
+NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.profile-image.loaded";
+
 @interface User ()
 + (NSOperationQueue *)sharedProfileImageRequestOperationQueue;
 @end
@@ -74,6 +76,8 @@
 			self.profileImage = image;
             
 			_profileImageRequestOperation = nil;
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUserProfileImageDidLoadNotification object:self userInfo:nil];
 		}];
         
 		[_profileImageRequestOperation setCacheResponseBlock:^NSCachedURLResponse *(NSURLConnection *connection, NSCachedURLResponse *cachedResponse) {
