@@ -62,10 +62,17 @@
 @synthesize tweetsArrayController = _tweetsArrayController;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
-  [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets) {
-      self.tweetsArrayController.content = tweets;
-      NSLog(@"Tweets: %@", tweets);
-  }];
+    [self.window makeKeyAndOrderFront:self];
+    
+    [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets) {
+        self.tweetsArrayController.content = tweets;
+    }];
+}
+
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
+    [self.window makeKeyAndOrderFront:self];
+    
+    return YES;
 }
 
 @end
