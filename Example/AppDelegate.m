@@ -32,7 +32,9 @@
 @synthesize window = _window;
 @synthesize navigationController = _navigationController;
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication *)application 
+didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+{
     NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
 
@@ -78,7 +80,9 @@
     }];
 }
 
-- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)application 
+                    hasVisibleWindows:(BOOL)flag 
+{
     [self.window makeKeyAndOrderFront:self];
     
     return YES;
