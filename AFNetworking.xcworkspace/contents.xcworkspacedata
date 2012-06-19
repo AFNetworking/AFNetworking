@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:iOS Example/AFNetworking iOS Example.xcodeproj">
+      location = "group:Example/AFNetworking iOS Example.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Mac Example/AFNetworking Mac Example.xcodeproj">
+      location = "group:Example/AFNetworking Mac Example.xcodeproj">
    </FileRef>
 </Workspace>

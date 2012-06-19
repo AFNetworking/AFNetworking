@@ -21,6 +21,9 @@
 // THE SOFTWARE.
 
 #import "AppDelegate.h"
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
 #import "PublicTimelineViewController.h"
 
 #import "AFNetworkActivityIndicatorManager.h"
@@ -30,22 +33,41 @@
 @synthesize navigationController = _navigationController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil];
-	[NSURLCache setSharedURLCache:URLCache];
-    
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-    
-    UITableViewController *viewController = [[PublicTimelineViewController alloc] initWithStyle:UITableViewStylePlain];
-    self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
-    self.navigationController.navigationBar.tintColor = [UIColor darkGrayColor];
-    
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];  
-    self.window.backgroundColor = [UIColor whiteColor];
-    self.window.rootViewController = self.navigationController;
-    [self.window makeKeyAndVisible];
-    
-    return YES;
+  NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil];
+[NSURLCache setSharedURLCache:URLCache];
+
+  [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+
+  UITableViewController *viewController = [[PublicTimelineViewController alloc] initWithStyle:UITableViewStylePlain];
+  self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+  self.navigationController.navigationBar.tintColor = [UIColor darkGrayColor];
+
+  self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];  
+  self.window.backgroundColor = [UIColor whiteColor];
+  self.window.rootViewController = self.navigationController;
+  [self.window makeKeyAndVisible];
+
+  return YES;
 }
 
+@end
+
+#else
+
+#import "Tweet.h"
+
+@implementation AppDelegate
+
+@synthesize window = _window;
+@synthesize tweetsArrayController = _tweetsArrayController;
+
+- (void)applicationDidFinishLaunching:(NSNotification *)notification {
+  [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets) {
+      self.tweetsArrayController.content = tweets;
+      NSLog(@"Tweets: %@", tweets);
+  }];
+}
 
 @end
+
+#endif
