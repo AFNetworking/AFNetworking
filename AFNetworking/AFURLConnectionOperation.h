@@ -75,24 +75,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @warning Attempting to load a `file://` URL in iOS 4 may result in an `NSInvalidArgumentException`, caused by the connection returning `NSURLResponse` rather than `NSHTTPURLResponse`, which is the behavior as of iOS 5.
  */
-@interface AFURLConnectionOperation : NSOperation {
-@private
-    unsigned short _state;
-    BOOL _cancelled;
-    NSRecursiveLock *_lock;
-    
-    NSSet *_runLoopModes;
-    
-    NSURLConnection *_connection;
-    NSURLRequest *_request;
-    NSHTTPURLResponse *_response;
-    NSError *_error;
-
-    NSData *_responseData;
-    NSInteger _totalBytesRead;
-    NSMutableData *_dataAccumulator;
-    NSOutputStream *_outputStream;
-}
+@interface AFURLConnectionOperation : NSOperation
 
 ///-------------------------------
 /// @name Accessing Run Loop Modes
@@ -152,7 +135,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /**
  The output stream that is used to write data received until the request is finished.
  
- @discussion By default, data is accumulated into a buffer that is stored into `responseData` upon completion of the request. When `outputStream` is set, the data will not be accumulated into an internal buffer, and as a result, the `responseData` property of the completed request will be `nil`.
+ @discussion By default, data is accumulated into a buffer that is stored into `responseData` upon completion of the request. When `outputStream` is set, the data will not be accumulated into an internal buffer, and as a result, the `responseData` property of the completed request will be `nil`. The output stream will be scheduled in the network thread runloop upon being set.
  */
 @property (nonatomic, retain) NSOutputStream *outputStream;
 
@@ -169,6 +152,44 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  */
 - (id)initWithRequest:(NSURLRequest *)urlRequest;
 
+///----------------------------------
+/// @name Pausing / Resuming Requests
+///----------------------------------
+
+/**
+ Pauses the execution of the request operation.
+ 
+ @discussion A paused operation returns `NO` for `-isReady`, `-isExecuting`, and `-isFinished`. As such, it will remain in an `NSOperationQueue` until it is either cancelled or resumed. Pausing a finished or cancelled operation has no effect.
+ */
+- (void)pause;
+
+/**
+ Whether the request operation is currently paused.
+ 
+ @return `YES` if the operation is currently paused, otherwise `NO`.
+ */
+- (BOOL)isPaused;
+
+/**
+ Resumes the execution of the paused request operation.
+ 
+ @discussion Pause/Resume behavior varies depending on the underlying implementation for the operation class. In its base implementation, resuming a paused requests restarts the original request. However, since HTTP defines a specification for how to request a specific content range, `AFHTTPRequestOperation` will resume downloading the request from where it left off, instead of restarting the original request.
+ */
+- (void)resume;
+
+///----------------------------------------------
+/// @name Configuring Backgrounding Task Behavior
+///----------------------------------------------
+
+/**
+ Specifies that the operation should continue execution after the app has entered the background, and the expiration handler for that background task.
+ 
+ @param handler A handler to be called shortly before the application’s remaining background time reaches 0. The handler is wrapped in a block that cancels the operation, and cleans up and marks the end of execution, unlike the `handler` parameter in `UIApplication -beginBackgroundTaskWithExpirationHandler:`, which expects this to be done in the handler itself. The handler is called synchronously on the main thread, thus blocking the application’s suspension momentarily while the application is notified. 
+ */
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+- (void)setShouldExecuteAsBackgroundTaskWithExpirationHandler:(void (^)(void))handler;
+#endif
+
 ///---------------------------------
 /// @name Setting Progress Callbacks
 ///---------------------------------
@@ -180,7 +201,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @see setDownloadProgressBlock
  */
-- (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))block;
+- (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block;
 
 /**
  Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
@@ -189,7 +210,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @see setUploadProgressBlock
  */
-- (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead))block;
+- (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block;
 
 ///-------------------------------------------------
 /// @name Setting NSURLConnection Delegate Callbacks
@@ -212,6 +233,14 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  @discussion If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is defined, `connection:didReceiveAuthenticationChallenge:` will attempt to have the challenge sender use credentials with invalid SSL certificates.
  */
 - (void)setAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block;
+
+/**
+ Sets a block to be executed when the server redirects the request from one URL to another URL, or when the request URL changed by the `NSURLProtocol` subclass handling the request in order to standardize its format, as handled by the `NSURLConnectionDelegate` method `connection:willSendRequest:redirectResponse:`.
+ 
+ @param block A block object to be executed when the request URL was changed. The block returns an `NSURLRequest` object, the URL request to redirect, and takes three arguments: the URL connection object, the the proposed redirected request, and the URL response that caused the redirect.
+ */
+- (void)setRedirectResponseBlock:(NSURLRequest * (^)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse))block;
+
 
 /**
  Sets a block to be executed to modify the response a connection will cache, if any, as handled by the `NSURLConnectionDelegate` method `connection:willCacheResponse:`.

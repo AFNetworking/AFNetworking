@@ -28,8 +28,8 @@
 
 @interface AFImageCache : NSCache
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
-- (void)cacheImageData:(NSData *)imageData
-            forRequest:(NSURLRequest *)request;
+- (void)cacheImage:(UIImage *)image
+        forRequest:(NSURLRequest *)request;
 @end
 
 #pragma mark -
@@ -115,21 +115,25 @@ static char kAFImageRequestOperationObjectKey;
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
                 self.image = responseObject;
+                self.af_imageRequestOperation = nil;
             }
 
             if (success) {
                 success(operation.request, operation.response, responseObject);
             }
 
-            [[[self class] af_sharedImageCache] cacheImageData:operation.responseData forRequest:urlRequest];
+            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
             
-            self.af_imageRequestOperation = nil;
+
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
+                self.af_imageRequestOperation = nil;
+            }
+
             if (failure) {
                 failure(operation.request, operation.response, error);
             }
             
-            self.af_imageRequestOperation = nil;
         }];
         
         self.af_imageRequestOperation = requestOperation;
@@ -162,18 +166,15 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
             break;
     }
     
-	UIImage *image = [UIImage imageWithData:[self objectForKey:AFImageCacheKeyFromURLRequest(request)]];
-	if (image) {
-		return [UIImage imageWithCGImage:[image CGImage] scale:[[UIScreen mainScreen] scale] orientation:image.imageOrientation];
-	}
-    
-    return image;
+	return [self objectForKey:AFImageCacheKeyFromURLRequest(request)];
 }
 
-- (void)cacheImageData:(NSData *)imageData
-            forRequest:(NSURLRequest *)request
+- (void)cacheImage:(UIImage *)image
+        forRequest:(NSURLRequest *)request
 {
-    [self setObject:[NSPurgeableData dataWithData:imageData] forKey:AFImageCacheKeyFromURLRequest(request)];
+    if (image && request) {
+        [self setObject:image forKey:AFImageCacheKeyFromURLRequest(request)];
+    }
 }
 
 @end
