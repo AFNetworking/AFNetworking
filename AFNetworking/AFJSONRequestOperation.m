@@ -59,6 +59,24 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     return requestOperation;
 }
 
++ (AFJSONRequestOperation *)RawJSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON, NSData *rawData))success 
+                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON, NSData *rawData))failure
+{
+    AFJSONRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if (success) {
+            success(operation.request, operation.response, responseObject, [operation responseData ]);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (failure) {
+            failure(operation.request, operation.response, error, [(AFJSONRequestOperation *)operation responseJSON], [operation responseData]);
+        }
+    }];
+    
+    return requestOperation;
+}
+
 - (void)dealloc {
     [_responseJSON release];
     [_JSONError release];
