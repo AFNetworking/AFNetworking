@@ -63,4 +63,17 @@
                                                     success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success 
                                                     failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure;
 
+/**
+ Creates and returns an `AFJSONRequestOperation` object and sets the specified success and failure callbacks.
+ 
+ @param urlRequest The request object to be loaded asynchronously during execution of the operation
+ @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the JSON object created from the response data of request. Also contains extra raw response data.
+ @param failure A block object to be executed when the operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. Also contains extra raw response data. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
+ 
+ @return A new JSON request operation
+ */
++ (AFJSONRequestOperation *)RawJSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON, NSData *rawData))success 
+                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON, NSData *rawData))failure;
+
 @end
