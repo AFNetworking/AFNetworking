@@ -492,16 +492,18 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
     __block AFMultipartFormData *formData = [[[AFMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding] autorelease];
     
-    for (AFQueryStringComponent *component in AFQueryStringComponentsFromKeyAndValue(nil, parameters)) {
-        NSData *data = nil;
-        if ([component.value isKindOfClass:[NSData class]]) {
-            data = component.value;
-        } else {
-            data = [[component.value description] dataUsingEncoding:self.stringEncoding];
-        }
-        
-        if (data) {
-            [formData appendPartWithFormData:data name:[component.key description]];
+    if (parameters) {
+        for (AFQueryStringComponent *component in AFQueryStringComponentsFromKeyAndValue(nil, parameters)) {
+            NSData *data = nil;
+            if ([component.value isKindOfClass:[NSData class]]) {
+                data = component.value;
+            } else {
+                data = [[component.value description] dataUsingEncoding:self.stringEncoding];
+            }
+            
+            if (data) {
+                [formData appendPartWithFormData:data name:[component.key description]];
+            }
         }
     }
     
