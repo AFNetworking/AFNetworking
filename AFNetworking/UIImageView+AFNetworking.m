@@ -96,7 +96,16 @@ static char kAFImageRequestOperationObjectKey;
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
               placeholderImage:(UIImage *)placeholderImage 
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure {
+    [self setImageWithURLRequest:urlRequest placeholderImage:placeholderImage 
+                        progress:nil success:success failure:failure];
+}
+
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
+              placeholderImage:(UIImage *)placeholderImage 
+                      progress:(void (^)(NSInteger, long long, long long))progress 
+                       success:(void (^)(NSURLRequest *, NSHTTPURLResponse *, UIImage *))success 
+                       failure:(void (^)(NSURLRequest *, NSHTTPURLResponse *, NSError *))failure
 {
     [self cancelImageRequestOperation];
     
@@ -117,24 +126,26 @@ static char kAFImageRequestOperationObjectKey;
                 self.image = responseObject;
                 self.af_imageRequestOperation = nil;
             }
-
+            
             if (success) {
                 success(operation.request, operation.response, responseObject);
             }
-
+            
             [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
             
-
+            
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
                 self.af_imageRequestOperation = nil;
             }
-
+            
             if (failure) {
                 failure(operation.request, operation.response, error);
             }
             
         }];
+        
+        [requestOperation setDownloadProgressBlock:progress];
         
         self.af_imageRequestOperation = requestOperation;
         
