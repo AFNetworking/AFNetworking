@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 
 #import "AFJSONRequestOperation.h"
-#import "AFJSONUtilities.h"
 
 static dispatch_queue_t af_json_request_operation_processing_queue;
 static dispatch_queue_t json_request_operation_processing_queue() {
@@ -72,7 +71,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         if ([self.responseData length] == 0) {
             self.responseJSON = nil;
         } else {
-            self.responseJSON = AFJSONDecode(self.responseData, &error);
+            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
         }
         
         self.JSONError = error;

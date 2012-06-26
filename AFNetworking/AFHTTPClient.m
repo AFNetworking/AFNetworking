@@ -24,7 +24,6 @@
 
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
-#import "AFJSONUtilities.h"
 
 #import <Availability.h>
 
@@ -195,7 +194,7 @@ NSArray * AFQueryStringComponentsFromKeyAndArrayValue(NSString *key, NSArray *va
 
 static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
     NSError *error = nil;
-    NSData *JSONData = AFJSONEncode(parameters, &error);
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];;
     
     if (!error) {
         return [[[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding] autorelease];

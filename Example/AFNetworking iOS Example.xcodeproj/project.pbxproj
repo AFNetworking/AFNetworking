@@ -27,7 +27,6 @@
 		F8FA94B2150EFEC100ED4EAD /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA949F150EFEC100ED4EAD /* AFHTTPRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F8FA94B3150EFEC100ED4EAD /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A1150EFEC100ED4EAD /* AFImageRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F8FA94B4150EFEC100ED4EAD /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A3150EFEC100ED4EAD /* AFJSONRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94B5150EFEC100ED4EAD /* AFJSONUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A5150EFEC100ED4EAD /* AFJSONUtilities.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F8FA94B6150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A7150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F8FA94B7150EFEC100ED4EAD /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94AA150EFEC100ED4EAD /* AFPropertyListRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F8FA94B8150EFEC100ED4EAD /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94AC150EFEC100ED4EAD /* AFURLConnectionOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -71,8 +70,6 @@
 		F8FA94A1150EFEC100ED4EAD /* AFImageRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageRequestOperation.m; sourceTree = "<group>"; };
 		F8FA94A2150EFEC100ED4EAD /* AFJSONRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFJSONRequestOperation.h; sourceTree = "<group>"; };
 		F8FA94A3150EFEC100ED4EAD /* AFJSONRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONRequestOperation.m; sourceTree = "<group>"; };
-		F8FA94A4150EFEC100ED4EAD /* AFJSONUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFJSONUtilities.h; sourceTree = "<group>"; };
-		F8FA94A5150EFEC100ED4EAD /* AFJSONUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONUtilities.m; sourceTree = "<group>"; };
 		F8FA94A6150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		F8FA94A7150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		F8FA94A8150EFEC100ED4EAD /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
@@ -249,8 +246,6 @@
 				F8FA94B0150EFEC100ED4EAD /* UIImageView+AFNetworking.m */,
 				F8FA94A6150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.h */,
 				F8FA94A7150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m */,
-				F8FA94A4150EFEC100ED4EAD /* AFJSONUtilities.h */,
-				F8FA94A5150EFEC100ED4EAD /* AFJSONUtilities.m */,
 			);
 			name = AFNetworking;
 			path = ../AFNetworking;
@@ -332,7 +327,6 @@
 				F8FA94B2150EFEC100ED4EAD /* AFHTTPRequestOperation.m in Sources */,
 				F8FA94B3150EFEC100ED4EAD /* AFImageRequestOperation.m in Sources */,
 				F8FA94B4150EFEC100ED4EAD /* AFJSONRequestOperation.m in Sources */,
-				F8FA94B5150EFEC100ED4EAD /* AFJSONUtilities.m in Sources */,
 				F8FA94B6150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m in Sources */,
 				F8FA94B7150EFEC100ED4EAD /* AFPropertyListRequestOperation.m in Sources */,
 				F8FA94B8150EFEC100ED4EAD /* AFURLConnectionOperation.m in Sources */,
