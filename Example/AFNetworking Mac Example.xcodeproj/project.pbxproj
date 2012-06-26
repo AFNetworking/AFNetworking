@@ -54,6 +54,7 @@
 		F82EB079159A172000B10B56 /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFURLConnectionOperation.m; path = ../AFNetworking/AFURLConnectionOperation.m; sourceTree = "<group>"; };
 		F82EB07A159A172000B10B56 /* AFXMLRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFXMLRequestOperation.h; path = ../AFNetworking/AFXMLRequestOperation.h; sourceTree = "<group>"; };
 		F82EB07B159A172000B10B56 /* AFXMLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFXMLRequestOperation.m; path = ../AFNetworking/AFXMLRequestOperation.m; sourceTree = "<group>"; };
+		F877018B159A1CE700B45C0D /* AFNetworking Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "AFNetworking Example.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +72,7 @@
 		F8129BF01591061B009BFE23 = {
 			isa = PBXGroup;
 			children = (
+				F877018B159A1CE700B45C0D /* AFNetworking Example.entitlements */,
 				F8129C051591061B009BFE23 /* Classes */,
 				F8129C4C15910901009BFE23 /* Vendor */,
 				F8129BFE1591061B009BFE23 /* Frameworks */,
@@ -299,6 +301,8 @@
 		F8129C1A1591061B009BFE23 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "AFNetworking Example.entitlements";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = "Mac-Info.plist";
@@ -310,6 +314,8 @@
 		F8129C1B1591061B009BFE23 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "AFNetworking Example.entitlements";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = "Mac-Info.plist";
