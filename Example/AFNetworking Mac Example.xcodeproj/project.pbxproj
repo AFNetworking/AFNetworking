@@ -151,21 +151,21 @@
 		F82EB083159A172500B10B56 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
-				F82EB06D159A172000B10B56 /* AFHTTPClient.h */,
-				F82EB06E159A172000B10B56 /* AFHTTPClient.m */,
-				F82EB06F159A172000B10B56 /* AFHTTPRequestOperation.h */,
-				F82EB070159A172000B10B56 /* AFHTTPRequestOperation.m */,
-				F82EB071159A172000B10B56 /* AFImageRequestOperation.h */,
-				F82EB072159A172000B10B56 /* AFImageRequestOperation.m */,
-				F82EB073159A172000B10B56 /* AFJSONRequestOperation.h */,
-				F82EB074159A172000B10B56 /* AFJSONRequestOperation.m */,
 				F82EB075159A172000B10B56 /* AFNetworking.h */,
-				F82EB076159A172000B10B56 /* AFPropertyListRequestOperation.h */,
-				F82EB077159A172000B10B56 /* AFPropertyListRequestOperation.m */,
 				F82EB078159A172000B10B56 /* AFURLConnectionOperation.h */,
 				F82EB079159A172000B10B56 /* AFURLConnectionOperation.m */,
+				F82EB06F159A172000B10B56 /* AFHTTPRequestOperation.h */,
+				F82EB070159A172000B10B56 /* AFHTTPRequestOperation.m */,
+				F82EB073159A172000B10B56 /* AFJSONRequestOperation.h */,
+				F82EB074159A172000B10B56 /* AFJSONRequestOperation.m */,
 				F82EB07A159A172000B10B56 /* AFXMLRequestOperation.h */,
 				F82EB07B159A172000B10B56 /* AFXMLRequestOperation.m */,
+				F82EB076159A172000B10B56 /* AFPropertyListRequestOperation.h */,
+				F82EB077159A172000B10B56 /* AFPropertyListRequestOperation.m */,
+				F82EB06D159A172000B10B56 /* AFHTTPClient.h */,
+				F82EB06E159A172000B10B56 /* AFHTTPClient.m */,
+				F82EB071159A172000B10B56 /* AFImageRequestOperation.h */,
+				F82EB072159A172000B10B56 /* AFImageRequestOperation.m */,
 			);
 			name = AFNetworking;
 			sourceTree = "<group>";
