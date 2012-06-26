@@ -103,12 +103,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
-@property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
-@property (readwrite, nonatomic, retain) NSURLConnection *connection;
-@property (readwrite, nonatomic, retain) NSURLRequest *request;
-@property (readwrite, nonatomic, retain) NSURLResponse *response;
-@property (readwrite, nonatomic, retain) NSError *error;
-@property (readwrite, nonatomic, retain) NSData *responseData;
+@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
+@property (readwrite, nonatomic, strong) NSURLConnection *connection;
+@property (readwrite, nonatomic, strong) NSURLRequest *request;
+@property (readwrite, nonatomic, strong) NSURLResponse *response;
+@property (readwrite, nonatomic, strong) NSError *error;
+@property (readwrite, nonatomic, strong) NSData *responseData;
 @property (readwrite, nonatomic, copy) NSString *responseString;
 @property (readwrite, nonatomic, assign) long long totalBytesRead;
 @property (readwrite, nonatomic, assign) AFBackgroundTaskIdentifier backgroundTaskIdentifier;
@@ -147,9 +147,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
-        NSAutoreleasePool *runLoopPool = [[NSAutoreleasePool alloc] init];
-        [[NSRunLoop currentRunLoop] run];
-        [runLoopPool drain];
+        @autoreleasepool {
+            [[NSRunLoop currentRunLoop] run];
+        }
     } while (YES);
 }
 
@@ -171,7 +171,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 		return nil;
     }
     
-    self.lock = [[[NSRecursiveLock alloc] init] autorelease];
+    self.lock = [[NSRecursiveLock alloc] init];
     self.lock.name = kAFNetworkingLockName;
     
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
@@ -186,20 +186,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)dealloc {
-    [_lock release];
         
-    [_runLoopModes release];
     
-    [_request release];
-    [_response release];
-    [_error release];
     
-    [_responseData release];
-    [_responseString release];
     
     if (_outputStream) {
         [_outputStream close];
-        [_outputStream release];
         _outputStream = nil;
     }
 
@@ -210,16 +202,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
 #endif
     	
-    [_uploadProgress release];
-    [_downloadProgress release];
-    [_authenticationChallenge release];
-    [_authenticationAgainstProtectionSpace release];
-    [_cacheResponse release];
-    [_redirectResponse release];
     
-    [_connection release];
     
-    [super dealloc];
 }
 
 - (NSString *)description {
@@ -231,7 +215,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (!block) {
         [super setCompletionBlock:nil];
     } else {
-        __block id _blockSelf = self;
+        __unsafe_unretained id _blockSelf = self;
         [super setCompletionBlock:^ {
             block();
             [_blockSelf setCompletionBlock:nil];
@@ -246,7 +230,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)setInputStream:(NSInputStream *)inputStream {
     [self willChangeValueForKey:@"inputStream"];
-    NSMutableURLRequest *mutableRequest = [[self.request mutableCopy] autorelease];
+    NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
     [self didChangeValueForKey:@"inputStream"];
@@ -254,11 +238,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)setOutputStream:(NSOutputStream *)outputStream {
     [self willChangeValueForKey:@"outputStream"];
-    [outputStream retain];
     
     if (_outputStream) {
         [_outputStream close];
-        [_outputStream release];
     }
     _outputStream = outputStream;
     [self didChangeValueForKey:@"outputStream"];
@@ -344,10 +326,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (!_responseString && self.response && self.responseData) {
         NSStringEncoding textEncoding = NSUTF8StringEncoding;
         if (self.response.textEncodingName) {
-            textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.response.textEncodingName));
+            textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((__bridge CFStringRef)self.response.textEncodingName));
         }
         
-        self.responseString = [[[NSString alloc] initWithData:self.responseData encoding:textEncoding] autorelease];
+        self.responseString = [[NSString alloc] initWithData:self.responseData encoding:textEncoding];
     }
     [self.lock unlock];
     
@@ -416,7 +398,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if ([self isCancelled]) {
         [self finish];
     } else {
-        self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
+        self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
         
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         for (NSString *runLoopMode in self.runLoopModes) {
@@ -496,8 +478,8 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
         if ([challenge previousFailureCount] == 0) {
             NSURLCredential *credential = nil;
             
-            NSString *username = [(NSString *)CFURLCopyUserName((CFURLRef)[self.request URL]) autorelease];
-            NSString *password = [(NSString *)CFURLCopyPassword((CFURLRef)[self.request URL]) autorelease];
+            NSString *username = (__bridge_transfer NSString *)CFURLCopyUserName((__bridge CFURLRef)[self.request URL]);
+            NSString *password = (__bridge_transfer NSString *)CFURLCopyPassword((__bridge CFURLRef)[self.request URL]);
             
             if (username && password) {
                 credential = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceNone];

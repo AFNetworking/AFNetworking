@@ -25,13 +25,7 @@
 
 #import "AFTwitterAPIClient.h"
 
-@implementation Tweet {
-@private
-    NSUInteger _tweetID;
-    __strong NSString *_text;
-    __strong User *_user;
-}
-
+@implementation Tweet
 @synthesize tweetID = _tweetID;
 @synthesize text = _text;
 @synthesize user = _user;

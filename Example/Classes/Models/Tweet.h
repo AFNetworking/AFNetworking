@@ -26,10 +26,10 @@
 
 @interface Tweet : NSObject
 
-@property (readonly) NSUInteger tweetID;
-@property (readonly) NSString *text;
+@property (readonly, assign) NSUInteger tweetID;
+@property (readonly, strong) NSString *text;
 
-@property (readonly) User *user;
+@property (readonly, strong) User *user;
 
 - (id)initWithAttributes:(NSDictionary *)attributes;
 
