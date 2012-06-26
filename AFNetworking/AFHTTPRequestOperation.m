@@ -54,11 +54,10 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     return [NSSet setWithSet:mutableContentTypes];
 }
 
-static void AFSwizzleClassMethodWithImplementation(Class klass, SEL selector, IMP implementation) {
+static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL selector, void *block) {
     Method originalMethod = class_getClassMethod(klass, selector);
-	if (method_getImplementation(originalMethod) != implementation) {
-		class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
-    }
+    IMP implementation = imp_implementationWithBlock(block);
+    class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
 }
 
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
@@ -259,10 +258,6 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 
 #pragma mark - AFHTTPRequestOperation
 
-static id AFStaticClassValueImplementation(id self, SEL _cmd) {
-	return objc_getAssociatedObject([self class], _cmd);
-}
-
 + (NSIndexSet *)acceptableStatusCodes {
     return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
 }
@@ -270,9 +265,9 @@ static id AFStaticClassValueImplementation(id self, SEL _cmd) {
 + (void)addAcceptableStatusCodes:(NSIndexSet *)statusCodes {
     NSMutableIndexSet *mutableStatusCodes = [[NSMutableIndexSet alloc] initWithIndexSet:[self acceptableStatusCodes]];
     [mutableStatusCodes addIndexes:statusCodes];
-	SEL selector = @selector(acceptableStatusCodes);
-	AFSwizzleClassMethodWithImplementation([self class], selector, (IMP)AFStaticClassValueImplementation);
-	objc_setAssociatedObject([self class], selector, mutableStatusCodes, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableStatusCodes), (__bridge void *)^(id _self) {
+        return mutableStatusCodes;
+    });
 }
 
 + (NSSet *)acceptableContentTypes {
@@ -282,9 +277,9 @@ static id AFStaticClassValueImplementation(id self, SEL _cmd) {
 + (void)addAcceptableContentTypes:(NSSet *)contentTypes {
     NSMutableSet *mutableContentTypes = [[NSMutableSet alloc] initWithSet:[self acceptableContentTypes] copyItems:YES];
     [mutableContentTypes unionSet:contentTypes];
-	SEL selector = @selector(acceptableContentTypes);
-	AFSwizzleClassMethodWithImplementation([self class], selector, (IMP)AFStaticClassValueImplementation);
-	objc_setAssociatedObject([self class], selector, mutableContentTypes, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableContentTypes), (__bridge void *)^(id _self) {
+        return mutableContentTypes;
+    });
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
