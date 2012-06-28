@@ -283,7 +283,7 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    if (![[self class] isEqual:[AFHTTPRequestOperation class]]) {
+    if ([[self class] isEqual:[AFHTTPRequestOperation class]]) {
         return YES;
     }
     
