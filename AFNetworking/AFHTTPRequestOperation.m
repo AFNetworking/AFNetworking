@@ -291,7 +291,7 @@ static id AFStaticClassValueImplementation(id self, SEL _cmd) {
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    if (![[self class] isEqual:[AFHTTPRequestOperation class]]) {
+    if ([[self class] isEqual:[AFHTTPRequestOperation class]]) {
         return YES;
     }
     
