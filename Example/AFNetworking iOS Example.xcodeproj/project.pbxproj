@@ -145,7 +145,6 @@
 		F8E469551395739C00DB05C8 = {
 			isa = PBXGroup;
 			children = (
-				50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */,
 				F8E469B71395759C00DB05C8 /* Networking Extensions */,
 				F8E4696A1395739D00DB05C8 /* Classes */,
 				F8E469ED1395812A00DB05C8 /* Images */,
@@ -166,6 +165,7 @@
 		F8E469631395739D00DB05C8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */,
 				F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */,
 				F8E469E013957DF100DB05C8 /* Security.framework */,
 				F8E469DE13957DD500DB05C8 /* CoreLocation.framework */,
