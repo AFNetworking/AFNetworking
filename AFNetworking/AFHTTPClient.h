@@ -24,7 +24,7 @@
 
 @class AFHTTPRequestOperation;
 @protocol AFHTTPClientOperation;
-@protocol AFMultipartFormData;
+@protocol AFStreamingMultipartFormData;
 
 /**
  Posted when network reachability changes.
@@ -42,10 +42,10 @@ extern NSString * const AFNetworkingReachabilityDidChangeNotification;
  */
 #ifdef _SYSTEMCONFIGURATION_H
 typedef enum {
-    AFNetworkReachabilityStatusUnknown          = -1,
-    AFNetworkReachabilityStatusNotReachable     = 0,
-    AFNetworkReachabilityStatusReachableViaWWAN = 1,
-    AFNetworkReachabilityStatusReachableViaWiFi = 2,
+  AFNetworkReachabilityStatusUnknown          = -1,
+  AFNetworkReachabilityStatusNotReachable     = 0,
+  AFNetworkReachabilityStatusReachableViaWWAN = 1,
+  AFNetworkReachabilityStatusReachableViaWiFi = 2,
 } AFNetworkReachabilityStatus;
 #endif
 
@@ -53,9 +53,9 @@ typedef enum {
  Specifies the method used to encode parameters into request body. 
  */
 typedef enum {
-    AFFormURLParameterEncoding,
-    AFJSONParameterEncoding,
-    AFPropertyListParameterEncoding,
+  AFFormURLParameterEncoding,
+  AFJSONParameterEncoding,
+  AFPropertyListParameterEncoding,
 } AFHTTPClientParameterEncoding;
 
 /**
@@ -116,14 +116,14 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  Both `requestWithMethod:path:parameters` and `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `baseURL`, using `NSURL +URLWithString:relativeToURL:`. Below are a few examples of how `baseURL` and relative paths interract:
  
-    NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
-    [NSURL URLWithString:@"foo" relativeToURL:baseURL];                     // http://example.com/v1/foo
-    [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL];             // http://example.com/v1/foo?bar=baz
-    [NSURL URLWithString:@"/foo" relativeToURL:baseURL];                    // http://example.com/foo
-    [NSURL URLWithString:@"foo/" relativeToURL:baseURL];                    // http://example.com/v1/foo
-    [NSURL URLWithString:@"/foo/" relativeToURL:baseURL];                   // http://example.com/foo/
-    [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL];    // http://example2.com/
-
+ NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
+ [NSURL URLWithString:@"foo" relativeToURL:baseURL];                     // http://example.com/v1/foo
+ [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL];             // http://example.com/v1/foo?bar=baz
+ [NSURL URLWithString:@"/foo" relativeToURL:baseURL];                    // http://example.com/foo
+ [NSURL URLWithString:@"foo/" relativeToURL:baseURL];                    // http://example.com/v1/foo
+ [NSURL URLWithString:@"/foo/" relativeToURL:baseURL];                   // http://example.com/foo/
+ [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL];    // http://example2.com/
+ 
  */
 @interface AFHTTPClient : NSObject
 
@@ -143,7 +143,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 
 /**
  The `AFHTTPClientParameterEncoding` value corresponding to how parameters are encoded into a request body. This is `AFFormURLParameterEncoding` by default.
-
+ 
  @warning JSON encoding will automatically use JSONKit, SBJSON, YAJL, or NextiveJSON, if provided. Otherwise, the built-in `NSJSONSerialization` class is used, if available (iOS 5.0 and Mac OS 10.7). If the build target does not either support `NSJSONSerialization` or include a third-party JSON library, a runtime exception will be thrown when attempting to encode parameters as JSON.
  */
 @property (nonatomic, assign) AFHTTPClientParameterEncoding parameterEncoding;
@@ -155,8 +155,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 
 /**
  The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
-
-  @warning This property requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
+ 
+ @warning This property requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
  */
 #ifdef _SYSTEMCONFIGURATION_H
 @property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
@@ -170,7 +170,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  Creates and initializes an `AFHTTPClient` object with the specified base URL.
  
  @param url The base URL for the HTTP client. This argument must not be nil.
-  
+ 
  @return The newly-initialized HTTP client
  */
 + (AFHTTPClient *)clientWithBaseURL:(NSURL *)url;
@@ -280,7 +280,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param method The HTTP method for the request, such as `GET`, `POST`, `PUT`, or `DELETE`.
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be either set as a query string for `GET` requests, or the request HTTP body.
-  
+ 
  @return An `NSMutableURLRequest` object 
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
@@ -294,7 +294,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
-  
+ 
  @discussion The multipart form data is constructed synchronously in the specified block, so in cases where large amounts of data are being added to the request, you should consider performing this method in the background. Likewise, the form data is constructed in-memory, so it may be advantageous to instead write parts of the form data to a file and stream the request body using the `HTTPBodyStream` property of `NSURLRequest`.
  
  @warning An exception will be raised if the specified method is not `POST`, `PUT` or `DELETE`.
@@ -304,7 +304,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                                    path:(NSString *)path
                                              parameters:(NSDictionary *)parameters
-                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
+                              constructingBodyWithBlock:(void (^)(id <AFStreamingMultipartFormData> formData))block;
 
 ///-------------------------------
 /// @name Creating HTTP Operations
@@ -457,15 +457,10 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @see `AFHTTPClient -multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:`
  */
-@protocol AFMultipartFormData
 
-/**
- Appends HTTP headers, followed by the encoded data and the multipart form boundary.
- 
- @param headers The HTTP headers to be appended to the form data.
- @param body The data to be encoded and appended to the form data.
- */
-- (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body;
+
+@protocol AFStreamingMultipartFormData
+
 
 /**
  Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
@@ -473,17 +468,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param data The data to be encoded and appended to the form data.
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
  */
-- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
 
-/**
- Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
- 
- @param data The data to be encoded and appended to the form data.
- @param name The name to be associated with the specified data. This parameter must not be `nil`.
- @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
- @param filename The filename to be associated with the specified data. This parameter must not be `nil`.
- */
-- (void)appendPartWithFileData:(NSData *)data name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType;
+- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{generated filename}; name=#{name}"` and `Content-Type: #{generated mimeType}`, followed by the encoded file data and the multipart form boundary.
@@ -496,34 +482,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @discussion The filename and MIME type for this data in the form will be automatically generated, using `NSURLResponse` `-suggestedFilename` and `-MIMEType`, respectively.
  */
+
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
-
-/**
- Appends the HTTP header `Content-Disposition: file; filename=#{generated filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary, using NSInputStream to read input.
- 
- @param fileURL The URL corresponding to the file whose content will be appended to the form.
- @param name The name to be associated with the specified data. This parameter must not be `nil`.
- @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
-  
- @discussion The filename is generated from the last component of the streamingURL parameter. The size of the buffer used to copy from streamingURL to the output stream is defined by the constant kAFStreamToStreamBufferSize.
- */
-- (void)appendPartWithStreamingURL:(NSURL *)streamingURL
-                              name:(NSString *)name 
-                          mimeType:(NSString *)mimeType;
-
-/**
- Appends encoded data to the form data.
- 
- @param data The data to be encoded and appended to the form data.
- */
-- (void)appendData:(NSData *)data;
-
-/**
- Appends a string to the form data.
- 
- @param string The string to be encoded and appended to the form data.
- */
-- (void)appendString:(NSString *)string;
 
 @end
 
