@@ -162,24 +162,21 @@ If you are including AFNetworking in a project that uses [Automatic Reference Co
 
 AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
 
-[TTTLocationFormatter](https://github.com/mattt/FormatterKit/tree/master/TTTLocationFormatter), used in the example project, is part of [FormatterKit](https://github.com/mattt/FormatterKit), created by [Mattt Thompson](https://github.com/mattt/).
-
 AFNetworking's logo was designed by [Alan Defibaugh](http://www.alandefibaugh.com/).
 
 And most of all, thanks to AFNetworking's [growing list of contributors](https://github.com/AFNetworking/AFNetworking/contributors).
 
 ## Contact
 
-Mattt Thompson
+Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking))
 
-- http://github.com/mattt
-- http://twitter.com/mattt
-- m@mattt.me
+### Creators
 
-Scott Raymond
+[Mattt Thompson](http://github.com/mattt)  
+[@mattt](https://twitter.com/mattt)
 
-- http://github.com/sco
-- http://twitter.com/sco
+[Scott Raymond](http://github.com/sco)  
+[@sco](https://twitter.com/sco)
 
 ## License
 

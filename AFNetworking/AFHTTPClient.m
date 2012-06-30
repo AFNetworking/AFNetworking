@@ -453,6 +453,10 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
+
+    if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"]) {
+        [request setHTTPShouldUsePipelining:YES];
+    }
 	
     if (parameters) {        
         if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"] || [method isEqualToString:@"DELETE"]) {
@@ -488,16 +492,18 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
     __block AFMultipartFormData *formData = [[[AFMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding] autorelease];
     
-    for (AFQueryStringComponent *component in AFQueryStringComponentsFromKeyAndValue(nil, parameters)) {
-        NSData *data = nil;
-        if ([component.value isKindOfClass:[NSData class]]) {
-            data = component.value;
-        } else {
-            data = [[component.value description] dataUsingEncoding:self.stringEncoding];
-        }
-        
-        if (data) {
-            [formData appendPartWithFormData:data name:[component.key description]];
+    if (parameters) {
+        for (AFQueryStringComponent *component in AFQueryStringComponentsFromKeyAndValue(nil, parameters)) {
+            NSData *data = nil;
+            if ([component.value isKindOfClass:[NSData class]]) {
+                data = component.value;
+            } else {
+                data = [[component.value description] dataUsingEncoding:self.stringEncoding];
+            }
+            
+            if (data) {
+                [formData appendPartWithFormData:data name:[component.key description]];
+            }
         }
     }
     
@@ -871,8 +877,9 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 
 - (void)appendData:(NSData *)data {
     if ([data length] == 0) {
-      return;
+        return;
     }
+
     if ([self.outputStream hasSpaceAvailable]) {
         const uint8_t *dataBuffer = (uint8_t *) [data bytes];
         [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
