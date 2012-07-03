@@ -128,7 +128,6 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 @dynamic response;
 
 - (void)dealloc {
-    
     if (_successCallbackQueue) { 
         dispatch_release(_successCallbackQueue);
         _successCallbackQueue = NULL;
@@ -138,7 +137,6 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
         dispatch_release(_failureCallbackQueue); 
         _failureCallbackQueue = NULL;
     }
-
 }
 
 - (NSError *)error {

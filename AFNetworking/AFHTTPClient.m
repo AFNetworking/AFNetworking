@@ -283,8 +283,6 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 #ifdef _SYSTEMCONFIGURATION_H
     [self stopMonitoringNetworkReachability];
 #endif
-    
-    
 }
 
 - (NSString *)description {

@@ -186,10 +186,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)dealloc {
-        
-    
-    
-    
     if (_outputStream) {
         [_outputStream close];
         _outputStream = nil;
@@ -201,9 +197,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
     }
 #endif
-    	
-    
-    
 }
 
 - (NSString *)description {
