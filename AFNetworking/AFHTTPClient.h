@@ -149,6 +149,11 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 @property (nonatomic, assign) AFHTTPClientParameterEncoding parameterEncoding;
 
 /**
+ This specifies where the paramaters for a DELETE request are encoded, YES for in the URL and NO for in the HTTP Request Body. Is Yes by default to support backwords compatability.
+ */
+@property (nonatomic, assign) BOOL deleteParamsEncodedInURL;
+
+/**
  The operation queue which manages operations enqueued by the HTTP client.
  */
 @property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;
