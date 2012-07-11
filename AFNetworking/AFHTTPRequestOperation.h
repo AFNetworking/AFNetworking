@@ -85,12 +85,12 @@ extern NSString * AFCreateIncompleteDownloadDirectoryPath(void);
 /** 
  The callback dispatch queue on success. If `NULL` (default), the main queue is used.
  */
-@property (nonatomic) dispatch_queue_t successCallbackQueue;
+@property (nonatomic, assign) dispatch_queue_t successCallbackQueue;
 
 /** 
  The callback dispatch queue on failure. If `NULL` (default), the main queue is used.
  */
-@property (nonatomic) dispatch_queue_t failureCallbackQueue;
+@property (nonatomic, assign) dispatch_queue_t failureCallbackQueue;
 
 ///-------------------------------------------------------------
 /// @name Managing Accceptable HTTP Status Codes & Content Types
