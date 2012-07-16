@@ -103,12 +103,21 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
+@property (readwrite, nonatomic, strong) NSURLConnection *connection;
+@property (readwrite, nonatomic, strong) NSURLRequest *request;
+@property (readwrite, nonatomic, strong) NSURLResponse *response;
+@property (readwrite, nonatomic, strong) NSError *error;
+@property (readwrite, nonatomic, strong) NSData *responseData;
+#else
 @property (readwrite, nonatomic, retain) NSRecursiveLock *lock;
 @property (readwrite, nonatomic, retain) NSURLConnection *connection;
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSURLResponse *response;
 @property (readwrite, nonatomic, retain) NSError *error;
 @property (readwrite, nonatomic, retain) NSData *responseData;
+#endif
 @property (readwrite, nonatomic, copy) NSString *responseString;
 @property (readwrite, nonatomic, assign) long long totalBytesRead;
 @property (readwrite, nonatomic, assign) AFBackgroundTaskIdentifier backgroundTaskIdentifier;
@@ -147,9 +156,15 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     do {
+#ifdef AF_ARC_SUPPORT_ENABLED
+        @autoreleasepool {
+            [[NSRunLoop currentRunLoop] run];
+        }
+#else
         NSAutoreleasePool *runLoopPool = [[NSAutoreleasePool alloc] init];
         [[NSRunLoop currentRunLoop] run];
         [runLoopPool drain];
+#endif
     } while (YES);
 }
 
@@ -171,7 +186,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 		return nil;
     }
     
+#ifdef AF_ARC_SUPPORT_ENABLED
+    self.lock = [[NSRecursiveLock alloc] init];
+#else
     self.lock = [[[NSRecursiveLock alloc] init] autorelease];
+#endif
     self.lock.name = kAFNetworkingLockName;
     
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
@@ -186,6 +205,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)dealloc {
+#ifndef AF_ARC_SUPPORT_ENABLED
     [_lock release];
         
     [_runLoopModes release];
@@ -196,10 +216,13 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     [_responseData release];
     [_responseString release];
+#endif
     
     if (_outputStream) {
         [_outputStream close];
+#ifndef AF_ARC_SUPPORT_ENABLED
         [_outputStream release];
+#endif
         _outputStream = nil;
     }
 
@@ -209,7 +232,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
     }
 #endif
-    	
+
+#ifndef AF_ARC_SUPPORT_ENABLED
     [_uploadProgress release];
     [_downloadProgress release];
     [_authenticationChallenge release];
@@ -220,6 +244,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [_connection release];
     
     [super dealloc];
+#endif
 }
 
 - (NSString *)description {
@@ -246,7 +271,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)setInputStream:(NSInputStream *)inputStream {
     [self willChangeValueForKey:@"inputStream"];
+#ifdef AF_ARC_SUPPORT_ENABLED
+    NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
+#else
     NSMutableURLRequest *mutableRequest = [[self.request mutableCopy] autorelease];
+#endif
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
     [self didChangeValueForKey:@"inputStream"];
@@ -254,11 +283,16 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)setOutputStream:(NSOutputStream *)outputStream {
     [self willChangeValueForKey:@"outputStream"];
+
+#ifndef AF_ARC_SUPPORT_ENABLED
     [outputStream retain];
+#endif
     
     if (_outputStream) {
         [_outputStream close];
+#ifndef AF_ARC_SUPPORT_ENABLED
         [_outputStream release];
+#endif
     }
     _outputStream = outputStream;
     [self didChangeValueForKey:@"outputStream"];
@@ -344,10 +378,17 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (!_responseString && self.response && self.responseData) {
         NSStringEncoding textEncoding = NSUTF8StringEncoding;
         if (self.response.textEncodingName) {
+#ifdef AF_ARC_SUPPORT_ENABLED
+            textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((__bridge CFStringRef)self.response.textEncodingName));
+#else
             textEncoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.response.textEncodingName));
+#endif
         }
-        
+#ifdef AF_ARC_SUPPORT_ENABLED
+        self.responseString = [[NSString alloc] initWithData:self.responseData encoding:textEncoding];
+#else
         self.responseString = [[[NSString alloc] initWithData:self.responseData encoding:textEncoding] autorelease];
+#endif
     }
     [self.lock unlock];
     
@@ -416,7 +457,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if ([self isCancelled]) {
         [self finish];
     } else {
+#ifdef AF_ARC_SUPPORT_ENABLED
+        self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
+#else
         self.connection = [[[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO] autorelease];
+#endif
         
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         for (NSString *runLoopMode in self.runLoopModes) {
@@ -496,8 +541,13 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
         if ([challenge previousFailureCount] == 0) {
             NSURLCredential *credential = nil;
             
+#ifdef AF_ARC_SUPPORT_ENABLED
+            NSString *username = (__bridge NSString *)CFURLCopyUserName((__bridge CFURLRef)[self.request URL]);
+            NSString *password = (__bridge NSString *)CFURLCopyPassword((__bridge CFURLRef)[self.request URL]);
+#else
             NSString *username = [(NSString *)CFURLCopyUserName((CFURLRef)[self.request URL]) autorelease];
             NSString *password = [(NSString *)CFURLCopyPassword((CFURLRef)[self.request URL]) autorelease];
+#endif
             
             if (username && password) {
                 credential = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceNone];

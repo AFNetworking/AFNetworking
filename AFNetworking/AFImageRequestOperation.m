@@ -33,9 +33,17 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 @interface AFImageRequestOperation ()
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readwrite, nonatomic, strong) UIImage *responseImage;
+#else
 @property (readwrite, nonatomic, retain) UIImage *responseImage;
+#endif
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readwrite, nonatomic, strong) NSImage *responseImage;
+#else
 @property (readwrite, nonatomic, retain) NSImage *responseImage;
+#endif
 #endif
 @end
 
@@ -74,7 +82,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
+#else
     AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+#endif
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             UIImage *image = responseObject;
@@ -105,7 +117,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
+#else
     AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+#endif
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             NSImage *image = responseObject;
@@ -144,10 +160,12 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     return self;
 }
 
+#ifndef AF_ARC_SUPPORT_ENABLED
 - (void)dealloc {
     [_responseImage release];
     [super dealloc];
 }
+#endif
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (UIImage *)responseImage {
@@ -174,9 +192,15 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
         // Ensure that the image is set to it's correct pixel width and height
         NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
+#ifdef AF_ARC_SUPPORT_ENABLED
+        self.responseImage = [[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])];
+#else
         self.responseImage = [[[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])] autorelease];
+#endif
         [self.responseImage addRepresentation:bitimage];
+#ifndef AF_ARC_SUPPORT_ENABLED
         [bitimage release];
+#endif
     }
     
     return _responseImage;
@@ -202,16 +226,23 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    static AFImageRequestOperation *bself = nil;
+    bself = self;
+#else
+    AFImageRequestOperation *bself = self;
+#endif
+    
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([bself isCancelled]) {
             return;
         }
         
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
-            if (self.error) {
+            if (bself.error) {
                 if (failure) {
-                    dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                        failure(self, self.error);
+                    dispatch_async(bself.failureCallbackQueue ? bself.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                        failure(bself, bself.error);
                     });
                 }
             } else {            
@@ -225,11 +256,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                     image = self.responseImage;
 
                     dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                        success(self, image);
+                        success(bself, image);
                     });
                 }
             }
-        });        
+        });
     };  
 }
 

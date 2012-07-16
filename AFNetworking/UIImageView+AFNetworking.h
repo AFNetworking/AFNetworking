@@ -22,6 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AFImageRequestOperation.h"
+#import "AFARCSupport.h"
 
 #import <Availability.h>
 

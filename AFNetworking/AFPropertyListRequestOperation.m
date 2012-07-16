@@ -32,9 +32,17 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 }
 
 @interface AFPropertyListRequestOperation ()
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readwrite, nonatomic, strong) id responsePropertyList;
+#else
 @property (readwrite, nonatomic, retain) id responsePropertyList;
+#endif
 @property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readwrite, nonatomic, strong) NSError *propertyListError;
+#else
 @property (readwrite, nonatomic, retain) NSError *propertyListError;
+#endif
 @end
 
 @implementation AFPropertyListRequestOperation
@@ -47,7 +55,11 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
                                                                     success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id propertyList))success
                                                                     failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id propertyList))failure
 {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    AFPropertyListRequestOperation *requestOperation = [[self alloc] initWithRequest:request];
+#else
     AFPropertyListRequestOperation *requestOperation = [[[self alloc] initWithRequest:request] autorelease];
+#endif
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -72,11 +84,13 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     return self;
 }
 
+#ifndef AF_ARC_SUPPORT_ENABLED
 - (void)dealloc {
     [_responsePropertyList release];
     [_propertyListError release];
     [super dealloc];
 }
+#endif
 
 - (id)responsePropertyList {
     if (!_responsePropertyList && [self.responseData length] > 0 && [self isFinished]) {
@@ -111,37 +125,44 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    static AFPropertyListRequestOperation *bself = nil;
+    bself = self;
+#else
+    AFPropertyListRequestOperation *bself = self;
+#endif
+    
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([bself isCancelled]) {
             return;
         }
         
-        if (self.error) {
+        if (bself.error) {
             if (failure) {
-                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                    failure(self, self.error);
+                dispatch_async(bself.failureCallbackQueue ? bself.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                    failure(bself, bself.error);
                 });
             }
         } else {
             dispatch_async(property_list_request_operation_processing_queue(), ^(void) {
-                id propertyList = self.responsePropertyList;
+                id propertyList = bself.responsePropertyList;
                 
-                if (self.propertyListError) {
+                if (bself.propertyListError) {
                     if (failure) {
-                        dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                            failure(self, self.error);
+                        dispatch_async(bself.failureCallbackQueue ? bself.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                            failure(bself, bself.error);
                         });
                     }
                 } else {
                     if (success) {
-                        dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                            success(self, propertyList);
+                        dispatch_async(bself.successCallbackQueue ? bself.successCallbackQueue : dispatch_get_main_queue(), ^{
+                            success(bself, propertyList);
                         });
                     } 
                 }
             });
         }
-    };    
+    };
 }
 
 @end

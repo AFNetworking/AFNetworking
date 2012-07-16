@@ -22,6 +22,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "AFARCSupport.h"
+
 #import <Availability.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED

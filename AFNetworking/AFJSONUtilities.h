@@ -22,5 +22,7 @@
 
 #import <Foundation/Foundation.h>
 
+#import "AFARCSupport.h"
+
 extern NSData * AFJSONEncode(id object, NSError **error);
 extern id AFJSONDecode(NSData *data, NSError **error);
