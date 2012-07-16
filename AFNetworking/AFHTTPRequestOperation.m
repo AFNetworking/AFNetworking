@@ -173,7 +173,7 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
     unsigned long long offset = 0; 
     if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
         offset = [[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
-    } else {
+    } else if ([self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey]) {
         offset = [[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
     }
 
