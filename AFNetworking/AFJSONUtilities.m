@@ -66,7 +66,9 @@ NSData * AFJSONEncode(id object, NSError **error) {
         
         [invocation invoke];
         [invocation getReturnValue:&data];
+#ifndef AF_ARC_SUPPORT_ENABLED
         [writer release];
+#endif
     } else if (_YAJLSelector && [object respondsToSelector:_YAJLSelector]) {
         @try {
             NSString *JSONString = nil;
@@ -80,7 +82,11 @@ NSData * AFJSONEncode(id object, NSError **error) {
             data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
         }
         @catch (NSException *exception) {
+#ifdef AF_ARC_SUPPORT_ENABLED
+            *error = [[NSError alloc] initWithDomain:NSStringFromClass([exception class]) code:0 userInfo:[exception userInfo]];
+#else
             *error = [[[NSError alloc] initWithDomain:NSStringFromClass([exception class]) code:0 userInfo:[exception userInfo]] autorelease];
+#endif
         }
     } else if (_NXJsonSerializerClass && [_NXJsonSerializerClass respondsToSelector:_NXJsonSerializerSelector]) {
         NSString *JSONString = nil;
@@ -163,7 +169,9 @@ id AFJSONDecode(NSData *data, NSError **error) {
 
         [invocation invoke];
         [invocation getReturnValue:&JSON];
+#ifndef AF_ARC_SUPPORT_ENABLED
         [parser release];
+#endif
     } else if (_YAJLSelector && [data respondsToSelector:_YAJLSelector]) {
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[data methodSignatureForSelector:_YAJLSelector]];
         invocation.target = data;

@@ -34,11 +34,24 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 
 @interface AFXMLRequestOperation ()
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readwrite, nonatomic, strong) NSXMLParser *responseXMLParser;
+#else
 @property (readwrite, nonatomic, retain) NSXMLParser *responseXMLParser;
+#endif
+
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readwrite, nonatomic, strong) NSXMLDocument *responseXMLDocument;
+#else
 @property (readwrite, nonatomic, retain) NSXMLDocument *responseXMLDocument;
 #endif
+#endif
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readwrite, nonatomic, strong) NSError *XMLError;
+#else
 @property (readwrite, nonatomic, retain) NSError *XMLError;
+#endif
 @end
 
 @implementation AFXMLRequestOperation
@@ -52,7 +65,12 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLParser *XMLParser))failure
 {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
+#else
     AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+#endif
+    
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -71,7 +89,11 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                                                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
                                                           failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLDocument *document))failure
 {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
+#else
     AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+#endif
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, __unused id responseObject) {
         if (success) {
             NSXMLDocument *XMLDocument = [(AFXMLRequestOperation *)operation responseXMLDocument];            
@@ -88,6 +110,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 #endif
 
+#ifndef AF_ARC_SUPPORT_ENABLED
 - (void)dealloc {
     [_responseXMLParser release];
     
@@ -99,10 +122,15 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     
     [super dealloc];
 }
+#endif
 
 - (NSXMLParser *)responseXMLParser {
     if (!_responseXMLParser && [self.responseData length] > 0 && [self isFinished]) {
+#ifdef AF_ARC_SUPPORT_ENABLED
+        self.responseXMLParser = [[NSXMLParser alloc] initWithData:self.responseData];
+#else
         self.responseXMLParser = [[[NSXMLParser alloc] initWithData:self.responseData] autorelease];
+#endif
     }
     
     return _responseXMLParser;
@@ -112,7 +140,11 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (NSXMLDocument *)responseXMLDocument {
     if (!_responseXMLDocument && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
+#ifdef AF_ARC_SUPPORT_ENABLED
+        self.responseXMLDocument = [[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error];
+#else
         self.responseXMLDocument = [[[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error] autorelease];
+#endif
         self.XMLError = error;
     }
     
@@ -149,29 +181,36 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    static AFXMLRequestOperation *bself = nil;
+    bself = self;
+#else
+    AFXMLRequestOperation *bself = self;
+#endif
+    
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([bself isCancelled]) {
             return;
         }
         
         dispatch_async(xml_request_operation_processing_queue(), ^(void) {
-            NSXMLParser *XMLParser = self.responseXMLParser;
+            NSXMLParser *XMLParser = bself.responseXMLParser;
             
-            if (self.error) {
+            if (bself.error) {
                 if (failure) {
-                    dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                        failure(self, self.error);
+                    dispatch_async(bself.failureCallbackQueue ? bself.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                        failure(bself, bself.error);
                     });
                 }
             } else {
                 if (success) {
-                    dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                        success(self, XMLParser);
+                    dispatch_async(bself.successCallbackQueue ? bself.successCallbackQueue : dispatch_get_main_queue(), ^{
+                        success(bself, XMLParser);
                     });
                 } 
             }
         });
-    };    
+    };
 }
 
 @end

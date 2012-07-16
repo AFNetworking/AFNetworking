@@ -22,6 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
+#import "AFARCSupport.h"
 
 #import <Availability.h>
 
@@ -48,13 +49,22 @@
 /**
  An `NSXMLParser` object constructed from the response data.
  */
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readonly, nonatomic, strong) NSXMLParser *responseXMLParser;
+#else
 @property (readonly, nonatomic, retain) NSXMLParser *responseXMLParser;
+#endif
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 /**
  An `NSXMLDocument` object constructed from the response data. If an error occurs while parsing, `nil` will be returned, and the `error` property will be set to the error.
  */
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readonly, nonatomic, strong) NSXMLDocument *responseXMLDocument;
+#else
 @property (readonly, nonatomic, retain) NSXMLDocument *responseXMLDocument;
+#endif
+
 #endif
 
 /**

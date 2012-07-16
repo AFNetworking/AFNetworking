@@ -22,6 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AFURLConnectionOperation.h"
+#import "AFARCSupport.h"
 
 /**
  Returns a set of MIME types detected in an HTTP `Accept` or `Content-Type` header.
@@ -42,7 +43,11 @@ extern NSString * AFCreateIncompleteDownloadDirectoryPath(void);
 /**
  The last HTTP response received by the operation's connection.
  */
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readonly, nonatomic, strong) NSHTTPURLResponse *response;
+#else
 @property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
+#endif
 
 /**
  Set a target file for the response, will stream directly into this destination.

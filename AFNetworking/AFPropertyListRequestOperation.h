@@ -22,6 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
+#import "AFARCSupport.h"
 
 /**
  `AFPropertyListRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and deserializing objects with property list (plist) response data.
@@ -41,7 +42,11 @@
 /**
  An object deserialized from a plist constructed using the response data.
  */
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readonly, nonatomic, strong) id responsePropertyList;
+#else
 @property (readonly, nonatomic, retain) id responsePropertyList;
+#endif
 
 ///--------------------------------------
 /// @name Managing Property List Behavior

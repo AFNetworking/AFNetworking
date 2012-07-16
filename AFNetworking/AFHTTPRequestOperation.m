@@ -29,7 +29,11 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     static NSCharacterSet *_skippedCharacterSet = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+#ifdef AF_ARC_SUPPORT_ENABLED
+        _skippedCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@" ,"];
+#else
         _skippedCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@" ,"] retain];
+#endif
     });
     
     if (!string) {
@@ -77,11 +81,19 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         }
 
         if (range.length == 1) {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
             [string appendFormat:@"%u", range.location];
+#else
+            [string appendFormat:@"%lu", range.location];
+#endif
         } else {
             NSUInteger firstIndex = range.location;
             NSUInteger lastIndex = firstIndex + range.length - 1;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
             [string appendFormat:@"%u-%u", firstIndex, lastIndex];
+#else
+            [string appendFormat:@"%lu-%lu", firstIndex, lastIndex];
+#endif
         }
 
         range.location = nextIndex;
@@ -96,14 +108,20 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSString *tempDirectory = NSTemporaryDirectory();
+#ifdef AF_ARC_SUPPORT_ENABLED
+        incompleteDownloadPath = [tempDirectory stringByAppendingPathComponent:kAFNetworkingIncompleteDownloadDirectoryName];
+#else
         incompleteDownloadPath = [[tempDirectory stringByAppendingPathComponent:kAFNetworkingIncompleteDownloadDirectoryName] retain];
+#endif
 
         NSError *error = nil;
         NSFileManager *fileMan = [[NSFileManager alloc] init];
         if(![fileMan createDirectoryAtPath:incompleteDownloadPath withIntermediateDirectories:YES attributes:nil error:&error]) {
             NSLog(@"Failed to create incomplete downloads directory at %@", incompleteDownloadPath);
         }
+#ifndef AF_ARC_SUPPORT_ENABLED
         [fileMan release];
+#endif
     });
 
     return incompleteDownloadPath;
@@ -112,9 +130,15 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()
+#ifdef AF_ARC_SUPPORT_ENABLED
+@property (readwrite, nonatomic, strong) NSURLRequest *request;
+@property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
+@property (readwrite, nonatomic, strong) NSError *HTTPError;
+#else
 @property (readwrite, nonatomic, retain) NSURLRequest *request;
 @property (readwrite, nonatomic, retain) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, retain) NSError *HTTPError;
+#endif
 @property (assign) long long totalContentLength;
 @property (assign) long long offsetContentLength;
 @end
@@ -130,7 +154,9 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 @dynamic response;
 
 - (void)dealloc {
+#ifndef AF_ARC_SUPPORT_ENABLED
     [_HTTPError release];
+#endif
     
     if (_successCallbackQueue) { 
         dispatch_release(_successCallbackQueue);
@@ -141,8 +167,10 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
         dispatch_release(_failureCallbackQueue); 
         _failureCallbackQueue = NULL;
     }
-
+    
+#ifndef AF_ARC_SUPPORT_ENABLED
     [super dealloc];
+#endif
 }
 
 - (NSError *)error {
@@ -152,13 +180,21 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
+#ifdef AF_ARC_SUPPORT_ENABLED
+            self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
+#else
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
+#endif
         } else if ([self.responseData length] > 0 && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), [[self class] acceptableContentTypes], [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
+#ifdef AF_ARC_SUPPORT_ENABLED
+            self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+#else
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo] autorelease];
+#endif
         }
     }
     
@@ -173,11 +209,16 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
     unsigned long long offset = 0; 
     if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
         offset = [[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
-    } else {
+    } else if ([self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey]) {
         offset = [[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
     }
 
+#ifdef AF_ARC_SUPPORT_ENABLED
+    NSMutableURLRequest *mutableURLRequest = [self.request mutableCopy];
+#else
     NSMutableURLRequest *mutableURLRequest = [[self.request mutableCopy] autorelease];
+#endif
+    
     if ([[self.response allHeaderFields] valueForKey:@"ETag"]) {
         [mutableURLRequest setValue:[[self.response allHeaderFields] valueForKey:@"ETag"] forHTTPHeaderField:@"If-Range"];
     }
@@ -226,21 +267,29 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    static AFHTTPRequestOperation *bself = nil;
+    bself = self;
+#else
+    AFHTTPRequestOperation *bself = self;
+#endif
+    
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
+        if ([bself isCancelled]) {
             return;
         }
         
-        if (self.error) {
+        if (bself.error) {
             if (failure) {
-                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                    failure(self, self.error);
+                dispatch_async(bself.failureCallbackQueue ? bself.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                    failure(bself, bself.error);
                 });
             }
         } else {
             if (success) {
-                dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
-                    success(self, self.responseData);
+                dispatch_async(bself.successCallbackQueue ? bself.successCallbackQueue : dispatch_get_main_queue(), ^{
+                    success(bself, bself.responseData);
+
                 });
             }
         }
@@ -249,8 +298,12 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 
 - (void)setResponseFilePath:(NSString *)responseFilePath {
     if ([self isReady] && responseFilePath != _responseFilePath) {
+#ifdef AF_ARC_SUPPORT_ENABLED
+        _responseFilePath = responseFilePath;
+#else
         [_responseFilePath release];
         _responseFilePath = [responseFilePath retain];
+#endif
         
         if (responseFilePath) {
             self.outputStream = [NSOutputStream outputStreamToFileAtPath:responseFilePath append:NO];
@@ -271,7 +324,11 @@ static id AFStaticClassValueImplementation(id self, SEL _cmd) {
 }
 
 + (void)addAcceptableStatusCodes:(NSIndexSet *)statusCodes {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    NSMutableIndexSet *mutableStatusCodes = [[NSMutableIndexSet alloc] initWithIndexSet:[self acceptableStatusCodes]];
+#else
     NSMutableIndexSet *mutableStatusCodes = [[[NSMutableIndexSet alloc] initWithIndexSet:[self acceptableStatusCodes]] autorelease];
+#endif
     [mutableStatusCodes addIndexes:statusCodes];
 	SEL selector = @selector(acceptableStatusCodes);
 	AFSwizzleClassMethodWithImplementation([self class], selector, (IMP)AFStaticClassValueImplementation);
@@ -283,7 +340,11 @@ static id AFStaticClassValueImplementation(id self, SEL _cmd) {
 }
 
 + (void)addAcceptableContentTypes:(NSSet *)contentTypes {
+#ifdef AF_ARC_SUPPORT_ENABLED
+    NSMutableSet *mutableContentTypes = [[NSMutableSet alloc] initWithSet:[self acceptableContentTypes] copyItems:YES];
+#else
     NSMutableSet *mutableContentTypes = [[[NSMutableSet alloc] initWithSet:[self acceptableContentTypes] copyItems:YES] autorelease];
+#endif
     [mutableContentTypes unionSet:contentTypes];
 	SEL selector = @selector(acceptableContentTypes);
 	AFSwizzleClassMethodWithImplementation([self class], selector, (IMP)AFStaticClassValueImplementation);
@@ -311,7 +372,7 @@ didReceiveResponse:(NSURLResponse *)response
     if ([self.response statusCode] != 206) {
         if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
             [self.outputStream setProperty:[NSNumber numberWithInteger:0] forKey:NSStreamFileCurrentOffsetKey];
-        } else {
+        } else if ([self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey]) {
             if ([[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length] > 0) {
                 self.outputStream = [NSOutputStream outputStreamToMemory];
             }
