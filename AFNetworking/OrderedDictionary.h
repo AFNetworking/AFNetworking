@@ -21,7 +21,11 @@
 //     distribution.
 //
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import <Foundation/Foundation.h>
+#else
 #import <Cocoa/Cocoa.h>
+#endif
 
 @interface OrderedDictionary : NSMutableDictionary
 {
