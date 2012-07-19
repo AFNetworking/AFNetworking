@@ -25,6 +25,7 @@
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
 #import "AFJSONUtilities.h"
+#import "OrderedDictionary.h"
 
 #import <Availability.h>
 
@@ -447,7 +448,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
                                       path:(NSString *)path 
-                                parameters:(NSDictionary *)parameters 
+                                parameters:(OrderedDictionary *)parameters 
 {	
     NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
 	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
