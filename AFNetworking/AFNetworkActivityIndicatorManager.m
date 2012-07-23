@@ -25,7 +25,7 @@
 #import "AFHTTPRequestOperation.h"
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
+static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 
 @interface AFNetworkActivityIndicatorManager ()
 @property (readwrite, atomic, assign) NSInteger activityCount;
@@ -33,6 +33,7 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 @property (readonly, getter = isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
 
 - (void)updateNetworkActivityIndicatorVisibility;
+- (void)updateNetworkActivityIndicatorVisibilityDelayed;
 @end
 
 @implementation AFNetworkActivityIndicatorManager
@@ -77,10 +78,10 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
         // Delay hiding of activity indicator for a short interval, to avoid flickering
         if (![self isNetworkActivityIndicatorVisible]) {
             [self.activityIndicatorVisibilityTimer invalidate];
-            self.activityIndicatorVisibilityTimer = [NSTimer timerWithTimeInterval:kAFNetworkActivityIndicatorInvisibilityDelay target:self selector:@selector(updateNetworkActivityIndicatorVisibilityOnCurrentQueue) userInfo:nil repeats:NO];
+            self.activityIndicatorVisibilityTimer = [NSTimer timerWithTimeInterval:kAFNetworkActivityIndicatorInvisibilityDelay target:self selector:@selector(updateNetworkActivityIndicatorVisibility) userInfo:nil repeats:NO];
             [[NSRunLoop mainRunLoop] addTimer:self.activityIndicatorVisibilityTimer forMode:NSRunLoopCommonModes];
         } else {
-            [self updateNetworkActivityIndicatorVisibility];
+            [self performSelectorOnMainThread:@selector(updateNetworkActivityIndicatorVisibility) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
         }
     }
 }
@@ -90,12 +91,6 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 }
 
 - (void)updateNetworkActivityIndicatorVisibility {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateNetworkActivityIndicatorVisibilityOnCurrentQueue];
-    });
-}
-
-- (void)updateNetworkActivityIndicatorVisibilityOnCurrentQueue {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:[self isNetworkActivityIndicatorVisible]];
 }
 
