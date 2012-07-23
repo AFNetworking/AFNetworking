@@ -355,7 +355,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)pause {
-    if ([self isPaused] || [self isFinished]) {
+    if ([self isPaused] || [self isFinished] || [self isCancelled]) {
         return;
     }
     

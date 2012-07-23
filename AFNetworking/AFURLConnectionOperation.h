@@ -159,7 +159,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /**
  Pauses the execution of the request operation.
  
- @discussion A paused operation returns `NO` for `-isReady`, `-isExecuting`, and `-isFinished`. As such, it will remain in an `NSOperationQueue` until it is either cancelled or resumed. Pausing a finished or cancelled operation has no effect.
+ @discussion A paused operation returns `NO` for `-isReady`, `-isExecuting`, and `-isFinished`. As such, it will remain in an `NSOperationQueue` until it is either cancelled or resumed. Pausing a finished, cancelled, or paused operation has no effect.
  */
 - (void)pause;
 
