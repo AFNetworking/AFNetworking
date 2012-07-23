@@ -355,15 +355,19 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)pause {
-    if ([self isPaused]) {
+    if ([self isPaused] || [self isFinished]) {
         return;
     }
     
     [self.lock lock];
-    self.state = AFHTTPOperationPausedState;
     
-    [self.connection performSelector:@selector(cancel) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+    if ([self isExecuting]) {
+        [self.connection performSelector:@selector(cancel) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+    }
+    
+    self.state = AFHTTPOperationPausedState;
+
     [self.lock unlock];
 }
 
