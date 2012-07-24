@@ -188,7 +188,7 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 }
 
 - (BOOL)hasAcceptableStatusCode {
-    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:[self.response statusCode]];
+    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:(NSUInteger)[self.response statusCode]];
 }
 
 - (BOOL)hasAcceptableContentType {
