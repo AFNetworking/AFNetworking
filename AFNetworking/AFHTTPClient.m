@@ -458,7 +458,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         [request setHTTPShouldUsePipelining:YES];
     }
 	
-    if (parameters) {        
+    if (parameters && [parameters count] > 0) {        
         if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"] || [method isEqualToString:@"DELETE"]) {
             url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding)]];
             [request setURL:url];
