@@ -75,7 +75,7 @@ AFNetworking is architected to be as small and modular as possible, in order to 
   <tr><th colspan="2" style="text-align:center;">Images</th></tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Classes/AFImageRequestOperation.html">AFImageRequestOperation</a></td>
-    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading an processing images.</td>
+    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and processing images.</td>
   </tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Categories/UIImageView+AFNetworking.html">UIImageView+AFNetworking</a></td>
