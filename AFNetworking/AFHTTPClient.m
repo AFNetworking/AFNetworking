@@ -217,7 +217,6 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 }
 
 @interface AFHTTPClient ()
-@property (readwrite, nonatomic, retain) NSURL *baseURL;
 @property (readwrite, nonatomic, retain) NSMutableArray *registeredHTTPOperationClassNames;
 @property (readwrite, nonatomic, retain) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, retain) NSOperationQueue *operationQueue;
@@ -399,7 +398,21 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 - (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block {
     self.networkReachabilityStatusBlock = block;
 }
+
 #endif
+
+- (void)setBaseURL:(NSURL *)baseURL {
+    if (baseURL != _baseURL) {
+        [_baseURL release];
+        _baseURL = [baseURL retain];
+
+#ifdef _SYSTEMCONFIGURATION_H
+        [self stopMonitoringNetworkReachability];
+        [self startMonitoringNetworkReachability];
+#endif
+    }
+
+}
 
 #pragma mark -
 
