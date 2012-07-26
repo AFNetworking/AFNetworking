@@ -201,7 +201,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @see setDownloadProgressBlock
  */
-- (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block;
+- (void)setUploadProgressBlock:(void (^)(long long bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block;
 
 /**
  Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
@@ -210,7 +210,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @see setUploadProgressBlock
  */
-- (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block;
+- (void)setDownloadProgressBlock:(void (^)(long long bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block;
 
 ///-------------------------------------------------
 /// @name Setting NSURLConnection Delegate Callbacks
