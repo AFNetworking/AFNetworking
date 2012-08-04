@@ -161,9 +161,12 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 
 - (void)setImageScale:(CGFloat)imageScale {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wfloat-equal"
     if (imageScale == _imageScale) {
         return;
     }
+#pragma clang diagnostic pop
     
     _imageScale = imageScale;
     
