@@ -251,4 +251,38 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  */
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block;
 
+///---------------------------------------
+/// @name NSURLConnection Delegate Methods
+/// @discussion NSURLConnection delegate methods were part of an informal protocol until iOS 5 & Mac OS 10.7, so the method signatures are declared here in order to allow subclasses to override these methods and call back to the super implementation.
+///---------------------------------------
+
+- (BOOL)connection:(NSURLConnection *)connection
+canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace;
+
+- (void)connection:(NSURLConnection *)connection
+didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge;
+
+- (NSURLRequest *)connection:(NSURLConnection *)connection
+             willSendRequest:(NSURLRequest *)request
+            redirectResponse:(NSURLResponse *)redirectResponse;
+
+- (void)connection:(NSURLConnection *)connection
+   didSendBodyData:(NSInteger)bytesWritten
+ totalBytesWritten:(NSInteger)totalBytesWritten
+totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite;
+
+- (void)connection:(NSURLConnection *)connection
+didReceiveResponse:(NSURLResponse *)response;
+
+- (void)connection:(NSURLConnection *)connection
+    didReceiveData:(NSData *)data;
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection;
+
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error;
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse *)cachedResponse;
+
 @end

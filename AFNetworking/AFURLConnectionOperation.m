@@ -524,7 +524,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection
              willSendRequest:(NSURLRequest *)request
-            redirectResponse:(NSURLResponse *)redirectResponse;
+            redirectResponse:(NSURLResponse *)redirectResponse
 {
     if (self.redirectResponse) {
         return self.redirectResponse(connection, request, redirectResponse);
