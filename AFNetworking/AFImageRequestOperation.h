@@ -74,10 +74,13 @@
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
  
+ As the `success` callback is called on the main queue, it is not appropriate to perform image processing in this callback. Instead, use the `imageProcessingBlock` of `imageRequestOperationWithRequest:imageProcessingBlock:success:failure:`.
+ 
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param success A block object to be executed when the request finishes successfully. This block has no return value and takes a single arguments, the image created from the response data of the request.
+ @param success A block object to be executed when the request finishes successfully. This block has no return value and takes a single arguments, the image created from the response data of the request. It is called from the main queue.
  
  @return A new image request operation
+
  */
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 + (AFImageRequestOperation *)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest                
@@ -91,9 +94,9 @@
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param imageProcessingBlock A block object to be executed after the image request finishes successfully, but before the image is returned in the `success` block. This block takes a single argument, the image loaded from the response body, and returns the processed image.
- @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `image/png`). This block has no return value and takes three arguments: the request object of the operation, the response for the request, and the image created from the response data.
- @param failure A block object to be executed when the request finishes unsuccessfully. This block has no return value and takes three arguments: the request object of the operation, the response for the request, and the error associated with the cause for the unsuccessful operation.
+ @param imageProcessingBlock A block object to be executed after the image request finishes successfully, but before the image is returned in the `success` block. This block takes a single argument, the image loaded from the response body, and returns the processed image. It is called from a dedicated background processing queue.
+ @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, and with an acceptable content type (e.g. `image/png`). This block has no return value and takes three arguments: the request object of the operation, the response for the request, and the image created from the response data. It is called from the main queue.
+ @param failure A block object to be executed when the request finishes unsuccessfully. This block has no return value and takes three arguments: the request object of the operation, the response for the request, and the error associated with the cause for the unsuccessful operation. It is called from the main queue.
  
  @return A new image request operation
  */
