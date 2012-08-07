@@ -23,8 +23,6 @@
 #import "AFHTTPRequestOperation.h"
 #import <objc/runtime.h>
 
-NSString * const kAFNetworkingIncompleteDownloadDirectoryName = @"Incomplete";
-
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     static NSCharacterSet *_skippedCharacterSet = nil;
     static dispatch_once_t onceToken;
@@ -91,24 +89,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return string;
 }
 
-NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
-    static NSString *incompleteDownloadPath;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSString *tempDirectory = NSTemporaryDirectory();
-        incompleteDownloadPath = [[tempDirectory stringByAppendingPathComponent:kAFNetworkingIncompleteDownloadDirectoryName] retain];
-
-        NSError *error = nil;
-        NSFileManager *fileMan = [[NSFileManager alloc] init];
-        if(![fileMan createDirectoryAtPath:incompleteDownloadPath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create incomplete downloads directory at %@", incompleteDownloadPath);
-        }
-        [fileMan release];
-    });
-
-    return incompleteDownloadPath;
-}
-
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()
@@ -121,7 +101,6 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 
 @implementation AFHTTPRequestOperation
 @synthesize HTTPError = _HTTPError;
-@synthesize responseFilePath = _responseFilePath;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
 @synthesize totalContentLength = _totalContentLength;
@@ -245,19 +224,6 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
             }
         }
     };
-}
-
-- (void)setResponseFilePath:(NSString *)responseFilePath {
-    if ([self isReady] && responseFilePath != _responseFilePath) {
-        [_responseFilePath release];
-        _responseFilePath = [responseFilePath retain];
-        
-        if (responseFilePath) {
-            self.outputStream = [NSOutputStream outputStreamToFileAtPath:responseFilePath append:NO];
-        }else {
-            self.outputStream = [NSOutputStream outputStreamToMemory];
-        }
-    }
 }
 
 #pragma mark - AFHTTPRequestOperation

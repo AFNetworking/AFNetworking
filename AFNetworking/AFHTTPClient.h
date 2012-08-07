@@ -210,7 +210,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @param The subclass of `AFHTTPRequestOperation` to register
  
- @return `YES` if the registration is successful, `NO` otherwise. The only failure condition is if `operationClass` does is not a subclass of `AFHTTPRequestOperation`.
+ @return `YES` if the registration is successful, `NO` otherwise. The only failure condition is if `operationClass` is not a subclass of `AFHTTPRequestOperation`.
  
  @discussion When `enqueueHTTPRequestOperationWithRequest:success:failure` is invoked, each registered class is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to create an operation using `initWithURLRequest:` and do `setCompletionBlockWithSuccess:failure:`. There is no guarantee that all registered classes will be consulted. Classes are consulted in the reverse order of their registration. Attempting to register an already-registered class will move it to the top of the list.
  

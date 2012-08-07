@@ -197,7 +197,9 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /**
  Sets a callback to be called when an undetermined number of bytes have been uploaded to the server.
  
- @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes three arguments: the number of bytes written since the last time the upload progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times.
+ @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes three arguments: the number of bytes written since the last time the upload progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times, and will execute on the main thread.
+ 
+ @discussion This block is called on the main thread.
  
  @see setDownloadProgressBlock
  */
@@ -206,8 +208,8 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 /**
  Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
  
- @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes three arguments: the number of bytes read since the last time the download progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times.
- 
+ @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes three arguments: the number of bytes read since the last time the download progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times, and will execute on the main thread.
+  
  @see setUploadProgressBlock
  */
 - (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block;
@@ -248,5 +250,39 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  @param block A block object to be executed to determine what response a connection will cache, if any. The block returns an `NSCachedURLResponse` object, the cached response to store in memory or `nil` to prevent the response from being cached, and takes two arguments: the URL connection object, and the cached response provided for the request.
  */
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block;
+
+///---------------------------------------
+/// @name NSURLConnection Delegate Methods
+/// @discussion NSURLConnection delegate methods were part of an informal protocol until iOS 5 & Mac OS 10.7, so the method signatures are declared here in order to allow subclasses to override these methods and call back to the super implementation.
+///---------------------------------------
+
+- (BOOL)connection:(NSURLConnection *)connection
+canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace;
+
+- (void)connection:(NSURLConnection *)connection
+didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge;
+
+- (NSURLRequest *)connection:(NSURLConnection *)connection
+             willSendRequest:(NSURLRequest *)request
+            redirectResponse:(NSURLResponse *)redirectResponse;
+
+- (void)connection:(NSURLConnection *)connection
+   didSendBodyData:(NSInteger)bytesWritten
+ totalBytesWritten:(NSInteger)totalBytesWritten
+totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite;
+
+- (void)connection:(NSURLConnection *)connection
+didReceiveResponse:(NSURLResponse *)response;
+
+- (void)connection:(NSURLConnection *)connection
+    didReceiveData:(NSData *)data;
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection;
+
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error;
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse *)cachedResponse;
 
 @end
