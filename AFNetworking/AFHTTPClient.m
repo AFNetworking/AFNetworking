@@ -555,6 +555,16 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
 }
 
+- (void)cancelAllHTTPOperations
+{
+    for (NSOperation *operation in [self.operationQueue operations]) {
+        if (![operation isKindOfClass:[AFHTTPRequestOperation class]]) {
+            continue;
+        }
+        [operation cancel];
+    }
+}
+
 - (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests 
                                           progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
                                         completionBlock:(void (^)(NSArray *operations))completionBlock
