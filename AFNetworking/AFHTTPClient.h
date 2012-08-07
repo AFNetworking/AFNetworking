@@ -342,6 +342,12 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  */
 - (void)cancelAllHTTPOperationsWithMethod:(NSString *)method path:(NSString *)path;
 
+/**
+ Cancels all operations in the HTTP client's operation
+ */
+- (void)cancelAllHTTPOperations;
+
+
 ///---------------------------------------
 /// @name Batching HTTP Request Operations
 ///---------------------------------------
