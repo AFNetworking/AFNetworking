@@ -96,38 +96,40 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-    __weak AFJSONRequestOperation *weakSelf = self;
-    self.completionBlock = ^ {
-        if ([weakSelf isCancelled]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
+   self.completionBlock = ^ {
+        if ([self isCancelled]) {
             return;
         }
         
-        if (weakSelf.error) {
+        if (self.error) {
             if (failure) {
-                dispatch_async(weakSelf.failureCallbackQueue ? weakSelf.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                    failure(weakSelf, weakSelf.error);
+                dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+                    failure(self, self.error);
                 });
             }
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^{
-                id JSON = weakSelf.responseJSON;
+                id JSON = self.responseJSON;
                 
                 if (self.JSONError) {
                     if (failure) {
-                        dispatch_async(weakSelf.failureCallbackQueue ? weakSelf.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                            failure(weakSelf, weakSelf.error);
+                        dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+                            failure(self, self.error);
                         });
                     }
                 } else {
                     if (success) {
-                        dispatch_async(weakSelf.successCallbackQueue ? weakSelf.successCallbackQueue : dispatch_get_main_queue(), ^{
-                            success(weakSelf, JSON);
+                        dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
+                            success(self, JSON);
                         });
                     }                    
                 }
             });
         }
-    };    
+    };
+#pragma clang diagnostic pop
 }
 
 @end
