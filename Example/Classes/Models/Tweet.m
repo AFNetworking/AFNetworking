@@ -52,7 +52,7 @@
 
 #pragma mark -
 
-+ (void)publicTimelineTweetsWithBlock:(void (^)(NSArray *tweets))block {
++ (void)publicTimelineTweetsWithBlock:(void (^)(NSArray *tweets, NSError *error))block {
     [[AFTwitterAPIClient sharedClient] getPath:@"statuses/public_timeline.json" parameters:[NSDictionary dictionaryWithObject:@"false" forKey:@"include_entities"] success:^(AFHTTPRequestOperation *operation, id JSON) {
         NSMutableArray *mutableTweets = [NSMutableArray arrayWithCapacity:[JSON count]];
         for (NSDictionary *attributes in JSON) {
@@ -61,16 +61,11 @@
         }
         
         if (block) {
-            block([NSArray arrayWithArray:mutableTweets]);
+            block([NSArray arrayWithArray:mutableTweets], nil);
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {        
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:[error localizedDescription] delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-#else
-        [[NSAlert alertWithMessageText:NSLocalizedString(@"Error", nil) defaultButton:NSLocalizedString(@"OK", nil) alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@",[error localizedDescription]] runModal];
-#endif
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (block) {
-            block(nil);
+            block([NSArray array], error);
         }
     }];
 }
