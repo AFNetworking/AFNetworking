@@ -82,7 +82,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 dispatch_async(image_request_operation_processing_queue(), ^(void) {
                     UIImage *processedImage = imageProcessingBlock(image);
 
-                    dispatch_async(requestOperation.successCallbackQueue ? requestOperation.successCallbackQueue : dispatch_get_main_queue(), ^(void) {
+                    dispatch_async(requestOperation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, processedImage);
                     });
                 });
@@ -113,7 +113,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 dispatch_async(image_request_operation_processing_queue(), ^(void) {
                     NSImage *processedImage = imageProcessingBlock(image);
 
-                    dispatch_async(requestOperation.successCallbackQueue ? requestOperation.successCallbackQueue : dispatch_get_main_queue(), ^(void) {
+                    dispatch_async(requestOperation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, processedImage);
                     });
                 });
@@ -197,17 +197,18 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-    __weak AFImageRequestOperation *weakSelf = self;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
     self.completionBlock = ^ {
-        if ([weakSelf isCancelled]) {
+        if ([self isCancelled]) {
             return;
         }
         
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
-            if (weakSelf.error) {
+            if (self.error) {
                 if (failure) {
-                    dispatch_async(weakSelf.failureCallbackQueue ? weakSelf.failureCallbackQueue : dispatch_get_main_queue(), ^{
-                        failure(weakSelf, weakSelf.error);
+                    dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+                        failure(self, self.error);
                     });
                 }
             } else {            
@@ -218,15 +219,16 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                     NSImage *image = nil;
 #endif
 
-                    image = weakSelf.responseImage;
+                    image = self.responseImage;
 
-                    dispatch_async(weakSelf.successCallbackQueue ? weakSelf.successCallbackQueue : dispatch_get_main_queue(), ^{
-                        success(weakSelf, image);
+                    dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
+                        success(self, image);
                     });
                 }
             }
         });        
-    };  
+    };
+#pragma clang diagnostic pop
 }
 
 @end
