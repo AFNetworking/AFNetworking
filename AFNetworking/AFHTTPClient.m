@@ -52,6 +52,12 @@ NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire
 
 @end
 
+@interface AFMultipartFormData ()
+
+- (void) setupTemporaryFilePath;
+
+@end
+
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
@@ -230,7 +236,6 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 - (void)stopMonitoringNetworkReachability;
 #endif
 
-- (void) setupTemparyFilePath;
 @end
 
 @implementation AFHTTPClient
@@ -661,12 +666,10 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [self enqueueHTTPRequestOperation:operation];
 }
 
-@end
-
-#pragma mark -
 
 + (NSString *) tempFileDirectoryPath {
-    NSSTring *multipartTemporaryFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
+    NSString *multipartTemporaryFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
+    NSError *error = nil;
     BOOL succesCreate = [[NSFileManager defaultManager] createDirectoryAtPath:multipartTemporaryFilePath
                                                   withIntermediateDirectories:YES
                                                                    attributes:nil
@@ -677,17 +680,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
     return multipartTemporaryFilePath;
 }
+@end
+
+#pragma mark -
 
 static NSString * AFMultipartTemporaryFileDirectoryPath() {
-        NSString *pathComponentForTemp = [[[NSProcessInfo processInfo] globallyUniqueString] stringByAppendingFormat:@"%@",kAFMultipartTemporaryFileDirectoryName];
-        multipartTemporaryFilePath = [[NSTemporaryDirectory() stringByAppendingPathComponent:pathComponentForTemp] copy];
-        
-        NSError *error = nil;
-        if(![[NSFileManager defaultManager] createDirectoryAtPath:multipartTemporaryFilePath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create multipary temporary file directory at %@", multipartTemporaryFilePath);
-        }
-
-    return multipartTemporaryFilePath;
+    return [AFHTTPClient tempFileDirectoryPath];
 }
 
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
@@ -730,7 +728,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     self.request = request;
     self.stringEncoding = encoding;
     
-    [self setupTemparyFilePath];
+    [self setupTemporaryFilePath];
     self.outputStream = [NSOutputStream outputStreamToFileAtPath:self.temporaryFilePath append:NO];
     
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -753,7 +751,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     [super dealloc];
 }
 
-- (void) setupTemparyFilePath {
+- (void) setupTemporaryFilePath {
     self.temporaryFilePath = [AFHTTPClient tempFileDirectoryPath];
 }
 
