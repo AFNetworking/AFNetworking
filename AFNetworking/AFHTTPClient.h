@@ -448,7 +448,17 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
        parameters:(NSDictionary *)parameters 
           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+
+/**
+ returns a globally unique temporary path string, creating it if needed (returns nil on error)
+
+ */
++ (NSString *) tempFileDirectoryPath;
+
 @end
+
+
 
 #pragma mark -
 
