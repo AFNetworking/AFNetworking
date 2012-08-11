@@ -254,6 +254,9 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
         return nil;
     }
     
+    if ( [[url path] length] > 0 && ![[url absoluteString] hasSuffix: @"/"] ) {
+        url = [url URLByAppendingPathComponent: @""];
+    }
     self.baseURL = url;
     
     self.stringEncoding = NSUTF8StringEncoding;
