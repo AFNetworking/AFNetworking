@@ -26,7 +26,20 @@
 #import <Availability.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
+
 #import <UIKit/UIKit.h>
+
+#else
+
+#import <AppKit/AppKit.h>
+#ifndef UIImage
+#define UIImage NSImage
+#endif
+#ifndef UIImageView
+#define UIImageView NSImageView
+#endif
+
+#endif
 
 /**
  This category adds methods to the UIKit framework's `UIImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
@@ -72,5 +85,3 @@
 - (void)cancelImageRequestOperation;
 
 @end
-
-#endif
