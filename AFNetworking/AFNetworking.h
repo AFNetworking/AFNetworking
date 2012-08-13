@@ -35,10 +35,11 @@
 #import "AFHTTPClient.h"
 
 #import "AFImageRequestOperation.h"
+#import "UIImageView+AFNetworking.h"
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "AFNetworkActivityIndicatorManager.h"
-#import "UIImageView+AFNetworking.h"
 #endif
+
 
 #endif /* _AFNETWORKING_ */
