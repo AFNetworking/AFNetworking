@@ -73,6 +73,20 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @warning Subclasses are strongly discouraged from overriding `setCompletionBlock:`, as `AFURLConnectionOperation`'s implementation includes a workaround to mitigate retain cycles, and what Apple rather ominously refers to as "The Deallocation Problem" (See http://developer.apple.com/library/ios/technotes/tn2109/_index.html#//apple_ref/doc/uid/DTS40010274-CH1-SUBSECTION11)
  
+ ## NSCoding & NSCopying Conformance
+ 
+ `AFURLConnectionOperation` conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. However, because of the intrinsic limitations of capturing the exact state of an operation at a particular moment, there are some important caveats to keep in mind:
+ 
+ ### NSCoding Caveats
+ 
+ - Encoded operations do not include any block properties. Be sure to set `completionBlock` and any other callback blocks as necessary when using `-initWithCoder:` or `NSKeyedUnarchiver`, for example.
+ - Operations are paused on `encodeWithCoder:`. If the operation was encoded while paused or still executing, its archived state will return `YES` for `isReady`. Otherwise, the state of an operation when encoding will remain unchanged.
+ 
+ ### NSCopying Caveats
+ 
+ - `-copy` and `-copyWithZone:` return a new operation with the `NSURLRequest` of the original. So rather than an exact copy of the operation at that particular instant, the copying mechanism returns a completely new instance, which can be useful for retrying operations.
+ - Operation copies do not include `completionBlock`, but do include any other callback blocks of the original. `completionBlock` often strongly captures a reference to `self`, which, perhaps surprisingly, would otherwise point to the _original_ operation when copied.
+ 
  @warning Attempting to load a `file://` URL in iOS 4 may result in an `NSInvalidArgumentException`, caused by the connection returning `NSURLResponse` rather than `NSHTTPURLResponse`, which is the behavior as of iOS 5.
  */
 @interface AFURLConnectionOperation : NSOperation <NSCoding, NSCopying>

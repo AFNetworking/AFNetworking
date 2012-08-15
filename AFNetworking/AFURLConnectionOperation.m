@@ -608,13 +608,10 @@ didReceiveResponse:(NSURLResponse *)response
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     NSURLRequest *request = [aDecoder decodeObjectForKey:@"request"];
-    
-    self = [self initWithRequest:request];
-    if (!self) {
+    if (!request || ![self initWithRequest:request]) {
         return nil;
     }
-    
-    self.runLoopModes = [aDecoder decodeObjectForKey:@"runLoopModes"];
+
     self.state = [aDecoder decodeIntegerForKey:@"state"];
     self.cancelled = [aDecoder decodeBoolForKey:@"isCancelled"];
     self.response = [aDecoder decodeObjectForKey:@"response"];
@@ -628,7 +625,6 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [self pause];
     
-    [aCoder encodeObject:self.runLoopModes forKey:@"runLoopModes"];
     [aCoder encodeObject:self.request forKey:@"request"];
 
     switch (self.state) {
@@ -652,16 +648,14 @@ didReceiveResponse:(NSURLResponse *)response
 
 - (id)copyWithZone:(NSZone *)zone {
     AFURLConnectionOperation *operation = [[[self class] allocWithZone:zone] initWithRequest:self.request];
-    
-    operation.runLoopModes = [self.runLoopModes copyWithZone:zone];
-    
-    operation.uploadProgress = [self.uploadProgress copy];
-    operation.downloadProgress = [self.downloadProgress copy];
-    operation.authenticationAgainstProtectionSpace = [self.authenticationAgainstProtectionSpace copy];
-    operation.authenticationChallenge = [self.authenticationChallenge copy];
-    operation.cacheResponse = [self.cacheResponse copy];
-    operation.redirectResponse = [self.redirectResponse copy];
-    
+            
+    operation.uploadProgress = self.uploadProgress;
+    operation.downloadProgress = self.downloadProgress;
+    operation.authenticationAgainstProtectionSpace = self.authenticationAgainstProtectionSpace;
+    operation.authenticationChallenge = self.authenticationChallenge;
+    operation.cacheResponse = self.cacheResponse;
+    operation.redirectResponse = self.redirectResponse;
+
     return operation;
 }
 
