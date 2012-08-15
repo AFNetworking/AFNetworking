@@ -118,6 +118,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)operationDidStart;
 - (void)finish;
+- (void)cancelConnection;
 @end
 
 @implementation AFURLConnectionOperation
