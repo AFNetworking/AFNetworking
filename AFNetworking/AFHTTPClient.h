@@ -124,8 +124,14 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
     [NSURL URLWithString:@"/foo/" relativeToURL:baseURL];                   // http://example.com/foo/
     [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL];    // http://example2.com/
 
+ ## NSCoding / NSCopying Conformance
+ 
+ `AFHTTPClient`  conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. There are a few minor caveats to keep in mind, however:
+ 
+ - Archives and copies of HTTP clients will be initialized with an empty operation queue.
+ - NSCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
  */
-@interface AFHTTPClient : NSObject
+@interface AFHTTPClient : NSObject <NSCoding, NSCopying>
 
 ///---------------------------------------
 /// @name Accessing HTTP Client Properties

@@ -664,6 +664,46 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [self enqueueHTTPRequestOperation:operation];
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    NSURL *baseURL = [aDecoder decodeObjectForKey:@"baseURL"];
+    
+    self = [self initWithBaseURL:baseURL];
+    if (!self) {
+        return nil;
+    }
+    
+    self.stringEncoding = [aDecoder decodeIntegerForKey:@"stringEncoding"];
+    self.parameterEncoding = [aDecoder decodeIntegerForKey:@"parameterEncoding"];
+    self.registeredHTTPOperationClassNames = [aDecoder decodeObjectForKey:@"registeredHTTPOperationClassNames"];
+    self.defaultHeaders = [aDecoder decodeObjectForKey:@"defaultHeaders"];
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.baseURL forKey:@"baseURL"];
+    [aCoder encodeInteger:self.stringEncoding forKey:@"stringEncoding"];
+    [aCoder encodeInteger:self.parameterEncoding forKey:@"parameterEncoding"];
+    [aCoder encodeObject:self.registeredHTTPOperationClassNames forKey:@"registeredHTTPOperationClassNames"];
+    [aCoder encodeObject:self.defaultHeaders forKey:@"defaultHeaders"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFHTTPClient *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL];
+    
+    HTTPClient.stringEncoding = self.stringEncoding;
+    HTTPClient.parameterEncoding = self.parameterEncoding;
+    HTTPClient.registeredHTTPOperationClassNames = [[self.registeredHTTPOperationClassNames copyWithZone:zone] autorelease];
+    HTTPClient.defaultHeaders = [[self.defaultHeaders copyWithZone:zone] autorelease];
+    HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
+    
+    return HTTPClient;
+}
+
 @end
 
 #pragma mark -
