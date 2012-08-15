@@ -26,10 +26,10 @@
 #endif
 
 typedef enum {
-    AFHTTPOperationPausedState      = -1,
-    AFHTTPOperationReadyState       = 1,
-    AFHTTPOperationExecutingState   = 2,
-    AFHTTPOperationFinishedState    = 3,
+    AFOperationPausedState      = -1,
+    AFOperationReadyState       = 1,
+    AFOperationExecutingState   = 2,
+    AFOperationFinishedState    = 3,
 } _AFOperationState;
 
 typedef signed short AFOperationState;
@@ -58,13 +58,13 @@ typedef NSURLRequest * (^AFURLConnectionOperationRedirectResponseBlock)(NSURLCon
 
 static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
     switch (state) {
-        case AFHTTPOperationReadyState:
+        case AFOperationReadyState:
             return @"isReady";
-        case AFHTTPOperationExecutingState:
+        case AFOperationExecutingState:
             return @"isExecuting";
-        case AFHTTPOperationFinishedState:
+        case AFOperationFinishedState:
             return @"isFinished";
-        case AFHTTPOperationPausedState:
+        case AFOperationPausedState:
             return @"isPaused";
         default:
             return @"state";
@@ -73,28 +73,28 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
 
 static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperationState toState, BOOL isCancelled) {
     switch (fromState) {
-        case AFHTTPOperationReadyState:
+        case AFOperationReadyState:
             switch (toState) {
-                case AFHTTPOperationPausedState:
-                case AFHTTPOperationExecutingState:
+                case AFOperationPausedState:
+                case AFOperationExecutingState:
                     return YES;
-                case AFHTTPOperationFinishedState:
+                case AFOperationFinishedState:
                     return isCancelled;
                 default:
                     return NO;
             }
-        case AFHTTPOperationExecutingState:
+        case AFOperationExecutingState:
             switch (toState) {
-                case AFHTTPOperationPausedState:
-                case AFHTTPOperationFinishedState:
+                case AFOperationPausedState:
+                case AFOperationFinishedState:
                     return YES;
                 default:
                     return NO;
             }
-        case AFHTTPOperationFinishedState:
+        case AFOperationFinishedState:
             return NO;
-        case AFHTTPOperationPausedState:
-            return toState == AFHTTPOperationReadyState;
+        case AFOperationPausedState:
+            return toState == AFOperationReadyState;
         default:
             return YES;
     }
@@ -180,7 +180,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     self.outputStream = [NSOutputStream outputStreamToMemory];
         
-    self.state = AFHTTPOperationReadyState;
+    self.state = AFOperationReadyState;
 	
     return self;
 }
@@ -326,10 +326,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         [self didChangeValueForKey:newStateKey];
         
         switch (state) {
-            case AFHTTPOperationExecutingState:
+            case AFOperationExecutingState:
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
                 break;
-            case AFHTTPOperationFinishedState:
+            case AFOperationFinishedState:
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
                 break;
             default:
@@ -366,13 +366,13 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
     }
     
-    self.state = AFHTTPOperationPausedState;
+    self.state = AFOperationPausedState;
 
     [self.lock unlock];
 }
 
 - (BOOL)isPaused {
-    return self.state == AFHTTPOperationPausedState;
+    return self.state == AFOperationPausedState;
 }
 
 - (void)resume {
@@ -381,7 +381,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
     
     [self.lock lock];
-    self.state = AFHTTPOperationReadyState;
+    self.state = AFOperationReadyState;
     
     [self start];
     [self.lock unlock];
@@ -390,15 +390,15 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 #pragma mark - NSOperation
 
 - (BOOL)isReady {
-    return self.state == AFHTTPOperationReadyState && [super isReady];
+    return self.state == AFOperationReadyState && [super isReady];
 }
 
 - (BOOL)isExecuting {
-    return self.state == AFHTTPOperationExecutingState;
+    return self.state == AFOperationExecutingState;
 }
 
 - (BOOL)isFinished {
-    return self.state == AFHTTPOperationFinishedState;
+    return self.state == AFOperationFinishedState;
 }
 
 - (BOOL)isConcurrent {
@@ -408,7 +408,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 - (void)start {
     [self.lock lock];
     if ([self isReady]) {
-        self.state = AFHTTPOperationExecutingState;
+        self.state = AFOperationExecutingState;
         
         [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
     }
@@ -434,7 +434,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)finish {
-    self.state = AFHTTPOperationFinishedState;
+    self.state = AFOperationFinishedState;
 }
 
 - (void)cancel {
@@ -634,9 +634,9 @@ didReceiveResponse:(NSURLResponse *)response
     [aCoder encodeObject:self.request forKey:@"request"];
 
     switch (self.state) {
-        case AFHTTPOperationExecutingState:
-        case AFHTTPOperationPausedState:
-            [aCoder encodeInteger:AFHTTPOperationReadyState forKey:@"state"];
+        case AFOperationExecutingState:
+        case AFOperationPausedState:
+            [aCoder encodeInteger:AFOperationReadyState forKey:@"state"];
             break;
         default:
             [aCoder encodeInteger:self.state forKey:@"state"];
