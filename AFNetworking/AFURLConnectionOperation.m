@@ -608,7 +608,9 @@ didReceiveResponse:(NSURLResponse *)response
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     NSURLRequest *request = [aDecoder decodeObjectForKey:@"request"];
-    if (!request || ![self initWithRequest:request]) {
+    
+    self = [self initWithRequest:request];
+    if (!self) {
         return nil;
     }
 
