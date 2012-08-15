@@ -606,4 +606,65 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    NSURLRequest *request = [aDecoder decodeObjectForKey:@"request"];
+    
+    self = [self initWithRequest:request];
+    if (!self) {
+        return nil;
+    }
+    
+    self.runLoopModes = [aDecoder decodeObjectForKey:@"runLoopModes"];
+    self.state = [aDecoder decodeIntegerForKey:@"state"];
+    self.cancelled = [aDecoder decodeBoolForKey:@"isCancelled"];
+    self.response = [aDecoder decodeObjectForKey:@"response"];
+    self.error = [aDecoder decodeObjectForKey:@"error"];
+    self.responseData = [aDecoder decodeObjectForKey:@"responseData"];
+    self.totalBytesRead = [[aDecoder decodeObjectForKey:@"totalBytesRead"] longLongValue];
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [self pause];
+    
+    [aCoder encodeObject:self.runLoopModes forKey:@"runLoopModes"];
+    [aCoder encodeObject:self.request forKey:@"request"];
+
+    switch (self.state) {
+        case AFHTTPOperationExecutingState:
+        case AFHTTPOperationPausedState:
+            [aCoder encodeInteger:AFHTTPOperationReadyState forKey:@"state"];
+            break;
+        default:
+            [aCoder encodeInteger:self.state forKey:@"state"];
+            break;
+    }
+    
+    [aCoder encodeBool:[self isCancelled] forKey:@"isCancelled"];
+    [aCoder encodeObject:self.response forKey:@"response"];
+    [aCoder encodeObject:self.error forKey:@"error"];
+    [aCoder encodeObject:self.responseData forKey:@"responseData"];
+    [aCoder encodeObject:[NSNumber numberWithLongLong:self.totalBytesRead] forKey:@"totalBytesRead"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFURLConnectionOperation *operation = [[[self class] allocWithZone:zone] initWithRequest:self.request];
+    
+    operation.runLoopModes = [self.runLoopModes copyWithZone:zone];
+    
+    operation.uploadProgress = [self.uploadProgress copy];
+    operation.downloadProgress = [self.downloadProgress copy];
+    operation.authenticationAgainstProtectionSpace = [self.authenticationAgainstProtectionSpace copy];
+    operation.authenticationChallenge = [self.authenticationChallenge copy];
+    operation.cacheResponse = [self.cacheResponse copy];
+    operation.redirectResponse = [self.redirectResponse copy];
+    
+    return operation;
+}
+
 @end
