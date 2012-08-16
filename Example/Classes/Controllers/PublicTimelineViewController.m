@@ -41,8 +41,10 @@
     [_activityIndicatorView startAnimating];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets) {
-        if (tweets) {
+    [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets, NSError *error) {
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:[error localizedDescription] delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+        } else {
             _tweets = tweets;
             [self.tableView reloadData];
         }
