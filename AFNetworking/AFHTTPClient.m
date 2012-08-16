@@ -63,8 +63,6 @@ typedef id AFNetworkReachabilityRef;
 
 typedef void (^AFCompletionBlock)(void);
 
-static NSUInteger const kAFHTTPClientDefaultMaxConcurrentOperationCount = 4;
-
 static NSString * AFBase64EncodedStringFromString(NSString *string) {
     NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
     NSUInteger length = [data length];
@@ -256,6 +254,11 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
         return nil;
     }
     
+    // Ensure terminal slash for baseURL path, so that NSURL +URLWithString:relativeToURL: works as expected
+    if ([[url path] length] > 0 && ![[url absoluteString] hasSuffix:@"/"]) {
+        url = [url URLByAppendingPathComponent:@""];
+    }
+    
     self.baseURL = url;
     
     self.stringEncoding = NSUTF8StringEncoding;
@@ -285,7 +288,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 #endif
     
     self.operationQueue = [[[NSOperationQueue alloc] init] autorelease];
-	[self.operationQueue setMaxConcurrentOperationCount:kAFHTTPClientDefaultMaxConcurrentOperationCount];
+	[self.operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
     
     return self;
 }
@@ -661,6 +664,47 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [self enqueueHTTPRequestOperation:operation];
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    NSURL *baseURL = [aDecoder decodeObjectForKey:@"baseURL"];
+    
+    self = [self initWithBaseURL:baseURL];
+    if (!self) {
+        return nil;
+    }
+    
+    self.stringEncoding = [aDecoder decodeIntegerForKey:@"stringEncoding"];
+    self.parameterEncoding = [aDecoder decodeIntegerForKey:@"parameterEncoding"];
+    self.registeredHTTPOperationClassNames = [aDecoder decodeObjectForKey:@"registeredHTTPOperationClassNames"];
+    self.defaultHeaders = [aDecoder decodeObjectForKey:@"defaultHeaders"];
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.baseURL forKey:@"baseURL"];
+    [aCoder encodeInteger:self.stringEncoding forKey:@"stringEncoding"];
+    [aCoder encodeInteger:self.parameterEncoding forKey:@"parameterEncoding"];
+    [aCoder encodeObject:self.registeredHTTPOperationClassNames forKey:@"registeredHTTPOperationClassNames"];
+    [aCoder encodeObject:self.defaultHeaders forKey:@"defaultHeaders"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFHTTPClient *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL];
+    
+    HTTPClient.stringEncoding = self.stringEncoding;
+    HTTPClient.parameterEncoding = self.parameterEncoding;
+    HTTPClient.registeredHTTPOperationClassNames = [[self.registeredHTTPOperationClassNames copyWithZone:zone] autorelease];
+    HTTPClient.defaultHeaders = [[self.defaultHeaders copyWithZone:zone] autorelease];
+#ifdef _SYSTEMCONFIGURATION_H
+    HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
+#endif
+    return HTTPClient;
+}
+
 @end
 
 #pragma mark -
@@ -724,7 +768,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     self.request = request;
     self.stringEncoding = encoding;
     
-    self.temporaryFilePath = [AFMultipartTemporaryFileDirectoryPath() stringByAppendingPathComponent:[NSString stringWithFormat:@"%u", [[self.request URL] hash]]];
+    self.temporaryFilePath = [AFMultipartTemporaryFileDirectoryPath() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
     self.outputStream = [NSOutputStream outputStreamToFileAtPath:self.temporaryFilePath append:NO];
     
     NSRunLoop *runLoop = [NSRunLoop currentRunLoop];

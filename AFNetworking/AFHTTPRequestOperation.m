@@ -23,8 +23,6 @@
 #import "AFHTTPRequestOperation.h"
 #import <objc/runtime.h>
 
-NSString * const kAFNetworkingIncompleteDownloadDirectoryName = @"Incomplete";
-
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     static NSCharacterSet *_skippedCharacterSet = nil;
     static dispatch_once_t onceToken;
@@ -77,11 +75,11 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         }
 
         if (range.length == 1) {
-            [string appendFormat:@"%u", range.location];
+            [string appendFormat:@"%lu", (long)range.location];
         } else {
             NSUInteger firstIndex = range.location;
             NSUInteger lastIndex = firstIndex + range.length - 1;
-            [string appendFormat:@"%u-%u", firstIndex, lastIndex];
+            [string appendFormat:@"%lu-%lu", (long)firstIndex, (long)lastIndex];
         }
 
         range.location = nextIndex;
@@ -89,24 +87,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     }
 
     return string;
-}
-
-NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
-    static NSString *incompleteDownloadPath;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSString *tempDirectory = NSTemporaryDirectory();
-        incompleteDownloadPath = [[tempDirectory stringByAppendingPathComponent:kAFNetworkingIncompleteDownloadDirectoryName] retain];
-
-        NSError *error = nil;
-        NSFileManager *fileMan = [[NSFileManager alloc] init];
-        if(![fileMan createDirectoryAtPath:incompleteDownloadPath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create incomplete downloads directory at %@", incompleteDownloadPath);
-        }
-        [fileMan release];
-    });
-
-    return incompleteDownloadPath;
 }
 
 #pragma mark -
@@ -121,7 +101,6 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 
 @implementation AFHTTPRequestOperation
 @synthesize HTTPError = _HTTPError;
-@synthesize responseFilePath = _responseFilePath;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
 @synthesize totalContentLength = _totalContentLength;
@@ -150,12 +129,14 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
         if (![self hasAcceptableStatusCode]) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
+            [userInfo setValue:self.responseString forKey:NSLocalizedRecoverySuggestionErrorKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
         } else if ([self.responseData length] > 0 && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), [[self class] acceptableContentTypes], [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
+            [userInfo setValue:self.responseString forKey:NSLocalizedRecoverySuggestionErrorKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo] autorelease];
@@ -188,7 +169,7 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 }
 
 - (BOOL)hasAcceptableStatusCode {
-    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:[self.response statusCode]];
+    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:(NSUInteger)[self.response statusCode]];
 }
 
 - (BOOL)hasAcceptableContentType {
@@ -245,19 +226,6 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
             }
         }
     };
-}
-
-- (void)setResponseFilePath:(NSString *)responseFilePath {
-    if ([self isReady] && responseFilePath != _responseFilePath) {
-        [_responseFilePath release];
-        _responseFilePath = [responseFilePath retain];
-        
-        if (responseFilePath) {
-            self.outputStream = [NSOutputStream outputStreamToFileAtPath:responseFilePath append:NO];
-        }else {
-            self.outputStream = [NSOutputStream outputStreamToMemory];
-        }
-    }
 }
 
 #pragma mark - AFHTTPRequestOperation

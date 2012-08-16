@@ -189,8 +189,8 @@
 			children = (
 				F8DA09E31396AC040057D0CC /* main.m */,
 				F8129C3815910830009BFE23 /* Prefix.pch */,
-				F8129C7215910C37009BFE23 /* AppDelegate.m */,
 				F8129C7315910C37009BFE23 /* AppDelegate.h */,
+				F8129C7215910C37009BFE23 /* AppDelegate.m */,
 				F8E4696C1395739D00DB05C8 /* iOS-Info.plist */,
 			);
 			name = "Supporting Files";
