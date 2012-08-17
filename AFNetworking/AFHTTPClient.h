@@ -24,7 +24,7 @@
 
 @class AFHTTPRequestOperation;
 @protocol AFHTTPClientOperation;
-@protocol AFMultipartFormData;
+@protocol AFStreamingMultipartFormData;
 
 /**
  Posted when network reachability changes.
@@ -310,7 +310,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                                    path:(NSString *)path
                                              parameters:(NSDictionary *)parameters
-                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
+                              constructingBodyWithBlock:(void (^)(id <AFStreamingMultipartFormData> formData))block;
 
 ///-------------------------------
 /// @name Creating HTTP Operations
@@ -463,15 +463,13 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @see `AFHTTPClient -multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:`
  */
-@protocol AFMultipartFormData
 
-/**
- Appends HTTP headers, followed by the encoded data and the multipart form boundary.
- 
- @param headers The HTTP headers to be appended to the form data.
- @param body The data to be encoded and appended to the form data.
- */
-- (void)appendPartWithHeaders:(NSDictionary *)headers body:(NSData *)body;
+
+#pragma mark --
+
+
+@protocol AFStreamingMultipartFormData
+
 
 /**
  Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
@@ -479,17 +477,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param data The data to be encoded and appended to the form data.
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
  */
-- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
 
-/**
- Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
- 
- @param data The data to be encoded and appended to the form data.
- @param name The name to be associated with the specified data. This parameter must not be `nil`.
- @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
- @param filename The filename to be associated with the specified data. This parameter must not be `nil`.
- */
-- (void)appendPartWithFileData:(NSData *)data name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType;
+- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{generated filename}; name=#{name}"` and `Content-Type: #{generated mimeType}`, followed by the encoded file data and the multipart form boundary.
@@ -502,21 +491,9 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @discussion The filename and MIME type for this data in the form will be automatically generated, using `NSURLResponse` `-suggestedFilename` and `-MIMEType`, respectively.
  */
+
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
 
-/**
- Appends encoded data to the form data.
- 
- @param data The data to be encoded and appended to the form data.
- */
-- (void)appendData:(NSData *)data;
-
-/**
- Appends a string to the form data.
- 
- @param string The string to be encoded and appended to the form data.
- */
-- (void)appendString:(NSString *)string;
-
 @end
+
 
