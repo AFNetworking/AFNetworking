@@ -465,6 +465,9 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  */
 
 
+#pragma mark --
+
+
 @protocol AFStreamingMultipartFormData
 
 
@@ -492,4 +495,5 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
 
 @end
+
 

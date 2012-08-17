@@ -61,8 +61,8 @@ NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire
 -(id)initWithStringEncoding:(NSStringEncoding)encoding;
 -(BOOL)addFileFromURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
 -(void)addFormData:(NSData *)data name:(NSString *)name;
--(BOOL)empty;
 -(NSUInteger)contentLength;
+-(BOOL)empty;
 
 @end
 
@@ -720,28 +720,11 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 #pragma mark -
 
-static NSString * const kAFMultipartTemporaryFileDirectoryName = @"com.alamofire.uploads";
-
-static NSString * AFMultipartTemporaryFileDirectoryPath() {
-    static NSString *multipartTemporaryFilePath = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        multipartTemporaryFilePath = [[NSTemporaryDirectory() stringByAppendingPathComponent:kAFMultipartTemporaryFileDirectoryName] copy];
-        
-        NSError *error = nil;
-        if(![[NSFileManager defaultManager] createDirectoryAtPath:multipartTemporaryFilePath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create multipary temporary file directory at %@", multipartTemporaryFilePath);
-        }
-    });
-    
-    return multipartTemporaryFilePath;
-}
-
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
 
 static NSString * const kAFMultipartFormCRLF = @"\r\n";
 
-static NSInteger const kAFStreamToStreamBufferSize = 1024*1024; //1 meg default
+static NSUInteger const kAFMultipart3GThrottleBytesPerSecond = 81920;
 
 static inline NSString * AFMultipartFormInitialBoundary() {
     return [NSString stringWithFormat:@"--%@%@", kAFMultipartFormBoundary, kAFMultipartFormCRLF];
@@ -810,8 +793,400 @@ static inline NSString * AFMultipartFormFinalBoundary() {
   return self.request;
 }
 
--(void)appendData:(NSData *)data {
+@end
+
+#pragma mark --
+
+@class AFMultipartBodyStreamElementHeader;
+
+@protocol AFMultipartBodyStreamElementProtocol <NSObject>
+
+-(AFMultipartBodyStreamElementHeader *)headerElement;
+-(NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)len;
+-(NSUInteger)contentLength;
+
+
+@end
+
+
+#pragma mark --
+#pragma mark AFMultipartBodyStreamElementProtocol classes
+
+NSInteger AFReadDataIntoBuffer(NSData * data, uint8_t * buffer, NSUInteger maxLength, NSUInteger * cursorPtr);
+
+@interface AFMultipartBodyStreamElement : NSObject <AFMultipartBodyStreamElementProtocol> {
+  NSStringEncoding stringEncoding;
+  NSUInteger cursor;
+}
+
+-(id)initWithStringEncoding:(NSStringEncoding)encoding;
+-(id)initWithName:(NSString *)elementName stringEncoding:(NSStringEncoding)encoding;
+
+
+@property (retain) NSString * name;
+
+@end
+
+@interface AFMultipartBodyStreamElementHeader : AFMultipartBodyStreamElement
+
+@property (retain) NSData * headerData;
+
++(AFMultipartBodyStreamElementHeader*)headerFromData:(NSData *)data;
+
+@end
+
+@interface AFMultipartBodyStreamFormData : AFMultipartBodyStreamElement
+
++(AFMultipartBodyStreamFormData *)elementFromData:(NSData *)data withName:(NSString *)name stringEncoding:(NSStringEncoding)stringEncoding;
+
+@end
+
+
+@interface AFMultipartBodyStreamFileData : AFMultipartBodyStreamElement
+
++(AFMultipartBodyStreamFileData *)elementFromFileURL:(NSURL *)fileURL name:(NSString *)name stringEncoding:(NSStringEncoding)encoding error:(NSError **)error;
+
+@end
+
+@interface AFMultipartBodyStreamBoundary : AFMultipartBodyStreamElement
+
++(AFMultipartBodyStreamBoundary *)boundaryFromString:(NSString *)string withEncoding:(NSStringEncoding)stringEncoding;
+
+@end
+
+#pragma mark --
+#pragma mark AFMultipartBodyStreamElements
+
+@interface AFMultipartBodyStreamElements : NSEnumerator {
+  NSUInteger elementCursor;
+  NSMutableArray * elements;
+}
+
+@property NSStringEncoding stringEncoding;
+
+-(AFMultipartBodyStreamElements *)initWithStringEncoding:(NSStringEncoding)encoding;
+-(NSUInteger)contentLength;
+-(void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
+-(BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error;
+
+@end
+
+@implementation AFMultipartBodyStreamElements
+
+@synthesize stringEncoding;
+
+-(AFMultipartBodyStreamElements *)initWithStringEncoding:(NSStringEncoding)encoding {
+  self = [super init];
+  stringEncoding = encoding;
+  elementCursor = -1;
+  elements = nil;
+  return self;
+}
+
+-(id)nextObject {
+  if (elementCursor == ([elements count] - 1))
+    return nil;
+  elementCursor++;
+  return [elements objectAtIndex:elementCursor];
+}
+
+-(NSArray *)allObjects {
+  return elements;
+}
+
+-(NSUInteger)contentLength {
+  NSUInteger sum = 0;
+  for (id<AFMultipartBodyStreamElementProtocol> element in elements) {
+    sum = sum + [element contentLength];
+  }
+  return sum;
+}
+
+-(void)appendPartWithFormData:(NSData *)data name:(NSString *)name {
+  AFMultipartBodyStreamFormData * element = [AFMultipartBodyStreamFormData elementFromData:data withName:name stringEncoding:stringEncoding];
+  [self appendPartWithElement:element];
+}
+
+-(BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error {
+  AFMultipartBodyStreamFileData * element = [AFMultipartBodyStreamFileData elementFromFileURL:fileURL name:name stringEncoding:stringEncoding error:error];
+  if (element == nil)
+    return NO;
+  [self appendPartWithElement:element];
+  return YES;
+}
+
+-(void)appendPartWithElement:(AFMultipartBodyStreamElement *)element {
+  //init elements with init/final boundaries if necessary
+  if (elements == nil)
+    elements = [[NSMutableArray arrayWithObjects:
+                 [AFMultipartBodyStreamBoundary boundaryFromString:AFMultipartFormInitialBoundary() withEncoding:stringEncoding],
+                 [AFMultipartBodyStreamBoundary boundaryFromString:AFMultipartFormFinalBoundary() withEncoding:stringEncoding], 
+                 nil] retain];
+
   
+  //append encapsulation boundary if needed
+  if ([elements count] > 2) {
+    [self insertElementBeforeFinalBoundary:[AFMultipartBodyStreamBoundary boundaryFromString:AFMultipartFormEncapsulationBoundary() withEncoding:stringEncoding]];
+  }
+  
+  AFMultipartBodyStreamElementHeader * header = [element headerElement];
+  [self insertElementBeforeFinalBoundary:header];  
+  [self insertElementBeforeFinalBoundary:element];
+}
+
+-(void)insertElementBeforeFinalBoundary:(AFMultipartBodyStreamElement *)element {
+  [elements insertObject:element atIndex:[elements count]-1];
+}
+
+-(void)dealloc {
+  [elements release];
+  [super dealloc];
+}
+
+@end
+
+NSInteger AFReadDataIntoBuffer(NSData * data, uint8_t * buffer, NSUInteger maxLength, NSUInteger * cursorPtr) {
+  NSInteger bytesAvailable = [data length] - *cursorPtr;
+  if (maxLength > bytesAvailable) {
+    [data getBytes:buffer range:NSMakeRange(*cursorPtr, bytesAvailable)];
+    *cursorPtr += bytesAvailable;
+    return bytesAvailable;
+  } else {
+    [data getBytes:buffer range:NSMakeRange(*cursorPtr, maxLength)];
+    *cursorPtr += maxLength;
+    return maxLength;
+  }
+}
+
+#pragma mark --
+#pragma mark AFMultipartBodyStreamElementProtocol classes
+
+@implementation AFMultipartBodyStreamElement 
+
+@synthesize name;
+
+-(id)initWithName:(NSString *)elementName stringEncoding:(NSStringEncoding)encoding {
+  self = [self initWithStringEncoding:encoding];
+  self.name = elementName;
+  return self;
+}
+
+-(id)initWithStringEncoding:(NSStringEncoding)encoding {
+  self = [super init];
+  assert(encoding != 0);
+  stringEncoding = encoding;
+  cursor = 0;
+  return self;
+}
+
+-(NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)len {
+  assert(false);
+}
+
+-(NSUInteger)contentLength {
+  assert(false);
+}
+
+-(AFMultipartBodyStreamElementHeader *)headerElement {
+  assert(false);
+}
+
+-(void)dealloc {
+  [name release];
+  [super dealloc];
+}
+
+@end
+
+@implementation AFMultipartBodyStreamElementHeader
+
+@synthesize headerData;
+
++(AFMultipartBodyStreamElementHeader *)headerFromData:(NSData *)data {
+  AFMultipartBodyStreamElementHeader * header = [[[[self class] alloc] init] autorelease];
+  header.headerData = data;
+  return header;
+}
+
++(NSString *)stringForHeadersDict:(NSDictionary *)headers {
+  NSMutableString * headerString = [NSMutableString string];
+  for (NSString *field in [headers allKeys]) {
+    [headerString appendString:[NSString stringWithFormat:@"%@: %@%@", field, [headers valueForKey:field], kAFMultipartFormCRLF]];
+  }
+  return [NSString stringWithString:headerString];
+}
+
++(NSData *)dataForHeadersDict:(NSDictionary *)headersDict stringEncoding:(NSStringEncoding)stringEncoding {
+  NSMutableString * headerString = [NSMutableString string]; 
+  [headerString appendString:[[self class] stringForHeadersDict:headersDict]];
+  [headerString appendString:kAFMultipartFormCRLF];
+  
+  return [headerString dataUsingEncoding:stringEncoding];
+}
+
+-(NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)len {
+  return AFReadDataIntoBuffer(headerData, buffer, len, &cursor);
+}
+
+-(NSUInteger)contentLength {
+  return [headerData length];
+}
+
+-(void)dealloc {
+  [headerData release];
+  [super dealloc];
+}
+
+@end
+
+
+@implementation AFMultipartBodyStreamFormData {
+  NSData * formData;
+}
+
++(AFMultipartBodyStreamFormData *)elementFromData:(NSData *)data withName:(NSString *)name stringEncoding:(NSStringEncoding)stringEncoding {
+  AFMultipartBodyStreamFormData * element = [[[[self class] alloc] initWithData:data name:name stringEncoding:stringEncoding] autorelease];
+  return element;
+}
+
+-(id)initWithData:(NSData *)data name:(NSString *)elementName stringEncoding:(NSStringEncoding)encoding {
+  self = [self initWithName:elementName stringEncoding:encoding];
+  formData = [data retain];
+  return self;
+}
+
+-(NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)len {
+  return AFReadDataIntoBuffer(formData, buffer, len, &cursor);
+}
+
+-(NSUInteger)contentLength {
+  return [formData length];
+}
+
+-(AFMultipartBodyStreamElementHeader *)headerElement {
+  NSData * headerData = [AFMultipartBodyStreamElementHeader dataForHeadersDict:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"form-data; name=\"%@\"", self.name] forKey:@"Content-Disposition"] 
+                                          stringEncoding:stringEncoding];
+  return [AFMultipartBodyStreamElementHeader headerFromData:headerData];
+}
+
+-(void)dealloc {
+  [formData release];
+  [super dealloc];
+}
+
+@end
+
+
+@implementation AFMultipartBodyStreamFileData {
+  NSURL * url;
+  NSInputStream * fileStream;
+}
+
++(AFMultipartBodyStreamFileData *)elementFromFileURL:(NSURL *)fileURL name:(NSString *)name stringEncoding:(NSStringEncoding)encoding error:(NSError **)error {
+  return [[[[self class] alloc] initWithFileURL:fileURL name:name stringEncoding:encoding error:error] autorelease];
+}
+
+-(id)initWithFileURL:(NSURL *)fileURL name:(NSString *)name stringEncoding:(NSStringEncoding)encoding error:(NSError **)error {  
+  NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+  [userInfo setValue:fileURL forKey:NSURLErrorFailingURLErrorKey];
+  
+  if (![fileURL isFileURL]) {
+    [userInfo setValue:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
+    if (error != NULL) {
+      *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo] autorelease];  
+    }
+    return nil;
+  }
+  
+  if ([fileURL checkResourceIsReachableAndReturnError:error] == NO) {
+    [userInfo setValue:NSLocalizedString(@"File URL not reachable.", nil) forKey:NSLocalizedFailureReasonErrorKey];
+    if (error != NULL) {
+      *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo] autorelease];  
+    }
+    
+    return nil;
+  }
+
+  self = [self initWithName:name stringEncoding:encoding];
+  url = [fileURL retain];
+  fileStream = nil;
+  return self;
+}
+
+-(NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)len {
+  if (fileStream == nil) {
+    fileStream = [[NSInputStream inputStreamWithURL:url] retain];
+    [fileStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    [fileStream open];
+  }
+  
+  NSInteger bytesRead = [fileStream read:buffer maxLength:len];      
+  if (bytesRead == 0) {
+    [fileStream close];
+    [fileStream release];
+    fileStream = nil;
+  }
+  return bytesRead;
+}
+
+-(NSUInteger)contentLength {
+  NSError * error;
+  NSDictionary * fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[url path] error:&error];
+  return [[fileAttributes objectForKey:NSFileSize] longValue];
+}
+
+-(AFMultipartBodyStreamElementHeader *)headerElement {
+  NSString * fileName = [[url pathComponents] objectAtIndex:([[url pathComponents] count] - 1)];
+  NSMutableDictionary * mutableHeaders = [NSMutableDictionary dictionary];
+  [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", self.name, fileName] forKey:@"Content-Disposition"];
+  CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)[url pathExtension], NULL);
+  NSString * MIMEType = [(NSString*) UTTypeCopyPreferredTagWithClass (UTI, kUTTagClassMIMEType) autorelease];
+  CFRelease(UTI);
+  [mutableHeaders setValue:MIMEType forKey:@"Content-Type"];
+  
+  NSData * headerData = [AFMultipartBodyStreamElementHeader dataForHeadersDict:mutableHeaders stringEncoding:stringEncoding];
+  return [AFMultipartBodyStreamElementHeader headerFromData:headerData];
+}
+
+-(void)dealloc {
+  [url release];
+  [super dealloc];
+}
+
+@end
+
+@implementation AFMultipartBodyStreamBoundary {
+  NSData * boundaryData;
+}
+
++(AFMultipartBodyStreamBoundary *)boundaryFromString:(NSString *)string withEncoding:(NSStringEncoding)stringEncoding {
+  return [[[[self class] alloc] initWithBoundaryString:string stringEncoding:stringEncoding] autorelease];
+}
+
+-(id)init {
+  self = [super init];
+  boundaryData = nil;
+  return self;
+}
+
+-(id)initWithBoundaryString:(NSString *)boundaryString stringEncoding:(NSStringEncoding)encoding {
+  self = [self initWithStringEncoding:encoding];
+  boundaryData = [[boundaryString dataUsingEncoding:stringEncoding] retain];
+  return self;
+}
+
+-(NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)len {
+  assert(boundaryData != nil);
+  return AFReadDataIntoBuffer(boundaryData, buffer, len, &cursor);
+}
+
+-(NSUInteger)contentLength {
+  return [boundaryData length];
+}
+
+-(void)dealloc {
+  [boundaryData release];
+  [super dealloc];
 }
 
 @end
@@ -820,24 +1195,14 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 #pragma mark AFMultipartBodyStream
 
 @interface AFMultipartBodyStream () {
-  //all undocumented nsstream/nsinputstream/CFReadStream bull shit
-  CFReadStreamClientCallBack copiedCallback;
-	CFStreamClientContext copiedContext;
-	CFOptionFlags requestedEvents;
-  NSStreamStatus streamStatus;
-  id <NSStreamDelegate> delegate;
-  
-  NSMutableArray * fileNames;
-  NSMutableDictionary * fileURLs;
-  NSMutableDictionary * fileHeaders;
-  NSMutableArray * formNames;
-  NSMutableDictionary * formDatas;
-  NSMutableDictionary * formHeaders;
-  NSUInteger readElementCursor;
-  NSUInteger readOffsetCursor;
-  NSUInteger readHeaderOffsetCursor;
-  NSInputStream * currentFileStream;
   NSStringEncoding stringEncoding;
+  AFMultipartBodyStreamElements * elements;
+  AFMultipartBodyStreamElement * currentElement;
+  NSDate * lastReadAt;
+  NSInteger lastBytesRead;
+  
+  NSStreamStatus streamStatus;
+  id <NSStreamDelegate> delegate; 
 }
 
 @end
@@ -847,187 +1212,49 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 
 -(id)init {
   self = [super init];
-  fileNames = [[NSMutableArray alloc] init];
-  fileURLs = [[NSMutableDictionary alloc] init];
-  fileHeaders = [[NSMutableDictionary alloc] init];
-  formNames = [[NSMutableArray alloc] init];
-  formDatas = [[NSMutableDictionary alloc] init];
-  formHeaders = [[NSMutableDictionary alloc] init];
-  currentFileStream = NULL;
   stringEncoding = NSUTF8StringEncoding;
   streamStatus = NSStreamStatusNotOpen;
-  [self resetCursors];
-//  [self setDelegate:self];
+  elements = [[AFMultipartBodyStreamElements alloc] initWithStringEncoding:stringEncoding];
+  currentElement = NULL;
+  lastReadAt = NULL;
+  lastBytesRead = 0;
   return self;
 }
 
 -(id)initWithStringEncoding:(NSStringEncoding)encoding {
   self = [self init];
+  if (encoding == 0)
+    encoding = NSUTF8StringEncoding;
   stringEncoding = encoding;
+  elements.stringEncoding = encoding;
   return self;
 }
 
--(void)resetCursors {
-  readElementCursor = 0;
-  readOffsetCursor = 0;
-  readHeaderOffsetCursor = 0;
-}
-
 -(void)dealloc {
-  [fileNames release];
-  [fileURLs release];
-  [fileHeaders release];
-  [formNames release];
-  [formDatas release];
-  [formHeaders release];
-  if (currentFileStream) {
-    [currentFileStream close];
-    [currentFileStream release];
-    currentFileStream = NULL;
-  }
+  [elements release];
   [super dealloc];
 }
 
--(BOOL)empty {
-  if (([fileURLs count] + [formDatas count]) == 0)
-    return YES;
-  else
-    return NO;
-}
-
-
 -(BOOL)addFileFromURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error {
   assert([self streamStatus] == NSStreamStatusNotOpen);
-
-  NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-  [userInfo setValue:fileURL forKey:NSURLErrorFailingURLErrorKey];
-  
-  if (![fileURL isFileURL]) {
-    [userInfo setValue:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
-    if (error != NULL) {
-      *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo] autorelease];  
-    }
-    return NO;
-  }
-  
-  if ([fileURL checkResourceIsReachableAndReturnError:error] == NO) {
-    [userInfo setValue:NSLocalizedString(@"File URL not reachable.", nil) forKey:NSLocalizedFailureReasonErrorKey];
-    if (error != NULL) {
-      *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo] autorelease];  
-    }
-
-    return NO;
-  }
-  
-  [fileNames addObject:name];
-  [fileURLs setObject:fileURL forKey:name];
-  [self generateHeaders];
-  
-  return YES;
+  return [elements appendPartWithFileURL:fileURL name:name error:error];
 }
 
 -(void)addFormData:(NSData *)data name:(NSString *)name {
   assert([self streamStatus] == NSStreamStatusNotOpen);
-  [formNames addObject:name];
-  [formDatas setObject:data forKey:name];
-  [self generateHeaders];
-}
-
--(void)generateHeaders {
-  [formHeaders removeAllObjects];
-  for (NSString * formName in formNames) {
-    [formHeaders setObject:[self headersDataForForm:formName] forKey:formName];
-  }
-  [fileHeaders removeAllObjects];
-  for (NSString * fileName in fileNames) {
-    [fileHeaders setObject:[self headersDataForFile:fileName] forKey:fileName];
-  }
-}
-
--(NSString *)stringForHeaders:(NSDictionary *)headers {
-  NSMutableString * headerString = [NSMutableString string];
-  for (NSString *field in [headers allKeys]) {
-    [headerString appendString:[NSString stringWithFormat:@"%@: %@%@", field, [headers valueForKey:field], kAFMultipartFormCRLF]];
-  }
-  return [NSString stringWithString:headerString];
-}
-
--(NSData *)headersDataForDict:(NSDictionary *)headersDict {
-  NSMutableString * headerString = [NSMutableString string];      
-  if ([formHeaders count] == 0 && [fileHeaders count] == 0) {
-    [headerString appendString:AFMultipartFormInitialBoundary()];
-  } else {
-    [headerString appendString:AFMultipartFormEncapsulationBoundary()];
-  }
-  [headerString appendString:[self stringForHeaders:headersDict]];
-  [headerString appendString:kAFMultipartFormCRLF];
-  
-  return [headerString dataUsingEncoding:stringEncoding];
-}
-
--(NSData *)headersDataForFile:(NSString *)name {
-  NSURL * fileURL = [fileURLs objectForKey:name];
-  NSString * fileName = [[fileURL pathComponents] objectAtIndex:([[fileURL pathComponents] count] - 1)];
-  NSMutableDictionary * mutableHeaders = [NSMutableDictionary dictionary];
-  [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-  CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)[fileURL pathExtension], NULL);
-  NSString * MIMEType = [(NSString*) UTTypeCopyPreferredTagWithClass (UTI, kUTTagClassMIMEType) autorelease];
-  CFRelease(UTI);
-  [mutableHeaders setValue:MIMEType forKey:@"Content-Type"];
-  return [self headersDataForDict:mutableHeaders];
-}
-
--(NSData *)headersDataForForm:(NSString *)name {
-  return [self headersDataForDict:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"]];
-}
-
--(NSInteger)readData:(NSData *)data intoBuffer:(uint8_t *)buffer maxLength:(NSUInteger)len offsetCursor:(NSUInteger*)offsetCursorPtr {
-  NSInteger bytesAvailable = [data length] - *offsetCursorPtr;
-  if (len > bytesAvailable) {
-    [data getBytes:buffer range:NSMakeRange(*offsetCursorPtr, bytesAvailable)];
-    *offsetCursorPtr += bytesAvailable;
-    return bytesAvailable;
-  } else {
-    [data getBytes:buffer range:NSMakeRange(*offsetCursorPtr, len)];
-    *offsetCursorPtr += len;
-    return len;
-  }
-}
-
--(void)nextElement {
-  readOffsetCursor = 0;
-  readHeaderOffsetCursor = 0;
-  readElementCursor += 1;
-  
-  if (currentFileStream) {
-    [currentFileStream close];
-    [currentFileStream release];
-    currentFileStream = NULL;
-  }
+  return [elements appendPartWithFormData:data name:name];
 }
 
 -(NSUInteger)contentLength {
-  NSUInteger total = 0;
-  for (NSString * formName in formNames) {
-    total += [[formHeaders objectForKey:formName] length];
-    total += [[formDatas objectForKey:formName] length];
-  }
-  for (NSString * fileName in fileNames) {
-    NSError * error;
-    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[[fileURLs objectForKey:fileName] path] error:&error];
-    total += [[fileHeaders objectForKey:fileName] length];
-    total += [[fileAttributes objectForKey:NSFileSize] longValue];    
-  }
-  total += [[self finalBoundaryData] length];
-  return total;
+  return [elements contentLength];
 }
 
--(NSUInteger)totalElements {
-  return [formDatas count] + [fileURLs count] + 1; //one extra for final boundary
+-(BOOL)empty {
+  return [[elements allObjects] count] == 0;
 }
 
--(NSData *)finalBoundaryData {
-  return [AFMultipartFormFinalBoundary() dataUsingEncoding:stringEncoding];
+-(BOOL)throttle3G {
+  return NO;
 }
 
 #pragma mark - NSStream subclass overrides
@@ -1038,7 +1265,6 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 
 -(void)close {
   streamStatus = NSStreamStatusClosed;
-  [self resetCursors];
 }
 
 - (id <NSStreamDelegate> )delegate {
@@ -1083,82 +1309,46 @@ static inline NSString * AFMultipartFormFinalBoundary() {
   if ([self streamStatus] == NSStreamStatusClosed) {
     return 0;    
   }
-  
   assert ([self streamStatus] == NSStreamStatusOpen);
-    
-  NSInteger bytesRead = 0;
-  NSInteger readFileCursor = (readElementCursor - [formNames count]);
   
-  if (readElementCursor < [formNames count]) {
-    //reading from formDatas
-    NSString * currentFormName = [formNames objectAtIndex:readElementCursor];
-    NSData * currentData = [formDatas objectForKey:currentFormName];
-    NSData * headersData = [formHeaders objectForKey:currentFormName];
-
-    if (readHeaderOffsetCursor < [headersData length]) {
-      bytesRead = [self readData:headersData intoBuffer:buffer maxLength:len offsetCursor:&readHeaderOffsetCursor];
-    } else {
-      bytesRead = [self readData:currentData intoBuffer:buffer maxLength:len offsetCursor:&readOffsetCursor];
-    }
-    if (readOffsetCursor == [currentData length]) {
-      [self nextElement];
-    }
-  } 
-  else if (readFileCursor >= 0 && readFileCursor < [fileNames count]) {
-    //reading from files                                                    
-    NSString * currentFileName = [fileNames objectAtIndex:readFileCursor];
-    NSURL * currentFileURL = [fileURLs objectForKey:currentFileName];
-    NSData * headersData = [fileHeaders objectForKey:currentFileName];
-    
-    assert(headersData != NULL);
-    
-    if (readHeaderOffsetCursor < [headersData length]) {
-      bytesRead =  [self readData:headersData intoBuffer:buffer maxLength:len offsetCursor:&readHeaderOffsetCursor];
-    } else {
-      if (!currentFileStream) {
-        currentFileStream = [[NSInputStream inputStreamWithURL:currentFileURL] retain];
-//        currentFileStream.delegate = self;
-        [currentFileStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-        [currentFileStream open];
-      }
-      
-      bytesRead = [currentFileStream read:buffer maxLength:len];      
-      
-      if (![currentFileStream hasBytesAvailable] || bytesRead == 0) {
-        [self nextElement];
-      }
-    }
-  }  
-  else if (readElementCursor < [self totalElements]) {  
-    //add final boundary
-    bytesRead = [self readData:[self finalBoundaryData] intoBuffer:buffer maxLength:len offsetCursor:&readOffsetCursor];
-    if (readOffsetCursor == [[self finalBoundaryData] length]) {
-      [self nextElement];
-    }
-  }
-  else {
-    [self nextElement];
+  if (currentElement == NULL) {
+    currentElement = [elements nextObject];
   }
   
-  if (readElementCursor <= [self totalElements]) {
-    if (bytesRead < len) {
-      bytesRead += [self read:buffer+bytesRead maxLength:len-bytesRead];
-    } else {
-      // no deeper recursion so call callback if necessary
-      if (copiedCallback && (requestedEvents & kCFStreamEventHasBytesAvailable)) {
-        copiedCallback((CFReadStreamRef)self, kCFStreamEventHasBytesAvailable, &copiedContext);
-      }
-    }
+  NSInteger bytesRead = [currentElement read:buffer maxLength:len];
+  
+  if (bytesRead == 0) {
+    currentElement = [elements nextObject];
   }
-
+  
+  if (currentElement != nil && bytesRead < len) {
+    //recurse to fill out the buffer. the main reason we do this
+    //is because we might have read zero bytes above if we reached
+    // the end of one element, but if we return zero below, it means 
+    //we're ready to close, which we're not.
+    bytesRead += [self read:buffer+bytesRead maxLength:len-bytesRead];
+  } else {
+    if (lastReadAt) {
+      if ([self throttle3G]) {
+        NSTimeInterval minInterval = (NSTimeInterval)lastBytesRead / kAFMultipart3GThrottleBytesPerSecond;
+        NSTimeInterval elapsedInterval = [[NSDate date] timeIntervalSinceDate:lastReadAt];
+        if (elapsedInterval < minInterval) {
+          [NSThread sleepForTimeInterval:(minInterval - elapsedInterval)];
+        }
+      }
+      [lastReadAt release];
+    }
+    lastReadAt = [[NSDate date] retain];
+  }
+  
+  lastBytesRead = bytesRead;  
   return bytesRead;
 }
 
 -(BOOL)hasBytesAvailable {
   if ([self streamStatus] != NSStreamStatusOpen) {
     return NO;
-  }  
-  else {
+  } else {
     return YES;
   }
 }
@@ -1175,27 +1365,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 - (BOOL)_setCFClientFlags:(CFOptionFlags)inFlags
                  callback:(CFReadStreamClientCallBack)inCallback
                   context:(CFStreamClientContext *)inContext {
-	
-	if (inCallback != NULL) {
-		requestedEvents = inFlags;
-		copiedCallback = inCallback;
-		memcpy(&copiedContext, inContext, sizeof(CFStreamClientContext));
-		if (copiedContext.info && copiedContext.retain) {
-			copiedContext.retain(copiedContext.info);
-		}
-		copiedCallback((CFReadStreamRef)self, kCFStreamEventHasBytesAvailable, &copiedContext);
-	}
-	else {
-		requestedEvents = kCFStreamEventNone;
-		copiedCallback = NULL;
-		if (copiedContext.info && copiedContext.release) {
-			copiedContext.release(copiedContext.info);
-		}		
-		memset(&copiedContext, 0, sizeof(CFStreamClientContext));
-	}
-	
-	return YES;	
-	
+  return NO;
 }
 
 - (void)_unscheduleFromCFRunLoop:(CFRunLoopRef)aRunLoop forMode:(CFStringRef)aMode {
