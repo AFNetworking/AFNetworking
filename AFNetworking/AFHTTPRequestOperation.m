@@ -127,8 +127,9 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 - (NSError *)error {
     if (self.response && !self.HTTPError) {
         if (![self hasAcceptableStatusCode]) {
+            int statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? [self.response statusCode] : 200;
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
+    		[userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), statusCode] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:self.responseString forKey:NSLocalizedRecoverySuggestionErrorKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
             
@@ -169,7 +170,8 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 }
 
 - (BOOL)hasAcceptableStatusCode {
-    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:(NSUInteger)[self.response statusCode]];
+    int statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? [self.response statusCode] : 200;
+    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:statusCode];
 }
 
 - (BOOL)hasAcceptableContentType {
@@ -276,7 +278,8 @@ didReceiveResponse:(NSURLResponse *)response
     // 206 = Partial Content.
     long long totalContentLength = self.response.expectedContentLength;
     long long fileOffset = 0;
-    if ([self.response statusCode] != 206) {
+    int statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? [self.response statusCode] : 200;
+    if (statusCode != 206) {
         if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
             [self.outputStream setProperty:[NSNumber numberWithInteger:0] forKey:NSStreamFileCurrentOffsetKey];
         } else {
