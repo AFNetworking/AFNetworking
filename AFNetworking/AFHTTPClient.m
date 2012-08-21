@@ -585,8 +585,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         dispatch_release(dispatchGroup);
     }];
     
-    NSPredicate *finishedOperationPredicate = [NSPredicate predicateWithFormat:@"isFinished == YES"];
-    
     for (AFHTTPRequestOperation *operation in operations) {
         AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
         operation.completionBlock = ^{
@@ -597,7 +595,13 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                 }
                 
                 if (progressBlock) {
-                    progressBlock([[operations filteredArrayUsingPredicate:finishedOperationPredicate] count], [operations count]);
+                    NSInteger finishedOperationCount = 0;
+                    for (AFHTTPRequestOperation *o in operations) {
+                        if (o.isFinished) {
+                            finishedOperationCount++;
+                        }
+                    }                    
+                    progressBlock(finishedOperationCount, [operations count]);
                 }
                 
                 dispatch_group_leave(dispatchGroup);
