@@ -22,6 +22,9 @@
 
 #import <Foundation/Foundation.h>
 
+
+extern NSString * const AFURLHTTPErrorCode;
+
 /**
  Indicates an error occured in AFNetworking.
  

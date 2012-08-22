@@ -42,6 +42,8 @@ typedef id AFBackgroundTaskIdentifier;
 
 static NSString * const kAFNetworkingLockName = @"com.alamofire.networking.operation.lock";
 
+NSString * const AFURLHTTPErrorCode = @"AFURLHTTPErrorCode";
+
 NSString * const AFNetworkingErrorDomain = @"com.alamofire.networking.error";
 
 NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.networking.operation.start";
