@@ -28,7 +28,7 @@
 static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 
 @interface AFNetworkActivityIndicatorManager ()
-@property (readwrite, atomic, assign) NSInteger activityCount;
+@property (readwrite, assign) NSInteger activityCount;
 @property (readwrite, nonatomic, retain) NSTimer *activityIndicatorVisibilityTimer;
 @property (readonly, getter = isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
 
@@ -50,6 +50,10 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
     });
     
     return _sharedManager;
+}
+
++ (NSSet *)keyPathsForValuesAffectingIsNetworkActivityIndicatorVisible {
+    return [NSSet setWithObject:@"activityCount"];
 }
 
 - (id)init {
@@ -122,10 +126,6 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 	}
     [self didChangeValueForKey:@"activityCount"];
     [self updateNetworkActivityIndicatorVisibilityDelayed];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingIsNetworkActivityIndicatorVisible {
-    return [NSSet setWithObject:@"activityCount"];
 }
 
 @end
