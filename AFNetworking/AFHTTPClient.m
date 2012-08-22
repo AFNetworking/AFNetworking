@@ -584,9 +584,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         });
         dispatch_release(dispatchGroup);
     }];
-    
-    NSPredicate *finishedOperationPredicate = [NSPredicate predicateWithFormat:@"isFinished == YES"];
-    
+        
     for (AFHTTPRequestOperation *operation in operations) {
         AFCompletionBlock originalCompletionBlock = [[operation.completionBlock copy] autorelease];
         operation.completionBlock = ^{
@@ -596,8 +594,15 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                     originalCompletionBlock();
                 }
                 
+                __block NSUInteger numberOfCompletedOperations = 0;
+                [operations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    if ([(NSOperation *)obj isFinished]) {
+                        numberOfCompletedOperations++;
+                    }
+                }];
+                
                 if (progressBlock) {
-                    progressBlock([[operations filteredArrayUsingPredicate:finishedOperationPredicate] count], [operations count]);
+                    progressBlock(numberOfCompletedOperations, [operations count]);
                 }
                 
                 dispatch_group_leave(dispatchGroup);
