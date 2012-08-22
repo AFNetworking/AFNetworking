@@ -559,7 +559,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 - (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests 
-                                          progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                                          progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock 
                                         completionBlock:(void (^)(NSArray *operations))completionBlock
 {
     NSMutableArray *mutableOperations = [NSMutableArray array];
@@ -572,7 +572,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 - (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations 
-                              progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                              progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock 
                             completionBlock:(void (^)(NSArray *operations))completionBlock
 {
     __block dispatch_group_t dispatchGroup = dispatch_group_create();
@@ -594,15 +594,15 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                     originalCompletionBlock();
                 }
                 
-                __block NSUInteger numberOfCompletedOperations = 0;
+                __block NSUInteger numberOfFinishedOperations = 0;
                 [operations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                     if ([(NSOperation *)obj isFinished]) {
-                        numberOfCompletedOperations++;
+                        numberOfFinishedOperations++;
                     }
                 }];
                 
                 if (progressBlock) {
-                    progressBlock(numberOfCompletedOperations, [operations count]);
+                    progressBlock(numberOfFinishedOperations, [operations count]);
                 }
                 
                 dispatch_group_leave(dispatchGroup);

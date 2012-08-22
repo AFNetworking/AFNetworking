@@ -362,7 +362,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @discussion Operations are created by passing the specified `NSURLRequest` objects in `requests`, using `-HTTPRequestOperationWithRequest:success:failure:`, with `nil` for both the `success` and `failure` parameters.
  */
 - (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests 
-                                          progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                                          progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock 
                                         completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 /**
@@ -373,7 +373,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations. 
  */
 - (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations 
-                              progressBlock:(void (^)(NSUInteger numberOfCompletedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                              progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock 
                             completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 ///---------------------------
