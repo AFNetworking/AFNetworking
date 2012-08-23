@@ -205,6 +205,13 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    if (!self.successCallbackQueue) {
+      self.successCallbackQueue = dispatch_get_current_queue();
+    }
+    if (!self.failureCallbackQueue) {
+      self.failureCallbackQueue = dispatch_get_current_queue();
+    }
+    
     self.completionBlock = ^ {
         if ([self isCancelled]) {
             return;
