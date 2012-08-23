@@ -7,10 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		50ABD6ED159FC2CE001BE42C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */; };
 		F8129C7415910C37009BFE23 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C7215910C37009BFE23 /* AppDelegate.m */; };
+		F818101615E6A0C600EF93C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */; };
 		F8D0701B14310F4A00653FD3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */; };
-		F8D0701C14310F4F00653FD3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E013957DF100DB05C8 /* Security.framework */; };
 		F8DA09E41396AC040057D0CC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09E31396AC040057D0CC /* main.m */; };
 		F8E469651395739D00DB05C8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469641395739D00DB05C8 /* UIKit.framework */; };
 		F8E469671395739D00DB05C8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469661395739D00DB05C8 /* Foundation.framework */; };
@@ -97,13 +96,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50ABD6ED159FC2CE001BE42C /* MobileCoreServices.framework in Frameworks */,
 				F8E469651395739D00DB05C8 /* UIKit.framework in Frameworks */,
 				F8E469671395739D00DB05C8 /* Foundation.framework in Frameworks */,
 				F8E469691395739D00DB05C8 /* CoreGraphics.framework in Frameworks */,
 				F8E469DF13957DD500DB05C8 /* CoreLocation.framework in Frameworks */,
 				F8D0701B14310F4A00653FD3 /* SystemConfiguration.framework in Frameworks */,
-				F8D0701C14310F4F00653FD3 /* Security.framework in Frameworks */,
+				F818101615E6A0C600EF93C2 /* MobileCoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
