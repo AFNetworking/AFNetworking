@@ -563,7 +563,7 @@ didReceiveResponse:(NSURLResponse *)response
     
     if (self.downloadProgress) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.downloadProgress((long long)[data length], self.totalBytesRead, self.response.expectedContentLength);
+            self.downloadProgress([data length], self.totalBytesRead, self.response.expectedContentLength);
         });
     }
 }
