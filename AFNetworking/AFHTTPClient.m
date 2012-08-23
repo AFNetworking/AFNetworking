@@ -55,34 +55,6 @@ NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire
 
 @end
 
-@interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
-
-@property (readonly) unsigned long long contentLength;
-@property (readonly, getter = isEmpty) BOOL empty;
-
-- (id)initWithStringEncoding:(NSStringEncoding)encoding;
-
-@end
-
-@interface AFHTTPBodyPart : NSObject
-@property (assign) BOOL hasInitialBoundary;
-@property (assign) BOOL hasFinalBoundary;
-
-@property (readonly, getter = hasBytesAvailable) BOOL bytesAvailable;
-@property (readonly) unsigned long long contentLength;
-
-+ (AFHTTPBodyPart *)HTTPBodyPartWithStringEncoding:(NSStringEncoding)encoding
-                                           headers:(NSDictionary *)headers
-                                           fileURL:(NSURL *)fileURL;
-
-+ (AFHTTPBodyPart *)HTTPBodyPartWithStringEncoding:(NSStringEncoding)encoding
-                                           headers:(NSDictionary *)headers
-                                          formData:(NSData *)formData;
-
-- (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length;
-
-@end
-
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
@@ -521,9 +493,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 {
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
     
-    __block AFStreamingMultipartFormData * formData = [[[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding] autorelease];
-    
-    //  __block AFMultipartFormData *formData = [[[AFMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding] autorelease];
+    __block AFStreamingMultipartFormData *formData = [[[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding] autorelease];
     
     for (AFQueryStringComponent *component in AFQueryStringComponentsFromKeyAndValue(nil, parameters)) {
         NSData *data = nil;
@@ -781,36 +751,43 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     return [contentType autorelease];
 }
 
+@interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
+
+@property (readonly) unsigned long long contentLength;
+@property (readonly, getter = isEmpty) BOOL empty;
+
+- (id)initWithStringEncoding:(NSStringEncoding)encoding;
+
+@end
+
+@interface AFHTTPBodyPart : NSObject
+@property (nonatomic, assign) NSStringEncoding stringEncoding;
+@property (nonatomic, retain) NSDictionary *headers;
+@property (nonatomic, retain) NSInputStream *inputStream;
+@property (nonatomic, assign) unsigned long long bodyContentLength;
+
+@property (nonatomic, assign) BOOL hasInitialBoundary;
+@property (nonatomic, assign) BOOL hasFinalBoundary;
+
+@property (readonly, getter = hasBytesAvailable) BOOL bytesAvailable;
+@property (readonly) unsigned long long contentLength;
+
+- (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length;
+
+@end
+
 #pragma mark - AFStreamingMultipartFormData
 
-
-
 @interface AFStreamingMultipartFormData ()
-@property (readwrite, nonatomic, retain) NSMutableURLRequest *request;
+@property (readwrite, nonatomic, copy) NSMutableURLRequest *request;
 @property (readwrite, nonatomic, retain) AFMultipartBodyStream *bodyStream;
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
 @end
 
-typedef enum {
-    AFEncapsulationBoundaryPhase = 1,
-    AFHeaderPhase                = 2,
-    AFBodyPhase                  = 3,
-    AFFinalBoundaryPhase         = 4,
-} AFHTTPBodyPartReadPhase;
-
-@interface AFHTTPBodyPart ()
-@property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
-@property (readwrite, nonatomic, retain) NSDictionary *headers;
-@property (readwrite, nonatomic, retain) NSInputStream *inputStream;
-@property (readwrite, nonatomic, assign) unsigned long long bodyContentLength;
-
-- (BOOL)transitionToNextPhase;
-@end
-
 @interface AFMultipartBodyStream () {
     CFReadStreamClientCallBack copiedCallback;
-	CFStreamClientContext copiedContext;
-	CFOptionFlags requestedEvents;
+    CFStreamClientContext copiedContext;
+    CFOptionFlags requestedEvents;
     NSStreamStatus streamStatus;
     id <NSStreamDelegate> delegate;
     
@@ -824,9 +801,9 @@ typedef enum {
 @property (nonatomic, retain) NSEnumerator *HTTPBodyPartEnumerator;
 @property (nonatomic, retain) AFHTTPBodyPart *currentHTTPBodyPart;
 
-- (void)appendHTTPBodyPart:(AFHTTPBodyPart *)bodyPart;
-
 @end
+
+#pragma mark -
 
 @implementation AFStreamingMultipartFormData
 @synthesize request = _request;
@@ -862,26 +839,36 @@ typedef enum {
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
     bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
-    
+        
     bodyPart.bodyContentLength = [data length];
     
     [self.bodyStream.HTTPBodyParts addObject:bodyPart];
 }
 
 
-- (void)appendPartWithFileData:(NSData *)data name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType
-{
-    // TODO
+- (void)appendPartWithFileData:(NSData *)data
+                          name:(NSString *)name
+                      fileName:(NSString *)fileName
+                      mimeType:(NSString *)mimeType
+{    
+    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
     
-//    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-//    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-//    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
-//    
-//    
-
+    AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
+    bodyPart.stringEncoding = self.stringEncoding;
+    bodyPart.headers = mutableHeaders;
+    bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
+        
+    bodyPart.bodyContentLength = [data length];
+    
+    [self.bodyStream.HTTPBodyParts addObject:bodyPart];
 }
 
-- (BOOL)appendPartWithFileURL:(NSURL *)fileURL name:(NSString *)name error:(NSError **)error {
+- (BOOL)appendPartWithFileURL:(NSURL *)fileURL
+                         name:(NSString *)name
+                        error:(NSError **)error
+{
     if (![fileURL isFileURL]) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
         if (error != NULL) {
@@ -920,6 +907,7 @@ typedef enum {
     if ([self.bodyStream isEmpty]) {
         return self.request;
     }
+    
     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", kAFMultipartFormBoundary] forHTTPHeaderField:@"Content-Type"];
     [self.request setValue:[NSString stringWithFormat:@"%llu", [self.bodyStream contentLength]] forHTTPHeaderField:@"Content-Length"];
     [self.request setHTTPBodyStream:self.bodyStream];
@@ -945,7 +933,9 @@ typedef enum {
     
     self.stringEncoding = encoding;
     streamStatus = NSStreamStatusNotOpen;
-    //  [self setDelegate:self];
+    
+    self.HTTPBodyParts = [NSMutableArray array];
+    
     return self;
 }
 
@@ -956,51 +946,21 @@ typedef enum {
     [super dealloc];
 }
 
-- (void)appendHTTPBodyPart:(AFHTTPBodyPart *)bodyPart {
-    
-}
-
-- (NSString *)stringForHeaders:(NSDictionary *)headers {
-    NSMutableString * headerString = [NSMutableString string];
-    for (NSString *field in [headers allKeys]) {
-        [headerString appendString:[NSString stringWithFormat:@"%@: %@%@", field, [headers valueForKey:field], kAFMultipartFormCRLF]];
-    }
-    return [NSString stringWithString:headerString];
-}
-
-- (NSData *)finalBoundaryData {
-    return [AFMultipartFormFinalBoundary() dataUsingEncoding:_stringEncoding];
-}
-
 #pragma mark - NSStream subclass overrides
 
 - (void)open {
-    streamStatus = NSStreamStatusOpen;
-    
     if ([self.HTTPBodyParts count] > 0) {
         [[self.HTTPBodyParts objectAtIndex:0] setHasInitialBoundary:YES];
         [[self.HTTPBodyParts lastObject] setHasFinalBoundary:YES];
         
         self.HTTPBodyPartEnumerator = [self.HTTPBodyParts objectEnumerator];
     }
+    
+    streamStatus = NSStreamStatusOpen;
 }
 
 - (void)close {
     streamStatus = NSStreamStatusClosed;
-
-}
-
-- (id <NSStreamDelegate>)delegate {
-	return delegate;
-}
-
-- (void)setDelegate:(id<NSStreamDelegate>)aDelegate {
-	if (aDelegate == nil) {
-		delegate = self;
-	}
-	else {
-		delegate = aDelegate;
-	}
 }
 
 - (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop
@@ -1027,31 +987,43 @@ typedef enum {
     return nil;
 }
 
+- (BOOL)isEmpty {
+    return [self.HTTPBodyParts count] == 0;
+}
+
+- (unsigned long long)contentLength {
+    unsigned long long length = 0;
+    for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
+        length += [bodyPart contentLength];
+    }
+        
+    return length;
+}
+
 #pragma mark - NSInputStream subclass overrides
 
 - (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length {
     if ([self streamStatus] == NSStreamStatusClosed) {
         return 0;
     }
-    
-    assert ([self streamStatus] == NSStreamStatusOpen);
-    
+        
     NSInteger bytesRead = 0;
     
-    if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
-        if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
-            NSLog(@"NOTHING TO BE DONE");
-            [self close];
+    while ((NSUInteger)bytesRead < length) {
+        if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
+            if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
+                break;
+            }
+        } else {
+            bytesRead += [self.currentHTTPBodyPart read:buffer maxLength:length];
         }
     }
-    
-    bytesRead += [self.currentHTTPBodyPart read:buffer maxLength:length];
     
     return bytesRead;
 }
 
 - (BOOL)hasBytesAvailable {
-    return [self streamStatus] != NSStreamStatusOpen;
+    return [self streamStatus] == NSStreamStatusOpen;
 }
 
 - (BOOL)getBuffer:(uint8_t **)buffer length:(NSUInteger *)len {
@@ -1071,37 +1043,30 @@ typedef enum {
 - (BOOL)_setCFClientFlags:(CFOptionFlags)inFlags
                  callback:(CFReadStreamClientCallBack)inCallback
                   context:(CFStreamClientContext *)inContext {
-	
-	if (inCallback != NULL) {
-		requestedEvents = inFlags;
-		copiedCallback = inCallback;
-		memcpy(&copiedContext, inContext, sizeof(CFStreamClientContext));
-		if (copiedContext.info && copiedContext.retain) {
-			copiedContext.retain(copiedContext.info);
-		}
-		copiedCallback((CFReadStreamRef)self, kCFStreamEventHasBytesAvailable, &copiedContext);
-	}
-	else {
-		requestedEvents = kCFStreamEventNone;
-		copiedCallback = NULL;
-		if (copiedContext.info && copiedContext.release) {
-			copiedContext.release(copiedContext.info);
-		}		
-		memset(&copiedContext, 0, sizeof(CFStreamClientContext));
-	}
-	
-	return YES;	
-	
+    return NO;
 }
 
 @end
 
 #pragma mark -
 
-@implementation AFHTTPBodyPart {
+typedef enum {
+    AFEncapsulationBoundaryPhase = 1,
+    AFHeaderPhase                = 2,
+    AFBodyPhase                  = 3,
+    AFFinalBoundaryPhase         = 4,
+} AFHTTPBodyPartReadPhase;
+
+@interface AFHTTPBodyPart () {
     AFHTTPBodyPartReadPhase _phase;
     unsigned long long _phaseReadOffset;
 }
+
+- (BOOL)transitionToNextPhase;
+
+@end
+
+@implementation AFHTTPBodyPart
 @synthesize stringEncoding = _stringEncoding;
 @synthesize headers = _headers;
 @synthesize inputStream = _inputStream;
@@ -1131,21 +1096,27 @@ typedef enum {
 }
 
 - (BOOL)transitionToNextPhase {
+    if (![[NSThread currentThread] isMainThread]) {
+        [self performSelectorOnMainThread:@selector(transitionToNextPhase) withObject:nil waitUntilDone:YES];
+        return YES;
+    }
+    
     switch (_phase) {
         case AFEncapsulationBoundaryPhase:
             _phase = AFHeaderPhase;
             break;
         case AFHeaderPhase:
-            _phase = AFBodyPhase;
             [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
             [self.inputStream open];
+            _phase = AFBodyPhase;
             break;
         case AFBodyPhase:
             [self.inputStream close];
             _phase = AFFinalBoundaryPhase;
+            break;
         default:
-            _phase = 0;
-            return NO;
+            _phase = AFEncapsulationBoundaryPhase;
+            break;
     }
     
     _phaseReadOffset = 0;
@@ -1158,7 +1129,7 @@ typedef enum {
     for (NSString *field in [self.headers allKeys]) {
         [headerString appendString:[NSString stringWithFormat:@"%@: %@%@", field, [self.headers valueForKey:field], kAFMultipartFormCRLF]];
     }
-    
+        
     return [NSString stringWithString:headerString];
 }
 
@@ -1169,10 +1140,10 @@ typedef enum {
     NSRange range = NSMakeRange(_phaseReadOffset, MIN([data length], length));
     [data getBytes:buffer range:range];
     
+    _phaseReadOffset += range.length;
+    
     if (range.length >= [data length]) {
         [self transitionToNextPhase];
-    } else {
-        _phaseReadOffset += range.length;
     }
     
     return range.length;
@@ -1191,14 +1162,14 @@ typedef enum {
     
     NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding] : [NSData data]);
     length += [closingBoundaryData length];
-    
+        
     return length;
 }
 
 
 - (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length {
     NSInteger bytesRead = 0;
-    
+        
     if (_phase == AFEncapsulationBoundaryPhase) {
         NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary() : AFMultipartFormEncapsulationBoundary()) dataUsingEncoding:self.stringEncoding];
         bytesRead += [self readData:encapsulationBoundaryData intoBuffer:buffer maxLength:(length - bytesRead)];
@@ -1212,7 +1183,9 @@ typedef enum {
     if (_phase == AFBodyPhase) {
         if ([self.inputStream hasBytesAvailable]) {
             bytesRead += [self.inputStream read:buffer maxLength:(length - bytesRead)];
-        } else {
+        }
+        
+        if (![self.inputStream hasBytesAvailable]) {
             [self transitionToNextPhase];
         }
     }
@@ -1230,7 +1203,7 @@ typedef enum {
         case NSStreamStatusAtEnd:
         case NSStreamStatusClosed:
         case NSStreamStatusError:
-            return _phase == AFFinalBoundaryPhase;
+            return NO;
         default:
             return YES;
     }
