@@ -114,7 +114,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  ## URL Construction Using Relative Paths
  
- Both `requestWithMethod:path:parameters` and `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `baseURL`, using `NSURL +URLWithString:relativeToURL:`. Below are a few examples of how `baseURL` and relative paths interract:
+ Both `requestWithMethod:path:parameters` and `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `baseURL`, using `NSURL +URLWithString:relativeToURL:`. Below are a few examples of how `baseURL` and relative paths interact:
  
     NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
     [NSURL URLWithString:@"foo" relativeToURL:baseURL];                     // http://example.com/v1/foo
@@ -138,7 +138,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 ///---------------------------------------
 
 /**
- The url used as the base for paths specified in methods such as `getPath:parameteres:success:failure`
+ The url used as the base for paths specified in methods such as `getPath:parameters:success:failure`
  */
 @property (readonly, nonatomic, retain) NSURL *baseURL;
 
