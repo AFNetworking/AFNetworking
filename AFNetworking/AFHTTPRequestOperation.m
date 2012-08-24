@@ -132,7 +132,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     		[userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), statusCode] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:self.responseString forKey:NSLocalizedRecoverySuggestionErrorKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
-            [userInfo setValue:[NSString stringWithFormat:@"%d", statusCode] forKey:AFURLHTTPErrorCode];
+            [userInfo setValue:[NSNumber numberWithUnsignedInt:statusCode] forKey:AFURLHTTPErrorCode];
             
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
         } else if ([self.responseData length] > 0 && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
