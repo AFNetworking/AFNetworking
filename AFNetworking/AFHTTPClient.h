@@ -23,54 +23,6 @@
 #import <Foundation/Foundation.h>
 
 @class AFHTTPRequestOperation;
-@protocol AFHTTPClientOperation;
-@protocol AFMultipartFormData;
-
-/**
- Posted when network reachability changes.
- The notification object is an `NSNumber` object containing the boolean value for the current network reachability.
- This notification contains no information in the `userInfo` dictionary.
- 
- @warning In order for network reachability to be monitored, include the `SystemConfiguration` framework in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
- */
-#ifdef _SYSTEMCONFIGURATION_H
-extern NSString * const AFNetworkingReachabilityDidChangeNotification;
-#endif
-
-/**
- Specifies network reachability of the client to its `baseURL` domain.
- */
-#ifdef _SYSTEMCONFIGURATION_H
-typedef enum {
-    AFNetworkReachabilityStatusUnknown          = -1,
-    AFNetworkReachabilityStatusNotReachable     = 0,
-    AFNetworkReachabilityStatusReachableViaWWAN = 1,
-    AFNetworkReachabilityStatusReachableViaWiFi = 2,
-} AFNetworkReachabilityStatus;
-#endif
-
-/**
- Specifies the method used to encode parameters into request body. 
- */
-typedef enum {
-    AFFormURLParameterEncoding,
-    AFJSONParameterEncoding,
-    AFPropertyListParameterEncoding,
-} AFHTTPClientParameterEncoding;
-
-/**
- Returns a query string constructed by a set of parameters, using the specified encoding.
- 
- @param parameters The parameters used to construct the query string
- @param encoding The encoding to use in constructing the query string. If you are uncertain of the correct encoding, you should use UTF-8 (`NSUTF8StringEncoding`), which is the encoding designated by RFC 3986 as the correct encoding for use in URLs.
- 
- @discussion Query strings are constructed by collecting each key-value pair, percent escaping a string representation of the key-value pair, and then joining the pairs with "&".
- 
- If a query string pair has a an `NSArray` for its value, each member of the array will be represented in the format `field[]=value1&field[]value2`. Otherwise, the pair will be formatted as "field=value". String representations of both keys and values are derived using the `-description` method. The constructed query string does not include the ? character used to delimit the query component.
- 
- @return A percent-escaped query string
- */
-extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding);
 
 /**
  `AFHTTPClient` captures the common patterns of communicating with an web application over HTTP. It encapsulates information like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
@@ -110,6 +62,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
     [NSURL URLWithString:@"foo/" relativeToURL:baseURL];                    // http://example.com/v1/foo
     [NSURL URLWithString:@"/foo/" relativeToURL:baseURL];                   // http://example.com/foo/
     [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL];    // http://example2.com/
+ 
+ Also important to note is that a trailing slash will be added to any `baseURL` without one, which would otherwise cause unexpected behavior when constructing URLs using paths without a leading slash.
 
  ## NSCoding / NSCopying Conformance
  
@@ -118,6 +72,25 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  - Archives and copies of HTTP clients will be initialized with an empty operation queue.
  - NSCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
  */
+
+#ifdef _SYSTEMCONFIGURATION_H
+typedef enum {
+    AFNetworkReachabilityStatusUnknown          = -1,
+    AFNetworkReachabilityStatusNotReachable     = 0,
+    AFNetworkReachabilityStatusReachableViaWWAN = 1,
+    AFNetworkReachabilityStatusReachableViaWiFi = 2,
+} AFNetworkReachabilityStatus;
+#endif
+
+typedef enum {
+    AFFormURLParameterEncoding,
+    AFJSONParameterEncoding,
+    AFPropertyListParameterEncoding,
+} AFHTTPClientParameterEncoding;
+
+@protocol AFHTTPClientOperation;
+@protocol AFMultipartFormData;
+
 @interface AFHTTPClient : NSObject <NSCoding, NSCopying>
 
 ///---------------------------------------
@@ -443,6 +416,87 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 @end
 
+///----------------
+/// @name Constants
+///----------------
+
+/**
+ ### Network Reachability
+ 
+ The following constants are provided by `AFHTTPClient` as possible network reachability statuses. 
+ 
+ enum {
+    AFNetworkReachabilityStatusUnknown,
+    AFNetworkReachabilityStatusNotReachable,
+    AFNetworkReachabilityStatusReachableViaWWAN,
+    AFNetworkReachabilityStatusReachableViaWiFi,
+ }
+ 
+ `AFNetworkReachabilityStatusUnknown`  
+    The `baseURL` host reachability is not known.
+ 
+ `AFNetworkReachabilityStatusNotReachable`
+    The `baseURL` host cannot be reached.
+ 
+ `AFNetworkReachabilityStatusReachableViaWWAN`
+    The `baseURL` host can be reached via a cellular connection, such as EDGE or GPRS.
+ 
+ `AFNetworkReachabilityStatusReachableViaWiFi`
+    The `baseURL` host can be reached via a Wi-Fi connection.
+ 
+ ### Parameter Encoding
+ 
+ The following constants are provided by `AFHTTPClient` as possible methods for serializing parameters into query string or message body values.
+
+ enum {
+    AFFormURLParameterEncoding,
+    AFJSONParameterEncoding,
+    AFPropertyListParameterEncoding,
+ }
+ 
+ `AFFormURLParameterEncoding`
+    Parameters are encoded into field/key pairs in the URL query string for `GET` `HEAD` and `DELETE` requests, and in the message body otherwise.
+ 
+ `AFJSONParameterEncoding`
+    Parameters are encoded into JSON in the message body.
+ 
+ `AFPropertyListParameterEncoding`  
+    Parameters are encoded into a property list in the message body.
+ */
+
+///----------------
+/// @name Functions
+///----------------
+
+/**
+ Returns a query string constructed by a set of parameters, using the specified encoding.
+ 
+ @param parameters The parameters used to construct the query string
+ @param encoding The encoding to use in constructing the query string. If you are uncertain of the correct encoding, you should use UTF-8 (`NSUTF8StringEncoding`), which is the encoding designated by RFC 3986 as the correct encoding for use in URLs.
+ 
+ @discussion Query strings are constructed by collecting each key-value pair, percent escaping a string representation of the key-value pair, and then joining the pairs with "&".
+ 
+ If a query string pair has a an `NSArray` for its value, each member of the array will be represented in the format `field[]=value1&field[]value2`. Otherwise, the pair will be formatted as "field=value". String representations of both keys and values are derived using the `-description` method. The constructed query string does not include the ? character used to delimit the query component.
+ 
+ @return A percent-escaped query string
+ */
+extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding);
+
+///--------------------
+/// @name Notifications
+///--------------------
+
+/**
+ Posted when network reachability changes.
+ The notification object is an `NSNumber` object containing the boolean value for the current network reachability.
+ This notification contains no information in the `userInfo` dictionary.
+ 
+ @warning In order for network reachability to be monitored, include the `SystemConfiguration` framework in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
+ */
+#ifdef _SYSTEMCONFIGURATION_H
+extern NSString * const AFNetworkingReachabilityDidChangeNotification;
+#endif
+
 #pragma mark -
 
 /**
@@ -506,4 +560,3 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 - (void)appendString:(NSString *)string;
 
 @end
-

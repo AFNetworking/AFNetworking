@@ -23,33 +23,6 @@
 #import <Foundation/Foundation.h>
 
 /**
- Indicates an error occurred in AFNetworking.
- 
- @discussion Error codes for AFNetworkingErrorDomain correspond to codes in NSURLErrorDomain.
- */
-extern NSString * const AFNetworkingErrorDomain;
-
-/**
- The corresponding value is an `NSURLRequest` containing the request of the operation associated with an error. This key is only present in the `AFNetworkingErrorDomain`.
- */
-extern NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
-
-/**
- The corresponding value is an `NSURLResponse` containing the response of the operation associated with an error. This key is only present in the `AFNetworkingErrorDomain`.
- */
-extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
-
-/**
- Posted when an operation begins executing.
- */
-extern NSString * const AFNetworkingOperationDidStartNotification;
-
-/**
- Posted when an operation finishes.
- */
-extern NSString * const AFNetworkingOperationDidFinishNotification;
-
-/**
  `AFURLConnectionOperation` is an `NSOperation` that implements NSURLConnection delegate methods.
  
  ## Subclassing Notes
@@ -309,3 +282,52 @@ didReceiveResponse:(NSURLResponse *)response;
                   willCacheResponse:(NSCachedURLResponse *)cachedResponse;
 
 @end
+
+///----------------
+/// @name Constants
+///----------------
+
+/**
+ ## User info dictionary keys
+ 
+ These keys may exist in the user info dictionary, in addition to those defined for NSError.
+ 
+ - `NSString * const AFNetworkingOperationFailingURLRequestErrorKey`
+ - `NSString * const AFNetworkingOperationFailingURLResponseErrorKey`
+ 
+ ### Constants
+ 
+ `AFNetworkingOperationFailingURLRequestErrorKey`
+ The corresponding value is an `NSURLRequest` containing the request of the operation associated with an error. This key is only present in the `AFNetworkingErrorDomain`.
+ 
+ `AFNetworkingOperationFailingURLResponseErrorKey`
+ The corresponding value is an `NSURLResponse` containing the response of the operation associated with an error. This key is only present in the `AFNetworkingErrorDomain`.
+ 
+ ## Error Domains
+ 
+ The following error domain is predefined.
+ 
+ - `NSString * const AFNetworkingErrorDomain`
+ 
+ ### Constants
+ 
+ `AFNetworkingErrorDomain`
+ AFNetworking errors. Error codes for `AFNetworkingErrorDomain` correspond to codes in `NSURLErrorDomain`.
+ */
+extern NSString * const AFNetworkingErrorDomain;
+extern NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
+extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
+
+///--------------------
+/// @name Notifications
+///--------------------
+
+/**
+ Posted when an operation begins executing.
+ */
+extern NSString * const AFNetworkingOperationDidStartNotification;
+
+/**
+ Posted when an operation finishes.
+ */
+extern NSString * const AFNetworkingOperationDidFinishNotification;
