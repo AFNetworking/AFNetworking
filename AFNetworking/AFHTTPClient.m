@@ -849,7 +849,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
         [userInfo setValue:fileURL forKey:NSURLErrorFailingURLErrorKey];
         [userInfo setValue:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
         if (error != NULL) {
-            *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo] autorelease];  
+            *error = [[[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:userInfo] autorelease];
         }
         
         return NO;
