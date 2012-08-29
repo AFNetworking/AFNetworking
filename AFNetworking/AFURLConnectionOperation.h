@@ -23,7 +23,7 @@
 #import <Foundation/Foundation.h>
 
 /**
- Indicates an error occured in AFNetworking.
+ Indicates an error occurred in AFNetworking.
  
  @discussion Error codes for AFNetworkingErrorDomain correspond to codes in NSURLErrorDomain.
  */
@@ -61,7 +61,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  - `connection:canAuthenticateAgainstProtectionSpace:`
  - `connection:didReceiveAuthenticationChallenge:`
  
- If any of these methods are overriden in a subclass, they _must_ call the `super` implementation first.
+ If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
   
  ## Class Constructors
  
@@ -114,7 +114,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
 @property (readonly, nonatomic, retain) NSURLResponse *response;
 
 /**
- The error, if any, that occured in the lifecycle of the request.
+ The error, if any, that occurred in the lifecycle of the request.
  */
 @property (readonly, nonatomic, retain) NSError *error;
 
@@ -216,7 +216,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
  
  @see setDownloadProgressBlock
  */
-- (void)setUploadProgressBlock:(void (^)(NSInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block;
+- (void)setUploadProgressBlock:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block;
 
 /**
  Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
@@ -225,7 +225,7 @@ extern NSString * const AFNetworkingOperationDidFinishNotification;
   
  @see setUploadProgressBlock
  */
-- (void)setDownloadProgressBlock:(void (^)(NSInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block;
+- (void)setDownloadProgressBlock:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block;
 
 ///-------------------------------------------------
 /// @name Setting NSURLConnection Delegate Callbacks
