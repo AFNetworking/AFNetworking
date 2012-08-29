@@ -30,6 +30,16 @@
 extern NSString * const AFNetworkingErrorDomain;
 
 /**
+ The corresponding value is an `NSURLRequest` containing the request of the operation associated with an error. This key is only present in the `AFNetworkingErrorDomain`.
+ */
+extern NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
+
+/**
+ The corresponding value is an `NSURLResponse` containing the response of the operation associated with an error. This key is only present in the `AFNetworkingErrorDomain`.
+ */
+extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
+
+/**
  Posted when an operation begins executing.
  */
 extern NSString * const AFNetworkingOperationDidStartNotification;
