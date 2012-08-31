@@ -444,6 +444,14 @@ typedef enum {
  `AFNetworkReachabilityStatusReachableViaWiFi`
     The `baseURL` host can be reached via a Wi-Fi connection.
  
+ ### Keys for Notification UserInfo Dictionary
+ 
+ Strings that are used as keys in a userinfo dictionary in a network reachability status change notification.
+ 
+ `AFNetworkingReachabilityNotificationStatusItem`
+    A key in the userInfo dictionary in a `AFNetworkingReachabilityDidChangeNotification` notification.  
+    The corresponding value is an `NSNumber` object representing the `AFNetworkReachabilityStatus` value for the current reachability status. 
+ 
  ### Parameter Encoding
  
  The following constants are provided by `AFHTTPClient` as possible methods for serializing parameters into query string or message body values.
@@ -488,13 +496,13 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
 
 /**
  Posted when network reachability changes.
- The notification object is an `NSNumber` object containing the boolean value for the current network reachability.
- This notification contains no information in the `userInfo` dictionary.
+ This notification assigns no notification object. The `userInfo` dictionary contains an `NSNumber` object under the `AFNetworkingReachabilityNotificationStatusItem` key, representing the `AFNetworkReachabilityStatus` value for the current network reachability.
  
  @warning In order for network reachability to be monitored, include the `SystemConfiguration` framework in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (Prefix.pch).
  */
 #ifdef _SYSTEMCONFIGURATION_H
 extern NSString * const AFNetworkingReachabilityDidChangeNotification;
+extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
 #endif
 
 #pragma mark -

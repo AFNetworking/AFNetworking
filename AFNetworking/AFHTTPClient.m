@@ -41,8 +41,6 @@
 #import <netdb.h>
 #endif
 
-NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
-
 @interface AFMultipartFormData : NSObject <AFMultipartFormData>
 
 - (id)initWithURLRequest:(NSMutableURLRequest *)request 
@@ -55,6 +53,9 @@ NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
+NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
+NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworkingReachabilityNotificationStatusItem";
+
 typedef SCNetworkReachabilityRef AFNetworkReachabilityRef;
 typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus status);
 #else
@@ -332,7 +333,7 @@ static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused targ
         block(status);
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:[NSNumber numberWithInt:status]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:status] forKey:AFNetworkingReachabilityNotificationStatusItem]];
 }
 
 static const void * AFNetworkReachabilityRetainCallback(const void *info) {
