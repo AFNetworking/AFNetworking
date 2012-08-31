@@ -29,7 +29,7 @@
  
  ## Automatic Content Parsing
  
- Instances of `AFHTTPClient` may specify which types of requests it expects and should handle by registering HTTP operation classes for automatic parsing. Registered classes will determine whether they can handle a particular request, and then construct a request operation accordingly in `enqueueHTTPRequestOperationWithRequest:success:failure`. See `AFHTTPClientOperation` for further details.
+ Instances of `AFHTTPClient` may specify which types of requests it expects and should handle by registering HTTP operation classes for automatic parsing. Registered classes will determine whether they can handle a particular request, and then construct a request operation accordingly in `enqueueHTTPRequestOperationWithRequest:success:failure`.
  
  ## Subclassing Notes
  
@@ -88,7 +88,6 @@ typedef enum {
     AFPropertyListParameterEncoding,
 } AFHTTPClientParameterEncoding;
 
-@protocol AFHTTPClientOperation;
 @protocol AFMultipartFormData;
 
 @interface AFHTTPClient : NSObject <NSCoding, NSCopying>
@@ -174,20 +173,18 @@ typedef enum {
 /**
  Attempts to register a subclass of `AFHTTPRequestOperation`, adding it to a chain to automatically generate request operations from a URL request.
  
- @param The subclass of `AFHTTPRequestOperation` to register
+ @param operationClass The subclass of `AFHTTPRequestOperation` to register
  
  @return `YES` if the registration is successful, `NO` otherwise. The only failure condition is if `operationClass` is not a subclass of `AFHTTPRequestOperation`.
  
  @discussion When `enqueueHTTPRequestOperationWithRequest:success:failure` is invoked, each registered class is consulted in turn to see if it can handle the specific request. The first class to return `YES` when sent a `canProcessRequest:` message is used to create an operation using `initWithURLRequest:` and do `setCompletionBlockWithSuccess:failure:`. There is no guarantee that all registered classes will be consulted. Classes are consulted in the reverse order of their registration. Attempting to register an already-registered class will move it to the top of the list.
- 
- @see `AFHTTPClientOperation`
  */
 - (BOOL)registerHTTPOperationClass:(Class)operationClass;
 
 /**
  Unregisters the specified subclass of `AFHTTPRequestOperation`.
  
- @param The class conforming to the `AFHTTPClientOperation` protocol to unregister
+ @param operationClass The subclass of `AFHTTPRequestOperation` to register
  
  @discussion After this method is invoked, `operationClass` is no longer consulted when `requestWithMethod:path:parameters` is invoked.
  */
