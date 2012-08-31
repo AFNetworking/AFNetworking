@@ -173,7 +173,12 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 }
 
 - (BOOL)hasAcceptableStatusCode {
-    NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 0;
+	if(!self.response) {
+		// no response means network failure or such
+		return NO;
+	}
+
+    NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 200;
     return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:statusCode];
 }
 
