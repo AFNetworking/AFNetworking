@@ -251,9 +251,6 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     self.registeredHTTPOperationClassNames = [NSMutableArray array];
     
 	self.defaultHeaders = [NSMutableDictionary dictionary];
-    
-	// Accept-Encoding HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
-	[self setDefaultHeader:@"Accept-Encoding" value:@"gzip"];
 	
 	// Accept-Language HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
 	NSString *preferredLanguageCodes = [[NSLocale preferredLanguages] componentsJoinedByString:@", "];
