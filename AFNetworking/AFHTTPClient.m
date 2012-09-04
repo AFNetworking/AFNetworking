@@ -705,7 +705,7 @@ static NSString * AFMultipartTemporaryFileDirectoryPath() {
         
         NSError *error = nil;
         if(![[NSFileManager defaultManager] createDirectoryAtPath:multipartTemporaryFilePath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create multipary temporary file directory at %@", multipartTemporaryFilePath);
+            NSLog(@"Failed to create multipart temporary file directory at %@", multipartTemporaryFilePath);
         }
     });
     
