@@ -25,7 +25,7 @@
 #import "Tweet.h"
 #import "User.h"
 
-#import "UIImageView+AFNetworking.h"
+#import "AFNetworking/UIImageView+AFNetworking.h"
 
 @implementation TweetTableViewCell {
 @private

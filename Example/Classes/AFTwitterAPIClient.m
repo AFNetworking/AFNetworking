@@ -22,7 +22,7 @@
 
 #import "AFTwitterAPIClient.h"
 
-#import "AFJSONRequestOperation.h"
+#import "AFNetworking/AFJSONRequestOperation.h"
 
 static NSString * const kAFTwitterAPIBaseURLString = @"http://api.twitter.com/1/";
 
