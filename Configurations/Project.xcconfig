@@ -1,0 +1,28 @@
+//
+//  Project.xcconfig
+//  AFNetworking
+//
+//  Created by Stephan Diederich on 05.09.12.
+//  Copyright (c) 2012 Stephan Diederich. All rights reserved.
+//
+
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) CONFIGURATION_$(CONFIGURATION)
+
+SUPPORTED_PLATFORMS = macos iphonesimulator iphoneos
+VALID_ARCHS = i386 armv7 x86_64
+
+//setup BaseSDK
+//it seems we can't specify the 'iPhone/Simulator'-arch
+//so specify x86_64 and use '*' as the fallback
+SDKROOT = macosx10.8
+SDKROOT[arch=x86_64] = macosx10.8
+SDKROOT[arch=*] = iphoneos
+
+//setup architectures for both iOS and MacOS SDK
+ARCHS = $(ARCHS_STANDARD_64_BIT)
+ARCHS[sdk=macosx*] = $(ARCHS_STANDARD_64_BIT)
+ARCHS[sdk=iphoneos*] = armv7
+ARCHS[sdk=iphonesimulator*] = $(NATIVE_ARCH_32_BIT)
+
+//set the iPhoneOS Deployment Target
+IPHONEOS_DEPLOYMENT_TARGET = 5.0

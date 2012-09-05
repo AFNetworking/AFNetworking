@@ -1,0 +1,12 @@
+//
+//  Library-Debug.xcconfig
+//  AFNetworking
+//
+//  Created by Stephan Diederich on 05.09.12.
+//  Copyright (c) 2012 Stephan Diederich. All rights reserved.
+//
+
+#include "Library-Base.xcconfig"
+
+GCC_OPTIMIZATION_LEVEL = 0
+ONLY_ACTIVE_ARCH = YES
