@@ -93,7 +93,7 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
     return [[[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding] autorelease];
 }
 
-NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
+static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
     // Escape characters that are legal in URIs, but have unintentional semantic significance when used in a query string parameter
     static NSString * const kAFLegalCharactersToBeEscaped = @":/.?&=;+!@$()~";
     
@@ -250,10 +250,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 	
     self.registeredHTTPOperationClassNames = [NSMutableArray array];
     
-    self.defaultHeaders = [NSMutableDictionary dictionary];
-    
-    // Accept-Encoding HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
-    [self setDefaultHeader:@"Accept-Encoding" value:@"gzip"];
+	self.defaultHeaders = [NSMutableDictionary dictionary];
 	
     // Accept-Language HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
     NSString *preferredLanguageCodes = [[NSLocale preferredLanguages] componentsJoinedByString:@", "];
@@ -708,7 +705,7 @@ static NSString * AFMultipartTemporaryFileDirectoryPath() {
         
         NSError *error = nil;
         if(![[NSFileManager defaultManager] createDirectoryAtPath:multipartTemporaryFilePath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create multipary temporary file directory at %@", multipartTemporaryFilePath);
+            NSLog(@"Failed to create multipart temporary file directory at %@", multipartTemporaryFilePath);
         }
     });
     
