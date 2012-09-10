@@ -95,10 +95,19 @@ static char kAFImageRequestOperationObjectKey;
     [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
 }
 
-- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
+              placeholderImage:(UIImage *)placeholderImage
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    [self setImageWithURLRequest:urlRequest placeholderImage:placeholderImage success:success failure:failure progress:nil];
+}
+
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
               placeholderImage:(UIImage *)placeholderImage 
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                      progress:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress
 {
     [self cancelImageRequestOperation];
     
@@ -114,6 +123,12 @@ static char kAFImageRequestOperationObjectKey;
         self.image = placeholderImage;
         
         AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+        
+        [requestOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+            if (progress) {
+                progress(bytesRead,totalBytesRead,totalBytesExpectedToRead);
+            }
+        }];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
                 self.image = responseObject;
