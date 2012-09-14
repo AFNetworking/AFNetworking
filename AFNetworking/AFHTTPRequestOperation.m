@@ -23,6 +23,13 @@
 #import "AFHTTPRequestOperation.h"
 #import <objc/runtime.h>
 
+// Workaround for change in imp_implementationWithBlock()
+#ifdef __IPHONE_6_0
+    #define AF_CAST_TO_BLOCK id
+#else
+    #define AF_CAST_TO_BLOCK __bridge void *
+#endif
+
 NSString * const kAFNetworkingIncompleteDownloadDirectoryName = @"Incomplete";
 
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
@@ -54,9 +61,9 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     return [NSSet setWithSet:mutableContentTypes];
 }
 
-static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL selector, void *block) {
+static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL selector, id block) {
     Method originalMethod = class_getClassMethod(klass, selector);
-    IMP implementation = imp_implementationWithBlock((__bridge id)(block));
+    IMP implementation = imp_implementationWithBlock((AF_CAST_TO_BLOCK)block);
     class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
 }
 
@@ -266,7 +273,7 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 + (void)addAcceptableStatusCodes:(NSIndexSet *)statusCodes {
     NSMutableIndexSet *mutableStatusCodes = [[NSMutableIndexSet alloc] initWithIndexSet:[self acceptableStatusCodes]];
     [mutableStatusCodes addIndexes:statusCodes];
-    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableStatusCodes), (__bridge void *)^(id _self) {
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableStatusCodes), ^(id _self) {
         return mutableStatusCodes;
     });
 }
@@ -278,7 +285,7 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 + (void)addAcceptableContentTypes:(NSSet *)contentTypes {
     NSMutableSet *mutableContentTypes = [[NSMutableSet alloc] initWithSet:[self acceptableContentTypes] copyItems:YES];
     [mutableContentTypes unionSet:contentTypes];
-    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableContentTypes), (__bridge void *)^(id _self) {
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableContentTypes), ^(id _self) {
         return mutableContentTypes;
     });
 }
