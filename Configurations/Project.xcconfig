@@ -9,7 +9,7 @@
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) CONFIGURATION_$(CONFIGURATION)
 
 SUPPORTED_PLATFORMS = macos iphonesimulator iphoneos
-VALID_ARCHS = i386 armv7 x86_64
+VALID_ARCHS = i386 armv7 armv7s x86_64
 
 //setup BaseSDK
 //it seems we can't specify the 'iPhone/Simulator'-arch
@@ -21,7 +21,7 @@ SDKROOT[arch=*] = iphoneos
 //setup architectures for both iOS and MacOS SDK
 ARCHS = $(ARCHS_STANDARD_64_BIT)
 ARCHS[sdk=macosx*] = $(ARCHS_STANDARD_64_BIT)
-ARCHS[sdk=iphoneos*] = armv7
+ARCHS[sdk=iphoneos*] = $(ARCHS_STANDARD_32_BIT)
 ARCHS[sdk=iphonesimulator*] = $(NATIVE_ARCH_32_BIT)
 
 //set the iPhoneOS Deployment Target
