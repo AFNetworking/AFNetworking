@@ -179,7 +179,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.request = urlRequest;
     
     self.outputStream = [NSOutputStream outputStreamToMemory];
-        
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    for (NSString *runLoopMode in self.runLoopModes) {
+        [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
+    }
+    
     self.state = AFOperationReadyState;
 	
     return self;
@@ -253,6 +257,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)setOutputStream:(NSOutputStream *)outputStream {
+    if (_outputStream == outputStream) {
+        return;
+    }
+    
     [self willChangeValueForKey:@"outputStream"];
     [outputStream retain];
     
@@ -262,11 +270,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
     _outputStream = outputStream;
     [self didChangeValueForKey:@"outputStream"];
-    
-    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-    for (NSString *runLoopMode in self.runLoopModes) {
-        [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
-    }
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED

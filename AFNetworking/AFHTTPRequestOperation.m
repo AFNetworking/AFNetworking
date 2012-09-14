@@ -314,6 +314,11 @@ didReceiveResponse:(NSURLResponse *)response
         } else {
             if ([[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length] > 0) {
                 self.outputStream = [NSOutputStream outputStreamToMemory];
+                
+                NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+                for (NSString *runLoopMode in self.runLoopModes) {
+                    [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
+                }
             }
         }
     }
