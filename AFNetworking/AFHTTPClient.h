@@ -99,7 +99,7 @@ typedef enum {
 /**
  The url used as the base for paths specified in methods such as `getPath:parameters:success:failure`
  */
-@property (readonly, nonatomic, retain) NSURL *baseURL;
+@property (readonly, nonatomic) NSURL *baseURL;
 
 /**
  The string encoding used in constructing url requests. This is `NSUTF8StringEncoding` by default.
@@ -116,7 +116,7 @@ typedef enum {
 /**
  The operation queue which manages operations enqueued by the HTTP client.
  */
-@property (readonly, nonatomic, retain) NSOperationQueue *operationQueue;
+@property (readonly, nonatomic) NSOperationQueue *operationQueue;
 
 /**
  The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.

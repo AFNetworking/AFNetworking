@@ -55,7 +55,7 @@
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
  */
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-@property (readonly, nonatomic, retain) UIImage *responseImage;
+@property (readonly, nonatomic) UIImage *responseImage;
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (readonly, nonatomic, retain) NSImage *responseImage;
 #endif

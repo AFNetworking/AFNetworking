@@ -34,11 +34,11 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 
 @interface AFXMLRequestOperation ()
-@property (readwrite, nonatomic, retain) NSXMLParser *responseXMLParser;
+@property (readwrite, nonatomic) NSXMLParser *responseXMLParser;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (readwrite, nonatomic, retain) NSXMLDocument *responseXMLDocument;
 #endif
-@property (readwrite, nonatomic, retain) NSError *XMLError;
+@property (readwrite, nonatomic) NSError *XMLError;
 @end
 
 @implementation AFXMLRequestOperation
@@ -52,7 +52,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                                                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLParser *XMLParser))failure
 {
-    AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -71,7 +71,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                                                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
                                                           failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLDocument *document))failure
 {
-    AFXMLRequestOperation *requestOperation = [[[self alloc] initWithRequest:urlRequest] autorelease];
+    AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, __unused id responseObject) {
         if (success) {
             NSXMLDocument *XMLDocument = [(AFXMLRequestOperation *)operation responseXMLDocument];            
@@ -88,21 +88,10 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 #endif
 
-- (void)dealloc {
-    [_responseXMLParser release];
-    
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
-    [_responseXMLDocument release];
-#endif
-    
-    [_XMLError release];
-    
-    [super dealloc];
-}
 
 - (NSXMLParser *)responseXMLParser {
     if (!_responseXMLParser && [self.responseData length] > 0 && [self isFinished]) {
-        self.responseXMLParser = [[[NSXMLParser alloc] initWithData:self.responseData] autorelease];
+        self.responseXMLParser = [[NSXMLParser alloc] initWithData:self.responseData];
     }
     
     return _responseXMLParser;
@@ -112,7 +101,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (NSXMLDocument *)responseXMLDocument {
     if (!_responseXMLDocument && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
-        self.responseXMLDocument = [[[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error] autorelease];
+        self.responseXMLDocument = [[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error];
         self.XMLError = error;
     }
     
@@ -149,6 +138,8 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
     self.completionBlock = ^ {
         if ([self isCancelled]) {
             return;
@@ -171,7 +162,8 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                 } 
             }
         });
-    };    
+    };
+#pragma clang diagnostic pop
 }
 
 @end

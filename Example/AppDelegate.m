@@ -35,7 +35,7 @@
 - (BOOL)application:(UIApplication *)application 
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil];
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:20 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
 
   [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
@@ -66,7 +66,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 @synthesize tweetsArrayController = _tweetsArrayController;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 5 diskPath:nil];
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:20 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
     
     [self.window makeKeyAndOrderFront:self];
