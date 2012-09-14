@@ -421,7 +421,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
-    [request setHTTPShouldHandleCookies:NO];
 
     if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"]) {
         [request setHTTPShouldUsePipelining:YES];
