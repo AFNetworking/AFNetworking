@@ -26,7 +26,7 @@
 
 #import "PublicTimelineViewController.h"
 
-#import "AFNetworkActivityIndicatorManager.h"
+#import "AFNetworking/AFNetworkActivityIndicatorManager.h"
 
 @implementation AppDelegate
 @synthesize window = _window;

@@ -7,4 +7,7 @@
    <FileRef
       location = "group:Example/AFNetworking Mac Example.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "container:AFNetworking.xcodeproj">
+   </FileRef>
 </Workspace>

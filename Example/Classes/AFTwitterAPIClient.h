@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPClient.h"
+#import "AFNetworking/AFHTTPClient.h"
 
 @interface AFTwitterAPIClient : AFHTTPClient
 
