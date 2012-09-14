@@ -19,7 +19,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/zipball/master) and try out the included Mac and iPhone example apps
 - Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles in the wiki](https://github.com/AFNetworking/AFNetworking/wiki)
-- Check out the [complete documentation](http://afnetworking.org/Documentation/) for a comprehensive look at the APIs available in AFNetworking
+- Check out the [complete documentation](http://afnetworking.github.com/AFNetworking/) for a comprehensive look at the APIs available in AFNetworking
 - Watch the [NSScreencast episode about AFNetworking](http://nsscreencast.com/episodes/6-afnetworking) for a quick introduction to how to use it in your application
 - Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
 
@@ -75,11 +75,11 @@ AFNetworking is architected to be as small and modular as possible, in order to 
   <tr><th colspan="2" style="text-align:center;">Images</th></tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Classes/AFImageRequestOperation.html">AFImageRequestOperation</a></td>
-    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading an processing images.</td>
+    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and processing images.</td>
   </tr>
   <tr>
     <td><a href="http://afnetworking.org/Documentation/Categories/UIImageView+AFNetworking.html">UIImageView+AFNetworking</a></td>
-    <td>Adds methods to `UIImageView` for loading remote images asynchronously from a URL.</td>
+    <td>Adds methods to <tt>UIImageView</tt> for loading remote images asynchronously from a URL.</td>
   </tr>
 </table>
 
@@ -124,8 +124,8 @@ NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST
 }];
 
 AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
-[operation setUploadProgressBlock:^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
-    NSLog(@"Sent %d of %d bytes", totalBytesWritten, totalBytesExpectedToWrite);
+[operation setUploadProgressBlock:^(NSInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+    NSLog(@"Sent %lld of %lld bytes", totalBytesWritten, totalBytesExpectedToWrite);
 }];
 [operation start];
 ```

@@ -71,7 +71,11 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     
     [self.window makeKeyAndOrderFront:self];
     
-    [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets) {
+    [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets, NSError *error) {
+        if (error) {
+            [[NSAlert alertWithMessageText:NSLocalizedString(@"Error", nil) defaultButton:NSLocalizedString(@"OK", nil) alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@",[error localizedDescription]] runModal];
+        }
+        
         self.tweetsArrayController.content = tweets;
     }];
     

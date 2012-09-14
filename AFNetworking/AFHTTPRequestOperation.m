@@ -30,8 +30,6 @@
     #define AF_CAST_TO_BLOCK __bridge void *
 #endif
 
-NSString * const kAFNetworkingIncompleteDownloadDirectoryName = @"Incomplete";
-
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     static NSCharacterSet *_skippedCharacterSet = nil;
     static dispatch_once_t onceToken;
@@ -83,11 +81,11 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         }
 
         if (range.length == 1) {
-            [string appendFormat:@"%u", range.location];
+            [string appendFormat:@"%lu", (long)range.location];
         } else {
             NSUInteger firstIndex = range.location;
             NSUInteger lastIndex = firstIndex + range.length - 1;
-            [string appendFormat:@"%u-%u", firstIndex, lastIndex];
+            [string appendFormat:@"%lu-%lu", (long)firstIndex, (long)lastIndex];
         }
 
         range.location = nextIndex;
@@ -95,23 +93,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     }
 
     return string;
-}
-
-NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
-    static NSString *incompleteDownloadPath;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSString *tempDirectory = NSTemporaryDirectory();
-        incompleteDownloadPath = [tempDirectory stringByAppendingPathComponent:kAFNetworkingIncompleteDownloadDirectoryName];
-
-        NSError *error = nil;
-        NSFileManager *fileMan = [[NSFileManager alloc] init];
-        if(![fileMan createDirectoryAtPath:incompleteDownloadPath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create incomplete downloads directory at %@", incompleteDownloadPath);
-        }
-    });
-
-    return incompleteDownloadPath;
 }
 
 #pragma mark -
@@ -126,7 +107,6 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 
 @implementation AFHTTPRequestOperation
 @synthesize HTTPError = _HTTPError;
-@synthesize responseFilePath = _responseFilePath;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
 @synthesize totalContentLength = _totalContentLength;
@@ -148,18 +128,24 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 
 - (NSError *)error {
     if (self.response && !self.HTTPError) {
-        if (![self hasAcceptableStatusCode]) {
+        if (![self hasAcceptableStatusCode] || ![self hasAcceptableContentType]) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
+            [userInfo setValue:self.responseString forKey:NSLocalizedRecoverySuggestionErrorKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
+            [userInfo setValue:self.request forKey:AFNetworkingOperationFailingURLRequestErrorKey];
+            [userInfo setValue:self.response forKey:AFNetworkingOperationFailingURLResponseErrorKey];
             
-            self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
-        } else if ([self.responseData length] > 0 && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
-            NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), [[self class] acceptableContentTypes], [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
-            [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
-            
-            self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+            if (![self hasAcceptableStatusCode]) {
+                NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 200;
+                [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), statusCode] forKey:NSLocalizedDescriptionKey];
+                self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
+            } else if (![self hasAcceptableContentType]) {
+                // Don't invalidate content type if there is no content
+                if ([self.responseData length] > 0) {
+                    [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), [[self class] acceptableContentTypes], [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
+                    self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+                }
+            }
         }
     }
     
@@ -189,11 +175,28 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 }
 
 - (BOOL)hasAcceptableStatusCode {
-    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:[self.response statusCode]];
+	if (!self.response) {
+		return NO;
+	}
+    
+    NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 200;
+    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:statusCode];
 }
 
 - (BOOL)hasAcceptableContentType {
-    return ![[self class] acceptableContentTypes] || [[[self class] acceptableContentTypes] containsObject:[self.response MIMEType]];
+    if (!self.response) {
+		return NO;
+	}
+    
+    // According to RFC 2616:
+    // Any HTTP/1.1 message containing an entity-body SHOULD include a Content-Type header field defining the media type of that body. If and only if the media type is not given by a Content-Type field, the recipient MAY attempt to guess the media type via inspection of its content and/or the name extension(s) of the URI used to identify the resource. If the media type remains unknown, the recipient SHOULD treat it as type "application/octet-stream".
+    // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec7.html
+    NSString *contentType = [self.response MIMEType];
+    if (!contentType) {
+        contentType = @"application/octet-stream";
+    }
+    
+    return ![[self class] acceptableContentTypes] || [[[self class] acceptableContentTypes] containsObject:contentType];
 }
 
 - (void)setSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue {
@@ -252,18 +255,6 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 #pragma clang diagnostic pop
 }
 
-- (void)setResponseFilePath:(NSString *)responseFilePath {
-    if ([self isReady] && responseFilePath != _responseFilePath) {
-        _responseFilePath = responseFilePath;
-        
-        if (responseFilePath) {
-            self.outputStream = [NSOutputStream outputStreamToFileAtPath:responseFilePath append:NO];
-        }else {
-            self.outputStream = [NSOutputStream outputStreamToMemory];
-        }
-    }
-}
-
 #pragma mark - AFHTTPRequestOperation
 
 + (NSIndexSet *)acceptableStatusCodes {
@@ -305,30 +296,38 @@ didReceiveResponse:(NSURLResponse *)response
 {
     self.response = (NSHTTPURLResponse *)response;
     
-    // 206 = Partial Content.
+    // Set Content-Range header if status code of response is 206 (Partial Content)
+    // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.7
     long long totalContentLength = self.response.expectedContentLength;
     long long fileOffset = 0;
-    if ([self.response statusCode] != 206) {
+    NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 200;
+    if (statusCode == 206) {
+        NSString *contentRange = [self.response.allHeaderFields valueForKey:@"Content-Range"];
+        if ([contentRange hasPrefix:@"bytes"]) {
+            NSArray *byteRanges = [contentRange componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -/"]];
+            if ([byteRanges count] == 4) {
+                fileOffset = [[byteRanges objectAtIndex:1] longLongValue];
+                totalContentLength = [[byteRanges objectAtIndex:2] longLongValue] ?: -1; // if this is "*", it's converted to 0, but -1 is default.
+            }
+        }
+    } else {
         if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
             [self.outputStream setProperty:[NSNumber numberWithInteger:0] forKey:NSStreamFileCurrentOffsetKey];
         } else {
             if ([[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length] > 0) {
                 self.outputStream = [NSOutputStream outputStreamToMemory];
+                
+                NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+                for (NSString *runLoopMode in self.runLoopModes) {
+                    [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
+                }
             }
         }
-    }else {
-        NSString *contentRange = [self.response.allHeaderFields valueForKey:@"Content-Range"];
-        if ([contentRange hasPrefix:@"bytes"]) {
-            NSArray *bytes = [contentRange componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -/"]];
-            if ([bytes count] == 4) {
-                fileOffset = [[bytes objectAtIndex:1] longLongValue];
-                totalContentLength = [[bytes objectAtIndex:2] longLongValue] ?: -1; // if this is *, it's converted to 0, but -1 is default.
-            }
-        }
-
     }
+    
     self.offsetContentLength = MAX(fileOffset, 0);
     self.totalContentLength = totalContentLength;
+    
     [self.outputStream open];
 }
 

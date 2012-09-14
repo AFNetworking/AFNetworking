@@ -33,6 +33,6 @@
 
 - (id)initWithAttributes:(NSDictionary *)attributes;
 
-+ (void)publicTimelineTweetsWithBlock:(void (^)(NSArray *tweets))block;
++ (void)publicTimelineTweetsWithBlock:(void (^)(NSArray *tweets, NSError *error))block;
 
 @end
