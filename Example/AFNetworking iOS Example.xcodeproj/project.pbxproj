@@ -277,7 +277,7 @@
 		F8E469571395739C00DB05C8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0440;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = Gowalla;
 			};
 			buildConfigurationList = F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking iOS Example" */;
