@@ -30,6 +30,22 @@
     #define AF_CAST_TO_BLOCK __bridge void *
 #endif
 
+// Does ARC support support GCD objects?
+// It does if the minimum deployment target is iOS 6+ or Mac OS X 8+
+#if TARGET_OS_IPHONE
+    #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000   // iOS 6.0 or later
+        #define NEEDS_DISPATCH_RETAIN_RELEASE 0
+    #else                                           // iOS 5.X or earlier
+        #define NEEDS_DISPATCH_RETAIN_RELEASE 1
+    #endif
+#else
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1080       // Mac OS X 10.8 or later
+        #define NEEDS_DISPATCH_RETAIN_RELEASE 0
+    #else
+        #define NEEDS_DISPATCH_RETAIN_RELEASE 1     // Mac OS X 10.7 or earlier
+    #endif
+#endif
+
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     static NSCharacterSet *_skippedCharacterSet = nil;
     static dispatch_once_t onceToken;
@@ -115,13 +131,17 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 @dynamic response;
 
 - (void)dealloc {
-    if (_successCallbackQueue) { 
+    if (_successCallbackQueue) {
+#if NEEDS_DISPATCH_RETAIN_RELEASE
         dispatch_release(_successCallbackQueue);
+#endif
         _successCallbackQueue = NULL;
     }
     
-    if (_failureCallbackQueue) { 
-        dispatch_release(_failureCallbackQueue); 
+    if (_failureCallbackQueue) {
+#if NEEDS_DISPATCH_RETAIN_RELEASE
+        dispatch_release(_failureCallbackQueue);
+#endif
         _failureCallbackQueue = NULL;
     }
 }
@@ -202,12 +222,16 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 - (void)setSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue {
     if (successCallbackQueue != _successCallbackQueue) {
         if (_successCallbackQueue) {
+#if NEEDS_DISPATCH_RETAIN_RELEASE
             dispatch_release(_successCallbackQueue);
+#endif
             _successCallbackQueue = NULL;
         }
 
         if (successCallbackQueue) {
+#if NEEDS_DISPATCH_RETAIN_RELEASE
             dispatch_retain(successCallbackQueue);
+#endif
             _successCallbackQueue = successCallbackQueue;
         }
     }    
@@ -216,12 +240,16 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 - (void)setFailureCallbackQueue:(dispatch_queue_t)failureCallbackQueue {
     if (failureCallbackQueue != _failureCallbackQueue) {
         if (_failureCallbackQueue) {
+#if NEEDS_DISPATCH_RETAIN_RELEASE
             dispatch_release(_failureCallbackQueue);
+#endif
             _failureCallbackQueue = NULL;
         }
         
         if (failureCallbackQueue) {
+#if NEEDS_DISPATCH_RETAIN_RELEASE
             dispatch_retain(failureCallbackQueue);
+#endif
             _failureCallbackQueue = failureCallbackQueue;
         }
     }    

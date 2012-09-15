@@ -40,6 +40,22 @@
 #import <netdb.h>
 #endif
 
+// Does ARC support support GCD objects?
+// It does if the minimum deployment target is iOS 6+ or Mac OS X 8+
+#if TARGET_OS_IPHONE
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000   // iOS 6.0 or later
+#define NEEDS_DISPATCH_RETAIN_RELEASE 0
+#else                                           // iOS 5.X or earlier
+#define NEEDS_DISPATCH_RETAIN_RELEASE 1
+#endif
+#else
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= 1080       // Mac OS X 10.8 or later
+#define NEEDS_DISPATCH_RETAIN_RELEASE 0
+#else
+#define NEEDS_DISPATCH_RETAIN_RELEASE 1     // Mac OS X 10.7 or earlier
+#endif
+#endif
+
 @interface AFMultipartFormData : NSObject <AFMultipartFormData>
 
 - (id)initWithURLRequest:(NSMutableURLRequest *)request
@@ -547,7 +563,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                 completionBlock(operations);
             }
         });
+#if NEEDS_DISPATCH_RETAIN_RELEASE
         dispatch_release(dispatchGroup);
+#endif
     }];
     
     for (AFHTTPRequestOperation *operation in operations) {
