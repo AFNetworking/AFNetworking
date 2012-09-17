@@ -49,6 +49,8 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
         NSString *contentType = nil;
         if ([scanner scanUpToString:@";" intoString:&contentType]) {
             [scanner scanUpToString:@"," intoString:nil];
+        } else {
+            [scanner scanUpToCharactersFromSet:_skippedCharacterSet intoString:&contentType];
         }
         
         if (contentType) {
