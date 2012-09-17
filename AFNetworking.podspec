@@ -9,4 +9,5 @@ Pod::Spec.new do |s|
   s.source_files = 'AFNetworking'
   s.framework = 'SystemConfiguration'
   s.prefix_header_contents = "#import <SystemConfiguration/SystemConfiguration.h>"
+  s.requires_arc = true
 end
