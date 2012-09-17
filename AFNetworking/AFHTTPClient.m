@@ -40,20 +40,10 @@
 #import <netdb.h>
 #endif
 
-// Does ARC support support GCD objects?
-// It does if the minimum deployment target is iOS 6+ or Mac OS X 8+
-#if TARGET_OS_IPHONE
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000   // iOS 6.0 or later
-#define NEEDS_DISPATCH_RETAIN_RELEASE 0
-#else                                           // iOS 5.X or earlier
-#define NEEDS_DISPATCH_RETAIN_RELEASE 1
-#endif
-#else
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= 1080       // Mac OS X 10.8 or later
-#define NEEDS_DISPATCH_RETAIN_RELEASE 0
-#else
-#define NEEDS_DISPATCH_RETAIN_RELEASE 1     // Mac OS X 10.7 or earlier
-#endif
+// Workaround for management of dispatch_retain() / dispatch_release() by ARC with iOS 6 / Mac OS X 10.8
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && (!defined(__IPHONE_6_0) || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0)) || \
+    (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && (!defined(__MAC_10_8) || __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8))
+#define AF_DISPATCH_RETAIN_RELEASE 1
 #endif
 
 @interface AFMultipartFormData : NSObject <AFMultipartFormData>
@@ -338,8 +328,7 @@ static const void * AFNetworkReachabilityRetainCallback(const void *info) {
     return (__bridge_retained const void *)([(__bridge AFNetworkReachabilityStatusBlock)info copy]);
 }
 
-static void AFNetworkReachabilityReleaseCallback(const void *info) {
-}
+static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 
 - (void)startMonitoringNetworkReachability {
     [self stopMonitoringNetworkReachability];
@@ -563,7 +552,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                 completionBlock(operations);
             }
         });
-#if NEEDS_DISPATCH_RETAIN_RELEASE
+#if AF_DISPATCH_RETAIN_RELEASE
         dispatch_release(dispatchGroup);
 #endif
     }];
