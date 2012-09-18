@@ -30,6 +30,7 @@
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #endif
 
 #ifdef _SYSTEMCONFIGURATION_H
@@ -802,6 +803,17 @@ static inline NSString * AFMultipartFormFinalBoundary() {
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
 
+-(NSString*) fileMIMEType:(NSString*) file
+{
+    CFStringRef UTI =
+    UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,(CFStringRef)[file pathExtension], NULL);
+    CFStringRef MIMEType =
+    UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType);
+    
+    CFRelease(UTI);
+    return[(NSString*)MIMEType autorelease];
+}
+
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL 
                          name:(NSString *)name 
                         error:(NSError **)error 
@@ -825,19 +837,24 @@ static inline NSString * AFMultipartFormFinalBoundary() {
         
         return NO;
     }
-    
+
+    /*
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:fileURL];
     [request setHTTPMethod:@"HEAD"];
     [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     
     NSURLResponse *response = nil;
     [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
+     //*/
     
-    if (response) {
+//    if (response) {
         NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-        [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, [response suggestedFilename]] forKey:@"Content-Disposition"];
-        [mutableHeaders setValue:[response MIMEType] forKey:@"Content-Type"];
-        
+        [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, @"test-filename"] forKey:@"Content-Disposition"];
+    
+        //        [mutableHeaders setValue:[response MIMEType] forKey:@"Content-Type"];
+        NSString *filePathStr = [fileURL absoluteString];
+        [mutableHeaders setValue:[self fileMIMEType:filePathStr] forKey:@"Content-Type"];
+            
         NSInputStream *inputStream = [NSInputStream inputStreamWithURL:fileURL];
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         [inputStream scheduleInRunLoop:runLoop forMode:NSRunLoopCommonModes];
@@ -855,9 +872,9 @@ static inline NSString * AFMultipartFormFinalBoundary() {
         [inputStream close];
         
         return YES;
-    } else {
-        return NO;
-    }
+//    } else {
+//        return NO;
+//    }
 }
 
 - (void)appendString:(NSString *)string {
