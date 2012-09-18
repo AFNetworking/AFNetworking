@@ -838,43 +838,29 @@ static inline NSString * AFMultipartFormFinalBoundary() {
         return NO;
     }
 
-    /*
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:fileURL];
-    [request setHTTPMethod:@"HEAD"];
-    [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, @"test-filename"] forKey:@"Content-Disposition"];
     
-    NSURLResponse *response = nil;
-    [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
-     //*/
+    NSString *filePathStr = [fileURL absoluteString];
+    [mutableHeaders setValue:[self fileMIMEType:filePathStr] forKey:@"Content-Type"];
     
-//    if (response) {
-        NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-        [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, @"test-filename"] forKey:@"Content-Disposition"];
+    NSInputStream *inputStream = [NSInputStream inputStreamWithURL:fileURL];
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    [inputStream scheduleInRunLoop:runLoop forMode:NSRunLoopCommonModes];
+    [inputStream open];
     
-        //        [mutableHeaders setValue:[response MIMEType] forKey:@"Content-Type"];
-        NSString *filePathStr = [fileURL absoluteString];
-        [mutableHeaders setValue:[self fileMIMEType:filePathStr] forKey:@"Content-Type"];
-            
-        NSInputStream *inputStream = [NSInputStream inputStreamWithURL:fileURL];
-        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-        [inputStream scheduleInRunLoop:runLoop forMode:NSRunLoopCommonModes];
-        [inputStream open];
-        
-        static NSInteger const kAFStreamToStreamBufferSize = 1024 * 1024;
-        
-        void *buffer = malloc(kAFStreamToStreamBufferSize);
-        while ([inputStream hasBytesAvailable]) {
-            unsigned long long bytesRead = [inputStream read:buffer maxLength:kAFStreamToStreamBufferSize];
-            [self appendData:[NSData dataWithBytesNoCopy:buffer length:bytesRead freeWhenDone:NO]];
-        }  
-        free(buffer);
-        
-        [inputStream close];
-        
-        return YES;
-//    } else {
-//        return NO;
-//    }
+    static NSInteger const kAFStreamToStreamBufferSize = 1024 * 1024;
+    
+    void *buffer = malloc(kAFStreamToStreamBufferSize);
+    while ([inputStream hasBytesAvailable]) {
+        unsigned long long bytesRead = [inputStream read:buffer maxLength:kAFStreamToStreamBufferSize];
+        [self appendData:[NSData dataWithBytesNoCopy:buffer length:bytesRead freeWhenDone:NO]];
+    }
+    free(buffer);
+    
+    [inputStream close];
+    
+    return YES;
 }
 
 - (void)appendString:(NSString *)string {
