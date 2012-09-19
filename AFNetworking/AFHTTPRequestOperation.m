@@ -37,33 +37,34 @@
 #endif
 
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
-    static NSCharacterSet *_skippedCharacterSet = nil;
+    static NSCharacterSet *_trimCharacterSet = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _skippedCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@" ,"];
+        _trimCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     });
-    
+
     if (!string) {
         return nil;
     }
-    
-    NSScanner *scanner = [NSScanner scannerWithString:string];
-    scanner.charactersToBeSkipped = _skippedCharacterSet;
-    
-    NSMutableSet *mutableContentTypes = [NSMutableSet set];
-    while (![scanner isAtEnd]) {
-        NSString *contentType = nil;
-        if ([scanner scanUpToString:@";" intoString:&contentType]) {
-            [scanner scanUpToString:@"," intoString:nil];
-        } else {
-            [scanner scanUpToCharactersFromSet:_skippedCharacterSet intoString:&contentType];
-        }
-        
-        if (contentType) {
-            [mutableContentTypes addObject:contentType];
-        }
-    }
-    
+
+    NSArray *mediaRanges = [string componentsSeparatedByString:@","];
+
+    NSMutableSet *mutableContentTypes = [NSMutableSet setWithCapacity:mediaRanges.count];
+
+    [mediaRanges enumerateObjectsUsingBlock:^(NSString *mediaRange, NSUInteger idx, BOOL *stop) {
+
+      NSRange startOfParameters = [mediaRange rangeOfString:@";"];
+      if (startOfParameters.location != NSNotFound) {
+          mediaRange = [mediaRange substringToIndex:startOfParameters.location];
+      }
+
+      mediaRange = [mediaRange stringByTrimmingCharactersInSet:_trimCharacterSet];
+
+      if (mediaRange.length > 0)
+        [mutableContentTypes addObject:mediaRange];
+
+    }];
+
     return [NSSet setWithSet:mutableContentTypes];
 }
 
