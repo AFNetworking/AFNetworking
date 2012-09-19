@@ -366,6 +366,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
     if (_networkReachability) {
         SCNetworkReachabilityUnscheduleFromRunLoop(_networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
         CFRelease(_networkReachability);
+        _networkReachability = NULL;
     }
 }
 
