@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8095D58A16083B9F00FFE6A4 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8095D58916083B9F00FFE6A4 /* MobileCoreServices.framework */; };
 		F8D0701B14310F4A00653FD3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */; };
 		F8D0701C14310F4F00653FD3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E013957DF100DB05C8 /* Security.framework */; };
 		F8DA09E41396AC040057D0CC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09E31396AC040057D0CC /* main.m */; };
@@ -39,6 +40,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8095D58916083B9F00FFE6A4 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		F8DA09E31396AC040057D0CC /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = SOURCE_ROOT; };
 		F8DA09E51396AC220057D0CC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		F8DA09E61396AC220057D0CC /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
@@ -95,6 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8095D58A16083B9F00FFE6A4 /* MobileCoreServices.framework in Frameworks */,
 				F8E469651395739D00DB05C8 /* UIKit.framework in Frameworks */,
 				F8E469671395739D00DB05C8 /* Foundation.framework in Frameworks */,
 				F8E469691395739D00DB05C8 /* CoreGraphics.framework in Frameworks */,
@@ -162,6 +165,7 @@
 		F8E469631395739D00DB05C8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8095D58916083B9F00FFE6A4 /* MobileCoreServices.framework */,
 				F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */,
 				F8E469E013957DF100DB05C8 /* Security.framework */,
 				F8E469DE13957DD500DB05C8 /* CoreLocation.framework */,
