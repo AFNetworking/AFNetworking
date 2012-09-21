@@ -114,7 +114,9 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 		_activityCount++;
 	}
     [self didChangeValueForKey:@"activityCount"];
-    [self updateNetworkActivityIndicatorVisibilityDelayed];
+    if (_activityCount == 1) {
+        [self updateNetworkActivityIndicatorVisibilityDelayed];
+    }
 }
 
 - (void)decrementActivityCount {
@@ -126,7 +128,9 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 		_activityCount--;
 	}
     [self didChangeValueForKey:@"activityCount"];
-    [self updateNetworkActivityIndicatorVisibilityDelayed];
+    if (_activityCount == 0) {
+        [self updateNetworkActivityIndicatorVisibilityDelayed];
+    }
 }
 
 @end
