@@ -10,4 +10,5 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.framework = 'SystemConfiguration'
+  s.prefix_header_contents = "#import <SystemConfiguration/SystemConfiguration.h>"
 end
