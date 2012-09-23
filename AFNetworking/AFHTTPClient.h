@@ -505,7 +505,7 @@ extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
 /**
  The `AFMultipartFormData` protocol defines the methods supported by the parameter in the block argument of `-multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:`.
  */
-@protocol AFMultipartFormData
+@protocol AFMultipartFormData <NSObject>
 
 /**
  Appends HTTP headers, followed by the encoded data and the multipart form boundary.
