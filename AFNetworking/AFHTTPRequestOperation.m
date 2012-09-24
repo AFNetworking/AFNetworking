@@ -60,12 +60,6 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     return [NSSet setWithSet:mutableContentTypes];
 }
 
-static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL selector, id block) {
-    Method originalMethod = class_getClassMethod(klass, selector);
-    IMP implementation = imp_implementationWithBlock((AF_CAST_TO_BLOCK)block);
-    class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
-}
-
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     NSMutableString *string = [NSMutableString string];
 
@@ -94,6 +88,12 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     }
 
     return string;
+}
+
+static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL selector, id block) {
+    Method originalMethod = class_getClassMethod(klass, selector);
+    IMP implementation = imp_implementationWithBlock((AF_CAST_TO_BLOCK)block);
+    class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
 }
 
 #pragma mark -
