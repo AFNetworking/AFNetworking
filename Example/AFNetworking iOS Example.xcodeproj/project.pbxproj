@@ -172,6 +172,8 @@
 		F8E4696A1395739D00DB05C8 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				F8129C7315910C37009BFE23 /* AppDelegate.h */,
+				F8129C7215910C37009BFE23 /* AppDelegate.m */,
 				F8DA09C91396AB690057D0CC /* Models */,
 				F8DA09CC1396AB690057D0CC /* Views */,
 				F8DA09C61396AB690057D0CC /* Controllers */,
@@ -186,8 +188,6 @@
 			children = (
 				F8DA09E31396AC040057D0CC /* main.m */,
 				F8129C3815910830009BFE23 /* Prefix.pch */,
-				F8129C7315910C37009BFE23 /* AppDelegate.h */,
-				F8129C7215910C37009BFE23 /* AppDelegate.m */,
 				F8E4696C1395739D00DB05C8 /* iOS-Info.plist */,
 			);
 			name = "Supporting Files";

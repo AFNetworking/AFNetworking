@@ -112,6 +112,8 @@
 			children = (
 				F8129C311591073C009BFE23 /* AFTwitterAPIClient.h */,
 				F8129C251591073C009BFE23 /* AFTwitterAPIClient.m */,
+				F8129C7615910C40009BFE23 /* AppDelegate.h */,
+				F8129C7515910C40009BFE23 /* AppDelegate.m */,
 				F8129C291591073C009BFE23 /* Models */,
 				F8129C061591061B009BFE23 /* Supporting Files */,
 			);
@@ -122,8 +124,6 @@
 		F8129C061591061B009BFE23 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F8129C7615910C40009BFE23 /* AppDelegate.h */,
-				F8129C7515910C40009BFE23 /* AppDelegate.m */,
 				F8129C6E15910B15009BFE23 /* main.m */,
 				F8129C7015910B3E009BFE23 /* MainMenu.xib */,
 			);
