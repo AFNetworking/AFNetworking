@@ -757,6 +757,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 @property (readonly, getter = isEmpty) BOOL empty;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
+- (void)setInitialAndFinalBoundaries;
 
 @end
 
@@ -908,6 +909,9 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
         return self.request;
     }
     
+    // We have to set the initial and final boundaries here so that the body stream returns the correct content length.
+    [self.bodyStream setInitialAndFinalBoundaries];
+    
     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", kAFMultipartFormBoundary] forHTTPHeaderField:@"Content-Type"];
     [self.request setValue:[NSString stringWithFormat:@"%llu", [self.bodyStream contentLength]] forHTTPHeaderField:@"Content-Length"];
     [self.request setHTTPBodyStream:self.bodyStream];
@@ -946,12 +950,29 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     [super dealloc];
 }
 
+- (void)setInitialAndFinalBoundaries {
+    if ([self.HTTPBodyParts count] > 0) { // If there's any HTTP body parts...
+        // Reset all HTTP body parts boundary settings first.
+        for (AFHTTPBodyPart *theHTTPBodyPart in self.HTTPBodyParts) {
+            theHTTPBodyPart.hasInitialBoundary = NO;
+            theHTTPBodyPart.hasFinalBoundary = NO;
+        }
+        // Set the first and last object boundary settings.
+        [[self.HTTPBodyParts objectAtIndex:0] setHasInitialBoundary:YES];
+        [[self.HTTPBodyParts lastObject] setHasFinalBoundary:YES];
+    }
+}
+
 #pragma mark - NSStream subclass overrides
 
 - (void)open {
     if ([self.HTTPBodyParts count] > 0) {
-        [[self.HTTPBodyParts objectAtIndex:0] setHasInitialBoundary:YES];
-        [[self.HTTPBodyParts lastObject] setHasFinalBoundary:YES];
+        // This call might be redundant but can be a good safety measure
+        // to make sure that the boundary settings are correctly set.
+        // But even so, the length might be screw up if the user try to
+        // mess with the HTTP body part between finalizing the multipart
+        // form data request and here.
+        [self setInitialAndFinalBoundaries];
         
         self.HTTPBodyPartEnumerator = [self.HTTPBodyParts objectEnumerator];
     }
@@ -1015,7 +1036,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
                 break;
             }
         } else {
-            bytesRead += [self.currentHTTPBodyPart read:buffer maxLength:length];
+            bytesRead += [self.currentHTTPBodyPart read:&buffer[bytesRead] maxLength:length - bytesRead];
         }
     }
     
@@ -1129,6 +1150,8 @@ typedef enum {
     for (NSString *field in [self.headers allKeys]) {
         [headerString appendString:[NSString stringWithFormat:@"%@: %@%@", field, [self.headers valueForKey:field], kAFMultipartFormCRLF]];
     }
+    // There's a CRLF after the header string.
+    [headerString appendString:kAFMultipartFormCRLF];
         
     return [NSString stringWithString:headerString];
 }
@@ -1172,17 +1195,17 @@ typedef enum {
         
     if (_phase == AFEncapsulationBoundaryPhase) {
         NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary() : AFMultipartFormEncapsulationBoundary()) dataUsingEncoding:self.stringEncoding];
-        bytesRead += [self readData:encapsulationBoundaryData intoBuffer:buffer maxLength:(length - bytesRead)];
+        bytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
     }
     
     if (_phase == AFHeaderPhase) {
         NSData *headersData = [[self stringForHeaders] dataUsingEncoding:self.stringEncoding];
-        bytesRead += [self readData:headersData intoBuffer:buffer maxLength:(length - bytesRead)];
+        bytesRead += [self readData:headersData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
     }
     
     if (_phase == AFBodyPhase) {
         if ([self.inputStream hasBytesAvailable]) {
-            bytesRead += [self.inputStream read:buffer maxLength:(length - bytesRead)];
+            bytesRead += [self.inputStream read:&buffer[bytesRead] maxLength:(length - bytesRead)];
         }
         
         if (![self.inputStream hasBytesAvailable]) {
@@ -1192,7 +1215,7 @@ typedef enum {
     
     if (_phase == AFFinalBoundaryPhase) {
         NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding] : [NSData data]);
-        bytesRead += [self readData:closingBoundaryData intoBuffer:buffer maxLength:(length - bytesRead)];
+        bytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
     }
 
     return bytesRead;
