@@ -37,32 +37,24 @@
 #endif
 
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
-    static NSCharacterSet *_trimCharacterSet = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _trimCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-    });
-
     if (!string) {
         return nil;
     }
 
     NSArray *mediaRanges = [string componentsSeparatedByString:@","];
-
     NSMutableSet *mutableContentTypes = [NSMutableSet setWithCapacity:mediaRanges.count];
 
     [mediaRanges enumerateObjectsUsingBlock:^(NSString *mediaRange, NSUInteger idx, BOOL *stop) {
-
-      NSRange startOfParameters = [mediaRange rangeOfString:@";"];
-      if (startOfParameters.location != NSNotFound) {
-          mediaRange = [mediaRange substringToIndex:startOfParameters.location];
-      }
-
-      mediaRange = [mediaRange stringByTrimmingCharactersInSet:_trimCharacterSet];
-
-      if (mediaRange.length > 0)
-        [mutableContentTypes addObject:mediaRange];
-
+        NSRange parametersRange = [mediaRange rangeOfString:@";"];
+        if (parametersRange.location != NSNotFound) {
+            mediaRange = [mediaRange substringToIndex:parametersRange.location];
+        }
+        
+        mediaRange = [mediaRange stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if (mediaRange.length > 0) {
+            [mutableContentTypes addObject:mediaRange];
+        }
     }];
 
     return [NSSet setWithSet:mutableContentTypes];
