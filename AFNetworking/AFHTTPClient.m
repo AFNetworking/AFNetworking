@@ -48,17 +48,6 @@
 #define AF_DISPATCH_RETAIN_RELEASE 1
 #endif
 
-@interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
-
-- (id)initWithURLRequest:(NSMutableURLRequest *)request
-          stringEncoding:(NSStringEncoding)encoding;
-
-- (NSMutableURLRequest *)requestByFinalizingMultipartFormData;
-
-@end
-
-#pragma mark -
-
 #ifdef _SYSTEMCONFIGURATION_H
 NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
 NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworkingReachabilityNotificationStatusItem";
@@ -199,6 +188,17 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     
     return propertyListString;
 }
+
+@interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
+
+- (id)initWithURLRequest:(NSMutableURLRequest *)request
+          stringEncoding:(NSStringEncoding)encoding;
+
+- (NSMutableURLRequest *)requestByFinalizingMultipartFormData;
+
+@end
+
+#pragma mark -
 
 @interface AFHTTPClient ()
 @property (readwrite, nonatomic) NSURL *baseURL;
@@ -707,28 +707,15 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 
 static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 #ifdef __UTTYPE__
-    CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL);
-    NSString *contentType = (__bridge NSString *)UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType);
-    
-    CFRelease(UTI);
-    
-    return contentType;
+    NSString *UTI = (__bridge_transfer NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL);
+    return (__bridge_transfer NSString *)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)UTI, kUTTagClassMIMEType);
 #else
     return @"application/octet-stream";
 #endif
 }
 
-@interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
-
-@property (readonly) unsigned long long contentLength;
-@property (readonly, getter = isEmpty) BOOL empty;
-
-- (id)initWithStringEncoding:(NSStringEncoding)encoding;
-- (void)setInitialAndFinalBoundaries;
-
-@end
-
 @interface AFHTTPBodyPart : NSObject
+
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 @property (nonatomic, retain) NSDictionary *headers;
 @property (nonatomic, retain) NSInputStream *inputStream;
@@ -744,34 +731,24 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 
 @end
 
-#pragma mark - AFStreamingMultipartFormData
+@interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
+
+@property (readonly) unsigned long long contentLength;
+@property (readonly, getter = isEmpty) BOOL empty;
+
+- (id)initWithStringEncoding:(NSStringEncoding)encoding;
+- (void)setInitialAndFinalBoundaries;
+- (void)appendHTTPBodyPart:(AFHTTPBodyPart *)bodyPart;
+
+@end
+
+#pragma mark -
 
 @interface AFStreamingMultipartFormData ()
 @property (readwrite, nonatomic, copy) NSMutableURLRequest *request;
 @property (readwrite, nonatomic, retain) AFMultipartBodyStream *bodyStream;
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
 @end
-
-@interface AFMultipartBodyStream () {
-    CFReadStreamClientCallBack copiedCallback;
-    CFStreamClientContext copiedContext;
-    CFOptionFlags requestedEvents;
-    NSStreamStatus streamStatus;
-    id <NSStreamDelegate> delegate;
-    
-    NSMutableArray *_HTTPBodyParts;
-    NSEnumerator *_HTTPBodyPartEnumerator;
-    AFHTTPBodyPart *_currentHTTPBodyPart;
-}
-
-@property (nonatomic, assign) NSStringEncoding stringEncoding;
-@property (nonatomic, retain) NSMutableArray *HTTPBodyParts;
-@property (nonatomic, retain) NSEnumerator *HTTPBodyPartEnumerator;
-@property (nonatomic, retain) AFHTTPBodyPart *currentHTTPBodyPart;
-
-@end
-
-#pragma mark -
 
 @implementation AFStreamingMultipartFormData
 @synthesize request = _request;
@@ -800,11 +777,10 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
+    bodyPart.bodyContentLength = [data length];
     bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
     
-    bodyPart.bodyContentLength = [data length];
-    
-    [self.bodyStream.HTTPBodyParts addObject:bodyPart];
+    [self.bodyStream appendHTTPBodyPart:bodyPart];
 }
 
 
@@ -820,11 +796,10 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
+    bodyPart.bodyContentLength = [data length];
     bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
     
-    bodyPart.bodyContentLength = [data length];
-    
-    [self.bodyStream.HTTPBodyParts addObject:bodyPart];
+    [self.bodyStream appendHTTPBodyPart:bodyPart];
 }
 
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL
@@ -859,7 +834,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:nil];
     bodyPart.bodyContentLength = [[fileAttributes objectForKey:NSFileSize] unsignedLongLongValue];
     
-    [self.bodyStream.HTTPBodyParts addObject:bodyPart];
+    [self.bodyStream appendHTTPBodyPart:bodyPart];
     
     return YES;
 }
@@ -869,7 +844,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
         return self.request;
     }
     
-    // We have to set the initial and final boundaries here so that the body stream returns the correct content length.
+    // Reset the initial and final boundaries to ensure correct Content-Length
     [self.bodyStream setInitialAndFinalBoundaries];
     
     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", kAFMultipartFormBoundary] forHTTPHeaderField:@"Content-Type"];
@@ -881,9 +856,21 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 
 @end
 
-#pragma mark - AFMultipartBodyStream
+#pragma mark -
+
+@interface AFMultipartBodyStream ()
+@property (nonatomic, assign) NSStreamStatus streamStatus;
+@property (nonatomic, retain) NSError *streamError;
+
+@property (nonatomic, assign) NSStringEncoding stringEncoding;
+@property (nonatomic, retain) NSMutableArray *HTTPBodyParts;
+@property (nonatomic, retain) NSEnumerator *HTTPBodyPartEnumerator;
+@property (nonatomic, retain) AFHTTPBodyPart *currentHTTPBodyPart;
+@end
 
 @implementation AFMultipartBodyStream
+@synthesize streamStatus = _streamStatus;
+@synthesize streamError = _streamError;
 @synthesize stringEncoding = _stringEncoding;
 @synthesize HTTPBodyParts = _HTTPBodyParts;
 @synthesize HTTPBodyPartEnumerator = _HTTPBodyPartEnumerator;
@@ -895,9 +882,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
         return nil;
     }
     
-    self.stringEncoding = encoding;
-    streamStatus = NSStreamStatusNotOpen;
-    
+    self.stringEncoding = encoding;    
     self.HTTPBodyParts = [NSMutableArray array];
     
     return self;
@@ -913,6 +898,10 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
         [[self.HTTPBodyParts objectAtIndex:0] setHasInitialBoundary:YES];
         [[self.HTTPBodyParts lastObject] setHasFinalBoundary:YES];
     }
+}
+
+- (void)appendHTTPBodyPart:(AFHTTPBodyPart *)bodyPart {
+    [self.HTTPBodyParts addObject:bodyPart];
 }
 
 - (BOOL)isEmpty {
@@ -956,14 +945,14 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
         return;
     }
     
-    streamStatus = NSStreamStatusOpen;
-    
+    self.streamStatus = NSStreamStatusOpen;
+
     [self setInitialAndFinalBoundaries];
     self.HTTPBodyPartEnumerator = [self.HTTPBodyParts objectEnumerator];
 }
 
 - (void)close {
-    streamStatus = NSStreamStatusClosed;
+    self.streamStatus = NSStreamStatusClosed;
 }
 
 - (id)propertyForKey:(NSString *)key {
@@ -981,14 +970,6 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 - (void)removeFromRunLoop:(NSRunLoop *)aRunLoop
                   forMode:(NSString *)mode
 {}
-
-- (NSStreamStatus)streamStatus {
-    return streamStatus;
-}
-
-- (NSError *)streamError {
-    return nil;
-}
 
 - (unsigned long long)contentLength {
     unsigned long long length = 0;
@@ -1038,8 +1019,8 @@ typedef enum {
 @implementation AFHTTPBodyPart
 @synthesize stringEncoding = _stringEncoding;
 @synthesize headers = _headers;
-@synthesize inputStream = _inputStream;
 @synthesize bodyContentLength = _bodyContentLength;
+@synthesize inputStream = _inputStream;
 
 - (id)init {
     self = [super init];
@@ -1174,4 +1155,3 @@ typedef enum {
 }
 
 @end
-
