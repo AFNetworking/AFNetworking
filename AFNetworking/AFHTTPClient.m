@@ -687,23 +687,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 
 #pragma mark -
 
-static NSString * const kAFMultipartTemporaryFileDirectoryName = @"com.alamofire.uploads";
-
-static NSString * AFMultipartTemporaryFileDirectoryPath() {
-    static NSString *multipartTemporaryFilePath = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        multipartTemporaryFilePath = [[NSTemporaryDirectory() stringByAppendingPathComponent:kAFMultipartTemporaryFileDirectoryName] copy];
-        
-        NSError *error = nil;
-        if(![[NSFileManager defaultManager] createDirectoryAtPath:multipartTemporaryFilePath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create multipary temporary file directory at %@", multipartTemporaryFilePath);
-        }
-    });
-    
-    return multipartTemporaryFilePath;
-}
-
 static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY";
 
 static NSString * const kAFMultipartFormCRLF = @"\r\n";
@@ -882,7 +865,6 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 }
 
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData {
-    // Return the original request if no data has been added
     if ([self.bodyStream isEmpty]) {
         return self.request;
     }
@@ -922,77 +904,22 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 }
 
 - (void)setInitialAndFinalBoundaries {
-    if ([self.HTTPBodyParts count] > 0) { // If there's any HTTP body parts...
-        // Reset all HTTP body parts boundary settings first.
-        for (AFHTTPBodyPart *theHTTPBodyPart in self.HTTPBodyParts) {
-            theHTTPBodyPart.hasInitialBoundary = NO;
-            theHTTPBodyPart.hasFinalBoundary = NO;
+    if ([self.HTTPBodyParts count] > 0) {
+        for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
+            bodyPart.hasInitialBoundary = NO;
+            bodyPart.hasFinalBoundary = NO;
         }
-        // Set the first and last object boundary settings.
+
         [[self.HTTPBodyParts objectAtIndex:0] setHasInitialBoundary:YES];
         [[self.HTTPBodyParts lastObject] setHasFinalBoundary:YES];
     }
-}
-
-#pragma mark - NSStream subclass overrides
-
-- (void)open {
-    if ([self.HTTPBodyParts count] > 0) {
-        // This call might be redundant but can be a good safety measure
-        // to make sure that the boundary settings are correctly set.
-        // But even so, the length might be screw up if the user try to
-        // mess with the HTTP body part between finalizing the multipart
-        // form data request and here.
-        [self setInitialAndFinalBoundaries];
-        
-        self.HTTPBodyPartEnumerator = [self.HTTPBodyParts objectEnumerator];
-    }
-    
-    streamStatus = NSStreamStatusOpen;
-}
-
-- (void)close {
-    streamStatus = NSStreamStatusClosed;
-}
-
-- (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop
-                  forMode:(NSString *)mode
-{}
-
-- (void)removeFromRunLoop:(NSRunLoop *)aRunLoop
-                  forMode:(NSString *)mode
-{}
-
-- (id)propertyForKey:(NSString *)key {
-    return nil;
-}
-
-- (BOOL)setProperty:(id)property forKey:(NSString *)key {
-    return NO;
-}
-
-- (NSStreamStatus)streamStatus {
-    return streamStatus;
-}
-
-- (NSError *)streamError {
-    return nil;
 }
 
 - (BOOL)isEmpty {
     return [self.HTTPBodyParts count] == 0;
 }
 
-- (unsigned long long)contentLength {
-    unsigned long long length = 0;
-    for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
-        length += [bodyPart contentLength];
-    }
-    
-    return length;
-}
-
-#pragma mark - NSInputStream subclass overrides
+#pragma mark - NSInputStream
 
 - (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length {
     if ([self streamStatus] == NSStreamStatusClosed) {
@@ -1014,15 +941,65 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     return bytesRead;
 }
 
-- (BOOL)hasBytesAvailable {
-    return [self streamStatus] == NSStreamStatusOpen;
-}
-
 - (BOOL)getBuffer:(uint8_t **)buffer length:(NSUInteger *)len {
     return NO;
 }
 
-#pragma mark - Undocumented CFReadStream bridged methods
+- (BOOL)hasBytesAvailable {
+    return [self streamStatus] == NSStreamStatusOpen;
+}
+
+#pragma mark - NSStream
+
+- (void)open {
+    if (self.streamStatus == NSStreamStatusOpen) {
+        return;
+    }
+    
+    streamStatus = NSStreamStatusOpen;
+    
+    [self setInitialAndFinalBoundaries];
+    self.HTTPBodyPartEnumerator = [self.HTTPBodyParts objectEnumerator];
+}
+
+- (void)close {
+    streamStatus = NSStreamStatusClosed;
+}
+
+- (id)propertyForKey:(NSString *)key {
+    return nil;
+}
+
+- (BOOL)setProperty:(id)property forKey:(NSString *)key {
+    return NO;
+}
+
+- (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop
+                  forMode:(NSString *)mode
+{}
+
+- (void)removeFromRunLoop:(NSRunLoop *)aRunLoop
+                  forMode:(NSString *)mode
+{}
+
+- (NSStreamStatus)streamStatus {
+    return streamStatus;
+}
+
+- (NSError *)streamError {
+    return nil;
+}
+
+- (unsigned long long)contentLength {
+    unsigned long long length = 0;
+    for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
+        length += [bodyPart contentLength];
+    }
+    
+    return length;
+}
+
+#pragma mark - Undocumented CFReadStream Bridged Methods
 
 - (void)_scheduleInCFRunLoop:(CFRunLoopRef)aRunLoop
                      forMode:(CFStringRef)aMode
@@ -1082,60 +1059,14 @@ typedef enum {
     }    
 }
 
-- (BOOL)transitionToNextPhase {
-    if (![[NSThread currentThread] isMainThread]) {
-        [self performSelectorOnMainThread:@selector(transitionToNextPhase) withObject:nil waitUntilDone:YES];
-        return YES;
-    }
-    
-    switch (_phase) {
-        case AFEncapsulationBoundaryPhase:
-            _phase = AFHeaderPhase;
-            break;
-        case AFHeaderPhase:
-            [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-            [self.inputStream open];
-            _phase = AFBodyPhase;
-            break;
-        case AFBodyPhase:
-            [self.inputStream close];
-            _phase = AFFinalBoundaryPhase;
-            break;
-        default:
-            _phase = AFEncapsulationBoundaryPhase;
-            break;
-    }
-    
-    _phaseReadOffset = 0;
-    
-    return YES;
-}
-
 - (NSString *)stringForHeaders {
     NSMutableString *headerString = [NSMutableString string];
     for (NSString *field in [self.headers allKeys]) {
         [headerString appendString:[NSString stringWithFormat:@"%@: %@%@", field, [self.headers valueForKey:field], kAFMultipartFormCRLF]];
     }
-    // There's a CRLF after the header string.
     [headerString appendString:kAFMultipartFormCRLF];
     
     return [NSString stringWithString:headerString];
-}
-
-- (NSInteger)readData:(NSData *)data
-           intoBuffer:(uint8_t *)buffer
-            maxLength:(NSUInteger)length
-{
-    NSRange range = NSMakeRange(_phaseReadOffset, MIN([data length], length));
-    [data getBytes:buffer range:range];
-    
-    _phaseReadOffset += range.length;
-    
-    if (range.length >= [data length]) {
-        [self transitionToNextPhase];
-    }
-    
-    return range.length;
 }
 
 - (unsigned long long)contentLength {
@@ -1155,6 +1086,16 @@ typedef enum {
     return length;
 }
 
+- (BOOL)hasBytesAvailable {
+    switch (self.inputStream.streamStatus) {
+        case NSStreamStatusAtEnd:
+        case NSStreamStatusClosed:
+        case NSStreamStatusError:
+            return NO;
+        default:
+            return YES;
+    }
+}
 
 - (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length {
     NSInteger bytesRead = 0;
@@ -1187,15 +1128,49 @@ typedef enum {
     return bytesRead;
 }
 
-- (BOOL)hasBytesAvailable {
-    switch (self.inputStream.streamStatus) {
-        case NSStreamStatusAtEnd:
-        case NSStreamStatusClosed:
-        case NSStreamStatusError:
-            return NO;
-        default:
-            return YES;
+- (NSInteger)readData:(NSData *)data
+           intoBuffer:(uint8_t *)buffer
+            maxLength:(NSUInteger)length
+{
+    NSRange range = NSMakeRange(_phaseReadOffset, MIN([data length], length));
+    [data getBytes:buffer range:range];
+    
+    _phaseReadOffset += range.length;
+    
+    if (range.length >= [data length]) {
+        [self transitionToNextPhase];
     }
+    
+    return range.length;
+}
+
+- (BOOL)transitionToNextPhase {
+    if (![[NSThread currentThread] isMainThread]) {
+        [self performSelectorOnMainThread:@selector(transitionToNextPhase) withObject:nil waitUntilDone:YES];
+        return YES;
+    }
+    
+    switch (_phase) {
+        case AFEncapsulationBoundaryPhase:
+            _phase = AFHeaderPhase;
+            break;
+        case AFHeaderPhase:
+            [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+            [self.inputStream open];
+            _phase = AFBodyPhase;
+            break;
+        case AFBodyPhase:
+            [self.inputStream close];
+            _phase = AFFinalBoundaryPhase;
+            break;
+        default:
+            _phase = AFEncapsulationBoundaryPhase;
+            break;
+    }
+    
+    _phaseReadOffset = 0;
+    
+    return YES;
 }
 
 @end
