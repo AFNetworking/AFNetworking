@@ -27,12 +27,6 @@
 
 #import <Availability.h>
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import <MobileCoreServices/MobileCoreServices.h>
-#else
-#import <CoreServices/CoreServices.h>
-#endif
-
 #ifdef _SYSTEMCONFIGURATION_H
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <netinet/in.h>
