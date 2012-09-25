@@ -24,11 +24,6 @@
 #import "AFURLConnectionOperation.h"
 
 /**
- Returns a set of MIME types detected in an HTTP `Accept` or `Content-Type` header.
- */
-extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
-
-/**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
  */
 @interface AFHTTPRequestOperation : AFURLConnectionOperation
@@ -40,7 +35,7 @@ extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
 /**
  The last HTTP response received by the operation's connection.
  */
-@property (readonly, nonatomic, retain) NSHTTPURLResponse *response;
+@property (readonly, nonatomic, strong) NSHTTPURLResponse *response;
 
 ///----------------------------------------------------------
 /// @name Managing And Checking For Acceptable HTTP Responses
@@ -66,9 +61,9 @@ extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
  */
 @property (nonatomic, assign) dispatch_queue_t failureCallbackQueue;
 
-///-------------------------------------------------------------
-/// @name Managing Accceptable HTTP Status Codes & Content Types
-///-------------------------------------------------------------
+///------------------------------------------------------------
+/// @name Managing Acceptable HTTP Status Codes & Content Types
+///------------------------------------------------------------
 
 /**
  Returns an `NSIndexSet` object containing the ranges of acceptable HTTP status codes. When non-`nil`, the operation will set the `error` property to an error in `AFErrorDomain`. See http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
@@ -78,7 +73,7 @@ extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
 + (NSIndexSet *)acceptableStatusCodes;
 
 /**
- Adds status codes to the set of acceptable HTTP status codes returned by `+acceptableStatusCodes` in subsequent calls by this class and its descendents.
+ Adds status codes to the set of acceptable HTTP status codes returned by `+acceptableStatusCodes` in subsequent calls by this class and its descendants.
  
  @param statusCodes The status codes to be added to the set of acceptable HTTP status codes
  */
@@ -92,7 +87,7 @@ extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
 + (NSSet *)acceptableContentTypes;
 
 /**
- Adds content types to the set of acceptable MIME types returned by `+acceptableContentTypes` in subsequent calls by this class and its descendents. 
+ Adds content types to the set of acceptable MIME types returned by `+acceptableContentTypes` in subsequent calls by this class and its descendants.
 
  @param contentTypes The content types to be added to the set of acceptable MIME types
  */
@@ -118,7 +113,7 @@ extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
  Sets the `completionBlock` property with a block that executes either the specified success or failure block, depending on the state of the request on completion. If `error` returns a value, which can be caused by an unacceptable status code or content type, then `failure` is executed. Otherwise, `success` is executed.
  
  @param success The block to be executed on the completion of a successful request. This block has no return value and takes two arguments: the receiver operation and the object constructed from the response data of the request.
- @param failure The block to be executed on the completion of an unsuccessful request. This block has no return value and takes two arguments: the receiver operation and the error that occured during the request.
+ @param failure The block to be executed on the completion of an unsuccessful request. This block has no return value and takes two arguments: the receiver operation and the error that occurred during the request.
  
  @discussion This method should be overridden in subclasses in order to specify the response object passed into the success block.
  */
@@ -126,3 +121,13 @@ extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 @end
+
+///----------------
+/// @name Functions
+///----------------
+
+/**
+ Returns a set of MIME types detected in an HTTP `Accept` or `Content-Type` header.
+ */
+extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
+

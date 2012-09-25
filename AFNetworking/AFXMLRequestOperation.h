@@ -48,7 +48,7 @@
 /**
  An `NSXMLParser` object constructed from the response data.
  */
-@property (readonly, nonatomic, retain) NSXMLParser *responseXMLParser;
+@property (readonly, nonatomic) NSXMLParser *responseXMLParser;
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 /**
@@ -77,7 +77,7 @@
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation
  @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the XML document created from the response data of request.
- @param failure A block object to be executed when the operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as XML. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
+ @param failure A block object to be executed when the operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data as XML. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
  
  @return A new XML request operation
  */

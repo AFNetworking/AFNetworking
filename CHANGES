@@ -1,3 +1,17 @@
+= 1.0RC2 / 2012-06-26
+
+ * AFNetworking now requires iOS 5 / Mac OSX 10.7 or higher (Mattt Thompson)
+ 
+ * AFNetworking now uses Automatic Reference Counting (ARC) (Mattt Thompson)
+ 
+ * Revert implementation of `AFHTTPRequestOperation` 
+ `+addAcceptableStatusCodes:` and `+addAcceptableContentTypes:` to use
+ `class_replaceMethod` with `imp_implementationWithBlock`. (Mattt Thompson)
+ 
+ * Update `AFHTTPClient` to not handle cookies by default (@phamsonha, Mattt Thompson)
+ 
+ * Update icons for iOS example application (Mattt Thompson)
+ 
 = 0.10.0 / 2012-06-26
 
  * Add Twitter Mac Example application (Mattt Thompson)

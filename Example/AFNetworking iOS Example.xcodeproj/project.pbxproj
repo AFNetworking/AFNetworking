@@ -23,16 +23,15 @@
 		F8FA9494150EF97E00ED4EAD /* Tweet.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA9493150EF97E00ED4EAD /* Tweet.m */; };
 		F8FA9497150EF98800ED4EAD /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA9496150EF98800ED4EAD /* User.m */; };
 		F8FA949A150EF9DA00ED4EAD /* PublicTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA9499150EF9DA00ED4EAD /* PublicTimelineViewController.m */; };
-		F8FA94B1150EFEC100ED4EAD /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA949D150EFEC100ED4EAD /* AFHTTPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94B2150EFEC100ED4EAD /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA949F150EFEC100ED4EAD /* AFHTTPRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94B3150EFEC100ED4EAD /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A1150EFEC100ED4EAD /* AFImageRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94B4150EFEC100ED4EAD /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A3150EFEC100ED4EAD /* AFJSONRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94B5150EFEC100ED4EAD /* AFJSONUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A5150EFEC100ED4EAD /* AFJSONUtilities.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94B6150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A7150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94B7150EFEC100ED4EAD /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94AA150EFEC100ED4EAD /* AFPropertyListRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94B8150EFEC100ED4EAD /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94AC150EFEC100ED4EAD /* AFURLConnectionOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94B9150EFEC100ED4EAD /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94AE150EFEC100ED4EAD /* AFXMLRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F8FA94BA150EFEC100ED4EAD /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94B0150EFEC100ED4EAD /* UIImageView+AFNetworking.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F8FA94B1150EFEC100ED4EAD /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA949D150EFEC100ED4EAD /* AFHTTPClient.m */; };
+		F8FA94B2150EFEC100ED4EAD /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA949F150EFEC100ED4EAD /* AFHTTPRequestOperation.m */; };
+		F8FA94B3150EFEC100ED4EAD /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A1150EFEC100ED4EAD /* AFImageRequestOperation.m */; };
+		F8FA94B4150EFEC100ED4EAD /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A3150EFEC100ED4EAD /* AFJSONRequestOperation.m */; };
+		F8FA94B6150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94A7150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m */; };
+		F8FA94B7150EFEC100ED4EAD /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94AA150EFEC100ED4EAD /* AFPropertyListRequestOperation.m */; };
+		F8FA94B8150EFEC100ED4EAD /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94AC150EFEC100ED4EAD /* AFURLConnectionOperation.m */; };
+		F8FA94B9150EFEC100ED4EAD /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94AE150EFEC100ED4EAD /* AFXMLRequestOperation.m */; };
+		F8FA94BA150EFEC100ED4EAD /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94B0150EFEC100ED4EAD /* UIImageView+AFNetworking.m */; };
 		F8FA94C1150F019100ED4EAD /* TweetTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F8FA94C0150F019100ED4EAD /* TweetTableViewCell.m */; };
 		F8FA94D0150F094D00ED4EAD /* profile-image-placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = F8FA94CC150F094D00ED4EAD /* profile-image-placeholder.png */; };
 		F8FA94D1150F094D00ED4EAD /* profile-image-placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8FA94CD150F094D00ED4EAD /* profile-image-placeholder@2x.png */; };
@@ -72,8 +71,6 @@
 		F8FA94A1150EFEC100ED4EAD /* AFImageRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageRequestOperation.m; sourceTree = "<group>"; };
 		F8FA94A2150EFEC100ED4EAD /* AFJSONRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFJSONRequestOperation.h; sourceTree = "<group>"; };
 		F8FA94A3150EFEC100ED4EAD /* AFJSONRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONRequestOperation.m; sourceTree = "<group>"; };
-		F8FA94A4150EFEC100ED4EAD /* AFJSONUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFJSONUtilities.h; sourceTree = "<group>"; };
-		F8FA94A5150EFEC100ED4EAD /* AFJSONUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONUtilities.m; sourceTree = "<group>"; };
 		F8FA94A6150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		F8FA94A7150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		F8FA94A8150EFEC100ED4EAD /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
@@ -177,6 +174,8 @@
 		F8E4696A1395739D00DB05C8 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				F8129C7315910C37009BFE23 /* AppDelegate.h */,
+				F8129C7215910C37009BFE23 /* AppDelegate.m */,
 				F8DA09C91396AB690057D0CC /* Models */,
 				F8DA09CC1396AB690057D0CC /* Views */,
 				F8DA09C61396AB690057D0CC /* Controllers */,
@@ -191,8 +190,6 @@
 			children = (
 				F8DA09E31396AC040057D0CC /* main.m */,
 				F8129C3815910830009BFE23 /* Prefix.pch */,
-				F8129C7315910C37009BFE23 /* AppDelegate.h */,
-				F8129C7215910C37009BFE23 /* AppDelegate.m */,
 				F8E4696C1395739D00DB05C8 /* iOS-Info.plist */,
 			);
 			name = "Supporting Files";
@@ -251,8 +248,6 @@
 				F8FA94B0150EFEC100ED4EAD /* UIImageView+AFNetworking.m */,
 				F8FA94A6150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.h */,
 				F8FA94A7150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m */,
-				F8FA94A4150EFEC100ED4EAD /* AFJSONUtilities.h */,
-				F8FA94A5150EFEC100ED4EAD /* AFJSONUtilities.m */,
 			);
 			name = AFNetworking;
 			path = ../AFNetworking;
@@ -284,7 +279,7 @@
 		F8E469571395739C00DB05C8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = Gowalla;
 			};
 			buildConfigurationList = F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking iOS Example" */;
@@ -334,7 +329,6 @@
 				F8FA94B2150EFEC100ED4EAD /* AFHTTPRequestOperation.m in Sources */,
 				F8FA94B3150EFEC100ED4EAD /* AFImageRequestOperation.m in Sources */,
 				F8FA94B4150EFEC100ED4EAD /* AFJSONRequestOperation.m in Sources */,
-				F8FA94B5150EFEC100ED4EAD /* AFJSONUtilities.m in Sources */,
 				F8FA94B6150EFEC100ED4EAD /* AFNetworkActivityIndicatorManager.m in Sources */,
 				F8FA94B7150EFEC100ED4EAD /* AFPropertyListRequestOperation.m in Sources */,
 				F8FA94B8150EFEC100ED4EAD /* AFURLConnectionOperation.m in Sources */,
@@ -394,7 +388,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -413,7 +407,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

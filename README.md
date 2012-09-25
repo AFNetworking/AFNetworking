@@ -19,7 +19,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/zipball/master) and try out the included Mac and iPhone example apps
 - Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles in the wiki](https://github.com/AFNetworking/AFNetworking/wiki)
-- Check out the [complete documentation](http://afnetworking.org/Documentation/) for a comprehensive look at the APIs available in AFNetworking
+- Check out the [complete documentation](http://afnetworking.github.com/AFNetworking/) for a comprehensive look at the APIs available in AFNetworking
 - Watch the [NSScreencast episode about AFNetworking](http://nsscreencast.com/episodes/6-afnetworking) for a quick introduction to how to use it in your application
 - Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
 
@@ -30,32 +30,32 @@ AFNetworking is architected to be as small and modular as possible, in order to 
 <table>
   <tr><th colspan="2" style="text-align:center;">Core</th></tr>
   <tr>
-    <td><a href="http://afnetworking.org/Documentation/Classes/AFURLConnectionOperation.html">AFURLConnectionOperation</a></td>
+    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFURLConnectionOperation.html">AFURLConnectionOperation</a></td>
     <td>An <tt>NSOperation</tt> that implements the <tt>NSURLConnection</tt> delegate methods.</td>
   </tr>
 
   <tr><th colspan="2" style="text-align:center;">HTTP Requests</th></tr>
 
   <tr>
-    <td><a href="http://afnetworking.org/Documentation/Classes/AFHTTPRequestOperation.html">AFHTTPRequestOperation</a></td>
+    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFHTTPRequestOperation.html">AFHTTPRequestOperation</a></td>
     <td>A subclass of <tt>AFURLConnectionOperation</tt> for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.</td>
   </tr>
   <tr>
-    <td><a href="http://afnetworking.org/Documentation/Classes/AFJSONRequestOperation.html">AFJSONRequestOperation</a></td>
+    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFJSONRequestOperation.html">AFJSONRequestOperation</a></td>
     <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and working with JSON response data.</td>
   </tr>
   <tr>
-    <td><a href="http://afnetworking.org/Documentation/Classes/AFXMLRequestOperation.html">AFXMLRequestOperation</a></td>
+    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFXMLRequestOperation.html">AFXMLRequestOperation</a></td>
     <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and working with XML response data.</td>
   </tr>
   <tr>
-    <td><a href="http://afnetworking.org/Documentation/Classes/AFPropertyListRequestOperation.html">AFPropertyListRequestOperation</a></td>
+    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFPropertyListRequestOperation.html">AFPropertyListRequestOperation</a></td>
     <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and deserializing objects with <a href="http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/PropertyLists/index.html">property list</a> response data.</td>
   </tr>
 
   <tr><th colspan="2" style="text-align:center;">HTTP Client</th></tr>
   <tr>
-    <td><a href="http://afnetworking.org/Documentation/Classes/AFHTTPClient.html">AFHTTPClient</a></td>
+    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFHTTPClient.html">AFHTTPClient</a></td>
     <td>
       Captures the common patterns of communicating with an web application over HTTP, including:
       
@@ -74,11 +74,11 @@ AFNetworking is architected to be as small and modular as possible, in order to 
 
   <tr><th colspan="2" style="text-align:center;">Images</th></tr>
   <tr>
-    <td><a href="http://afnetworking.org/Documentation/Classes/AFImageRequestOperation.html">AFImageRequestOperation</a></td>
+    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFImageRequestOperation.html">AFImageRequestOperation</a></td>
     <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and processing images.</td>
   </tr>
   <tr>
-    <td><a href="http://afnetworking.org/Documentation/Categories/UIImageView+AFNetworking.html">UIImageView+AFNetworking</a></td>
+    <td><a href="http://afnetworking.github.com/AFNetworking/Categories/UIImageView+AFNetworking.html">UIImageView+AFNetworking</a></td>
     <td>Adds methods to <tt>UIImageView</tt> for loading remote images asynchronously from a URL.</td>
   </tr>
 </table>
@@ -143,20 +143,7 @@ operation.outputStream = [NSOutputStream outputStreamToMemory];
 
 ## Requirements
 
-AFNetworking requires either [iOS 4.0](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html) and above, or [Mac OS 10.6](http://developer.apple.com/library/mac/#releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_6.html#//apple_ref/doc/uid/TP40008898-SW7) ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
-
-AFNetworking uses [`NSJSONSerialization`](http://developer.apple.com/library/mac/#documentation/Foundation/Reference/NSJSONSerialization_Class/Reference/Reference.html) if it is available. If your app targets a platform where this class is not available you can include one of the following JSON libraries to your project for AFNetworking to automatically detect and use.
-
-* [JSONKit](https://github.com/johnezang/JSONKit)
-* [SBJson](https://stig.github.com/json-framework/)
-* [YAJL](https://lloyd.github.com/yajl/)
-* [NextiveJson](https://github.com/nextive/NextiveJson)
-
-### ARC Support
-
-AFNetworking will transition its codebase to ARC in a future release.
-
-If you are including AFNetworking in a project that uses [Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html) enabled, you will need to set the `-fno-objc-arc` compiler flag on all of the AFNetworking source files. To do this in Xcode, go to your active target and select the "Build Phases" tab. Now select all AFNetworking source files, press Enter, insert `-fno-objc-arc` and then "Done" to disable ARC for AFNetworking.
+AFNetworking requires either [iOS 5.0](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html) and above, or [Mac OS 10.7](http://developer.apple.com/library/mac/#releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_6.html#//apple_ref/doc/uid/TP40008898-SW7) ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
 
 ## Credits
 

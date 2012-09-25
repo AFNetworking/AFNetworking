@@ -27,7 +27,7 @@ extern NSString * const kUserProfileImageDidLoadNotification;
 @interface User : NSObject
 
 @property (readonly) NSUInteger userID;
-@property (readonly) NSString *username;
+@property (strong, readonly) NSString *username;
 @property (unsafe_unretained, readonly) NSURL *profileImageURL;
 
 - (id)initWithAttributes:(NSDictionary *)attributes;
