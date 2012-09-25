@@ -697,7 +697,7 @@ static NSString * AFMultipartTemporaryFileDirectoryPath() {
         
         NSError *error = nil;
         if(![[NSFileManager defaultManager] createDirectoryAtPath:multipartTemporaryFilePath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create multipart temporary file directory at %@", multipartTemporaryFilePath);
+            NSLog(@"Failed to create multipary temporary file directory at %@", multipartTemporaryFilePath);
         }
     });
     
@@ -818,17 +818,18 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
     bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
-        
+    
     bodyPart.bodyContentLength = [data length];
     
     [self.bodyStream.HTTPBodyParts addObject:bodyPart];
 }
 
+
 - (void)appendPartWithFileData:(NSData *)data
                           name:(NSString *)name
                       fileName:(NSString *)fileName
                       mimeType:(NSString *)mimeType
-{    
+{
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
@@ -837,7 +838,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
     bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
-        
+    
     bodyPart.bodyContentLength = [data length];
     
     [self.bodyStream.HTTPBodyParts addObject:bodyPart];
@@ -885,7 +886,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     if ([self.bodyStream isEmpty]) {
         return self.request;
     }
-
+    
     // We have to set the initial and final boundaries here so that the body stream returns the correct content length.
     [self.bodyStream setInitialAndFinalBoundaries];
     
@@ -987,7 +988,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
         length += [bodyPart contentLength];
     }
-        
+    
     return length;
 }
 
@@ -997,7 +998,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     if ([self streamStatus] == NSStreamStatusClosed) {
         return 0;
     }
-        
+    
     NSInteger bytesRead = 0;
     
     while ((NSUInteger)bytesRead < length) {
@@ -1068,50 +1069,23 @@ typedef enum {
     if (!self) {
         return nil;
     }
-
+    
     [self transitionToNextPhase];
     
     return self;
 }
 
-- (void)appendPartWithFormData:(NSData *)data
-                          name:(NSString *)name
-{
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];    
-}
-
-- (void)appendPartWithFileData:(NSData *)data
-                          name:(NSString *)name
-                      fileName:(NSString *)fileName
-                      mimeType:(NSString *)mimeType
-{
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+- (void)dealloc {
+    if (_inputStream) {
+        [_inputStream close];
+        _inputStream = nil;
+    }    
 }
 
 - (BOOL)transitionToNextPhase {
     if (![[NSThread currentThread] isMainThread]) {
         [self performSelectorOnMainThread:@selector(transitionToNextPhase) withObject:nil waitUntilDone:YES];
-    }
-    
-    return YES;
-}
-
-- (BOOL)appendPartWithFileURL:(NSURL *)fileURL
-                         name:(NSString *)name
-                        error:(NSError **)error
-{
-    if (![fileURL isFileURL]) {
-        NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-        [userInfo setValue:fileURL forKey:NSURLErrorFailingURLErrorKey];
-        [userInfo setValue:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
-        if (error != NULL) {
-            *error = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:userInfo];
-        }
-        
-        return NO;
+        return YES;
     }
     
     switch (_phase) {
@@ -1144,7 +1118,7 @@ typedef enum {
     }
     // There's a CRLF after the header string.
     [headerString appendString:kAFMultipartFormCRLF];
-        
+    
     return [NSString stringWithString:headerString];
 }
 
@@ -1177,14 +1151,14 @@ typedef enum {
     
     NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding] : [NSData data]);
     length += [closingBoundaryData length];
-        
+    
     return length;
 }
 
 
 - (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length {
     NSInteger bytesRead = 0;
-        
+    
     if (_phase == AFEncapsulationBoundaryPhase) {
         NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary() : AFMultipartFormEncapsulationBoundary()) dataUsingEncoding:self.stringEncoding];
         bytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
@@ -1209,7 +1183,7 @@ typedef enum {
         NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding] : [NSData data]);
         bytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
     }
-
+    
     return bytesRead;
 }
 
