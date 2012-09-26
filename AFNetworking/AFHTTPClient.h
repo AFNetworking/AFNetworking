@@ -519,7 +519,7 @@ extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
  */
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL
                          name:(NSString *)name
-                        error:(NSError **)error;
+                        error:(NSError * __autoreleasing *)error;
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
@@ -529,7 +529,10 @@ extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
  @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
  @param filename The filename to be associated with the specified data. This parameter must not be `nil`.
  */
-- (void)appendPartWithFileData:(NSData *)data name:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType;
+- (void)appendPartWithFileData:(NSData *)data
+                          name:(NSString *)name
+                      fileName:(NSString *)fileName
+                      mimeType:(NSString *)mimeType;
 
 /**
  Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
@@ -538,6 +541,7 @@ extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
  */
 
-- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name;
+- (void)appendPartWithFormData:(NSData *)data
+                          name:(NSString *)name;
 
 @end

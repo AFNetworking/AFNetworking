@@ -764,41 +764,9 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     return self;
 }
 
-- (void)appendPartWithFormData:(NSData *)data name:(NSString *)name {
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
-    
-    AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
-    bodyPart.stringEncoding = self.stringEncoding;
-    bodyPart.headers = mutableHeaders;
-    bodyPart.bodyContentLength = [data length];
-    bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
-    
-    [self.bodyStream appendHTTPBodyPart:bodyPart];
-}
-
-
-- (void)appendPartWithFileData:(NSData *)data
-                          name:(NSString *)name
-                      fileName:(NSString *)fileName
-                      mimeType:(NSString *)mimeType
-{
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
-    
-    AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
-    bodyPart.stringEncoding = self.stringEncoding;
-    bodyPart.headers = mutableHeaders;
-    bodyPart.bodyContentLength = [data length];
-    bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
-    
-    [self.bodyStream appendHTTPBodyPart:bodyPart];
-}
-
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL
                          name:(NSString *)name
-                        error:(NSError **)error
+                        error:(NSError * __autoreleasing *)error
 {
     if (![fileURL isFileURL]) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
@@ -831,6 +799,39 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     [self.bodyStream appendHTTPBodyPart:bodyPart];
     
     return YES;
+}
+
+- (void)appendPartWithFileData:(NSData *)data
+                          name:(NSString *)name
+                      fileName:(NSString *)fileName
+                      mimeType:(NSString *)mimeType
+{
+    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    
+    AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
+    bodyPart.stringEncoding = self.stringEncoding;
+    bodyPart.headers = mutableHeaders;
+    bodyPart.bodyContentLength = [data length];
+    bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
+    
+    [self.bodyStream appendHTTPBodyPart:bodyPart];
+}
+
+- (void)appendPartWithFormData:(NSData *)data
+                          name:(NSString *)name
+{
+    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
+    
+    AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
+    bodyPart.stringEncoding = self.stringEncoding;
+    bodyPart.headers = mutableHeaders;
+    bodyPart.bodyContentLength = [data length];
+    bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
+    
+    [self.bodyStream appendHTTPBodyPart:bodyPart];
 }
 
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData {
