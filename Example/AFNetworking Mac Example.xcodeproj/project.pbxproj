@@ -198,7 +198,7 @@
 		F8129BF21591061B009BFE23 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = F8129BF51591061B009BFE23 /* Build configuration list for PBXProject "AFNetworking Mac Example" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -303,6 +303,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "AFNetworking Example.entitlements";
 				CODE_SIGN_IDENTITY = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = "Mac-Info.plist";
@@ -316,6 +317,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "AFNetworking Example.entitlements";
 				CODE_SIGN_IDENTITY = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = "Mac-Info.plist";

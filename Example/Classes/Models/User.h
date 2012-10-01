@@ -27,12 +27,12 @@ extern NSString * const kUserProfileImageDidLoadNotification;
 @interface User : NSObject
 
 @property (readonly) NSUInteger userID;
-@property (strong, readonly) NSString *username;
+@property (readonly) NSString *username;
 @property (unsafe_unretained, readonly) NSURL *profileImageURL;
 
 - (id)initWithAttributes:(NSDictionary *)attributes;
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (nonatomic, strong) NSImage *profileImage;
 #endif
 
