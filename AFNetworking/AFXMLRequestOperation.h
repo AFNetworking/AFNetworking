@@ -50,7 +50,7 @@
  */
 @property (readonly, nonatomic) NSXMLParser *responseXMLParser;
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 /**
  An `NSXMLDocument` object constructed from the response data. If an error occurs while parsing, `nil` will be returned, and the `error` property will be set to the error.
  */
@@ -71,7 +71,7 @@
                                                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLParser *XMLParse))failure;
 
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 /**
  Creates and returns an `AFXMLRequestOperation` object and sets the specified success and failure callbacks.
  
