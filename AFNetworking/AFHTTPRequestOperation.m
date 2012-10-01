@@ -117,14 +117,14 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 
 - (void)dealloc {
     if (_successCallbackQueue) {
-#if AF_DISPATCH_RETAIN_RELEASE
+#ifdef AF_DISPATCH_RETAIN_RELEASE
         dispatch_release(_successCallbackQueue);
 #endif
         _successCallbackQueue = NULL;
     }
     
     if (_failureCallbackQueue) {
-#if AF_DISPATCH_RETAIN_RELEASE
+#ifdef AF_DISPATCH_RETAIN_RELEASE
         dispatch_release(_failureCallbackQueue);
 #endif
         _failureCallbackQueue = NULL;
@@ -207,14 +207,14 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 - (void)setSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue {
     if (successCallbackQueue != _successCallbackQueue) {
         if (_successCallbackQueue) {
-#if AF_DISPATCH_RETAIN_RELEASE
+#ifdef AF_DISPATCH_RETAIN_RELEASE
             dispatch_release(_successCallbackQueue);
 #endif
             _successCallbackQueue = NULL;
         }
 
         if (successCallbackQueue) {
-#if AF_DISPATCH_RETAIN_RELEASE
+#ifdef AF_DISPATCH_RETAIN_RELEASE
             dispatch_retain(successCallbackQueue);
 #endif
             _successCallbackQueue = successCallbackQueue;
@@ -225,14 +225,14 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 - (void)setFailureCallbackQueue:(dispatch_queue_t)failureCallbackQueue {
     if (failureCallbackQueue != _failureCallbackQueue) {
         if (_failureCallbackQueue) {
-#if AF_DISPATCH_RETAIN_RELEASE
+#ifdef AF_DISPATCH_RETAIN_RELEASE
             dispatch_release(_failureCallbackQueue);
 #endif
             _failureCallbackQueue = NULL;
         }
         
         if (failureCallbackQueue) {
-#if AF_DISPATCH_RETAIN_RELEASE
+#ifdef AF_DISPATCH_RETAIN_RELEASE
             dispatch_retain(failureCallbackQueue);
 #endif
             _failureCallbackQueue = failureCallbackQueue;
