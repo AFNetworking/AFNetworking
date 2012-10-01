@@ -150,7 +150,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize redirectResponse = _redirectResponse;
 @synthesize lock = _lock;
 
-+ (void)networkRequestThreadEntryPoint:(id)__unused object {
++ (void) __attribute__((noreturn)) networkRequestThreadEntryPoint:(id)__unused object {
     do {
         @autoreleasepool {
             [[NSRunLoop currentRunLoop] run];
