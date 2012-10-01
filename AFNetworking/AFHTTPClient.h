@@ -501,6 +501,9 @@ extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
 
 #pragma mark -
 
+extern NSUInteger const kAFUploadStream3GSuggestedPacketSize;
+extern NSUInteger const kAFUploadStream3GSuggestedDelay;
+
 /**
  The `AFMultipartFormData` protocol defines the methods supported by the parameter in the block argument of `AFHTTPClient -multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:`.
  */
@@ -543,5 +546,16 @@ extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
 
 - (void)appendPartWithFormData:(NSData *)data
                           name:(NSString *)name;
+
+/**
+ Throttles request bandwidth by limiting the packet size and adding a delay for each chunk read from the upload stream.
+ 
+ @param numberOfBytes Maximum packet size, in number of bytes. The default packet size for an input stream is 32kb.
+ @param delay Duration of delay each time a packet is read. By default, no delay is set.
+ 
+ @discussion When uploading over a 3G or EDGE connection, requests may fail with "request body stream exhausted". Setting a maximum packet size and delay according to the recommended values (`kAFUploadStream3GSuggestedPacketSize` and `kAFUploadStream3GSuggestedDelay`) lowers the risk of the input stream exceeding its allocated bandwidth. Unfortunately, as of iOS 6, there is no definite way to distinguish between a 3G, EDGE, or LTE connection. As such, it is not recommended that you throttle bandwidth based solely on network reachability. Instead, you should consider checking for the "request body stream exhausted" in a failure block, and then retrying the request with throttled bandwidth.
+ */
+- (void)throttleBandwidthWithPacketSize:(NSUInteger)numberOfBytes
+                                  delay:(NSTimeInterval)delay;
 
 @end

@@ -708,6 +708,9 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 #endif
 }
 
+NSUInteger const kAFUploadStream3GSuggestedPacketSize = 1024 * 16;
+NSUInteger const kAFUploadStream3GSuggestedDelay = 0.2;
+
 @interface AFHTTPBodyPart : NSObject
 
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
@@ -727,6 +730,8 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 
 @interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
 
+@property (nonatomic, assign) NSUInteger numberOfBytesInPacket;
+@property (nonatomic, assign) NSTimeInterval delay;
 @property (readonly) unsigned long long contentLength;
 @property (readonly, getter = isEmpty) BOOL empty;
 
@@ -834,6 +839,13 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     [self.bodyStream appendHTTPBodyPart:bodyPart];
 }
 
+- (void)throttleBandwidthWithPacketSize:(NSUInteger)numberOfBytes
+                                  delay:(NSTimeInterval)delay
+{
+    self.bodyStream.numberOfBytesInPacket = numberOfBytes;
+    self.bodyStream.delay = delay;
+}
+
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData {
     if ([self.bodyStream isEmpty]) {
         return self.request;
@@ -861,6 +873,8 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 @property (nonatomic, retain) NSMutableArray *HTTPBodyParts;
 @property (nonatomic, retain) NSEnumerator *HTTPBodyPartEnumerator;
 @property (nonatomic, retain) AFHTTPBodyPart *currentHTTPBodyPart;
+@property (nonatomic, retain) NSDate *lastReadAt;
+@property (nonatomic, assign) NSInteger lastBytesRead;
 @end
 
 @implementation AFMultipartBodyStream
@@ -870,6 +884,8 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 @synthesize HTTPBodyParts = _HTTPBodyParts;
 @synthesize HTTPBodyPartEnumerator = _HTTPBodyPartEnumerator;
 @synthesize currentHTTPBodyPart = _currentHTTPBodyPart;
+@synthesize numberOfBytesInPacket = _numberOfBytesInPacket;
+@synthesize delay = _delay;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding {
     self = [super init];
@@ -879,6 +895,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     
     self.stringEncoding = encoding;    
     self.HTTPBodyParts = [NSMutableArray array];
+    self.numberOfBytesInPacket = NSIntegerMax;
     
     return self;
 }
@@ -912,16 +929,19 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
     
     NSInteger bytesRead = 0;
     
-    while ((NSUInteger)bytesRead < length) {
+    while ((NSUInteger)bytesRead < MIN(length, self.numberOfBytesInPacket)) {
         if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
             if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
                 break;
             }
         } else {
             bytesRead += [self.currentHTTPBodyPart read:&buffer[bytesRead] maxLength:length - bytesRead];
+            if (self.delay > 0.0f) {
+                [NSThread sleepForTimeInterval:self.delay];
+            }
         }
     }
-    
+
     return bytesRead;
 }
 
