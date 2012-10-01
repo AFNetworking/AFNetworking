@@ -551,7 +551,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                 completionBlock(operations);
             }
         });
-#if AF_DISPATCH_RETAIN_RELEASE
+#ifdef AF_DISPATCH_RETAIN_RELEASE
         dispatch_release(dispatchGroup);
 #endif
     }];
@@ -877,8 +877,6 @@ NSUInteger const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, retain) NSMutableArray *HTTPBodyParts;
 @property (nonatomic, retain) NSEnumerator *HTTPBodyPartEnumerator;
 @property (nonatomic, retain) AFHTTPBodyPart *currentHTTPBodyPart;
-@property (nonatomic, retain) NSDate *lastReadAt;
-@property (nonatomic, assign) NSInteger lastBytesRead;
 @end
 
 @implementation AFMultipartBodyStream
@@ -1040,6 +1038,8 @@ typedef enum {
 @synthesize headers = _headers;
 @synthesize bodyContentLength = _bodyContentLength;
 @synthesize inputStream = _inputStream;
+@synthesize hasInitialBoundary = _hasInitialBoundary;
+@synthesize hasFinalBoundary = _hasFinalBoundary;
 
 - (id)init {
     self = [super init];
@@ -1088,12 +1088,16 @@ typedef enum {
 
 - (BOOL)hasBytesAvailable {
     switch (self.inputStream.streamStatus) {
+        case NSStreamStatusOpen:
+        case NSStreamStatusReading:
+        case NSStreamStatusWriting:
+            return YES;
+        case NSStreamStatusNotOpen:
+        case NSStreamStatusOpening:
         case NSStreamStatusAtEnd:
         case NSStreamStatusClosed:
         case NSStreamStatusError:
             return NO;
-        default:
-            return YES;
     }
 }
 
@@ -1163,7 +1167,7 @@ typedef enum {
             [self.inputStream close];
             _phase = AFFinalBoundaryPhase;
             break;
-        default:
+        case AFFinalBoundaryPhase:
             _phase = AFEncapsulationBoundaryPhase;
             break;
     }
