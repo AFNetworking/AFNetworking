@@ -1088,12 +1088,12 @@ typedef enum {
 
 - (BOOL)hasBytesAvailable {
     switch (self.inputStream.streamStatus) {
+        case NSStreamStatusNotOpen:
+        case NSStreamStatusOpening:
         case NSStreamStatusOpen:
         case NSStreamStatusReading:
         case NSStreamStatusWriting:
             return YES;
-        case NSStreamStatusNotOpen:
-        case NSStreamStatusOpening:
         case NSStreamStatusAtEnd:
         case NSStreamStatusClosed:
         case NSStreamStatusError:
@@ -1167,7 +1167,7 @@ typedef enum {
             [self.inputStream close];
             _phase = AFFinalBoundaryPhase;
             break;
-        case AFFinalBoundaryPhase:
+        default:
             _phase = AFEncapsulationBoundaryPhase;
             break;
     }
