@@ -548,6 +548,15 @@ extern NSUInteger const kAFUploadStream3GSuggestedDelay;
                           name:(NSString *)name;
 
 /**
+ Appends HTTP headers, followed by the encoded data and the multipart form boundary.
+ 
+ @param headers The HTTP headers to be appended to the form data.
+ @param body The data to be encoded and appended to the form data.
+ */
+- (void)appendPartWithHeaders:(NSDictionary *)headers
+                         body:(NSData *)body;
+
+/**
  Throttles request bandwidth by limiting the packet size and adding a delay for each chunk read from the upload stream.
  
  @param numberOfBytes Maximum packet size, in number of bytes. The default packet size for an input stream is 32kb.

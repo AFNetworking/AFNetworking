@@ -819,13 +819,7 @@ NSUInteger const kAFUploadStream3GSuggestedDelay = 0.2;
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
     
-    AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
-    bodyPart.stringEncoding = self.stringEncoding;
-    bodyPart.headers = mutableHeaders;
-    bodyPart.bodyContentLength = [data length];
-    bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
-    
-    [self.bodyStream appendHTTPBodyPart:bodyPart];
+    [self appendPartWithHeaders:mutableHeaders body:data];
 }
 
 - (void)appendPartWithFormData:(NSData *)data
@@ -834,11 +828,17 @@ NSUInteger const kAFUploadStream3GSuggestedDelay = 0.2;
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
     
+    [self appendPartWithHeaders:mutableHeaders body:data];
+}
+
+- (void)appendPartWithHeaders:(NSDictionary *)headers
+                         body:(NSData *)body
+{
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
-    bodyPart.headers = mutableHeaders;
-    bodyPart.bodyContentLength = [data length];
-    bodyPart.inputStream = [NSInputStream inputStreamWithData:data];
+    bodyPart.headers = headers;
+    bodyPart.bodyContentLength = [body length];
+    bodyPart.inputStream = [NSInputStream inputStreamWithData:body];
     
     [self.bodyStream appendHTTPBodyPart:bodyPart];
 }
