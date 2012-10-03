@@ -140,10 +140,10 @@ typedef enum {
 /**
  Initializes an `AFHTTPClient` object with the specified base URL.
  
- @param url The base URL for the HTTP client. This argument must not be nil.
+ @param url The base URL for the HTTP client. This argument must not be `nil`.
  
  @discussion This is the designated initializer.
- 
+  
  @return The newly-initialized HTTP client
  */
 - (id)initWithBaseURL:(NSURL *)url;
@@ -253,7 +253,7 @@ typedef enum {
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
   
- @discussion The multipart form data is constructed synchronously in the specified block, so in cases where large amounts of data are being added to the request, you should consider performing this method in the background. Likewise, the form data is constructed in-memory, so it may be advantageous to instead write parts of the form data to a file and stream the request body using the `HTTPBodyStream` property of `NSURLRequest`.
+ @discussion Multipart form requests are automatically streamed, reading files directly from disk along with in-memory data in a single HTTP body. The resulting `NSMutableURLRequest` object has an `HTTPBodyStream` property, so refrain from setting `HTTPBodyStream` or `HTTPBody` on this request object, as it will clear out the multipart form body stream.
  
  @warning An exception will be raised if the specified method is not `POST`, `PUT` or `DELETE`.
  
