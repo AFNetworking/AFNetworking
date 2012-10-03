@@ -88,10 +88,10 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
 }
 
 static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
-    // Escape characters that are legal in URIs, but have unintentional semantic significance when used in a query string parameter
-    static NSString * const kAFLegalCharactersToBeEscaped = @":/.?&=;+!@$()~";
+    static NSString * const kAFCharactersToBeEscaped = @":/.?&=;+!@#$()~";
+    static NSString * const kAFCharactersToLeaveUnescaped = @"[]";
     
-	return (__bridge_transfer  NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (__bridge CFStringRef)string, NULL, (__bridge CFStringRef)kAFLegalCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding));
+	return (__bridge_transfer  NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (__bridge CFStringRef)string, (__bridge CFStringRef)kAFCharactersToLeaveUnescaped, (__bridge CFStringRef)kAFCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding));
 }
 
 #pragma mark -
@@ -237,7 +237,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
     if (!self) {
         return nil;
     }
-    
+
     // Ensure terminal slash for baseURL path, so that NSURL +URLWithString:relativeToURL: works as expected
     if ([[url path] length] > 0 && ![[url absoluteString] hasSuffix:@"/"]) {
         url = [url URLByAppendingPathComponent:@""];
