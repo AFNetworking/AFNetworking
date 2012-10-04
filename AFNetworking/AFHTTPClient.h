@@ -500,7 +500,7 @@ extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
 #pragma mark -
 
 extern NSUInteger const kAFUploadStream3GSuggestedPacketSize;
-extern NSUInteger const kAFUploadStream3GSuggestedDelay;
+extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 
 /**
  The `AFMultipartFormData` protocol defines the methods supported by the parameter in the block argument of `AFHTTPClient -multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:`.
