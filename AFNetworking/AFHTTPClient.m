@@ -717,7 +717,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 }
 
 NSUInteger const kAFUploadStream3GSuggestedPacketSize = 1024 * 16;
-NSUInteger const kAFUploadStream3GSuggestedDelay = 0.2;
+NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 @interface AFHTTPBodyPart : NSObject
 
