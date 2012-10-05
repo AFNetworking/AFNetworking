@@ -111,14 +111,14 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 
 - (void)dealloc {
     if (_successCallbackQueue) {
-#ifdef OS_OBJECT_USE_OBJC
+#if OS_OBJECT_USE_OBJC != 1
         dispatch_release(_successCallbackQueue);
 #endif
         _successCallbackQueue = NULL;
     }
     
     if (_failureCallbackQueue) {
-#ifdef OS_OBJECT_USE_OBJC
+#if OS_OBJECT_USE_OBJC != 1
         dispatch_release(_failureCallbackQueue);
 #endif
         _failureCallbackQueue = NULL;
@@ -201,14 +201,14 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 - (void)setSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue {
     if (successCallbackQueue != _successCallbackQueue) {
         if (_successCallbackQueue) {
-#ifdef OS_OBJECT_USE_OBJC
+#if OS_OBJECT_USE_OBJC != 1
             dispatch_release(_successCallbackQueue);
 #endif
             _successCallbackQueue = NULL;
         }
 
         if (successCallbackQueue) {
-#ifdef OS_OBJECT_USE_OBJC
+#if OS_OBJECT_USE_OBJC != 1
             dispatch_retain(successCallbackQueue);
 #endif
             _successCallbackQueue = successCallbackQueue;
@@ -219,14 +219,14 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 - (void)setFailureCallbackQueue:(dispatch_queue_t)failureCallbackQueue {
     if (failureCallbackQueue != _failureCallbackQueue) {
         if (_failureCallbackQueue) {
-#ifdef OS_OBJECT_USE_OBJC
+#if OS_OBJECT_USE_OBJC != 1
             dispatch_release(_failureCallbackQueue);
 #endif
             _failureCallbackQueue = NULL;
         }
         
         if (failureCallbackQueue) {
-#ifdef OS_OBJECT_USE_OBJC
+#if OS_OBJECT_USE_OBJC != 1
             dispatch_retain(failureCallbackQueue);
 #endif
             _failureCallbackQueue = failureCallbackQueue;

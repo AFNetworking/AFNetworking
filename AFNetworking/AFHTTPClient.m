@@ -553,7 +553,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                 completionBlock(operations);
             }
         });
-#ifdef OS_OBJECT_USE_OBJC
+#if OS_OBJECT_USE_OBJC != 1
         dispatch_release(dispatchGroup);
 #endif
     }];
