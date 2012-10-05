@@ -40,12 +40,6 @@
 #import <UIKit/UIKit.h>
 #endif
 
-// Workaround for management of dispatch_retain() / dispatch_release() by ARC with iOS 6 / Mac OS X 10.8
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && (!defined(__IPHONE_6_0) || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0)) || \
-    (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && (!defined(__MAC_10_8) || __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8))
-#define AF_DISPATCH_RETAIN_RELEASE 1
-#endif
-
 #ifdef _SYSTEMCONFIGURATION_H
 NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
 NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworkingReachabilityNotificationStatusItem";
@@ -561,7 +555,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                 completionBlock(operations);
             }
         });
-#ifdef AF_DISPATCH_RETAIN_RELEASE
+#ifdef OS_OBJECT_USE_OBJC
         dispatch_release(dispatchGroup);
 #endif
     }];
