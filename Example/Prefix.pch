@@ -14,5 +14,7 @@
 #else
   #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
+    #import <SystemConfiguration/SystemConfiguration.h>
+    #import <CoreServices/CoreServices.h>
   #endif
 #endif
