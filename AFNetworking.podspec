@@ -16,6 +16,7 @@ Pod::Spec.new do |s|
   s.osx.frameworks = 'CoreServices', 'SystemConfiguration'
 
   s.prefix_header_contents = <<-EOS
+#import <Availability.h>
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
   #import <SystemConfiguration/SystemConfiguration.h>
   #import <MobileCoreServices/MobileCoreServices.h>
