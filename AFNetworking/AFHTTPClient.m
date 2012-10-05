@@ -473,6 +473,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
             NSData *data = nil;
             if ([pair.value isKindOfClass:[NSData class]]) {
                 data = pair.value;
+            } else if ([pair.value isKindOfClass:[NSNull class]]) {
+                data = [NSData data];
             } else {
                 data = [[pair.value description] dataUsingEncoding:self.stringEncoding];
             }
