@@ -123,7 +123,11 @@ static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NS
 }
 
 - (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding {
-    return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(self.field, stringEncoding), AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.value description], stringEncoding)];
+    if (!self.value || [self.value isEqual:[NSNull null]]) {
+        return AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(self.field, stringEncoding);
+    } else {
+        return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(self.field, stringEncoding), AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.value description], stringEncoding)];
+    }
 }
 
 @end
