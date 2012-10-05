@@ -231,14 +231,12 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 }
 
 - (id)initWithBaseURL:(NSURL *)url {
+    NSCParameterAssert(url);
+
     self = [super init];
     if (!self) {
         return nil;
     }
-	
-	if (!url) {
-		[NSException raise:@"-[AFHTTPClient initWithBaseURL:] nil URL" format:@"`url` must not be nil"];
-	}
     
     // Ensure terminal slash for baseURL path, so that NSURL +URLWithString:relativeToURL: works as expected
     if ([[url path] length] > 0 && ![[url absoluteString] hasSuffix:@"/"]) {
@@ -781,6 +779,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                          name:(NSString *)name
                         error:(NSError * __autoreleasing *)error
 {
+    NSCParameterAssert(fileURL);
+    NSCParameterAssert(name);
+    
     if (![fileURL isFileURL]) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
         if (error != NULL) {
@@ -819,6 +820,10 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                       fileName:(NSString *)fileName
                       mimeType:(NSString *)mimeType
 {
+    NSCParameterAssert(name);
+    NSCParameterAssert(fileName);
+    NSCParameterAssert(mimeType);
+
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
@@ -829,6 +834,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 - (void)appendPartWithFormData:(NSData *)data
                           name:(NSString *)name
 {
+    NSCParameterAssert(name);
+
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
     

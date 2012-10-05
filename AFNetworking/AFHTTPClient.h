@@ -131,7 +131,7 @@ typedef enum {
 /**
  Creates and initializes an `AFHTTPClient` object with the specified base URL.
  
- @param url The base URL for the HTTP client. This argument must not be nil.
+ @param url The base URL for the HTTP client. This argument must not be `nil`.
   
  @return The newly-initialized HTTP client
  */
@@ -510,7 +510,7 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{generated filename}; name=#{name}"` and `Content-Type: #{generated mimeType}`, followed by the encoded file data and the multipart form boundary.
  
- @param fileURL The URL corresponding to the file whose content will be appended to the form.
+ @param fileURL The URL corresponding to the file whose content will be appended to the form. This parameter must not be `nil`.
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
  @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
  
@@ -527,8 +527,8 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
  
  @param data The data to be encoded and appended to the form data.
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
- @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
  @param filename The filename to be associated with the specified data. This parameter must not be `nil`.
+ @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
  */
 - (void)appendPartWithFileData:(NSData *)data
                           name:(NSString *)name
