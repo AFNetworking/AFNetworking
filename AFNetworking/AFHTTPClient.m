@@ -527,9 +527,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 
 - (void)cancelAllHTTPOperationsWithMethod:(NSString *)method
                                      path:(NSString *)path
-{
-    NSCParameterAssert(path);
-    
+{    
     NSString *URLStringToMatched = [[[self requestWithMethod:(method ?: @"GET") path:path parameters:nil] URL] absoluteString];
     
     for (NSOperation *operation in [self.operationQueue operations]) {
