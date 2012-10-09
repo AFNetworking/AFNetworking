@@ -128,7 +128,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 #pragma mark - AFHTTPRequestOperation
 
 + (NSSet *)acceptableContentTypes {
-    return [NSSet setWithObjects:@"application/xml", @"text/xml", nil];
+    return [NSSet setWithObjects:@"application/xml", @"text/xml", @"application/rss+xml", nil];
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
