@@ -84,6 +84,16 @@ static char kAFImageRequestOperationObjectKey;
     [self setImageWithURL:url placeholderImage:nil];
 }
 
+- (void)setImageWithURL:(NSURL *)url
+       placeholderView:(UIView *)placeholderView {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0];
+    [request setHTTPShouldHandleCookies:NO];
+    [request setHTTPShouldUsePipelining:YES];
+    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    
+    [self setImageWithURLRequest:request placeholderView:placeholderView success:nil failure:nil];
+}
+
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage
 {
@@ -94,7 +104,79 @@ static char kAFImageRequestOperationObjectKey;
     [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
 }
 
-- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
+               placeholderView: (UIView *) placeholderView
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    // Find existing placeholder view and remove from view hierarchy
+    SEL startPlaceholderSelector = @selector(startPlaceholderWithImageView:);
+    for (UIView *view in self.subviews) {
+        if ([placeholderView respondsToSelector: startPlaceholderSelector]) {
+            [view removeFromSuperview];
+        }
+    }
+    
+    [placeholderView removeFromSuperview];
+    
+    [self cancelImageRequestOperation];
+    
+    UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
+    if (cachedImage) {
+        self.image = cachedImage;
+        self.af_imageRequestOperation = nil;
+        
+        // Remove placeholder view from hierarchy
+        [placeholderView removeFromSuperview];
+        
+        if (success) {
+            success(nil, nil, cachedImage);
+        }
+    } else {
+        // Add placeholder view to hierarchy
+        [self addSubview: placeholderView];
+        if ([placeholderView respondsToSelector: startPlaceholderSelector]) {
+            [placeholderView performSelector: startPlaceholderSelector withObject: self];
+        }
+        
+        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
+        [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
+                self.image = responseObject;
+                self.af_imageRequestOperation = nil;
+            }
+            
+            // Remove placeholder view from hierarchy
+            [placeholderView removeFromSuperview];
+            
+            if (success) {
+                success(operation.request, operation.response, responseObject);
+            }
+            
+            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
+            
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
+                self.af_imageRequestOperation = nil;
+            }
+            
+            // Remove placeholder view from hierarchy
+            [placeholderView removeFromSuperview];
+            
+            if (failure) {
+                failure(operation.request, operation.response, error);
+            }
+            
+        }];
+        
+        self.af_imageRequestOperation = requestOperation;
+        
+        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
+    }
+}
+
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
               placeholderImage:(UIImage *)placeholderImage 
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
