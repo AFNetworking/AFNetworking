@@ -32,8 +32,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 }
 
 @interface AFJSONRequestOperation ()
-@property (readwrite, nonatomic) id responseJSON;
-@property (readwrite, nonatomic) NSError *JSONError;
+@property (readwrite, nonatomic, strong) id responseJSON;
+@property (readwrite, nonatomic, strong) NSError *JSONError;
 @end
 
 @implementation AFJSONRequestOperation
