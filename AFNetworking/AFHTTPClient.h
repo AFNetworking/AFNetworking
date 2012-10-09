@@ -300,7 +300,9 @@ typedef enum {
  Cancels all operations in the HTTP client's operation queue whose URLs match the specified HTTP method and path.
  
  @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`. If `nil`, all request operations with URLs matching the path will be cancelled. 
- @param path The path to match for the cancelled requests.
+ @param path The path appended to the HTTP client base URL to match against the cancelled requests. This parameter must not be `nil`.
+ 
+ @discussion This method only cancels `AFHTTPRequestOperations` whose request URL matches the HTTP client base URL with the path appended. For complete control over the lifecycle of enqueued operations, you can access the `operationQueue` property directly, which allows you to, for instance, cancel operations filtered by a predicate, or simply use `-cancelAllRequests`. Note that the operation queue may include non-HTTP operations, so be sure to check the type before attempting to directly introspect an operation's `request` property.
  */
 - (void)cancelAllHTTPOperationsWithMethod:(NSString *)method path:(NSString *)path;
 
