@@ -72,12 +72,12 @@
  */
 
 #ifdef _SYSTEMCONFIGURATION_H
-typedef enum {
+typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
     AFNetworkReachabilityStatusUnknown          = -1,
     AFNetworkReachabilityStatusNotReachable     = 0,
     AFNetworkReachabilityStatusReachableViaWWAN = 1,
     AFNetworkReachabilityStatusReachableViaWiFi = 2,
-} AFNetworkReachabilityStatus;
+};
 #else
 #warning "SystemConfiguration framework not found in project, or not included in precompiled header. Network reachability functionality will not be available."
 #endif
@@ -86,11 +86,11 @@ typedef enum {
 #warning "CoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available."
 #endif
 
-typedef enum {
+typedef NS_ENUM(NSInteger, AFHTTPClientParameterEncoding) {
     AFFormURLParameterEncoding,
     AFJSONParameterEncoding,
     AFPropertyListParameterEncoding,
-} AFHTTPClientParameterEncoding;
+};
 
 @class AFHTTPRequestOperation;
 @protocol AFMultipartFormData;
