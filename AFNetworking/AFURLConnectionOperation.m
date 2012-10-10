@@ -30,12 +30,12 @@
 // You can turn on ARC for only AFNetworking files by adding -fobjc-arc to the build phase for each of its files.
 #endif
 
-typedef NS_ENUM(NSInteger, _AFOperationState) {
+typedef enum {
     AFOperationPausedState      = -1,
     AFOperationReadyState       = 1,
     AFOperationExecutingState   = 2,
     AFOperationFinishedState    = 3,
-};
+} _AFOperationState;
 
 typedef signed short AFOperationState;
 
