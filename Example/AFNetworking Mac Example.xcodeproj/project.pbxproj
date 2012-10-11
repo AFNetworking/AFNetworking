@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		F8129C001591061B009BFE23 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8129BFF1591061B009BFE23 /* Cocoa.framework */; };
-		F8129C321591073C009BFE23 /* AFTwitterAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C251591073C009BFE23 /* AFTwitterAPIClient.m */; };
-		F8129C341591073C009BFE23 /* Tweet.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C2B1591073C009BFE23 /* Tweet.m */; };
+		F8129C321591073C009BFE23 /* AFAppDotNetAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C251591073C009BFE23 /* AFAppDotNetAPIClient.m */; };
+		F8129C341591073C009BFE23 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C2B1591073C009BFE23 /* Post.m */; };
 		F8129C351591073C009BFE23 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C2D1591073C009BFE23 /* User.m */; };
 		F8129C6F15910B15009BFE23 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C6E15910B15009BFE23 /* main.m */; };
 		F8129C7115910B3E009BFE23 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8129C7015910B3E009BFE23 /* MainMenu.xib */; };
@@ -31,12 +31,12 @@
 		F8129C021591061B009BFE23 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		F8129C031591061B009BFE23 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F8129C041591061B009BFE23 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		F8129C251591073C009BFE23 /* AFTwitterAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFTwitterAPIClient.m; path = Classes/AFTwitterAPIClient.m; sourceTree = SOURCE_ROOT; };
-		F8129C2A1591073C009BFE23 /* Tweet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweet.h; sourceTree = "<group>"; };
-		F8129C2B1591073C009BFE23 /* Tweet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweet.m; sourceTree = "<group>"; };
+		F8129C251591073C009BFE23 /* AFAppDotNetAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFAppDotNetAPIClient.m; path = Classes/AFAppDotNetAPIClient.m; sourceTree = SOURCE_ROOT; };
+		F8129C2A1591073C009BFE23 /* Post.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post.h; sourceTree = "<group>"; };
+		F8129C2B1591073C009BFE23 /* Post.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post.m; sourceTree = "<group>"; };
 		F8129C2C1591073C009BFE23 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		F8129C2D1591073C009BFE23 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
-		F8129C311591073C009BFE23 /* AFTwitterAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFTwitterAPIClient.h; path = Classes/AFTwitterAPIClient.h; sourceTree = SOURCE_ROOT; };
+		F8129C311591073C009BFE23 /* AFAppDotNetAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFAppDotNetAPIClient.h; path = Classes/AFAppDotNetAPIClient.h; sourceTree = SOURCE_ROOT; };
 		F8129C6E15910B15009BFE23 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = SOURCE_ROOT; };
 		F8129C7015910B3E009BFE23 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = SOURCE_ROOT; };
 		F8129C7515910C40009BFE23 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
@@ -118,8 +118,8 @@
 		F8129C051591061B009BFE23 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				F8129C311591073C009BFE23 /* AFTwitterAPIClient.h */,
-				F8129C251591073C009BFE23 /* AFTwitterAPIClient.m */,
+				F8129C311591073C009BFE23 /* AFAppDotNetAPIClient.h */,
+				F8129C251591073C009BFE23 /* AFAppDotNetAPIClient.m */,
 				F8129C7615910C40009BFE23 /* AppDelegate.h */,
 				F8129C7515910C40009BFE23 /* AppDelegate.m */,
 				F8129C291591073C009BFE23 /* Models */,
@@ -141,8 +141,8 @@
 		F8129C291591073C009BFE23 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				F8129C2A1591073C009BFE23 /* Tweet.h */,
-				F8129C2B1591073C009BFE23 /* Tweet.m */,
+				F8129C2A1591073C009BFE23 /* Post.h */,
+				F8129C2B1591073C009BFE23 /* Post.m */,
 				F8129C2C1591073C009BFE23 /* User.h */,
 				F8129C2D1591073C009BFE23 /* User.m */,
 			);
@@ -241,9 +241,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8129C341591073C009BFE23 /* Tweet.m in Sources */,
+				F8129C341591073C009BFE23 /* Post.m in Sources */,
 				F8129C351591073C009BFE23 /* User.m in Sources */,
-				F8129C321591073C009BFE23 /* AFTwitterAPIClient.m in Sources */,
+				F8129C321591073C009BFE23 /* AFAppDotNetAPIClient.m in Sources */,
 				F8129C6F15910B15009BFE23 /* main.m in Sources */,
 				F8129C7715910C40009BFE23 /* AppDelegate.m in Sources */,
 				F82EB07C159A172000B10B56 /* AFHTTPClient.m in Sources */,

@@ -1,4 +1,4 @@
-// PublicTimelineViewController.m
+// GlobalTimelineViewController.m
 //
 // Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
@@ -20,19 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "PublicTimelineViewController.h"
+#import "GlobalTimelineViewController.h"
 
-#import "Tweet.h"
+#import "Post.h"
 
-#import "TweetTableViewCell.h"
+#import "PostTableViewCell.h"
 
-@interface PublicTimelineViewController ()
+@interface GlobalTimelineViewController ()
 - (void)reload:(id)sender;
 @end
 
-@implementation PublicTimelineViewController {
+@implementation GlobalTimelineViewController {
 @private
-    NSArray *_tweets;
+    NSArray *_posts;
     
     __strong UIActivityIndicatorView *_activityIndicatorView;
 }
@@ -41,11 +41,11 @@
     [_activityIndicatorView startAnimating];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets, NSError *error) {
+    [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
         if (error) {
             [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:[error localizedDescription] delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
         } else {
-            _tweets = tweets;
+            _posts = posts;
             [self.tableView reloadData];
         }
         
@@ -82,37 +82,21 @@
     [super viewDidUnload];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-}
-
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_tweets count];
+    return [_posts count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     
-    TweetTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    PostTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
-        cell = [[TweetTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[PostTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    cell.tweet = [_tweets objectAtIndex:indexPath.row];
+    cell.post = [_posts objectAtIndex:indexPath.row];
     
     return cell;
 }
@@ -120,7 +104,7 @@
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [TweetTableViewCell heightForCellWithTweet:[_tweets objectAtIndex:indexPath.row]];
+    return [PostTableViewCell heightForCellWithPost:[_posts objectAtIndex:indexPath.row]];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

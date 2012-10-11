@@ -1,4 +1,4 @@
-// AFTwitterAPIClient.h
+// TweetTableViewCell.h
 //
 // Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
@@ -20,11 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import "AFHTTPClient.h"
+#import <UIKit/UIKit.h>
 
-@interface AFTwitterAPIClient : AFHTTPClient
+@class Post;
 
-+ (AFTwitterAPIClient *)sharedClient;
+@interface PostTableViewCell : UITableViewCell
+
+@property (nonatomic, strong) Post *post;
+
++ (CGFloat)heightForCellWithPost:(Post *)post;
 
 @end

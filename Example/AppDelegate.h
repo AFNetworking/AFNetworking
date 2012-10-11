@@ -43,7 +43,7 @@
 
 @property (strong) IBOutlet NSWindow *window;
 @property (strong) IBOutlet NSTableView *tableView;
-@property (strong) IBOutlet NSArrayController *tweetsArrayController;
+@property (strong) IBOutlet NSArrayController *postsArrayController;
 
 @end
 

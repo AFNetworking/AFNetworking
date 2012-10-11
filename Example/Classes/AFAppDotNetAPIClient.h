@@ -1,4 +1,4 @@
-// PublicTimelineViewController.h
+// AFAppDotNetAPIClient.h
 //
 // Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
@@ -20,8 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "AFHTTPClient.h"
 
-@interface PublicTimelineViewController : UITableViewController
+@interface AFAppDotNetAPIClient : AFHTTPClient
+
++ (AFAppDotNetAPIClient *)sharedClient;
 
 @end

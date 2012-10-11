@@ -24,7 +24,7 @@
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 
-#import "PublicTimelineViewController.h"
+#import "GlobalTimelineViewController.h"
 
 #import "AFNetworkActivityIndicatorManager.h"
 
@@ -40,7 +40,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
         
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     
-    UITableViewController *viewController = [[PublicTimelineViewController alloc] initWithStyle:UITableViewStylePlain];
+    UITableViewController *viewController = [[GlobalTimelineViewController alloc] initWithStyle:UITableViewStylePlain];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.navigationController.navigationBar.tintColor = [UIColor darkGrayColor];
     
@@ -56,14 +56,14 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 
 #else
 
-#import "Tweet.h"
+#import "Post.h"
 #import "User.h"
 
 @implementation AppDelegate
 
 @synthesize window = _window;
 @synthesize tableView = _tableView;
-@synthesize tweetsArrayController = _tweetsArrayController;
+@synthesize postsArrayController = _postsArrayController;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
     NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:20 * 1024 * 1024 diskPath:nil];
@@ -71,12 +71,12 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     
     [self.window makeKeyAndOrderFront:self];
     
-    [Tweet publicTimelineTweetsWithBlock:^(NSArray *tweets, NSError *error) {
+    [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
         if (error) {
             [[NSAlert alertWithMessageText:NSLocalizedString(@"Error", nil) defaultButton:NSLocalizedString(@"OK", nil) alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@",[error localizedDescription]] runModal];
         }
         
-        self.tweetsArrayController.content = tweets;
+        self.postsArrayController.content = posts;
     }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:kUserProfileImageDidLoadNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {

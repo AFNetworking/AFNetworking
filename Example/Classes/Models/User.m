@@ -33,8 +33,8 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
 
 @implementation User {
 @private
-    __strong NSString *_profileImageURLString;
-    __strong AFImageRequestOperation *_profileImageRequestOperation;
+    __strong NSString *_avatarImageURLString;
+    __strong AFImageRequestOperation *_avatarImageRequestOperation;
 }
 
 @synthesize userID = _userID;
@@ -47,14 +47,14 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
     }
     
     _userID = [[attributes valueForKeyPath:@"id"] integerValue];
-    _username = [attributes valueForKeyPath:@"screen_name"];
-    _profileImageURLString = [attributes valueForKeyPath:@"profile_image_url_https"];
+    _username = [attributes valueForKeyPath:@"username"];
+    _avatarImageURLString = [attributes valueForKeyPath:@"avatar_image.url"];
     
     return self;
 }
 
-- (NSURL *)profileImageURL {
-    return [NSURL URLWithString:_profileImageURLString];
+- (NSURL *)avatarImageURL {
+    return [NSURL URLWithString:_avatarImageURLString];
 }
 
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
@@ -73,20 +73,20 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
 }
 
 - (NSImage *)profileImage {
-	if (!_profileImage && !_profileImageRequestOperation) {
-		_profileImageRequestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:[NSURLRequest requestWithURL:self.profileImageURL] success:^(NSImage *image) {
+	if (!_profileImage && !_avatarImageRequestOperation) {
+		_avatarImageRequestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:[NSURLRequest requestWithURL:self.avatarImageURL] success:^(NSImage *image) {
 			self.profileImage = image;
             
-			_profileImageRequestOperation = nil;
+			_avatarImageRequestOperation = nil;
             
             [[NSNotificationCenter defaultCenter] postNotificationName:kUserProfileImageDidLoadNotification object:self userInfo:nil];
 		}];
         
-		[_profileImageRequestOperation setCacheResponseBlock:^NSCachedURLResponse *(NSURLConnection *connection, NSCachedURLResponse *cachedResponse) {
+		[_avatarImageRequestOperation setCacheResponseBlock:^NSCachedURLResponse *(NSURLConnection *connection, NSCachedURLResponse *cachedResponse) {
 			return [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.data userInfo:cachedResponse.userInfo storagePolicy:NSURLCacheStorageAllowed];
 		}];
 		
-        [[[self class] sharedProfileImageRequestOperationQueue] addOperation:_profileImageRequestOperation];
+        [[[self class] sharedProfileImageRequestOperationQueue] addOperation:_avatarImageRequestOperation];
 	}
 	
 	return _profileImage;
