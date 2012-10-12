@@ -108,32 +108,36 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         if ([self isCancelled]) {
             return;
         }
-        
-        if (self.error) {
-            if (failure) {
-                dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
-                    failure(self, self.error);
-                });
-            }
-        } else {
-            dispatch_async(json_request_operation_processing_queue(), ^{
-                id JSON = self.responseJSON;
-                
-                if (self.JSONError) {
-                    if (failure) {
-                        dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
-                            failure(self, self.error);
-                        });
-                    }
-                } else {
-                    if (success) {
-                        dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
-                            success(self, JSON);
-                        });
-                    }                    
-                }
-            });
-        }
+				
+				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+					
+					if (self.error) {
+							if (failure) {
+									dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+											failure(self, self.error);
+									});
+							}
+					} else {
+							dispatch_async(json_request_operation_processing_queue(), ^{
+									id JSON = self.responseJSON;
+									
+									if (self.JSONError) {
+											if (failure) {
+													dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+															failure(self, self.error);
+													});
+											}
+									} else {
+											if (success) {
+													dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
+															success(self, JSON);
+													});
+											}                    
+									}
+							});
+					}
+					
+				});
     };
 #pragma clang diagnostic pop
 }
