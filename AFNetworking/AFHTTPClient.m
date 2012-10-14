@@ -227,7 +227,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 }
 
 - (id)initWithBaseURL:(NSURL *)url {
-    NSCParameterAssert(url);
+    NSParameterAssert(url);
 
     self = [super init];
     if (!self) {
@@ -420,7 +420,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                                       path:(NSString *)path
                                 parameters:(NSDictionary *)parameters
 {
-    NSCParameterAssert(method);
+    NSParameterAssert(method);
     
     if (!path) {
         path = @"";
@@ -462,8 +462,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                                              parameters:(NSDictionary *)parameters
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
 {
-    NSCParameterAssert(method);
-    NSCParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
+    NSParameterAssert(method);
+    NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
     
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
 
@@ -787,8 +787,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                          name:(NSString *)name
                         error:(NSError * __autoreleasing *)error
 {
-    NSCParameterAssert(fileURL);
-    NSCParameterAssert(name);
+    NSParameterAssert(fileURL);
+    NSParameterAssert(name);
     
     if (![fileURL isFileURL]) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Expected URL to be a file URL", nil) forKey:NSLocalizedFailureReasonErrorKey];
@@ -828,9 +828,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                       fileName:(NSString *)fileName
                       mimeType:(NSString *)mimeType
 {
-    NSCParameterAssert(name);
-    NSCParameterAssert(fileName);
-    NSCParameterAssert(mimeType);
+    NSParameterAssert(name);
+    NSParameterAssert(fileName);
+    NSParameterAssert(mimeType);
 
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
@@ -842,7 +842,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 - (void)appendPartWithFormData:(NSData *)data
                           name:(NSString *)name
 {
-    NSCParameterAssert(name);
+    NSParameterAssert(name);
 
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
