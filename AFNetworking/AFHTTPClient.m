@@ -184,7 +184,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 }
 
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
-- (id)initWithURLRequest:(NSMutableURLRequest *)request
+- (id)initWithURLRequest:(NSMutableURLRequest *)urlRequest
           stringEncoding:(NSStringEncoding)encoding;
 
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData;
@@ -541,12 +541,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
     }
 }
 
-- (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests
+- (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)urlRequests
                                           progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
                                         completionBlock:(void (^)(NSArray *operations))completionBlock
 {
     NSMutableArray *mutableOperations = [NSMutableArray array];
-    for (NSURLRequest *request in requests) {
+    for (NSURLRequest *request in urlRequests) {
         AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:nil failure:nil];
         [mutableOperations addObject:operation];
     }
@@ -768,7 +768,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @synthesize bodyStream = _bodyStream;
 @synthesize stringEncoding = _stringEncoding;
 
-- (id)initWithURLRequest:(NSMutableURLRequest *)request
+- (id)initWithURLRequest:(NSMutableURLRequest *)urlRequest
           stringEncoding:(NSStringEncoding)encoding
 {
     self = [super init];
@@ -776,7 +776,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         return nil;
     }
     
-    self.request = request;
+    self.request = urlRequest;
     self.stringEncoding = encoding;
     self.bodyStream = [[AFMultipartBodyStream alloc] initWithStringEncoding:encoding];
     
