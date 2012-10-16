@@ -1154,7 +1154,7 @@ typedef enum {
            intoBuffer:(uint8_t *)buffer
             maxLength:(NSUInteger)length
 {
-    NSRange range = NSMakeRange(_phaseReadOffset, MIN([data length], length));
+    NSRange range = NSMakeRange((NSUInteger)_phaseReadOffset, MIN([data length], length));
     [data getBytes:buffer range:range];
     
     _phaseReadOffset += range.length;
