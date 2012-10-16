@@ -216,6 +216,7 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 @synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize operationQueue = _operationQueue;
+@synthesize timeoutInterval = _timeoutInterval;
 #ifdef _SYSTEMCONFIGURATION_H
 @synthesize networkReachability = _networkReachability;
 @synthesize networkReachabilityStatus = _networkReachabilityStatus;
@@ -430,6 +431,10 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
+
+    if (self.timeoutInterval > 0) {
+        [request setTimeoutInterval:self.timeoutInterval];
+    }
 	
     if (parameters) {
         if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"] || [method isEqualToString:@"DELETE"]) {
