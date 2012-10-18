@@ -142,8 +142,8 @@
 		F8E469551395739C00DB05C8 = {
 			isa = PBXGroup;
 			children = (
-				F8A847C4161F524200940F39 /* Default@2x.png */,
 				F8A847C2161F523E00940F39 /* Default.png */,
+				F8A847C4161F524200940F39 /* Default@2x.png */,
 				F8A847C0161F51A300940F39 /* Default-568h@2x.png */,
 				F8E469B71395759C00DB05C8 /* Networking Extensions */,
 				F8E4696A1395739D00DB05C8 /* Classes */,

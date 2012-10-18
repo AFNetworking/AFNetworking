@@ -33,8 +33,8 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
 
 @implementation User {
 @private
-    __strong NSString *_avatarImageURLString;
-    __strong AFImageRequestOperation *_avatarImageRequestOperation;
+    NSString *_avatarImageURLString;
+    AFImageRequestOperation *_avatarImageRequestOperation;
 }
 
 @synthesize userID = _userID;
