@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import "AFPreProcessorMacros.h"
 #import "AFURLConnectionOperation.h"
 
 /**
@@ -35,7 +36,7 @@
 /**
  The last HTTP response received by the operation's connection.
  */
-@property (readonly, nonatomic, strong) NSHTTPURLResponse *response;
+@property (readonly, nonatomic, AF_STRONG) NSHTTPURLResponse *response;
 
 ///----------------------------------------------------------
 /// @name Managing And Checking For Acceptable HTTP Responses

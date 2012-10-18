@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import "AFPreProcessorMacros.h"
 
 /**
  `AFURLConnectionOperation` is an `NSOperation` that implements NSURLConnection delegate methods.
@@ -80,7 +81,7 @@
 /**
  The run loop modes in which the operation will run on the network thread. By default, this is a single-member set containing `NSRunLoopCommonModes`.
  */
-@property (nonatomic, strong) NSSet *runLoopModes;
+@property (nonatomic, AF_STRONG) NSSet *runLoopModes;
 
 ///-----------------------------------------
 /// @name Getting URL Connection Information
@@ -89,17 +90,17 @@
 /**
  The request used by the operation's connection.
  */
-@property (readonly, nonatomic, strong) NSURLRequest *request;
+@property (readonly, nonatomic, AF_STRONG) NSURLRequest *request;
 
 /**
  The last response received by the operation's connection.
  */
-@property (readonly, nonatomic, strong) NSURLResponse *response;
+@property (readonly, nonatomic, AF_STRONG) NSURLResponse *response;
 
 /**
  The error, if any, that occurred in the lifecycle of the request.
  */
-@property (readonly, nonatomic, strong) NSError *error;
+@property (readonly, nonatomic, AF_STRONG) NSError *error;
 
 ///----------------------------
 /// @name Getting Response Data
@@ -108,7 +109,7 @@
 /**
  The data received during the request. 
  */
-@property (readonly, nonatomic, strong) NSData *responseData;
+@property (readonly, nonatomic, AF_STRONG) NSData *responseData;
 
 /**
  The string representation of the response data.
@@ -126,14 +127,14 @@
  
  @discussion This property acts as a proxy to the `HTTPBodyStream` property of `request`.
  */
-@property (nonatomic, strong) NSInputStream *inputStream;
+@property (nonatomic, AF_STRONG) NSInputStream *inputStream;
 
 /**
  The output stream that is used to write data received until the request is finished.
  
  @discussion By default, data is accumulated into a buffer that is stored into `responseData` upon completion of the request. When `outputStream` is set, the data will not be accumulated into an internal buffer, and as a result, the `responseData` property of the completed request will be `nil`. The output stream will be scheduled in the network thread runloop upon being set.
  */
-@property (nonatomic, strong) NSOutputStream *outputStream;
+@property (nonatomic, AF_STRONG) NSOutputStream *outputStream;
 
 ///------------------------------------------------------
 /// @name Initializing an AFURLConnectionOperation Object
