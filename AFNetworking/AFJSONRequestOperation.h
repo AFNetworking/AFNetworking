@@ -22,6 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
+#import "AFPreProcessorMacros.h"
 
 /**
  `AFJSONRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and working with JSON response data.
@@ -44,7 +45,7 @@
 /**
  A JSON object constructed from the response data. If an error occurs while parsing, `nil` will be returned, and the `error` property will be set to the error.
  */
-@property (readonly, nonatomic, strong) id responseJSON;
+@property (readonly, nonatomic, AF_STRONG) id responseJSON;
 
 ///----------------------------------
 /// @name Creating Request Operations
