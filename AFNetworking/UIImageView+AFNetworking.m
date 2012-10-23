@@ -22,6 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "UIImageView+AFNetworking.h"
@@ -80,22 +81,58 @@ static char kAFImageRequestOperationObjectKey;
 
 #pragma mark -
 
+- (void)af_setImage:(UIImage *)image animated:(BOOL)animated
+{
+    if (animated) {
+        //crossfade transition without importing QuartzCore
+        id animation = objc_msgSend(NSClassFromString(@"CATransition"), @selector(animation));
+        objc_msgSend(animation, @selector(setType:), @"kCATransitionFade");
+        objc_msgSend(animation, @selector(setDuration:), 0.4);
+        objc_msgSend(self.layer, @selector(addAnimation:forKey:), animation, nil);
+    }
+    [self setImage:image];
+}
+
 - (void)setImageWithURL:(NSURL *)url {
-    [self setImageWithURL:url placeholderImage:nil];
+    [self setImageWithURL:url placeholderImage:nil animated:NO];
+}
+
+- (void)setImageWithURL:(NSURL *)url
+               animated:(BOOL)animated
+{
+    [self setImageWithURL:url placeholderImage:nil animated:animated];
+}
+
+- (void)setImageWithURL:(NSURL *)url
+       placeholderImage:(UIImage *)placeholderImage
+{
+    [self setImageWithURL:url placeholderImage:placeholderImage animated:NO];
 }
 
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage
+               animated:(BOOL)animated
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPShouldHandleCookies:NO];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
     
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage animated:animated success:nil failure:nil];
 }
 
+
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
+              placeholderImage:(UIImage *)placeholderImage
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    [self setImageWithURLRequest:urlRequest placeholderImage:placeholderImage animated:NO success:success failure:failure];
+}
+
+
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
-              placeholderImage:(UIImage *)placeholderImage 
+              placeholderImage:(UIImage *)placeholderImage
+                      animated:(BOOL)animated
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
@@ -103,7 +140,7 @@ static char kAFImageRequestOperationObjectKey;
     
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
-        self.image = cachedImage;
+        [self af_setImage:cachedImage animated:animated];
         self.af_imageRequestOperation = nil;
         
         if (success) {
@@ -115,7 +152,7 @@ static char kAFImageRequestOperationObjectKey;
         AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
-                self.image = responseObject;
+                [self af_setImage:responseObject animated:animated];
                 self.af_imageRequestOperation = nil;
             }
 
