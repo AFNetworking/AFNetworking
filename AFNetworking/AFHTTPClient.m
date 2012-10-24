@@ -160,21 +160,6 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return mutableQueryStringComponents;
 }
 
-static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
-    NSError *error = nil;
-    parameters = AFJSONNormalizeObject(parameters, &error);
-    if (!parameters)
-        // Cannot be normalized.
-        return nil;
-
-    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];;
-    if (!error) {
-        return [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-    } else {
-        return nil;
-    }
-}
-
 static BOOL AFJSONIsNormalObject(id object, NSError **error) {
 
     if ([object isKindOfClass:[NSString class]] || [object isKindOfClass:[NSNumber class]] || [object isKindOfClass:[NSNull class]])
@@ -254,6 +239,21 @@ id AFJSONNormalizeObject(id object, NSError **error) {
 
     assert(error); // An error should've been set by AFJSONIsNormalObject
     return nil;
+}
+
+static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
+    NSError *error = nil;
+    parameters = AFJSONNormalizeObject(parameters, &error);
+    if (!parameters)
+        // Cannot be normalized.
+        return nil;
+    
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];;
+    if (!error) {
+        return [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+    } else {
+        return nil;
+    }
 }
 
 static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
