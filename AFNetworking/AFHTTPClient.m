@@ -160,7 +160,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return mutableQueryStringComponents;
 }
 
-static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
+static NSString * AFJSONStringFromParameters(id parameters) {
     NSError *error = nil;
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];;
     
@@ -418,7 +418,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method
                                       path:(NSString *)path
-                                parameters:(NSDictionary *)parameters
+                                parameters:(id)parameters
 {
     NSParameterAssert(method);
     

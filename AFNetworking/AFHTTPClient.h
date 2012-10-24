@@ -249,7 +249,7 @@ typedef enum {
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
                                       path:(NSString *)path 
-                                parameters:(NSDictionary *)parameters;
+                                parameters:(id)parameters;
 
 /**
  Creates an `NSMutableURLRequest` object with the specified HTTP method and path, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block. See http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
