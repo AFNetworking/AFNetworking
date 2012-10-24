@@ -162,13 +162,98 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
     NSError *error = nil;
+    parameters = AFJSONNormalizeObject(parameters, &error);
+    if (!parameters)
+        // Cannot be normalized.
+        return nil;
+
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];;
-    
     if (!error) {
         return [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
     } else {
         return nil;
     }
+}
+
+static BOOL AFJSONIsNormalObject(id object, NSError **error) {
+
+    if ([object isKindOfClass:[NSString class]] || [object isKindOfClass:[NSNumber class]] || [object isKindOfClass:[NSNull class]])
+        // Object is normal.
+        return YES;
+
+    if ([object isKindOfClass:[NSSet class]] || [object isKindOfClass:[NSOrderedSet class]])
+        // Object is not normal.
+        return NO;
+
+    if ([object isKindOfClass:[NSArray class]]) {
+        // Object may be normal.
+        for (id element in object)
+            if (!AFJSONIsNormalObject(element, error))
+                return NO;
+
+        return YES;
+    }
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        // Object may be normal.
+        for (id key in [object allKeys])
+            if (!AFJSONIsNormalObject(key, error) || !AFJSONIsNormalObject([object objectForKey:key], error))
+                return NO;
+
+        return YES;
+    }
+
+    // Object cannot be normalized.
+    *error = [NSError errorWithDomain:@"AFErrorDomain" code:-1L
+                             userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Objects of type %@ cannot be serialized.", [object class]]}];
+    return NO;
+}
+
+id AFJSONNormalizeObject(id object, NSError **error) {
+
+    *error = nil;
+    if (AFJSONIsNormalObject(object, error))
+        // Object is normal.
+        return object;
+    if (*error)
+        // AFJSONIsNormalObject found that object cannot be normalized.
+        return nil;
+
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        // A dictionary that is not yet normal.
+        NSMutableDictionary *normalObject = [NSMutableDictionary dictionaryWithCapacity:[object count]];
+        for (id key in [object allKeys]) {
+
+            id normalElement = AFJSONNormalizeObject([object objectForKey:key], error);
+            if (!normalElement)
+                return nil;
+
+            id normalKey = AFJSONNormalizeObject(key, error);
+            if (!normalKey)
+                return nil;
+
+            [normalObject setObject:normalElement forKey:normalKey];
+        }
+
+        return normalObject;
+    }
+
+    if ([object conformsToProtocol:@protocol(NSFastEnumeration)]) {
+        // An enumerable that is not yet normal.
+        NSMutableArray *normalObject = [NSMutableArray arrayWithCapacity:[object count]];
+        for (id element in object) {
+
+            id normalElement = AFJSONNormalizeObject(element, error);
+            if (!normalElement)
+                return nil;
+
+            [normalObject addObject:normalElement];
+        }
+
+        return normalObject;
+    }
+
+    assert(error); // An error should've been set by AFJSONIsNormalObject
+    return nil;
 }
 
 static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
