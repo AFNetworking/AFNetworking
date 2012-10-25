@@ -91,11 +91,12 @@ static char kAFImageRequestOperationObjectKey;
     [request setHTTPShouldHandleCookies:NO];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
     
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage setter:nil success:nil failure:nil];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
-              placeholderImage:(UIImage *)placeholderImage 
+              placeholderImage:(UIImage *)placeholderImage
+                        setter:(void (^)(UIImage *image, BOOL isFromCache))setter
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
@@ -103,7 +104,12 @@ static char kAFImageRequestOperationObjectKey;
     
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
-        self.image = cachedImage;
+        if (setter) {
+            setter(cachedImage, YES);
+        } else {
+            self.image = cachedImage;
+        }
+        
         self.af_imageRequestOperation = nil;
         
         if (success) {
@@ -115,7 +121,11 @@ static char kAFImageRequestOperationObjectKey;
         AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
-                self.image = responseObject;
+                if (setter) {
+                    setter(responseObject, NO);
+                } else {
+                    self.image = responseObject;
+                }
                 self.af_imageRequestOperation = nil;
             }
 
