@@ -415,25 +415,30 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 }
 
 #pragma mark -
-
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method
                                       path:(NSString *)path
                                 parameters:(NSDictionary *)parameters
 {
-    NSParameterAssert(method);
-    
     if (!path) {
         path = @"";
     }
-    
     NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
+    return [self requestWithMethod:method url:url parameters:parameters];
+}
+
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method
+                                       url:(NSURL *)url
+                                parameters:(NSDictionary *)parameters
+{
+    NSParameterAssert(method);   
+    
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
 	
     if (parameters) {
         if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"] || [method isEqualToString:@"DELETE"]) {
-            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding)]];
+            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[[url absoluteString] rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding)]];
             [request setURL:url];
         } else {
             NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
@@ -462,10 +467,22 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                                              parameters:(NSDictionary *)parameters
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
 {
+    if (!path) {
+        path = @"";
+    }
+    NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
+    return [self multipartFormRequestWithMethod:method url:url parameters:parameters constructingBodyWithBlock:block];
+}
+
+- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
+                                                    url:(NSURL *)url
+                                             parameters:(NSDictionary *)parameters
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+{
     NSParameterAssert(method);
     NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
     
-    NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
+    NSMutableURLRequest *request = [self requestWithMethod:method url:url parameters:nil];
 
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding];
     
@@ -653,6 +670,58 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self enqueueHTTPRequestOperation:operation];
 }
+
+/* URL Based */
+- (void)getURL:(NSURL *)url
+     parameters:(NSDictionary *)parameters
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSURLRequest *request = [self requestWithMethod:@"GET" url:url parameters:parameters];
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
+- (void)postURL:(NSURL *)url
+      parameters:(NSDictionary *)parameters
+         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSURLRequest *request = [self requestWithMethod:@"POST" url:url parameters:parameters];
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
+- (void)putURL:(NSURL *)url
+     parameters:(NSDictionary *)parameters
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSURLRequest *request = [self requestWithMethod:@"PUT" url:url parameters:parameters];
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
+- (void)deleteURL:(NSURL *)url
+        parameters:(NSDictionary *)parameters
+           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSURLRequest *request = [self requestWithMethod:@"DELETE" url:url parameters:parameters];
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
+- (void)patchURL:(NSURL *)url
+       parameters:(NSDictionary *)parameters
+          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSURLRequest *request = [self requestWithMethod:@"PATCH" url:url parameters:parameters];
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
 
 #pragma mark - NSCoding
 

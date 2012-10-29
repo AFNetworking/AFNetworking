@@ -251,6 +251,10 @@ typedef enum {
                                       path:(NSString *)path 
                                 parameters:(NSDictionary *)parameters;
 
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
+                                       url:(NSURL *)url
+                                parameters:(NSDictionary *)parameters;
+
 /**
  Creates an `NSMutableURLRequest` object with the specified HTTP method and path, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block. See http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
  
@@ -265,6 +269,11 @@ typedef enum {
  */
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                                    path:(NSString *)path
+                                             parameters:(NSDictionary *)parameters
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
+
+- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
+                                                    url:(NSURL *)url
                                              parameters:(NSDictionary *)parameters
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
 
@@ -412,6 +421,36 @@ typedef enum {
        parameters:(NSDictionary *)parameters 
           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+
+/**
+ URL Based API, request any url
+ */
+- (void)getURL:(NSURL *)url
+     parameters:(NSDictionary *)parameters
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+- (void)postURL:(NSURL *)url
+      parameters:(NSDictionary *)parameters 
+         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+- (void)putURL:(NSURL *)url
+     parameters:(NSDictionary *)parameters 
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+- (void)deleteURL:(NSURL *)url
+        parameters:(NSDictionary *)parameters 
+           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+- (void)patchURL:(NSURL *)url
+       parameters:(NSDictionary *)parameters 
+          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
 @end
 
 ///----------------
