@@ -81,8 +81,8 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
 }
 
 static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
-    static NSString * const kAFCharactersToBeEscaped = @":/.?&=;+!@#$()~";
-    static NSString * const kAFCharactersToLeaveUnescaped = @"[]";
+    static NSString * const kAFCharactersToBeEscaped = @":/?&=;+!@#$()~";
+    static NSString * const kAFCharactersToLeaveUnescaped = @"[].";
     
 	return (__bridge_transfer  NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (__bridge CFStringRef)string, (__bridge CFStringRef)kAFCharactersToLeaveUnescaped, (__bridge CFStringRef)kAFCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding));
 }
