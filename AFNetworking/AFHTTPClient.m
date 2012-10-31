@@ -160,29 +160,6 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return mutableQueryStringComponents;
 }
 
-static NSString * AFJSONStringFromParameters(NSDictionary *parameters) {
-    NSError *error = nil;
-    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error];;
-    
-    if (!error) {
-        return [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-    } else {
-        return nil;
-    }
-}
-
-static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
-    NSString *propertyListString = nil;
-    NSError *error = nil;
-    
-    NSData *propertyListData = [NSPropertyListSerialization dataWithPropertyList:parameters format:NSPropertyListXMLFormat_v1_0 options:0 error:&error];
-    if (!error) {
-        propertyListString = [[NSString alloc] initWithData:propertyListData encoding:NSUTF8StringEncoding] ;
-    }
-    
-    return propertyListString;
-}
-
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
 - (id)initWithURLRequest:(NSMutableURLRequest *)urlRequest
           stringEncoding:(NSStringEncoding)encoding;
@@ -443,6 +420,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
             [request setURL:url];
         } else {
             NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+            NSError *error = nil;
+            
             switch (self.parameterEncoding) {
                 case AFFormURLParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
@@ -450,12 +429,16 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                     break;
                 case AFJSONParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFJSONStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+                    [request setHTTPBody:[NSJSONSerialization dataWithJSONObject:parameters options:0 error:&error]];
                     break;
                 case AFPropertyListParameterEncoding:;
                     [request setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-                    [request setHTTPBody:[AFPropertyListStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
+                    [request setHTTPBody:[NSPropertyListSerialization dataWithPropertyList:parameters format:NSPropertyListXMLFormat_v1_0 options:0 error:&error]];
                     break;
+            }
+            
+            if (error) {
+                NSLog(@"%@ %@: %@", [self class], NSStringFromSelector(_cmd), error);
             }
         }
     }
