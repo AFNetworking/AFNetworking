@@ -1,4 +1,4 @@
-// AFTwitterAPIClient.h
+// AFAppDotNetAPIClient.h
 //
 // Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
@@ -23,8 +23,8 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPClient.h"
 
-@interface AFTwitterAPIClient : AFHTTPClient
+@interface AFAppDotNetAPIClient : AFHTTPClient
 
-+ (AFTwitterAPIClient *)sharedClient;
++ (AFAppDotNetAPIClient *)sharedClient;
 
 @end

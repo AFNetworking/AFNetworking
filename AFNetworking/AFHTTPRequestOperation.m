@@ -23,42 +23,35 @@
 #import "AFHTTPRequestOperation.h"
 #import <objc/runtime.h>
 
-NSString * const kAFNetworkingIncompleteDownloadDirectoryName = @"Incomplete";
+// Workaround for change in imp_implementationWithBlock() with Xcode 4.5
+#if defined(__IPHONE_6_0) || defined(__MAC_10_8)
+#define AF_CAST_TO_BLOCK id
+#else
+#define AF_CAST_TO_BLOCK __bridge void *
+#endif
 
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
-    static NSCharacterSet *_skippedCharacterSet = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _skippedCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@" ,"] retain];
-    });
-    
     if (!string) {
         return nil;
     }
-    
-    NSScanner *scanner = [NSScanner scannerWithString:string];
-    scanner.charactersToBeSkipped = _skippedCharacterSet;
-    
-    NSMutableSet *mutableContentTypes = [NSMutableSet set];
-    while (![scanner isAtEnd]) {
-        NSString *contentType = nil;
-        if ([scanner scanUpToString:@";" intoString:&contentType]) {
-            [scanner scanUpToString:@"," intoString:nil];
+
+    NSArray *mediaRanges = [string componentsSeparatedByString:@","];
+    NSMutableSet *mutableContentTypes = [NSMutableSet setWithCapacity:mediaRanges.count];
+
+    [mediaRanges enumerateObjectsUsingBlock:^(NSString *mediaRange, NSUInteger idx, BOOL *stop) {
+        NSRange parametersRange = [mediaRange rangeOfString:@";"];
+        if (parametersRange.location != NSNotFound) {
+            mediaRange = [mediaRange substringToIndex:parametersRange.location];
         }
         
-        if (contentType) {
-            [mutableContentTypes addObject:contentType];
+        mediaRange = [mediaRange stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if (mediaRange.length > 0) {
+            [mutableContentTypes addObject:mediaRange];
         }
-    }
-    
-    return [NSSet setWithSet:mutableContentTypes];
-}
+    }];
 
-static void AFSwizzleClassMethodWithImplementation(Class klass, SEL selector, IMP implementation) {
-    Method originalMethod = class_getClassMethod(klass, selector);
-	if (method_getImplementation(originalMethod) != implementation) {
-		class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
-    }
+    return [NSSet setWithSet:mutableContentTypes];
 }
 
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
@@ -77,11 +70,11 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         }
 
         if (range.length == 1) {
-            [string appendFormat:@"%u", range.location];
+            [string appendFormat:@"%lu", (long)range.location];
         } else {
             NSUInteger firstIndex = range.location;
             NSUInteger lastIndex = firstIndex + range.length - 1;
-            [string appendFormat:@"%u-%u", firstIndex, lastIndex];
+            [string appendFormat:@"%lu-%lu", (long)firstIndex, (long)lastIndex];
         }
 
         range.location = nextIndex;
@@ -91,37 +84,24 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return string;
 }
 
-NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
-    static NSString *incompleteDownloadPath;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSString *tempDirectory = NSTemporaryDirectory();
-        incompleteDownloadPath = [[tempDirectory stringByAppendingPathComponent:kAFNetworkingIncompleteDownloadDirectoryName] retain];
-
-        NSError *error = nil;
-        NSFileManager *fileMan = [[NSFileManager alloc] init];
-        if(![fileMan createDirectoryAtPath:incompleteDownloadPath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"Failed to create incomplete downloads directory at %@", incompleteDownloadPath);
-        }
-        [fileMan release];
-    });
-
-    return incompleteDownloadPath;
+static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL selector, id block) {
+    Method originalMethod = class_getClassMethod(klass, selector);
+    IMP implementation = imp_implementationWithBlock((AF_CAST_TO_BLOCK)block);
+    class_replaceMethod(objc_getMetaClass([NSStringFromClass(klass) UTF8String]), selector, implementation, method_getTypeEncoding(originalMethod));
 }
 
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()
-@property (readwrite, nonatomic, retain) NSURLRequest *request;
-@property (readwrite, nonatomic, retain) NSHTTPURLResponse *response;
-@property (readwrite, nonatomic, retain) NSError *HTTPError;
+@property (readwrite, nonatomic, strong) NSURLRequest *request;
+@property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
+@property (readwrite, nonatomic, strong) NSError *HTTPError;
 @property (assign) long long totalContentLength;
 @property (assign) long long offsetContentLength;
 @end
 
 @implementation AFHTTPRequestOperation
 @synthesize HTTPError = _HTTPError;
-@synthesize responseFilePath = _responseFilePath;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
 @synthesize totalContentLength = _totalContentLength;
@@ -130,35 +110,41 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 @dynamic response;
 
 - (void)dealloc {
-    [_HTTPError release];
-    
-    if (_successCallbackQueue) { 
+    if (_successCallbackQueue) {
+#if !OS_OBJECT_USE_OBJC
         dispatch_release(_successCallbackQueue);
+#endif
         _successCallbackQueue = NULL;
     }
     
-    if (_failureCallbackQueue) { 
-        dispatch_release(_failureCallbackQueue); 
+    if (_failureCallbackQueue) {
+#if !OS_OBJECT_USE_OBJC
+        dispatch_release(_failureCallbackQueue);
+#endif
         _failureCallbackQueue = NULL;
     }
-
-    [super dealloc];
 }
 
 - (NSError *)error {
     if (self.response && !self.HTTPError) {
-        if (![self hasAcceptableStatusCode]) {
+        if (![self hasAcceptableStatusCode] || ![self hasAcceptableContentType]) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
+            [userInfo setValue:self.responseString forKey:NSLocalizedRecoverySuggestionErrorKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
+            [userInfo setValue:self.request forKey:AFNetworkingOperationFailingURLRequestErrorKey];
+            [userInfo setValue:self.response forKey:AFNetworkingOperationFailingURLResponseErrorKey];
             
-            self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
-        } else if ([self.responseData length] > 0 && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
-            NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), [[self class] acceptableContentTypes], [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
-            [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
-            
-            self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo] autorelease];
+            if (![self hasAcceptableStatusCode]) {
+                NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 200;
+                [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code in (%@), got %d", nil), AFStringFromIndexSet([[self class] acceptableStatusCodes]), statusCode] forKey:NSLocalizedDescriptionKey];
+                self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
+            } else if (![self hasAcceptableContentType]) {
+                // Don't invalidate content type if there is no content
+                if ([self.responseData length] > 0) {
+                    [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), [[self class] acceptableContentTypes], [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
+                    self.HTTPError = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+                }
+            }
         }
     }
     
@@ -177,7 +163,7 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
         offset = [[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
     }
 
-    NSMutableURLRequest *mutableURLRequest = [[self.request mutableCopy] autorelease];
+    NSMutableURLRequest *mutableURLRequest = [self.request mutableCopy];
     if ([[self.response allHeaderFields] valueForKey:@"ETag"]) {
         [mutableURLRequest setValue:[[self.response allHeaderFields] valueForKey:@"ETag"] forHTTPHeaderField:@"If-Range"];
     }
@@ -188,22 +174,43 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 }
 
 - (BOOL)hasAcceptableStatusCode {
-    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:[self.response statusCode]];
+	if (!self.response) {
+		return NO;
+	}
+    
+    NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 200;
+    return ![[self class] acceptableStatusCodes] || [[[self class] acceptableStatusCodes] containsIndex:statusCode];
 }
 
 - (BOOL)hasAcceptableContentType {
-    return ![[self class] acceptableContentTypes] || [[[self class] acceptableContentTypes] containsObject:[self.response MIMEType]];
+    if (!self.response) {
+		return NO;
+	}
+    
+    // According to RFC 2616:
+    // Any HTTP/1.1 message containing an entity-body SHOULD include a Content-Type header field defining the media type of that body. If and only if the media type is not given by a Content-Type field, the recipient MAY attempt to guess the media type via inspection of its content and/or the name extension(s) of the URI used to identify the resource. If the media type remains unknown, the recipient SHOULD treat it as type "application/octet-stream".
+    // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec7.html
+    NSString *contentType = [self.response MIMEType];
+    if (!contentType) {
+        contentType = @"application/octet-stream";
+    }
+    
+    return ![[self class] acceptableContentTypes] || [[[self class] acceptableContentTypes] containsObject:contentType];
 }
 
 - (void)setSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue {
     if (successCallbackQueue != _successCallbackQueue) {
         if (_successCallbackQueue) {
+#if !OS_OBJECT_USE_OBJC
             dispatch_release(_successCallbackQueue);
+#endif
             _successCallbackQueue = NULL;
         }
 
         if (successCallbackQueue) {
+#if !OS_OBJECT_USE_OBJC
             dispatch_retain(successCallbackQueue);
+#endif
             _successCallbackQueue = successCallbackQueue;
         }
     }    
@@ -212,12 +219,16 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 - (void)setFailureCallbackQueue:(dispatch_queue_t)failureCallbackQueue {
     if (failureCallbackQueue != _failureCallbackQueue) {
         if (_failureCallbackQueue) {
+#if !OS_OBJECT_USE_OBJC
             dispatch_release(_failureCallbackQueue);
+#endif
             _failureCallbackQueue = NULL;
         }
         
         if (failureCallbackQueue) {
+#if !OS_OBJECT_USE_OBJC
             dispatch_retain(failureCallbackQueue);
+#endif
             _failureCallbackQueue = failureCallbackQueue;
         }
     }    
@@ -226,56 +237,43 @@ NSString * AFCreateIncompleteDownloadDirectoryPath(void) {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-    self.completionBlock = ^ {
+    // completionBlock is manually nilled out in AFURLConnectionOperation to break the retain cycle.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
+    self.completionBlock = ^{
         if ([self isCancelled]) {
             return;
         }
         
         if (self.error) {
             if (failure) {
-                dispatch_async(self.failureCallbackQueue ? self.failureCallbackQueue : dispatch_get_main_queue(), ^{
+                dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
                     failure(self, self.error);
                 });
             }
         } else {
             if (success) {
-                dispatch_async(self.successCallbackQueue ? self.successCallbackQueue : dispatch_get_main_queue(), ^{
+                dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
                     success(self, self.responseData);
                 });
             }
         }
     };
-}
-
-- (void)setResponseFilePath:(NSString *)responseFilePath {
-    if ([self isReady] && responseFilePath != _responseFilePath) {
-        [_responseFilePath release];
-        _responseFilePath = [responseFilePath retain];
-        
-        if (responseFilePath) {
-            self.outputStream = [NSOutputStream outputStreamToFileAtPath:responseFilePath append:NO];
-        }else {
-            self.outputStream = [NSOutputStream outputStreamToMemory];
-        }
-    }
+#pragma clang diagnostic pop
 }
 
 #pragma mark - AFHTTPRequestOperation
-
-static id AFStaticClassValueImplementation(id self, SEL _cmd) {
-	return objc_getAssociatedObject([self class], _cmd);
-}
 
 + (NSIndexSet *)acceptableStatusCodes {
     return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
 }
 
 + (void)addAcceptableStatusCodes:(NSIndexSet *)statusCodes {
-    NSMutableIndexSet *mutableStatusCodes = [[[NSMutableIndexSet alloc] initWithIndexSet:[self acceptableStatusCodes]] autorelease];
+    NSMutableIndexSet *mutableStatusCodes = [[NSMutableIndexSet alloc] initWithIndexSet:[self acceptableStatusCodes]];
     [mutableStatusCodes addIndexes:statusCodes];
-	SEL selector = @selector(acceptableStatusCodes);
-	AFSwizzleClassMethodWithImplementation([self class], selector, (IMP)AFStaticClassValueImplementation);
-	objc_setAssociatedObject([self class], selector, mutableStatusCodes, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableStatusCodes), ^(id _self) {
+        return mutableStatusCodes;
+    });
 }
 
 + (NSSet *)acceptableContentTypes {
@@ -283,15 +281,15 @@ static id AFStaticClassValueImplementation(id self, SEL _cmd) {
 }
 
 + (void)addAcceptableContentTypes:(NSSet *)contentTypes {
-    NSMutableSet *mutableContentTypes = [[[NSMutableSet alloc] initWithSet:[self acceptableContentTypes] copyItems:YES] autorelease];
+    NSMutableSet *mutableContentTypes = [[NSMutableSet alloc] initWithSet:[self acceptableContentTypes] copyItems:YES];
     [mutableContentTypes unionSet:contentTypes];
-	SEL selector = @selector(acceptableContentTypes);
-	AFSwizzleClassMethodWithImplementation([self class], selector, (IMP)AFStaticClassValueImplementation);
-	objc_setAssociatedObject([self class], selector, mutableContentTypes, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableContentTypes), ^(id _self) {
+        return mutableContentTypes;
+    });
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    if (![[self class] isEqual:[AFHTTPRequestOperation class]]) {
+    if ([[self class] isEqual:[AFHTTPRequestOperation class]]) {
         return YES;
     }
     
@@ -305,30 +303,38 @@ didReceiveResponse:(NSURLResponse *)response
 {
     self.response = (NSHTTPURLResponse *)response;
     
-    // 206 = Partial Content.
+    // Set Content-Range header if status code of response is 206 (Partial Content)
+    // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.7
     long long totalContentLength = self.response.expectedContentLength;
     long long fileOffset = 0;
-    if ([self.response statusCode] != 206) {
+    NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 200;
+    if (statusCode == 206) {
+        NSString *contentRange = [self.response.allHeaderFields valueForKey:@"Content-Range"];
+        if ([contentRange hasPrefix:@"bytes"]) {
+            NSArray *byteRanges = [contentRange componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -/"]];
+            if ([byteRanges count] == 4) {
+                fileOffset = [[byteRanges objectAtIndex:1] longLongValue];
+                totalContentLength = [[byteRanges objectAtIndex:2] longLongValue] ?: -1; // if this is "*", it's converted to 0, but -1 is default.
+            }
+        }
+    } else {
         if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
             [self.outputStream setProperty:[NSNumber numberWithInteger:0] forKey:NSStreamFileCurrentOffsetKey];
         } else {
             if ([[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length] > 0) {
                 self.outputStream = [NSOutputStream outputStreamToMemory];
+                
+                NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+                for (NSString *runLoopMode in self.runLoopModes) {
+                    [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
+                }
             }
         }
-    }else {
-        NSString *contentRange = [self.response.allHeaderFields valueForKey:@"Content-Range"];
-        if ([contentRange hasPrefix:@"bytes"]) {
-            NSArray *bytes = [contentRange componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -/"]];
-            if ([bytes count] == 4) {
-                fileOffset = [[bytes objectAtIndex:1] longLongValue];
-                totalContentLength = [[bytes objectAtIndex:2] longLongValue] ?: -1; // if this is *, it's converted to 0, but -1 is default.
-            }
-        }
-
     }
+    
     self.offsetContentLength = MAX(fileOffset, 0);
     self.totalContentLength = totalContentLength;
+    
     [self.outputStream open];
 }
 

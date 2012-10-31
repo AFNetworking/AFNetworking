@@ -1,4 +1,4 @@
-// Tweet.h
+// Post.h
 //
 // Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
@@ -24,15 +24,15 @@
 
 @class User;
 
-@interface Tweet : NSObject
+@interface Post : NSObject
 
-@property (readonly) NSUInteger tweetID;
+@property (readonly) NSUInteger postID;
 @property (readonly) NSString *text;
 
 @property (readonly) User *user;
 
 - (id)initWithAttributes:(NSDictionary *)attributes;
 
-+ (void)publicTimelineTweetsWithBlock:(void (^)(NSArray *tweets))block;
++ (void)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block;
 
 @end

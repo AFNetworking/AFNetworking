@@ -1,4 +1,4 @@
-// PublicTimelineViewController.h
+// GlobalTimelineViewController.h
 //
 // Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
@@ -22,6 +22,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PublicTimelineViewController : UITableViewController
+@interface GlobalTimelineViewController : UITableViewController
 
 @end
