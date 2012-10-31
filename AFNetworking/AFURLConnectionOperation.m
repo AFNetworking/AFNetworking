@@ -257,15 +257,16 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [self.lock lock];
     if (!self.backgroundTaskIdentifier) {    
         UIApplication *application = [UIApplication sharedApplication];
+        __unsafe_unretained typeof(self) _blockSelf = self;
         self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:^{
             if (handler) {
                 handler();
             }
             
-            [self cancel];
+            [_blockSelf cancel];
             
-            [application endBackgroundTask:self.backgroundTaskIdentifier];
-            self.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+            [application endBackgroundTask:_blockSelf.backgroundTaskIdentifier];
+            _blockSelf.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
         }];
     }
     [self.lock unlock];
