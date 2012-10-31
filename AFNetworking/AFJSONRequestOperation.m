@@ -38,6 +38,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 @implementation AFJSONRequestOperation
 @synthesize responseJSON = _responseJSON;
+@synthesize JSONReadingOptions = _JSONReadingOptions;
 @synthesize JSONError = _JSONError;
 
 + (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
@@ -66,7 +67,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         if ([self.responseData length] == 0) {
             self.responseJSON = nil;
         } else {
-            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:self.parseOptions error:&error];
+            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:self.JSONReadingOptions error:&error];
         }
         
         self.JSONError = error;

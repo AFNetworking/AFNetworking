@@ -47,9 +47,9 @@
 @property (readonly, nonatomic, strong) id responseJSON;
 
 /**
- A bitmask of options that will be used by the NSJSONSerialization class that parses the JSON data from the response.
+ Options for reading the response JSON data and creating the Foundation objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONReadingOptions".
  */
-@property (readwrite) NSJSONReadingOptions parseOptions;
+@property (nonatomic, assign) NSJSONReadingOptions JSONReadingOptions;
  
 ///----------------------------------
 /// @name Creating Request Operations
