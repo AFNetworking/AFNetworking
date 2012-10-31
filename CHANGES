@@ -1,3 +1,9 @@
+= Next
+
+* If a success block is specified to `UIImageView -setImageWithURLRequest:
+placeholderImage:success:failure`:, it is now the responsibility of the
+block to set the image of the image view (Mattt Thompson)
+
 = 1.0 / 2012-10-15
 
  * AFNetworking now requires iOS 5 / Mac OSX 10.7 or higher (Mattt Thompson)
