@@ -336,13 +336,13 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
     
     self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
 
-    __weak AFHTTPClient *weakSelf = self;
+    __weak __typeof(&*self)weakSelf = self;
     AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
-        __strong AFHTTPClient *strongSelf = weakSelf;
+        __strong __typeof(&*weakSelf)strongSelf = weakSelf;
         if (!strongSelf) {
-            // the weak ref is gone, depart this block
             return;
         }
+        
         strongSelf.networkReachabilityStatus = status;
         if (strongSelf.networkReachabilityStatusBlock) {
             strongSelf.networkReachabilityStatusBlock(status);
