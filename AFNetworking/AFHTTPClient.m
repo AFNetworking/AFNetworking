@@ -227,8 +227,6 @@ static NSString * AFPropertyListStringFromParameters(NSDictionary *parameters) {
 }
 
 - (id)initWithBaseURL:(NSURL *)url {
-    NSParameterAssert(url);
-
     self = [super init];
     if (!self) {
         return nil;
