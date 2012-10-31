@@ -426,7 +426,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
         path = @"";
     }
     
-    NSString *body = nil;
     NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:method];
@@ -440,28 +439,19 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
             NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
             switch (self.parameterEncoding) {
                 case AFFormURLParameterEncoding:;
-                    body = AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding);
                     [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
                     [request setHTTPBody:[AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding) dataUsingEncoding:self.stringEncoding]];
                     break;
                 case AFJSONParameterEncoding:;
-                    body = AFJSONStringFromParameters(parameters);
                     [request setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
                     [request setHTTPBody:[AFJSONStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
                     break;
                 case AFPropertyListParameterEncoding:;
-                    body = AFPropertyListStringFromParameters(parameters);
                     [request setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
                     [request setHTTPBody:[AFPropertyListStringFromParameters(parameters) dataUsingEncoding:self.stringEncoding]];
                     break;
             }
         }
-    }
-    
-//    DebugLog(@"requestWithMethod: %@ path: %@ parameters: %@ headers: %@", method, path, parameters, self.defaultHeaders);
-    DebugLog(@"requestWithMethod: %@ url: %@", method, [url absoluteString]);
-    if ([body length] > 0) {
-        DebugLog(@"body: %@", body);
     }
     
 	return request;
