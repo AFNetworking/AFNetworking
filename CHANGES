@@ -1,6 +1,9 @@
-= Next
+= Master
 
-* If a success block is specified to `UIImageView -setImageWithURLRequest:
+ * Fix error in multipart upload streaming, where byte range at boundaries
+was not correctly calculated (Stan Chang Khin Boon)
+
+ * If a success block is specified to `UIImageView -setImageWithURLRequest:
 placeholderImage:success:failure`:, it is now the responsibility of the
 block to set the image of the image view (Mattt Thompson)
 
