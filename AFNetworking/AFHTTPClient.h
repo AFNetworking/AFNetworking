@@ -113,6 +113,8 @@ typedef enum {
 
 /**
  The `AFHTTPClientParameterEncoding` value corresponding to how parameters are encoded into a request body. This is `AFFormURLParameterEncoding` by default.
+ 
+ @warning Some nested parameter structures, such as a keyed array of hashes containing inconsistent keys (i.e. `@{@"": @[@{@"a" : @(1)}, @{@"b" : @(2)}]}`), cannot be unambiguously represented in query strings. It is strongly recommended that an unambiguous encoding, such as `AFJSONParameterEncoding`, is used when posting complicated or nondeterministic parameter structures.
  */
 @property (nonatomic, assign) AFHTTPClientParameterEncoding parameterEncoding;
 
@@ -461,7 +463,7 @@ typedef enum {
  }
  
  `AFFormURLParameterEncoding`
-    Parameters are encoded into field/key pairs in the URL query string for `GET` `HEAD` and `DELETE` requests, and in the message body otherwise.
+    Parameters are encoded into field/key pairs in the URL query string for `GET` `HEAD` and `DELETE` requests, and in the message body otherwise. Dictionary keys are sorted with the `caseInsensitiveCompare:` selector of their description, in order to mitigate the possibility of ambiguous query strings being generated non-deterministically. See the warning for the `parameterEncoding` property for additional information.
  
  `AFJSONParameterEncoding`
     Parameters are encoded into JSON in the message body.
