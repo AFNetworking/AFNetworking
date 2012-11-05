@@ -1,5 +1,7 @@
 = master
 
+ * Moved __unused keywords for better Xcode indexing (Christian Rasmussen)
+
  * Sorting dictionary keys with `caseInsensitiveCompare:` to ensure 
  deterministic ordering of query string parameters, which may otherwise 
  cause ambiguous representations of nested parameters (James Coleman, 
