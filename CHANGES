@@ -1,3 +1,10 @@
+= master
+
+ * Sorting dictionary keys with `caseInsensitiveCompare:` to ensure 
+ deterministic ordering of query string parameters, which may otherwise 
+ cause ambiguous representations of nested parameters (James Coleman, 
+ Mattt Thompson)
+
 = 1.0.1 / 2012-11-01
 
  * Fix error in multipart upload streaming, where byte range at boundaries
