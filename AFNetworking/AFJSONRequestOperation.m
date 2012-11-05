@@ -59,6 +59,15 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     return requestOperation;
 }
 
++ (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                         JSONReadingOptions:(NSJSONReadingOptions)readingOptions
+                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure {
+    AFJSONRequestOperation *requestOperation = [AFJSONRequestOperation JSONRequestOperationWithRequest:urlRequest success:success failure:failure];
+    [requestOperation setJSONReadingOptions:readingOptions];
+    return requestOperation;
+}
+
 
 - (id)responseJSON {
     if (!_responseJSON && [self.responseData length] > 0 && [self isFinished] && !self.JSONError) {
