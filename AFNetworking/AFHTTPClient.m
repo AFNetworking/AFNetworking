@@ -590,9 +590,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
         
         dispatch_group_enter(dispatchGroup);
         [batchedOperation addDependency:operation];
-        
-        [self enqueueHTTPRequestOperation:operation];
     }
+    [self.operationQueue addOperations:operations waitUntilFinished:NO];
     [self.operationQueue addOperation:batchedOperation];
 }
 
