@@ -26,9 +26,9 @@
 #import <Availability.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import <UIKit/UIKit.h>
+    #import <UIKit/UIKit.h>
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED 
-#import <Cocoa/Cocoa.h>
+    #import <Cocoa/Cocoa.h>
 #endif
 
 /**

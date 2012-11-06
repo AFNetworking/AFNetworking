@@ -25,9 +25,9 @@
 
 // Workaround for change in imp_implementationWithBlock() with Xcode 4.5
 #if defined(__IPHONE_6_0) || defined(__MAC_10_8)
-#define AF_CAST_TO_BLOCK id
+    #define AF_CAST_TO_BLOCK id
 #else
-#define AF_CAST_TO_BLOCK __bridge void *
+    #define AF_CAST_TO_BLOCK __bridge void *
 #endif
 
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
