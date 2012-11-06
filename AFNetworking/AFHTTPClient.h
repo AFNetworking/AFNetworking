@@ -22,6 +22,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import <Availability.h>
+
 /**
  `AFHTTPClient` captures the common patterns of communicating with an web application over HTTP. It encapsulates information like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
  
@@ -83,7 +85,11 @@ typedef enum {
 #endif
 
 #ifndef __UTTYPE__
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#warning MobileCoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.
+#else
 #warning CoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.
+#endif
 #endif
 
 typedef enum {
