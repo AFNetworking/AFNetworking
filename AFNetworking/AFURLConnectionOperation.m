@@ -520,8 +520,8 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
-- (void)connection:(NSURLConnection *)__unused connection 
-   didSendBodyData:(NSInteger)bytesWritten 
+- (void)connection:(NSURLConnection __unused *)connection
+   didSendBodyData:(NSInteger)bytesWritten
  totalBytesWritten:(NSInteger)totalBytesWritten 
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
@@ -532,7 +532,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
     }
 }
 
-- (void)connection:(NSURLConnection *)__unused connection 
+- (void)connection:(NSURLConnection __unused *)connection
 didReceiveResponse:(NSURLResponse *)response 
 {
     self.response = response;
@@ -540,7 +540,7 @@ didReceiveResponse:(NSURLResponse *)response
     [self.outputStream open];
 }
 
-- (void)connection:(NSURLConnection *)__unused connection 
+- (void)connection:(NSURLConnection __unused *)connection
     didReceiveData:(NSData *)data
 {
     self.totalBytesRead += [data length];
@@ -557,7 +557,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)__unused connection {
+- (void)connectionDidFinishLoading:(NSURLConnection __unused *)connection {
     self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
     
     [self.outputStream close];
@@ -567,7 +567,7 @@ didReceiveResponse:(NSURLResponse *)response
     self.connection = nil;
 }
 
-- (void)connection:(NSURLConnection *)__unused connection 
+- (void)connection:(NSURLConnection __unused *)connection
   didFailWithError:(NSError *)error 
 {    
     self.error = error;
