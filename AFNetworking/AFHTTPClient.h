@@ -79,11 +79,11 @@ typedef enum {
     AFNetworkReachabilityStatusReachableViaWiFi = 2,
 } AFNetworkReachabilityStatus;
 #else
-#warning "SystemConfiguration framework not found in project, or not included in precompiled header. Network reachability functionality will not be available."
+#warning SystemConfiguration framework not found in project, or not included in precompiled header. Network reachability functionality will not be available.
 #endif
 
 #ifndef __UTTYPE__
-#warning "CoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available."
+#warning CoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.
 #endif
 
 typedef enum {
