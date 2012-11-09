@@ -603,7 +603,7 @@ didReceiveResponse:(NSURLResponse *)response
         return nil;
     }
 
-    self.state = [aDecoder decodeIntegerForKey:@"state"];
+    self.state = (AFOperationState)[aDecoder decodeIntegerForKey:@"state"];
     self.cancelled = [aDecoder decodeBoolForKey:@"isCancelled"];
     self.response = [aDecoder decodeObjectForKey:@"response"];
     self.error = [aDecoder decodeObjectForKey:@"error"];
