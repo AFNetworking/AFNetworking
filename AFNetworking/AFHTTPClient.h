@@ -45,7 +45,6 @@
  
  By default, `AFHTTPClient` sets the following HTTP headers:
  
- - `Accept-Encoding: gzip`
  - `Accept-Language: (comma-delimited preferred languages), en-us;q=0.8`
  - `User-Agent: (generated user agent)`
  
