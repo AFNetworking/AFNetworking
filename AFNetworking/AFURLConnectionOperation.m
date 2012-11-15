@@ -333,8 +333,14 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
                 stringEncoding = CFStringConvertEncodingToNSStringEncoding(IANAEncoding);
             }
         }
-        
+
+        /*
+         When no explicit charset parameter is provided by the sender, media subtypes of the "text" type are defined to have a default charset value of "ISO-8859-1" when received via HTTP (RFC 2616)
+         */
         self.responseString = [[NSString alloc] initWithData:self.responseData encoding:stringEncoding];
+        if (!_responseString) {
+            self.responseString = [[NSString alloc] initWithData:self.responseData encoding:NSISOLatin1StringEncoding];
+        }
     }
     [self.lock unlock];
     
