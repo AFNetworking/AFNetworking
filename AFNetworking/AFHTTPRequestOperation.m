@@ -58,6 +58,7 @@ static void AFGetMediaTypeAndSubtypeWithString(NSString *string, NSString **type
     NSScanner *scanner = [NSScanner scannerWithString:string];
     [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [scanner scanUpToString:@"/" intoString:type];
+    [scanner scanString:@"/" intoString:nil];
     [scanner scanUpToString:@";" intoString:subtype];
 }
 
