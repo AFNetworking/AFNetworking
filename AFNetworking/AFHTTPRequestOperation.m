@@ -54,6 +54,13 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     return [NSSet setWithSet:mutableContentTypes];
 }
 
+static void AFGetMediaTypeAndSubtypeWithString(NSString *string, NSString **type, NSString **subtype) {
+    NSScanner *scanner = [NSScanner scannerWithString:string];
+    [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    [scanner scanUpToString:@"/" intoString:type];
+    [scanner scanUpToString:@";" intoString:subtype];
+}
+
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     NSMutableString *string = [NSMutableString string];
 
@@ -96,12 +103,14 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, strong) NSError *HTTPError;
+@property (readwrite, nonatomic, copy) NSString *HTTPResponseString;
 @property (assign) long long totalContentLength;
 @property (assign) long long offsetContentLength;
 @end
 
 @implementation AFHTTPRequestOperation
 @synthesize HTTPError = _HTTPError;
+@synthesize HTTPResponseString = _HTTPResponseString;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
 @synthesize totalContentLength = _totalContentLength;
@@ -155,6 +164,25 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
     }
 }
 
+- (NSString *)responseString {
+    // When no explicit charset parameter is provided by the sender, media subtypes of the "text" type are defined to have a default charset value of "ISO-8859-1" when received via HTTP. Data in character sets other than "ISO-8859-1" or its subsets MUST be labeled with an appropriate charset value.
+    // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.4.1
+    if (!self.HTTPResponseString && self.response && !self.response.textEncodingName && self.responseData) {
+        NSString *type = nil;
+        AFGetMediaTypeAndSubtypeWithString([[self.response allHeaderFields] valueForKey:@"Content-Type"], &type, nil);
+
+        if ([type isEqualToString:@"text"]) {
+            self.HTTPResponseString = [[NSString alloc] initWithData:self.responseData encoding:NSISOLatin1StringEncoding];
+        }
+    }
+
+    if (self.HTTPResponseString) {
+        return self.HTTPResponseString;
+    } else {
+        return [super responseString];
+    }
+}
+
 - (void)pause {
     unsigned long long offset = 0; 
     if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
@@ -187,7 +215,6 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 		return NO;
 	}
     
-    // According to RFC 2616:
     // Any HTTP/1.1 message containing an entity-body SHOULD include a Content-Type header field defining the media type of that body. If and only if the media type is not given by a Content-Type field, the recipient MAY attempt to guess the media type via inspection of its content and/or the name extension(s) of the URI used to identify the resource. If the media type remains unknown, the recipient SHOULD treat it as type "application/octet-stream".
     // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec7.html
     NSString *contentType = [self.response MIMEType];
