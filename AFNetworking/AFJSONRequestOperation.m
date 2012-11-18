@@ -64,7 +64,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     if (!_responseJSON && [self.responseData length] > 0 && [self isFinished] && !self.JSONError) {
         NSError *error = nil;
 
-        if ([self.responseData length] == 0) {
+        NSString* trimmedResponseString = [self.responseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if ([self.responseData length] == 0 || [trimmedResponseString length] == 0) {
             self.responseJSON = nil;
         } else {
             self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:self.JSONReadingOptions error:&error];
