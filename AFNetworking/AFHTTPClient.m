@@ -566,6 +566,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
     
     for (AFHTTPRequestOperation *operation in operations) {
         AFCompletionBlock originalCompletionBlock = [operation.completionBlock copy];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
         operation.completionBlock = ^{
             dispatch_queue_t queue = operation.successCallbackQueue ?: dispatch_get_main_queue();
             dispatch_group_async(dispatchGroup, queue, ^{
@@ -587,6 +589,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                 dispatch_group_leave(dispatchGroup);
             });
         };
+#pragma clang diagnostic pop
         
         dispatch_group_enter(dispatchGroup);
         [batchedOperation addDependency:operation];
