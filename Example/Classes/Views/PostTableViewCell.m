@@ -54,7 +54,17 @@
 
     self.textLabel.text = _post.user.username;
     self.detailTextLabel.text = _post.text;
-    [self.imageView setImageWithURL:_post.user.avatarImageURL placeholderImage:[UIImage imageNamed:@"profile-image-placeholder"]];
+    [self.imageView setImageWithURL:_post.user.avatarImageURL
+                   placeholderImage:[UIImage imageNamed:@"profile-image-placeholder"]
+                         completion:^(UIImage *image, NSError *error) {
+                             if (error) {
+                                 NSLog(@"Failed to load image");
+                             }
+                             else {
+                                 NSLog(@"Successfully loaded and set image of size: %@", NSStringFromCGSize(image.size));
+                             }
+                            
+                         }];
     
     [self setNeedsLayout];
 }

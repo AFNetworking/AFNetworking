@@ -86,11 +86,29 @@ static char kAFImageRequestOperationObjectKey;
 - (void)setImageWithURL:(NSURL *)url 
        placeholderImage:(UIImage *)placeholderImage
 {
+    [self setImageWithURL:url placeholderImage:placeholderImage completion:nil];
+}
+
+- (void)setImageWithURL:(NSURL *)url
+       placeholderImage:(UIImage *)placeholderImage
+             completion:(AFUIImageAction)completion
+{
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPShouldHandleCookies:NO];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
     
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    [self setImageWithURLRequest:request
+                placeholderImage:placeholderImage
+                         success:^(NSURLRequest *req, NSHTTPURLResponse *response, UIImage *image) {
+                             if (completion) {
+                                 completion(image, nil);
+                             }
+                         }
+                         failure:^(NSURLRequest *req, NSHTTPURLResponse *response, NSError *error) {
+                             if (completion) {
+                                 completion(nil, error);
+                             }
+                         }];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest 
@@ -116,9 +134,10 @@ static char kAFImageRequestOperationObjectKey;
             if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
                 if (success) {
                     success(operation.request, operation.response, responseObject);
-                } else {
-                    self.image = responseObject;
                 }
+                
+                self.image = responseObject;
+
                 
                 self.af_imageRequestOperation = nil;
             }
