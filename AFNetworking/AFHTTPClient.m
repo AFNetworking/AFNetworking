@@ -146,11 +146,11 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
     
     if([value isKindOfClass:[NSDictionary class]]) {
-        [value enumerateKeysAndObjectsUsingBlock:^(id nestedKey, id nestedValue, BOOL *stop) {
+        [value enumerateKeysAndObjectsUsingBlock:^(id nestedKey, id nestedValue, __unused BOOL *stop) {
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@"%@[%@]", key, nestedKey] : nestedKey), nestedValue)];
         }];
     } else if([value isKindOfClass:[NSArray class]]) {
-        [value enumerateObjectsUsingBlock:^(id nestedValue, NSUInteger idx, BOOL *stop) {
+        [value enumerateObjectsUsingBlock:^(id nestedValue, __unused NSUInteger idx, __unused BOOL *stop) {
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
         }];
     } else {
@@ -302,7 +302,7 @@ static const void * AFNetworkReachabilityRetainCallback(const void *info) {
     return (__bridge_retained const void *)([(__bridge AFNetworkReachabilityStatusBlock)info copy]);
 }
 
-static void AFNetworkReachabilityReleaseCallback(const void *info) {}
+static void AFNetworkReachabilityReleaseCallback(__unused const void *info) {}
 
 - (void)startMonitoringNetworkReachability {
     [self stopMonitoringNetworkReachability];
@@ -569,7 +569,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                 }
                 
                 __block NSUInteger numberOfFinishedOperations = 0;
-                [operations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                [operations enumerateObjectsUsingBlock:^(id obj, __unused NSUInteger idx, __unused BOOL *stop) {
                     if ([(NSOperation *)obj isFinished]) {
                         numberOfFinishedOperations++;
                     }
@@ -955,7 +955,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     return bytesRead;
 }
 
-- (BOOL)getBuffer:(uint8_t **)buffer length:(NSUInteger *)len {
+- (BOOL)getBuffer:(__unused uint8_t **)buffer length:(__unused NSUInteger *)len {
     return NO;
 }
 
@@ -980,20 +980,20 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     self.streamStatus = NSStreamStatusClosed;
 }
 
-- (id)propertyForKey:(NSString *)key {
+- (id)propertyForKey:(__unused NSString *)key {
     return nil;
 }
 
-- (BOOL)setProperty:(id)property forKey:(NSString *)key {
+- (BOOL)setProperty:(__unused id)property forKey:(__unused NSString *)key {
     return NO;
 }
 
-- (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop
-                  forMode:(NSString *)mode
+- (void)scheduleInRunLoop:(__unused NSRunLoop *)aRunLoop
+                  forMode:(__unused NSString *)mode
 {}
 
-- (void)removeFromRunLoop:(NSRunLoop *)aRunLoop
-                  forMode:(NSString *)mode
+- (void)removeFromRunLoop:(__unused NSRunLoop *)aRunLoop
+                  forMode:(__unused NSString *)mode
 {}
 
 - (unsigned long long)contentLength {
@@ -1007,17 +1007,17 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 #pragma mark - Undocumented CFReadStream Bridged Methods
 
-- (void)_scheduleInCFRunLoop:(CFRunLoopRef)aRunLoop
-                     forMode:(CFStringRef)aMode
+- (void)_scheduleInCFRunLoop:(__unused CFRunLoopRef)aRunLoop
+                     forMode:(__unused CFStringRef)aMode
 {}
 
-- (void)_unscheduleFromCFRunLoop:(CFRunLoopRef)aRunLoop
-                         forMode:(CFStringRef)aMode
+- (void)_unscheduleFromCFRunLoop:(__unused CFRunLoopRef)aRunLoop
+                         forMode:(__unused CFStringRef)aMode
 {}
 
-- (BOOL)_setCFClientFlags:(CFOptionFlags)inFlags
-                 callback:(CFReadStreamClientCallBack)inCallback
-                  context:(CFStreamClientContext *)inContext {
+- (BOOL)_setCFClientFlags:(__unused CFOptionFlags)inFlags
+                 callback:(__unused CFReadStreamClientCallBack)inCallback
+                  context:(__unused CFStreamClientContext *)inContext {
     return NO;
 }
 
