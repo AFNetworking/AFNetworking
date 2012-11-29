@@ -526,7 +526,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
     if (self.uploadProgress) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.uploadProgress(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+            self.uploadProgress((NSUInteger)bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
         });
     }
 }

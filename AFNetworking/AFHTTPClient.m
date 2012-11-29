@@ -653,7 +653,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
         return nil;
     }
     
-    self.stringEncoding = [aDecoder decodeIntegerForKey:@"stringEncoding"];
+    self.stringEncoding = (NSStringEncoding)[aDecoder decodeIntegerForKey:@"stringEncoding"];
     self.parameterEncoding = [aDecoder decodeIntegerForKey:@"parameterEncoding"];
     self.registeredHTTPOperationClassNames = [aDecoder decodeObjectForKey:@"registeredHTTPOperationClassNames"];
     self.defaultHeaders = [aDecoder decodeObjectForKey:@"defaultHeaders"];
@@ -663,7 +663,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.baseURL forKey:@"baseURL"];
-    [aCoder encodeInteger:self.stringEncoding forKey:@"stringEncoding"];
+    [aCoder encodeInteger:(NSInteger)self.stringEncoding forKey:@"stringEncoding"];
     [aCoder encodeInteger:self.parameterEncoding forKey:@"parameterEncoding"];
     [aCoder encodeObject:self.registeredHTTPOperationClassNames forKey:@"registeredHTTPOperationClassNames"];
     [aCoder encodeObject:self.defaultHeaders forKey:@"defaultHeaders"];
@@ -945,7 +945,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                 break;
             }
         } else {
-            bytesRead += [self.currentHTTPBodyPart read:&buffer[bytesRead] maxLength:length - bytesRead];
+            bytesRead += [self.currentHTTPBodyPart read:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
             if (self.delay > 0.0f) {
                 [NSThread sleepForTimeInterval:self.delay];
             }
@@ -1113,17 +1113,17 @@ typedef enum {
     
     if (_phase == AFEncapsulationBoundaryPhase) {
         NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary() : AFMultipartFormEncapsulationBoundary()) dataUsingEncoding:self.stringEncoding];
-        bytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
+        bytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
     }
     
     if (_phase == AFHeaderPhase) {
         NSData *headersData = [[self stringForHeaders] dataUsingEncoding:self.stringEncoding];
-        bytesRead += [self readData:headersData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
+        bytesRead += [self readData:headersData intoBuffer:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
     }
     
     if (_phase == AFBodyPhase) {
         if ([self.inputStream hasBytesAvailable]) {
-            bytesRead += [self.inputStream read:&buffer[bytesRead] maxLength:(length - bytesRead)];
+            bytesRead += [self.inputStream read:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
         }
         
         if (![self.inputStream hasBytesAvailable]) {
@@ -1133,7 +1133,7 @@ typedef enum {
     
     if (_phase == AFFinalBoundaryPhase) {
         NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding] : [NSData data]);
-        bytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
+        bytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
     }
     
     return bytesRead;
@@ -1152,7 +1152,7 @@ typedef enum {
         [self transitionToNextPhase];
     }
     
-    return range.length;
+    return (NSInteger)range.length;
 }
 
 - (BOOL)transitionToNextPhase {
