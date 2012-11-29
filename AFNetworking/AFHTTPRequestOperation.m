@@ -96,8 +96,8 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, strong) NSError *HTTPError;
-@property (assign) long long totalContentLength;
-@property (assign) long long offsetContentLength;
+@property (atomic, assign) long long totalContentLength;
+@property (atomic, assign) long long offsetContentLength;
 @end
 
 @implementation AFHTTPRequestOperation
