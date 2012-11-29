@@ -215,8 +215,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     } else {
         __weak __typeof(&*self)weakSelf = self;
         [super setCompletionBlock:^ {
+			__typeof(&*weakSelf) operation = weakSelf;
+			
             block();
-            [weakSelf setCompletionBlock:nil];
+            [operation setCompletionBlock:nil];
         }];
     }
     [self.lock unlock];
