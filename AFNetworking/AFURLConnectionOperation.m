@@ -310,7 +310,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         [self didChangeValueForKey:oldStateKey];
         [self didChangeValueForKey:newStateKey];
         
-		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 		
         switch (state) {
             case AFOperationExecutingState:
@@ -354,7 +354,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if ([self isExecuting]) {
         [self.connection performSelector:@selector(cancel) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
 
-		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         [notificationCenter postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
     }
     

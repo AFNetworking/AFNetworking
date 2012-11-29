@@ -150,7 +150,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@"%@[%@]", key, nestedKey] : nestedKey), nestedValue)];
         }];
     } else if([value isKindOfClass:[NSArray class]]) {
-		NSArray *array = value;
+        NSArray *array = value;
         [array enumerateObjectsUsingBlock:^(id nestedValue, __unused NSUInteger idx, __unused BOOL *stop) {
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
         }];
@@ -296,7 +296,7 @@ static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused targ
         block(status);
     }
     
-	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:status] forKey:AFNetworkingReachabilityNotificationStatusItem]];
 }
 
