@@ -30,6 +30,10 @@
 #define AF_CAST_TO_BLOCK __bridge void *
 #endif
 
+// We do a little bit of duck typing in this file which can trigger this warning.  Turn it off for this source file. 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-selector-match"
+
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     if (!string) {
         return nil;
