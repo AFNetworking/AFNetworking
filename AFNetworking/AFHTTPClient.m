@@ -729,8 +729,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, assign) BOOL hasInitialBoundary;
 @property (nonatomic, assign) BOOL hasFinalBoundary;
 
-@property (readonly, getter = hasBytesAvailable) BOOL bytesAvailable;
-@property (readonly) unsigned long long contentLength;
+@property (nonatomic, readonly, getter = hasBytesAvailable) BOOL bytesAvailable;
+@property (nonatomic, readonly) unsigned long long contentLength;
 
 - (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length;
 @end
@@ -738,8 +738,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
 @property (nonatomic, assign) NSUInteger numberOfBytesInPacket;
 @property (nonatomic, assign) NSTimeInterval delay;
-@property (readonly) unsigned long long contentLength;
-@property (readonly, getter = isEmpty) BOOL empty;
+@property (nonatomic, readonly) unsigned long long contentLength;
+@property (nonatomic, readonly, getter = isEmpty) BOOL empty;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
 - (void)setInitialAndFinalBoundaries;
