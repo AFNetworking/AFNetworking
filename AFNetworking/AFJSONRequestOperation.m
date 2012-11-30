@@ -67,7 +67,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         if ([self.responseData length] == 0) {
             self.responseJSON = nil;
         } else {
-            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:self.JSONReadingOptions error:&error];
+            NSData *jsonData = [self.responseString dataUsingEncoding:NSUTF8StringEncoding];
+            self.responseJSON = [NSJSONSerialization JSONObjectWithData:jsonData options:self.JSONReadingOptions error:&error];
         }
         
         self.JSONError = error;
