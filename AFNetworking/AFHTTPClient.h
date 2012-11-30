@@ -1,17 +1,17 @@
 // AFHTTPClient.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,16 +54,16 @@
  
  Both `-requestWithMethod:path:parameters:` and `-multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `-baseURL`, using `NSURL +URLWithString:relativeToURL:`. Below are a few examples of how `baseURL` and relative paths interact:
  
-    NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];  
-    [NSURL URLWithString:@"foo" relativeToURL:baseURL];                  // http://example.com/v1/foo
-    [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL];          // http://example.com/v1/foo?bar=baz
-    [NSURL URLWithString:@"/foo" relativeToURL:baseURL];                 // http://example.com/foo
-    [NSURL URLWithString:@"foo/" relativeToURL:baseURL];                 // http://example.com/v1/foo
-    [NSURL URLWithString:@"/foo/" relativeToURL:baseURL];                // http://example.com/foo/
-    [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL]; // http://example2.com/
-
+ NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
+ [NSURL URLWithString:@"foo" relativeToURL:baseURL];                  // http://example.com/v1/foo
+ [NSURL URLWithString:@"foo?bar=baz" relativeToURL:baseURL];          // http://example.com/v1/foo?bar=baz
+ [NSURL URLWithString:@"/foo" relativeToURL:baseURL];                 // http://example.com/foo
+ [NSURL URLWithString:@"foo/" relativeToURL:baseURL];                 // http://example.com/v1/foo
+ [NSURL URLWithString:@"/foo/" relativeToURL:baseURL];                // http://example.com/foo/
+ [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL]; // http://example2.com/
+ 
  Also important to note is that a trailing slash will be added to any `baseURL` without one, which would otherwise cause unexpected behavior when constructing URLs using paths without a leading slash.
-
+ 
  ## NSCoding / NSCopying Conformance
  
  `AFHTTPClient`  conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. There are a few minor caveats to keep in mind, however:
@@ -78,17 +78,18 @@ typedef enum {
     AFNetworkReachabilityStatusNotReachable     = 0,
     AFNetworkReachabilityStatusReachableViaWWAN = 1,
     AFNetworkReachabilityStatusReachableViaWiFi = 2,
+    AFNetworkReachabilityStatusReachableViaVPN  = 3
 } AFNetworkReachabilityStatus;
 #else
-    #warning SystemConfiguration framework not found in project, or not included in precompiled header. Network reachability functionality will not be available.
+#warning SystemConfiguration framework not found in project, or not included in precompiled header. Network reachability functionality will not be available.
 #endif
 
 #ifndef __UTTYPE__
-    #if __IPHONE_OS_VERSION_MIN_REQUIRED
-        #warning MobileCoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.
-    #else
-        #warning CoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.
-    #endif
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#warning MobileCoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.
+#else
+#warning CoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.
+#endif
 #endif
 
 typedef enum {
@@ -130,8 +131,8 @@ typedef enum {
 
 /**
  The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
-
-  @warning This property requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (`Prefix.pch`).
+ 
+ @warning This property requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (`Prefix.pch`).
  */
 #ifdef _SYSTEMCONFIGURATION_H
 @property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
@@ -145,7 +146,7 @@ typedef enum {
  Creates and initializes an `AFHTTPClient` object with the specified base URL.
  
  @param url The base URL for the HTTP client. This argument must not be `nil`.
-  
+ 
  @return The newly-initialized HTTP client
  */
 + (AFHTTPClient *)clientWithBaseURL:(NSURL *)url;
@@ -156,7 +157,7 @@ typedef enum {
  @param url The base URL for the HTTP client. This argument must not be `nil`.
  
  @discussion This is the designated initializer.
-  
+ 
  @return The newly-initialized HTTP client
  */
 - (id)initWithBaseURL:(NSURL *)url;
@@ -193,8 +194,8 @@ typedef enum {
 
 /**
  Unregisters the specified subclass of `AFHTTPRequestOperation` from the chain of classes consulted when `-requestWithMethod:path:parameters` is called.
-
- @param operationClass The subclass of `AFHTTPRequestOperation` to register 
+ 
+ @param operationClass The subclass of `AFHTTPRequestOperation` to register
  */
 - (void)unregisterHTTPOperationClass:(Class)operationClass;
 
@@ -251,11 +252,11 @@ typedef enum {
  @param method The HTTP method for the request, such as `GET`, `POST`, `PUT`, or `DELETE`. This parameter must not be `nil`.
  @param path The path to be appended to the HTTP client's base URL and used as the request URL. If `nil`, no path will be appended to the base URL.
  @param parameters The parameters to be either set as a query string for `GET` requests, or the request HTTP body.
-  
- @return An `NSMutableURLRequest` object 
+ 
+ @return An `NSMutableURLRequest` object
  */
-- (NSMutableURLRequest *)requestWithMethod:(NSString *)method 
-                                      path:(NSString *)path 
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method
+                                      path:(NSString *)path
                                 parameters:(NSDictionary *)parameters;
 
 /**
@@ -265,9 +266,9 @@ typedef enum {
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
-  
+ 
  @discussion Multipart form requests are automatically streamed, reading files directly from disk along with in-memory data in a single HTTP body. The resulting `NSMutableURLRequest` object has an `HTTPBodyStream` property, so refrain from setting `HTTPBodyStream` or `HTTPBody` on this request object, as it will clear out the multipart form body stream.
-  
+ 
  @return An `NSMutableURLRequest` object
  */
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
@@ -306,7 +307,7 @@ typedef enum {
 /**
  Cancels all operations in the HTTP client's operation queue whose URLs match the specified HTTP method and path.
  
- @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`. If `nil`, all request operations with URLs matching the path will be cancelled. 
+ @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`. If `nil`, all request operations with URLs matching the path will be cancelled.
  @param path The path appended to the HTTP client base URL to match against the cancelled requests. If `nil`, no path will be appended to the base URL.
  
  @discussion This method only cancels `AFHTTPRequestOperations` whose request URL matches the HTTP client base URL with the path appended. For complete control over the lifecycle of enqueued operations, you can access the `operationQueue` property directly, which allows you to, for instance, cancel operations filtered by a predicate, or simply use `-cancelAllRequests`. Note that the operation queue may include non-HTTP operations, so be sure to check the type before attempting to directly introspect an operation's `request` property.
@@ -322,12 +323,12 @@ typedef enum {
  
  @param urlRequests The `NSURLRequest` objects used to create and enqueue operations.
  @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
- @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations. 
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations.
  
  @discussion Operations are created by passing the specified `NSURLRequest` objects in `requests`, using `-HTTPRequestOperationWithRequest:success:failure:`, with `nil` for both the `success` and `failure` parameters.
  */
 - (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)urlRequests
-                                          progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+                                          progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
                                         completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 /**
@@ -335,10 +336,10 @@ typedef enum {
  
  @param operations The request operations used to be batched and enqueued.
  @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
- @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations. 
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations.
  */
-- (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations 
-                              progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock 
+- (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations
+                              progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
                             completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 ///---------------------------
@@ -370,8 +371,8 @@ typedef enum {
  
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
-- (void)postPath:(NSString *)path 
-      parameters:(NSDictionary *)parameters 
+- (void)postPath:(NSString *)path
+      parameters:(NSDictionary *)parameters
          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -385,8 +386,8 @@ typedef enum {
  
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
-- (void)putPath:(NSString *)path 
-     parameters:(NSDictionary *)parameters 
+- (void)putPath:(NSString *)path
+     parameters:(NSDictionary *)parameters
         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -400,8 +401,8 @@ typedef enum {
  
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
-- (void)deletePath:(NSString *)path 
-        parameters:(NSDictionary *)parameters 
+- (void)deletePath:(NSString *)path
+        parameters:(NSDictionary *)parameters
            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -416,7 +417,7 @@ typedef enum {
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (void)patchPath:(NSString *)path
-       parameters:(NSDictionary *)parameters 
+       parameters:(NSDictionary *)parameters
           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 @end
@@ -428,53 +429,53 @@ typedef enum {
 /**
  ### Network Reachability
  
- The following constants are provided by `AFHTTPClient` as possible network reachability statuses. 
+ The following constants are provided by `AFHTTPClient` as possible network reachability statuses.
  
  enum {
-    AFNetworkReachabilityStatusUnknown,
-    AFNetworkReachabilityStatusNotReachable,
-    AFNetworkReachabilityStatusReachableViaWWAN,
-    AFNetworkReachabilityStatusReachableViaWiFi,
+ AFNetworkReachabilityStatusUnknown,
+ AFNetworkReachabilityStatusNotReachable,
+ AFNetworkReachabilityStatusReachableViaWWAN,
+ AFNetworkReachabilityStatusReachableViaWiFi,
  }
  
- `AFNetworkReachabilityStatusUnknown`  
-    The `baseURL` host reachability is not known.
+ `AFNetworkReachabilityStatusUnknown`
+ The `baseURL` host reachability is not known.
  
  `AFNetworkReachabilityStatusNotReachable`
-    The `baseURL` host cannot be reached.
+ The `baseURL` host cannot be reached.
  
  `AFNetworkReachabilityStatusReachableViaWWAN`
-    The `baseURL` host can be reached via a cellular connection, such as EDGE or GPRS.
+ The `baseURL` host can be reached via a cellular connection, such as EDGE or GPRS.
  
  `AFNetworkReachabilityStatusReachableViaWiFi`
-    The `baseURL` host can be reached via a Wi-Fi connection.
+ The `baseURL` host can be reached via a Wi-Fi connection.
  
  ### Keys for Notification UserInfo Dictionary
  
  Strings that are used as keys in a `userInfo` dictionary in a network reachability status change notification.
  
  `AFNetworkingReachabilityNotificationStatusItem`
-    A key in the userInfo dictionary in a `AFNetworkingReachabilityDidChangeNotification` notification.  
-    The corresponding value is an `NSNumber` object representing the `AFNetworkReachabilityStatus` value for the current reachability status. 
+ A key in the userInfo dictionary in a `AFNetworkingReachabilityDidChangeNotification` notification.
+ The corresponding value is an `NSNumber` object representing the `AFNetworkReachabilityStatus` value for the current reachability status.
  
  ### Parameter Encoding
  
  The following constants are provided by `AFHTTPClient` as possible methods for serializing parameters into query string or message body values.
-
+ 
  enum {
-    AFFormURLParameterEncoding,
-    AFJSONParameterEncoding,
-    AFPropertyListParameterEncoding,
+ AFFormURLParameterEncoding,
+ AFJSONParameterEncoding,
+ AFPropertyListParameterEncoding,
  }
  
  `AFFormURLParameterEncoding`
-    Parameters are encoded into field/key pairs in the URL query string for `GET` `HEAD` and `DELETE` requests, and in the message body otherwise. Dictionary keys are sorted with the `caseInsensitiveCompare:` selector of their description, in order to mitigate the possibility of ambiguous query strings being generated non-deterministically. See the warning for the `parameterEncoding` property for additional information.
+ Parameters are encoded into field/key pairs in the URL query string for `GET` `HEAD` and `DELETE` requests, and in the message body otherwise. Dictionary keys are sorted with the `caseInsensitiveCompare:` selector of their description, in order to mitigate the possibility of ambiguous query strings being generated non-deterministically. See the warning for the `parameterEncoding` property for additional information.
  
  `AFJSONParameterEncoding`
-    Parameters are encoded into JSON in the message body.
+ Parameters are encoded into JSON in the message body.
  
- `AFPropertyListParameterEncoding`  
-    Parameters are encoded into a property list in the message body.
+ `AFPropertyListParameterEncoding`
+ Parameters are encoded into a property list in the message body.
  */
 
 ///----------------

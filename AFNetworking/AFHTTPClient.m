@@ -28,15 +28,15 @@
 #import <Availability.h>
 
 #ifdef _SYSTEMCONFIGURATION_H
-    #import <netinet/in.h>
-    #import <netinet6/in6.h>
-    #import <arpa/inet.h>
-    #import <ifaddrs.h>
-    #import <netdb.h>
+#import <netinet/in.h>
+#import <netinet6/in6.h>
+#import <arpa/inet.h>
+#import <ifaddrs.h>
+#import <netdb.h>
 #endif
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-    #import <UIKit/UIKit.h>
+#import <UIKit/UIKit.h>
 #endif
 
 #ifdef _SYSTEMCONFIGURATION_H
@@ -107,7 +107,7 @@ static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NS
     if (!self) {
         return nil;
     }
-
+    
     self.field = field;
     self.value = value;
     
@@ -146,7 +146,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
     
     if([value isKindOfClass:[NSDictionary class]]) {
-        // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries 
+        // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         [[[value allKeys] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] enumerateObjectsUsingBlock:^(id nestedKey, NSUInteger idx, BOOL *stop) {
             id nestedValue = [value objectForKey:nestedKey];
@@ -210,7 +210,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 - (id)initWithBaseURL:(NSURL *)url {
     NSParameterAssert(url);
-
+    
     self = [super init];
     if (!self) {
         return nil;
@@ -281,12 +281,15 @@ static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetwork
     if(isNetworkReachable == NO){
         status = AFNetworkReachabilityStatusNotReachable;
     }
+    else if((flags & kSCNetworkReachabilityFlagsTransientConnection) != 0){
+        status = AFNetworkReachabilityStatusReachableViaVPN;
+    }
 #if	TARGET_OS_IPHONE
     else if((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0){
         status = AFNetworkReachabilityStatusReachableViaWWAN;
     }
 #endif
-    else {
+    else{
         status = AFNetworkReachabilityStatusReachableViaWiFi;
     }
     
@@ -317,7 +320,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
     }
     
     self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
-
+    
     __weak __typeof(&*self)weakSelf = self;
     AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
         __strong __typeof(&*weakSelf)strongSelf = weakSelf;
@@ -460,7 +463,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
     NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
     
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
-
+    
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding];
     
     if (parameters) {
@@ -518,7 +521,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 
 - (void)cancelAllHTTPOperationsWithMethod:(NSString *)method
                                      path:(NSString *)path
-{    
+{
     NSString *URLStringToMatched = [[[self requestWithMethod:(method ?: @"GET") path:path parameters:nil] URL] absoluteString];
     
     for (NSOperation *operation in [self.operationQueue operations]) {
@@ -824,7 +827,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(name);
     NSParameterAssert(fileName);
     NSParameterAssert(mimeType);
-
+    
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
@@ -836,7 +839,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                           name:(NSString *)name
 {
     NSParameterAssert(name);
-
+    
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
     
@@ -907,7 +910,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         return nil;
     }
     
-    self.stringEncoding = encoding;    
+    self.stringEncoding = encoding;
     self.HTTPBodyParts = [NSMutableArray array];
     self.numberOfBytesInPacket = NSIntegerMax;
     
@@ -920,7 +923,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
             bodyPart.hasInitialBoundary = NO;
             bodyPart.hasFinalBoundary = NO;
         }
-
+        
         [[self.HTTPBodyParts objectAtIndex:0] setHasInitialBoundary:YES];
         [[self.HTTPBodyParts lastObject] setHasFinalBoundary:YES];
     }
@@ -955,7 +958,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
             }
         }
     }
-
+    
     return bytesRead;
 }
 
@@ -975,7 +978,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     }
     
     self.streamStatus = NSStreamStatusOpen;
-
+    
     [self setInitialAndFinalBoundaries];
     self.HTTPBodyPartEnumerator = [self.HTTPBodyParts objectEnumerator];
 }
@@ -1067,7 +1070,7 @@ typedef enum {
     if (_inputStream) {
         [_inputStream close];
         _inputStream = nil;
-    }    
+    }
 }
 
 - (NSString *)stringForHeaders {
