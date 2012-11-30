@@ -64,7 +64,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     if (!_responseJSON && [self.responseData length] > 0 && [self isFinished] && !self.JSONError) {
         NSError *error = nil;
 
-        if ([self.responseData length] == 0) {
+        NSString* trimmedResponseString = [self.responseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if ([self.responseData length] == 0 || [trimmedResponseString length] == 0) {
             self.responseJSON = nil;
         } else {
             // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
