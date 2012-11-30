@@ -1,6 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workspace
    version = "1.0">
+   <Group
+      location = "group:AFNetworking"
+      name = "AFNetworking">
+      <FileRef
+         location = "group:AFHTTPClient.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFHTTPClient.m">
+      </FileRef>
+      <FileRef
+         location = "group:AFHTTPRequestOperation.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFHTTPRequestOperation.m">
+      </FileRef>
+      <FileRef
+         location = "group:AFImageRequestOperation.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFImageRequestOperation.m">
+      </FileRef>
+      <FileRef
+         location = "group:AFJSONRequestOperation.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFJSONRequestOperation.m">
+      </FileRef>
+      <FileRef
+         location = "group:AFNetworkActivityIndicatorManager.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFNetworkActivityIndicatorManager.m">
+      </FileRef>
+      <FileRef
+         location = "group:AFNetworking.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFPropertyListRequestOperation.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFPropertyListRequestOperation.m">
+      </FileRef>
+      <FileRef
+         location = "group:AFURLConnectionOperation.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFURLConnectionOperation.m">
+      </FileRef>
+      <FileRef
+         location = "group:AFXMLRequestOperation.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFXMLRequestOperation.m">
+      </FileRef>
+      <FileRef
+         location = "group:UIImageView+AFNetworking.h">
+      </FileRef>
+      <FileRef
+         location = "group:UIImageView+AFNetworking.m">
+      </FileRef>
+   </Group>
    <FileRef
       location = "group:Example/AFNetworking iOS Example.xcodeproj">
    </FileRef>
