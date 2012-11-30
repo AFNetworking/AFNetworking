@@ -30,6 +30,10 @@
     #define AF_CAST_TO_BLOCK __bridge void *
 #endif
 
+// We do a little bit of duck typing in this file which can trigger this warning.  Turn it off for this source file. 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-selector-match"
+
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     if (!string) {
         return nil;
@@ -38,7 +42,7 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
     NSArray *mediaRanges = [string componentsSeparatedByString:@","];
     NSMutableSet *mutableContentTypes = [NSMutableSet setWithCapacity:mediaRanges.count];
 
-    [mediaRanges enumerateObjectsUsingBlock:^(NSString *mediaRange, NSUInteger idx, BOOL *stop) {
+    [mediaRanges enumerateObjectsUsingBlock:^(NSString *mediaRange, __unused NSUInteger idx, __unused BOOL *stop) {
         NSRange parametersRange = [mediaRange rangeOfString:@";"];
         if (parametersRange.location != NSNotFound) {
             mediaRange = [mediaRange substringToIndex:parametersRange.location];
@@ -105,8 +109,8 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, strong) NSError *HTTPError;
 @property (readwrite, nonatomic, copy) NSString *HTTPResponseString;
-@property (assign) long long totalContentLength;
-@property (assign) long long offsetContentLength;
+@property (readwrite, nonatomic, assign) long long totalContentLength;
+@property (readwrite, nonatomic, assign) long long offsetContentLength;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -299,7 +303,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 + (void)addAcceptableStatusCodes:(NSIndexSet *)statusCodes {
     NSMutableIndexSet *mutableStatusCodes = [[NSMutableIndexSet alloc] initWithIndexSet:[self acceptableStatusCodes]];
     [mutableStatusCodes addIndexes:statusCodes];
-    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableStatusCodes), ^(id _self) {
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableStatusCodes), ^(__unused id _self) {
         return mutableStatusCodes;
     });
 }
@@ -311,7 +315,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 + (void)addAcceptableContentTypes:(NSSet *)contentTypes {
     NSMutableSet *mutableContentTypes = [[NSMutableSet alloc] initWithSet:[self acceptableContentTypes] copyItems:YES];
     [mutableContentTypes unionSet:contentTypes];
-    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableContentTypes), ^(id _self) {
+    AFSwizzleClassMethodWithClassAndSelectorUsingBlock([self class], @selector(acceptableContentTypes), ^(__unused id _self) {
         return mutableContentTypes;
     });
 }
@@ -326,7 +330,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 
 #pragma mark - NSURLConnectionDelegate
 
-- (void)connection:(NSURLConnection *)connection 
+- (void)connection:(__unused NSURLConnection *)connection 
 didReceiveResponse:(NSURLResponse *)response 
 {
     self.response = (NSHTTPURLResponse *)response;

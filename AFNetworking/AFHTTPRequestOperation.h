@@ -44,12 +44,12 @@
 /**
  A Boolean value that corresponds to whether the status code of the response is within the specified set of acceptable status codes. Returns `YES` if `acceptableStatusCodes` is `nil`.
  */
-@property (readonly) BOOL hasAcceptableStatusCode;
+@property (nonatomic, readonly) BOOL hasAcceptableStatusCode;
 
 /**
  A Boolean value that corresponds to whether the MIME type of the response is among the specified set of acceptable content types. Returns `YES` if `acceptableContentTypes` is `nil`.
  */
-@property (readonly) BOOL hasAcceptableContentType;
+@property (nonatomic, readonly) BOOL hasAcceptableContentType;
 
 /** 
  The callback dispatch queue on success. If `NULL` (default), the main queue is used.

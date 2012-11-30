@@ -35,7 +35,7 @@
     #import <netdb.h>
 #endif
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     #import <UIKit/UIKit.h>
 #endif
 
@@ -148,14 +148,15 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     if([value isKindOfClass:[NSDictionary class]]) {
         // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries 
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        [[[value allKeys] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] enumerateObjectsUsingBlock:^(id nestedKey, NSUInteger idx, BOOL *stop) {
+        [[[value allKeys] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] enumerateObjectsUsingBlock:^(id nestedKey, __unused NSUInteger idx, __unused BOOL *stop) {
             id nestedValue = [value objectForKey:nestedKey];
             if (nestedValue) {
                 [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@"%@[%@]", key, nestedKey] : nestedKey), nestedValue)];
             }
         }];
     } else if([value isKindOfClass:[NSArray class]]) {
-        [value enumerateObjectsUsingBlock:^(id nestedValue, NSUInteger idx, BOOL *stop) {
+        NSArray *array = value;
+        [array enumerateObjectsUsingBlock:^(id nestedValue, __unused NSUInteger idx, __unused BOOL *stop) {
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
         }];
     } else {
@@ -234,10 +235,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSString *preferredLanguageCodes = [[NSLocale preferredLanguages] componentsJoinedByString:@", "];
     [self setDefaultHeader:@"Accept-Language" value:[NSString stringWithFormat:@"%@, en-us;q=0.8", preferredLanguageCodes]];
     
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     // User-Agent Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
     [self setDefaultHeader:@"User-Agent" value:[NSString stringWithFormat:@"%@/%@ (%@; iOS %@; Scale/%0.2f)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleExecutableKey] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], (__bridge id)CFBundleGetValueForInfoDictionaryKey(CFBundleGetMainBundle(), kCFBundleVersionKey) ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion], ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0f)]];
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
     [self setDefaultHeader:@"User-Agent" value:[NSString stringWithFormat:@"%@/%@ (Mac OS X %@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleExecutableKey] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[NSProcessInfo processInfo] operatingSystemVersionString]]];
 #endif
     
@@ -307,7 +308,7 @@ static const void * AFNetworkReachabilityRetainCallback(const void *info) {
     return (__bridge_retained const void *)([(__bridge AFNetworkReachabilityStatusBlock)info copy]);
 }
 
-static void AFNetworkReachabilityReleaseCallback(const void *info) {}
+static void AFNetworkReachabilityReleaseCallback(__unused const void *info) {}
 
 - (void)startMonitoringNetworkReachability {
     [self stopMonitoringNetworkReachability];
@@ -578,7 +579,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
                 }
                 
                 __block NSUInteger numberOfFinishedOperations = 0;
-                [operations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                [operations enumerateObjectsUsingBlock:^(id obj, __unused NSUInteger idx, __unused BOOL *stop) {
                     if ([(NSOperation *)obj isFinished]) {
                         numberOfFinishedOperations++;
                     }
@@ -671,7 +672,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.baseURL forKey:@"baseURL"];
-    [aCoder encodeInteger:self.stringEncoding forKey:@"stringEncoding"];
+    [aCoder encodeInteger:(NSInteger)self.stringEncoding forKey:@"stringEncoding"];
     [aCoder encodeInteger:self.parameterEncoding forKey:@"parameterEncoding"];
     [aCoder encodeObject:self.registeredHTTPOperationClassNames forKey:@"registeredHTTPOperationClassNames"];
     [aCoder encodeObject:self.defaultHeaders forKey:@"defaultHeaders"];
@@ -735,8 +736,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, assign) BOOL hasInitialBoundary;
 @property (nonatomic, assign) BOOL hasFinalBoundary;
 
-@property (readonly, getter = hasBytesAvailable) BOOL bytesAvailable;
-@property (readonly) unsigned long long contentLength;
+@property (nonatomic, readonly, getter = hasBytesAvailable) BOOL bytesAvailable;
+@property (nonatomic, readonly) unsigned long long contentLength;
 
 - (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length;
 @end
@@ -744,8 +745,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
 @property (nonatomic, assign) NSUInteger numberOfBytesInPacket;
 @property (nonatomic, assign) NSTimeInterval delay;
-@property (readonly) unsigned long long contentLength;
-@property (readonly, getter = isEmpty) BOOL empty;
+@property (nonatomic, readonly) unsigned long long contentLength;
+@property (nonatomic, readonly, getter = isEmpty) BOOL empty;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
 - (void)setInitialAndFinalBoundaries;
@@ -953,7 +954,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                 break;
             }
         } else {
-            bytesRead += [self.currentHTTPBodyPart read:&buffer[bytesRead] maxLength:length - bytesRead];
+            bytesRead += [self.currentHTTPBodyPart read:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
             if (self.delay > 0.0f) {
                 [NSThread sleepForTimeInterval:self.delay];
             }
@@ -963,7 +964,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     return bytesRead;
 }
 
-- (BOOL)getBuffer:(uint8_t **)buffer length:(NSUInteger *)len {
+- (BOOL)getBuffer:(__unused uint8_t **)buffer length:(__unused NSUInteger *)len {
     return NO;
 }
 
@@ -988,20 +989,20 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     self.streamStatus = NSStreamStatusClosed;
 }
 
-- (id)propertyForKey:(NSString *)key {
+- (id)propertyForKey:(__unused NSString *)key {
     return nil;
 }
 
-- (BOOL)setProperty:(id)property forKey:(NSString *)key {
+- (BOOL)setProperty:(__unused id)property forKey:(__unused NSString *)key {
     return NO;
 }
 
-- (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop
-                  forMode:(NSString *)mode
+- (void)scheduleInRunLoop:(__unused NSRunLoop *)aRunLoop
+                  forMode:(__unused NSString *)mode
 {}
 
-- (void)removeFromRunLoop:(NSRunLoop *)aRunLoop
-                  forMode:(NSString *)mode
+- (void)removeFromRunLoop:(__unused NSRunLoop *)aRunLoop
+                  forMode:(__unused NSString *)mode
 {}
 
 - (unsigned long long)contentLength {
@@ -1015,17 +1016,17 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 #pragma mark - Undocumented CFReadStream Bridged Methods
 
-- (void)_scheduleInCFRunLoop:(CFRunLoopRef)aRunLoop
-                     forMode:(CFStringRef)aMode
+- (void)_scheduleInCFRunLoop:(__unused CFRunLoopRef)aRunLoop
+                     forMode:(__unused CFStringRef)aMode
 {}
 
-- (void)_unscheduleFromCFRunLoop:(CFRunLoopRef)aRunLoop
-                         forMode:(CFStringRef)aMode
+- (void)_unscheduleFromCFRunLoop:(__unused CFRunLoopRef)aRunLoop
+                         forMode:(__unused CFStringRef)aMode
 {}
 
-- (BOOL)_setCFClientFlags:(CFOptionFlags)inFlags
-                 callback:(CFReadStreamClientCallBack)inCallback
-                  context:(CFStreamClientContext *)inContext {
+- (BOOL)_setCFClientFlags:(__unused CFOptionFlags)inFlags
+                 callback:(__unused CFReadStreamClientCallBack)inCallback
+                  context:(__unused CFStreamClientContext *)inContext {
     return NO;
 }
 
@@ -1121,17 +1122,17 @@ typedef enum {
     
     if (_phase == AFEncapsulationBoundaryPhase) {
         NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary() : AFMultipartFormEncapsulationBoundary()) dataUsingEncoding:self.stringEncoding];
-        bytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
+        bytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
     }
     
     if (_phase == AFHeaderPhase) {
         NSData *headersData = [[self stringForHeaders] dataUsingEncoding:self.stringEncoding];
-        bytesRead += [self readData:headersData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
+        bytesRead += [self readData:headersData intoBuffer:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
     }
     
     if (_phase == AFBodyPhase) {
         if ([self.inputStream hasBytesAvailable]) {
-            bytesRead += [self.inputStream read:&buffer[bytesRead] maxLength:(length - bytesRead)];
+            bytesRead += [self.inputStream read:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
         }
         
         if (![self.inputStream hasBytesAvailable]) {
@@ -1141,7 +1142,7 @@ typedef enum {
     
     if (_phase == AFFinalBoundaryPhase) {
         NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding] : [NSData data]);
-        bytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - bytesRead)];
+        bytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
     }
     
     return bytesRead;
@@ -1160,7 +1161,7 @@ typedef enum {
         [self transitionToNextPhase];
     }
     
-    return range.length;
+    return (NSInteger)range.length;
 }
 
 - (BOOL)transitionToNextPhase {
@@ -1182,6 +1183,7 @@ typedef enum {
             [self.inputStream close];
             _phase = AFFinalBoundaryPhase;
             break;
+        case AFFinalBoundaryPhase:
         default:
             _phase = AFEncapsulationBoundaryPhase;
             break;
