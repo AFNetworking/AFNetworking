@@ -1176,7 +1176,7 @@ typedef enum {
             [self.inputStream close];
             _phase = AFFinalBoundaryPhase;
             break;
-        default:
+        case AFFinalBoundaryPhase:
             _phase = AFEncapsulationBoundaryPhase;
             break;
     }
