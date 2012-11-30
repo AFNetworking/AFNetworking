@@ -317,6 +317,10 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {}
     }
     
     self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
+    
+    if (!self.networkReachability) {
+        return;
+    }
 
     __weak __typeof(&*self)weakSelf = self;
     AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status){
