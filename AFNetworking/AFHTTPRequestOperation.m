@@ -303,7 +303,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 #pragma mark - NSURLConnectionDelegate
 
 - (void)connection:(__unused NSURLConnection *)connection 
-didReceiveResponse:(__unused NSURLResponse *)response 
+didReceiveResponse:(NSURLResponse *)response 
 {
     self.response = (NSHTTPURLResponse *)response;
     
