@@ -17,12 +17,14 @@ Pod::Spec.new do |s|
 
   s.prefix_header_contents = <<-EOS
 #import <Availability.h>
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-  #import <SystemConfiguration/SystemConfiguration.h>
-  #import <MobileCoreServices/MobileCoreServices.h>
-#else
-  #import <SystemConfiguration/SystemConfiguration.h>
-  #import <CoreServices/CoreServices.h>
+#ifdef __OBJC__
+    #if __IPHONE_OS_VERSION_MIN_REQUIRED
+          #import <SystemConfiguration/SystemConfiguration.h>
+          #import <MobileCoreServices/MobileCoreServices.h>
+    #else
+          #import <SystemConfiguration/SystemConfiguration.h>
+          #import <CoreServices/CoreServices.h>
+    #endif
 #endif
 EOS
 end
