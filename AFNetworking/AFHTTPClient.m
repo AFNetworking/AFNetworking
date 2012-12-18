@@ -1105,6 +1105,9 @@ typedef enum {
 }
 
 - (BOOL)hasBytesAvailable {
+    if(_phase == AFFinalBoundaryPhase) {
+    	return YES;
+    }
     switch (self.inputStream.streamStatus) {
         case NSStreamStatusNotOpen:
         case NSStreamStatusOpening:
