@@ -140,11 +140,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
+    self.completionBlock = ^ {        
         dispatch_async(xml_request_operation_processing_queue(), ^(void) {
             NSXMLParser *XMLParser = self.responseXMLParser;
             
