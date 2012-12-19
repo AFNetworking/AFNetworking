@@ -203,10 +203,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
     self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (self.error) {
                 if (failure) {
