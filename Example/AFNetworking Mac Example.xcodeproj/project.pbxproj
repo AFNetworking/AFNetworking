@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B3C521791685327F007A303E /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C521781685327F007A303E /* Security.framework */; };
+		B3C5217C168532A2007A303E /* app.net.cer in Resources */ = {isa = PBXBuildFile; fileRef = B3C5217A168532A2007A303E /* app.net.cer */; };
+		B3C5217D168532A2007A303E /* cloudfront.net.cer in Resources */ = {isa = PBXBuildFile; fileRef = B3C5217B168532A2007A303E /* cloudfront.net.cer */; };
 		F8129C001591061B009BFE23 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8129BFF1591061B009BFE23 /* Cocoa.framework */; };
 		F8129C321591073C009BFE23 /* AFAppDotNetAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C251591073C009BFE23 /* AFAppDotNetAPIClient.m */; };
 		F8129C341591073C009BFE23 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C2B1591073C009BFE23 /* Post.m */; };
@@ -26,6 +29,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B3C521781685327F007A303E /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		B3C5217A168532A2007A303E /* app.net.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = app.net.cer; sourceTree = SOURCE_ROOT; };
+		B3C5217B168532A2007A303E /* cloudfront.net.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = cloudfront.net.cer; sourceTree = SOURCE_ROOT; };
 		F8129BFB1591061B009BFE23 /* AFNetworking Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8129BFF1591061B009BFE23 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F8129C021591061B009BFE23 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -66,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3C521791685327F007A303E /* Security.framework in Frameworks */,
 				F8A847D2161F55AC00940F39 /* SystemConfiguration.framework in Frameworks */,
 				F8A847CF161F55A500940F39 /* CoreServices.framework in Frameworks */,
 				F8129C001591061B009BFE23 /* Cocoa.framework in Frameworks */,
@@ -78,6 +85,7 @@
 		F8129BF01591061B009BFE23 = {
 			isa = PBXGroup;
 			children = (
+				B3C521781685327F007A303E /* Security.framework */,
 				F8A847D1161F55AC00940F39 /* SystemConfiguration.framework */,
 				F8A847CE161F55A500940F39 /* CoreServices.framework */,
 				F877018B159A1CE700B45C0D /* AFNetworking Example.entitlements */,
@@ -132,6 +140,8 @@
 		F8129C061591061B009BFE23 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B3C5217A168532A2007A303E /* app.net.cer */,
+				B3C5217B168532A2007A303E /* cloudfront.net.cer */,
 				F8129C6E15910B15009BFE23 /* main.m */,
 				F8129C7015910B3E009BFE23 /* MainMenu.xib */,
 			);
@@ -231,6 +241,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8129C7115910B3E009BFE23 /* MainMenu.xib in Resources */,
+				B3C5217C168532A2007A303E /* app.net.cer in Resources */,
+				B3C5217D168532A2007A303E /* cloudfront.net.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,8 +326,13 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"_AFNETWORKING_PIN_SSL_CERTIFICATES_=1",
+				);
 				INFOPLIST_FILE = "Mac-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -328,8 +345,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "_AFNETWORKING_PIN_SSL_CERTIFICATES_=1";
 				INFOPLIST_FILE = "Mac-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
