@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B3C5217116852A9A007A303E /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E013957DF100DB05C8 /* Security.framework */; };
+		B3C5217416852C7D007A303E /* app.net.cer in Resources */ = {isa = PBXBuildFile; fileRef = B3C5217316852C7D007A303E /* app.net.cer */; };
+		B3C5217616852CD3007A303E /* cloudfront.net.cer in Resources */ = {isa = PBXBuildFile; fileRef = B3C5217516852CD3007A303E /* cloudfront.net.cer */; };
 		F8129C7415910C37009BFE23 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C7215910C37009BFE23 /* AppDelegate.m */; };
 		F818101615E6A0C600EF93C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */; };
 		F8A847C1161F51A300940F39 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A847C0161F51A300940F39 /* Default-568h@2x.png */; };
@@ -40,6 +43,8 @@
 
 /* Begin PBXFileReference section */
 		50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		B3C5217316852C7D007A303E /* app.net.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = app.net.cer; sourceTree = SOURCE_ROOT; };
+		B3C5217516852CD3007A303E /* cloudfront.net.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = cloudfront.net.cer; sourceTree = SOURCE_ROOT; };
 		F8129C3815910830009BFE23 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
 		F8129C7215910C37009BFE23 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
 		F8129C7315910C37009BFE23 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
@@ -101,6 +106,7 @@
 				F8E469DF13957DD500DB05C8 /* CoreLocation.framework in Frameworks */,
 				F8D0701B14310F4A00653FD3 /* SystemConfiguration.framework in Frameworks */,
 				F818101615E6A0C600EF93C2 /* MobileCoreServices.framework in Frameworks */,
+				B3C5217116852A9A007A303E /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,6 +199,8 @@
 		F8E4696B1395739D00DB05C8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B3C5217516852CD3007A303E /* cloudfront.net.cer */,
+				B3C5217316852C7D007A303E /* app.net.cer */,
 				F8DA09E31396AC040057D0CC /* main.m */,
 				F8129C3815910830009BFE23 /* Prefix.pch */,
 				F8E4696C1395739D00DB05C8 /* iOS-Info.plist */,
@@ -314,6 +322,8 @@
 				F8A847C1161F51A300940F39 /* Default-568h@2x.png in Resources */,
 				F8A847C3161F523E00940F39 /* Default.png in Resources */,
 				F8A847C5161F524200940F39 /* Default@2x.png in Resources */,
+				B3C5217416852C7D007A303E /* app.net.cer in Resources */,
+				B3C5217616852CD3007A303E /* cloudfront.net.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +397,10 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					"_AFNETWORKING_PIN_SSL_CERTIFICATES_=1",
+				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
@@ -407,6 +421,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "_AFNETWORKING_PIN_SSL_CERTIFICATES_=1";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
