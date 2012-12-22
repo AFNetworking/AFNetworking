@@ -173,6 +173,24 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     return _networkRequestThread;
 }
 
++ (NSArray *)pinnedCertificates {
+    static NSArray *_pinnedCertificates = nil;
+    static dispatch_once_t oncePredicate;
+    
+    dispatch_once(&oncePredicate, ^{
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
+        NSMutableArray *certificates = [NSMutableArray array];
+        for (NSString *path in paths) {
+            NSData *certificateData = [NSData dataWithContentsOfFile:path];
+            [certificates addObject:certificateData];
+        }
+        _pinnedCertificates = [[NSArray alloc] initWithArray:certificates];
+    });
+    
+    return _pinnedCertificates;
+}
+
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
     self = [super init];
     if (!self) {
@@ -466,6 +484,25 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 #pragma mark - NSURLConnectionDelegate
+
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+-(void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
+{
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
+        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, 0);
+        NSData *remoteCertificateData = CFBridgingRelease(SecCertificateCopyData(certificate));
+                
+        NSArray *pinnedCertificates = [[self class] pinnedCertificates];
+        if ([pinnedCertificates containsObject:remoteCertificateData]) {
+            NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+            [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+        } else {
+            [[challenge sender] cancelAuthenticationChallenge:challenge];
+        }
+    }
+}
+#endif
 
 - (BOOL)connection:(NSURLConnection *)connection 
 canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
