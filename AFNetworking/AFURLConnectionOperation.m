@@ -173,7 +173,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     return _networkRequestThread;
 }
 
-- (id)initWithRequest:(NSURLRequest *)urlRequest {
+- (instancetype)initWithRequest:(NSURLRequest *)urlRequest {
     self = [super init];
     if (!self) {
 		return nil;

@@ -58,7 +58,7 @@
  
  @return The systemwide network activity indicator manager.
  */
-+ (AFNetworkActivityIndicatorManager *)sharedManager;
++ (instancetype)sharedManager;
 
 /**
  Increments the number of active network requests. If this number was zero before incrementing, this will start animating the status bar network activity indicator.

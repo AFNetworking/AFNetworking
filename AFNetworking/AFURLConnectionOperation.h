@@ -153,7 +153,7 @@
  
  @discussion This is the designated initializer.
  */
-- (id)initWithRequest:(NSURLRequest *)urlRequest;
+- (instancetype)initWithRequest:(NSURLRequest *)urlRequest;
 
 ///----------------------------------
 /// @name Pausing / Resuming Requests
