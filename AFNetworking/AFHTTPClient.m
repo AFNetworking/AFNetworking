@@ -205,11 +205,11 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 @synthesize networkReachabilityStatusBlock = _networkReachabilityStatusBlock;
 #endif
 
-+ (AFHTTPClient *)clientWithBaseURL:(NSURL *)url {
++ (instancetype)clientWithBaseURL:(NSURL *)url {
     return [[self alloc] initWithBaseURL:url];
 }
 
-- (id)initWithBaseURL:(NSURL *)url {
+- (instancetype)initWithBaseURL:(NSURL *)url {
     NSParameterAssert(url);
 
     self = [super init];
