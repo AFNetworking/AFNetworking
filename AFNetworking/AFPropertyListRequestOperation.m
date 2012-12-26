@@ -108,11 +108,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
+    self.completionBlock = ^ {        
         if (self.error) {
             if (failure) {
                 dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
