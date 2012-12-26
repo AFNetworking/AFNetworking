@@ -308,7 +308,11 @@ static const void * AFNetworkReachabilityRetainCallback(const void *info) {
     return (__bridge_retained const void *)([(__bridge AFNetworkReachabilityStatusBlock)info copy]);
 }
 
-static void AFNetworkReachabilityReleaseCallback(__unused const void *info) {}
+static void AFNetworkReachabilityReleaseCallback(const void *info) {
+    if (info) {
+        CFRelease(info);
+    }
+}
 
 - (void)startMonitoringNetworkReachability {
     [self stopMonitoringNetworkReachability];
