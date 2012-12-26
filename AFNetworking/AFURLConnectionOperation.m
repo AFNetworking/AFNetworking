@@ -175,9 +175,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 + (NSArray *)pinnedCertificates {
     static NSArray *_pinnedCertificates = nil;
-    static dispatch_once_t oncePredicate;
+    static dispatch_once_t onceToken;
     
-    dispatch_once(&oncePredicate, ^{
+    dispatch_once(&onceToken, ^{
         NSBundle *bundle = [NSBundle bundleForClass:[self class]];
         NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
         NSMutableArray *certificates = [NSMutableArray array];
@@ -486,15 +486,15 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 #pragma mark - NSURLConnectionDelegate
 
 #ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
--(void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
+- (void)connection:(NSURLConnection *)connection
+willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
     if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
         SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, 0);
-        NSData *remoteCertificateData = CFBridgingRelease(SecCertificateCopyData(certificate));
-                
-        NSArray *pinnedCertificates = [[self class] pinnedCertificates];
-        if ([pinnedCertificates containsObject:remoteCertificateData]) {
+        NSData *certificateData = (__bridge_transfer NSData *)SecCertificateCopyData(certificate);
+        
+        if ([[[self class] pinnedCertificates] containsObject:certificateData]) {
             NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
             [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
         } else {
