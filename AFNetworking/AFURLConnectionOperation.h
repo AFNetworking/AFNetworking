@@ -142,6 +142,15 @@
  */
 @property (nonatomic, strong) NSOutputStream *outputStream;
 
+///---------------------------------------------
+/// @name Managing Request Operation Information
+///---------------------------------------------
+
+/**
+ The user info dictionary for the receiver.
+ */
+@property (nonatomic, strong) NSDictionary *userInfo;
+
 ///------------------------------------------------------
 /// @name Initializing an AFURLConnectionOperation Object
 ///------------------------------------------------------
