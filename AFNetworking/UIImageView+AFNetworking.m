@@ -61,7 +61,7 @@ static char kAFImageRequestOperationObjectKey;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _af_imageRequestOperationQueue = [[NSOperationQueue alloc] init];
-        [_af_imageRequestOperationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
+        [_af_imageRequestOperationQueue setMaxConcurrentOperationCount:4];
     });
     
     return _af_imageRequestOperationQueue;
