@@ -1,11 +1,67 @@
-= master
+= 1.1.0 (2012-12-27)
 
- * Moved __unused keywords for better Xcode indexing (Christian Rasmussen)
+ * Add optional SSL certificate pinning with `#define _AFNETWORKING_PIN_SSL_CERTIFICATES_` (Dustin Barker)
 
- * Sorting dictionary keys with `caseInsensitiveCompare:` to ensure 
+ * Add `responseStringEncoding` property to `AFURLConnectionOperation` (Mattt Thompson)
+
+ * Add `userInfo` property to `AFURLConnectionOperation` (Mattt Thompson, Steven Fisher)
+
+ * Change behavior to cause a failure when an operation is cancelled (Daniel Tull)
+
+ * Change return type of class constructors to `instancetype` (@guykogus)
+
+ * Change notifications to always being posted on an asynchronously-dispatched block run on the main queue (Evadne Wu, Mattt Thompson)
+
+ * Change from NSLocalizedString to NSLocalizedStringFromTable with AFNetworking.strings table for localized strings (Cédric Luthi)
+
+ * Change `-appendPartWithHeaders:body:` to add assertion handler for existence of body data parameter (Jonathan Beilin)
+
+ * Change `AFHTTPRequestOperation -responseString` to follow guidelines from RFC 2616 regarding the use of string encoding when none is specified in the response (Jorge Bernal)
+
+ * Change AFHTTPClient parameter serialization dictionary keys with `caseInsensitiveCompare:` to ensure 
  deterministic ordering of query string parameters, which may otherwise 
  cause ambiguous representations of nested parameters (James Coleman, 
  Mattt Thompson)
+
+ * Fix -Wstrict-selector-match warnings raised by Xcode 4.6DP3 (Jesse Collis, Cédric Luthi)
+
+ * Fix NSJSONSerialization crash with Unicode character escapes in JSON response (Mathijs Kadijk)
+
+ * Fix issue with early return in -startMonitoringNetworkReachability if network reachability object could not be created (i.e. invalid hostnames) (Basil Shkara)
+
+ * Fix retain cycles in AFImageRequestOperation.m and AFHTTPClient.m caused by strong references within blocks (Nick Forge)
+
+ * Fix issue caused by Rails behavior of returning a single space in head :ok responses, which is interpreted as invalid (Sebastian Ludwig)
+
+ * Fix issue in streaming multipart upload, where final encapsulation boundary would not be appended if it was larger than the available buffer, causing a potential timeout (Tomohisa Takaoka, David Kasper)
+
+ * Fix memory leak of network reachability callback block (Mattt Thompson)
+
+ * Fix `-initWithCoder:` for `AFURLConnectionOperation` and `AFHTTPClient` to cast scalar types (Mattt Thompson)
+
+ * Fix bug in `-enqueueBatchOfHTTPRequestOperations:...` to by using `addOperations:waitUntilFinished:` instead of adding each operation individually. (Mattt Thompson)
+
+ * Change `#warning` messages of checks for `CoreServices` and `MobileCoreServices` to message according to the build target platform (Mattt Thompson)
+
+ * Change `AFQueryStringFromParametersWithEncoding` to create keys string representations using the description method as specified in documentation (Cédric Luthi)
+
+ * Fix __unused keywords for better Xcode indexing (Christian Rasmussen)
+
+ * Fix warning: unused parameter 'x' [-Werror,-Wunused-parameter] (Oliver Jones)
+ 
+ * Fix warning: property is assumed atomic by default [-Werror,-Wimplicit-atomic-properties] (Oliver Jones)
+ 
+ * Fix warning: weak receiver may be unpredictably null in ARC mode [-Werror,-Wreceiver-is-weak] (Oliver Jones)
+ 
+ * Fix warning: multiple methods named 'selector' found [-Werror,-Wstrict-selector-match] (Oliver Jones)
+ 
+ * Fix warning: 'macro' is not defined, evaluates to 0 (Oliver Jones)
+ 
+ * Fix warning: atomic by default property 'X' has a user (Oliver Jones)defined getter (property should be marked 'atomic' if this is intended) [-Werror, -Wcustom-atomic-properties] (Oliver Jones)
+ 
+ * Fix warning: 'response' was marked unused but was used [-Werror,-Wused-but-marked-unused] (Oliver Jones)
+ 
+ * Fix warning: enumeration value 'AFFinalBoundaryPhase' not explicitly handled in switch [-Werror,-Wswitch-enum] (Oliver Jones)
 
 = 1.0.1 / 2012-11-01
 
