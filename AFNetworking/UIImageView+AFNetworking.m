@@ -147,6 +147,10 @@ static char kAFImageRequestOperationObjectKey;
     self.af_imageRequestOperation = nil;
 }
 
+- (void)setImageRequestOperationPriority:(NSOperationQueuePriority)priority {
+    [self.af_imageRequestOperation setQueuePriority:priority];
+}
+
 @end
 
 #pragma mark -

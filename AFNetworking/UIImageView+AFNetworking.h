@@ -73,6 +73,15 @@
  */
 - (void)cancelImageRequestOperation;
 
+/**
+ Sets the queue priority of the image request operation for the receiver, if one exists.
+ 
+ @param priority The relative priority of the image request operation.
+ 
+ @discussion Setting a priority different from `NSOperationQueuePriorityNormal` disables automatic image request operation cancellation.
+ */
+- (void)setImageRequestOperationPriority:(NSOperationQueuePriority)priority;
+
 @end
 
 #endif
