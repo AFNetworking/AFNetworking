@@ -148,7 +148,7 @@ typedef enum {
   
  @return The newly-initialized HTTP client
  */
-+ (AFHTTPClient *)clientWithBaseURL:(NSURL *)url;
++ (instancetype)clientWithBaseURL:(NSURL *)url;
 
 /**
  Initializes an `AFHTTPClient` object with the specified base URL.
