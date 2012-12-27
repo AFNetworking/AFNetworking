@@ -25,6 +25,7 @@
 #import "Post.h"
 
 #import "PostTableViewCell.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface GlobalTimelineViewController ()
 - (void)reload:(id)sender;
@@ -109,6 +110,14 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [cell.imageView setImageRequestOperationPriority:NSOperationQueuePriorityHigh];
+}
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [cell.imageView setImageRequestOperationPriority:NSOperationQueuePriorityLow];
 }
 
 @end
