@@ -98,7 +98,9 @@ static char kAFImageRequestOperationObjectKey;
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    [self cancelImageRequestOperation];
+    if (self.af_imageRequestOperation && self.af_imageRequestOperation.queuePriority == NSOperationQueuePriorityNormal) {
+        [self cancelImageRequestOperation];
+    }
     
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
