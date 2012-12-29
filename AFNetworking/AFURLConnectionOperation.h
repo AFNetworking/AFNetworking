@@ -24,6 +24,13 @@
 
 #import <Availability.h>
 
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+typedef enum {
+    AFURLConnectionOperationSSLPinningModeCertificate = 0,
+    AFURLConnectionOperationSSLPinningModePublicKey
+} AFURLConnectionOperationSSLPinningMode;
+#endif
+
 /**
  `AFURLConnectionOperation` is a subclass of `NSOperation` that implements `NSURLConnection` delegate methods.
  
@@ -123,6 +130,13 @@
  @discussion If the response does not specify a valid string encoding, `responseStringEncoding` will return `NSUTF8StringEncoding`. 
  */
 @property (readonly, nonatomic, assign) NSStringEncoding responseStringEncoding;
+
+/**
+ The pinning mode which will be used for SSL connections.
+ */
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
+#endif
 
 ///------------------------
 /// @name Accessing Streams

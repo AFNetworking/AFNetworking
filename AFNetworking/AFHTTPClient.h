@@ -23,6 +23,7 @@
 #import <Foundation/Foundation.h>
 
 #import <Availability.h>
+#import "AFURLConnectionOperation.h"
 
 /**
  `AFHTTPClient` captures the common patterns of communicating with an web application over HTTP. It encapsulates information like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
@@ -135,6 +136,13 @@ typedef enum {
  */
 #ifdef _SYSTEMCONFIGURATION_H
 @property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
+#endif
+
+/**
+ Default SSL pinning mode for each `AFHTTPRequestOperation` which will be enqueued with `enqueueHTTPRequestOperation:`.
+ */
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode defaultSSLPinMode;
 #endif
 
 ///---------------------------------------------
