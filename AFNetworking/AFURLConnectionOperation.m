@@ -214,6 +214,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             
             CFRelease(allowedTrust);
             CFRelease(allowedCertificate);
+            CFRelease(policy);
         }
         
         _pinnedPublicKeys = [[NSArray alloc] initWithArray:publicKeys];
