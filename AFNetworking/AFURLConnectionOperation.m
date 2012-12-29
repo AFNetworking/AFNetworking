@@ -546,16 +546,12 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
             } case AFURLConnectionOperationSSLPinningModePublicKey: {
                 id publicKey = (__bridge_transfer id)SecTrustCopyPublicKey(serverTrust);
                 
-                for (id allowedPublicKey in [self.class pinnedPublicKeys]) {
-                    if ([allowedPublicKey isEqual:publicKey]) {
-                        NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
-                        [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-                        
-                        return;
-                    }
+                if ([[self.class pinnedPublicKeys] containsObject:publicKey]) {
+                    NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+                    [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+                } else {
+                    [[challenge sender] cancelAuthenticationChallenge:challenge];
                 }
-                
-                [[challenge sender] cancelAuthenticationChallenge:challenge];
                 break;
             }
         }
