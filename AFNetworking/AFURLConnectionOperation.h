@@ -82,6 +82,7 @@
 /**
  The run loop modes in which the operation will run on the network thread. By default, this is a single-member set containing `NSRunLoopCommonModes`.
  */
+
 @property (nonatomic, strong) NSSet *runLoopModes;
 
 ///-----------------------------------------
@@ -92,6 +93,11 @@
  The request used by the operation's connection.
  */
 @property (readonly, nonatomic, strong) NSURLRequest *request;
+
+
+//Tag to identify Operations assigned to a Queue
+@property (nonatomic, unsafe_unretained) NSInteger tag;
+
 
 /**
  The last response received by the operation's connection.
@@ -211,14 +217,18 @@
  
  @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes three arguments: the number of bytes written since the last time the upload progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times, and will execute on the main thread.
  */
-- (void)setUploadProgressBlock:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block;
+- (void)setUploadProgressBlock:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite, NSInteger tag))block;
 
 /**
  Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
  
  @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes three arguments: the number of bytes read since the last time the download progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times, and will execute on the main thread.
  */
-- (void)setDownloadProgressBlock:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block;
+- (void)setDownloadProgressBlock:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead, NSInteger tag))block;
+
+
+//Called when the connection starts loading
+- (void)setOperationStartedBlock:(void (^)(NSInteger tag))block;
 
 ///-------------------------------------------------
 /// @name Setting NSURLConnection Delegate Callbacks

@@ -55,9 +55,10 @@ NSString * const AFNetworkingOperationFailingURLResponseErrorKey = @"AFNetworkin
 NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.networking.operation.start";
 NSString * const AFNetworkingOperationDidFinishNotification = @"com.alamofire.networking.operation.finish";
 
-typedef void (^AFURLConnectionOperationProgressBlock)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+typedef void (^AFURLConnectionOperationProgressBlock)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected, NSInteger tag);
 typedef BOOL (^AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock)(NSURLConnection *connection, NSURLProtectionSpace *protectionSpace);
 typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
+typedef void (^AFURLConnectionOperationStartedBLock)(NSInteger tag);
 typedef NSCachedURLResponse * (^AFURLConnectionOperationCacheResponseBlock)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse);
 typedef NSURLRequest * (^AFURLConnectionOperationRedirectResponseBlock)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse);
 
@@ -124,6 +125,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationChallengeBlock authenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationCacheResponseBlock cacheResponse;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationRedirectResponseBlock redirectResponse;
+@property (readwrite, nonatomic, copy) AFURLConnectionOperationStartedBLock startOperation;
 
 - (void)operationDidStart;
 - (void)finish;
@@ -131,6 +133,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @end
 
 @implementation AFURLConnectionOperation
+
+@synthesize tag;
+
 @synthesize state = _state;
 @synthesize cancelled = _cancelled;
 @synthesize connection = _connection;
@@ -153,6 +158,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize cacheResponse = _cacheResponse;
 @synthesize redirectResponse = _redirectResponse;
 @synthesize lock = _lock;
+@synthesize startOperation = _startOperation;
 
 + (void) __attribute__((noreturn)) networkRequestThreadEntryPoint:(id)__unused object {
     do {
@@ -320,6 +326,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.redirectResponse = block;
 }
 
+- (void)setOperationStartedBlock:(void (^)(NSInteger tag))block {
+    self.startOperation = block;
+}
+
 - (void)setState:(AFOperationState)state {
     [self.lock lock];
     if (AFStateTransitionIsValid(self.state, state, [self isCancelled])) {
@@ -335,6 +345,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         dispatch_async(dispatch_get_main_queue(), ^{
             switch (state) {
                 case AFOperationExecutingState:
+                    if (self.startOperation) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            self.startOperation(self.tag);
+                        });
+                    }
                     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
                     break;
                 case AFOperationFinishedState:
@@ -586,7 +601,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
     if (self.uploadProgress) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.uploadProgress((NSUInteger)bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+            self.uploadProgress((NSUInteger)bytesWritten, totalBytesWritten, totalBytesExpectedToWrite, self.tag);
         });
     }
 }
@@ -611,7 +626,7 @@ didReceiveResponse:(NSURLResponse *)response
     
     if (self.downloadProgress) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.downloadProgress([data length], self.totalBytesRead, self.response.expectedContentLength);
+            self.downloadProgress([data length], self.totalBytesRead, self.response.expectedContentLength, self.tag);
         });
     }
 }
