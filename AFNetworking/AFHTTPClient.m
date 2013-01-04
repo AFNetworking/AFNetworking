@@ -179,6 +179,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 @property (readwrite, nonatomic) NSURL *baseURL;
 @property (readwrite, nonatomic) NSMutableArray *registeredHTTPOperationClassNames;
 @property (readwrite, nonatomic) NSMutableDictionary *defaultHeaders;
+@property (readwrite, nonatomic) NSURLCredential *defaultCredential;
 @property (readwrite, nonatomic) NSOperationQueue *operationQueue;
 #ifdef _SYSTEMCONFIGURATION_H
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
@@ -517,6 +518,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
     
     [operation setCompletionBlockWithSuccess:success failure:failure];
+
+    operation.credential = self.defaultCredential;
     
     return operation;
 }
