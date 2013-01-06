@@ -61,7 +61,7 @@ static char kAFImageRequestOperationObjectKey;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _af_imageRequestOperationQueue = [[NSOperationQueue alloc] init];
-        [_af_imageRequestOperationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
+        [_af_imageRequestOperationQueue setMaxConcurrentOperationCount:4];
     });
     
     return _af_imageRequestOperationQueue;
@@ -98,7 +98,9 @@ static char kAFImageRequestOperationObjectKey;
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    [self cancelImageRequestOperation];
+    if (self.af_imageRequestOperation && self.af_imageRequestOperation.queuePriority == NSOperationQueuePriorityNormal) {
+        [self cancelImageRequestOperation];
+    }
     
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
@@ -143,6 +145,10 @@ static char kAFImageRequestOperationObjectKey;
 - (void)cancelImageRequestOperation {
     [self.af_imageRequestOperation cancel];
     self.af_imageRequestOperation = nil;
+}
+
+- (void)setImageRequestOperationPriority:(NSOperationQueuePriority)priority {
+    [self.af_imageRequestOperation setQueuePriority:priority];
 }
 
 @end
