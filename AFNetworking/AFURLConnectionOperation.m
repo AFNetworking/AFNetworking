@@ -657,6 +657,19 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
+- (NSInputStream *)connection:(NSURLConnection *)connection needNewBodyStream:(NSURLRequest *)request
+{
+    NSInputStream *newBodyStream = nil;
+    
+    NSInputStream *bodyStream = request.HTTPBodyStream;
+    if ([bodyStream conformsToProtocol:@protocol(NSCopying)])
+    {
+        newBodyStream = [bodyStream copy];
+    }
+
+    return newBodyStream;
+}
+
 #pragma mark - NSCoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder {

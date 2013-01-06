@@ -741,7 +741,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @interface AFHTTPBodyPart : NSObject
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 @property (nonatomic, strong) NSDictionary *headers;
-@property (nonatomic, strong) NSInputStream *inputStream;
+@property (nonatomic, strong) NSData *inputData;
+@property (nonatomic, strong) NSURL *inputURL;
+@property (nonatomic, readonly) NSInputStream *inputStream;
 @property (nonatomic, assign) unsigned long long bodyContentLength;
 
 @property (nonatomic, assign) BOOL hasInitialBoundary;
@@ -823,8 +825,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
-    bodyPart.inputStream = [NSInputStream inputStreamWithURL:fileURL];
-    
+    bodyPart.inputURL = fileURL;
+
     NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:nil];
     bodyPart.bodyContentLength = [[fileAttributes objectForKey:NSFileSize] unsignedLongLongValue];
     
@@ -869,7 +871,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = headers;
     bodyPart.bodyContentLength = [body length];
-    bodyPart.inputStream = [NSInputStream inputStreamWithData:body];
+    bodyPart.inputData = body;
     
     [self.bodyStream appendHTTPBodyPart:bodyPart];
 }
@@ -900,7 +902,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 #pragma mark -
 
-@interface AFMultipartBodyStream ()
+@interface AFMultipartBodyStream () <NSCopying>
 @property (nonatomic, assign) NSStreamStatus streamStatus;
 @property (nonatomic, strong) NSError *streamError;
 
@@ -931,6 +933,20 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     self.numberOfBytesInPacket = NSIntegerMax;
     
     return self;
+}
+
+-(id)copyWithZone:(NSZone *)zone {
+    AFMultipartBodyStream *bodyStreamCopy = [[[self class] allocWithZone:zone] initWithStringEncoding:self.stringEncoding];
+
+    for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts)
+    {
+        AFHTTPBodyPart *bodyPartCopy = [bodyPart copy];
+        [bodyStreamCopy appendHTTPBodyPart:bodyPartCopy];
+    }
+
+    [bodyStreamCopy setInitialAndFinalBoundaries];
+
+    return bodyStreamCopy;
 }
 
 - (void)setInitialAndFinalBoundaries {
@@ -1059,8 +1075,9 @@ typedef enum {
     AFFinalBoundaryPhase         = 4,
 } AFHTTPBodyPartReadPhase;
 
-@interface AFHTTPBodyPart () {
+@interface AFHTTPBodyPart () <NSCopying> {
     AFHTTPBodyPartReadPhase _phase;
+    NSInputStream *_inputStream;
     unsigned long long _phaseReadOffset;
 }
 
@@ -1074,7 +1091,8 @@ typedef enum {
 @synthesize stringEncoding = _stringEncoding;
 @synthesize headers = _headers;
 @synthesize bodyContentLength = _bodyContentLength;
-@synthesize inputStream = _inputStream;
+@synthesize inputData = _inputData;
+@synthesize inputURL = _inputURL;
 @synthesize hasInitialBoundary = _hasInitialBoundary;
 @synthesize hasFinalBoundary = _hasFinalBoundary;
 
@@ -1089,11 +1107,37 @@ typedef enum {
     return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    AFHTTPBodyPart *bodyPartCopy = [[[self class] allocWithZone:zone] init];
+
+    bodyPartCopy.stringEncoding = self.stringEncoding;
+    bodyPartCopy.headers = self.headers;
+    bodyPartCopy.bodyContentLength = self.bodyContentLength;
+    bodyPartCopy.inputData = self.inputData;
+    bodyPartCopy.inputURL = self.inputURL;
+
+    return bodyPartCopy;
+}
+
 - (void)dealloc {
     if (_inputStream) {
         [_inputStream close];
         _inputStream = nil;
     }
+}
+
+- (NSInputStream *)inputStream {
+    if (_inputStream) {
+        return _inputStream;
+    }
+
+    if (self.inputData) {
+        _inputStream = [NSInputStream inputStreamWithData:self.inputData];
+    } else if (self.inputURL) {
+        _inputStream = [NSInputStream inputStreamWithURL:self.inputURL];
+    }
+
+    return _inputStream;
 }
 
 - (NSString *)stringForHeaders {
