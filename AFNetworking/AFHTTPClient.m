@@ -176,11 +176,11 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 #pragma mark -
 
 @interface AFHTTPClient ()
-@property (readwrite, nonatomic) NSURL *baseURL;
-@property (readwrite, nonatomic) NSMutableArray *registeredHTTPOperationClassNames;
-@property (readwrite, nonatomic) NSMutableDictionary *defaultHeaders;
-@property (readwrite, nonatomic) NSURLCredential *defaultCredential;
-@property (readwrite, nonatomic) NSOperationQueue *operationQueue;
+@property (readwrite, nonatomic, strong) NSURL *baseURL;
+@property (readwrite, nonatomic, strong) NSMutableArray *registeredHTTPOperationClassNames;
+@property (readwrite, nonatomic, strong) NSMutableDictionary *defaultHeaders;
+@property (readwrite, nonatomic, strong) NSURLCredential *defaultCredential;
+@property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 #ifdef _SYSTEMCONFIGURATION_H
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
@@ -199,6 +199,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 @synthesize parameterEncoding = _parameterEncoding;
 @synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
+@synthesize defaultCredential = _defaultCredential;
 @synthesize operationQueue = _operationQueue;
 #ifdef _SYSTEMCONFIGURATION_H
 @synthesize networkReachability = _networkReachability;
@@ -711,7 +712,7 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 
 static NSString * const kAFMultipartFormCRLF = @"\r\n";
 
-static NSInteger const kAFStreamToStreamBufferSize = 1024*1024; //1 meg default
+static NSInteger const kAFStreamToStreamBufferSize = 1024 * 1024; //1 meg default
 
 static inline NSString * AFMultipartFormInitialBoundary() {
     return [NSString stringWithFormat:@"--%@%@", kAFMultipartFormBoundary, kAFMultipartFormCRLF];
@@ -749,7 +750,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, readonly, getter = hasBytesAvailable) BOOL bytesAvailable;
 @property (nonatomic, readonly) unsigned long long contentLength;
 
-- (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length;
+- (NSInteger)read:(uint8_t *)buffer
+        maxLength:(NSUInteger)length;
 @end
 
 @interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
@@ -953,7 +955,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 #pragma mark - NSInputStream
 
-- (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length {
+- (NSInteger)read:(uint8_t *)buffer
+        maxLength:(NSUInteger)length
+{
     if ([self streamStatus] == NSStreamStatusClosed) {
         return 0;
     }
@@ -974,7 +978,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     return bytesRead;
 }
 
-- (BOOL)getBuffer:(__unused uint8_t **)buffer length:(__unused NSUInteger *)len {
+- (BOOL)getBuffer:(__unused uint8_t **)buffer
+           length:(__unused NSUInteger *)len
+{
     return NO;
 }
 
@@ -1003,7 +1009,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     return nil;
 }
 
-- (BOOL)setProperty:(__unused id)property forKey:(__unused NSString *)key {
+- (BOOL)setProperty:(__unused id)property
+             forKey:(__unused NSString *)key
+{
     return NO;
 }
 
@@ -1057,6 +1065,9 @@ typedef enum {
 }
 
 - (BOOL)transitionToNextPhase;
+- (NSInteger)readData:(NSData *)data
+           intoBuffer:(uint8_t *)buffer
+            maxLength:(NSUInteger)length;
 @end
 
 @implementation AFHTTPBodyPart
@@ -1132,7 +1143,9 @@ typedef enum {
     }
 }
 
-- (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length {
+- (NSInteger)read:(uint8_t *)buffer
+        maxLength:(NSUInteger)length
+{
     NSInteger bytesRead = 0;
     
     if (_phase == AFEncapsulationBoundaryPhase) {
