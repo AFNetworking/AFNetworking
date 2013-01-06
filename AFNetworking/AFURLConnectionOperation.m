@@ -573,6 +573,16 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
+- (NSInputStream *)connection:(NSURLConnection *)connection
+            needNewBodyStream:(NSURLRequest *)request
+{
+    if ([request.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
+        return [request.HTTPBodyStream copy];
+    }
+
+    return nil;
+}
+
 - (NSURLRequest *)connection:(NSURLConnection *)connection
              willSendRequest:(NSURLRequest *)request
             redirectResponse:(NSURLResponse *)redirectResponse
@@ -655,16 +665,6 @@ didReceiveResponse:(NSURLResponse *)response
         
         return cachedResponse; 
     }
-}
-
-- (NSInputStream *)connection:(NSURLConnection *)connection
-            needNewBodyStream:(NSURLRequest *)request
-{    
-    if ([request.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
-        return [request.HTTPBodyStream copy];
-    }
-
-    return nil;
 }
 
 #pragma mark - NSCoding
