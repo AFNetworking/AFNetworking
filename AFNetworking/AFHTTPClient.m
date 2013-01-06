@@ -741,10 +741,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @interface AFHTTPBodyPart : NSObject
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 @property (nonatomic, strong) NSDictionary *headers;
-@property (nonatomic, strong) NSData *inputData;
-@property (nonatomic, strong) NSURL *inputURL;
-@property (nonatomic, readonly) NSInputStream *inputStream;
+@property (nonatomic, strong) id body;
 @property (nonatomic, assign) unsigned long long bodyContentLength;
+@property (nonatomic, readonly) NSInputStream *inputStream;
 
 @property (nonatomic, assign) BOOL hasInitialBoundary;
 @property (nonatomic, assign) BOOL hasFinalBoundary;
@@ -825,7 +824,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
-    bodyPart.inputURL = fileURL;
+    bodyPart.body = fileURL;
 
     NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:nil];
     bodyPart.bodyContentLength = [[fileAttributes objectForKey:NSFileSize] unsignedLongLongValue];
@@ -871,7 +870,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = headers;
     bodyPart.bodyContentLength = [body length];
-    bodyPart.inputData = body;
+    bodyPart.body = body;
     
     [self.bodyStream appendHTTPBodyPart:bodyPart];
 }
@@ -933,20 +932,6 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     self.numberOfBytesInPacket = NSIntegerMax;
     
     return self;
-}
-
--(id)copyWithZone:(NSZone *)zone {
-    AFMultipartBodyStream *bodyStreamCopy = [[[self class] allocWithZone:zone] initWithStringEncoding:self.stringEncoding];
-
-    for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts)
-    {
-        AFHTTPBodyPart *bodyPartCopy = [bodyPart copy];
-        [bodyStreamCopy appendHTTPBodyPart:bodyPartCopy];
-    }
-
-    [bodyStreamCopy setInitialAndFinalBoundaries];
-
-    return bodyStreamCopy;
 }
 
 - (void)setInitialAndFinalBoundaries {
@@ -1064,6 +1049,20 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     return NO;
 }
 
+#pragma mark - NSCopying
+
+-(id)copyWithZone:(NSZone *)zone {
+    AFMultipartBodyStream *bodyStreamCopy = [[[self class] allocWithZone:zone] initWithStringEncoding:self.stringEncoding];
+
+    for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
+        [bodyStreamCopy appendHTTPBodyPart:[bodyPart copy]];
+    }
+
+    [bodyStreamCopy setInitialAndFinalBoundaries];
+
+    return bodyStreamCopy;
+}
+
 @end
 
 #pragma mark -
@@ -1090,9 +1089,8 @@ typedef enum {
 @implementation AFHTTPBodyPart
 @synthesize stringEncoding = _stringEncoding;
 @synthesize headers = _headers;
+@synthesize body = _body;
 @synthesize bodyContentLength = _bodyContentLength;
-@synthesize inputData = _inputData;
-@synthesize inputURL = _inputURL;
 @synthesize hasInitialBoundary = _hasInitialBoundary;
 @synthesize hasFinalBoundary = _hasFinalBoundary;
 
@@ -1107,18 +1105,6 @@ typedef enum {
     return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone {
-    AFHTTPBodyPart *bodyPartCopy = [[[self class] allocWithZone:zone] init];
-
-    bodyPartCopy.stringEncoding = self.stringEncoding;
-    bodyPartCopy.headers = self.headers;
-    bodyPartCopy.bodyContentLength = self.bodyContentLength;
-    bodyPartCopy.inputData = self.inputData;
-    bodyPartCopy.inputURL = self.inputURL;
-
-    return bodyPartCopy;
-}
-
 - (void)dealloc {
     if (_inputStream) {
         [_inputStream close];
@@ -1127,14 +1113,12 @@ typedef enum {
 }
 
 - (NSInputStream *)inputStream {
-    if (_inputStream) {
-        return _inputStream;
-    }
-
-    if (self.inputData) {
-        _inputStream = [NSInputStream inputStreamWithData:self.inputData];
-    } else if (self.inputURL) {
-        _inputStream = [NSInputStream inputStreamWithURL:self.inputURL];
+    if (!_inputStream) {
+        if ([self.body isKindOfClass:[NSData class]]) {
+            _inputStream = [NSInputStream inputStreamWithData:self.body];
+        } else if ([self.body isKindOfClass:[NSURL class]]) {
+            _inputStream = [NSInputStream inputStreamWithURL:self.body];
+        }
     }
 
     return _inputStream;
@@ -1263,6 +1247,19 @@ typedef enum {
     _phaseReadOffset = 0;
     
     return YES;
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFHTTPBodyPart *bodyPart = [[[self class] allocWithZone:zone] init];
+
+    bodyPart.stringEncoding = self.stringEncoding;
+    bodyPart.headers = self.headers;
+    bodyPart.bodyContentLength = self.bodyContentLength;
+    bodyPart.body = self.body;
+
+    return bodyPart;
 }
 
 @end

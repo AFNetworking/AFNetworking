@@ -657,17 +657,14 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
-- (NSInputStream *)connection:(NSURLConnection *)connection needNewBodyStream:(NSURLRequest *)request
-{
-    NSInputStream *newBodyStream = nil;
-    
-    NSInputStream *bodyStream = request.HTTPBodyStream;
-    if ([bodyStream conformsToProtocol:@protocol(NSCopying)])
-    {
-        newBodyStream = [bodyStream copy];
+- (NSInputStream *)connection:(NSURLConnection *)connection
+            needNewBodyStream:(NSURLRequest *)request
+{    
+    if ([request.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
+        return [request.HTTPBodyStream copy];
     }
 
-    return newBodyStream;
+    return nil;
 }
 
 #pragma mark - NSCoding
