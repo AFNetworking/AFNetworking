@@ -573,7 +573,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
-- (NSInputStream *)connection:(NSURLConnection *)connection
+- (NSInputStream *)connection:(NSURLConnection __unused *)connection
             needNewBodyStream:(NSURLRequest *)request
 {
     if ([request.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
