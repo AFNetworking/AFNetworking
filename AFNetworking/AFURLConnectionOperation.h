@@ -126,9 +126,16 @@
 @property (readonly, nonatomic, assign) NSStringEncoding responseStringEncoding;
 
 
-///--------------------------------
-/// @name Accessing URL Credentials
-///--------------------------------
+///-------------------------------
+/// @name Managing URL Credentials
+///-------------------------------
+
+/**
+ Whether the URL connection should consult the credential storage for authenticating the connection. `YES` by default.
+ 
+ @discussion This is the value that is returned in the `NSURLConnectionDelegate` method `-connectionShouldUseCredentialStorage:`.
+ */
+@property (nonatomic, assign) BOOL shouldUseCredentialStorage;
 
 /**
  The credential used for authentication challenges in `-connection:didReceiveAuthenticationChallenge:`.

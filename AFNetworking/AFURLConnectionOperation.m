@@ -145,6 +145,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @dynamic inputStream;
 @synthesize outputStream = _outputStream;
 @synthesize credential = _credential;
+@synthesize shouldUseCredentialStorage = _shouldUseCredentialStorage;
 @synthesize userInfo = _userInfo;
 @synthesize backgroundTaskIdentifier = _backgroundTaskIdentifier;
 @synthesize uploadProgress = _uploadProgress;
@@ -205,6 +206,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
     
     self.request = urlRequest;
+
+    self.shouldUseCredentialStorage = YES;
     
     self.outputStream = [NSOutputStream outputStreamToMemory];
 
@@ -571,6 +574,10 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
             [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
         }
     }
+}
+
+- (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection __unused *)connection {
+    return self.shouldUseCredentialStorage;
 }
 
 - (NSInputStream *)connection:(NSURLConnection __unused *)connection
