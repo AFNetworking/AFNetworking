@@ -45,6 +45,7 @@
  - `connection:willCacheResponse:`
  - `connection:canAuthenticateAgainstProtectionSpace:`
  - `connection:didReceiveAuthenticationChallenge:`
+ - `connectionShouldUseCredentialStorage:`
  - `connection:needNewBodyStream:`
  
  If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
