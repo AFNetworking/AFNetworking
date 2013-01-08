@@ -119,8 +119,10 @@ static char kAFImageRequestOperationObjectKey;
                 } else {
                     self.image = responseObject;
                 }
-                
-                self.af_imageRequestOperation = nil;
+
+                if (self.af_imageRequestOperation == operation) {
+                  self.af_imageRequestOperation = nil;
+                }
             }
 
             [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
@@ -129,13 +131,15 @@ static char kAFImageRequestOperationObjectKey;
                 if (failure) {
                     failure(operation.request, operation.response, error);
                 }
-                
-                self.af_imageRequestOperation = nil;
+
+                if (self.af_imageRequestOperation == operation) {
+                  self.af_imageRequestOperation = nil;
+                }
             }
         }];
-        
+
         self.af_imageRequestOperation = requestOperation;
-        
+
         [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
     }
 }
