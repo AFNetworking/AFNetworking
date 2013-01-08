@@ -99,6 +99,10 @@ static char kAFImageRequestOperationObjectKey;
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     [self cancelImageRequestOperation];
+ 
+    if([urlRequest isKindOfClass:[NSURL class]]){
+        urlRequest = [NSURLRequest requestWithURL:(NSURL *)urlRequest];
+    }
     
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
