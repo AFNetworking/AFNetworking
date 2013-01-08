@@ -30,8 +30,9 @@
  
  By default, `AFJSONRequestOperation` accepts the following MIME types, which includes the official standard, `application/json`, as well as other commonly-used types:
  
- - `application/json`
+ - `application/x-javascript`
  - `text/json`
+ - `text/javascript`
 
  @warning JSON parsing will use the built-in `NSJSONSerialization` class.
  */
