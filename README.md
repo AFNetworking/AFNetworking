@@ -1,35 +1,89 @@
-![AFNetworking](http://engineering.gowalla.com/AFNetworking/afnetworking-logo.png "AFNetworking")
+<img src="https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking" style="display:block; margin: 10px auto 30px auto;" class="center">
 
-## A delightful iOS and OS X networking framework
-### There's a lot to be said for a networking library that you can wrap your head around. API design matters, too. Code at its best is poetry, and should be designed to delight (but never surprise).
-
-AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of familiar Foundation network classes, using `NSOperation` for scheduling and concurrency, and blocks for convenience and flexibility. It's designed to make common tasks easy, and to make complex tasks simple.
-
-## Documentation
-
-API documentation is available at [http://afnetworking.org/Documentation](http://afnetworking.org/Documentation).
-
-To install the API docset directly into your local Xcode organizer, first [install `appledoc`](https://github.com/tomaz/appledoc), and then clone this project and run `appledoc -p AFNetworking -c "Alamofire" --company-id com.alamofire AFNetworking/*.h`
-
-If you're looking for something more human-friendly, or more conceptual in nature, be sure to [check out the Wiki](https://github.com/AFNetworking/AFNetworking/wiki). 
-
-## Example Projects
-
-Be sure to download and run the example projects for iOS and Mac. Both example projects serve as models of how one might integrate AFNetworking into their own project.
-
-## Example Usage
-
-### JSON Request
+AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of [NSURLConnection](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/Reference/Reference.html), [NSOperation](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/NSOperation_class/Reference/Reference.html), and other familiar Foundation technologies. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use. For example, here's how easy it is to get JSON from a URL:
 
 ``` objective-c
-NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/users/mattt.json"]];
+NSURL *url = [NSURL URLWithString:@"http://api.twitter.com/1/statuses/public_timeline.json"];
+NSURLRequest *request = [NSURLRequest requestWithURL:url];
 AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-    NSLog(@"Name: %@ %@", [JSON valueForKeyPath:@"first_name"], [JSON valueForKeyPath:@"last_name"]);
+    NSLog(@"Public Timeline: %@", JSON);
 } failure:nil];
-
-NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
-[queue addOperation:operation];
+[operation start];
 ```
+
+Perhaps the most important feature of all, however, is the amazing community of developers who use and contribute to AFNetworking every day. AFNetworking powers some of the most popular and critically-acclaimed apps on the iPhone, iPad, and Mac. 
+
+Choose AFNetworking for your next project, or migrate over your existing projects—you'll be happy you did!
+
+## How To Get Started
+
+- [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/zipball/master) and try out the included Mac and iPhone example apps
+- Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles in the wiki](https://github.com/AFNetworking/AFNetworking/wiki)
+- Check out the [complete documentation](http://afnetworking.github.com/AFNetworking/) for a comprehensive look at the APIs available in AFNetworking
+- Watch the [NSScreencast episode about AFNetworking](http://nsscreencast.com/episodes/6-afnetworking) for a quick introduction to how to use it in your application
+- Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
+
+## Overview
+
+AFNetworking is architected to be as small and modular as possible, in order to make it simple to use and extend.
+
+<table>
+  <tr><th colspan="2" style="text-align:center;">Core</th></tr>
+  <tr>
+    <td><a href="http://afnetworking.org/Documentation/Classes/AFURLConnectionOperation.html">AFURLConnectionOperation</a></td>
+    <td>An <tt>NSOperation</tt> that implements the <tt>NSURLConnection</tt> delegate methods.</td>
+  </tr>
+
+  <tr><th colspan="2" style="text-align:center;">HTTP Requests</th></tr>
+
+  <tr>
+    <td><a href="http://afnetworking.org/Documentation/Classes/AFHTTPRequestOperation.html">AFHTTPRequestOperation</a></td>
+    <td>A subclass of <tt>AFURLConnectionOperation</tt> for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.</td>
+  </tr>
+  <tr>
+    <td><a href="http://afnetworking.org/Documentation/Classes/AFJSONRequestOperation.html">AFJSONRequestOperation</a></td>
+    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and working with JSON response data.</td>
+  </tr>
+  <tr>
+    <td><a href="http://afnetworking.org/Documentation/Classes/AFXMLRequestOperation.html">AFXMLRequestOperation</a></td>
+    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and working with XML response data.</td>
+  </tr>
+  <tr>
+    <td><a href="http://afnetworking.org/Documentation/Classes/AFPropertyListRequestOperation.html">AFPropertyListRequestOperation</a></td>
+    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and deserializing objects with <a href="http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/PropertyLists/index.html">property list</a> response data.</td>
+  </tr>
+
+  <tr><th colspan="2" style="text-align:center;">HTTP Client</th></tr>
+  <tr>
+    <td><a href="http://afnetworking.org/Documentation/Classes/AFHTTPClient.html">AFHTTPClient</a></td>
+    <td>
+      Captures the common patterns of communicating with an web application over HTTP, including:
+      
+      <ul>
+        <li>Making requests from relative paths of a base URL</li>
+        <li>Setting HTTP headers to be added automatically to requests</li>
+        <li>Authenticating requests with HTTP Basic credentials or an OAuth token</li>
+        <li>Managing an <tt>NSOperationQueue</tt> for requests made by the client</li>
+        <li>Generating query strings or HTTP bodies from an <tt>NSDictionary</tt></li>
+        <li>Constructing multipart form requests</li>
+        <li>Automatically parsing HTTP response data into its corresponding object representation</li>
+        <li>Monitoring and responding to changes in network reachability</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr><th colspan="2" style="text-align:center;">Images</th></tr>
+  <tr>
+    <td><a href="http://afnetworking.org/Documentation/Classes/AFImageRequestOperation.html">AFImageRequestOperation</a></td>
+    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and processing images.</td>
+  </tr>
+  <tr>
+    <td><a href="http://afnetworking.org/Documentation/Categories/UIImageView+AFNetworking.html">UIImageView+AFNetworking</a></td>
+    <td>Adds methods to <tt>UIImageView</tt> for loading remote images asynchronously from a URL.</td>
+  </tr>
+</table>
+
+## Example Usage
 
 ### XML Request
 
@@ -39,9 +93,7 @@ AFXMLRequestOperation *operation = [AFXMLRequestOperation XMLParserRequestOperat
   XMLParser.delegate = self;
   [XMLParser parse];
 } failure:nil];
-
-NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
-[queue addOperation:operation];
+[operation start];
 ```
 
 ### Image Request
@@ -49,15 +101,6 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 ``` objective-c
 UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 100.0f)];
 [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
-```
-
-``` objective-c
-NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://gowalla.com/images/web/logo.png"]];
-AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(NSImage *image){
-    NSLog(@"Image loaded: %@", image);
-}];
-NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
-[queue addOperation:operation];
 ```
 
 ### API Client Request
@@ -73,38 +116,18 @@ NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
 ### File Upload with Progress Callback
 
 ``` objective-c
+NSURL *url = [NSURL URLWithString:@"http://api-base-url.com"];
+AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
 NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"avatar.jpg"], 0.5);
-NSMutableURLRequest *request = [[AFHTTPClient sharedClient] multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:nil constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
-  [formData appendPartWithFileData:data mimeType:@"image/jpeg" name:@"avatar"];
+NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:nil constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
+    [formData appendPartWithFileData:imageData name:@"avatar" fileName:@"avatar.jpg" mimeType:@"image/jpeg"];
 }];
 
 AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
-[operation setUploadProgressBlock:^(NSUInteger totalBytesWritten, NSUInteger totalBytesExpectedToWrite) {
-    NSLog(@"Sent %d of %d bytes", totalBytesWritten, totalBytesExpectedToWrite);
+[operation setUploadProgressBlock:^(NSInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+    NSLog(@"Sent %lld of %lld bytes", totalBytesWritten, totalBytesExpectedToWrite);
 }];
-
-NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
-[queue addOperation:operation];
-```
-
-### Request With HTTP Authorization Header
-
-``` objective-c
-NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://gowalla.com/friendships/request?user_id=1699"]];
-[request setHTTPMethod:@"POST"];
-[request setValue:@"#{Base64-Encoded Credentials}" forHTTPHeaderField:@"Authorization"];
-
-AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
-operation.completionBlock = ^ {
-    if ([operation hasAcceptableStatusCode]) {
-        NSLog(@"Friend Request Sent");
-    } else {
-        NSLog(@"[Error]: (%@ %@) %@", [operation.request HTTPMethod], [[operation.request URL] relativePath], operation.error);
-    }
-};
-
-NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
-[queue addOperation:operation];
+[operation start];
 ```
 
 ### Streaming Request
@@ -115,48 +138,45 @@ NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http
 AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
 operation.inputStream = [NSInputStream inputStreamWithFileAtPath:[[NSBundle mainBundle] pathForResource:@"large-image" ofType:@"tiff"]];
 operation.outputStream = [NSOutputStream outputStreamToMemory];
-
-NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
-[queue addOperation:operation];
+[operation start];
 ```
 
 ## Requirements
 
-AFNetworking requires either [iOS 4.0](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html%23//apple_ref/doc/uid/TP40009559-SW1) and above, or [Mac OS 10.6](http://developer.apple.com/library/mac/#releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_6.html#//apple_ref/doc/uid/TP40008898-SW7) and above.
+AFNetworking requires either [iOS 4.0](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html) and above, or [Mac OS 10.6](http://developer.apple.com/library/mac/#releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_6.html#//apple_ref/doc/uid/TP40008898-SW7) ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
 
 AFNetworking uses [`NSJSONSerialization`](http://developer.apple.com/library/mac/#documentation/Foundation/Reference/NSJSONSerialization_Class/Reference/Reference.html) if it is available. If your app targets a platform where this class is not available you can include one of the following JSON libraries to your project for AFNetworking to automatically detect and use.
 
 * [JSONKit](https://github.com/johnezang/JSONKit)
-* [SBJson](http://stig.github.com/json-framework/)
-* [YAJL](http://lloyd.github.com/yajl/)
+* [SBJson](https://stig.github.com/json-framework/)
+* [YAJL](https://lloyd.github.com/yajl/)
+* [NextiveJson](https://github.com/nextive/NextiveJson)
 
 ### ARC Support
 
-If you are including AFNetworking in a project that uses [Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html) enabled, you will need to set the `-fno-objc-arc` compiler flag on all of the AFNetworking source files. To do this in Xcode, go to your active target and select the "Build Phases" tab. In the "Compiler Flags" column, set `-fno-objc-arc` for each of the AFNetworking source files.
+AFNetworking will transition its codebase to ARC in a future release.
 
-Although this is suboptimal, forking the project into an ARC and non-ARC branch would be extremely difficult to maintain. On the bright side, we're very excited about [CocoaPods](https://github.com/alloy/cocoapods) as a potential solution.
+If you are including AFNetworking in a project that uses [Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html) enabled, you will need to set the `-fno-objc-arc` compiler flag on all of the AFNetworking source files. To do this in Xcode, go to your active target and select the "Build Phases" tab. Now select all AFNetworking source files, press Enter, insert `-fno-objc-arc` and then "Done" to disable ARC for AFNetworking.
 
 ## Credits
 
-AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://itunes.apple.com/us/app/gowalla/id304510106?mt=8).
+AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
 
-[TTTLocationFormatter](), used in the example project, is part of [FormatterKit](https://github.com/mattt/FormatterKit), created by [Mattt Thompson](https://github.com/mattt/).
+AFNetworking's logo was designed by [Alan Defibaugh](http://www.alandefibaugh.com/).
 
-AFNetworking's logo was designed by the amazingly-talented [Alan Defibaugh](http://www.alandefibaugh.com/).
+And most of all, thanks to AFNetworking's [growing list of contributors](https://github.com/AFNetworking/AFNetworking/contributors).
 
 ## Contact
 
-Mattt Thompson
+Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking))
 
-- http://github.com/mattt
-- http://twitter.com/mattt
-- m@mattt.me
+### Creators
 
-Scott Raymond
+[Mattt Thompson](http://github.com/mattt)  
+[@mattt](https://twitter.com/mattt)
 
-- http://github.com/sco
-- http://twitter.com/sco
-- sco@gowalla.com
+[Scott Raymond](http://github.com/sco)  
+[@sco](https://twitter.com/sco)
 
 ## License
 

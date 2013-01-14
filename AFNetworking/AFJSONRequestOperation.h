@@ -32,12 +32,10 @@
  
  - `application/json`
  - `text/json`
+
+ @warning JSON parsing will automatically use JSONKit, SBJSON, YAJL, or NextiveJSON, if provided. Otherwise, the built-in `NSJSONSerialization` class is used, if available (iOS 5.0 and Mac OS 10.7). If the build target does not either support `NSJSONSerialization` or include a third-party JSON library, a runtime exception will be thrown when attempting to parse a JSON request. 
  */
-@interface AFJSONRequestOperation : AFHTTPRequestOperation {
-@private
-    id _responseJSON;
-    NSError *_JSONError;
-}
+@interface AFJSONRequestOperation : AFHTTPRequestOperation
 
 ///----------------------------
 /// @name Getting Response Data
@@ -57,7 +55,7 @@
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation
  @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the JSON object created from the response data of request.
- @param failure A block object to be executed when the operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the resonse data as JSON. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
+ @param failure A block object to be executed when the operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data as JSON. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error describing the network or parsing error that occurred.
   
  @return A new JSON request operation
  */

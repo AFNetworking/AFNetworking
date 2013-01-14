@@ -1,6 +1,6 @@
-// AFNetworking.h
+// PublicTimelineViewController.h
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <Availability.h>
+#import <UIKit/UIKit.h>
 
-#ifndef _AFNETWORKING_
-#define _AFNETWORKING_
+@interface PublicTimelineViewController : UITableViewController
 
-#import "AFURLConnectionOperation.h"
-
-#import "AFHTTPRequestOperation.h"
-#import "AFJSONRequestOperation.h"
-#import "AFXMLRequestOperation.h"
-#import "AFPropertyListRequestOperation.h"
-#import "AFHTTPClient.h"
-
-#import "AFImageRequestOperation.h"
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import "AFNetworkActivityIndicatorManager.h"
-#import "UIImageView+AFNetworking.h"
-#endif
-
-#endif /* _AFNETWORKING_ */
+@end

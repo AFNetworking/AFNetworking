@@ -1,6 +1,6 @@
-// AFNetworking.h
+// AFTwitterAPIClient.h
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +20,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <Availability.h>
+#import "AFTwitterAPIClient.h"
 
-#ifndef _AFNETWORKING_
-#define _AFNETWORKING_
-
-#import "AFURLConnectionOperation.h"
-
-#import "AFHTTPRequestOperation.h"
 #import "AFJSONRequestOperation.h"
-#import "AFXMLRequestOperation.h"
-#import "AFPropertyListRequestOperation.h"
-#import "AFHTTPClient.h"
 
-#import "AFImageRequestOperation.h"
+static NSString * const kAFTwitterAPIBaseURLString = @"http://api.twitter.com/1/";
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import "AFNetworkActivityIndicatorManager.h"
-#import "UIImageView+AFNetworking.h"
-#endif
+@implementation AFTwitterAPIClient
 
-#endif /* _AFNETWORKING_ */
++ (AFTwitterAPIClient *)sharedClient {
+    static AFTwitterAPIClient *_sharedClient = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedClient = [[AFTwitterAPIClient alloc] initWithBaseURL:[NSURL URLWithString:kAFTwitterAPIBaseURLString]];
+    });
+    
+    return _sharedClient;
+}
+
+- (id)initWithBaseURL:(NSURL *)url {
+    self = [super initWithBaseURL:url];
+    if (!self) {
+        return nil;
+    }
+    
+    [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    
+    // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
+	[self setDefaultHeader:@"Accept" value:@"application/json"];
+    
+    return self;
+}
+
+@end

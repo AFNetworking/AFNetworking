@@ -1,6 +1,6 @@
-// AFNetworking.h
+// Tweet.h
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,24 +21,18 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <Availability.h>
 
-#ifndef _AFNETWORKING_
-#define _AFNETWORKING_
+@class User;
 
-#import "AFURLConnectionOperation.h"
+@interface Tweet : NSObject
 
-#import "AFHTTPRequestOperation.h"
-#import "AFJSONRequestOperation.h"
-#import "AFXMLRequestOperation.h"
-#import "AFPropertyListRequestOperation.h"
-#import "AFHTTPClient.h"
+@property (readonly) NSUInteger tweetID;
+@property (readonly) NSString *text;
 
-#import "AFImageRequestOperation.h"
+@property (readonly) User *user;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import "AFNetworkActivityIndicatorManager.h"
-#import "UIImageView+AFNetworking.h"
-#endif
+- (id)initWithAttributes:(NSDictionary *)attributes;
 
-#endif /* _AFNETWORKING_ */
++ (void)publicTimelineTweetsWithBlock:(void (^)(NSArray *tweets, NSError *error))block;
+
+@end
