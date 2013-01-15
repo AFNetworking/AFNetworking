@@ -66,10 +66,18 @@
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
+
 /**
  Cancels any executing image request operation for the receiver, if one exists.
  */
 - (void)cancelImageRequestOperation;
+
+/**
+ True if image is already cached in NSCache
+ */
++ (BOOL)isImageWithURLCached:(NSURL *)url;
+
+
 
 @end
 
