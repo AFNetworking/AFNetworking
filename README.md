@@ -25,7 +25,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 ## Overview
 
-<p class="center">
+<p align="center">
   <img src="https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-architecture-diagram.png" alt="AFNetworking Architecture Diagram"/>
 </p>
 
