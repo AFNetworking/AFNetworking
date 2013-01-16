@@ -1,4 +1,4 @@
-<img src="https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking" style="display:block; margin: 10px auto 30px auto;" class="center">
+<img src="https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking">
 
 AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of [NSURLConnection](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/Reference/Reference.html), [NSOperation](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/NSOperation_class/Reference/Reference.html), and other familiar Foundation technologies. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use. For example, here's how easy it is to get JSON from a URL:
 
@@ -24,6 +24,10 @@ Choose AFNetworking for your next project, or migrate over your existing project
 - Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
 
 ## Overview
+
+<p class="center">
+  <img src="https://github.com/AFNetworking/AFNetworking/blob/gh-pages/afnetworking-architecture-diagram.png" alt="AFNetworking Architecture Diagram"/>
+</p>
 
 AFNetworking is architected to be as small and modular as possible, in order to make it simple to use and extend.
 
@@ -177,3 +181,4 @@ Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking
 ## License
 
 AFNetworking is available under the MIT license. See the LICENSE file for more info.
+
