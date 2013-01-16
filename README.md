@@ -26,7 +26,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 ## Overview
 
 <p class="center">
-  <img src="https://github.com/AFNetworking/AFNetworking/blob/gh-pages/afnetworking-architecture-diagram.png" alt="AFNetworking Architecture Diagram"/>
+  <img src="https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-architecture-diagram.png" alt="AFNetworking Architecture Diagram"/>
 </p>
 
 AFNetworking is architected to be as small and modular as possible, in order to make it simple to use and extend.
