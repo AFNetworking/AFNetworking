@@ -32,15 +32,14 @@
 
 - (id)initWithAttributes:(NSDictionary *)attributes {
     self = [super init];
-    if (!self) {
-        return nil;
+
+    if (self != nil) {
+        _postID = [[attributes valueForKeyPath:@"id"] integerValue];
+        _text = [attributes valueForKeyPath:@"text"];
+    
+        _user = [[User alloc] initWithAttributes:[attributes valueForKeyPath:@"user"]];
     }
-    
-    _postID = [[attributes valueForKeyPath:@"id"] integerValue];
-    _text = [attributes valueForKeyPath:@"text"];
-    
-    _user = [[User alloc] initWithAttributes:[attributes valueForKeyPath:@"user"]];
-    
+       
     return self;
 }
 
