@@ -24,6 +24,8 @@
 
 #import <Availability.h>
 
+@class AFURLSpeedMeasure;
+
 /**
  `AFURLConnectionOperation` is a subclass of `NSOperation` that implements `NSURLConnection` delegate methods.
  
@@ -171,6 +173,16 @@
  The user info dictionary for the receiver.
  */
 @property (nonatomic, strong) NSDictionary *userInfo;
+
+/**
+ Used to calculate the download speed.
+ */
+@property (nonatomic, strong, readonly) AFURLSpeedMeasure *downloadSpeedMeasure;
+
+/**
+ Used to calculate the upload speed.
+ */
+@property (nonatomic, strong, readonly) AFURLSpeedMeasure *uploadSpeedMeasure;
 
 ///------------------------------------------------------
 /// @name Initializing an AFURLConnectionOperation Object
