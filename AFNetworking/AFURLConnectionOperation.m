@@ -614,7 +614,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
     NSDate *now = [NSDate date];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.uploadSpeedMeasure updateSpeedWithDataChunkLength:bytesWritten date:now];
+        [self.uploadSpeedMeasure updateSpeedWithDataChunkLength:bytesWritten receivedAtDate:now];
     });
     
     if (self.uploadProgress) {
@@ -639,7 +639,7 @@ didReceiveResponse:(NSURLResponse *)response
     NSDate *now = [NSDate date];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.downloadSpeedMeasure updateSpeedWithDataChunkLength:length date:now];
+        [self.downloadSpeedMeasure updateSpeedWithDataChunkLength:length receivedAtDate:now];
     });
     
     self.totalBytesRead += length;

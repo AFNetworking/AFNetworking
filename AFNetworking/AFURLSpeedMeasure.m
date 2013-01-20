@@ -67,7 +67,7 @@
 
 #pragma mark - Instance methods
 
-- (void)updateSpeedWithDataChunkLength:(NSUInteger)dataChunkLength date:(NSDate *)date
+- (void)updateSpeedWithDataChunkLength:(NSUInteger)dataChunkLength receivedAtDate:(NSDate *)date
 {
     if (!self.active) {
         return;

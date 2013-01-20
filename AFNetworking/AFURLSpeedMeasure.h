@@ -57,6 +57,6 @@
 /**
  Updates the calculated speed if `active` is `YES`.
  */
-- (void)updateSpeedWithDataChunkLength:(NSUInteger)dataChunkLength date:(NSDate *)date;
+- (void)updateSpeedWithDataChunkLength:(NSUInteger)dataChunkLength receivedAtDate:(NSDate *)date;
 
 @end
