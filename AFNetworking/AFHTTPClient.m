@@ -1167,6 +1167,7 @@ typedef enum {
         case NSStreamStatusAtEnd:
         case NSStreamStatusClosed:
         case NSStreamStatusError:
+        default:
             return NO;
     }
 }
