@@ -132,7 +132,7 @@ AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequ
 [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
     NSLog(@"Sent %lld of %lld bytes", totalBytesWritten, totalBytesExpectedToWrite);
 }];
-[operation start];
+[httpClient enqueueHTTPRequestOperation:operation];
 ```
 
 ### Streaming Request
