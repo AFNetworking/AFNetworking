@@ -164,6 +164,20 @@
 @property (nonatomic, strong) NSOutputStream *outputStream;
 
 ///---------------------------------------------
+/// @name Progress Callback queues
+///---------------------------------------------
+
+/**
+ The callback dispatch queue on download progress. If `NULL` (default), the main queue is used.
+ */
+@property (nonatomic, assign) dispatch_queue_t downloadCallbackQueue;
+
+/**
+ The callback dispatch queue on upload progress. If `NULL` (default), the main queue is used.
+ */
+@property (nonatomic, assign) dispatch_queue_t uploadCallbackQueue;
+
+///---------------------------------------------
 /// @name Managing Request Operation Information
 ///---------------------------------------------
 

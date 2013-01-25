@@ -144,6 +144,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize totalBytesRead = _totalBytesRead;
 @dynamic inputStream;
 @synthesize outputStream = _outputStream;
+@synthesize downloadCallbackQueue = _downloadCallbackQueue;
+@synthesize uploadCallbackQueue = _uploadCallbackQueue;
 @synthesize credential = _credential;
 @synthesize shouldUseCredentialStorage = _shouldUseCredentialStorage;
 @synthesize userInfo = _userInfo;
@@ -220,6 +222,20 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (_outputStream) {
         [_outputStream close];
         _outputStream = nil;
+    }
+    
+    if (_downloadCallbackQueue) {
+#if !OS_OBJECT_USE_OBJC
+        dispatch_release(_downloadCallbackQueue);
+#endif
+        _downloadCallbackQueue = NULL;
+    }
+    
+    if (_uploadCallbackQueue) {
+#if !OS_OBJECT_USE_OBJC
+        dispatch_release(_uploadCallbackQueue);
+#endif
+        _uploadCallbackQueue = NULL;
     }
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
@@ -607,7 +623,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
     if (self.uploadProgress) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(self.uploadCallbackQueue ?: dispatch_get_main_queue(), ^{
             self.uploadProgress((NSUInteger)bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
         });
     }
@@ -632,7 +648,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     if (self.downloadProgress) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(self.downloadCallbackQueue ?: dispatch_get_main_queue(), ^{
             self.downloadProgress([data length], self.totalBytesRead, self.response.expectedContentLength);
         });
     }
