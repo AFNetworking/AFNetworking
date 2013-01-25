@@ -509,7 +509,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     NSEnumerator *enumerator = [self.registeredHTTPOperationClassNames reverseObjectEnumerator];
     while (!operation && (className = [enumerator nextObject])) {
         Class op_class = NSClassFromString(className);
-        if (op_class && [op_class canProcessRequest:urlRequest]) {
+        if (op_class) {
             operation = [(AFHTTPRequestOperation *)[op_class alloc] initWithRequest:urlRequest];
         }
     }
