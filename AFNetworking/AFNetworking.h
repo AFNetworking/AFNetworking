@@ -40,4 +40,6 @@
         #import "AFNetworkActivityIndicatorManager.h"
         #import "UIImageView+AFNetworking.h"
     #endif
+
+    #import "AFURLSpeedMeasure.h"
 #endif /* _AFNETWORKING_ */

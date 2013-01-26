@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFURLConnectionOperation.h"
+#import "AFURLSpeedMeasure.h"
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     #import <UIKit/UIKit.h>
@@ -155,6 +156,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize cacheResponse = _cacheResponse;
 @synthesize redirectResponse = _redirectResponse;
 @synthesize lock = _lock;
+@synthesize downloadSpeedMeasure = _downloadSpeedMeasure, uploadSpeedMeasure = _uploadSpeedMeasure;
 
 + (void) __attribute__((noreturn)) networkRequestThreadEntryPoint:(id)__unused object {
     do {
@@ -212,6 +214,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.outputStream = [NSOutputStream outputStreamToMemory];
 
     self.state = AFOperationReadyState;
+    
+    _downloadSpeedMeasure = [[AFURLSpeedMeasure alloc] init];
+    _uploadSpeedMeasure = [[AFURLSpeedMeasure alloc] init];
 	
     return self;
 }
@@ -606,6 +611,12 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
  totalBytesWritten:(NSInteger)totalBytesWritten 
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
+    NSDate *now = [NSDate date];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.uploadSpeedMeasure updateSpeedWithDataChunkLength:bytesWritten receivedAtDate:now];
+    });
+    
     if (self.uploadProgress) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.uploadProgress((NSUInteger)bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
@@ -624,16 +635,23 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)connection:(NSURLConnection __unused *)connection
     didReceiveData:(NSData *)data
 {
-    self.totalBytesRead += [data length];
+    NSUInteger length = data.length;
+    NSDate *now = [NSDate date];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.downloadSpeedMeasure updateSpeedWithDataChunkLength:length receivedAtDate:now];
+    });
+    
+    self.totalBytesRead += length;
     
     if ([self.outputStream hasSpaceAvailable]) {
-        const uint8_t *dataBuffer = (uint8_t *) [data bytes];
-        [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
+        const uint8_t *dataBuffer = (uint8_t *)[data bytes];
+        [self.outputStream write:&dataBuffer[0] maxLength:length];
     }
     
     if (self.downloadProgress) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.downloadProgress([data length], self.totalBytesRead, self.response.expectedContentLength);
+            self.downloadProgress(length, self.totalBytesRead, self.response.expectedContentLength);
         });
     }
 }
