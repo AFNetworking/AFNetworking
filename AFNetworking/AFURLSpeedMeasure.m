@@ -120,4 +120,57 @@
     return [NSString stringWithFormat:@"%01.02lf %@", speed, speedMeasures[counter]];
 }
 
+- (NSTimeInterval)remainingTimeOfTotalSize:(long long)totalSize numberOfCompletedBytes:(long long)numberOfCompletedBytes
+{
+    NSAssert(self.active, @"AFURLSpeedMeasure must be set active to compute the remaining time");
+    
+    if (numberOfCompletedBytes >= totalSize) {
+        return 0.0;
+    }
+    
+    long long remainingBytes = totalSize - numberOfCompletedBytes;
+    NSTimeInterval remainingSeconds = (double)remainingBytes / self.speed;
+    
+    return remainingSeconds;
+}
+
+- (NSString *)humanReadableRemainingTimeOfTotalSize:(long long)totalSize numberOfCompletedBytes:(long long)numberOfCompletedBytes
+{
+    NSTimeInterval remainingTime = [self remainingTimeOfTotalSize:totalSize numberOfCompletedBytes:numberOfCompletedBytes];
+    
+    static NSUInteger availableTimeIntervals = 3;
+    static double timeIntervals[] = { 60.0, 60.0, 24.0 };
+    
+    static NSArray *units = nil;
+    static NSArray *pluralizedUnits = nil;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        units = (@[
+                 NSLocalizedString(@"Second", @""),
+                 NSLocalizedString(@"Minute", @""),
+                 NSLocalizedString(@"Hour", @""),
+                 NSLocalizedString(@"Day", @"")
+                 ]);
+        
+        pluralizedUnits = (@[
+                           NSLocalizedString(@"Seconds", @""),
+                           NSLocalizedString(@"Minutes", @""),
+                           NSLocalizedString(@"Hours", @""),
+                           NSLocalizedString(@"Days", @"")
+                           ]);
+    });
+    
+    int counter = 0;
+    while (counter < availableTimeIntervals && remainingTime > timeIntervals[counter]) {
+        remainingTime /= timeIntervals[counter];
+        counter++;
+    }
+    
+    remainingTime = round(remainingTime);
+    NSString *unit = remainingTime == 1.0 ? units[counter] : pluralizedUnits[counter];
+    
+    return [NSString stringWithFormat:@"%.0lf %@", remainingTime, unit];
+}
+
 @end

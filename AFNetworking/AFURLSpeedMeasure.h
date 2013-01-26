@@ -59,4 +59,14 @@
  */
 - (void)updateSpeedWithDataChunkLength:(NSUInteger)dataChunkLength receivedAtDate:(NSDate *)date;
 
+/**
+ Computes the estimated remaining time in seconds based on the current `speed`.
+ */
+- (NSTimeInterval)remainingTimeOfTotalSize:(long long)totalSize numberOfCompletedBytes:(long long)numberOfCompletedBytes;
+
+/**
+ Computes the estimated remaining time in seconds based on the current `speed` and returns it in a human readable form.
+ */
+- (NSString *)humanReadableRemainingTimeOfTotalSize:(long long)totalSize numberOfCompletedBytes:(long long)numberOfCompletedBytes;
+
 @end
