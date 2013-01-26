@@ -325,31 +325,33 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)setState:(AFOperationState)state {
-    [self.lock lock];
-    if (AFStateTransitionIsValid(self.state, state, [self isCancelled])) {
-        NSString *oldStateKey = AFKeyPathFromOperationState(self.state);
-        NSString *newStateKey = AFKeyPathFromOperationState(state);
-        
-        [self willChangeValueForKey:newStateKey];
-        [self willChangeValueForKey:oldStateKey];
-        _state = state;
-        [self didChangeValueForKey:oldStateKey];
-        [self didChangeValueForKey:newStateKey];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            switch (state) {
-                case AFOperationExecutingState:
-                    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
-                    break;
-                case AFOperationFinishedState:
-                    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
-                    break;
-                default:
-                    break;
-            }
-        });
+    if (!AFStateTransitionIsValid(self.state, state, [self isCancelled])) {
+        return;
     }
+    
+    [self.lock lock];
+    NSString *oldStateKey = AFKeyPathFromOperationState(self.state);
+    NSString *newStateKey = AFKeyPathFromOperationState(state);
+    
+    [self willChangeValueForKey:newStateKey];
+    [self willChangeValueForKey:oldStateKey];
+    _state = state;
+    [self didChangeValueForKey:oldStateKey];
+    [self didChangeValueForKey:newStateKey];
     [self.lock unlock];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        switch (state) {
+            case AFOperationExecutingState:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
+                break;
+            case AFOperationFinishedState:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+                break;
+            default:
+                break;
+        }
+    });
 }
 
 - (NSString *)responseString {
