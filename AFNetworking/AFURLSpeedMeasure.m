@@ -56,7 +56,7 @@
 - (id)init
 {
     if (self = [super init]) {
-        _windowSize = 32;
+        _windowSize = 64;
         _timesArray = [NSMutableArray arrayWithCapacity:_windowSize];
         _chunkLengthsArray = [NSMutableArray arrayWithCapacity:_windowSize];
         _speedCalculationTimeInterval = 1.0;
