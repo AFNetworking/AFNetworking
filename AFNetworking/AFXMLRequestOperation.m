@@ -1,17 +1,17 @@
 // AFXMLRequestOperation.m
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,7 +29,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     if (af_xml_request_operation_processing_queue == NULL) {
         af_xml_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.xml-request.processing", 0);
     }
-    
+
     return af_xml_request_operation_processing_queue;
 }
 
@@ -62,7 +62,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
             failure(operation.request, operation.response, error, [(AFXMLRequestOperation *)operation responseXMLParser]);
         }
     }];
-    
+
     return requestOperation;
 }
 
@@ -74,7 +74,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, __unused id responseObject) {
         if (success) {
-            NSXMLDocument *XMLDocument = [(AFXMLRequestOperation *)operation responseXMLDocument];            
+            NSXMLDocument *XMLDocument = [(AFXMLRequestOperation *)operation responseXMLDocument];
             success(operation.request, operation.response, XMLDocument);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -83,7 +83,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
             failure(operation.request, operation.response, error, XMLDocument);
         }
     }];
-    
+
     return requestOperation;
 }
 #endif
@@ -93,7 +93,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     if (!_responseXMLParser && [self.responseData length] > 0 && [self isFinished]) {
         self.responseXMLParser = [[NSXMLParser alloc] initWithData:self.responseData];
     }
-    
+
     return _responseXMLParser;
 }
 
@@ -104,7 +104,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
         self.responseXMLDocument = [[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error];
         self.XMLError = error;
     }
-    
+
     return _responseXMLDocument;
 }
 #endif
@@ -121,7 +121,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 
 - (void)cancel {
     [super cancel];
-    
+
     self.responseXMLParser.delegate = nil;
 }
 
@@ -140,10 +140,10 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
-    self.completionBlock = ^ {        
+    self.completionBlock = ^ {
         dispatch_async(xml_request_operation_processing_queue(), ^(void) {
             NSXMLParser *XMLParser = self.responseXMLParser;
-            
+
             if (self.error) {
                 if (failure) {
                     dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
@@ -155,7 +155,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
                     dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
                         success(self, XMLParser);
                     });
-                } 
+                }
             }
         });
     };
