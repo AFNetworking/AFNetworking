@@ -41,11 +41,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 @synthesize JSONReadingOptions = _JSONReadingOptions;
 @synthesize JSONError = _JSONError;
 
-+ (AFJSONRequestOperation *)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success 
-                                                    failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure
++ (instancetype)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
+										success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+										failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure
 {
-    AFJSONRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
+    AFJSONRequestOperation *requestOperation = [(AFJSONRequestOperation *)[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -64,10 +64,15 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     if (!_responseJSON && [self.responseData length] > 0 && [self isFinished] && !self.JSONError) {
         NSError *error = nil;
 
-        if ([self.responseData length] == 0) {
+        // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
+        // See https://github.com/rails/rails/issues/1742
+        if ([self.responseData length] == 0 || [self.responseString isEqualToString:@" "]) {
             self.responseJSON = nil;
         } else {
-            self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:self.JSONReadingOptions error:&error];
+            // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
+            // See http://stackoverflow.com/a/12843465/157142
+            NSData *JSONData = [self.responseString dataUsingEncoding:self.responseStringEncoding];
+            self.responseJSON = [NSJSONSerialization JSONObjectWithData:JSONData options:self.JSONReadingOptions error:&error];
         }
         
         self.JSONError = error;
@@ -99,11 +104,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
-   self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
+   self.completionBlock = ^ {        
         if (self.error) {
             if (failure) {
                 dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{

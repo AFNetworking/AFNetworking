@@ -24,7 +24,7 @@
 
 #import "AFHTTPRequestOperation.h"
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 
 @interface AFNetworkActivityIndicatorManager ()
@@ -42,7 +42,7 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 @synthesize enabled = _enabled;
 @dynamic networkActivityIndicatorVisible;
 
-+ (AFNetworkActivityIndicatorManager *)sharedManager {
++ (instancetype)sharedManager {
     static AFNetworkActivityIndicatorManager *_sharedManager = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{

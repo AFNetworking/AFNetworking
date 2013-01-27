@@ -48,11 +48,11 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 #endif
 @synthesize XMLError = _XMLError;
 
-+ (AFXMLRequestOperation *)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
-                                                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLParser *XMLParser))failure
++ (instancetype)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
+											 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
+											 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLParser *XMLParser))failure
 {
-    AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
+    AFXMLRequestOperation *requestOperation = [(AFXMLRequestOperation *)[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -67,9 +67,9 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
-+ (AFXMLRequestOperation *)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                          success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
-                                                          failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLDocument *document))failure
++ (instancetype)XMLDocumentRequestOperationWithRequest:(NSURLRequest *)urlRequest
+											   success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLDocument *document))success
+											   failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLDocument *document))failure
 {
     AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, __unused id responseObject) {
@@ -140,11 +140,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
-    self.completionBlock = ^ {
-        if ([self isCancelled]) {
-            return;
-        }
-        
+    self.completionBlock = ^ {        
         dispatch_async(xml_request_operation_processing_queue(), ^(void) {
             NSXMLParser *XMLParser = self.responseXMLParser;
             

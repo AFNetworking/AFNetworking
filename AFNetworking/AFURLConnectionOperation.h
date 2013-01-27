@@ -45,6 +45,8 @@
  - `connection:willCacheResponse:`
  - `connection:canAuthenticateAgainstProtectionSpace:`
  - `connection:didReceiveAuthenticationChallenge:`
+ - `connectionShouldUseCredentialStorage:`
+ - `connection:needNewBodyStream:`
  
  If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
   
@@ -73,7 +75,7 @@
  - A copy of an operation will not include the `outputStream` of the original.
  - Operation copies do not include `completionBlock`. `completionBlock` often strongly captures a reference to `self`, which would otherwise have the unintuitive side-effect of pointing to the _original_ operation when copied.
  */
-@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate, NSCoding, NSCopying>
+@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate, NSCoding, NSCopying>
 
 ///-------------------------------
 /// @name Accessing Run Loop Modes
@@ -114,10 +116,34 @@
 
 /**
  The string representation of the response data.
- 
- @discussion This method uses the string encoding of the response, or if UTF-8 if not specified, to construct a string from the response data.
  */
 @property (readonly, nonatomic, copy) NSString *responseString;
+
+/**
+ The string encoding of the response.
+ 
+ @discussion If the response does not specify a valid string encoding, `responseStringEncoding` will return `NSUTF8StringEncoding`. 
+ */
+@property (readonly, nonatomic, assign) NSStringEncoding responseStringEncoding;
+
+
+///-------------------------------
+/// @name Managing URL Credentials
+///-------------------------------
+
+/**
+ Whether the URL connection should consult the credential storage for authenticating the connection. `YES` by default.
+ 
+ @discussion This is the value that is returned in the `NSURLConnectionDelegate` method `-connectionShouldUseCredentialStorage:`.
+ */
+@property (nonatomic, assign) BOOL shouldUseCredentialStorage;
+
+/**
+ The credential used for authentication challenges in `-connection:didReceiveAuthenticationChallenge:`.
+ 
+ @discussion This will be overridden by any shared credentials that exist for the username or password of the request URL, if present.
+ */
+@property (nonatomic, strong) NSURLCredential *credential;
 
 ///------------------------
 /// @name Accessing Streams
@@ -136,6 +162,15 @@
  @discussion By default, data is accumulated into a buffer that is stored into `responseData` upon completion of the request. When `outputStream` is set, the data will not be accumulated into an internal buffer, and as a result, the `responseData` property of the completed request will be `nil`. The output stream will be scheduled in the network thread runloop upon being set.
  */
 @property (nonatomic, strong) NSOutputStream *outputStream;
+
+///---------------------------------------------
+/// @name Managing Request Operation Information
+///---------------------------------------------
+
+/**
+ The user info dictionary for the receiver.
+ */
+@property (nonatomic, strong) NSDictionary *userInfo;
 
 ///------------------------------------------------------
 /// @name Initializing an AFURLConnectionOperation Object
@@ -184,7 +219,7 @@
  
  @param handler A handler to be called shortly before the application’s remaining background time reaches 0. The handler is wrapped in a block that cancels the operation, and cleans up and marks the end of execution, unlike the `handler` parameter in `UIApplication -beginBackgroundTaskWithExpirationHandler:`, which expects this to be done in the handler itself. The handler is called synchronously on the main thread, thus blocking the application’s suspension momentarily while the application is notified. 
  */
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 - (void)setShouldExecuteAsBackgroundTaskWithExpirationHandler:(void (^)(void))handler;
 #endif
 
