@@ -1241,7 +1241,6 @@ typedef enum {
             _phase = AFFinalBoundaryPhase;
             break;
         case AFFinalBoundaryPhase:
-        default:
             _phase = AFEncapsulationBoundaryPhase;
             break;
     }
