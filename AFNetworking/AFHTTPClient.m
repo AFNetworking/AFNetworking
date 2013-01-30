@@ -585,7 +585,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         AFCompletionBlock originalCompletionBlock = [operation.completionBlock copy];
 		__weak AFHTTPRequestOperation *weakOperation = operation;
         operation.completionBlock = ^{
-            dispatch_queue_t queue = weakOperation.successCallbackQueue ?: dispatch_get_main_queue();
+            __strong AFHTTPRequestOperation *op = weakOperation;
+            dispatch_queue_t queue = op.successCallbackQueue ?: dispatch_get_main_queue();
             dispatch_group_async(dispatchGroup, queue, ^{
                 if (originalCompletionBlock) {
                     originalCompletionBlock();
