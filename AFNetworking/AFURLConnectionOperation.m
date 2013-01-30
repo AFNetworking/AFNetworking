@@ -212,6 +212,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.outputStream = [NSOutputStream outputStreamToMemory];
 
     self.state = AFOperationReadyState;
+    
+    //This ifdef has been added for backwards compatibility purposes
+#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
+    self.allowInvalidSSLCertificate = YES;
+#endif
 
     return self;
 }
@@ -521,11 +526,10 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 - (BOOL)connection:(NSURLConnection *)connection
 canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 {
-#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
-    if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        return YES;
+    if(self.allowInvalidSSLCertificate &&
+       [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            return YES;
     }
-#endif
 
     if (self.authenticationAgainstProtectionSpace) {
         return self.authenticationAgainstProtectionSpace(connection, protectionSpace);
@@ -539,12 +543,13 @@ canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 - (void)connection:(NSURLConnection *)connection
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
-#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
-    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+
+    if(self.allowInvalidSSLCertificate
+       && [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
         return;
     }
-#endif
+
 
     if (self.authenticationChallenge) {
         self.authenticationChallenge(connection, challenge);
@@ -692,6 +697,7 @@ didReceiveResponse:(NSURLResponse *)response
     self.error = [aDecoder decodeObjectForKey:@"error"];
     self.responseData = [aDecoder decodeObjectForKey:@"responseData"];
     self.totalBytesRead = [[aDecoder decodeObjectForKey:@"totalBytesRead"] longLongValue];
+    self.allowInvalidSSLCertificate = [[aDecoder decodeObjectForKey:@"allowInvalidSSLCertificate"] boolValue];
 
     return self;
 }
@@ -716,6 +722,7 @@ didReceiveResponse:(NSURLResponse *)response
     [aCoder encodeObject:self.error forKey:@"error"];
     [aCoder encodeObject:self.responseData forKey:@"responseData"];
     [aCoder encodeObject:[NSNumber numberWithLongLong:self.totalBytesRead] forKey:@"totalBytesRead"];
+    [aCoder encodeObject:[NSNumber numberWithBool:self.allowInvalidSSLCertificate] forKey:@"allowInvalidSSLCertificate"];
 }
 
 #pragma mark - NSCopying
@@ -729,6 +736,7 @@ didReceiveResponse:(NSURLResponse *)response
     operation.authenticationChallenge = self.authenticationChallenge;
     operation.cacheResponse = self.cacheResponse;
     operation.redirectResponse = self.redirectResponse;
+    operation.allowInvalidSSLCertificate = self.allowInvalidSSLCertificate;
     
     return operation;
 }
