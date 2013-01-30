@@ -75,7 +75,14 @@
  - A copy of an operation will not include the `outputStream` of the original.
  - Operation copies do not include `completionBlock`. `completionBlock` often strongly captures a reference to `self`, which would otherwise have the unintuitive side-effect of pointing to the _original_ operation when copied.
  */
-@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate, NSCoding, NSCopying>
+@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate,
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_5_0
+NSURLConnectionDataDelegate,
+#endif
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_8
+NSURLConnectionDataDelegate,
+#endif
+NSCoding, NSCopying>
 
 ///-------------------------------
 /// @name Accessing Run Loop Modes
