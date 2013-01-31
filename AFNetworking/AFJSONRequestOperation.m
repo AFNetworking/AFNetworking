@@ -31,6 +31,10 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     return af_json_request_operation_processing_queue;
 }
 
+@interface AFURLConnectionOperation ()
+@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
+@end
+
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, strong) id responseJSON;
 @property (readwrite, nonatomic, strong) NSError *JSONError;
@@ -61,6 +65,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
 
 - (id)responseJSON {
+    [self.lock lock];
     if (!_responseJSON && [self.responseData length] > 0 && [self isFinished] && !self.JSONError) {
         NSError *error = nil;
 
@@ -77,6 +82,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
         self.JSONError = error;
     }
+    [self.lock unlock];
 
     return _responseJSON;
 }
