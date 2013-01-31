@@ -76,11 +76,9 @@
  - Operation copies do not include `completionBlock`. `completionBlock` often strongly captures a reference to `self`, which would otherwise have the unintuitive side-effect of pointing to the _original_ operation when copied.
  */
 @interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate,
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_5_0
-NSURLConnectionDataDelegate,
-#endif
-#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_8
-NSURLConnectionDataDelegate,
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_5_0) || \
+    (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_8)
+NSURLConnectionDataDelegate, 
 #endif
 NSCoding, NSCopying>
 
