@@ -31,19 +31,17 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     return af_json_request_operation_processing_queue;
 }
 
-@interface AFURLConnectionOperation ()
-@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
-@end
-
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, strong) id responseJSON;
 @property (readwrite, nonatomic, strong) NSError *JSONError;
+@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
 @implementation AFJSONRequestOperation
 @synthesize responseJSON = _responseJSON;
 @synthesize JSONReadingOptions = _JSONReadingOptions;
 @synthesize JSONError = _JSONError;
+@dynamic lock;
 
 + (instancetype)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
 										success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
