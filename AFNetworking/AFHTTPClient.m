@@ -1227,6 +1227,8 @@ typedef enum {
         return YES;
     }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcovered-switch-default"
     switch (_phase) {
         case AFEncapsulationBoundaryPhase:
             _phase = AFHeaderPhase;
@@ -1246,6 +1248,7 @@ typedef enum {
             break;
     }
     _phaseReadOffset = 0;
+#pragma clang diagnostic pop
 
     return YES;
 }
