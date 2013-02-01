@@ -238,7 +238,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     [[NSLocale preferredLanguages] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         float q = 1.0f - (idx * 0.1f);
         [acceptLanguagesComponents addObject:[NSString stringWithFormat:@"%@;q=%0.1g", obj, q]];
-        *stop = q <= 0.0f;
+        *stop = q <= 0.5f;
     }];
     [self setDefaultHeader:@"Accept-Language" value:[acceptLanguagesComponents componentsJoinedByString:@", "]];
     
