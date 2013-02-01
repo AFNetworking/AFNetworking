@@ -1160,19 +1160,7 @@ typedef enum {
         return YES;
     }
 
-    switch (self.inputStream.streamStatus) {
-        case NSStreamStatusNotOpen:
-        case NSStreamStatusOpening:
-        case NSStreamStatusOpen:
-        case NSStreamStatusReading:
-        case NSStreamStatusWriting:
-            return YES;
-        case NSStreamStatusAtEnd:
-        case NSStreamStatusClosed:
-        case NSStreamStatusError:
-        default:
-            return NO;
-    }
+    return self.inputStream.streamStatus < NSStreamStatusAtEnd;
 }
 
 - (NSInteger)read:(uint8_t *)buffer
