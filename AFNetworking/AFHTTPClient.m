@@ -485,12 +485,13 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 {
     NSParameterAssert(method);
     NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
+    const AFHTTPClientParameterEncoding parameterEncoding = self.parameterEncoding;
 
-    NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
+    NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters: (parameterEncoding != AFURLParameterEncoding ? nil : parameters)];
 
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding];
 
-    if (parameters) {
+    if (parameters && parameterEncoding != AFURLParameterEncoding) {
         for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
             NSData *data = nil;
             if ([pair.value isKindOfClass:[NSData class]]) {
