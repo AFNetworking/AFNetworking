@@ -1165,6 +1165,8 @@ typedef enum {
         return YES;
     }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcovered-switch-default"
     switch (self.inputStream.streamStatus) {
         case NSStreamStatusNotOpen:
         case NSStreamStatusOpening:
@@ -1178,6 +1180,8 @@ typedef enum {
         default:
             return NO;
     }
+#pragma clang diagnostic pop
+
 }
 
 - (NSInteger)read:(uint8_t *)buffer
