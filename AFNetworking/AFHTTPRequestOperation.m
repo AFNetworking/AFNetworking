@@ -111,6 +111,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @property (readwrite, nonatomic, copy) NSString *HTTPResponseString;
 @property (readwrite, nonatomic, assign) long long totalContentLength;
 @property (readwrite, nonatomic, assign) long long offsetContentLength;
+@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -122,6 +123,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @synthesize offsetContentLength = _offsetContentLength;
 @dynamic request;
 @dynamic response;
+@dynamic lock;
 
 - (void)dealloc {
     if (_successCallbackQueue) {
@@ -170,6 +172,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 }
 
 - (NSString *)responseString {
+    [self.lock lock];
     // When no explicit charset parameter is provided by the sender, media subtypes of the "text" type are defined to have a default charset value of "ISO-8859-1" when received via HTTP. Data in character sets other than "ISO-8859-1" or its subsets MUST be labeled with an appropriate charset value.
     // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.4.1
     if (!self.HTTPResponseString && self.response && !self.response.textEncodingName && self.responseData) {
@@ -180,6 +183,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
             self.HTTPResponseString = [[NSString alloc] initWithData:self.responseData encoding:NSISOLatin1StringEncoding];
         }
     }
+    [self.lock unlock];
 
     if (self.HTTPResponseString) {
         return self.HTTPResponseString;
