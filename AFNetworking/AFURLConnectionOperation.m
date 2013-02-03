@@ -367,7 +367,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (NSStringEncoding)responseStringEncoding {
     [self.lock lock];
-    if (!_responseStringEncoding) {
+    if (!_responseStringEncoding && self.response) {
         NSStringEncoding stringEncoding = NSUTF8StringEncoding;
         if (self.response.textEncodingName) {
             CFStringEncoding IANAEncoding = CFStringConvertIANACharSetNameToEncoding((__bridge CFStringRef)self.response.textEncodingName);
