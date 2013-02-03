@@ -27,7 +27,7 @@
 static dispatch_queue_t af_xml_request_operation_processing_queue;
 static dispatch_queue_t xml_request_operation_processing_queue() {
     if (af_xml_request_operation_processing_queue == NULL) {
-        af_xml_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.xml-request.processing", 0);
+        af_xml_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.xml-request.processing", DISPATCH_QUEUE_CONCURRENT);
     }
 
     return af_xml_request_operation_processing_queue;
