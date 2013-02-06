@@ -46,6 +46,18 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 @synthesize imageScale = _imageScale;
 #endif
 
+- (BOOL)dataIsValidJPEG:(NSData *)data {
+    if (!data || data.length < 2) return NO;
+
+    NSInteger totalBytes = data.length;
+    const char *bytes = (const char*)[data bytes];
+
+    return (bytes[0] == (char)0xff &&
+            bytes[1] == (char)0xd8 &&
+            bytes[totalBytes-2] == (char)0xff &&
+            bytes[totalBytes-1] == (char)0xd9);
+}
+
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 + (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
 										 success:(void (^)(UIImage *image))success
@@ -149,9 +161,19 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 - (UIImage *)responseImage {
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
-        UIImage *image = [UIImage imageWithData:self.responseData];
-
-        self.responseImage = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
+        NSString *extension = [[[self.request URL] lastPathComponent] pathExtension];
+        if ([extension caseInsensitiveCompare:@"jpg"] == NSOrderedSame || [extension caseInsensitiveCompare:@"jpeg"] == NSOrderedSame){
+            BOOL valid = [self dataIsValidJPEG:self.responseData];
+            if (valid) {
+                UIImage *image = [UIImage imageWithData:self.responseData];
+                self.responseImage = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
+            } else {
+                self.responseImage = nil;
+            }
+        } else {
+            UIImage *image = [UIImage imageWithData:self.responseData];
+            self.responseImage = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
+        }
     }
 
     return _responseImage;
