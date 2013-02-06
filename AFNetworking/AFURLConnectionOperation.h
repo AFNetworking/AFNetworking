@@ -75,6 +75,16 @@
  - A copy of an operation will not include the `outputStream` of the original.
  - Operation copies do not include `completionBlock`. `completionBlock` often strongly captures a reference to `self`, which would otherwise have the unintuitive side-effect of pointing to the _original_ operation when copied.
  */
+
+#ifdef _SECURITY_SECBASE_H_
+typedef enum {
+    AFSSLPinningModePublicKey,
+    AFSSLPinningModeCertificate,
+} AFURLConnectionOperationSSLPinningMode;
+#else
+#warning Security framework not found in project, or not included in precompiled header. SSL Certificate Pinning functionality will not be available.
+#endif
+
 @interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate,
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_5_0) || \
     (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_8)
@@ -131,7 +141,6 @@ NSCoding, NSCopying>
  */
 @property (readonly, nonatomic, assign) NSStringEncoding responseStringEncoding;
 
-
 ///-------------------------------
 /// @name Managing URL Credentials
 ///-------------------------------
@@ -149,6 +158,13 @@ NSCoding, NSCopying>
  @discussion This will be overridden by any shared credentials that exist for the username or password of the request URL, if present.
  */
 @property (nonatomic, strong) NSURLCredential *credential;
+
+/**
+ The pinning mode which will be used for SSL connections.
+ */
+#ifdef _SECURITY_SECBASE_H_
+@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
+#endif
 
 ///------------------------
 /// @name Accessing Streams

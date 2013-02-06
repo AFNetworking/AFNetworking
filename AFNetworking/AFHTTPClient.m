@@ -535,6 +535,10 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #pragma mark -
 
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation {
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+    operation.SSLPinningMode = self.defaultSSLPinMode;
+#endif
+    
     [self.operationQueue addOperation:operation];
 }
 
