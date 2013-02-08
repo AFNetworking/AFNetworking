@@ -86,6 +86,7 @@
 
 #ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
 typedef enum {
+    AFSSLPinningModeNone,
     AFSSLPinningModePublicKey,
     AFSSLPinningModeCertificate,
 } AFURLConnectionOperationSSLPinningMode;
@@ -306,6 +307,18 @@ NSCoding, NSCopying>
  @param block A block object to be executed to determine what response a connection will cache, if any. The block returns an `NSCachedURLResponse` object, the cached response to store in memory or `nil` to prevent the response from being cached, and takes two arguments: the URL connection object, and the cached response provided for the request.
  */
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block;
+
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+/**
+ `NSSet` containing all pinned certificates.
+ */
++ (NSSet *)pinnedCertificates;
+
+/**
+ `NSSet` containing all pinned public keys.
+ */
++ (NSSet *)pinnedPublicKeys;
+#endif
 
 @end
 
