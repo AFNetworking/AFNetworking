@@ -579,6 +579,24 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     
                     break;
                 }
+                case AFSSLPinningModeNone: {
+#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
+                    NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+                    [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+#else
+                    SecTrustResultType result = 0;
+                    OSStatus status = SecTrustEvaluate(serverTrust, &result);
+                    NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
+                    
+                    if (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed) {
+                        NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+                        [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+                    } else {
+                        [[challenge sender] cancelAuthenticationChallenge:challenge];
+                    }
+#endif
+                    break;
+                }
             }
         }
     }
