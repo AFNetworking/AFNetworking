@@ -76,7 +76,7 @@
  - Operation copies do not include `completionBlock`. `completionBlock` often strongly captures a reference to `self`, which would otherwise have the unintuitive side-effect of pointing to the _original_ operation when copied.
  */
 
-#ifdef _SECURITY_SECBASE_H_
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
 typedef enum {
     AFSSLPinningModePublicKey,
     AFSSLPinningModeCertificate,
@@ -162,7 +162,7 @@ NSCoding, NSCopying>
 /**
  The pinning mode which will be used for SSL connections.
  */
-#ifdef _SECURITY_SECBASE_H_
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
 @property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
 #endif
 
