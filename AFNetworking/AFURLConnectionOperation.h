@@ -307,6 +307,18 @@ NSCoding, NSCopying>
  */
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block;
 
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+/**
+ `NSSet` containing all pinned certificates.
+ */
++ (NSSet *)pinnedCertificates;
+
+/**
+ `NSSet` containing all pinned public keys.
+ */
++ (NSSet *)pinnedPublicKeys;
+#endif
+
 @end
 
 ///----------------
