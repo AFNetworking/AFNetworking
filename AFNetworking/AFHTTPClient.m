@@ -553,8 +553,13 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
             continue;
         }
 
+	NSString *operationURL = [[[(AFHTTPRequestOperation *)operation request] URL] absoluteString];
+	NSString *operationWithNoParams = [operationURL componentsSeparatedByString:@"?"][0];
+		
+	NSString *URLStringWithNoParams = [URLStringToMatched componentsSeparatedByString:@"?"][0];
+		
         BOOL hasMatchingMethod = !method || [method isEqualToString:[[(AFHTTPRequestOperation *)operation request] HTTPMethod]];
-        BOOL hasMatchingURL = [[[[(AFHTTPRequestOperation *)operation request] URL] absoluteString] isEqualToString:URLStringToMatched];
+	BOOL hasMatchingURL = [operationWithNoParams isEqualToString:URLStringWithNoParams];
 
         if (hasMatchingMethod && hasMatchingURL) {
             [operation cancel];
