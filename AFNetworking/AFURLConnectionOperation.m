@@ -186,11 +186,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         NSBundle *bundle = [NSBundle bundleForClass:[self class]];
         NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
 
-        NSMutableArray *certificates = [NSMutableArray array];
+        NSMutableArray *certificates = [NSMutableArray arrayWithCapacity:[paths count]];
         for (NSString *path in paths) {
             NSData *certificateData = [NSData dataWithContentsOfFile:path];
             [certificates addObject:certificateData];
         }
+        
         _pinnedCertificates = [[NSArray alloc] initWithArray:certificates];
     });
 
@@ -202,25 +203,29 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSArray *pinnedCertificates = [self pinnedCertificates];
-        NSMutableArray *publicKeys = [NSMutableArray array];
+        NSMutableArray *publicKeys = [NSMutableArray arrayWithCapacity:[pinnedCertificates count]];
         
         for (NSData *data in pinnedCertificates) {
             SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)data);
-            NSParameterAssert(allowedCertificate);
+            NSCParameterAssert(allowedCertificate);
+
+            SecCertificateRef allowedCertificates[] = {allowedCertificate};
+            CFArrayRef certificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
             
             SecPolicyRef policy = SecPolicyCreateBasicX509();
             SecTrustRef allowedTrust = NULL;
-            OSStatus status = SecTrustCreateWithCertificates(allowedCertificate, policy, &allowedTrust);
-            NSAssert(status == noErr, @"SecTrustCreateWithCertificates error: %ld", status);
+            OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &allowedTrust);
+            NSAssert(status == noErr, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
             
             SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
             [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
-            
+
             CFRelease(allowedTrust);
-            CFRelease(allowedCertificate);
             CFRelease(policy);
+            CFRelease(certificates);
+            CFRelease(allowedCertificate);
         }
-        
+
         _pinnedPublicKeys = [[NSArray alloc] initWithArray:publicKeys];
     });
     
