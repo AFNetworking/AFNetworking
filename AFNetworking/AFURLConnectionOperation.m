@@ -179,31 +179,31 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 #ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
-+ (NSArray *)pinnedCertificates {
-    static NSArray *_pinnedCertificates = nil;
++ (NSSet *)pinnedCertificates {
+    static NSSet *_pinnedCertificates = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSBundle *bundle = [NSBundle bundleForClass:[self class]];
         NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
 
-        NSMutableArray *certificates = [NSMutableArray arrayWithCapacity:[paths count]];
+        NSMutableSet *certificates = [NSMutableSet setWithCapacity:paths.count];
         for (NSString *path in paths) {
             NSData *certificateData = [NSData dataWithContentsOfFile:path];
             [certificates addObject:certificateData];
         }
         
-        _pinnedCertificates = [[NSArray alloc] initWithArray:certificates];
+        _pinnedCertificates = [NSSet setWithSet:certificates];
     });
 
     return _pinnedCertificates;
 }
 
-+ (NSArray *)pinnedPublicKeys {
-    static NSArray *_pinnedPublicKeys = nil;
++ (NSSet *)pinnedPublicKeys {
+    static NSSet *_pinnedPublicKeys = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSArray *pinnedCertificates = [self pinnedCertificates];
-        NSMutableArray *publicKeys = [NSMutableArray arrayWithCapacity:[pinnedCertificates count]];
+        NSSet *pinnedCertificates = [self pinnedCertificates];
+        NSMutableSet *publicKeys = [NSMutableSet setWithCapacity:pinnedCertificates.count];
         
         for (NSData *data in pinnedCertificates) {
             SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)data);
@@ -226,7 +226,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             CFRelease(allowedCertificate);
         }
 
-        _pinnedPublicKeys = [[NSArray alloc] initWithArray:publicKeys];
+        _pinnedPublicKeys = [NSSet setWithSet:publicKeys];
     });
     
     return _pinnedPublicKeys;
