@@ -81,8 +81,6 @@ typedef enum {
     AFSSLPinningModePublicKey,
     AFSSLPinningModeCertificate,
 } AFURLConnectionOperationSSLPinningMode;
-#else
-#warning Security framework not found in project, or not included in precompiled header. SSL Certificate Pinning functionality will not be available.
 #endif
 
 @interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate,
