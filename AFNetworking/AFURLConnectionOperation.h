@@ -59,6 +59,14 @@
  The built-in `completionBlock` provided by `NSOperation` allows for custom behavior to be executed after the request finishes. It is a common pattern for class constructors in subclasses to take callback block parameters, and execute them conditionally in the body of its `completionBlock`. Make sure to handle cancelled operations appropriately when setting a `completionBlock` (i.e. returning early before parsing response data). See the implementation of any of the `AFHTTPRequestOperation` subclasses for an example of this.
 
  Subclasses are strongly discouraged from overriding `setCompletionBlock:`, as `AFURLConnectionOperation`'s implementation includes a workaround to mitigate retain cycles, and what Apple rather ominously refers to as ["The Deallocation Problem"](http://developer.apple.com/library/ios/#technotes/tn2109/).
+ 
+ ## SSL Pinning
+ 
+ Relying on the CA trust model to validate SSL certificates exposes your app to security vulnerabilities, such as man-in-the-middle attacks. For applications that connect to known servers, SSL certificate pinning provides an increased level of security, by checking server certificate validity against those specified in the app bundle.
+ 
+ SSL with certificate pinning is strongly recommended for any application that transmits sensitive information to an external webservice.
+
+ When `_AFNETWORKING_PIN_SSL_CERTIFICATES_` is defined and the Security framework is linked, connections will be validated on all matching certificates with a `.cer` extension in the bundle root.
 
  ## NSCoding & NSCopying Conformance
 
@@ -158,7 +166,9 @@ NSCoding, NSCopying>
 @property (nonatomic, strong) NSURLCredential *credential;
 
 /**
- The pinning mode which will be used for SSL connections.
+ The pinning mode which will be used for SSL connections. `AFSSLPinningModePublicKey` by default.
+ 
+ @discussion To enable SSL Pinning, `#define _AFNETWORKING_PIN_SSL_CERTIFICATES_` in `Prefix.pch`. Also, make sure that the Security framework is linked with the binary. See the "SSL Pinning" section in the `AFURLConnectionOperation` header for more information.
  */
 #ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
 @property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
@@ -304,6 +314,21 @@ NSCoding, NSCopying>
 ///----------------
 
 /**
+ ## Network Reachability
+
+ The following constants are provided by `AFURLConnectionOperation` as possible SSL Pinning options.
+
+ enum {
+ AFSSLPinningModePublicKey,
+ AFSSLPinningModeCertificate,
+ }
+
+ `AFSSLPinningModePublicKey`
+ Pin SSL connections to certificate public key (SPKI).
+
+ `AFSSLPinningModeCertificate`
+ Pin SSL connections to exact certificate. This may cause problems when your certificate expires and needs re-issuance.
+
  ## User info dictionary keys
 
  These keys may exist in the user info dictionary, in addition to those defined for NSError.
