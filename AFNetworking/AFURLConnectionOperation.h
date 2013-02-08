@@ -86,6 +86,7 @@
 
 #ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
 typedef enum {
+    AFSSLPinningModeNone,
     AFSSLPinningModePublicKey,
     AFSSLPinningModeCertificate,
 } AFURLConnectionOperationSSLPinningMode;
