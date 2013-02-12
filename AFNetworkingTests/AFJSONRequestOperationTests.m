@@ -19,7 +19,7 @@
     STAssertTrue(canProcess, @"should be able to process URL: %@", url);
 }
 
-- (void)testCanProcessRequestTrueIfExtensionIsJS
+- (void)testCanProcessRequestFalseIfExtensionIsJS
 {
     NSURL *url = [NSURL URLWithString:@"http://test.com/pie.js"];
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
