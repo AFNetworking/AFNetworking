@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import "User.h"
-#import "AFImageRequestOperation.h"
+#import <AFNetworking/AFImageRequestOperation.h>
 
 NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.profile-image.loaded";
 

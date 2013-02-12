@@ -1,0 +1,9 @@
+//
+// Prefix header for all source files of the 'AFNetworking' target in the 'AFNetworking' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <MobileCoreServices/MobileCoreServices.h>
+    #import <SystemConfiguration/SystemConfiguration.h>
+#endif
