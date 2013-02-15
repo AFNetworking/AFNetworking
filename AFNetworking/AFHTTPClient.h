@@ -543,7 +543,7 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 
  @return `YES` if the file data was successfully appended, otherwise `NO`.
 
- @discussion The filename and MIME type for this data in the form will be automatically generated, using `NSURLResponse` `-suggestedFilename` and `-MIMEType`, respectively.
+ @discussion The filename and MIME type for this data in the form will be automatically generated, using the last path component of the `fileURL` and system associated MIME type for the `fileURL` extension, respectively.
  */
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL
                          name:(NSString *)name
