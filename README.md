@@ -87,6 +87,10 @@ AFNetworking is architected to be as small and modular as possible, in order to 
     <td><a href="http://afnetworking.github.com/AFNetworking/Categories/UIImageView+AFNetworking.html">UIImageView+AFNetworking</a></td>
     <td>Adds methods to <tt>UIImageView</tt> for loading remote images asynchronously from a URL.</td>
   </tr>
+  <tr>
+    <td><a href="http://afnetworking.github.com/AFNetworking/Categories/NSImageView+AFNetworking.html">NSImageView+AFNetworking</a></td>
+    <td>Adds methods to <tt>NSImageView</tt> for loading remote images asynchronously from a URL.</td>
+  </tr>
 </table>
 
 ## Example Usage

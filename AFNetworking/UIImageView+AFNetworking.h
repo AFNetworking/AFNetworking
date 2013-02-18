@@ -25,13 +25,24 @@
 
 #import <Availability.h>
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+
 #import <UIKit/UIKit.h>
+#define AFNetworkingImage UIImage
+#define AFNetworkingImageView UIImageView
+
+#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+
+#import <AppKit/AppKit.h>
+#define AFNetworkingImage NSImage
+#define AFNetworkingImageView NSImageView
+
+#endif
 
 /**
- This category adds methods to the UIKit framework's `UIImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
+ This category adds methods to the UIKit/AppKit framework's `UIImageView`/`NSImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
  */
-@interface UIImageView (AFNetworking)
+@interface AFNetworkingImageView (AFNetworking)
 
 /**
  Creates and enqueues an image request operation, which asynchronously downloads the image from the specified URL, and sets it the request is finished. Any previous image request for the receiver will be cancelled. If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
@@ -51,7 +62,7 @@
  @discussion By default, URL requests have a cache policy of `NSURLCacheStorageAllowed` and a timeout interval of 30 seconds, and are set not handle cookies. To configure URL requests differently, use `setImageWithURLRequest:placeholderImage:success:failure:`
  */
 - (void)setImageWithURL:(NSURL *)url
-       placeholderImage:(UIImage *)placeholderImage;
+       placeholderImage:(AFNetworkingImage *)placeholderImage;
 
 /**
  Creates and enqueues an image request operation, which asynchronously downloads the image with the specified URL request object. Any previous image request for the receiver will be cancelled. If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
@@ -64,8 +75,8 @@
  @discussion If a success block is specified, it is the responsibility of the block to set the image of the image view before returning. If no success block is specified, the default behavior of setting the image with `self.image = image` is executed.
  */
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
-              placeholderImage:(UIImage *)placeholderImage
-                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+              placeholderImage:(AFNetworkingImage *)placeholderImage
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, AFNetworkingImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 /**
@@ -74,5 +85,3 @@
 - (void)cancelImageRequestOperation;
 
 @end
-
-#endif
