@@ -998,7 +998,6 @@ static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
         });
         [_outputStream open];
         _keepalive = self;
-        //[self handleOutputStreamSpaceAvailable];
     }
     
     return _inputStream;
@@ -1011,7 +1010,7 @@ static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
 #pragma mark - NSStreamDelegate
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
-    if(eventCode | NSStreamEventHasSpaceAvailable) {
+    if(eventCode & NSStreamEventHasSpaceAvailable) {
         [self handleOutputStreamSpaceAvailable];
     }
 }
