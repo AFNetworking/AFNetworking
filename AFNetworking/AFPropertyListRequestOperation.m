@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFPropertyListRequestOperation.h"
-#import "Private/AFMacros.h"
+#import "Private/AFWarningMacros.h"
 
 static dispatch_queue_t property_list_request_operation_processing_queue() {
     static dispatch_queue_t af_property_list_request_operation_processing_queue;

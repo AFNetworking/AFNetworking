@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFImageRequestOperation.h"
-#import "Private/AFMacros.h"
+#import "Private/AFWarningMacros.h"
 
 static dispatch_queue_t image_request_operation_processing_queue() {
     static dispatch_queue_t af_image_request_operation_processing_queue;

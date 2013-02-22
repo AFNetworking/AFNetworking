@@ -24,7 +24,7 @@
 
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
-#import "Private/AFMacros.h"
+#import "Private/AFWarningMacros.h"
 
 #import <Availability.h>
 

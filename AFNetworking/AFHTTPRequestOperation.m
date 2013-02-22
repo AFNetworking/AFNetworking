@@ -22,7 +22,7 @@
 
 #import "AFHTTPRequestOperation.h"
 #import <objc/runtime.h>
-#import "Private/AFMacros.h"
+#import "Private/AFWarningMacros.h"
 
 // Workaround for change in imp_implementationWithBlock() with Xcode 4.5
 #if defined(__IPHONE_6_0) || defined(__MAC_10_8)

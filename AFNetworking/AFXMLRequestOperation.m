@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFXMLRequestOperation.h"
-#import "Private/AFMacros.h"
+#import "Private/AFWarningMacros.h"
 
 #include <Availability.h>
 

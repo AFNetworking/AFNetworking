@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFJSONRequestOperation.h"
-#import "Private/AFMacros.h"
+#import "Private/AFWarningMacros.h"
 
 static dispatch_queue_t json_request_operation_processing_queue() {
     static dispatch_queue_t af_json_request_operation_processing_queue;
