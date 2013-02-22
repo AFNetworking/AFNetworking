@@ -993,9 +993,14 @@ static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
         _outputStream = CFBridgingRelease(writeStream);
         
         _outputStream.delegate = self;
-        dispatch_sync(dispatch_get_main_queue(), ^{
+        if([NSThread isMainThread]) {
             [_outputStream scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
-        });
+        }
+        else {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [_outputStream scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
+            });
+        }
         [_outputStream open];
         _keepalive = self;
     }
