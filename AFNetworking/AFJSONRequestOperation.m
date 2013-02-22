@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFJSONRequestOperation.h"
+#import "Private/AFMacros.h"
 
 static dispatch_queue_t json_request_operation_processing_queue() {
     static dispatch_queue_t af_json_request_operation_processing_queue;
@@ -107,8 +108,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
+    PUSH_NO_ARC_RETAIN_CYCLES_WARNING
     self.completionBlock = ^ {
         if (self.error) {
             if (failure) {
@@ -136,7 +136,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
             });
         }
     };
-#pragma clang diagnostic pop
+    POP_WARNINGS
 }
 
 @end

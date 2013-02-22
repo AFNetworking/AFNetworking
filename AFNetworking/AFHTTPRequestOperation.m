@@ -22,6 +22,7 @@
 
 #import "AFHTTPRequestOperation.h"
 #import <objc/runtime.h>
+#import "Private/AFMacros.h"
 
 // Workaround for change in imp_implementationWithBlock() with Xcode 4.5
 #if defined(__IPHONE_6_0) || defined(__MAC_10_8)
@@ -31,7 +32,6 @@
 #endif
 
 // We do a little bit of duck typing in this file which can trigger this warning.  Turn it off for this source file.
-#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-selector-match"
 
 NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
@@ -274,8 +274,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     // completionBlock is manually nilled out in AFURLConnectionOperation to break the retain cycle.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
+    PUSH_NO_ARC_RETAIN_CYCLES_WARNING
     self.completionBlock = ^{
         if (self.error) {
             if (failure) {
@@ -291,7 +290,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
             }
         }
     };
-#pragma clang diagnostic pop
+    POP_WARNINGS
 }
 
 #pragma mark - AFHTTPRequestOperation
