@@ -24,6 +24,7 @@
 
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
+#import "AFHTTPBlockResponses.h"
 
 #import <Availability.h>
 
@@ -513,8 +514,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 - (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                                                    failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+                                                    success:(AFHTTPRequestOperationSuccess)success
+                                                    failure:(AFHTTPRequestOperationFailure)failure
 {
     AFHTTPRequestOperation *operation = nil;
     NSString *className = nil;
@@ -628,8 +629,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (void)getPath:(NSString *)path
      parameters:(NSDictionary *)parameters
-        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+        success:(AFHTTPRequestOperationSuccess)success
+        failure:(AFHTTPRequestOperationFailure)failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
@@ -638,8 +639,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (void)postPath:(NSString *)path
       parameters:(NSDictionary *)parameters
-         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+         success:(AFHTTPRequestOperationSuccess)success
+         failure:(AFHTTPRequestOperationFailure)failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
@@ -648,8 +649,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (void)putPath:(NSString *)path
      parameters:(NSDictionary *)parameters
-        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+        success:(AFHTTPRequestOperationSuccess)success
+        failure:(AFHTTPRequestOperationFailure)failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
@@ -658,8 +659,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (void)deletePath:(NSString *)path
         parameters:(NSDictionary *)parameters
-           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+           success:(AFHTTPRequestOperationSuccess)success
+           failure:(AFHTTPRequestOperationFailure)failure
 {
 	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
@@ -668,8 +669,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (void)patchPath:(NSString *)path
        parameters:(NSDictionary *)parameters
-          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+          success:(AFHTTPRequestOperationSuccess)success
+          failure:(AFHTTPRequestOperationFailure)failure
 {
     NSURLRequest *request = [self requestWithMethod:@"PATCH" path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];

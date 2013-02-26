@@ -5,6 +5,9 @@
       location = "group:AFNetworking"
       name = "AFNetworking">
       <FileRef
+         location = "group:AFHTTPBlockResponses.h">
+      </FileRef>
+      <FileRef
          location = "group:AFHTTPClient.h">
       </FileRef>
       <FileRef
