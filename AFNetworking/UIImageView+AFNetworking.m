@@ -86,15 +86,29 @@ static char kAFImageRequestOperationObjectKey;
 - (void)setImageWithURL:(NSURL *)url
        placeholderImage:(UIImage *)placeholderImage
 {
+    [self setImageWithURL:url placeholderImage:placeholderImage editDownloadedImage:nil];
+}
+
+- (void)setImageWithURL:(NSURL *)url
+    editDownloadedImage:(UIImage *(^)(UIImage *))editing
+{
+    [self setImageWithURL:url placeholderImage:nil editDownloadedImage:editing];
+}
+
+- (void)setImageWithURL:(NSURL *)url
+       placeholderImage:(UIImage *)placeholderImage
+    editDownloadedImage:(UIImage *(^)(UIImage *))editing
+{
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPShouldHandleCookies:NO];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage editDownloadedImage:editing success:nil failure:nil];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
               placeholderImage:(UIImage *)placeholderImage
+           editDownloadedImage:(UIImage *(^)(UIImage *))editing
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
@@ -105,7 +119,7 @@ static char kAFImageRequestOperationObjectKey;
         if (success) {
             success(nil, nil, cachedImage);
         } else {
-            self.image = cachedImage;
+            self.image = (editing) ? editing(cachedImage) : cachedImage;
         }
 
         self.af_imageRequestOperation = nil;
@@ -118,7 +132,7 @@ static char kAFImageRequestOperationObjectKey;
                 if (success) {
                     success(operation.request, operation.response, responseObject);
                 } else {
-                    self.image = responseObject;
+                    self.image = (editing) ? editing(responseObject) : responseObject;
                 }
 
                 if (self.af_imageRequestOperation == operation) {
