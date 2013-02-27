@@ -108,8 +108,6 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, strong) NSError *HTTPError;
 @property (readwrite, nonatomic, copy) NSString *HTTPResponseString;
-@property (readwrite, nonatomic, assign) long long totalContentLength;
-@property (readwrite, nonatomic, assign) long long offsetContentLength;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
@@ -118,8 +116,6 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @synthesize HTTPResponseString = _HTTPResponseString;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
-@synthesize totalContentLength = _totalContentLength;
-@synthesize offsetContentLength = _offsetContentLength;
 @dynamic request;
 @dynamic response;
 @dynamic lock;
@@ -325,48 +321,6 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
     }
 
     return [[self acceptableContentTypes] intersectsSet:AFContentTypesFromHTTPHeader([request valueForHTTPHeaderField:@"Accept"])];
-}
-
-#pragma mark - NSURLConnectionDelegate
-
-- (void)connection:(__unused NSURLConnection *)connection
-didReceiveResponse:(NSURLResponse *)response
-{
-    self.response = (NSHTTPURLResponse *)response;
-
-    // Set Content-Range header if status code of response is 206 (Partial Content)
-    // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.7
-    long long totalContentLength = self.response.expectedContentLength;
-    long long fileOffset = 0;
-    NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 200;
-    if (statusCode == 206) {
-        NSString *contentRange = [self.response.allHeaderFields valueForKey:@"Content-Range"];
-        if ([contentRange hasPrefix:@"bytes"]) {
-            NSArray *byteRanges = [contentRange componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -/"]];
-            if ([byteRanges count] == 4) {
-                fileOffset = [[byteRanges objectAtIndex:1] longLongValue];
-                totalContentLength = [[byteRanges objectAtIndex:2] longLongValue] ?: -1; // if this is "*", it's converted to 0, but -1 is default.
-            }
-        }
-    } else {
-        if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
-            [self.outputStream setProperty:[NSNumber numberWithInteger:0] forKey:NSStreamFileCurrentOffsetKey];
-        } else {
-            if ([[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length] > 0) {
-                self.outputStream = [NSOutputStream outputStreamToMemory];
-
-                NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-                for (NSString *runLoopMode in self.runLoopModes) {
-                    [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
-                }
-            }
-        }
-    }
-
-    self.offsetContentLength = MAX(fileOffset, 0);
-    self.totalContentLength = totalContentLength;
-    
-    [self.outputStream open];
 }
 
 @end
