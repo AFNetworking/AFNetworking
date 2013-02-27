@@ -117,7 +117,7 @@ static char kAFImageRequestOperationObjectKey;
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
                 if (success) {
                     success(operation.request, operation.response, responseObject);
-                } else {
+                } else if (responseObject) {
                     self.image = responseObject;
                 }
 
