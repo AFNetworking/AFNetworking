@@ -24,6 +24,7 @@
 
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
+#import "Private/AFWarningMacros.h"
 
 #import <Availability.h>
 
@@ -1175,8 +1176,7 @@ typedef enum {
         return YES;
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wcovered-switch-default"
+    PUSH_NO_COVERED_SWITCH_DEFAULT_WARNING
     switch (self.inputStream.streamStatus) {
         case NSStreamStatusNotOpen:
         case NSStreamStatusOpening:
@@ -1190,8 +1190,8 @@ typedef enum {
         default:
             return NO;
     }
-#pragma clang diagnostic pop
-
+    POP_WARNINGS
+    
 }
 
 - (NSInteger)read:(uint8_t *)buffer
@@ -1249,8 +1249,7 @@ typedef enum {
         return YES;
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wcovered-switch-default"
+    PUSH_NO_COVERED_SWITCH_DEFAULT_WARNING
     switch (_phase) {
         case AFEncapsulationBoundaryPhase:
             _phase = AFHeaderPhase;
@@ -1270,7 +1269,7 @@ typedef enum {
             break;
     }
     _phaseReadOffset = 0;
-#pragma clang diagnostic pop
+    POP_WARNINGS
 
     return YES;
 }

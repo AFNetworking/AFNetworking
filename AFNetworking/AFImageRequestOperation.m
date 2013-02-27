@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFImageRequestOperation.h"
+#import "Private/AFWarningMacros.h"
 
 static dispatch_queue_t image_request_operation_processing_queue() {
     static dispatch_queue_t af_image_request_operation_processing_queue;
@@ -158,12 +159,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 
 - (void)setImageScale:(CGFloat)imageScale {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wfloat-equal"
+    PUSH_NO_FLOAT_EQUAL_WARNING
     if (imageScale == _imageScale) {
         return;
     }
-#pragma clang diagnostic pop
+    POP_WARNINGS
 
     _imageScale = imageScale;
 
@@ -201,8 +201,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
+    PUSH_NO_ARC_RETAIN_CYCLES_WARNING
     self.completionBlock = ^ {
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (self.error) {
@@ -228,7 +227,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
             }
         });        
     };
-#pragma clang diagnostic pop
+    POP_WARNINGS
 }
 
 @end

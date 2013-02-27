@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFPropertyListRequestOperation.h"
+#import "Private/AFWarningMacros.h"
 
 static dispatch_queue_t property_list_request_operation_processing_queue() {
     static dispatch_queue_t af_property_list_request_operation_processing_queue;
@@ -107,8 +108,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
+    PUSH_NO_ARC_RETAIN_CYCLES_WARNING
     self.completionBlock = ^ {
         if (self.error) {
             if (failure) {
@@ -136,7 +136,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
             });
         }
     };
-#pragma clang diagnostic pop
+    POP_WARNINGS
 }
 
 @end
