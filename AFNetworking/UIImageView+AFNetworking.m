@@ -137,7 +137,7 @@ static NSMutableDictionary *hasRetried = nil;
                 [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
             } else {
                 NSString *key = [initUrlRequest.URL absoluteString];
-                if (![hasRetried objectForKey:key]) {
+                if (key && ![hasRetried objectForKey:key]) {
                     NSLog(@"%@ corrupted, retry...",key);
                     [hasRetried setObject:[NSNumber numberWithBool:YES] forKey:key];
                     [self setImageWithURL:initUrlRequest.URL placeholderImage:placeholderImage];
