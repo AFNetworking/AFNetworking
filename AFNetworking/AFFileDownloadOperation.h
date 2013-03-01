@@ -4,4 +4,6 @@
 
 @interface AFFileDownloadOperation : AFHTTPRequestOperation
 
+- (id)initWithRequest:(NSURLRequest *)urlRequest destinationFilePath:(NSString *)filePath;
+
 @end
