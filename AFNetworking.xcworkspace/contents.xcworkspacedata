@@ -5,6 +5,12 @@
       location = "group:AFNetworking"
       name = "AFNetworking">
       <FileRef
+         location = "group:AFFileDownloadOperation.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFFileDownloadOperation.m">
+      </FileRef>
+      <FileRef
          location = "group:AFHTTPClient.h">
       </FileRef>
       <FileRef
