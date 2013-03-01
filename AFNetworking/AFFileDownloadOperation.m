@@ -9,7 +9,9 @@
     if (!self) {
   	  return nil;
     }
-
+    
+    _destinationFilePath = filePath;
+    
     self.outputStream = [NSOutputStream outputStreamToFileAtPath:filePath append:NO];
     
     return self;
