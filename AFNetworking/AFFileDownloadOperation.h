@@ -1,8 +1,7 @@
-
 #import <Foundation/Foundation.h>
 
-#import "AFURLConnectionOperation.h"
+#import "AFHTTPRequestOperation.h"
 
-@interface AFFileDownloadOperation : AFURLConnectionOperation
+@interface AFFileDownloadOperation : AFHTTPRequestOperation
 
 @end
