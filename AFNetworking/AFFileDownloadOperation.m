@@ -27,4 +27,8 @@
     self.connection = nil;
 }
 
+- (void)dealloc {
+    _destinationFilePath = nil;
+}
+
 @end
