@@ -1,3 +1,12 @@
+//
+//  AFFileDownloadOperation.m
+//  AFNetworking
+//
+//  Created by Vincent Roy Chevalier on 2013-02-28.
+//
+
+#import <Foundation/Foundation.h>
+
 #import "AFFileDownloadOperation.h"
 
 @implementation AFFileDownloadOperation
@@ -5,9 +14,9 @@
 @synthesize destinationFilePath = _destinationFilePath;
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest destinationFilePath:(NSString *)filePath {
-    self = [super )initWithRequest:urlRequest];
+    self = [super initWithRequest:urlRequest];
     if (!self) {
-  	  return nil;
+        return nil;
     }
     
     _destinationFilePath = filePath;
@@ -18,17 +27,8 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection __unused *)connection {
-    self.responseData = [NSData dataWithContentsOfFile:_destinationFilePath options:NSDataReadingMappedIfSafe error:nil];
-
-    [self.outputStream close];
-
-    [self finish];
-
-    self.connection = nil;
-}
-
-- (void)dealloc {
-    _destinationFilePath = nil;
+    [self.outputStream setProperty:[NSData dataWithContentsOfFile:_destinationFilePath options:NSDataReadingMappedIfSafe error:nil] forKey:NSStreamDataWrittenToMemoryStreamKey];
+    [super connectionDidFinishLoading:connection];
 }
 
 @end
