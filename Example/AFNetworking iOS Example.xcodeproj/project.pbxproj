@@ -152,7 +152,10 @@
 				F8E469631395739D00DB05C8 /* Frameworks */,
 				F8E469611395739C00DB05C8 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		F8E469611395739C00DB05C8 /* Products */ = {
 			isa = PBXGroup;

@@ -86,7 +86,10 @@
 				F8129BFE1591061B009BFE23 /* Frameworks */,
 				F8129BFC1591061B009BFE23 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		F8129BFC1591061B009BFE23 /* Products */ = {
 			isa = PBXGroup;
