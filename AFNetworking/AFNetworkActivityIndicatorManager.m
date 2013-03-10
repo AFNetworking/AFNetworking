@@ -62,8 +62,8 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
         return nil;
     }
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementActivityCount) name:AFNetworkingOperationDidStartNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(decrementActivityCount) name:AFNetworkingOperationDidFinishNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkingOperationDidStart:) name:AFNetworkingOperationDidStartNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkingOperationDidFinish:) name:AFNetworkingOperationDidFinishNotification object:nil];
 
     return self;
 }
@@ -124,6 +124,20 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 	}
     [self didChangeValueForKey:@"activityCount"];
     [self updateNetworkActivityIndicatorVisibilityDelayed];
+}
+
+- (void)networkingOperationDidStart:(NSNotification *)notification {
+    AFURLConnectionOperation *connectionOperation = [notification object];
+    if (connectionOperation.request.URL) {
+        [self incrementActivityCount];
+    }
+}
+
+- (void)networkingOperationDidFinish:(NSNotification *)notification {
+    AFURLConnectionOperation *connectionOperation = [notification object];
+    if (connectionOperation.request.URL) {
+        [self decrementActivityCount];
+    }
 }
 
 @end
