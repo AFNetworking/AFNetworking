@@ -517,12 +517,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                                                     failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     AFHTTPRequestOperation *operation = nil;
-    NSString *className = nil;
-    NSEnumerator *enumerator = [self.registeredHTTPOperationClassNames reverseObjectEnumerator];
-    while (!operation && (className = [enumerator nextObject])) {
+    
+    for (NSString * className in self.registeredHTTPOperationClassNames) {
         Class op_class = NSClassFromString(className);
         if (op_class && [op_class canProcessRequest:urlRequest]) {
             operation = [(AFHTTPRequestOperation *)[op_class alloc] initWithRequest:urlRequest];
+            break;
         }
     }
 
