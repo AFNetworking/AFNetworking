@@ -138,11 +138,9 @@ static NSMutableDictionary *hasRetried = nil;
             } else {
                 NSString *key = [initUrlRequest.URL absoluteString];
                 if (key && ![hasRetried objectForKey:key]) {
-                    NSLog(@"%@ corrupted, retry...",key);
                     [hasRetried setObject:[NSNumber numberWithBool:YES] forKey:key];
                     [self setImageWithURL:initUrlRequest.URL placeholderImage:placeholderImage];
                 } else {
-                    NSLog(@"try to download %@ twice, failed",key);
                     if (failure) {
                         NSError *error = [[NSError alloc] initWithDomain:@"ARImageDownloadFailed" code:403 userInfo:@{}];
                         failure(operation.request, operation.response, error);

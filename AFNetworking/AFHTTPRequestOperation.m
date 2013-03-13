@@ -30,7 +30,6 @@
 #define AF_CAST_TO_BLOCK __bridge void *
 #endif
 
-// We do a little bit of duck typing in this file which can trigger this warning.  Turn it off for this source file.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-selector-match"
 
@@ -108,22 +107,14 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, strong) NSError *HTTPError;
-@property (readwrite, nonatomic, copy) NSString *HTTPResponseString;
-@property (readwrite, nonatomic, assign) long long totalContentLength;
-@property (readwrite, nonatomic, assign) long long offsetContentLength;
-@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
 @implementation AFHTTPRequestOperation
 @synthesize HTTPError = _HTTPError;
-@synthesize HTTPResponseString = _HTTPResponseString;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
-@synthesize totalContentLength = _totalContentLength;
-@synthesize offsetContentLength = _offsetContentLength;
 @dynamic request;
 @dynamic response;
-@dynamic lock;
 
 - (void)dealloc {
     if (_successCallbackQueue) {
@@ -171,25 +162,19 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
     }
 }
 
-- (NSString *)responseString {
-    [self.lock lock];
+- (NSStringEncoding)responseStringEncoding {
     // When no explicit charset parameter is provided by the sender, media subtypes of the "text" type are defined to have a default charset value of "ISO-8859-1" when received via HTTP. Data in character sets other than "ISO-8859-1" or its subsets MUST be labeled with an appropriate charset value.
     // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.4.1
-    if (!self.HTTPResponseString && self.response && !self.response.textEncodingName && self.responseData) {
+    if (self.response && !self.response.textEncodingName && self.responseData) {
         NSString *type = nil;
         AFGetMediaTypeAndSubtypeWithString([[self.response allHeaderFields] valueForKey:@"Content-Type"], &type, nil);
 
         if ([type isEqualToString:@"text"]) {
-            self.HTTPResponseString = [[NSString alloc] initWithData:self.responseData encoding:NSISOLatin1StringEncoding];
+            return NSISOLatin1StringEncoding;
         }
     }
-    [self.lock unlock];
 
-    if (self.HTTPResponseString) {
-        return self.HTTPResponseString;
-    } else {
-        return [super responseString];
-    }
+    return [super responseStringEncoding];
 }
 
 - (void)pause {
@@ -328,46 +313,6 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
     return [[self acceptableContentTypes] intersectsSet:AFContentTypesFromHTTPHeader([request valueForHTTPHeaderField:@"Accept"])];
 }
 
-#pragma mark - NSURLConnectionDelegate
-
-- (void)connection:(__unused NSURLConnection *)connection
-didReceiveResponse:(NSURLResponse *)response
-{
-    self.response = (NSHTTPURLResponse *)response;
-
-    // Set Content-Range header if status code of response is 206 (Partial Content)
-    // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.7
-    long long totalContentLength = self.response.expectedContentLength;
-    long long fileOffset = 0;
-    NSUInteger statusCode = ([self.response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSUInteger)[self.response statusCode] : 200;
-    if (statusCode == 206) {
-        NSString *contentRange = [self.response.allHeaderFields valueForKey:@"Content-Range"];
-        if ([contentRange hasPrefix:@"bytes"]) {
-            NSArray *byteRanges = [contentRange componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -/"]];
-            if ([byteRanges count] == 4) {
-                fileOffset = [[byteRanges objectAtIndex:1] longLongValue];
-                totalContentLength = [[byteRanges objectAtIndex:2] longLongValue] ?: -1; // if this is "*", it's converted to 0, but -1 is default.
-            }
-        }
-    } else {
-        if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
-            [self.outputStream setProperty:[NSNumber numberWithInteger:0] forKey:NSStreamFileCurrentOffsetKey];
-        } else {
-            if ([[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length] > 0) {
-                self.outputStream = [NSOutputStream outputStreamToMemory];
-
-                NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-                for (NSString *runLoopMode in self.runLoopModes) {
-                    [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
-                }
-            }
-        }
-    }
-
-    self.offsetContentLength = MAX(fileOffset, 0);
-    self.totalContentLength = totalContentLength;
-    
-    [self.outputStream open];
-}
-
 @end
+
+#pragma clang diagnostic pop

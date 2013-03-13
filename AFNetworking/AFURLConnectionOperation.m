@@ -339,20 +339,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [self didChangeValueForKey:oldStateKey];
     [self didChangeValueForKey:newStateKey];
     [self.lock unlock];
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        switch (state) {
-            case AFOperationExecutingState:
-                [notificationCenter postNotificationName:AFNetworkingOperationDidStartNotification object:self];
-                break;
-            case AFOperationFinishedState:
-                [notificationCenter postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
-                break;
-            default:
-                break;
-        }
-    });
 }
 
 - (NSString *)responseString {
@@ -450,24 +436,34 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)operationDidStart {
     [self.lock lock];
-    if ([self isCancelled]) {
-        [self finish];
-    } else {
+    if (! [self isCancelled]) {
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
-
+        
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         for (NSString *runLoopMode in self.runLoopModes) {
             [self.connection scheduleInRunLoop:runLoop forMode:runLoopMode];
             [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
         }
-
+        
         [self.connection start];
     }
     [self.lock unlock];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
+    });
+    
+    if ([self isCancelled]) {
+        [self finish];
+    }
 }
 
 - (void)finish {
     self.state = AFOperationFinishedState;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+    });
 }
 
 - (void)cancel {
@@ -628,18 +624,18 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)connection:(NSURLConnection __unused *)connection
     didReceiveData:(NSData *)data
 {
-    self.totalBytesRead += [data length];
-
     if ([self.outputStream hasSpaceAvailable]) {
         const uint8_t *dataBuffer = (uint8_t *) [data bytes];
         [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
     }
-
-    if (self.downloadProgress) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.totalBytesRead += [data length];
+        
+        if (self.downloadProgress) {
             self.downloadProgress([data length], self.totalBytesRead, self.response.expectedContentLength);
-        });
-    }
+        }
+    });
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection __unused *)connection {
