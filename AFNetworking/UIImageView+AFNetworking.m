@@ -35,6 +35,7 @@
 #pragma mark -
 
 static char kAFImageRequestOperationObjectKey;
+static NSMutableDictionary *hasRetried = nil;
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFImageRequestOperation *af_imageRequestOperation;
@@ -98,7 +99,13 @@ static char kAFImageRequestOperationObjectKey;
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
+    if (!hasRetried) {
+        hasRetried = [[NSMutableDictionary alloc] init];
+    }
+
     [self cancelImageRequestOperation];
+
+    NSURLRequest *initUrlRequest = urlRequest;
 
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
@@ -114,19 +121,32 @@ static char kAFImageRequestOperationObjectKey;
 
         AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-                if (success) {
-                    success(operation.request, operation.response, responseObject);
-                } else if (responseObject) {
-                    self.image = responseObject;
+            if (responseObject) {
+                if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
+                    if (success) {
+                        success(operation.request, operation.response, responseObject);
+                    } else {
+                        self.image = responseObject;
+                    }
+
+                    if (self.af_imageRequestOperation == operation) {
+                        self.af_imageRequestOperation = nil;
+                    }
                 }
 
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
+                [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
+            } else {
+                NSString *key = [initUrlRequest.URL absoluteString];
+                if (key && ![hasRetried objectForKey:key]) {
+                    [hasRetried setObject:[NSNumber numberWithBool:YES] forKey:key];
+                    [self setImageWithURL:initUrlRequest.URL placeholderImage:placeholderImage];
+                } else {
+                    if (failure) {
+                        NSError *error = [[NSError alloc] initWithDomain:@"ARImageDownloadFailed" code:403 userInfo:@{}];
+                        failure(operation.request, operation.response, error);
+                    }
                 }
             }
-
-            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
                 if (failure) {
