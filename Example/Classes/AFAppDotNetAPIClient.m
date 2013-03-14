@@ -22,7 +22,7 @@
 
 #import "AFAppDotNetAPIClient.h"
 
-#import "AFJSONRequestOperation.h"
+#import <AFNetworking/AFJSONRequestOperation.h>
 
 static NSString * const kAFAppDotNetAPIBaseURLString = @"https://alpha-api.app.net/";
 
