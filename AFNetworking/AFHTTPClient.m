@@ -518,7 +518,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 {
     AFHTTPRequestOperation *operation = nil;
     
-    for (NSString * className in self.registeredHTTPOperationClassNames) {
+    for (NSString *className in self.registeredHTTPOperationClassNames) {
         Class operationClass = NSClassFromString(className);
         if (operationClass && [operationClass canProcessRequest:urlRequest]) {
             operation = [(AFHTTPRequestOperation *)[operationClass alloc] initWithRequest:urlRequest];
