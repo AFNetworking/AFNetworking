@@ -564,7 +564,7 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
                          name:(NSString *)name
                      fileName:(NSString *)fileName
                      mimeType:(NSString *)mimeType
-                        error:(NSError *__autoreleasing *)error;
+                        error:(NSError * __autoreleasing *)error;
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.

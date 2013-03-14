@@ -821,6 +821,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
     NSString *fileName = [fileURL lastPathComponent];
     NSString *mimeType = AFContentTypeForPathExtension([fileURL pathExtension]);
+    
     return [self appendPartWithFileURL:fileURL name:name fileName:fileName mimeType:mimeType error:error];
 }
 
@@ -828,7 +829,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                          name:(NSString *)name
                      fileName:(NSString *)fileName
                      mimeType:(NSString *)mimeType
-                        error:(NSError *__autoreleasing *)error
+                        error:(NSError * __autoreleasing *)error
 {
     NSParameterAssert(fileURL);
     NSParameterAssert(name);
