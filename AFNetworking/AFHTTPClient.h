@@ -572,6 +572,7 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 - (void)appendPartWithFormData:(NSData *)data
                           name:(NSString *)name;
 
+
 /**
  Appends HTTP headers, followed by the encoded data and the multipart form boundary.
 
@@ -580,6 +581,21 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
  */
 - (void)appendPartWithHeaders:(NSDictionary *)headers
                          body:(NSData *)body;
+
+/**
+ Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the data from the input stream and the multipart form boundary.
+ 
+ @param inputStream The input stream to be appended to the form data
+ @param name The name to be associated with the specified input stream. This parameter must not be `nil`.
+ @param fileName The filename to be associated with the specified input stream. This parameter must not be `nil`.
+ @param length The length of the specified input stream in bytes.
+ @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
+ */
+- (void)appendPartWithInputStream:(NSInputStream *)inputStream
+                             name:(NSString *)name
+                         fileName:(NSString *)fileName
+                           length:(unsigned long long)length
+                         mimeType:(NSString *)mimeType;
 
 /**
  Throttles request bandwidth by limiting the packet size and adding a delay for each chunk read from the upload stream.
