@@ -61,6 +61,19 @@
  Creates and returns an `AFXMLRequestOperation` object and sets the specified success and failure callbacks.
 
  @param urlRequest The request object to be loaded asynchronously during execution of the operation
+ @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the XML string constructed with the response data of request.
+ @param failure A block object to be executed when the operation finishes unsuccessfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error describing the network error that occurred.
+ 
+ @return A new XML request operation
+*/
++ (AFXMLRequestOperation *)XMLRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                  success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSString *xml))success
+                                                  failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSString *string))failure;
+                                                  
+/**
+ Creates and returns an `AFXMLRequestOperation` object and sets the specified success and failure callbacks.
+ 
+ @param urlRequest The request object to be loaded asynchronously during execution of the operation
  @param success A block object to be executed when the operation finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the XML parser constructed with the response data of request.
  @param failure A block object to be executed when the operation finishes unsuccessfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error describing the network error that occurred.
 
