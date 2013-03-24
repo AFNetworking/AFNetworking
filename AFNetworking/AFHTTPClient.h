@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import "AFURLConnectionOperation.h"
 
 #import <Availability.h>
 
@@ -135,6 +136,13 @@ typedef enum {
  */
 #ifdef _SYSTEMCONFIGURATION_H
 @property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
+#endif
+
+/**
+ Default SSL pinning mode for each `AFHTTPRequestOperation` which will be enqueued with `enqueueHTTPRequestOperation:`.
+ */
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode defaultSSLPinMode;
 #endif
 
 ///---------------------------------------------
@@ -440,7 +448,7 @@ typedef enum {
 ///----------------
 
 /**
- ### Network Reachability
+ ## Network Reachability
 
  The following constants are provided by `AFHTTPClient` as possible network reachability statuses.
 
@@ -471,7 +479,7 @@ typedef enum {
  A key in the userInfo dictionary in a `AFNetworkingReachabilityDidChangeNotification` notification.
  The corresponding value is an `NSNumber` object representing the `AFNetworkReachabilityStatus` value for the current reachability status.
 
- ### Parameter Encoding
+ ## Parameter Encoding
 
  The following constants are provided by `AFHTTPClient` as possible methods for serializing parameters into query string or message body values.
 

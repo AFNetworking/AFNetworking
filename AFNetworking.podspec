@@ -10,13 +10,16 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.ios.deployment_target = '5.0'
-  s.ios.frameworks = 'MobileCoreServices', 'SystemConfiguration'
+  s.ios.frameworks = 'MobileCoreServices', 'SystemConfiguration', 'Security'
 
   s.osx.deployment_target = '10.7'
-  s.osx.frameworks = 'CoreServices', 'SystemConfiguration'
+  s.osx.frameworks = 'CoreServices', 'SystemConfiguration', 'Security'
 
   s.prefix_header_contents = <<-EOS
 #import <Availability.h>
+
+#define _AFNETWORKING_PIN_SSL_CERTIFICATES_
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
   #import <SystemConfiguration/SystemConfiguration.h>
   #import <MobileCoreServices/MobileCoreServices.h>
