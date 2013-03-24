@@ -1,67 +1,96 @@
 = 1.2.0 (2013-03-24)
 
- * Add `SSLPinningMode` property to `AFHTTPClient` (Oliver Letterer, Kevin Harwood, Adam Becevello, Dustin Barker, Mattt Thompson)
+ * Add `SSLPinningMode` property to `AFHTTPClient` (Oliver Letterer, Kevin
+Harwood, Adam Becevello, Dustin Barker, Mattt Thompson)
 
- * Add single quote ("'"), comma (","), and asterix ("*") to escaped URL encoding characters (Eric Florenzano, Marc Nijdam, Garrett Murray)
+ * Add single quote ("'"), comma (","), and asterix ("*") to escaped URL
+encoding characters (Eric Florenzano, Marc Nijdam, Garrett Murray)
 
  * Add `credential` property to `AFURLConnectionOperation` (Mattt Thompson)
 
  * Add `-setDefaultCredential:` to `AFHTTPClient`
 
- * Fix request stream exhaustion error on authentication challenges (Alex Burgel)
+ * Add `shouldUseCredentialStorage` property to `AFURLConnectionOperation`
+(Mattt Thompson)
 
- * Add `shouldUseCredentialStorage` property to `AFURLConnectionOperation` (Mattt Thompson)
+ * Add support for repeated key value pairs in `AFHTTPClient` URL query string
+(Nick Dawson)
 
- * Add support for repeated key value pairs in `AFHTTPClient` URL query string (Nick Dawson)
+ * Add `AFMultipartFormData -
+appendPartWithFileURL:name:fileName:mimeType:error` (Daniel Rodríguez Troitiño)
 
- * Add `AFMultipartFormData - appendPartWithFileURL:name:fileName:mimeType:error` (Daniel Rodríguez Troitiño)
+ * Add `AFMultipartFormData -
+appendPartWithInputStream:name:fileName:mimeType:` (@joein3d)
 
- * Add `AFMultipartFormData - appendPartWithInputStream:name:fileName:mimeType:` (@joein3d)
+ * Change SSL pinning to be runtime property on `AFURLConnectionOperation`
+rather than defined by macro (Oliver Letterer)
 
- * Change SSL pinning to be runtime property on `AFURLConnectionOperation` rather than defined by macro (Oliver Letterer)
+ * Change `AFMultipartBodyStream` to `AFMultipartBodyStreamProvider`, vending
+one side of a bound CFStream pair rather than subclassing `NSInputStream` (Mike
+Ash)
 
- * Change `AFMultipartBodyStream` to `AFMultipartBodyStreamProvider`, vending one side of a bound CFStream pair rather than subclassing `NSInputStream` (Mike Ash)
+ * Change default `Accept-Language` header in `AFHTTPClient` (@therigu, Mattt
+Thompson)
 
- * Change default `Accept-Language` header in `AFHTTPClient` (@therigu, Mattt Thompson)
+ * Change `AFHTTPClient` operation cancellation to be based on request URL path
+rather than absolute URL string (Mattt Thompson)
 
- * Change `AFHTTPClient` operation cancellation to be based on request URL path rather than absolute URL string (Mattt Thompson)
+ * Change request operation subclass processing queues to use
+`DISPATCH_QUEUE_CONCURRENT` (Mattt Thompson)
 
- * Change request operation subclass processing queues to use `DISPATCH_QUEUE_CONCURRENT` (Mattt Thompson)
+ * Change `UIImageView+AFNetworking` to resolve asymmetry in cached image case
+between success block provided and not provided (@Eveets, Mattt Thompson)
 
- * Change `UIImageView+AFNetworking` to resolve asymmetry in cached image case between success block provided and not provided (@Eveets, Mattt Thompson)
+ * Change `UIImageView+AFNetworking` to compare `NSURLRequest` instead of
+`NSURL` to determine if previous request was equivalent (Cédric Luthi)
 
- * Change `UIImageView+AFNetworking` to compare `NSURLRequest` instead of `NSURL` to determine if previous request was equivalent (Cédric Luthi)
+ * Change `UIImageView+AFNetworking` to only set image if non-`nil` (Sean
+Kovacs)
 
- * Change `UIImageView+AFNetworking` to only set image if non-`nil` (Sean Kovacs)
+ * Change indentation settings to four spaces at the project level (Cédric
+Luthi)
 
- * Change indentation settings to four spaces at the project level (Cédric Luthi)
+ * Change `AFNetworkActivityIndicatorManager` to only update if requests have a
+non-`nil` URL (Cédric Luthi)
 
- * Change `AFNetworkActivityIndicatorManager` to only update if requests have a non-`nil` URL (Cédric Luthi)
+ * Change `UIImageView+AFNetworking` to not do `setHTTPShouldHandleCookies`
+(Konstantinos Vaggelakos)
 
- * Change `UIImageView+AFNetworking` to not do `setHTTPShouldHandleCookies` (Konstantinos Vaggelakos)
+ * Fix request stream exhaustion error on authentication challenges (Alex
+Burgel)
 
- * Fix implementation to use `NSURL` methods instead of `CFURL` functions where applicable (Cédric Luthi)
+ * Fix implementation to use `NSURL` methods instead of `CFURL` functions where
+applicable (Cédric Luthi)
 
  * Fix race condition in `UIImageView+AFNetworking` (Peyman)
 
- * Fix `responseJSON`, `responseString`, and `responseStringEncoding` to be threadsafe (Jon Parise, Mattt Thompson)
+ * Fix `responseJSON`, `responseString`, and `responseStringEncoding` to be
+threadsafe (Jon Parise, Mattt Thompson)
 
- * Fix `AFContentTypeForPathExtension` to ensure non-`NULL` content return value (Zach Waugh)
+ * Fix `AFContentTypeForPathExtension` to ensure non-`NULL` content return
+value (Zach Waugh)
 
  * Fix documentation for `appendPartWithFileURL:name:error:`
  (Daniel Rodríguez Troitiño)
 
- * Fix request operation subclass processing queues to initialize with `dispatch_once` (Sasmito Adibowo)
+ * Fix request operation subclass processing queues to initialize with
+`dispatch_once` (Sasmito Adibowo)
 
- * Fix posting of `AFNetworkingOperationDidStartNotification` and `AFNetworkingOperationDidFinishNotification` to avoid crashes when logging in response to notifications (Blake Watters)
+ * Fix posting of `AFNetworkingOperationDidStartNotification` and
+`AFNetworkingOperationDidFinishNotification` to avoid crashes when logging in
+response to notifications (Blake Watters)
 
- * Fix ordering of registered operation consultation in `AFHTTPClient` (Joel Parsons)
+ * Fix ordering of registered operation consultation in `AFHTTPClient` (Joel
+Parsons)
 
- * Fix warning: multiple methods named 'postNotificationName:object:' found [-Wstrict-selector-match] (Oliver Jones)
+ * Fix warning: multiple methods named 'postNotificationName:object:' found
+[-Wstrict-selector-match] (Oliver Jones)
 
- * Fix warning: multiple methods named 'objectForKey:' found [-Wstrict-selector-match] (Oliver Jones)
+ * Fix warning: multiple methods named 'objectForKey:' found
+[-Wstrict-selector-match] (Oliver Jones)
 
- * Fix warning: weak receiver may be unpredictably set to nil [-Wreceiver-is-weak] (Oliver Jones)
+ * Fix warning: weak receiver may be unpredictably set to nil
+[-Wreceiver-is-weak] (Oliver Jones)
 
  * Fix missing #pragma clang diagnostic pop (Steven Fisher)
 
