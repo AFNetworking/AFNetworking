@@ -1199,7 +1199,7 @@ typedef enum {
             _inputStream = [NSInputStream inputStreamWithData:self.body];
         } else if ([self.body isKindOfClass:[NSURL class]]) {
             _inputStream = [NSInputStream inputStreamWithURL:self.body];
-        } else if ( [self.body isKindOfClass:[NSInputStream class]] ) {
+        } else if ([self.body isKindOfClass:[NSInputStream class]]) {
             _inputStream = self.body;
         }
     }
