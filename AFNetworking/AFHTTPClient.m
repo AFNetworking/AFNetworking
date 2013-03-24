@@ -777,7 +777,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         maxLength:(NSUInteger)length;
 @end
 
-@interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
+@interface AFMultipartBodyStreamProvider : NSObject
 @property (nonatomic, assign) NSUInteger numberOfBytesInPacket;
 @property (nonatomic, assign) NSTimeInterval delay;
 @property (nonatomic, readonly) unsigned long long contentLength;
@@ -786,13 +786,15 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
 - (void)setInitialAndFinalBoundaries;
 - (void)appendHTTPBodyPart:(AFHTTPBodyPart *)bodyPart;
+
+- (NSInputStream *)inputStream;
 @end
 
 #pragma mark -
 
 @interface AFStreamingMultipartFormData ()
 @property (readwrite, nonatomic, copy) NSMutableURLRequest *request;
-@property (readwrite, nonatomic, strong) AFMultipartBodyStream *bodyStream;
+@property (readwrite, nonatomic, strong) AFMultipartBodyStreamProvider *bodyStream;
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
 @end
 
@@ -811,7 +813,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
     self.request = urlRequest;
     self.stringEncoding = encoding;
-    self.bodyStream = [[AFMultipartBodyStream alloc] initWithStringEncoding:encoding];
+    self.bodyStream = [[AFMultipartBodyStreamProvider alloc] initWithStringEncoding:encoding];
 
     return self;
 }
@@ -931,7 +933,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", kAFMultipartFormBoundary] forHTTPHeaderField:@"Content-Type"];
     [self.request setValue:[NSString stringWithFormat:@"%llu", [self.bodyStream contentLength]] forHTTPHeaderField:@"Content-Length"];
-    [self.request setHTTPBodyStream:self.bodyStream];
+    [self.request setHTTPBodyStream:self.bodyStream.inputStream];
 
     return self.request;
 }
@@ -940,7 +942,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 #pragma mark -
 
-@interface AFMultipartBodyStream () <NSCopying>
+@interface AFMultipartBodyStreamProvider () <NSCopying, NSStreamDelegate>
 @property (nonatomic, assign) NSStreamStatus streamStatus;
 @property (nonatomic, strong) NSError *streamError;
 
@@ -950,7 +952,15 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, strong) AFHTTPBodyPart *currentHTTPBodyPart;
 @end
 
-@implementation AFMultipartBodyStream
+static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
+
+@implementation AFMultipartBodyStreamProvider {
+    NSInputStream *_inputStream;
+    NSOutputStream *_outputStream;
+    NSMutableData *_buffer;
+    
+    id _keepalive;
+}
 @synthesize streamStatus = _streamStatus;
 @synthesize streamError = _streamError;
 @synthesize stringEncoding = _stringEncoding;
@@ -969,8 +979,14 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     self.stringEncoding = encoding;
     self.HTTPBodyParts = [NSMutableArray array];
     self.numberOfBytesInPacket = NSIntegerMax;
-
+    
+    _buffer = [[NSMutableData alloc] init];
+    
     return self;
+}
+
+- (void)dealloc {
+    _outputStream.delegate = nil;
 }
 
 - (void)setInitialAndFinalBoundaries {
@@ -989,79 +1005,99 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     [self.HTTPBodyParts addObject:bodyPart];
 }
 
+- (NSInputStream *)inputStream {
+    if(_inputStream == nil) {
+        CFReadStreamRef readStream;
+        CFWriteStreamRef writeStream;
+        CFStreamCreateBoundPair(NULL, &readStream, &writeStream, AFMultipartBodyStreamProviderBufferSize);
+        _inputStream = CFBridgingRelease(readStream);
+        _outputStream = CFBridgingRelease(writeStream);
+        
+        _outputStream.delegate = self;
+        if([NSThread isMainThread]) {
+            [_outputStream scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
+        }
+        else {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [_outputStream scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
+            });
+        }
+        [_outputStream open];
+        _keepalive = self;
+    }
+    
+    return _inputStream;
+}
+
 - (BOOL)isEmpty {
     return [self.HTTPBodyParts count] == 0;
 }
 
-#pragma mark - NSInputStream
+#pragma mark - NSStreamDelegate
 
-- (NSInteger)read:(uint8_t *)buffer
-        maxLength:(NSUInteger)length
-{
-    if ([self streamStatus] == NSStreamStatusClosed) {
-        return 0;
+- (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
+    if(eventCode & NSStreamEventHasSpaceAvailable) {
+        [self handleOutputStreamSpaceAvailable];
     }
-    NSInteger bytesRead = 0;
+}
 
-    while ((NSUInteger)bytesRead < MIN(length, self.numberOfBytesInPacket)) {
-        if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
-            if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
-                break;
+- (void)handleOutputStreamSpaceAvailable {
+    while([_outputStream hasSpaceAvailable]) {
+        if([_buffer length] > 0) {
+            NSInteger ret = [_outputStream write: [_buffer bytes] maxLength: [_buffer length]];
+            if(ret < 0) {
+                /* I don't think an error should ever actually happen with a bound pair.
+                 * If it does, we'll just close the stream and give up. */
+                [self close];
+                return;
+            } else {
+                /* Delete the written bytes from the buffer. */
+                [_buffer replaceBytesInRange: NSMakeRange(0, ret) withBytes: NULL length: 0];
             }
         } else {
-            bytesRead += [self.currentHTTPBodyPart read:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
-            if (self.delay > 0.0f) {
-                [NSThread sleepForTimeInterval:self.delay];
+            /* Refill the buffer. */
+            
+            /* Make sure the current body part is valid. */
+            if(self.currentHTTPBodyPart == nil) {
+                if(self.HTTPBodyPartEnumerator == nil) {
+                    self.HTTPBodyPartEnumerator = [self.HTTPBodyParts objectEnumerator];
+                }
+                self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject];
             }
+            
+            /* If the current part is still nil, then it's the end of the road: close the stream and bail. */
+            if(self.currentHTTPBodyPart == nil) {
+                [self close];
+                return;
+            }
+            
+            /* Read some data. */
+            [_buffer setLength: AFMultipartBodyStreamProviderBufferSize];
+            NSInteger ret = [self.currentHTTPBodyPart read: [_buffer mutableBytes] maxLength: [_buffer length]];
+            if(ret < 0) {
+                /* Not sure how to handle an error currently. Close the output stream and bail out. */
+                [self close];
+                return;
+            }
+            
+            /* Resize the buffer to how much was actually read. */
+            [_buffer setLength: ret];
+            
+            /* If we hit EOF, invalidate the current body part so the next pass through will find a new one. */
+            if(ret == 0) {
+                self.currentHTTPBodyPart = nil;
+            }
+            
+            /* Fall off the end. The next loop through will get data out of the buffer. */
         }
     }
-    return bytesRead;
-}
-
-- (BOOL)getBuffer:(__unused uint8_t **)buffer
-           length:(__unused NSUInteger *)len
-{
-    return NO;
-}
-
-- (BOOL)hasBytesAvailable {
-    return [self streamStatus] == NSStreamStatusOpen;
-}
-
-#pragma mark - NSStream
-
-- (void)open {
-    if (self.streamStatus == NSStreamStatusOpen) {
-        return;
-    }
-
-    self.streamStatus = NSStreamStatusOpen;
-
-    [self setInitialAndFinalBoundaries];
-    self.HTTPBodyPartEnumerator = [self.HTTPBodyParts objectEnumerator];
 }
 
 - (void)close {
-    self.streamStatus = NSStreamStatusClosed;
+    [_outputStream close];
+    _outputStream.delegate = nil;
+    _keepalive = nil;
 }
-
-- (id)propertyForKey:(__unused NSString *)key {
-    return nil;
-}
-
-- (BOOL)setProperty:(__unused id)property
-             forKey:(__unused NSString *)key
-{
-    return NO;
-}
-
-- (void)scheduleInRunLoop:(__unused NSRunLoop *)aRunLoop
-                  forMode:(__unused NSString *)mode
-{}
-
-- (void)removeFromRunLoop:(__unused NSRunLoop *)aRunLoop
-                  forMode:(__unused NSString *)mode
-{}
 
 - (unsigned long long)contentLength {
     unsigned long long length = 0;
@@ -1072,26 +1108,10 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     return length;
 }
 
-#pragma mark - Undocumented CFReadStream Bridged Methods
-
-- (void)_scheduleInCFRunLoop:(__unused CFRunLoopRef)aRunLoop
-                     forMode:(__unused CFStringRef)aMode
-{}
-
-- (void)_unscheduleFromCFRunLoop:(__unused CFRunLoopRef)aRunLoop
-                         forMode:(__unused CFStringRef)aMode
-{}
-
-- (BOOL)_setCFClientFlags:(__unused CFOptionFlags)inFlags
-                 callback:(__unused CFReadStreamClientCallBack)inCallback
-                  context:(__unused CFStreamClientContext *)inContext {
-    return NO;
-}
-
 #pragma mark - NSCopying
 
 -(id)copyWithZone:(NSZone *)zone {
-    AFMultipartBodyStream *bodyStreamCopy = [[[self class] allocWithZone:zone] initWithStringEncoding:self.stringEncoding];
+    AFMultipartBodyStreamProvider *bodyStreamCopy = [[[self class] allocWithZone:zone] initWithStringEncoding:self.stringEncoding];
 
     for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
         [bodyStreamCopy appendHTTPBodyPart:[bodyPart copy]];
@@ -1107,10 +1127,12 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 #pragma mark -
 
 typedef enum {
+    AFInitialPhase               = 0,
     AFEncapsulationBoundaryPhase = 1,
     AFHeaderPhase                = 2,
     AFBodyPhase                  = 3,
     AFFinalBoundaryPhase         = 4,
+    AFCompletedPhase             = 5,
 } AFHTTPBodyPartReadPhase;
 
 @interface AFHTTPBodyPart () <NSCopying> {
@@ -1139,6 +1161,7 @@ typedef enum {
         return nil;
     }
 
+    _phase = AFInitialPhase;
     [self transitionToNextPhase];
 
     return self;
@@ -1273,6 +1296,9 @@ typedef enum {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wcovered-switch-default"
     switch (_phase) {
+        case AFInitialPhase:
+            _phase = AFEncapsulationBoundaryPhase;
+            break;
         case AFEncapsulationBoundaryPhase:
             _phase = AFHeaderPhase;
             break;
@@ -1286,8 +1312,9 @@ typedef enum {
             _phase = AFFinalBoundaryPhase;
             break;
         case AFFinalBoundaryPhase:
+        case AFCompletedPhase:
         default:
-            _phase = AFEncapsulationBoundaryPhase;
+            _phase = AFCompletedPhase;
             break;
     }
     _phaseReadOffset = 0;
