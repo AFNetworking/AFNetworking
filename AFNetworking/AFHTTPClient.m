@@ -778,7 +778,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @end
 
 @interface AFMultipartBodyStreamProvider : NSObject
-@property (nonatomic, assign) NSUInteger numberOfBytesInPacket;
+@property (nonatomic, assign) NSUInteger bufferLength;
 @property (nonatomic, assign) NSTimeInterval delay;
 @property (nonatomic, readonly) unsigned long long contentLength;
 @property (nonatomic, readonly, getter = isEmpty) BOOL empty;
@@ -919,7 +919,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 - (void)throttleBandwidthWithPacketSize:(NSUInteger)numberOfBytes
                                   delay:(NSTimeInterval)delay
 {
-    self.bodyStream.numberOfBytesInPacket = numberOfBytes;
+    self.bodyStream.bufferLength = numberOfBytes;
     self.bodyStream.delay = delay;
 }
 
@@ -952,7 +952,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, strong) NSMutableData *buffer;
 @end
 
-static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
+static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
 
 @implementation AFMultipartBodyStreamProvider {
 @private
@@ -966,7 +966,7 @@ static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
 @synthesize inputStream = _inputStream;
 @synthesize outputStream = _outputStream;
 @synthesize buffer = _buffer;
-@synthesize numberOfBytesInPacket = _numberOfBytesInPacket;
+@synthesize bufferLength = _numberOfBytesInPacket;
 @synthesize delay = _delay;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding {
@@ -977,9 +977,10 @@ static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
 
     self.stringEncoding = encoding;
     self.HTTPBodyParts = [NSMutableArray array];
-    self.numberOfBytesInPacket = NSIntegerMax;
+    self.bufferLength = NSIntegerMax;
     
     self.buffer = [[NSMutableData alloc] init];
+    self.bufferLength = AFMultipartBodyStreamProviderDefaultBufferLength;
     
     return self;
 }
@@ -1008,7 +1009,7 @@ static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
     if (_inputStream == nil) {
         CFReadStreamRef readStream;
         CFWriteStreamRef writeStream;
-        CFStreamCreateBoundPair(NULL, &readStream, &writeStream, AFMultipartBodyStreamProviderBufferSize);
+        CFStreamCreateBoundPair(NULL, &readStream, &writeStream, self.bufferLength);
         _inputStream = CFBridgingRelease(readStream);
         _outputStream = CFBridgingRelease(writeStream);
         
@@ -1065,7 +1066,7 @@ static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
                 return;
             }
             
-            [_buffer setLength:AFMultipartBodyStreamProviderBufferSize];
+            [_buffer setLength:self.bufferLength];
             
             NSInteger numberOfBytesRead = [self.currentHTTPBodyPart read:[_buffer mutableBytes] maxLength:[_buffer length]];
             if (numberOfBytesRead < 0) {
@@ -1074,10 +1075,14 @@ static const NSUInteger AFMultipartBodyStreamProviderBufferSize = 4096;
             }
             
             [_buffer setLength:numberOfBytesRead];
-            
+
             if(numberOfBytesRead == 0) {
                 self.currentHTTPBodyPart = nil;
-            }            
+            }
+
+            if (self.delay > 0.0f) {
+                [NSThread sleepForTimeInterval:self.delay];
+            }
         }
     }
 }
