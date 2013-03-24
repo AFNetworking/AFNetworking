@@ -916,6 +916,31 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     [self.bodyStream appendHTTPBodyPart:bodyPart];
 }
 
+- (void)appendPartWithInputStream:(NSInputStream *)inputStream
+                             name:(NSString *)name
+                         fileName:(NSString *)fileName
+                           length:(unsigned long long)length
+                         mimeType:(NSString *)mimeType
+{
+    NSParameterAssert(name);
+    NSParameterAssert(fileName);
+    NSParameterAssert(mimeType);
+    
+    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    
+    
+    AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
+    bodyPart.stringEncoding = self.stringEncoding;
+    bodyPart.headers = mutableHeaders;
+    bodyPart.body = inputStream;
+    
+    bodyPart.bodyContentLength = length;
+    
+    [self.bodyStream appendHTTPBodyPart:bodyPart];
+}
+
 - (void)throttleBandwidthWithPacketSize:(NSUInteger)numberOfBytes
                                   delay:(NSTimeInterval)delay
 {
@@ -1174,6 +1199,8 @@ typedef enum {
             _inputStream = [NSInputStream inputStreamWithData:self.body];
         } else if ([self.body isKindOfClass:[NSURL class]]) {
             _inputStream = [NSInputStream inputStreamWithURL:self.body];
+        } else if ( [self.body isKindOfClass:[NSInputStream class]] ) {
+            _inputStream = self.body;
         }
     }
 
