@@ -320,9 +320,13 @@ NSCoding, NSCopying>
  The following constants are provided by `AFURLConnectionOperation` as possible SSL Pinning options.
 
  enum {
+ AFSSLPinningModeNone,
  AFSSLPinningModePublicKey,
  AFSSLPinningModeCertificate,
  }
+ 
+ `AFSSLPinningModeNone`
+ Do not pin SSL connections
 
  `AFSSLPinningModePublicKey`
  Pin SSL connections to certificate public key (SPKI).
