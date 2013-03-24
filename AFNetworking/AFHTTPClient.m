@@ -780,14 +780,13 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @interface AFMultipartBodyStreamProvider : NSObject
 @property (nonatomic, assign) NSUInteger bufferLength;
 @property (nonatomic, assign) NSTimeInterval delay;
+@property (nonatomic, readonly) NSInputStream *inputStream;
 @property (nonatomic, readonly) unsigned long long contentLength;
 @property (nonatomic, readonly, getter = isEmpty) BOOL empty;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
 - (void)setInitialAndFinalBoundaries;
 - (void)appendHTTPBodyPart:(AFHTTPBodyPart *)bodyPart;
-
-- (NSInputStream *)inputStream;
 @end
 
 #pragma mark -
