@@ -533,6 +533,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [operation setCompletionBlockWithSuccess:success failure:failure];
 
     operation.credential = self.defaultCredential;
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+    operation.SSLPinningMode = self.defaultSSLPinningMode;
+#endif
 
     return operation;
 }
@@ -540,10 +543,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #pragma mark -
 
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation {
-#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
-    operation.SSLPinningMode = self.defaultSSLPinMode;
-#endif
-    
     [self.operationQueue addOperation:operation];
 }
 

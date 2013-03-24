@@ -142,7 +142,7 @@ typedef enum {
  Default SSL pinning mode for each `AFHTTPRequestOperation` which will be enqueued with `enqueueHTTPRequestOperation:`.
  */
 #ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
-@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode defaultSSLPinMode;
+@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode defaultSSLPinningMode;
 #endif
 
 ///---------------------------------------------
