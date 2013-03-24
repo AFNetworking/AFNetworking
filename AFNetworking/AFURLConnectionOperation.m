@@ -145,6 +145,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @dynamic inputStream;
 @synthesize outputStream = _outputStream;
 @synthesize credential = _credential;
+@synthesize allowInvalidSSLCertificate = _allowInvalidSSLCertificate;
 @synthesize shouldUseCredentialStorage = _shouldUseCredentialStorage;
 @synthesize userInfo = _userInfo;
 @synthesize backgroundTaskIdentifier = _backgroundTaskIdentifier;
@@ -520,10 +521,11 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 {
 #ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
-    if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+    _allowInvalidSSLCertificate = YES;
+#endif
+	if (_allowInvalidSSLCertificate && [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         return YES;
     }
-#endif
 
     if (self.authenticationAgainstProtectionSpace) {
         return self.authenticationAgainstProtectionSpace(connection, protectionSpace);
@@ -538,11 +540,12 @@ canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
 #ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
-    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+    _allowInvalidSSLCertificate = YES;
+#endif
+	if (_allowInvalidSSLCertificate && [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
         return;
     }
-#endif
 
     if (self.authenticationChallenge) {
         self.authenticationChallenge(connection, challenge);

@@ -253,6 +253,12 @@ typedef enum {
  */
 - (void)setDefaultCredential:(NSURLCredential *)credential;
 
+/**
+ Whether the URL connection should allows invalid SSL certificates (such as self-signed certificates) when connecting to an SSL-enabled server.
+ `NO` by default.
+ */
+@property (nonatomic, assign) BOOL allowInvalidSSLCertificate;
+
 ///-------------------------------
 /// @name Creating Request Objects
 ///-------------------------------

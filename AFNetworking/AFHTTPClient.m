@@ -206,6 +206,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 @synthesize registeredHTTPOperationClassNames = _registeredHTTPOperationClassNames;
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize defaultCredential = _defaultCredential;
+@synthesize allowInvalidSSLCertificate = _allowInvalidSSLCertificate;
 @synthesize operationQueue = _operationQueue;
 #ifdef _SYSTEMCONFIGURATION_H
 @synthesize networkReachability = _networkReachability;
@@ -533,6 +534,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [operation setCompletionBlockWithSuccess:success failure:failure];
 
     operation.credential = self.defaultCredential;
+	operation.allowInvalidSSLCertificate = self.allowInvalidSSLCertificate;
 
     return operation;
 }
