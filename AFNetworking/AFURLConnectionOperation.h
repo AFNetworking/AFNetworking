@@ -315,7 +315,7 @@ NSCoding, NSCopying>
 ///----------------
 
 /**
- ## Network Reachability
+ ## SSL Pinning Options
 
  The following constants are provided by `AFURLConnectionOperation` as possible SSL Pinning options.
 
