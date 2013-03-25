@@ -1,67 +1,195 @@
+= 1.2.0 (2013-03-24)
+
+ * Add `SSLPinningMode` property to `AFHTTPClient` (Oliver Letterer, Kevin
+Harwood, Adam Becevello, Dustin Barker, Mattt Thompson)
+
+ * Add single quote ("'"), comma (","), and asterix ("*") to escaped URL
+encoding characters (Eric Florenzano, Marc Nijdam, Garrett Murray)
+
+ * Add `credential` property to `AFURLConnectionOperation` (Mattt Thompson)
+
+ * Add `-setDefaultCredential:` to `AFHTTPClient`
+
+ * Add `shouldUseCredentialStorage` property to `AFURLConnectionOperation`
+(Mattt Thompson)
+
+ * Add support for repeated key value pairs in `AFHTTPClient` URL query string
+(Nick Dawson)
+
+ * Add `AFMultipartFormData -
+appendPartWithFileURL:name:fileName:mimeType:error` (Daniel Rodríguez Troitiño)
+
+ * Add `AFMultipartFormData -
+appendPartWithInputStream:name:fileName:mimeType:` (@joein3d)
+
+ * Change SSL pinning to be runtime property on `AFURLConnectionOperation`
+rather than defined by macro (Oliver Letterer)
+
+ * Change `AFMultipartBodyStream` to `AFMultipartBodyStreamProvider`, vending
+one side of a bound CFStream pair rather than subclassing `NSInputStream` (Mike
+Ash)
+
+ * Change default `Accept-Language` header in `AFHTTPClient` (@therigu, Mattt
+Thompson)
+
+ * Change `AFHTTPClient` operation cancellation to be based on request URL path
+rather than absolute URL string (Mattt Thompson)
+
+ * Change request operation subclass processing queues to use
+`DISPATCH_QUEUE_CONCURRENT` (Mattt Thompson)
+
+ * Change `UIImageView+AFNetworking` to resolve asymmetry in cached image case
+between success block provided and not provided (@Eveets, Mattt Thompson)
+
+ * Change `UIImageView+AFNetworking` to compare `NSURLRequest` instead of
+`NSURL` to determine if previous request was equivalent (Cédric Luthi)
+
+ * Change `UIImageView+AFNetworking` to only set image if non-`nil` (Sean
+Kovacs)
+
+ * Change indentation settings to four spaces at the project level (Cédric
+Luthi)
+
+ * Change `AFNetworkActivityIndicatorManager` to only update if requests have a
+non-`nil` URL (Cédric Luthi)
+
+ * Change `UIImageView+AFNetworking` to not do `setHTTPShouldHandleCookies`
+(Konstantinos Vaggelakos)
+
+ * Fix request stream exhaustion error on authentication challenges (Alex
+Burgel)
+
+ * Fix implementation to use `NSURL` methods instead of `CFURL` functions where
+applicable (Cédric Luthi)
+
+ * Fix race condition in `UIImageView+AFNetworking` (Peyman)
+
+ * Fix `responseJSON`, `responseString`, and `responseStringEncoding` to be
+threadsafe (Jon Parise, Mattt Thompson)
+
+ * Fix `AFContentTypeForPathExtension` to ensure non-`NULL` content return
+value (Zach Waugh)
+
+ * Fix documentation for `appendPartWithFileURL:name:error:`
+ (Daniel Rodríguez Troitiño)
+
+ * Fix request operation subclass processing queues to initialize with
+`dispatch_once` (Sasmito Adibowo)
+
+ * Fix posting of `AFNetworkingOperationDidStartNotification` and
+`AFNetworkingOperationDidFinishNotification` to avoid crashes when logging in
+response to notifications (Blake Watters)
+
+ * Fix ordering of registered operation consultation in `AFHTTPClient` (Joel
+Parsons)
+
+ * Fix warning: multiple methods named 'postNotificationName:object:' found
+[-Wstrict-selector-match] (Oliver Jones)
+
+ * Fix warning: multiple methods named 'objectForKey:' found
+[-Wstrict-selector-match] (Oliver Jones)
+
+ * Fix warning: weak receiver may be unpredictably set to nil
+[-Wreceiver-is-weak] (Oliver Jones)
+
+ * Fix missing #pragma clang diagnostic pop (Steven Fisher)
+
 = 1.1.0 (2012-12-27)
 
- * Add optional SSL certificate pinning with `#define _AFNETWORKING_PIN_SSL_CERTIFICATES_` (Dustin Barker)
+ * Add optional SSL certificate pinning with `#define
+_AFNETWORKING_PIN_SSL_CERTIFICATES_` (Dustin Barker)
 
- * Add `responseStringEncoding` property to `AFURLConnectionOperation` (Mattt Thompson)
+ * Add `responseStringEncoding` property to `AFURLConnectionOperation` (Mattt
+Thompson)
 
- * Add `userInfo` property to `AFURLConnectionOperation` (Mattt Thompson, Steven Fisher)
+ * Add `userInfo` property to `AFURLConnectionOperation` (Mattt Thompson,
+Steven Fisher)
 
- * Change behavior to cause a failure when an operation is cancelled (Daniel Tull)
+ * Change behavior to cause a failure when an operation is cancelled (Daniel
+Tull)
 
  * Change return type of class constructors to `instancetype` (@guykogus)
 
- * Change notifications to always being posted on an asynchronously-dispatched block run on the main queue (Evadne Wu, Mattt Thompson)
+ * Change notifications to always being posted on an asynchronously-dispatched
+block run on the main queue (Evadne Wu, Mattt Thompson)
 
- * Change from NSLocalizedString to NSLocalizedStringFromTable with AFNetworking.strings table for localized strings (Cédric Luthi)
+ * Change from NSLocalizedString to NSLocalizedStringFromTable with
+AFNetworking.strings table for localized strings (Cédric Luthi)
 
- * Change `-appendPartWithHeaders:body:` to add assertion handler for existence of body data parameter (Jonathan Beilin)
+ * Change `-appendPartWithHeaders:body:` to add assertion handler for existence
+of body data parameter (Jonathan Beilin)
 
- * Change `AFHTTPRequestOperation -responseString` to follow guidelines from RFC 2616 regarding the use of string encoding when none is specified in the response (Jorge Bernal)
+ * Change `AFHTTPRequestOperation -responseString` to follow guidelines from
+RFC 2616 regarding the use of string encoding when none is specified in the
+response (Jorge Bernal)
 
- * Change AFHTTPClient parameter serialization dictionary keys with `caseInsensitiveCompare:` to ensure 
- deterministic ordering of query string parameters, which may otherwise 
- cause ambiguous representations of nested parameters (James Coleman, 
+ * Change AFHTTPClient parameter serialization dictionary keys with
+`caseInsensitiveCompare:` to ensure
+ deterministic ordering of query string parameters, which may otherwise
+ cause ambiguous representations of nested parameters (James Coleman,
  Mattt Thompson)
 
- * Fix -Wstrict-selector-match warnings raised by Xcode 4.6DP3 (Jesse Collis, Cédric Luthi)
+ * Fix -Wstrict-selector-match warnings raised by Xcode 4.6DP3 (Jesse Collis,
+Cédric Luthi)
 
- * Fix NSJSONSerialization crash with Unicode character escapes in JSON response (Mathijs Kadijk)
+ * Fix NSJSONSerialization crash with Unicode character escapes in JSON
+response (Mathijs Kadijk)
 
- * Fix issue with early return in -startMonitoringNetworkReachability if network reachability object could not be created (i.e. invalid hostnames) (Basil Shkara)
+ * Fix issue with early return in -startMonitoringNetworkReachability if
+network reachability object could not be created (i.e. invalid hostnames)
+(Basil Shkara)
 
- * Fix retain cycles in AFImageRequestOperation.m and AFHTTPClient.m caused by strong references within blocks (Nick Forge)
+ * Fix retain cycles in AFImageRequestOperation.m and AFHTTPClient.m caused by
+strong references within blocks (Nick Forge)
 
- * Fix issue caused by Rails behavior of returning a single space in head :ok responses, which is interpreted as invalid (Sebastian Ludwig)
+ * Fix issue caused by Rails behavior of returning a single space in head :ok
+responses, which is interpreted as invalid (Sebastian Ludwig)
 
- * Fix issue in streaming multipart upload, where final encapsulation boundary would not be appended if it was larger than the available buffer, causing a potential timeout (Tomohisa Takaoka, David Kasper)
+ * Fix issue in streaming multipart upload, where final encapsulation boundary
+would not be appended if it was larger than the available buffer, causing a
+potential timeout (Tomohisa Takaoka, David Kasper)
 
  * Fix memory leak of network reachability callback block (Mattt Thompson)
 
- * Fix `-initWithCoder:` for `AFURLConnectionOperation` and `AFHTTPClient` to cast scalar types (Mattt Thompson)
+ * Fix `-initWithCoder:` for `AFURLConnectionOperation` and `AFHTTPClient` to
+cast scalar types (Mattt Thompson)
 
- * Fix bug in `-enqueueBatchOfHTTPRequestOperations:...` to by using `addOperations:waitUntilFinished:` instead of adding each operation individually. (Mattt Thompson)
+ * Fix bug in `-enqueueBatchOfHTTPRequestOperations:...` to by using
+`addOperations:waitUntilFinished:` instead of adding each operation
+individually. (Mattt Thompson)
 
- * Change `#warning` messages of checks for `CoreServices` and `MobileCoreServices` to message according to the build target platform (Mattt Thompson)
+ * Change `#warning` messages of checks for `CoreServices` and
+`MobileCoreServices` to message according to the build target platform (Mattt
+Thompson)
 
- * Change `AFQueryStringFromParametersWithEncoding` to create keys string representations using the description method as specified in documentation (Cédric Luthi)
+ * Change `AFQueryStringFromParametersWithEncoding` to create keys string
+representations using the description method as specified in documentation
+(Cédric Luthi)
 
  * Fix __unused keywords for better Xcode indexing (Christian Rasmussen)
 
  * Fix warning: unused parameter 'x' [-Werror,-Wunused-parameter] (Oliver Jones)
- 
- * Fix warning: property is assumed atomic by default [-Werror,-Wimplicit-atomic-properties] (Oliver Jones)
- 
- * Fix warning: weak receiver may be unpredictably null in ARC mode [-Werror,-Wreceiver-is-weak] (Oliver Jones)
- 
- * Fix warning: multiple methods named 'selector' found [-Werror,-Wstrict-selector-match] (Oliver Jones)
- 
+
+ * Fix warning: property is assumed atomic by default
+[-Werror,-Wimplicit-atomic-properties] (Oliver Jones)
+
+ * Fix warning: weak receiver may be unpredictably null in ARC mode
+[-Werror,-Wreceiver-is-weak] (Oliver Jones)
+
+ * Fix warning: multiple methods named 'selector' found
+[-Werror,-Wstrict-selector-match] (Oliver Jones)
+
  * Fix warning: 'macro' is not defined, evaluates to 0 (Oliver Jones)
- 
- * Fix warning: atomic by default property 'X' has a user (Oliver Jones)defined getter (property should be marked 'atomic' if this is intended) [-Werror, -Wcustom-atomic-properties] (Oliver Jones)
- 
- * Fix warning: 'response' was marked unused but was used [-Werror,-Wused-but-marked-unused] (Oliver Jones)
- 
- * Fix warning: enumeration value 'AFFinalBoundaryPhase' not explicitly handled in switch [-Werror,-Wswitch-enum] (Oliver Jones)
+
+ * Fix warning: atomic by default property 'X' has a user (Oliver Jones)defined
+getter (property should be marked 'atomic' if this is intended) [-Werror,
+-Wcustom-atomic-properties] (Oliver Jones)
+
+ * Fix warning: 'response' was marked unused but was used
+[-Werror,-Wused-but-marked-unused] (Oliver Jones)
+
+ * Fix warning: enumeration value 'AFFinalBoundaryPhase' not explicitly handled
+in switch [-Werror,-Wswitch-enum] (Oliver Jones)
 
 = 1.0.1 / 2012-11-01
 
@@ -72,7 +200,7 @@ was not correctly calculated (Stan Chang Khin Boon)
 placeholderImage:success:failure`:, it is now the responsibility of the
 block to set the image of the image view (Mattt Thompson)
 
- * Add `JSONReadingOptions` property to `AFJSONRequestOperation` (Jeremy 
+ * Add `JSONReadingOptions` property to `AFJSONRequestOperation` (Jeremy
  Foo, Mattt Thompson)
 
  * Using __weak self / __strong self pattern to break retain cycles in
@@ -80,10 +208,10 @@ block to set the image of the image view (Mattt Thompson)
 
  * Fix parameter encoding to leave period (`.`) unescaped (Diego Torres)
 
- * Fixing last file component in multipart form part creation (Sylver 
- Bruneau) 
- 
- * Remove executable permission on AFHTTPClient source files (Andrew 
+ * Fixing last file component in multipart form part creation (Sylver
+ Bruneau)
+
+ * Remove executable permission on AFHTTPClient source files (Andrew
  Sardone)
 
  * Fix warning (error with -Werror) on implicit 64 to 32 conversion (Dan
@@ -96,144 +224,144 @@ block to set the image of the image view (Mattt Thompson)
 = 1.0 / 2012-10-15
 
  * AFNetworking now requires iOS 5 / Mac OSX 10.7 or higher (Mattt Thompson)
- 
+
  * AFNetworking now uses Automatic Reference Counting (ARC) (Mattt Thompson)
 
- * AFNetworking raises compiler warnings for missing features when 
-SystemConfiguration or  CoreServices / MobileCoreServices frameworks are not 
-included in the project and imported in the precompiled headers (Mattt 
+ * AFNetworking raises compiler warnings for missing features when
+SystemConfiguration or  CoreServices / MobileCoreServices frameworks are not
+included in the project and imported in the precompiled headers (Mattt
 Thompson)
 
- * AFNetworking now raises compiler error when not compiled with ARC (Steven 
+ * AFNetworking now raises compiler error when not compiled with ARC (Steven
 Fisher)
 
- * Add `NSCoding` and `NSCopying` protocol conformance to 
+ * Add `NSCoding` and `NSCopying` protocol conformance to
 `AFURLConnectionOperation` and `AFHTTPClient` (Mattt Thompson)
 
- * Add substantial improvements HTTP multipart streaming support, having 
-files streamed directly from disk and read sequentially from a custom input 
+ * Add substantial improvements HTTP multipart streaming support, having
+files streamed directly from disk and read sequentially from a custom input
 stream (Max Lansing, Stan Chang Khin Boon, Mattt Thompson)
- 
- * Add `AFMultipartFormData -throttleBandwidthWithPacketSize:delay:` as 
+
+ * Add `AFMultipartFormData -throttleBandwidthWithPacketSize:delay:` as
 workaround to issues when uploading over 3G (Mattt Thompson)
 
- * Add request and response to `userInfo` of errors returned from failing 
+ * Add request and response to `userInfo` of errors returned from failing
 `AFHTTPRequestOperation` (Mattt Thompson)
 
- * Add `userInfo` dictionary with current status in reachability changes 
+ * Add `userInfo` dictionary with current status in reachability changes
 (Mattt Thompson)
 
- * Add `Accept` header for image requests in `UIImageView` category (Bratley 
+ * Add `Accept` header for image requests in `UIImageView` category (Bratley
 Lower)
 
- * Add explicit declaration of `NSURLConnection` delegate methods so that 
+ * Add explicit declaration of `NSURLConnection` delegate methods so that
 they can be overridden in subclasses (Mattt Thompson, Evan Grim)
 
- * Add parameter validation to match conditions specified in documentation 
+ * Add parameter validation to match conditions specified in documentation
 (Jason Brennan, Mattt Thompson)
 
- * Add import to `UIKit` to avoid build errors from `UIDevice` references in 
+ * Add import to `UIKit` to avoid build errors from `UIDevice` references in
 `User-Agent` default header (Blake Watters)
 
  * Remove `AFJSONUtilities` in favor of `NSJSONSerialization` (Mattt Thompson)
 
- * Remove `extern` declaration of `AFURLEncodedStringFromStringWithEncoding` 
-function (`CFURLCreateStringByAddingPercentEscapes` should be used instead) 
+ * Remove `extern` declaration of `AFURLEncodedStringFromStringWithEncoding`
+function (`CFURLCreateStringByAddingPercentEscapes` should be used instead)
 (Mattt Thompson)
 
- * Remove `setHTTPShouldHandleCookies:NO` from `AFHTTPClient` (@phamsonha, 
+ * Remove `setHTTPShouldHandleCookies:NO` from `AFHTTPClient` (@phamsonha,
 Mattt Thompson)
- 
- * Remove `dispatch_retain` / `dispatch_release` with ARC in iOS 6 (Benoit 
+
+ * Remove `dispatch_retain` / `dispatch_release` with ARC in iOS 6 (Benoit
 Bourdon)
- 
+
  * Fix threading issue with `AFNetworkActivityIndicatorManager` (Eric Patey)
 
- * Fix issue where `AFNetworkActivityIndicatorManager` count could become 
+ * Fix issue where `AFNetworkActivityIndicatorManager` count could become
 negative (@ap4y)
 
- * Fix properties to explicitly set options to suppress warnings (Wen-Hao 
+ * Fix properties to explicitly set options to suppress warnings (Wen-Hao
 Lue, Mattt Thompson)
 
- * Fix compiler warning caused by mismatched types in upload / download 
+ * Fix compiler warning caused by mismatched types in upload / download
 progress blocks (Gareth du Plooy, tomas.a)
- 
- * Fix weak / strong variable relationships in `completionBlock` (Peter 
+
+ * Fix weak / strong variable relationships in `completionBlock` (Peter
 Steinberger)
 
- * Fix string formatting syntax warnings caused by type mismatch (David 
+ * Fix string formatting syntax warnings caused by type mismatch (David
 Keegan, Steven Fisher, George Cox)
 
- * Fix minor potential security vulnerability by explicitly using string 
+ * Fix minor potential security vulnerability by explicitly using string
 format in NSError localizedDescription value in userInfo (Steven Fisher)
 
- * Fix `AFURLConnectionOperation -pause` by adding state checks to prevent 
+ * Fix `AFURLConnectionOperation -pause` by adding state checks to prevent
 likely memory issues when resuming (Mattt Thompson)
- 
- * Fix warning caused by miscast of type when 
+
+ * Fix warning caused by miscast of type when
 `CLANG_WARN_IMPLICIT_SIGN_CONVERSION` is set (Steven Fisher)
 
  * Fix incomplete implementation warning in example code (Steven Fisher)
 
  * Fix warning caused by using `==` comparator on floats (Steven Fisher)
 
- * Fix iOS 4 bug where file URLs return `NSURLResponse` rather than 
+ * Fix iOS 4 bug where file URLs return `NSURLResponse` rather than
 `NSHTTPURLResponse` objects (Leo Lobato)
 
- * Fix calculation of finished operations in batch operation progress 
+ * Fix calculation of finished operations in batch operation progress
 callback (Mattt Thompson)
 
- * Fix documentation typos (Steven Fisher, Matthias Wessendorf, 
+ * Fix documentation typos (Steven Fisher, Matthias Wessendorf,
 jorge@miv.uk.com)
 
- * Fix `hasAcceptableStatusCode` to return true after a network failure (Tony 
+ * Fix `hasAcceptableStatusCode` to return true after a network failure (Tony
 Million)
 
- * Fix warning about missing prototype for private static method (Stephan 
+ * Fix warning about missing prototype for private static method (Stephan
 Diederich)
 
- * Fix issue where `nil` content type resulted in unacceptable content type 
+ * Fix issue where `nil` content type resulted in unacceptable content type
 (Mattt Thompson)
 
  * Fix bug related to setup and scheduling of output stream (Stephen Tramer)
 
- * Fix AFContentTypesFromHTTPHeader to correctly handle comma-delimited 
+ * Fix AFContentTypesFromHTTPHeader to correctly handle comma-delimited
 content types (Peyman, Mattt Thompson, @jsm174)
 
- * Fix crash caused by `_networkReachability` not being set to `NULL` after 
+ * Fix crash caused by `_networkReachability` not being set to `NULL` after
 releasing (Blake Watters)
 
- * Fix Podspec to correctly import required headers and use ARC (Eloy Durán, 
+ * Fix Podspec to correctly import required headers and use ARC (Eloy Durán,
 Blake Watters)
 
- * Fix query string parameter escaping to leave square brackets unescaped 
+ * Fix query string parameter escaping to leave square brackets unescaped
 (Mattt Thompson)
 
  * Fix query string parameter encoding of `NSNull` values (Daniel Rinser)
 
- * Fix error caused by referencing `__IPHONE_OS_VERSION_MIN_REQUIRED` without 
+ * Fix error caused by referencing `__IPHONE_OS_VERSION_MIN_REQUIRED` without
 importing `Availability.h` (Blake Watters)
 
- * Update example to use App.net API, as Twitter shut off its unauthorized 
+ * Update example to use App.net API, as Twitter shut off its unauthorized
 access to the public timeline (Mattt Thompson)
 
- * Update `AFURLConnectionOperation` to replace `NSAutoReleasePool` with 
+ * Update `AFURLConnectionOperation` to replace `NSAutoReleasePool` with
 `@autoreleasepool` (Mattt Thompson)
 
- * Update `AFHTTPClient` operation queue to specify 
-`NSOperationQueueDefaultMaxConcurrentOperationCount` rather than 
+ * Update `AFHTTPClient` operation queue to specify
+`NSOperationQueueDefaultMaxConcurrentOperationCount` rather than
 previously-defined constant (Mattt Thompson)
 
- * Update `AFHTTPClient -initWithBaseURL` to automatically append trailing 
-slash, so as to fix common issue where default path is not respected without 
+ * Update `AFHTTPClient -initWithBaseURL` to automatically append trailing
+slash, so as to fix common issue where default path is not respected without
 trailing slash (Steven Fisher)
- 
- * Update default `AFHTTPClient` `User-Agent` header strings (Mattt Thompson, 
+
+ * Update default `AFHTTPClient` `User-Agent` header strings (Mattt Thompson,
 Steven Fisher)
- 
+
  * Update icons for iOS example application (Mattt Thompson)
 
- * Update `numberOfCompletedOperations` variable in progress block to be 
+ * Update `numberOfCompletedOperations` variable in progress block to be
 renamed to `numberOfFinishedOperations` (Mattt Thompson)
 
 

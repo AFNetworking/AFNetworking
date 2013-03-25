@@ -21,6 +21,7 @@
 		F82EB080159A172000B10B56 /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F82EB077159A172000B10B56 /* AFPropertyListRequestOperation.m */; };
 		F82EB081159A172000B10B56 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F82EB079159A172000B10B56 /* AFURLConnectionOperation.m */; };
 		F82EB082159A172000B10B56 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F82EB07B159A172000B10B56 /* AFXMLRequestOperation.m */; };
+		F88812F216C533E9003C8B8C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F88812F116C533E9003C8B8C /* Security.framework */; };
 		F8A847CF161F55A500940F39 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8A847CE161F55A500940F39 /* CoreServices.framework */; };
 		F8A847D2161F55AC00940F39 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8A847D1161F55AC00940F39 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
@@ -57,6 +58,7 @@
 		F82EB07A159A172000B10B56 /* AFXMLRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFXMLRequestOperation.h; path = ../AFNetworking/AFXMLRequestOperation.h; sourceTree = "<group>"; };
 		F82EB07B159A172000B10B56 /* AFXMLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFXMLRequestOperation.m; path = ../AFNetworking/AFXMLRequestOperation.m; sourceTree = "<group>"; };
 		F877018B159A1CE700B45C0D /* AFNetworking Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "AFNetworking Example.entitlements"; sourceTree = "<group>"; };
+		F88812F116C533E9003C8B8C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		F8A847CE161F55A500940F39 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		F8A847D1161F55AC00940F39 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -66,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F88812F216C533E9003C8B8C /* Security.framework in Frameworks */,
 				F8A847D2161F55AC00940F39 /* SystemConfiguration.framework in Frameworks */,
 				F8A847CF161F55A500940F39 /* CoreServices.framework in Frameworks */,
 				F8129C001591061B009BFE23 /* Cocoa.framework in Frameworks */,
@@ -78,6 +81,7 @@
 		F8129BF01591061B009BFE23 = {
 			isa = PBXGroup;
 			children = (
+				F88812F116C533E9003C8B8C /* Security.framework */,
 				F8A847D1161F55AC00940F39 /* SystemConfiguration.framework */,
 				F8A847CE161F55A500940F39 /* CoreServices.framework */,
 				F877018B159A1CE700B45C0D /* AFNetworking Example.entitlements */,
@@ -86,7 +90,10 @@
 				F8129BFE1591061B009BFE23 /* Frameworks */,
 				F8129BFC1591061B009BFE23 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		F8129BFC1591061B009BFE23 /* Products */ = {
 			isa = PBXGroup;
@@ -206,7 +213,7 @@
 		F8129BF21591061B009BFE23 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = F8129BF51591061B009BFE23 /* Build configuration list for PBXProject "AFNetworking Mac Example" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -265,6 +272,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -292,6 +303,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
