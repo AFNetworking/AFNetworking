@@ -146,7 +146,7 @@ typedef enum {
 #endif
 
 /**
- The flag to determine if each `AFHTTPRequestOperation` that will be enqueued with `enqueueHTTPRequestOperation:` should accept an invalid SSL certificate. If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to YES for backwards compatibility support. Otherwise, this property defaults to NO.
+ The flag to determine if each `AFHTTPRequestOperation` is created in `HTTPRequestOperationWithRequest` should accept an invalid SSL certificate. If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to YES for backwards compatibility support. Otherwise, this property defaults to NO.
  */
 @property (nonatomic,assign) BOOL allowInvalidSSLCertificate;
 

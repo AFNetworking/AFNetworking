@@ -541,6 +541,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
     operation.SSLPinningMode = self.defaultSSLPinningMode;
 #endif
+    operation.allowInvalidSSLCertificate = self.allowInvalidSSLCertificate;
 
     return operation;
 }
