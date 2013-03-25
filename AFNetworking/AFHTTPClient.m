@@ -263,6 +263,11 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     self.operationQueue = [[NSOperationQueue alloc] init];
 	[self.operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 
+    //This ifdef has been added for backwards compatibility purposes
+#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
+    self.allowInvalidSSLCertificate = YES;
+#endif
+    
     return self;
 }
 
