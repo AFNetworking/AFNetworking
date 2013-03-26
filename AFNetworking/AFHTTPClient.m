@@ -174,7 +174,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
 - (id)initWithURLRequest:(NSMutableURLRequest *)urlRequest
-          stringEncoding:(NSStringEncoding)encoding;
+          stringEncoding:(NSStringEncoding)encoding
+                  thread:(NSThread *)thread
+            runLoopModes:(NSArray *)runLoopModes;
 
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData;
 @end
@@ -479,6 +481,20 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                                    path:(NSString *)path
                                              parameters:(NSDictionary *)parameters
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block {
+    return [self multipartFormRequestWithMethod:method
+                                           path:path
+                                     parameters:parameters
+                                         thread:[NSThread mainThread]
+                                   runLoopModes:@[NSDefaultRunLoopMode]
+                      constructingBodyWithBlock:block];
+}
+
+- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
+                                                   path:(NSString *)path
+                                             parameters:(NSDictionary *)parameters
+                                                 thread:(NSThread *)thread
+                                           runLoopModes:(NSArray *)runLoopModes
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
 {
     NSParameterAssert(method);
@@ -486,7 +502,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
 
-    __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding];
+    __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding thread:thread runLoopModes:runLoopModes];
 
     if (parameters) {
         for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
@@ -777,6 +793,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @end
 
 @interface AFMultipartBodyStreamProvider : NSObject
+@property (assign) NSThread *thread;
+@property (nonatomic, copy) NSArray *runLoopModes;
 @property (nonatomic, assign) NSUInteger bufferLength;
 @property (nonatomic, assign) NSTimeInterval delay;
 @property (nonatomic, readonly) NSInputStream *inputStream;
@@ -803,6 +821,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 - (id)initWithURLRequest:(NSMutableURLRequest *)urlRequest
           stringEncoding:(NSStringEncoding)encoding
+                  thread:(NSThread *)thread
+            runLoopModes:(NSArray *)runLoopModes
 {
     self = [super init];
     if (!self) {
@@ -812,7 +832,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     self.request = urlRequest;
     self.stringEncoding = encoding;
     self.bodyStream = [[AFMultipartBodyStreamProvider alloc] initWithStringEncoding:encoding];
-
+    self.bodyStream.thread = thread;
+    self.bodyStream.runLoopModes = runLoopModes;
+    
     return self;
 }
 
@@ -992,6 +1014,8 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
 @synthesize buffer = _buffer;
 @synthesize bufferLength = _numberOfBytesInPacket;
 @synthesize delay = _delay;
+@synthesize thread = _thread;
+@synthesize runLoopModes = _runLoopModes;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding {
     self = [super init];
@@ -1029,6 +1053,12 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
     [self.HTTPBodyParts addObject:bodyPart];
 }
 
+- (void)scheduleOutputStream {
+    for ( NSString *runLoopMode in self.runLoopModes ) {
+        [_outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
+    }
+}
+
 - (NSInputStream *)inputStream {
     if (_inputStream == nil) {
         CFReadStreamRef readStream;
@@ -1038,13 +1068,7 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
         _outputStream = CFBridgingRelease(writeStream);
         
         _outputStream.delegate = self;
-        if ([NSThread isMainThread]) {
-            [_outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        } else {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [_outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-            });
-        }
+        [self performSelector:@selector(scheduleOutputStream) onThread:self.thread withObject:nil waitUntilDone:YES modes:self.runLoopModes];
         [_outputStream open];
 
         _self = self;
@@ -1308,11 +1332,6 @@ typedef enum {
 }
 
 - (BOOL)transitionToNextPhase {
-    if (![[NSThread currentThread] isMainThread]) {
-        [self performSelectorOnMainThread:@selector(transitionToNextPhase) withObject:nil waitUntilDone:YES];
-        return YES;
-    }
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wcovered-switch-default"
     switch (_phase) {
