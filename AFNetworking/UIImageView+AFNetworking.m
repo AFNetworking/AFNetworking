@@ -79,8 +79,55 @@ static char kAFImageRequestOperationObjectKey;
 
 #pragma mark -
 
+- (void)setImageWithURLOrString:(id)object
+{
+    if (object == nil) {
+        return;
+    }
+    if ([object isKindOfClass:[NSString class]]) {
+        if ([object isEqual:@""]) {
+            return;
+        }
+        
+        NSURL *url = [NSURL URLWithString:[object stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        [self setImageWithURL:url];
+    }
+    else if ([object isKindOfClass:[NSURL class]]) {
+        [self setImageWithURL:object];
+    }
+    else
+    {
+        NSLog(@"%s Object of type '%@' not supported", __PRETTY_FUNCTION__, NSStringFromClass([object class]));
+    }
+}
+
 - (void)setImageWithURL:(NSURL *)url {
     [self setImageWithURL:url placeholderImage:nil];
+}
+
+- (void)setImageWithURLOrString:(id)object
+                placeholderImage:(UIImage *)placeholderImage
+{
+    if (object == nil) {
+        self.image = placeholderImage;
+        return;
+    }
+    if ([object isKindOfClass:[NSString class]]) {
+        if ([object isEqual:@""]) {
+            self.image = placeholderImage;
+            return;
+        }
+        
+        NSURL *url = [NSURL URLWithString:[object stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        [self setImageWithURL:url placeholderImage:placeholderImage];
+    }
+    else if ([object isKindOfClass:[NSURL class]]) {
+        [self setImageWithURL:object placeholderImage:placeholderImage];
+    }
+    else
+    {
+        NSLog(@"%s Object of type '%@' not supported", __PRETTY_FUNCTION__, NSStringFromClass([object class]));
+    }
 }
 
 - (void)setImageWithURL:(NSURL *)url
