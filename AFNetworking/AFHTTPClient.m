@@ -639,6 +639,21 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [self enqueueHTTPRequestOperation:operation];
 }
 
+- (void)getPath:(NSString *)path
+     parameters:(NSDictionary *)parameters
+        headers:(NSDictionary *)headers
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSMutableURLRequest *request = [[self requestWithMethod:@"GET" path:path parameters:parameters] mutableCopy];
+    [headers enumerateKeysAndObjectsUsingBlock:^(id name, id value, BOOL *stop) {
+        [request setValue:value forHTTPHeaderField:name];
+    }];
+
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
 - (void)postPath:(NSString *)path
       parameters:(NSDictionary *)parameters
          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
@@ -646,6 +661,21 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 {
 	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
+- (void)postPath:(NSString *)path
+      parameters:(NSDictionary *)parameters
+         headers:(NSDictionary *)headers
+         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSMutableURLRequest *request = [[self requestWithMethod:@"POST" path:path parameters:parameters] mutableCopy];
+    [headers enumerateKeysAndObjectsUsingBlock:^(id name, id value, BOOL *stop) {
+        [request setValue:value forHTTPHeaderField:name];
+    }];
+
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self enqueueHTTPRequestOperation:operation];
 }
 
@@ -659,6 +689,21 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [self enqueueHTTPRequestOperation:operation];
 }
 
+- (void)putPath:(NSString *)path
+     parameters:(NSDictionary *)parameters
+        headers:(NSDictionary *)headers
+        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSMutableURLRequest *request = [[self requestWithMethod:@"PUT" path:path parameters:parameters] mutableCopy];
+    [headers enumerateKeysAndObjectsUsingBlock:^(id name, id value, BOOL *stop) {
+        [request setValue:value forHTTPHeaderField:name];
+    }];
+
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
 - (void)deletePath:(NSString *)path
         parameters:(NSDictionary *)parameters
            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
@@ -669,6 +714,21 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [self enqueueHTTPRequestOperation:operation];
 }
 
+- (void)deletePath:(NSString *)path
+        parameters:(NSDictionary *)parameters
+           headers:(NSDictionary *)headers
+           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSMutableURLRequest *request = [[self requestWithMethod:@"DELETE" path:path parameters:parameters] mutableCopy];
+    [headers enumerateKeysAndObjectsUsingBlock:^(id name, id value, BOOL *stop) {
+        [request setValue:value forHTTPHeaderField:name];
+    }];
+
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
 - (void)patchPath:(NSString *)path
        parameters:(NSDictionary *)parameters
           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
@@ -676,6 +736,21 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 {
     NSURLRequest *request = [self requestWithMethod:@"PATCH" path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
+- (void)patchPath:(NSString *)path
+       parameters:(NSDictionary *)parameters
+          headers:(NSDictionary *)headers
+          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
+    NSMutableURLRequest *request = [[self requestWithMethod:@"PATCH" path:path parameters:parameters] mutableCopy];
+    [headers enumerateKeysAndObjectsUsingBlock:^(id name, id value, BOOL *stop) {
+        [request setValue:value forHTTPHeaderField:name];
+    }];
+
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self enqueueHTTPRequestOperation:operation];
 }
 
