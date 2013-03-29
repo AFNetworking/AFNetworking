@@ -159,7 +159,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 + (void) __attribute__((noreturn)) networkRequestThreadEntryPoint:(id)__unused object {
     do {
         @autoreleasepool {
-            [NSThread currentThread].name = @"AFNetworking";
+            [[NSThread currentThread] setName:@"AFNetworking"];
             [[NSRunLoop currentRunLoop] run];
         }
     } while (YES);
