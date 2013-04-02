@@ -93,8 +93,8 @@ typedef enum {
 #endif
 
 @interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate,
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && defined(__IPHONE_5_0) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_5_0) || \
-    (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && defined(__MAC_10_8) && __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_8)
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 50000) || \
+    (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1080)
 NSURLConnectionDataDelegate, 
 #endif
 NSCoding, NSCopying>
