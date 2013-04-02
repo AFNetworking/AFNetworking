@@ -26,9 +26,13 @@
 #import <Availability.h>
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-#import <UIKit/UIKit.h>
+  #import <UIKit/UIKit.h>
+  #define AFImageClassName UIImage
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-#import <Cocoa/Cocoa.h>
+  #import <Cocoa/Cocoa.h>
+  #define AFImageClassName NSImage
+#else
+  #define AFImageClassName NSObject
 #endif
 
 /**
@@ -54,11 +58,7 @@
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
  */
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-@property (readonly, nonatomic, strong) UIImage *responseImage;
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-@property (readonly, nonatomic, strong) NSImage *responseImage;
-#endif
+@property (readonly, nonatomic, strong) AFImageClassName *responseImage;
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 /**
@@ -75,13 +75,8 @@
 
  @return A new image request operation
  */
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 + (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-										 success:(void (^)(UIImage *image))success;
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-+ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-										 success:(void (^)(NSImage *image))success;
-#endif
+										 success:(void (^)(AFImageClassName *image))success;
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -93,16 +88,9 @@
 
  @return A new image request operation
  */
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 + (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-							imageProcessingBlock:(UIImage *(^)(UIImage *image))imageProcessingBlock
-										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+							imageProcessingBlock:(AFImageClassName *(^)(AFImageClassName *image))imageProcessingBlock
+										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, AFImageClassName *image))success
 										 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-+ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-							imageProcessingBlock:(NSImage *(^)(NSImage *image))imageProcessingBlock
-										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
-										 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-#endif
 
 @end
