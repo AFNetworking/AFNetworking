@@ -53,7 +53,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 											 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
 											 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, NSXMLParser *XMLParser))failure
 {
-    AFXMLRequestOperation *requestOperation = [(AFXMLRequestOperation *)[self alloc] initWithRequest:urlRequest];
+    AFXMLRequestOperation *requestOperation = [[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             success(operation.request, operation.response, responseObject);
@@ -111,11 +111,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 #endif
 
 - (NSError *)error {
-    if (_XMLError) {
-        return _XMLError;
-    } else {
-        return [super error];
-    }
+    return _XMLError ?: [super error];
 }
 
 #pragma mark - NSOperation
