@@ -35,19 +35,15 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 
 @interface AFXMLRequestOperation ()
-@property (readwrite, nonatomic, strong) NSXMLParser *responseXMLParser;
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (readwrite, nonatomic, strong) NSXMLDocument *responseXMLDocument;
 #endif
-@property (readwrite, nonatomic, strong) NSError *XMLError;
 @end
 
 @implementation AFXMLRequestOperation
-@synthesize responseXMLParser = _responseXMLParser;
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 @synthesize responseXMLDocument = _responseXMLDocument;
 #endif
-@synthesize XMLError = _XMLError;
 
 + (instancetype)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
 											 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser))success
@@ -60,7 +56,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (failure) {
-            failure(operation.request, operation.response, error, [(AFXMLRequestOperation *)operation responseXMLParser]);
+            failure(operation.request, operation.response, error, [(AFXMLRequestOperation *)operation responseObject]);
         }
     }];
 
@@ -89,32 +85,14 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 }
 #endif
 
-
-- (NSXMLParser *)responseXMLParser {
-    if (!_responseXMLParser && [self.responseData length] > 0 && [self isFinished]) {
-        self.responseXMLParser = [[NSXMLParser alloc] initWithData:self.responseData];
-    }
-
-    return _responseXMLParser;
-}
-
+-(void) processResponse {
+    if (!self.responseObject && [self.responseData length] > 0 && [self isFinished]) {
+        self.responseObject = [[NSXMLParser alloc] initWithData:self.responseData];
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
-- (NSXMLDocument *)responseXMLDocument {
-    if (!_responseXMLDocument && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
         self.responseXMLDocument = [[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error];
-        self.XMLError = error;
-    }
-
-    return _responseXMLDocument;
-}
+        self.processingError = error;
 #endif
-
-- (NSError *)error {
-    if (_XMLError) {
-        return _XMLError;
-    } else {
-        return [super error];
     }
 }
 
@@ -123,7 +101,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 - (void)cancel {
     [super cancel];
 
-    self.responseXMLParser.delegate = nil;
+    self.responseObject.delegate = nil;
 }
 
 #pragma mark - AFHTTPRequestOperation
@@ -134,33 +112,6 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
     return [[[request URL] pathExtension] isEqualToString:@"xml"] || [super canProcessRequest:request];
-}
-
-- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
-    self.completionBlock = ^ {
-        dispatch_async(xml_request_operation_processing_queue(), ^(void) {
-            NSXMLParser *XMLParser = self.responseXMLParser;
-
-            if (self.error) {
-                if (failure) {
-                    dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
-                        failure(self, self.error);
-                    });
-                }
-            } else {
-                if (success) {
-                    dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
-                        success(self, XMLParser);
-                    });
-                }
-            }
-        });
-    };
-#pragma clang diagnostic pop
 }
 
 @end

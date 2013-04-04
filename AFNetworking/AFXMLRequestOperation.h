@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPRequestOperation.h"
+#import "AFHTTPRequestProcessingOperation.h"
 
 #import <Availability.h>
 
@@ -39,7 +39,7 @@
 
  When `AFXMLRequestOperation` is registered with `AFHTTPClient`, the response object in the success callback of `HTTPRequestOperationWithRequest:success:failure:` will be an instance of `NSXMLParser`. On platforms that support `NSXMLDocument`, you have the option to ignore the response object, and simply use the `responseXMLDocument` property of the operation argument of the callback.
  */
-@interface AFXMLRequestOperation : AFHTTPRequestOperation
+@interface AFXMLRequestOperation : AFHTTPRequestProcessingOperation
 
 ///----------------------------
 /// @name Getting Response Data
@@ -48,7 +48,7 @@
 /**
  An `NSXMLParser` object constructed from the response data.
  */
-@property (readonly, nonatomic, strong) NSXMLParser *responseXMLParser;
+@property (readwrite, nonatomic, strong) NSXMLParser *responseObject;
 
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 /**

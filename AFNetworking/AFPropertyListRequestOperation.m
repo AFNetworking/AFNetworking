@@ -33,16 +33,12 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 }
 
 @interface AFPropertyListRequestOperation ()
-@property (readwrite, nonatomic) id responsePropertyList;
 @property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
-@property (readwrite, nonatomic) NSError *propertyListError;
 @end
 
 @implementation AFPropertyListRequestOperation
-@synthesize responsePropertyList = _responsePropertyList;
 @synthesize propertyListReadOptions = _propertyListReadOptions;
 @synthesize propertyListFormat = _propertyListFormat;
-@synthesize propertyListError = _propertyListError;
 
 + (instancetype)propertyListRequestOperationWithRequest:(NSURLRequest *)request
 												success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id propertyList))success
@@ -55,7 +51,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (failure) {
-            failure(operation.request, operation.response, error, [(AFPropertyListRequestOperation *)operation responsePropertyList]);
+            failure(operation.request, operation.response, error, [(AFPropertyListRequestOperation *)operation responseObject]);
         }
     }];
 
@@ -73,24 +69,13 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
     return self;
 }
 
-
-- (id)responsePropertyList {
-    if (!_responsePropertyList && [self.responseData length] > 0 && [self isFinished]) {
+-(void)processResponse {
+    if (!self.responseObject && [self.responseData length] > 0 && [self isFinished]) {
         NSPropertyListFormat format;
         NSError *error = nil;
-        self.responsePropertyList = [NSPropertyListSerialization propertyListWithData:self.responseData options:self.propertyListReadOptions format:&format error:&error];
+        self.responseObject = [NSPropertyListSerialization propertyListWithData:self.responseData options:self.propertyListReadOptions format:&format error:&error];
         self.propertyListFormat = format;
-        self.propertyListError = error;
-    }
-
-    return _responsePropertyList;
-}
-
-- (NSError *)error {
-    if (_propertyListError) {
-        return _propertyListError;
-    } else {
-        return [super error];
+        self.processingError = error;
     }
 }
 
@@ -102,41 +87,6 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
     return [[[request URL] pathExtension] isEqualToString:@"plist"] || [super canProcessRequest:request];
-}
-
-- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
-    self.completionBlock = ^ {
-        if (self.error) {
-            if (failure) {
-                dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
-                    failure(self, self.error);
-                });
-            }
-        } else {
-            dispatch_async(property_list_request_operation_processing_queue(), ^(void) {
-                id propertyList = self.responsePropertyList;
-
-                if (self.propertyListError) {
-                    if (failure) {
-                        dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
-                            failure(self, self.error);
-                        });
-                    }
-                } else {
-                    if (success) {
-                        dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
-                            success(self, propertyList);
-                        });
-                    }
-                }
-            });
-        }
-    };
-#pragma clang diagnostic pop
 }
 
 @end

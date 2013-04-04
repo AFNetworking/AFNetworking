@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPRequestOperation.h"
+#import "AFHTTPRequestProcessingOperation.h"
 
 #import <Availability.h>
 
@@ -34,6 +34,8 @@
 #else
   #define AFImageClassName NSObject
 #endif
+
+typedef AFImageClassName * (^AFImageFilterBlock)(AFImageClassName *in);
 
 /**
  `AFImageRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading an processing images.
@@ -53,12 +55,12 @@
  - `image/x-xbitmap`
  - `image/x-win-bitmap`
  */
-@interface AFImageRequestOperation : AFHTTPRequestOperation
+@interface AFImageRequestOperation : AFHTTPRequestProcessingOperation
 
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
  */
-@property (readonly, nonatomic, strong) AFImageClassName *responseImage;
+@property (readwrite, nonatomic, strong) AFImageClassName *responseObject;
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 /**
@@ -66,6 +68,11 @@
  */
 @property (nonatomic, assign) CGFloat imageScale;
 #endif
+
+/**
+ An optional filter block which will be run on the image before the completion block is invoked.
+ */
+@property (readwrite, nonatomic, copy) AFImageFilterBlock filterBlock;
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -89,7 +96,7 @@
  @return A new image request operation
  */
 + (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-							imageProcessingBlock:(AFImageClassName *(^)(AFImageClassName *image))imageProcessingBlock
+                                     filterBlock:(AFImageFilterBlock)filterBlock
 										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, AFImageClassName *image))success
 										 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
