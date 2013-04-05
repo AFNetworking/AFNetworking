@@ -24,7 +24,7 @@
 #import "AFURLConnectionOperation.h"
 
 /**
- `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
+ `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request. It also provides support for deserializing response data in subclasses, encapsulating a processing response object, error, and dispatch queue.
  */
 @interface AFHTTPRequestOperation : AFURLConnectionOperation
 
@@ -104,6 +104,36 @@
  @param urlRequest The request that is determined to be supported or not supported for this class.
  */
 + (BOOL)canProcessRequest:(NSURLRequest *)urlRequest;
+
+///----------------------------------------------------
+/// @name Deserializing the response data in subclasses
+///----------------------------------------------------
+
+/**
+ The dispatch queue for processing, used by the completion block. If `NULL` (default), a shared, concurrent queue is used.
+ */
+@property (nonatomic, assign) dispatch_queue_t processingQueue;
+
+/**
+ The processed response object, derived from the response and response data.
+ 
+ Subclasses may redeclare this property to indicate its type.
+ */
+@property (nonatomic, retain) id responseObject;
+
+/**
+ Subclasses may set this method to indicate that an error occurred during processing.
+ */
+@property (nonatomic, retain) NSError *processingError;
+
+/**
+ Subclasses must override this method to deserialize the response data. Provided the HTTP request is successful, the receiver invokes this method on the processing queue in the completion block.
+ 
+ This method should set responseObject and should set processingError in case of an error.
+ 
+ The default implementation sets responseObject to responseData.
+ */
+- (void)processResponse;
 
 ///-----------------------------------------------------------
 /// @name Setting Completion Block Success / Failure Callbacks

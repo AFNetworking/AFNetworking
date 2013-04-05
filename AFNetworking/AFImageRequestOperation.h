@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPRequestProcessingOperation.h"
+#import "AFHTTPRequestOperation.h"
 
 #import <Availability.h>
 
@@ -55,7 +55,7 @@ typedef AFImageClassName * (^AFImageFilterBlock)(AFImageClassName *in);
  - `image/x-xbitmap`
  - `image/x-win-bitmap`
  */
-@interface AFImageRequestOperation : AFHTTPRequestProcessingOperation
+@interface AFImageRequestOperation : AFHTTPRequestOperation
 
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
