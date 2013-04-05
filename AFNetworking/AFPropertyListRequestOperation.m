@@ -22,16 +22,6 @@
 
 #import "AFPropertyListRequestOperation.h"
 
-static dispatch_queue_t property_list_request_operation_processing_queue() {
-    static dispatch_queue_t af_property_list_request_operation_processing_queue;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        af_property_list_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.property-list-request.processing", DISPATCH_QUEUE_CONCURRENT);
-    });
-
-    return af_property_list_request_operation_processing_queue;
-}
-
 @interface AFPropertyListRequestOperation ()
 @property (readwrite, nonatomic, assign) NSPropertyListFormat propertyListFormat;
 @end

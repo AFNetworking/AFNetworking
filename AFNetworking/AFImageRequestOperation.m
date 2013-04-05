@@ -42,7 +42,7 @@
 										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, AFImageClassName *image))success
 										 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest userInfo:nil];
+    AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
     requestOperation.filterBlock = filterBlock;
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
