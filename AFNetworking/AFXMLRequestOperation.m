@@ -76,14 +76,12 @@
 #endif
 
 -(void) processResponse {
-    if (!self.responseObject && [self.responseData length] > 0 && [self isFinished]) {
-        self.responseObject = [[NSXMLParser alloc] initWithData:self.responseData];
+    self.responseObject = [[NSXMLParser alloc] initWithData:self.responseData];
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
-        NSError *error = nil;
-        self.responseXMLDocument = [[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error];
-        self.processingError = error;
+    NSError *error = nil;
+    self.responseXMLDocument = [[NSXMLDocument alloc] initWithData:self.responseData options:0 error:&error];
+    self.processingError = error;
 #endif
-    }
 }
 
 #pragma mark - NSOperation

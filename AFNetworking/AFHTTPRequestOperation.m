@@ -286,7 +286,9 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
             dispatch_async(self.processingQueue ?: [AFHTTPRequestOperation sharedProcessingQueue], ^{
                 // Deserialize the response
                 // This should set self.responseObject and may also set self.processingError
-                [self processResponse];
+                if ([self.responseData length] > 0) {
+                    [self processResponse];
+                }
                 if (self.processingError) {
                     if (failure) {
                         dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{

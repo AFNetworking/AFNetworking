@@ -50,22 +50,20 @@
 
 -(void)processResponse {
     [self.lock lock];
-    if (!self.responseObject && [self.responseData length] > 0 && [self isFinished] && !self.processingError) {
-        NSError *error = nil;
+    NSError *error = nil;
 
-        // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
-        // See https://github.com/rails/rails/issues/1742
-        if ([self.responseData length] == 0 || [self.responseString isEqualToString:@" "]) {
-            self.responseObject = nil;
-        } else {
-            // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
-            // See http://stackoverflow.com/a/12843465/157142
-            NSData *JSONData = [self.responseString dataUsingEncoding:self.responseStringEncoding];
-            self.responseObject = [NSJSONSerialization JSONObjectWithData:JSONData options:self.JSONReadingOptions error:&error];
-        }
-
-        self.processingError = error;
+    // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
+    // See https://github.com/rails/rails/issues/1742
+    if ([self.responseData length] == 0 || [self.responseString isEqualToString:@" "]) {
+        self.responseObject = nil;
+    } else {
+        // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
+        // See http://stackoverflow.com/a/12843465/157142
+        NSData *JSONData = [self.responseString dataUsingEncoding:self.responseStringEncoding];
+        self.responseObject = [NSJSONSerialization JSONObjectWithData:JSONData options:self.JSONReadingOptions error:&error];
     }
+
+    self.processingError = error;
     [self.lock unlock];
 }
 

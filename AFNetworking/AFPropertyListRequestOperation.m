@@ -60,13 +60,11 @@
 }
 
 -(void)processResponse {
-    if (!self.responseObject && [self.responseData length] > 0 && [self isFinished]) {
-        NSPropertyListFormat format;
-        NSError *error = nil;
-        self.responseObject = [NSPropertyListSerialization propertyListWithData:self.responseData options:self.propertyListReadOptions format:&format error:&error];
-        self.propertyListFormat = format;
-        self.processingError = error;
-    }
+    NSPropertyListFormat format;
+    NSError *error = nil;
+    self.responseObject = [NSPropertyListSerialization propertyListWithData:self.responseData options:self.propertyListReadOptions format:&format error:&error];
+    self.propertyListFormat = format;
+    self.processingError = error;
 }
 
 #pragma mark - AFHTTPRequestOperation

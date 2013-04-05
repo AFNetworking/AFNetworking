@@ -71,19 +71,17 @@
 }
 
 -(void)processResponse {
-    if (!self.responseObject && [self.responseData length] > 0 && [self isFinished]) {
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-        UIImage *image = [UIImage imageWithData:self.responseData];
-        self.responseObject = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
+    UIImage *image = [UIImage imageWithData:self.responseData];
+    self.responseObject = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
 #elif defined(__IPHONE_OS_X_VERSION_MIN_REQUIRED)
-        // Ensure that the image is set to it's correct pixel width and height
-        NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
-        self.responseObject = [[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])];
-        [self.responseObject addRepresentation:bitimage];
+    // Ensure that the image is set to it's correct pixel width and height
+    NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
+    self.responseObject = [[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])];
+    [self.responseObject addRepresentation:bitimage];
 #endif
-        if (self.filterBlock) {
-            self.responseObject = self.filterBlock(self.responseObject);
-        }
+    if (self.filterBlock) {
+        self.responseObject = self.filterBlock(self.responseObject);
     }
 }
 
