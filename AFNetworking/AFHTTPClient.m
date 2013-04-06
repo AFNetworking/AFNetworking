@@ -761,7 +761,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, strong) NSDictionary *headers;
 @property (nonatomic, strong) id body;
 @property (nonatomic, assign) unsigned long long bodyContentLength;
-@property (nonatomic, readonly) NSInputStream *inputStream;
+@property (nonatomic, strong) NSInputStream *inputStream;
 
 @property (nonatomic, assign) BOOL hasInitialBoundary;
 @property (nonatomic, assign) BOOL hasFinalBoundary;
@@ -776,7 +776,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @interface AFMultipartBodyStreamProvider : NSObject
 @property (nonatomic, assign) NSUInteger bufferLength;
 @property (nonatomic, assign) NSTimeInterval delay;
-@property (nonatomic, readonly) NSInputStream *inputStream;
+@property (nonatomic, strong) NSInputStream *inputStream;
 @property (nonatomic, readonly) unsigned long long contentLength;
 @property (nonatomic, readonly, getter = isEmpty) BOOL empty;
 
@@ -968,7 +968,6 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, strong) NSMutableArray *HTTPBodyParts;
 @property (nonatomic, strong) NSEnumerator *HTTPBodyPartEnumerator;
 @property (nonatomic, strong) AFHTTPBodyPart *currentHTTPBodyPart;
-@property (nonatomic, strong) NSInputStream *inputStream;
 @property (nonatomic, strong) NSOutputStream *outputStream;
 @property (nonatomic, strong) NSMutableData *buffer;
 @end
