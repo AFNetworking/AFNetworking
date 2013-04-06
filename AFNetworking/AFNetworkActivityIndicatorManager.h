@@ -44,7 +44,7 @@
 /**
  A Boolean value indicating whether the manager is enabled.
 
- @discussion If YES, the manager will change status bar network activity indicator according to network operation notifications it receives. The default value is NO.
+ If YES, the manager will change status bar network activity indicator according to network operation notifications it receives. The default value is NO.
  */
 @property (nonatomic, assign, getter = isEnabled) BOOL enabled;
 
