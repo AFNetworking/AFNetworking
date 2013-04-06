@@ -27,6 +27,8 @@
 
 #import <Availability.h>
 
+#import <objc/runtime.h>
+
 #ifdef _SYSTEMCONFIGURATION_H
 #import <netinet/in.h>
 #import <netinet6/in6.h>
@@ -88,6 +90,60 @@ static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NS
 }
 
 #pragma mark -
+
+static void class_swizzleSelector(Class class, SEL originalSelector, SEL newSelector)
+{
+    Method origMethod = class_getInstanceMethod(class, originalSelector);
+    Method newMethod = class_getInstanceMethod(class, newSelector);
+    if(class_addMethod(class, originalSelector, method_getImplementation(newMethod), method_getTypeEncoding(newMethod))) {
+        class_replaceMethod(class, newSelector, method_getImplementation(origMethod), method_getTypeEncoding(origMethod));
+    } else {
+        method_exchangeImplementations(origMethod, newMethod);
+    }
+}
+
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+
+char *const AFURLConnectionOperationAFHTTPClientSSLPinningModeHasChangedKey;
+
+@interface AFURLConnectionOperation (AFHTTPClient)
+
+@property (nonatomic, assign) BOOL SSLPinningModeHasChanged;
+
+@end
+
+
+
+@implementation AFURLConnectionOperation (AFHTTPClient)
+
++ (void)load
+{
+    class_swizzleSelector(self, @selector(setSSLPinningMode:), @selector(__AFHTTPClientSetSSLPinningMode:));
+}
+
+- (void)__AFHTTPClientSetSSLPinningMode:(AFURLConnectionOperationSSLPinningMode)SSLPinningMode
+{
+    [self __AFHTTPClientSetSSLPinningMode:SSLPinningMode];
+    
+    self.SSLPinningModeHasChanged = YES;
+}
+
+- (BOOL)SSLPinningModeHasChanged
+{
+    return [objc_getAssociatedObject(self, &AFURLConnectionOperationAFHTTPClientSSLPinningModeHasChangedKey) boolValue];
+}
+
+- (void)setSSLPinningModeHasChanged:(BOOL)SSLPinningModeHasChanged
+{
+    objc_setAssociatedObject(self, &AFURLConnectionOperationAFHTTPClientSSLPinningModeHasChangedKey,
+                             @(SSLPinningModeHasChanged), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+@end
+
+#endif
+
+#pragma mark - 
 
 @interface AFQueryStringPair : NSObject
 @property (readwrite, nonatomic, strong) id field;
@@ -543,6 +599,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #pragma mark -
 
 - (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation {
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+    if (!operation.SSLPinningModeHasChanged) {
+        operation.SSLPinningMode = self.defaultSSLPinningMode;
+    }
+#endif
+    
     [self.operationQueue addOperation:operation];
 }
 
@@ -595,6 +657,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }];
 
     for (AFHTTPRequestOperation *operation in operations) {
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+        if (!operation.SSLPinningModeHasChanged) {
+            operation.SSLPinningMode = self.defaultSSLPinningMode;
+        }
+#endif
+        
         AFCompletionBlock originalCompletionBlock = [operation.completionBlock copy];
         __weak __typeof(&*operation)weakOperation = operation;
         operation.completionBlock = ^{
@@ -623,6 +691,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         dispatch_group_enter(dispatchGroup);
         [batchedOperation addDependency:operation];
     }
+    
     [self.operationQueue addOperations:operations waitUntilFinished:NO];
     [self.operationQueue addOperation:batchedOperation];
 }
