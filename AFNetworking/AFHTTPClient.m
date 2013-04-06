@@ -605,12 +605,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                     originalCompletionBlock();
                 }
 
-                NSUInteger numberOfFinishedOperations = 0;
-                for (NSOperation *operation in operations) {
-                    if (operation.isFinished) {
-                        numberOfFinishedOperations++;
-                    }
-                }
+                NSInteger numberOfFinishedOperations = [[operations indexesOfObjectsPassingTest:^BOOL(id op, NSUInteger idx, BOOL *stop) {
+                    return [op isCancelled];
+                }] count];
 
                 if (progressBlock) {
                     progressBlock(numberOfFinishedOperations, [operations count]);
