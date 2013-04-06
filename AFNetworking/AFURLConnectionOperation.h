@@ -93,8 +93,8 @@ typedef enum {
 #endif
 
 @interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate,
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_5_0) || \
-    (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_8)
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 50000) || \
+    (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1080)
 NSURLConnectionDataDelegate, 
 #endif
 NSCoding, NSCopying>
@@ -144,7 +144,7 @@ NSCoding, NSCopying>
 /**
  The string encoding of the response.
 
- @discussion If the response does not specify a valid string encoding, `responseStringEncoding` will return `NSUTF8StringEncoding`.
+ If the response does not specify a valid string encoding, `responseStringEncoding` will return `NSUTF8StringEncoding`.
  */
 @property (readonly, nonatomic, assign) NSStringEncoding responseStringEncoding;
 
@@ -155,21 +155,21 @@ NSCoding, NSCopying>
 /**
  Whether the URL connection should consult the credential storage for authenticating the connection. `YES` by default.
 
- @discussion This is the value that is returned in the `NSURLConnectionDelegate` method `-connectionShouldUseCredentialStorage:`.
+ This is the value that is returned in the `NSURLConnectionDelegate` method `-connectionShouldUseCredentialStorage:`.
  */
 @property (nonatomic, assign) BOOL shouldUseCredentialStorage;
 
 /**
  The credential used for authentication challenges in `-connection:didReceiveAuthenticationChallenge:`.
 
- @discussion This will be overridden by any shared credentials that exist for the username or password of the request URL, if present.
+ This will be overridden by any shared credentials that exist for the username or password of the request URL, if present.
  */
 @property (nonatomic, strong) NSURLCredential *credential;
 
 /**
  The pinning mode which will be used for SSL connections. `AFSSLPinningModePublicKey` by default.
  
- @discussion To enable SSL Pinning, `#define _AFNETWORKING_PIN_SSL_CERTIFICATES_` in `Prefix.pch`. Also, make sure that the Security framework is linked with the binary. See the "SSL Pinning" section in the `AFURLConnectionOperation`" header for more information.
+ To enable SSL Pinning, `#define _AFNETWORKING_PIN_SSL_CERTIFICATES_` in `Prefix.pch`. Also, make sure that the Security framework is linked with the binary. See the "SSL Pinning" section in the `AFURLConnectionOperation`" header for more information.
  */
 #ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
 @property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
@@ -182,14 +182,14 @@ NSCoding, NSCopying>
 /**
  The input stream used to read data to be sent during the request.
 
- @discussion This property acts as a proxy to the `HTTPBodyStream` property of `request`.
+ This property acts as a proxy to the `HTTPBodyStream` property of `request`.
  */
 @property (nonatomic, strong) NSInputStream *inputStream;
 
 /**
  The output stream that is used to write data received until the request is finished.
 
- @discussion By default, data is accumulated into a buffer that is stored into `responseData` upon completion of the request. When `outputStream` is set, the data will not be accumulated into an internal buffer, and as a result, the `responseData` property of the completed request will be `nil`. The output stream will be scheduled in the network thread runloop upon being set.
+ By default, data is accumulated into a buffer that is stored into `responseData` upon completion of the request. When `outputStream` is set, the data will not be accumulated into an internal buffer, and as a result, the `responseData` property of the completed request will be `nil`. The output stream will be scheduled in the network thread runloop upon being set.
  */
 @property (nonatomic, strong) NSOutputStream *outputStream;
 
@@ -208,10 +208,10 @@ NSCoding, NSCopying>
 
 /**
  Initializes and returns a newly allocated operation object with a url connection configured with the specified url request.
-
+ 
+ This is the designated initializer.
+ 
  @param urlRequest The request object to be used by the operation connection.
-
- @discussion This is the designated initializer.
  */
 - (id)initWithRequest:(NSURLRequest *)urlRequest;
 
@@ -222,7 +222,7 @@ NSCoding, NSCopying>
 /**
  Pauses the execution of the request operation.
 
- @discussion A paused operation returns `NO` for `-isReady`, `-isExecuting`, and `-isFinished`. As such, it will remain in an `NSOperationQueue` until it is either cancelled or resumed. Pausing a finished, cancelled, or paused operation has no effect.
+ A paused operation returns `NO` for `-isReady`, `-isExecuting`, and `-isFinished`. As such, it will remain in an `NSOperationQueue` until it is either cancelled or resumed. Pausing a finished, cancelled, or paused operation has no effect.
  */
 - (void)pause;
 
@@ -236,7 +236,7 @@ NSCoding, NSCopying>
 /**
  Resumes the execution of the paused request operation.
 
- @discussion Pause/Resume behavior varies depending on the underlying implementation for the operation class. In its base implementation, resuming a paused requests restarts the original request. However, since HTTP defines a specification for how to request a specific content range, `AFHTTPRequestOperation` will resume downloading the request from where it left off, instead of restarting the original request.
+ Pause/Resume behavior varies depending on the underlying implementation for the operation class. In its base implementation, resuming a paused requests restarts the original request. However, since HTTP defines a specification for how to request a specific content range, `AFHTTPRequestOperation` will resume downloading the request from where it left off, instead of restarting the original request.
  */
 - (void)resume;
 
@@ -280,7 +280,7 @@ NSCoding, NSCopying>
 
  @param block A block object to be executed to determine whether the connection should be able to respond to a protection space's form of authentication. The block has a `BOOL` return type and takes two arguments: the URL connection object, and the protection space to authenticate against.
 
- @discussion If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is defined, `connection:canAuthenticateAgainstProtectionSpace:` will accept invalid SSL certificates, returning `YES` if the protection space authentication method is `NSURLAuthenticationMethodServerTrust`.
+ If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is defined, `connection:canAuthenticateAgainstProtectionSpace:` will accept invalid SSL certificates, returning `YES` if the protection space authentication method is `NSURLAuthenticationMethodServerTrust`.
  */
 - (void)setAuthenticationAgainstProtectionSpaceBlock:(BOOL (^)(NSURLConnection *connection, NSURLProtectionSpace *protectionSpace))block;
 
@@ -289,7 +289,7 @@ NSCoding, NSCopying>
 
  @param block A block object to be executed when the connection must authenticate a challenge in order to download its request. The block has no return type and takes two arguments: the URL connection object, and the challenge that must be authenticated.
 
- @discussion If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is defined, `connection:didReceiveAuthenticationChallenge:` will attempt to have the challenge sender use credentials with invalid SSL certificates.
+ If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is defined, `connection:didReceiveAuthenticationChallenge:` will attempt to have the challenge sender use credentials with invalid SSL certificates.
  */
 - (void)setAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block;
 
@@ -315,7 +315,7 @@ NSCoding, NSCopying>
 ///----------------
 
 /**
- ## Network Reachability
+ ## SSL Pinning Options
 
  The following constants are provided by `AFURLConnectionOperation` as possible SSL Pinning options.
 
