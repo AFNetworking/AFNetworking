@@ -222,8 +222,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             status = SecTrustEvaluate(allowedTrust, &result);
             NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
             
-            SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
-            
+            SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);            
             NSCParameterAssert(allowedPublicKey);
             [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
 
