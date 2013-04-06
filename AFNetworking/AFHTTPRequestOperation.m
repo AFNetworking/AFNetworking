@@ -113,6 +113,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @synthesize HTTPError = _HTTPError;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
+@synthesize processingQueue = _processingQueue;
 @dynamic request;
 @dynamic response;
 
@@ -130,6 +131,13 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 #endif
         _failureCallbackQueue = NULL;
     }
+    
+    if (_processingQueue) {
+#if !OS_OBJECT_USE_OBJC
+        dispatch_release(_processingQueue);
+#endif
+        _processingQueue = NULL;
+    }    
 }
 
 - (NSError *)error {
@@ -256,6 +264,24 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
     }
 }
 
+- (void)setProcessingQueue:(dispatch_queue_t)processingQueue {
+    if (processingQueue != _processingQueue) {
+        if (_processingQueue) {
+#if !OS_OBJECT_USE_OBJC
+            dispatch_release(_processingQueue);
+#endif
+            _processingQueue = NULL;
+        }
+        
+        if (processingQueue) {
+#if !OS_OBJECT_USE_OBJC
+            dispatch_retain(processingQueue);
+#endif
+            _processingQueue = processingQueue;
+        }
+    }
+}
+
 - (void)processResponse {
     self.responseObject = self.responseData;
 }
@@ -273,6 +299,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    // completionBlock is manually nilled out in AFURLConnectionOperation to break the retain cycle.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
     self.completionBlock = ^ {
