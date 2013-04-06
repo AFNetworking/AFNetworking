@@ -224,7 +224,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             
             SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);            
             NSCParameterAssert(allowedPublicKey);
-            [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
+            if(allowedPublicKey!=NULL)
+                [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
 
             CFRelease(allowedTrust);
             CFRelease(policy);
