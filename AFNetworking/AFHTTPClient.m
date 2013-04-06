@@ -605,7 +605,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                     originalCompletionBlock();
                 }
 
-                NSInteger numberOfFinishedOperations = [[operations indexesOfObjectsPassingTest:^BOOL(id op, NSUInteger idx, BOOL *stop) {
+                NSInteger numberOfFinishedOperations = [[operations indexesOfObjectsPassingTest:^BOOL(id op, NSUInteger __unused idx,  BOOL __unused *stop) {
                     return [op isCancelled];
                 }] count];
 
