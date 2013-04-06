@@ -33,11 +33,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 
 @interface AFImageRequestOperation ()
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-@property (readwrite, nonatomic, strong) UIImage *responseImage;
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-@property (readwrite, nonatomic, strong) NSImage *responseImage;
-#endif
+@property (readwrite, nonatomic, strong) AFImageClassName *responseImage;
 @end
 
 @implementation AFImageRequestOperation
@@ -46,42 +42,28 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 @synthesize imageScale = _imageScale;
 #endif
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 + (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-										 success:(void (^)(UIImage *image))success
+										 success:(void (^)(AFImageClassName *image))success
 {
-    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, UIImage *image) {
+    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, AFImageClassName *image) {
         if (success) {
             success(image);
         }
     } failure:nil];
 }
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-+ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-										 success:(void (^)(NSImage *image))success
-{
-    return [self imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil success:^(NSURLRequest __unused *request, NSHTTPURLResponse __unused *response, NSImage *image) {
-        if (success) {
-            success(image);
-        }
-    } failure:nil];
-}
-#endif
 
-
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 + (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-							imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
-										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+							imageProcessingBlock:(AFImageClassName *(^)(AFImageClassName *))imageProcessingBlock
+										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, AFImageClassName *image))success
 										 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
-            UIImage *image = responseObject;
+            AFImageClassName *image = responseObject;
             if (imageProcessingBlock) {
                 dispatch_async(image_request_operation_processing_queue(), ^(void) {
-                    UIImage *processedImage = imageProcessingBlock(image);
+                    AFImageClassName *processedImage = imageProcessingBlock(image);
 
                     dispatch_async(operation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, processedImage);
@@ -100,37 +82,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
     return requestOperation;
 }
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-+ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-							imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
-										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
-										 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
-{
-    AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
-    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        if (success) {
-            NSImage *image = responseObject;
-            if (imageProcessingBlock) {
-                dispatch_async(image_request_operation_processing_queue(), ^(void) {
-                    NSImage *processedImage = imageProcessingBlock(image);
-
-                    dispatch_async(operation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
-                        success(operation.request, operation.response, processedImage);
-                    });
-                });
-            } else {
-                success(operation.request, operation.response, image);
-            }
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (failure) {
-            failure(operation.request, operation.response, error);
-        }
-    }];
-
-    return requestOperation;
-}
-#endif
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
     self = [super initWithRequest:urlRequest];
@@ -146,17 +97,24 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-- (UIImage *)responseImage {
+- (AFImageClassName *)responseImage {
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
         UIImage *image = [UIImage imageWithData:self.responseData];
-
+        
         self.responseImage = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
+#elif defined(__IPHONE_OS_X_VERSION_MIN_REQUIRED)
+        // Ensure that the image is set to it's correct pixel width and height
+        NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
+        self.responseImage = [[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])];
+        [self.responseImage addRepresentation:bitimage];
+#endif
     }
 
     return _responseImage;
 }
 
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 - (void)setImageScale:(CGFloat)imageScale {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wfloat-equal"
@@ -168,17 +126,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     _imageScale = imageScale;
 
     self.responseImage = nil;
-}
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-- (NSImage *)responseImage {
-    if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
-        // Ensure that the image is set to it's correct pixel width and height
-        NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:self.responseData];
-        self.responseImage = [[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])];
-        [self.responseImage addRepresentation:bitimage];
-    }
-
-    return _responseImage;
 }
 #endif
 
@@ -213,11 +160,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 }
             } else {
                 if (success) {
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-                    UIImage *image = nil;
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-                    NSImage *image = nil;
-#endif
+                    AFImageClassName *image = nil;
 
                     image = self.responseImage;
 
