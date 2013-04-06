@@ -41,7 +41,7 @@
 /**
  An object deserialized from a plist constructed using the response data.
  */
-@property (readonly, nonatomic) id responsePropertyList;
+@property (readwrite, nonatomic) id responseObject;
 
 ///--------------------------------------
 /// @name Managing Property List Behavior

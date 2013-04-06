@@ -113,6 +113,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @synthesize HTTPError = _HTTPError;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
+@synthesize processingQueue = _processingQueue;
 @dynamic request;
 @dynamic response;
 
@@ -130,6 +131,13 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 #endif
         _failureCallbackQueue = NULL;
     }
+    
+    if (_processingQueue) {
+#if !OS_OBJECT_USE_OBJC
+        dispatch_release(_processingQueue);
+#endif
+        _processingQueue = NULL;
+    }    
 }
 
 - (NSError *)error {
@@ -154,12 +162,13 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
             }
         }
     }
-
-    if (self.HTTPError) {
+    
+    if (self.processingError)
+        return self.processingError;
+    else if (self.HTTPError)
         return self.HTTPError;
-    } else {
+    else
         return [super error];
-    }
 }
 
 - (NSStringEncoding)responseStringEncoding {
@@ -255,25 +264,72 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
     }
 }
 
+- (void)setProcessingQueue:(dispatch_queue_t)processingQueue {
+    if (processingQueue != _processingQueue) {
+        if (_processingQueue) {
+#if !OS_OBJECT_USE_OBJC
+            dispatch_release(_processingQueue);
+#endif
+            _processingQueue = NULL;
+        }
+        
+        if (processingQueue) {
+#if !OS_OBJECT_USE_OBJC
+            dispatch_retain(processingQueue);
+#endif
+            _processingQueue = processingQueue;
+        }
+    }
+}
+
+- (void)processResponse {
+    self.responseObject = self.responseData;
+}
+
++ (dispatch_queue_t)sharedProcessingQueue {
+    static dispatch_queue_t queue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("com.alamofire.networking.processing", DISPATCH_QUEUE_CONCURRENT);
+    });
+    
+    return queue;
+}
+
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     // completionBlock is manually nilled out in AFURLConnectionOperation to break the retain cycle.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
-    self.completionBlock = ^{
-        if (self.error) {
+    self.completionBlock = ^ {
+        if ([self error]) {
             if (failure) {
                 dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
-                    failure(self, self.error);
+                    failure(self, [self error]);
                 });
             }
         } else {
-            if (success) {
-                dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
-                    success(self, self.responseData);
-                });
-            }
+            dispatch_async(self.processingQueue ?: [AFHTTPRequestOperation sharedProcessingQueue], ^{
+                // Deserialize the response
+                // This should set self.responseObject and may also set self.processingError
+                if ([self.responseData length] > 0) {
+                    [self processResponse];
+                }
+                if (self.processingError) {
+                    if (failure) {
+                        dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+                            failure(self, [self error]);
+                        });
+                    }
+                } else {
+                    if (success) {
+                        dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
+                            success(self, self.responseObject);
+                        });
+                    }
+                }
+            });
         }
     };
 #pragma clang diagnostic pop

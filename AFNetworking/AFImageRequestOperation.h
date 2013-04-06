@@ -26,10 +26,16 @@
 #import <Availability.h>
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-#import <UIKit/UIKit.h>
+  #import <UIKit/UIKit.h>
+  #define AFImageClassName UIImage
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-#import <Cocoa/Cocoa.h>
+  #import <Cocoa/Cocoa.h>
+  #define AFImageClassName NSImage
+#else
+  #define AFImageClassName NSObject
 #endif
+
+typedef AFImageClassName * (^AFImageFilterBlock)(AFImageClassName *in);
 
 /**
  `AFImageRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading an processing images.
@@ -54,11 +60,7 @@
 /**
  An image constructed from the response data. If an error occurs during the request, `nil` will be returned, and the `error` property will be set to the error.
  */
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-@property (readonly, nonatomic, strong) UIImage *responseImage;
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-@property (readonly, nonatomic, strong) NSImage *responseImage;
-#endif
+@property (readwrite, nonatomic, strong) AFImageClassName *responseObject;
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 /**
@@ -68,6 +70,11 @@
 #endif
 
 /**
+ An optional filter block which will be run on the image before the completion block is invoked.
+ */
+@property (readwrite, nonatomic, copy) AFImageFilterBlock filterBlock;
+
+/**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
 
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
@@ -75,13 +82,8 @@
 
  @return A new image request operation
  */
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 + (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-										 success:(void (^)(UIImage *image))success;
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-+ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-										 success:(void (^)(NSImage *image))success;
-#endif
+										 success:(void (^)(AFImageClassName *image))success;
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
@@ -93,16 +95,9 @@
 
  @return A new image request operation
  */
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 + (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-							imageProcessingBlock:(UIImage *(^)(UIImage *image))imageProcessingBlock
-										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                                     filterBlock:(AFImageFilterBlock)filterBlock
+										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, AFImageClassName *image))success
 										 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-+ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-							imageProcessingBlock:(NSImage *(^)(NSImage *image))imageProcessingBlock
-										 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image))success
-										 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
-#endif
 
 @end
