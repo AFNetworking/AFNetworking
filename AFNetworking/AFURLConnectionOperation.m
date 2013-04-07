@@ -218,7 +218,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &allowedTrust);
             NSAssert(status == noErr, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
             
-            SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
+            SecTrustResultType result = 0;
+            status = SecTrustEvaluate(allowedTrust, &result);
+            NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
+            
+            SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);            
+            NSCParameterAssert(allowedPublicKey);
             [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
 
             CFRelease(allowedTrust);
@@ -548,58 +553,50 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 {
     if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
-        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, 0);
-        NSData *certificateData = (__bridge_transfer NSData *)SecCertificateCopyData(certificate);
-
-        if ([[[self class] pinnedCertificates] containsObject:certificateData]) {
-            NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
-            [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-        } else {
-            switch (self.SSLPinningMode) {
-                case AFSSLPinningModePublicKey: {
-                    id publicKey = (__bridge_transfer id)SecTrustCopyPublicKey(serverTrust);
-
-                    if ([[self.class pinnedPublicKeys] containsObject:publicKey]) {
-                        NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
-                        [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-                    } else {
-                        [[challenge sender] cancelAuthenticationChallenge:challenge];
-                    }
-
-                    break;
+        switch (self.SSLPinningMode) {
+            case AFSSLPinningModePublicKey: {
+                id publicKey = (__bridge_transfer id)SecTrustCopyPublicKey(serverTrust);
+                
+                if ([[self.class pinnedPublicKeys] containsObject:publicKey]) {
+                    NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+                    [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+                } else {
+                    [[challenge sender] cancelAuthenticationChallenge:challenge];
                 }
-                case AFSSLPinningModeCertificate: {
-                    SecCertificateRef serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0);
-                    NSData *serverCertificateData = (__bridge_transfer NSData *)SecCertificateCopyData(serverCertificate);
-
-                    if ([[[self class] pinnedCertificates] containsObject:serverCertificateData]) {
-                        NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
-                        [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-                    } else {
-                        [[challenge sender] cancelAuthenticationChallenge:challenge];
-                    }
+                
+                break;
+            }
+            case AFSSLPinningModeCertificate: {
+                SecCertificateRef serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0);
+                NSData *serverCertificateData = (__bridge_transfer NSData *)SecCertificateCopyData(serverCertificate);
+                
+                if ([[[self class] pinnedCertificates] containsObject:serverCertificateData]) {
+                    NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+                    [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+                } else {
+                    [[challenge sender] cancelAuthenticationChallenge:challenge];
+                }
+                
+                break;
+            }
+            case AFSSLPinningModeNone: {
+                if(self.allowInvalidSSLCertificate == YES){
+                    NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+                    [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+                }
+                else {
+                    SecTrustResultType result = 0;
+                    OSStatus status = SecTrustEvaluate(serverTrust, &result);
+                    NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
                     
-                    break;
-                }
-                case AFSSLPinningModeNone: {
-                    if(self.allowInvalidSSLCertificate == YES){
+                    if (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed) {
                         NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
                         [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+                    } else {
+                        [[challenge sender] cancelAuthenticationChallenge:challenge];
                     }
-                    else {
-                        SecTrustResultType result = 0;
-                        OSStatus status = SecTrustEvaluate(serverTrust, &result);
-                        NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
-                        
-                        if (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed) {
-                            NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
-                            [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-                        } else {
-                            [[challenge sender] cancelAuthenticationChallenge:challenge];
-                        }
-                    }
-                    break;
                 }
+                break;
             }
         }
     }
@@ -610,7 +607,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 - (BOOL)connection:(NSURLConnection *)connection
 canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 {
-    if(self.allowInvalidSSLCertificate &&
+    if(self.allowInvalidSSLCertificate == YES &&
        [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
             return YES;
     }
@@ -628,7 +625,7 @@ canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
 
-    if(self.allowInvalidSSLCertificate
+    if(self.allowInvalidSSLCertificate == YES
        && [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
         return;
