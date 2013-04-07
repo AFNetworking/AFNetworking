@@ -162,6 +162,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 + (void) __attribute__((noreturn)) networkRequestThreadEntryPoint:(id)__unused object {
     do {
         @autoreleasepool {
+            [[NSThread currentThread] setName:@"AFNetworking"];
             [[NSRunLoop currentRunLoop] run];
         }
     } while (YES);
@@ -217,7 +218,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &allowedTrust);
             NSAssert(status == noErr, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
             
-            SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
+            SecTrustResultType result = 0;
+            status = SecTrustEvaluate(allowedTrust, &result);
+            NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
+            
+            SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);            
+            NSCParameterAssert(allowedPublicKey);
             [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
             
             CFRelease(allowedTrust);
@@ -561,6 +567,10 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &trust);
                 NSAssert(status == noErr, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
                 
+                SecTrustResultType result;
+                status = SecTrustEvaluate(trust, &result);
+                NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
+                
                 [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
                 
                 CFRelease(trust);
@@ -614,6 +624,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 break;
             }
         }
+        
     }
 }
 #endif
