@@ -254,8 +254,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     self.shouldUseCredentialStorage = YES;
     
-    self.outputStream = [NSOutputStream outputStreamToMemory];
-    
     self.state = AFOperationReadyState;
     
     return self;
@@ -305,6 +303,14 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
     [self didChangeValueForKey:@"inputStream"];
+}
+
+- (NSOutputStream *)outputStream {
+	if (!_outputStream) {
+		self.outputStream = [NSOutputStream outputStreamToMemory];
+	}
+	
+	return _outputStream;
 }
 
 - (void)setOutputStream:(NSOutputStream *)outputStream {
@@ -753,13 +759,15 @@ didReceiveResponse:(NSURLResponse *)response
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection __unused *)connection {
-    self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-    
-    [self.outputStream close];
-    
-    [self finish];
-    
-    self.connection = nil;
+	@autoreleasepool {
+		self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+		
+		[self.outputStream close];
+		
+		[self finish];
+		
+		self.connection = nil;
+	}
 }
 
 - (void)connection:(NSURLConnection __unused *)connection
