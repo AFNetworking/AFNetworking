@@ -86,14 +86,19 @@ static char kAFImageRequestOperationObjectKey;
 - (void)setImageWithURL:(NSURL *)url
        placeholderImage:(UIImage *)placeholderImage
 {
+    [self setImageWithURL:url placeholderImage:placeholderImage size:CGSizeZero];
+}
+
+- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage size:(CGSize)size {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage size:size success:nil failure:nil];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
               placeholderImage:(UIImage *)placeholderImage
+                          size:(CGSize)size
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
@@ -102,11 +107,23 @@ static char kAFImageRequestOperationObjectKey;
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
         if (success) {
-            success(nil, nil, cachedImage);
+            if (CGSizeEqualToSize(size, CGSizeZero)) {
+                success(nil, nil, cachedImage);
+            }
+            else {
+                UIImage *img = [self resizeImage:cachedImage newSize:size];
+                success(nil, nil, img);
+            }
         } else {
-            self.image = cachedImage;
+            if (CGSizeEqualToSize(size, CGSizeZero)) {
+                self.image = cachedImage;
+            }
+            else {
+                UIImage *img = [self resizeImage:cachedImage newSize:size];
+                self.image = img;
+            }
         }
-
+ 
         self.af_imageRequestOperation = nil;
     } else {
         self.image = placeholderImage;
@@ -115,11 +132,23 @@ static char kAFImageRequestOperationObjectKey;
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
                 if (success) {
-                    success(operation.request, operation.response, responseObject);
+                    if (CGSizeEqualToSize(size, CGSizeZero)) {
+                        success(operation.request, operation.response, responseObject);
+                    }
+                    else {
+                        UIImage *img = [self resizeImage:responseObject newSize:size];
+                        success(operation.request, operation.response, img);
+                    }
                 } else if (responseObject) {
-                    self.image = responseObject;
+                    if (CGSizeEqualToSize(size, CGSizeZero)) {
+                        self.image = responseObject;
+                    }
+                    else {
+                        UIImage *img = [self resizeImage:responseObject newSize:size];
+                        self.image = img;
+                    }
                 }
-
+ 
                 if (self.af_imageRequestOperation == operation) {
                     self.af_imageRequestOperation = nil;
                 }
@@ -147,6 +176,20 @@ static char kAFImageRequestOperationObjectKey;
 - (void)cancelImageRequestOperation {
     [self.af_imageRequestOperation cancel];
     self.af_imageRequestOperation = nil;
+}
+
+
+#pragma mark - Image Sizing Methods (Additions)
+
+- (UIImage *)resizeImage:(UIImage *)aImage newSize:(CGSize)newSize {
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, [[UIScreen mainScreen] scale]);
+    
+    [aImage drawInRect:CGRectMake(0,0,newSize.width,newSize.height)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return newImage;
 }
 
 @end
