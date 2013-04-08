@@ -208,7 +208,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         
         for (NSData *data in pinnedCertificates) {
             SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)data);
-            NSCParameterAssert(allowedCertificate);
+            NSParameterAssert(allowedCertificate);
             
             SecCertificateRef allowedCertificates[] = {allowedCertificate};
             CFArrayRef certificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
@@ -216,14 +216,14 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             SecPolicyRef policy = SecPolicyCreateBasicX509();
             SecTrustRef allowedTrust = NULL;
             OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &allowedTrust);
-            NSAssert(status == noErr, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
+            NSAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
             
             SecTrustResultType result = 0;
             status = SecTrustEvaluate(allowedTrust, &result);
-            NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
+            NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
             
             SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);            
-            NSCParameterAssert(allowedPublicKey);
+            NSParameterAssert(allowedPublicKey);
             [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
             
             CFRelease(allowedTrust);
@@ -565,11 +565,11 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 SecTrustRef trust = NULL;
                 
                 OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &trust);
-                NSAssert(status == noErr, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
+                NSAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
                 
                 SecTrustResultType result;
                 status = SecTrustEvaluate(trust, &result);
-                NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
+                NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
                 
                 [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
                 
@@ -612,7 +612,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 #else
                 SecTrustResultType result = 0;
                 OSStatus status = SecTrustEvaluate(serverTrust, &result);
-                NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
+                NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
                 
                 if (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed) {
                     NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
