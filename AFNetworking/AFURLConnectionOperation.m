@@ -208,7 +208,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         
         for (NSData *data in pinnedCertificates) {
             SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)data);
-            NSCParameterAssert(allowedCertificate);
+            NSParameterAssert(allowedCertificate);
             
             SecCertificateRef allowedCertificates[] = {allowedCertificate};
             CFArrayRef certificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
@@ -223,7 +223,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
             
             SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);            
-            NSCParameterAssert(allowedPublicKey);
+            NSParameterAssert(allowedPublicKey);
             [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
             
             CFRelease(allowedTrust);
