@@ -27,7 +27,7 @@
 
 #import <Availability.h>
 
-#ifdef _SYSTEMCONFIGURATION_H
+#ifdef HAS_SYSTEMCONFIGURATION_H
 #import <netinet/in.h>
 #import <netinet6/in6.h>
 #import <arpa/inet.h>
@@ -39,7 +39,7 @@
 #import <UIKit/UIKit.h>
 #endif
 
-#ifdef _SYSTEMCONFIGURATION_H
+#ifdef HAS_SYSTEMCONFIGURATION_H
 NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
 NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworkingReachabilityNotificationStatusItem";
 
@@ -187,13 +187,13 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 @property (readwrite, nonatomic, strong) NSMutableDictionary *defaultHeaders;
 @property (readwrite, nonatomic, strong) NSURLCredential *defaultCredential;
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
-#ifdef _SYSTEMCONFIGURATION_H
+#ifdef HAS_SYSTEMCONFIGURATION_H
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
 @property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
 #endif
 
-#ifdef _SYSTEMCONFIGURATION_H
+#ifdef HAS_SYSTEMCONFIGURATION_H
 - (void)startMonitoringNetworkReachability;
 - (void)stopMonitoringNetworkReachability;
 #endif
@@ -207,7 +207,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 @synthesize defaultHeaders = _defaultHeaders;
 @synthesize defaultCredential = _defaultCredential;
 @synthesize operationQueue = _operationQueue;
-#ifdef _SYSTEMCONFIGURATION_H
+#ifdef HAS_SYSTEMCONFIGURATION_H
 @synthesize networkReachability = _networkReachability;
 @synthesize networkReachabilityStatus = _networkReachabilityStatus;
 @synthesize networkReachabilityStatusBlock = _networkReachabilityStatusBlock;
@@ -255,7 +255,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     [self setDefaultHeader:@"User-Agent" value:[NSString stringWithFormat:@"%@/%@ (Mac OS X %@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleExecutableKey] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[NSProcessInfo processInfo] operatingSystemVersionString]]];
 #endif
 
-#ifdef _SYSTEMCONFIGURATION_H
+#ifdef HAS_SYSTEMCONFIGURATION_H
     self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
     [self startMonitoringNetworkReachability];
 #endif
@@ -267,7 +267,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 }
 
 - (void)dealloc {
-#ifdef _SYSTEMCONFIGURATION_H
+#ifdef HAS_SYSTEMCONFIGURATION_H
     [self stopMonitoringNetworkReachability];
 #endif
 }
@@ -278,7 +278,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 #pragma mark -
 
-#ifdef _SYSTEMCONFIGURATION_H
+#ifdef HAS_SYSTEMCONFIGURATION_H
 static BOOL AFURLHostIsIPAddress(NSURL *url) {
     struct sockaddr_in sa_in;
     struct sockaddr_in6 sa_in6;
@@ -711,7 +711,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     HTTPClient.parameterEncoding = self.parameterEncoding;
     HTTPClient.registeredHTTPOperationClassNames = [self.registeredHTTPOperationClassNames copyWithZone:zone];
     HTTPClient.defaultHeaders = [self.defaultHeaders copyWithZone:zone];
-#ifdef _SYSTEMCONFIGURATION_H
+#ifdef HAS_SYSTEMCONFIGURATION_H
     HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
 #endif
     return HTTPClient;
@@ -740,7 +740,7 @@ static inline NSString * AFMultipartFormFinalBoundary() {
 }
 
 static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
-#ifdef __UTTYPE__
+#ifdef HAS_UTTYPE
     NSString *UTI = (__bridge_transfer NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL);
     NSString *contentType = (__bridge_transfer NSString *)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)UTI, kUTTagClassMIMEType);
     if (!contentType) {
