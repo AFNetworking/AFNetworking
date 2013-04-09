@@ -176,7 +176,19 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
             break;
     }
     
-	return [self objectForKey:AFImageCacheKeyFromURLRequest(request)];
+    NSString *key = AFImageCacheKeyFromURLRequest(request);
+    UIImage *image = [self objectForKey:key];
+    
+    if (!image) {
+        NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
+        NSData *imageData = cachedResponse.data;
+        
+        if (imageData && (image = [[UIImage alloc] initWithData:imageData])) {
+            [self setObject:image forKey:key];
+        }
+    }
+    
+	return image;
 }
 
 - (void)cacheImage:(UIImage *)image
