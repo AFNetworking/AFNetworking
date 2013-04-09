@@ -614,13 +614,11 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 if(self.allowInvalidSSLCertificate == YES){
                     NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
                     [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-                } else {
-                    [[challenge sender] cancelAuthenticationChallenge:challenge];
                 }
                 else {
                     SecTrustResultType result = 0;
                     OSStatus status = SecTrustEvaluate(serverTrust, &result);
-                    NSAssert(status == noErr, @"SecTrustEvaluate error: %ld", (long int)status);
+                    NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
                     
                     if (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed) {
                         NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
