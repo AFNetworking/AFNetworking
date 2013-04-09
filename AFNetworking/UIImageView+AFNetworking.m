@@ -108,48 +108,38 @@ static char kAFImageRequestOperationObjectKey;
     [self cancelImageRequestOperation];
     
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
-    if (cachedImage) {
-        if (success) {
-            success(nil, nil, cachedImage);
-        } else {
-            self.image = cachedImage;
-        }
-        
-        self.af_imageRequestOperation = nil;
-    } else {
-        self.image = placeholderImage;
-        
-        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
-        [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-                if (success) {
-                    success(operation.request, operation.response, responseObject);
-                } else if (responseObject) {
-                    self.image = responseObject;
-                }
-                
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
-                }
+    self.image = cachedImage ?: placeholderImage;
+    
+    AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
+            self.image = responseObject;
+            
+            if (success) {
+                success(operation.request, operation.response, responseObject);
             }
             
-            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-                if (failure) {
-                    failure(operation.request, operation.response, error);
-                }
-                
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
-                }
+            if (self.af_imageRequestOperation == operation) {
+                self.af_imageRequestOperation = nil;
             }
-        }];
+        }
         
-        self.af_imageRequestOperation = requestOperation;
-        
-        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
-    }
+        [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
+            if (failure) {
+                failure(operation.request, operation.response, error);
+            }
+            
+            if (self.af_imageRequestOperation == operation) {
+                self.af_imageRequestOperation = nil;
+            }
+        }
+    }];
+    
+    self.af_imageRequestOperation = requestOperation;
+    
+    [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
 }
 
 - (void)cancelImageRequestOperation {
