@@ -63,7 +63,7 @@ static char kAFImageRequestOperationObjectKey;
         _af_imageRequestOperationQueue = [[NSOperationQueue alloc] init];
         [_af_imageRequestOperationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
     });
-
+    
     return _af_imageRequestOperationQueue;
 }
 
@@ -73,7 +73,7 @@ static char kAFImageRequestOperationObjectKey;
     dispatch_once(&oncePredicate, ^{
         _af_imageCache = [[AFImageCache alloc] init];
     });
-
+    
     return _af_imageCache;
 }
 
@@ -88,7 +88,15 @@ static char kAFImageRequestOperationObjectKey;
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-
+    
+    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
+    if (cachedResponse) {
+        NSHTTPURLResponse *previousResponse = (NSHTTPURLResponse *)cachedResponse.response;
+        if (previousResponse.allHeaderFields[@"last-modified"]) {
+            [request setValue:previousResponse.allHeaderFields[@"last-modified"] forHTTPHeaderField:@"If-Modified-Since"];
+        }
+    }
+    
     [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
 }
 
@@ -98,7 +106,7 @@ static char kAFImageRequestOperationObjectKey;
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     [self cancelImageRequestOperation];
-
+    
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
         if (success) {
@@ -106,11 +114,11 @@ static char kAFImageRequestOperationObjectKey;
         } else {
             self.image = cachedImage;
         }
-
+        
         self.af_imageRequestOperation = nil;
     } else {
         self.image = placeholderImage;
-
+        
         AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
@@ -119,27 +127,27 @@ static char kAFImageRequestOperationObjectKey;
                 } else if (responseObject) {
                     self.image = responseObject;
                 }
-
+                
                 if (self.af_imageRequestOperation == operation) {
                     self.af_imageRequestOperation = nil;
                 }
             }
-
+            
             [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
                 if (failure) {
                     failure(operation.request, operation.response, error);
                 }
-
+                
                 if (self.af_imageRequestOperation == operation) {
                     self.af_imageRequestOperation = nil;
                 }
             }
         }];
-
+        
         self.af_imageRequestOperation = requestOperation;
-
+        
         [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
     }
 }
@@ -167,7 +175,7 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
         default:
             break;
     }
-
+    
 	return [self objectForKey:AFImageCacheKeyFromURLRequest(request)];
 }
 
