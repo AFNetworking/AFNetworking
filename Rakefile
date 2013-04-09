@@ -13,15 +13,15 @@ class String
   end
 end
 
-def test_project(project, target, verbose = false)
-  command = "xcodebuild -project \"#{project}\" -target \"#{target}\" -sdk iphonesimulator -configuration Debug RUN_UNIT_TEST_WITH_IOS_SIM=YES 2>&1"
+def test_project(project, target, options, verbose = false)
+  command = "xcodebuild -project \"#{project}\" -target \"#{target}\" #{options} 2>&1"
   IO.popen(command) do |io|
     out = 0
     while line = io.gets do
       if verbose
         puts line
       else
-        if line =~ /Started running tests with ios-sim/i
+        if line =~ /Started running tests with ios-sim/i || line =~ /Started tests for architectures/i
           out = out + 1
         end
         
@@ -36,7 +36,7 @@ def test_project(project, target, verbose = false)
           end
         end
         
-        if line =~ /Finished running tests with ios-sim/i
+        if line =~ /Finished running tests with ios-sim/i || line =~ /Completed tests for architectures/i
           out = out - 1
         end
       end
@@ -53,11 +53,17 @@ end
 desc 'Run the tests'
 task :test do
   verbose = ENV['VERBOSE']
-  ios = test_project('Example/AFNetworking iOS Example.xcodeproj', 'AFNetworking iOS Tests', verbose)
+  ios = test_project('Example/AFNetworking iOS Example.xcodeproj', 'AFNetworking iOS Tests', '-configuration Debug -sdk iphonesimulator RUN_UNIT_TEST_WITH_IOS_SIM=YES', verbose)
+  mac = test_project('Example/AFNetworking Mac Example.xcodeproj', 'AFNetworking Mac Tests', '-configuration Debug TEST_AFTER_BUILD=YES', verbose)
 
   puts "\n\n\n" if verbose
   puts "iOS: #{ios == 0 ? 'PASSED'.green : 'FAILED'.red}"
-  exit(ios)
+  puts "Mac: #{mac == 0 ? 'PASSED'.green : 'FAILED'.red}"
+  if ios == 0 && mac == 0
+    exit(0)
+  else
+    exit(1)
+  end
 end
 
 task :default => :test
