@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		2982AD3217107C0000FFF048 /* adn.cer in Resources */ = {isa = PBXBuildFile; fileRef = 2982AD3117107C0000FFF048 /* adn.cer */; };
+		AB1440CD171548E800321854 /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AB1440CC171548E800321854 /* AFHTTPClientTests.m */; };
 		AB4C104117149DF6008FCF8B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4C104017149DF6008FCF8B /* SenTestingKit.framework */; };
 		AB4C104217149DF6008FCF8B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469641395739D00DB05C8 /* UIKit.framework */; };
 		AB4C104317149DF6008FCF8B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469661395739D00DB05C8 /* Foundation.framework */; };
 		AB4C104917149DF6008FCF8B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB4C104717149DF6008FCF8B /* InfoPlist.strings */; };
-		AB4C10551714A4FA008FCF8B /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4C10541714A4FA008FCF8B /* AFHTTPClientTests.m */; };
 		F8129C7415910C37009BFE23 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C7215910C37009BFE23 /* AppDelegate.m */; };
 		F818101615E6A0C600EF93C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */; };
 		F88812F016C533D6003C8B8C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E013957DF100DB05C8 /* Security.framework */; };
@@ -58,13 +58,13 @@
 /* Begin PBXFileReference section */
 		2982AD3117107C0000FFF048 /* adn.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = adn.cer; sourceTree = SOURCE_ROOT; };
 		50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		AB1440CB171548E800321854 /* AFHTTPClientTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClientTests.h; sourceTree = "<group>"; };
+		AB1440CC171548E800321854 /* AFHTTPClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
 		AB4C103F17149DF6008FCF8B /* AFNetworking iOS Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking iOS Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB4C104017149DF6008FCF8B /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		AB4C104617149DF6008FCF8B /* AFNetworking iOS Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AFNetworking iOS Tests-Info.plist"; sourceTree = "<group>"; };
 		AB4C104817149DF6008FCF8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AB4C104D17149DF6008FCF8B /* AFNetworking iOS Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AFNetworking iOS Tests-Prefix.pch"; sourceTree = "<group>"; };
-		AB4C10531714A4FA008FCF8B /* AFHTTPClientTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClientTests.h; sourceTree = "<group>"; };
-		AB4C10541714A4FA008FCF8B /* AFHTTPClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
 		F8129C3815910830009BFE23 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
 		F8129C7215910C37009BFE23 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
 		F8129C7315910C37009BFE23 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
@@ -143,11 +143,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AB1440CA171548E800321854 /* AFNetworking Shared Tests */ = {
+			isa = PBXGroup;
+			children = (
+				AB1440CB171548E800321854 /* AFHTTPClientTests.h */,
+				AB1440CC171548E800321854 /* AFHTTPClientTests.m */,
+			);
+			path = "AFNetworking Shared Tests";
+			sourceTree = "<group>";
+		};
 		AB4C104417149DF6008FCF8B /* AFNetworking iOS Tests */ = {
 			isa = PBXGroup;
 			children = (
-				AB4C10531714A4FA008FCF8B /* AFHTTPClientTests.h */,
-				AB4C10541714A4FA008FCF8B /* AFHTTPClientTests.m */,
 				AB4C104517149DF6008FCF8B /* Supporting Files */,
 			);
 			path = "AFNetworking iOS Tests";
@@ -205,6 +212,7 @@
 				F8E4696A1395739D00DB05C8 /* Classes */,
 				F8E469ED1395812A00DB05C8 /* Images */,
 				F8E469931395743A00DB05C8 /* Vendor */,
+				AB1440CA171548E800321854 /* AFNetworking Shared Tests */,
 				AB4C104417149DF6008FCF8B /* AFNetworking iOS Tests */,
 				F8E469631395739D00DB05C8 /* Frameworks */,
 				F8E469611395739C00DB05C8 /* Products */,
@@ -432,7 +440,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB4C10551714A4FA008FCF8B /* AFHTTPClientTests.m in Sources */,
+				AB1440CD171548E800321854 /* AFHTTPClientTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,6 +636,7 @@
 				AB4C105017149DF6008FCF8B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F8E4695A1395739C00DB05C8 /* Build configuration list for PBXProject "AFNetworking iOS Example" */ = {
 			isa = XCConfigurationList;

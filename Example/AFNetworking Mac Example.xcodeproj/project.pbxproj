@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB1440C9171548A400321854 /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AB1440C8171548A400321854 /* AFHTTPClientTests.m */; };
 		AB4C105D1714A9BE008FCF8B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4C105C1714A9BE008FCF8B /* SenTestingKit.framework */; };
 		AB4C105E1714A9BE008FCF8B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8129BFF1591061B009BFE23 /* Cocoa.framework */; };
 		AB4C10641714A9BE008FCF8B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB4C10621714A9BE008FCF8B /* InfoPlist.strings */; };
-		AB4C10B01714ABE7008FCF8B /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4C10AF1714ABE7008FCF8B /* AFHTTPClientTests.m */; };
 		F8129C001591061B009BFE23 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8129BFF1591061B009BFE23 /* Cocoa.framework */; };
 		F8129C321591073C009BFE23 /* AFAppDotNetAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C251591073C009BFE23 /* AFAppDotNetAPIClient.m */; };
 		F8129C341591073C009BFE23 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C2B1591073C009BFE23 /* Post.m */; };
@@ -41,13 +41,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AB1440C7171548A400321854 /* AFHTTPClientTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClientTests.h; sourceTree = "<group>"; };
+		AB1440C8171548A400321854 /* AFHTTPClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
 		AB4C105B1714A9BE008FCF8B /* AFNetworking Mac Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking Mac Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB4C105C1714A9BE008FCF8B /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		AB4C10611714A9BE008FCF8B /* AFNetworking Mac Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AFNetworking Mac Tests-Info.plist"; sourceTree = "<group>"; };
 		AB4C10631714A9BE008FCF8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AB4C10681714A9BE008FCF8B /* AFNetworking Mac Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AFNetworking Mac Tests-Prefix.pch"; sourceTree = "<group>"; };
-		AB4C10AE1714ABE7008FCF8B /* AFHTTPClientTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClientTests.h; sourceTree = "<group>"; };
-		AB4C10AF1714ABE7008FCF8B /* AFHTTPClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
 		F8129BFB1591061B009BFE23 /* AFNetworking Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8129BFF1591061B009BFE23 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F8129C021591061B009BFE23 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -108,11 +108,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AB1440C6171548A400321854 /* AFNetworking Shared Tests */ = {
+			isa = PBXGroup;
+			children = (
+				AB1440C7171548A400321854 /* AFHTTPClientTests.h */,
+				AB1440C8171548A400321854 /* AFHTTPClientTests.m */,
+			);
+			path = "AFNetworking Shared Tests";
+			sourceTree = "<group>";
+		};
 		AB4C105F1714A9BE008FCF8B /* AFNetworking Mac Tests */ = {
 			isa = PBXGroup;
 			children = (
-				AB4C10AE1714ABE7008FCF8B /* AFHTTPClientTests.h */,
-				AB4C10AF1714ABE7008FCF8B /* AFHTTPClientTests.m */,
 				AB4C10601714A9BE008FCF8B /* Supporting Files */,
 			);
 			path = "AFNetworking Mac Tests";
@@ -137,6 +144,7 @@
 				F877018B159A1CE700B45C0D /* AFNetworking Example.entitlements */,
 				F8129C051591061B009BFE23 /* Classes */,
 				F8129C4C15910901009BFE23 /* Vendor */,
+				AB1440C6171548A400321854 /* AFNetworking Shared Tests */,
 				AB4C105F1714A9BE008FCF8B /* AFNetworking Mac Tests */,
 				F8129BFE1591061B009BFE23 /* Frameworks */,
 				F8129BFC1591061B009BFE23 /* Products */,
@@ -345,7 +353,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB4C10B01714ABE7008FCF8B /* AFHTTPClientTests.m in Sources */,
+				AB1440C9171548A400321854 /* AFHTTPClientTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -519,6 +527,7 @@
 				AB4C106A1714A9BE008FCF8B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F8129BF51591061B009BFE23 /* Build configuration list for PBXProject "AFNetworking Mac Example" */ = {
 			isa = XCConfigurationList;
