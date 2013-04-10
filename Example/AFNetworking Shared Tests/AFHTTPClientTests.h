@@ -1,6 +1,6 @@
 //
 //  AFHTTPClientTests.h
-//  AFNetworking Mac Example
+//  AFNetworking Shared Example
 //
 //  Created by Stan Chang Khin Boon on 10/4/13.
 //
