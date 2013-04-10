@@ -606,7 +606,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                 }
 
                 NSInteger numberOfFinishedOperations = [[operations indexesOfObjectsPassingTest:^BOOL(id op, NSUInteger __unused idx,  BOOL __unused *stop) {
-                    return [op isCancelled];
+                    return [op isFinished];
                 }] count];
 
                 if (progressBlock) {
