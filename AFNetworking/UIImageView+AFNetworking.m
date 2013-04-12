@@ -110,13 +110,23 @@ static char kAFImageRequestOperationObjectKey;
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     self.image = cachedImage ?: placeholderImage;
     
+    if (cachedImage) {
+        if (success) {
+            success(nil, nil, cachedImage);
+        } else {
+            self.image = cachedImage;
+        }
+    }
+    
     AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-            self.image = responseObject;
-            
-            if (success) {
-                success(operation.request, operation.response, responseObject);
+            if (![responseObject isEqual:cachedImage]) {
+                if (success) {
+                    success(operation.request, operation.response, responseObject);
+                } else {
+                    self.image = responseObject;
+                }
             }
             
             if (self.af_imageRequestOperation == operation) {
