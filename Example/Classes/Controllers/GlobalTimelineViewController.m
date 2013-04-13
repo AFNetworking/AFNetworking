@@ -96,7 +96,7 @@
         cell = [[PostTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    cell.post = [_posts objectAtIndex:indexPath.row];
+    cell.post = _posts[indexPath.row];
     
     return cell;
 }
@@ -104,7 +104,7 @@
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [PostTableViewCell heightForCellWithPost:[_posts objectAtIndex:indexPath.row]];
+    return [PostTableViewCell heightForCellWithPost:_posts[indexPath.row]];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
