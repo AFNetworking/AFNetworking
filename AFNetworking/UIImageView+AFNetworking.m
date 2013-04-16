@@ -27,9 +27,13 @@
 #import "UIImageView+AFNetworking.h"
 
 @interface AFImageCache : NSCache
+
+@property (nonatomic, copy) AFNetworkingShouldAcceptImageBlock validationBlock;
+
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
 - (void)cacheImage:(UIImage *)image
         forRequest:(NSURLRequest *)request;
+
 @end
 
 #pragma mark -
@@ -47,6 +51,11 @@ static char kAFImageRequestOperationObjectKey;
 #pragma mark -
 
 @implementation UIImageView (AFNetworking)
+
++ (void)setAFNetworkingShouldAcceptImageBlock:(AFNetworkingShouldAcceptImageBlock)validationBlock
+{
+    [self af_sharedImageCache].validationBlock = validationBlock;
+}
 
 - (AFHTTPRequestOperation *)af_imageRequestOperation {
     return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFImageRequestOperationObjectKey);
@@ -110,22 +119,52 @@ static char kAFImageRequestOperationObjectKey;
         self.af_imageRequestOperation = nil;
     } else {
         self.image = placeholderImage;
+        
+        AFImageCache * cache = [[self class] af_sharedImageCache];
 
         AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
+        
+        if (cache.validationBlock)
+        {
+            [requestOperation setCacheResponseBlock:^NSCachedURLResponse *(NSURLConnection *connection, NSCachedURLResponse *cachedResponse) {
+                
+                NSError * error;
+                AFNetworkingShouldAcceptImage acceptImage = cache.validationBlock(cachedResponse.data, urlRequest, &error);
+                
+                if (acceptImage == AFNetworkingShouldAcceptImageYES)
+                    return cachedResponse;
+                
+                return nil;
+            }];
+        }
+
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-                if (success) {
-                    success(operation.request, operation.response, responseObject);
-                } else if (responseObject) {
-                    self.image = responseObject;
+                
+                AFNetworkingShouldAcceptImage acceptImage = AFNetworkingShouldAcceptImageYES;
+                NSError * error = nil;
+                if (cache.validationBlock)
+                    acceptImage = cache.validationBlock(operation.responseData, operation.request, &error);
+                
+                if (acceptImage == AFNetworkingShouldAcceptImageNO) {
+                    if (failure)
+                        failure(operation.request, operation.response, error);
+                } else {
+                    
+                    if (success) {
+                        success(operation.request, operation.response, responseObject);
+                    } else if (responseObject) {
+                        self.image = responseObject;
+                    }
                 }
 
                 if (self.af_imageRequestOperation == operation) {
                     self.af_imageRequestOperation = nil;
                 }
+                
+                if (acceptImage == AFNetworkingShouldAcceptImageYES)
+                    [cache cacheImage:responseObject forRequest:urlRequest];
             }
-
-            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
                 if (failure) {

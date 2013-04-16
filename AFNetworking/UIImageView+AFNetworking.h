@@ -28,6 +28,7 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
 
+
 /**
  This category adds methods to the UIKit framework's `UIImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
  */
@@ -72,6 +73,25 @@
  Cancels any executing image request operation for the receiver, if one exists.
  */
 - (void)cancelImageRequestOperation;
+
+typedef enum {
+    AFNetworkingShouldAcceptImageYES,
+    AFNetworkingShouldAcceptImageNO,
+    AFNetworkingShouldAcceptImageYESButDoNotCache
+} AFNetworkingShouldAcceptImage;
+
+typedef AFNetworkingShouldAcceptImage (^AFNetworkingShouldAcceptImageBlock)(NSData * originalData, NSURLRequest * originalRequest, NSError ** error);
+
+/**
+ Set a block that can choose to reject images from being returned (and cached) on a per-image basis. You might want to check an image is not corrupted or reject images over a certain size perhaps.
+ 
+ @discussion The block should return `AFNetworkingShouldAcceptImageYES` to both accept and cache the image (pending the usual cache policy test), `AFNetworkingShouldAcceptImageNO` to neither accept nor cache the image (your error handler will be called instead of your success handler and no image substitution will be performed), or `AFNetworkingShouldAcceptImageYESButDoNotCache` to return the image but never cache it, irrespective of the caching policy. The error object may be set for passing to your error handler in the case of `AFNetworkingShouldAcceptImageNO`. Note that this block may be called multiple times per image (this is because the test is run for the NSURLConnection cache and also for the internal AFImage cache).
+ 
+ @param validationBlock The block that is executed to determine whether to cache
+ 
+ */
++ (void)setAFNetworkingShouldAcceptImageBlock:(AFNetworkingShouldAcceptImageBlock)validationBlock;
+
 
 @end
 
