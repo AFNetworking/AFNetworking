@@ -516,6 +516,19 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                                                     success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                                                     failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    if ([urlRequest.HTTPMethod isEqualToString:@"GET"] && ![urlRequest valueForHTTPHeaderField:@"if-modified-since"]) {
+        NSCachedURLResponse *cachedURLResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:urlRequest];
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)cachedURLResponse.response;
+        
+        NSString *lastModifiedString = response.allHeaderFields[@"last-modified"];
+        if (lastModifiedString) {
+            NSMutableURLRequest *mutableURLRequest = urlRequest.copy;
+            [mutableURLRequest setValue:lastModifiedString forHTTPHeaderField:@"If-Modified-Since"];
+            
+            urlRequest = mutableURLRequest;
+        }
+    }
+    
     AFHTTPRequestOperation *operation = nil;
     
     for (NSString *className in self.registeredHTTPOperationClassNames) {
