@@ -520,7 +520,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         NSCachedURLResponse *cachedURLResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:urlRequest];
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)cachedURLResponse.response;
         
-        NSString *lastModifiedString = response.allHeaderFields[@"last-modified"];
+        NSString *lastModifiedString = [response.allHeaderFields objectForKey:@"last-modified"];
         if (lastModifiedString) {
             NSMutableURLRequest *mutableURLRequest = urlRequest.copy;
             [mutableURLRequest setValue:lastModifiedString forHTTPHeaderField:@"If-Modified-Since"];
