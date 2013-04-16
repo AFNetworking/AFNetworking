@@ -738,16 +738,17 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)connection:(NSURLConnection __unused *)connection
     didReceiveData:(NSData *)data
 {
+    NSUInteger length = [data length];
     if ([self.outputStream hasSpaceAvailable]) {
         const uint8_t *dataBuffer = (uint8_t *) [data bytes];
-        [self.outputStream write:&dataBuffer[0] maxLength:[data length]];
+        [self.outputStream write:&dataBuffer[0] maxLength:length];
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.totalBytesRead += [data length];
+        self.totalBytesRead += length;
         
         if (self.downloadProgress) {
-            self.downloadProgress([data length], self.totalBytesRead, self.response.expectedContentLength);
+            self.downloadProgress(length, self.totalBytesRead, self.response.expectedContentLength);
         }
     });
 }
