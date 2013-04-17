@@ -637,7 +637,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 - (BOOL)connection:(NSURLConnection *)connection
 canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 {
-    if(self.allowsInvalidSSLCertificate == YES &&
+    if (self.allowsInvalidSSLCertificate &&
        [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
             return YES;
     }

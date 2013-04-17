@@ -1102,7 +1102,7 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
             
             [_buffer setLength:numberOfBytesRead];
 
-            if(numberOfBytesRead == 0) {
+            if (numberOfBytesRead == 0) {
                 self.currentHTTPBodyPart = nil;
             }
 

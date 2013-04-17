@@ -150,7 +150,7 @@ typedef enum {
  
  If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to `YES` for backwards compatibility. Otherwise, this property defaults to `NO`.
  */
-@property (nonatomic,assign) BOOL allowsInvalidSSLCertificate;
+@property (nonatomic, assign) BOOL allowsInvalidSSLCertificate;
 
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
