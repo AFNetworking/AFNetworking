@@ -128,9 +128,11 @@ NSCoding, NSCopying>
 @property (readonly, nonatomic, strong) NSError *error;
 
 /**
- The flag to determine if the connection should accept an invalid SSL certificate. If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to YES for backwards compatibility support. Otherwise, this property defaults to NO.
+ Whether the connection should accept an invalid SSL certificate.
+ 
+ If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to `YES` for backwards compatibility. Otherwise, this property defaults to `NO`.
  */
-@property (nonatomic,assign) BOOL allowInvalidSSLCertificate;
+@property (nonatomic, assign) BOOL allowInvalidSSLCertificate;
 
 ///----------------------------
 /// @name Getting Response Data

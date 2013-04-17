@@ -257,8 +257,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.outputStream = [NSOutputStream outputStreamToMemory];
     
     self.state = AFOperationReadyState;
-    
-    //This ifdef has been added for backwards compatibility purposes
+
+    // #ifdef included for backwards-compatibility 
 #ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
     self.allowInvalidSSLCertificate = YES;
 #endif
@@ -611,11 +611,10 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 break;
             }
             case AFSSLPinningModeNone: {
-                if(self.allowInvalidSSLCertificate == YES){
+                if (self.allowInvalidSSLCertificate){
                     NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
                     [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-                }
-                else {
+                } else {
                     SecTrustResultType result = 0;
                     OSStatus status = SecTrustEvaluate(serverTrust, &result);
                     NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
@@ -656,12 +655,11 @@ canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
 
-    if(self.allowInvalidSSLCertificate == YES
+    if (self.allowInvalidSSLCertificate
        && [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
         return;
     }
-
 
     if (self.authenticationChallenge) {
         self.authenticationChallenge(connection, challenge);
