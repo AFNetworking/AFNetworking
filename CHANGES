@@ -1,3 +1,42 @@
+= 1.2.1 (2013-04-18)
+
+ * Add `allowsInvalidSSLCertificate` property to `AFURLConnectionOperation` and
+`AFHTTPClient`, replacing `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` macro
+(Kevin Harwood)
+
+ * Add SSL pinning mode to example project (Kevin Harwood)
+
+ * Add name to AFNetworking network thread (Peter Steinberger)
+
+ * Change pinned certificates to trust all derived certificates (Oliver
+Letterer)
+
+ * Fix documentation about SSL pinning (Kevin Harwood, Mattt Thompson)
+
+ * Fix certain enumerated loops to use fast enumeration, resulting in better
+performance (Oliver Letterer)
+
+ * Fix macro to work correctly under Mac OS X 10.7 and iOS 4 SDK (Paul Melnikow)
+
+ * Fix documentation, removing unsupported `@discussion` tags (Michele Titolo)
+
+ * Fix `SecTrustCreateWithCertificates` expecting an array as first argument
+(Oliver Letterer)
+
+ * Fix to use `errSecSuccess` instead of `noErr` for Security frameworks
+OSStatus (Oliver Letterer)
+
+ * Fix `AFImageRequestOperation` to use `[self alloc]` instead of explicit
+class, which allows for subclassing (James Clarke)
+
+ * Fix for `numberOfFinishedOperations` calculations (Rune Madsen)
+
+ * Fix calculation of data length in `-connection:didReceiveData:`
+(Jean-Francois Morin)
+
+ * Fix to encode JSON only with UTF-8, following recommendation of
+`NSJSONSerialiation` (Sebastian Utz)
+
 = 1.2.0 (2013-03-24)
 
  * Add `SSLPinningMode` property to `AFHTTPClient` (Oliver Letterer, Kevin
