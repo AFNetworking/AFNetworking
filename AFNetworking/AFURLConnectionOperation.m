@@ -159,13 +159,17 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize redirectResponse = _redirectResponse;
 @synthesize lock = _lock;
 
-+ (void) __attribute__((noreturn)) networkRequestThreadEntryPoint:(id)__unused object {
-    do {
-        @autoreleasepool {
-            [[NSThread currentThread] setName:@"AFNetworking"];
-            [[NSRunLoop currentRunLoop] run];
-        }
-    } while (YES);
++ (void)networkRequestThreadEntryPoint:(id)__unused object {
+	@autoreleasepool {
+		[[NSThread currentThread] setName:@"AFNetworking"];
+		
+		NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+		
+		// Add dummy port so that run loop never exits
+		[runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
+		
+		[runLoop run];
+	}
 }
 
 + (NSThread *)networkRequestThread {
@@ -254,8 +258,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     self.shouldUseCredentialStorage = YES;
     
-    self.outputStream = [NSOutputStream outputStreamToMemory];
-    
     self.state = AFOperationReadyState;
 
     // #ifdef included for backwards-compatibility 
@@ -310,6 +312,14 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
     [self didChangeValueForKey:@"inputStream"];
+}
+
+- (NSOutputStream *)outputStream {
+	if (!_outputStream) {
+		self.outputStream = [NSOutputStream outputStreamToMemory];
+	}
+	
+	return _outputStream;
 }
 
 - (void)setOutputStream:(NSOutputStream *)outputStream {
@@ -757,13 +767,15 @@ didReceiveResponse:(NSURLResponse *)response
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection __unused *)connection {
-    self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-    
-    [self.outputStream close];
-    
-    [self finish];
-    
-    self.connection = nil;
+	@autoreleasepool {
+		self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+		
+		[self.outputStream close];
+		
+		[self finish];
+		
+		self.connection = nil;
+	}
 }
 
 - (void)connection:(NSURLConnection __unused *)connection

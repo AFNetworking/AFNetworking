@@ -118,21 +118,23 @@ static dispatch_queue_t json_request_operation_processing_queue() {
             }
         } else {
             dispatch_async(json_request_operation_processing_queue(), ^{
-                id JSON = self.responseJSON;
+				@autoreleasepool {
+					id JSON = self.responseJSON;
 
-                if (self.JSONError) {
-                    if (failure) {
-                        dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
-                            failure(self, self.error);
-                        });
-                    }
-                } else {
-                    if (success) {
-                        dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
-                            success(self, JSON);
-                        });
-                    }
-                }
+					if (self.JSONError) {
+						if (failure) {
+							dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+								failure(self, self.error);
+							});
+						}
+					} else {
+						if (success) {
+							dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
+								success(self, JSON);
+							});
+						}
+					}
+				}
             });
         }
     };
