@@ -665,8 +665,9 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
         self.authenticationChallenge(connection, challenge);
     } else {
         if ([challenge previousFailureCount] == 0) {
-            NSURLCredential *credential = nil;
+            NSURLCredential *credential = self.credential;
             
+            /*
             NSString *user = [[self.request URL] user];
             NSString *password = [[self.request URL] password];
             
@@ -681,6 +682,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
             if (!credential) {
                 credential = self.credential;
             }
+            */
             
             if (credential) {
                 [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
