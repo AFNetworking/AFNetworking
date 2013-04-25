@@ -304,27 +304,6 @@ typedef enum {
                                              parameters:(NSDictionary *)parameters
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
 
-/**
- Creates an `NSMutableURLRequest` object with the specified HTTP method and path, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block. See http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
- 
- @param method The HTTP method for the request. This parameter must not be `GET` or `HEAD`, or `nil`.
- @param path The path to be appended to the HTTP client's base URL and used as the request URL.
- @param parameters The parameters to be encoded and set in the request HTTP body.
- @param thread The thread to schedule the streams in.
- @param runLoopModes The run loop modes to schedule the streams.
- @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
- 
- @discussion Multipart form requests are automatically streamed, reading files directly from disk along with in-memory data in a single HTTP body. The resulting `NSMutableURLRequest` object has an `HTTPBodyStream` property, so refrain from setting `HTTPBodyStream` or `HTTPBody` on this request object, as it will clear out the multipart form body stream.
- 
- @return An `NSMutableURLRequest` object
- */
-- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
-                                                   path:(NSString *)path
-                                             parameters:(NSDictionary *)parameters
-                                                 thread:(NSThread *)thread
-                                           runLoopModes:(NSArray *)runLoopModes
-                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
-
 ///-------------------------------
 /// @name Creating HTTP Operations
 ///-------------------------------
