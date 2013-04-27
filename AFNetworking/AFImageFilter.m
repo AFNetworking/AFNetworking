@@ -111,14 +111,6 @@ typedef UIImage *(^AFConcreteBlockImageFilterBlock)(UIImage * image);
 
 @implementation AFImageFilter
 
-+ (AFImageFilter *)imageFilterWithTargetSize:(CGSize)size {
-    return [[AFResizeImageFilter alloc] initWithSize:size];
-}
-
-+ (AFImageFilter *)imageFilterWithUniqueKey:(NSString *)uniqueKey block:(AFConcreteBlockImageFilterBlock)processingBlock {
-    return [[AFConcreteBlockImageFilter alloc] initWithUniqueKey:uniqueKey block:processingBlock];
-}
-
 - (NSString *)uniqueKey {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
@@ -127,6 +119,20 @@ typedef UIImage *(^AFConcreteBlockImageFilterBlock)(UIImage * image);
 - (UIImage *)processImage:(UIImage *)image {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
+}
+
+@end
+
+
+
+@implementation AFImageFilter (AFExtendedImageFilter)
+
++ (AFImageFilter *)imageFilterWithTargetSize:(CGSize)size {
+    return [[AFResizeImageFilter alloc] initWithSize:size];
+}
+
++ (AFImageFilter *)imageFilterWithUniqueKey:(NSString *)uniqueKey block:(AFConcreteBlockImageFilterBlock)processingBlock {
+    return [[AFConcreteBlockImageFilter alloc] initWithUniqueKey:uniqueKey block:processingBlock];
 }
 
 @end

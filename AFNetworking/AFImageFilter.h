@@ -37,6 +37,12 @@
  */
 - (UIImage *)processImage:(UIImage *)image;
 
+@end
+
+
+
+@interface AFImageFilter (AFExtendedImageFilter)
+
 /**
  Creates and returns a new `AFImageFilter` instance which scales an image to a given size in an aspect fill fashion.
  */
