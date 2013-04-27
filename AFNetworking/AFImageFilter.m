@@ -27,11 +27,8 @@ typedef UIImage *(^AFConcreteBlockImageFilterBlock)(UIImage * image);
 
 
 @interface AFResizeImageFilter : AFImageFilter
-
 @property (atomic, assign) CGSize size;
-
 - (instancetype)initWithSize:(CGSize)size;
-
 @end
 
 @implementation AFResizeImageFilter
@@ -78,12 +75,9 @@ typedef UIImage *(^AFConcreteBlockImageFilterBlock)(UIImage * image);
 
 
 @interface AFConcreteBlockImageFilter : AFImageFilter
-
 @property (copy) AFConcreteBlockImageFilterBlock block;
 @property (copy) NSString *concreteUniqueKey;
-
 - (id)initWithUniqueKey:(NSString *)uniqueKey block:(UIImage *(^)(UIImage * image))block;
-
 @end
 
 @implementation AFConcreteBlockImageFilter

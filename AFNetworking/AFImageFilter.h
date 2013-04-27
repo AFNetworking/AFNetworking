@@ -28,12 +28,12 @@
 @interface AFImageFilter : NSObject
 
 /**
- Every `AFImageFilter` must return a unique key for the processing being done because it is used to cache the processed image.
+ Every `AFImageFilter` must return a unique key for the processing being done because it is used to cache the processed image. Must be overwritten by any subclass.
  */
 @property (strong, readonly) NSString *uniqueKey;
 
 /**
- Processes an image.
+ Processes an image. Must be overwritten by any subclass.
  */
 - (UIImage *)processImage:(UIImage *)image;
 
