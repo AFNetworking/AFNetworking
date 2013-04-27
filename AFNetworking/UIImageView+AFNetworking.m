@@ -25,6 +25,7 @@
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import "UIImageView+AFNetworking.h"
+#import "AFImageFilter.h"
 
 @interface AFImageCache : NSCache
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
@@ -35,18 +36,32 @@
 #pragma mark -
 
 static char kAFImageRequestOperationObjectKey;
+static char kAFImageFiltersKey;
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFImageRequestOperation *af_imageRequestOperation;
+@property (nonatomic, strong, readonly) NSMutableArray *af_imageFilters;
 @end
 
 @implementation UIImageView (_AFNetworking)
-@dynamic af_imageRequestOperation;
+@dynamic af_imageRequestOperation, af_imageFilters;
 @end
 
 #pragma mark -
 
 @implementation UIImageView (AFNetworking)
+
+- (NSMutableArray *)af_imageFilters
+{
+    NSMutableArray *array = objc_getAssociatedObject(self, &kAFImageFiltersKey);
+    
+    if (!array) {
+        array = [NSMutableArray array];
+        objc_setAssociatedObject(self, &kAFImageFiltersKey, array, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    
+    return array;
+}
 
 - (AFHTTPRequestOperation *)af_imageRequestOperation {
     return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFImageRequestOperationObjectKey);
@@ -147,6 +162,12 @@ static char kAFImageRequestOperationObjectKey;
 - (void)cancelImageRequestOperation {
     [self.af_imageRequestOperation cancel];
     self.af_imageRequestOperation = nil;
+}
+
+- (void)addImageFilter:(AFImageFilter *)imageFiler {
+    NSParameterAssert(imageFiler);
+    
+    [self.af_imageFilters addObject:imageFiler];
 }
 
 @end
