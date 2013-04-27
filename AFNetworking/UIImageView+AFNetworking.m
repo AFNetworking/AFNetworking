@@ -244,18 +244,22 @@ static NSString *pathForImageUniqueKey(NSString *uniqueKey) {
         return;
     }
     
-    NSString *diskPath = pathForImageUniqueKey(uniqueKey);
-    if ([[NSFileManager defaultManager] fileExistsAtPath:diskPath]) {
-        UIImage *image = [[UIImage alloc] initWithContentsOfFile:diskPath];
-        [imageCache setObject:image forKey:uniqueKey];
-        
-        completion(image);
-        return;
-    }
-    
     static dispatch_queue_t backgroundQueue = NULL;
     if (!backgroundQueue) {
         backgroundQueue = dispatch_queue_create("com.alamofire.networking.image.processing", DISPATCH_QUEUE_CONCURRENT);
+    }
+    
+    NSString *diskPath = pathForImageUniqueKey(uniqueKey);
+    if ([[NSFileManager defaultManager] fileExistsAtPath:diskPath]) {
+        dispatch_async(backgroundQueue, ^{
+            UIImage *image = [[UIImage alloc] initWithContentsOfFile:diskPath];
+            [imageCache setObject:image forKey:uniqueKey];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(image);
+            });
+        });
+        return;
     }
     
     dispatch_async(backgroundQueue, ^{
