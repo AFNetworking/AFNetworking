@@ -412,11 +412,11 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #pragma mark -
 
 - (NSString *)defaultValueForHeader:(NSString *)header {
-	return [self.defaultHeaders valueForKey:header];
+	return [self.defaultHeaders objectForKey:header];
 }
 
 - (void)setDefaultHeader:(NSString *)header value:(NSString *)value {
-	[self.defaultHeaders setValue:value forKey:header];
+	[self.defaultHeaders setObject:value forKey:header];
 }
 
 - (void)setAuthorizationHeaderWithUsername:(NSString *)username password:(NSString *)password {
@@ -860,8 +860,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     }
 
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    [mutableHeaders setObject:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+    [mutableHeaders setObject:mimeType forKey:@"Content-Type"];
 
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
@@ -888,8 +888,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(mimeType);
 
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    [mutableHeaders setObject:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+    [mutableHeaders setObject:mimeType forKey:@"Content-Type"];
 
 
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
@@ -912,8 +912,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(mimeType);
 
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    [mutableHeaders setObject:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+    [mutableHeaders setObject:mimeType forKey:@"Content-Type"];
 
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
@@ -924,7 +924,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(name);
 
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
+    [mutableHeaders setObject:[NSString stringWithFormat:@"form-data; name=\"%@\"", name] forKey:@"Content-Disposition"];
 
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
@@ -1211,7 +1211,7 @@ typedef enum {
 - (NSString *)stringForHeaders {
     NSMutableString *headerString = [NSMutableString string];
     for (NSString *field in [self.headers allKeys]) {
-        [headerString appendString:[NSString stringWithFormat:@"%@: %@%@", field, [self.headers valueForKey:field], kAFMultipartFormCRLF]];
+        [headerString appendString:[NSString stringWithFormat:@"%@: %@%@", field, [self.headers objectForKey:field], kAFMultipartFormCRLF]];
     }
     [headerString appendString:kAFMultipartFormCRLF];
 
