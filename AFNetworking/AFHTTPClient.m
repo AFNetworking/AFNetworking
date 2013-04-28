@@ -1061,7 +1061,7 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
 
 #pragma mark - NSStreamDelegate
 
-- (void)stream:(NSStream *)stream
+- (void)stream:(NSStream __unused *)stream
    handleEvent:(NSStreamEvent)eventCode
 {
     if (eventCode & NSStreamEventHasSpaceAvailable) {
