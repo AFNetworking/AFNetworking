@@ -1,0 +1,3 @@
+language: objective-c
+before_install: "(which ios-sim || brew install ios-sim) && sudo gem update --system && sudo gem install bundler && bundle install"
+script: "bundle exec rake test --trace"

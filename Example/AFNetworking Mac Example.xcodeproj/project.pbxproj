@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB1440C9171548A400321854 /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AB1440C8171548A400321854 /* AFHTTPClientTests.m */; };
+		AB4C105D1714A9BE008FCF8B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4C105C1714A9BE008FCF8B /* SenTestingKit.framework */; };
+		AB4C105E1714A9BE008FCF8B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8129BFF1591061B009BFE23 /* Cocoa.framework */; };
+		AB4C10641714A9BE008FCF8B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB4C10621714A9BE008FCF8B /* InfoPlist.strings */; };
 		F8129C001591061B009BFE23 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8129BFF1591061B009BFE23 /* Cocoa.framework */; };
 		F8129C321591073C009BFE23 /* AFAppDotNetAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C251591073C009BFE23 /* AFAppDotNetAPIClient.m */; };
 		F8129C341591073C009BFE23 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C2B1591073C009BFE23 /* Post.m */; };
@@ -26,7 +30,24 @@
 		F8A847D2161F55AC00940F39 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8A847D1161F55AC00940F39 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		AB4C106C1714A9C7008FCF8B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F8129BF21591061B009BFE23 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8129BFA1591061B009BFE23;
+			remoteInfo = "AFNetworking Example";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		AB1440C7171548A400321854 /* AFHTTPClientTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClientTests.h; sourceTree = "<group>"; };
+		AB1440C8171548A400321854 /* AFHTTPClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
+		AB4C105B1714A9BE008FCF8B /* AFNetworking Mac Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking Mac Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB4C105C1714A9BE008FCF8B /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		AB4C10611714A9BE008FCF8B /* AFNetworking Mac Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AFNetworking Mac Tests-Info.plist"; sourceTree = "<group>"; };
+		AB4C10631714A9BE008FCF8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AB4C10681714A9BE008FCF8B /* AFNetworking Mac Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AFNetworking Mac Tests-Prefix.pch"; sourceTree = "<group>"; };
 		F8129BFB1591061B009BFE23 /* AFNetworking Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8129BFF1591061B009BFE23 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F8129C021591061B009BFE23 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -64,6 +85,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AB4C10571714A9BE008FCF8B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AB4C105D1714A9BE008FCF8B /* SenTestingKit.framework in Frameworks */,
+				AB4C105E1714A9BE008FCF8B /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F8129BF81591061B009BFE23 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -78,6 +108,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AB1440C6171548A400321854 /* AFNetworking Shared Tests */ = {
+			isa = PBXGroup;
+			children = (
+				AB1440C7171548A400321854 /* AFHTTPClientTests.h */,
+				AB1440C8171548A400321854 /* AFHTTPClientTests.m */,
+			);
+			path = "AFNetworking Shared Tests";
+			sourceTree = "<group>";
+		};
+		AB4C105F1714A9BE008FCF8B /* AFNetworking Mac Tests */ = {
+			isa = PBXGroup;
+			children = (
+				AB4C10601714A9BE008FCF8B /* Supporting Files */,
+			);
+			path = "AFNetworking Mac Tests";
+			sourceTree = "<group>";
+		};
+		AB4C10601714A9BE008FCF8B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AB4C10611714A9BE008FCF8B /* AFNetworking Mac Tests-Info.plist */,
+				AB4C10621714A9BE008FCF8B /* InfoPlist.strings */,
+				AB4C10681714A9BE008FCF8B /* AFNetworking Mac Tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		F8129BF01591061B009BFE23 = {
 			isa = PBXGroup;
 			children = (
@@ -87,6 +144,8 @@
 				F877018B159A1CE700B45C0D /* AFNetworking Example.entitlements */,
 				F8129C051591061B009BFE23 /* Classes */,
 				F8129C4C15910901009BFE23 /* Vendor */,
+				AB1440C6171548A400321854 /* AFNetworking Shared Tests */,
+				AB4C105F1714A9BE008FCF8B /* AFNetworking Mac Tests */,
 				F8129BFE1591061B009BFE23 /* Frameworks */,
 				F8129BFC1591061B009BFE23 /* Products */,
 			);
@@ -99,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				F8129BFB1591061B009BFE23 /* AFNetworking Example.app */,
+				AB4C105B1714A9BE008FCF8B /* AFNetworking Mac Tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -107,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				F8129BFF1591061B009BFE23 /* Cocoa.framework */,
+				AB4C105C1714A9BE008FCF8B /* SenTestingKit.framework */,
 				F8129C011591061B009BFE23 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -190,6 +251,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AB4C105A1714A9BE008FCF8B /* AFNetworking Mac Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB4C106B1714A9BE008FCF8B /* Build configuration list for PBXNativeTarget "AFNetworking Mac Tests" */;
+			buildPhases = (
+				AB4C10561714A9BE008FCF8B /* Sources */,
+				AB4C10571714A9BE008FCF8B /* Frameworks */,
+				AB4C10581714A9BE008FCF8B /* Resources */,
+				AB4C10591714A9BE008FCF8B /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AB4C106D1714A9C7008FCF8B /* PBXTargetDependency */,
+			);
+			name = "AFNetworking Mac Tests";
+			productName = "AFNetworking Mac Tests";
+			productReference = AB4C105B1714A9BE008FCF8B /* AFNetworking Mac Tests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 		F8129BFA1591061B009BFE23 /* AFNetworking Example */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F8129C191591061B009BFE23 /* Build configuration list for PBXNativeTarget "AFNetworking Example" */;
@@ -228,11 +308,20 @@
 			projectRoot = "";
 			targets = (
 				F8129BFA1591061B009BFE23 /* AFNetworking Example */,
+				AB4C105A1714A9BE008FCF8B /* AFNetworking Mac Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AB4C10581714A9BE008FCF8B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AB4C10641714A9BE008FCF8B /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F8129BF91591061B009BFE23 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -243,7 +332,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		AB4C10591714A9BE008FCF8B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		AB4C10561714A9BE008FCF8B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AB1440C9171548A400321854 /* AFHTTPClientTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F8129BF71591061B009BFE23 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -265,7 +378,64 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		AB4C106D1714A9C7008FCF8B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F8129BFA1591061B009BFE23 /* AFNetworking Example */;
+			targetProxy = AB4C106C1714A9C7008FCF8B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AB4C10621714A9BE008FCF8B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AB4C10631714A9BE008FCF8B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		AB4C10691714A9BE008FCF8B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AFNetworking Example.app/Contents/MacOS/AFNetworking Example";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AFNetworking Mac Tests/AFNetworking Mac Tests-Prefix.pch";
+				INFOPLIST_FILE = "AFNetworking Mac Tests/AFNetworking Mac Tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		AB4C106A1714A9BE008FCF8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AFNetworking Example.app/Contents/MacOS/AFNetworking Example";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AFNetworking Mac Tests/AFNetworking Mac Tests-Prefix.pch";
+				INFOPLIST_FILE = "AFNetworking Mac Tests/AFNetworking Mac Tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 		F8129C171591061B009BFE23 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -325,7 +495,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "AFNetworking Example.entitlements";
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
@@ -339,7 +508,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "AFNetworking Example.entitlements";
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
@@ -352,6 +520,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AB4C106B1714A9BE008FCF8B /* Build configuration list for PBXNativeTarget "AFNetworking Mac Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB4C10691714A9BE008FCF8B /* Debug */,
+				AB4C106A1714A9BE008FCF8B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F8129BF51591061B009BFE23 /* Build configuration list for PBXProject "AFNetworking Mac Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
