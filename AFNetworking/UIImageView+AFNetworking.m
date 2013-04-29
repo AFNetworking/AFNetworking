@@ -57,6 +57,11 @@ static char kAFImageRequestOperationObjectKey;
     [self af_sharedImageCache].validationBlock = validationBlock;
 }
 
++ (void)clearAFNetworkingImageCacheForRequest:(NSURLRequest *)request
+{
+    [[self af_sharedImageCache] cacheImage:nil forRequest:request];
+}
+
 - (AFHTTPRequestOperation *)af_imageRequestOperation {
     return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFImageRequestOperationObjectKey);
 }
@@ -215,6 +220,8 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
 {
     if (image && request) {
         [self setObject:image forKey:AFImageCacheKeyFromURLRequest(request)];
+    } else if (request) {
+        [self removeObjectForKey:AFImageCacheKeyFromURLRequest(request)];
     }
 }
 

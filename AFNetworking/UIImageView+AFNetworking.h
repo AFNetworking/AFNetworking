@@ -88,10 +88,16 @@ typedef AFNetworkingShouldAcceptImage (^AFNetworkingShouldAcceptImageBlock)(NSDa
  @discussion The block should return `AFNetworkingShouldAcceptImageYES` to both accept and cache the image (pending the usual cache policy test), `AFNetworkingShouldAcceptImageNO` to neither accept nor cache the image (your error handler will be called instead of your success handler and no image substitution will be performed), or `AFNetworkingShouldAcceptImageYESButDoNotCache` to return the image but never cache it, irrespective of the caching policy. The error object may be set for passing to your error handler in the case of `AFNetworkingShouldAcceptImageNO`. Note that this block may be called multiple times per image (this is because the test is run for the NSURLConnection cache and also for the internal AFImage cache).
  
  @param validationBlock The block that is executed to determine whether to cache
- 
  */
 + (void)setAFNetworkingShouldAcceptImageBlock:(AFNetworkingShouldAcceptImageBlock)validationBlock;
 
+/**
+ Clear the image from the cache (if any) for the given URL request
+ 
+ @param request The NSURLRequest who's cache should be cleared
+ */
+
++ (void)clearAFNetworkingImageCacheForRequest:(NSURLRequest *)request;
 
 @end
 
