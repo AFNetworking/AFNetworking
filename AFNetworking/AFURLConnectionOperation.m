@@ -551,7 +551,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 - (void)connection:(NSURLConnection *)connection
 willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
-    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+    NSString *authenticationMethod = challenge.protectionSpace.authenticationMethod;
+
+    if ([authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
         
         SecPolicyRef policy = SecPolicyCreateBasicX509();
@@ -629,7 +631,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 break;
             }
         }
-    } else {
+    } else if ([authenticationMethod isEqualToString:NSURLAuthenticationMethodDefault]) {
         [[challenge sender] performDefaultHandlingForAuthenticationChallenge:sender];
     }
 }
