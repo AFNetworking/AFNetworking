@@ -632,7 +632,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
             }
         }
     } else if ([authenticationMethod isEqualToString:NSURLAuthenticationMethodDefault]) {
-        [[challenge sender] performDefaultHandlingForAuthenticationChallenge:sender];
+        [[challenge sender] performDefaultHandlingForAuthenticationChallenge:challenge];
     }
 }
 #endif
