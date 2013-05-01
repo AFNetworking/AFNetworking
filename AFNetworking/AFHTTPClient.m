@@ -1114,8 +1114,21 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
 }
 
 - (void)close {
-    [_outputStream close];
-    _outputStream.delegate = nil;
+    NSOutputStream *outputStream = self.outputStream;
+    
+    [outputStream close];
+    outputStream.delegate = nil;
+    
+    /*
+     Workaround for a race condition in CFStream _CFStreamCopyRunLoopsAndModes. This outputstream needs to be retained just a little longer.
+     
+     See: https://github.com/AFNetworking/AFNetworking/issues/907
+     */
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^{
+        outputStream.delegate = nil;
+    });
     
     _self = nil;
 }
