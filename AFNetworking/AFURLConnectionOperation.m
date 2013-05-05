@@ -616,7 +616,10 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
                 } else {
                     SecTrustResultType result = 0;
-                    OSStatus status = SecTrustEvaluate(serverTrust, &result);
+
+                    // Add __unused__ attribute to suppress the warning when building with NS_BLOCK_ASSERTIONS=1
+                    OSStatus __attribute__((__unused__)) status = SecTrustEvaluate(serverTrust, &result);
+
                     NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
                     
                     if (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed) {
