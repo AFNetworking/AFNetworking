@@ -693,7 +693,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
 
     self.stringEncoding = [aDecoder decodeIntegerForKey:@"stringEncoding"];
-    self.parameterEncoding = [aDecoder decodeIntegerForKey:@"parameterEncoding"];
+    self.parameterEncoding = (AFHTTPClientParameterEncoding) [aDecoder decodeIntegerForKey:@"parameterEncoding"];
     self.registeredHTTPOperationClassNames = [aDecoder decodeObjectForKey:@"registeredHTTPOperationClassNames"];
     self.defaultHeaders = [aDecoder decodeObjectForKey:@"defaultHeaders"];
 
@@ -1072,7 +1072,7 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
 - (void)handleOutputStreamSpaceAvailable {
     while ([_outputStream hasSpaceAvailable]) {
         if ([_buffer length] > 0) {
-            NSInteger numberOfBytesWritten = [_outputStream write:[_buffer bytes] maxLength:[_buffer length]];
+            NSInteger numberOfBytesWritten = [_outputStream write:(uint8_t const *)[_buffer bytes] maxLength:[_buffer length]];
             if (numberOfBytesWritten < 0) {
                 [self close];
                 return;
@@ -1094,7 +1094,7 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
             
             [_buffer setLength:self.bufferLength];
             
-            NSInteger numberOfBytesRead = [self.currentHTTPBodyPart read:[_buffer mutableBytes] maxLength:[_buffer length]];
+            NSInteger numberOfBytesRead = [self.currentHTTPBodyPart read:(uint8_t *)[_buffer mutableBytes] maxLength:[_buffer length]];
             if (numberOfBytesRead < 0) {
                 [self close];
                 return;
@@ -1114,8 +1114,21 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
 }
 
 - (void)close {
-    [_outputStream close];
-    _outputStream.delegate = nil;
+    NSOutputStream *outputStream = self.outputStream;
+    
+    [outputStream close];
+    outputStream.delegate = nil;
+    
+    /*
+     Workaround for a race condition in CFStream _CFStreamCopyRunLoopsAndModes. This outputstream needs to be retained just a little longer.
+     
+     See: https://github.com/AFNetworking/AFNetworking/issues/907
+     */
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^{
+        outputStream.delegate = nil;
+    });
     
     _self = nil;
 }

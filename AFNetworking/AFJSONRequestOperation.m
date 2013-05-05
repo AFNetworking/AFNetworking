@@ -120,7 +120,7 @@ static dispatch_queue_t json_request_operation_processing_queue() {
             dispatch_async(json_request_operation_processing_queue(), ^{
                 id JSON = self.responseJSON;
 
-                if (self.JSONError) {
+                if (self.error) {
                     if (failure) {
                         dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
                             failure(self, self.error);
