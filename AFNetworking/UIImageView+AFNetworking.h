@@ -28,6 +28,8 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
 
+@class AFImageFilter;
+
 /**
  This category adds methods to the UIKit framework's `UIImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
  */
@@ -72,6 +74,11 @@
  Cancels any executing image request operation for the receiver, if one exists.
  */
 - (void)cancelImageRequestOperation;
+
+/**
+ Adds an image filter which handles image processing.
+ */
+- (void)addImageFilter:(AFImageFilter *)imageFiler;
 
 @end
 
