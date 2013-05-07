@@ -138,6 +138,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 @synthesize request = _request;
 @synthesize response = _response;
 @synthesize error = _error;
+@synthesize allowsInvalidSSLCertificate = _allowsInvalidSSLCertificate;
 @synthesize responseData = _responseData;
 @synthesize responseString = _responseString;
 @synthesize responseStringEncoding = _responseStringEncoding;
