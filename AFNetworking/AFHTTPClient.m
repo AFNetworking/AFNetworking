@@ -212,6 +212,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 @synthesize networkReachabilityStatus = _networkReachabilityStatus;
 @synthesize networkReachabilityStatusBlock = _networkReachabilityStatusBlock;
 #endif
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+@synthesize defaultSSLPinningMode = _defaultSSLPinningMode;
+#endif
+@synthesize allowsInvalidSSLCertificate = _allowsInvalidSSLCertificate;
 
 + (instancetype)clientWithBaseURL:(NSURL *)url {
     return [[self alloc] initWithBaseURL:url];
@@ -1186,6 +1190,7 @@ typedef enum {
 @synthesize headers = _headers;
 @synthesize body = _body;
 @synthesize bodyContentLength = _bodyContentLength;
+@synthesize inputStream = _inputStream;
 @synthesize hasInitialBoundary = _hasInitialBoundary;
 @synthesize hasFinalBoundary = _hasFinalBoundary;
 
