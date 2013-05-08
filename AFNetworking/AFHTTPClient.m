@@ -330,12 +330,12 @@ static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused targ
 }
 
 static const void * AFNetworkReachabilityRetainCallback(const void *info) {
-    return (__bridge_retained const void *)([(__bridge AFNetworkReachabilityStatusBlock)info copy]);
+    return Block_copy(info);
 }
 
 static void AFNetworkReachabilityReleaseCallback(const void *info) {
     if (info) {
-        CFRelease(info);
+        Block_release(info);
     }
 }
 
@@ -382,8 +382,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 - (void)stopMonitoringNetworkReachability {
-    if (_networkReachability) {
-        SCNetworkReachabilityUnscheduleFromRunLoop(_networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+    if (self.networkReachability) {
+        SCNetworkReachabilityUnscheduleFromRunLoop(self.networkReachability, CFRunLoopGetMain(), (CFStringRef)NSRunLoopCommonModes);
+
         CFRelease(_networkReachability);
         _networkReachability = NULL;
     }
