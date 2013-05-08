@@ -105,7 +105,10 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 	@synchronized(self) {
 		_activityCount = activityCount;
 	}
-    [self updateNetworkActivityIndicatorVisibilityDelayed];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateNetworkActivityIndicatorVisibilityDelayed];
+    });
 }
 
 - (void)incrementActivityCount {
@@ -114,7 +117,10 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 		_activityCount++;
 	}
     [self didChangeValueForKey:@"activityCount"];
-    [self updateNetworkActivityIndicatorVisibilityDelayed];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateNetworkActivityIndicatorVisibilityDelayed];
+    });
 }
 
 - (void)decrementActivityCount {
@@ -123,7 +129,10 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 		_activityCount = MAX(_activityCount - 1, 0);
 	}
     [self didChangeValueForKey:@"activityCount"];
-    [self updateNetworkActivityIndicatorVisibilityDelayed];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateNetworkActivityIndicatorVisibilityDelayed];
+    });
 }
 
 - (void)networkingOperationDidStart:(NSNotification *)notification {
