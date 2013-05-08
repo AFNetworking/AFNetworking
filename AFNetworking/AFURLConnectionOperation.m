@@ -703,17 +703,11 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
     if ([request.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
         return [request.HTTPBodyStream copy];
+    } else {
+        [self cancelConnection];
+        
+        return nil;
     }
-
-    self.error = [NSError errorWithDomain:AFNetworkingErrorDomain code:NSURLErrorCancelled userInfo:nil];
-
-    [self.outputStream close];
-
-    [self finish];
-
-    self.connection = nil;
-
-    return nil;
 }
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection
