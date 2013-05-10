@@ -630,6 +630,8 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 break;
             }
         }
+    } else if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodDefault]) {
+        [[challenge sender] performDefaultHandlingForAuthenticationChallenge:challenge];
     }
 }
 #endif
