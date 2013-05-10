@@ -58,6 +58,7 @@
 		25C4EC40173D84C70083E116 /* AFHTTPRequestOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C4EC3E173D84C70083E116 /* AFHTTPRequestOperationTest.m */; };
 		25C4EC41173D86AE0083E116 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC32173D7DD20083E116 /* SystemConfiguration.framework */; };
 		25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */; };
+		8C3F274EB4534B2EA29AB3D6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B6D24F8E1B74E10A269E8B3 /* libPods.a */; };
 		AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +92,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		12BB563617304561A5E20CE5 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		2544EC32173BE382004117E8 /* libAFNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAFNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2544EC35173BE382004117E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2544EC43173BE382004117E8 /* AFNetworkingTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AFNetworkingTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -131,6 +133,7 @@
 		25C4EC39173D7F9E0083E116 /* AFNetworkingTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFNetworkingTests.h; sourceTree = "<group>"; };
 		25C4EC3A173D82290083E116 /* AFNetworkingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkingTests.m; sourceTree = "<group>"; };
 		25C4EC3E173D84C70083E116 /* AFHTTPRequestOperationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationTest.m; sourceTree = "<group>"; };
+		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A9F6CCEA1634087A54CA260 /* Pods-osx.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.xcconfig"; path = "Pods/Pods-osx.xcconfig"; sourceTree = SOURCE_ROOT; };
 		4185EE53DF5646419AE66CA0 /* Pods-ios.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.xcconfig"; path = "Pods/Pods-ios.xcconfig"; sourceTree = SOURCE_ROOT; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +149,7 @@
 				25C4EC31173D7DCA0083E116 /* MobileCoreServices.framework in Frameworks */,
 				25C4EC2F173D7DC40083E116 /* CFNetwork.framework in Frameworks */,
 				2544EC36173BE382004117E8 /* Foundation.framework in Frameworks */,
+				8C3F274EB4534B2EA29AB3D6 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +198,7 @@
 				25C4EBFF173BFBA70083E116 /* AFNetworkingTests */,
 				2544EC34173BE382004117E8 /* Frameworks */,
 				2544EC33173BE382004117E8 /* Products */,
+				12BB563617304561A5E20CE5 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -223,6 +228,7 @@
 				2544EC82173BFAA8004117E8 /* Other Frameworks */,
 				55E73C267F33406A9F92476C /* libPods-ios.a */,
 				96A923755B00464187DEDBAF /* libPods-osx.a */,
+				2B6D24F8E1B74E10A269E8B3 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -312,9 +318,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2544EC57173BE382004117E8 /* Build configuration list for PBXNativeTarget "AFNetworking" */;
 			buildPhases = (
+				1B236131E70E4B509829D632 /* Check Pods Manifest.lock */,
 				2544EC2E173BE382004117E8 /* Sources */,
 				2544EC2F173BE382004117E8 /* Frameworks */,
 				2544EC30173BE382004117E8 /* CopyFiles */,
+				1B83324CD2F543A0B1C9BCF3 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -439,6 +447,34 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1B236131E70E4B509829D632 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+		};
+		1B83324CD2F543A0B1C9BCF3 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+		};
 		2544EC41173BE382004117E8 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -647,12 +683,12 @@
 		};
 		2544EC58173BE382004117E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 12BB563617304561A5E20CE5 /* Pods.xcconfig */;
 			buildSettings = {
 				DSTROOT = /tmp/AFNetworking.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AFNetworking-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -660,12 +696,12 @@
 		};
 		2544EC59173BE382004117E8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 12BB563617304561A5E20CE5 /* Pods.xcconfig */;
 			buildSettings = {
 				DSTROOT = /tmp/AFNetworking.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AFNetworking-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
