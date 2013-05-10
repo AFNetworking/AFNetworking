@@ -159,6 +159,23 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
 
 @implementation AFImageCache
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didReceiveMemoryWarning)
+                                                     name:UIApplicationDidReceiveMemoryWarningNotification
+                                                   object:nil];
+    }
+    return self;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [self removeAllObjects];
+}
+
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)request {
     switch ([request cachePolicy]) {
         case NSURLRequestReloadIgnoringCacheData:
