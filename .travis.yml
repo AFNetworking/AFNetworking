@@ -2,6 +2,4 @@ language: objective-c
 before_install:
     - brew update
     - brew install xctool --HEAD
-    - gem install cocoapods
-    - pod install
 script: "rake test:all"
