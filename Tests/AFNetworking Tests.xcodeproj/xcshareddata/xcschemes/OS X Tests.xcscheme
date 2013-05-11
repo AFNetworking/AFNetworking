@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9A2C173ADEE3455B8979C575"
+               BlueprintIdentifier = "3A73E04D2C0F4343AC6305CC"
                BuildableName = "libPods-osx.a"
                BlueprintName = "Pods-osx"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2544EC94173BFAA8004117E8"
-               BuildableName = "AFNetworkingFrameworkTests.octest"
-               BlueprintName = "AFNetworkingFrameworkTests"
+               BuildableName = "OS X Tests.octest"
+               BlueprintName = "OS X Tests"
                ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
          </TestableReference>

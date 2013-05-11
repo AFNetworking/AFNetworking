@@ -1,1 +1,16 @@
-<?xml version='1.0' encoding='UTF-8'?><Workspace version='1.0'><FileRef location='group:AFNetworking.xcodeproj'/><FileRef location='group:Example/AFNetworking iOS Example.xcodeproj'/><FileRef location='group:Example/AFNetworking Mac Example.xcodeproj'/><FileRef location='group:Pods/Pods.xcodeproj'/></Workspace>
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:Tests/AFNetworking Tests.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Example/AFNetworking iOS Example.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Example/AFNetworking Mac Example.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Tests/Pods/Pods.xcodeproj">
+   </FileRef>
+</Workspace>

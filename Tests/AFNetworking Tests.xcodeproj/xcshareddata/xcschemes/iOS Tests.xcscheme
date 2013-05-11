@@ -4,7 +4,7 @@
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "NO">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "42F5DC6799214273978C64C6"
+               BlueprintIdentifier = "DA933E64A2B04B09A021A4AD"
                BuildableName = "libPods-ios.a"
                BlueprintName = "Pods-ios"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2544EC42173BE382004117E8"
-               BuildableName = "AFNetworkingTests.octest"
-               BlueprintName = "AFNetworkingTests"
-               ReferencedContainer = "container:AFNetworking.xcodeproj">
+               BuildableName = "iOS Tests.octest"
+               BlueprintName = "iOS Tests"
+               ReferencedContainer = "container:AFNetworking Tests.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
