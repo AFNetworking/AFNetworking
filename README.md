@@ -162,6 +162,21 @@ If you are using AFNetworking 1.0 in your non-arc project, you will need to set 
 
 To set a compiler flag in Xcode, go to your active target and select the "Build Phases" tab. Now select all AFNetworking source files, press Enter, insert `-fobjc-arc` or `-fno-objc-arc` and then "Done" to enable or disable ARC for AFNetworking.
 
+## Unit Tests
+
+AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via CocoaPods. To do so:
+
+1. `gem install cocoapods` # If necessary
+1. `cd Tests`
+1. `pod install`
+
+Once CocoaPods has finished the installation, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode. If you wish to execute the tests from the command line or within a continuous integration environment, you will need to install [xctool](https://github.com/facebook/xctool). The recommended installation method is [Homebrew](http://mxcl.github.io/homebrew/). To install the commandline testing support via Homebrew:
+
+1. `brew update`
+1. `brew install xctool --HEAD`
+
+Once xctool is installed, you can execute the suite via `rake test`.
+
 ## Credits
 
 AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
