@@ -19,6 +19,8 @@
 		25801543173EB3A70026AA6E /* AFHTTPRequestOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTest.m */; };
 		25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153F173EB3A70026AA6E /* AFNetworkingTests.m */; };
 		25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153F173EB3A70026AA6E /* AFNetworkingTests.m */; };
+		2580154B173EB62E0026AA6E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC2A173D7DB30083E116 /* SystemConfiguration.framework */; };
+		2580154C173EB6340026AA6E /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC2C173D7DBA0083E116 /* CoreServices.framework */; };
 		25C4EC41173D86AE0083E116 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC32173D7DD20083E116 /* SystemConfiguration.framework */; };
 		25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */; };
 		25DE600E173EB13C00422571 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE5FFC173EB13C00422571 /* AFHTTPClient.m */; };
@@ -105,6 +107,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2580154C173EB6340026AA6E /* CoreServices.framework in Frameworks */,
+				2580154B173EB62E0026AA6E /* SystemConfiguration.framework in Frameworks */,
 				2544EC96173BFAA8004117E8 /* SenTestingKit.framework in Frameworks */,
 				2544EC97173BFAA8004117E8 /* Cocoa.framework in Frameworks */,
 				AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */,
