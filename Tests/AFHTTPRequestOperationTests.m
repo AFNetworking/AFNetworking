@@ -39,4 +39,30 @@
     expect(blockError).willNot.beNil();
 }
 
+- (void)testThatCancellationOfRequestOperationSetsError
+{
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:AFNetworkingTestsBaseURL()]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [operation start];
+    expect([operation isExecuting]).will.beTruthy();
+    [operation cancel];
+    expect(operation.error).willNot.beNil();
+    expect(operation.error.code).to.equal(NSURLErrorCancelled);
+}
+
+- (void)testThatCancellationOfRequestOperationInvokesFailureCompletionBlock
+{
+    __block NSError *blockError = nil;
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:AFNetworkingTestsBaseURL()]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
+    [operation start];
+    expect([operation isExecuting]).will.beTruthy();
+    [operation cancel];
+    expect(blockError).willNot.beNil();
+    expect(blockError.code).to.equal(NSURLErrorCancelled);
+}
+
 @end
