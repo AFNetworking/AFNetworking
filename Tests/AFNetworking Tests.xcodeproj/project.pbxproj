@@ -13,10 +13,10 @@
 		2544EC48173BE382004117E8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC35173BE382004117E8 /* Foundation.framework */; };
 		2544EC96173BFAA8004117E8 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC44173BE382004117E8 /* SenTestingKit.framework */; };
 		2544EC97173BFAA8004117E8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC80173BFAA8004117E8 /* Cocoa.framework */; };
-		25801540173EB3A70026AA6E /* AFHTTPClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153A173EB3A70026AA6E /* AFHTTPClientTest.m */; };
-		25801541173EB3A70026AA6E /* AFHTTPClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153A173EB3A70026AA6E /* AFHTTPClientTest.m */; };
-		25801542173EB3A70026AA6E /* AFHTTPRequestOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTest.m */; };
-		25801543173EB3A70026AA6E /* AFHTTPRequestOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTest.m */; };
+		25801540173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */; };
+		25801541173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */; };
+		25801542173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */; };
+		25801543173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */; };
 		25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153F173EB3A70026AA6E /* AFNetworkingTests.m */; };
 		25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153F173EB3A70026AA6E /* AFNetworkingTests.m */; };
 		2580154B173EB62E0026AA6E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC2A173D7DB30083E116 /* SystemConfiguration.framework */; };
@@ -54,8 +54,8 @@
 		2544EC84173BFAA8004117E8 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2544EC85173BFAA8004117E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2544EC95173BFAA8004117E8 /* OS X Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OS X Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2580153A173EB3A70026AA6E /* AFHTTPClientTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTest.m; sourceTree = "<group>"; };
-		2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationTest.m; sourceTree = "<group>"; };
+		2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
+		2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationTests.m; sourceTree = "<group>"; };
 		2580153E173EB3A70026AA6E /* AFNetworkingTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkingTests.h; sourceTree = "<group>"; };
 		2580153F173EB3A70026AA6E /* AFNetworkingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkingTests.m; sourceTree = "<group>"; };
 		25801549173EB4B40026AA6E /* Pods-ios.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Pods-ios.xcconfig"; path = "Pods/Pods-ios.xcconfig"; sourceTree = "<group>"; };
@@ -199,8 +199,8 @@
 		25801548173EB3B00026AA6E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				2580153A173EB3A70026AA6E /* AFHTTPClientTest.m */,
-				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTest.m */,
+				2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */,
+				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */,
 				2580153E173EB3A70026AA6E /* AFNetworkingTests.h */,
 				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
 			);
@@ -333,8 +333,8 @@
 				25DE601A173EB13C00422571 /* AFURLConnectionOperation.m in Sources */,
 				25DE601C173EB13C00422571 /* AFXMLRequestOperation.m in Sources */,
 				25DE601E173EB13C00422571 /* UIImageView+AFNetworking.m in Sources */,
-				25801540173EB3A70026AA6E /* AFHTTPClientTest.m in Sources */,
-				25801542173EB3A70026AA6E /* AFHTTPRequestOperationTest.m in Sources */,
+				25801540173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */,
+				25801542173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -352,8 +352,8 @@
 				25DE601B173EB13C00422571 /* AFURLConnectionOperation.m in Sources */,
 				25DE601D173EB13C00422571 /* AFXMLRequestOperation.m in Sources */,
 				25DE601F173EB13C00422571 /* UIImageView+AFNetworking.m in Sources */,
-				25801541173EB3A70026AA6E /* AFHTTPClientTest.m in Sources */,
-				25801543173EB3A70026AA6E /* AFHTTPRequestOperationTest.m in Sources */,
+				25801541173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */,
+				25801543173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

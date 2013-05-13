@@ -1,5 +1,5 @@
 //
-//  AFHTTPRequestOperationTest.m
+//  AFHTTPRequestOperationTests.m
 //  AFNetworking
 //
 //  Created by Blake Watters on 5/10/13.
@@ -8,10 +8,10 @@
 
 #import "AFNetworkingTests.h"
 
-@interface AFHTTPRequestOperationTest : SenTestCase
+@interface AFHTTPRequestOperationTests : SenTestCase
 @end
 
-@implementation AFHTTPRequestOperationTest
+@implementation AFHTTPRequestOperationTests
 
 - (void)testThatOperationInvokesSuccessCompletionBlockWithResponseObjectOnSuccess
 {
