@@ -53,7 +53,7 @@
 - (void)testThatCancellationOfRequestOperationInvokesFailureCompletionBlock
 {
     __block NSError *blockError = nil;
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:AFNetworkingTestsBaseURL()]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:AFNetworkingTestsBaseURL()]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;
@@ -61,8 +61,9 @@
     [operation start];
     expect([operation isExecuting]).will.beTruthy();
     [operation cancel];
+    expect(operation.error).willNot.beNil();
     expect(blockError).willNot.beNil();
-    expect(blockError.code).to.equal(NSURLErrorCancelled);
+    expect(blockError.code).will.equal(NSURLErrorCancelled);
 }
 
 - (void)testThat500StatusCodeInvokesFailureCompletionBlockWithErrorOnFailure
