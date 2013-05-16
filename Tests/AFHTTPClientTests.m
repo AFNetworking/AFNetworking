@@ -43,6 +43,19 @@
     expect([request valueForHTTPHeaderField:@"x-some-key"]).to.equal(@"SomeValue");
 }
 
+- (void)testJSONRequestOperationContruction {
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFHTTPRequestOperation class]);
+    
+    expect([AFJSONRequestOperation canProcessRequest:request]).to.beTruthy();
+    [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFJSONRequestOperation class]);
+}
+
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
     expect(self.client.stringEncoding).to.equal(NSUTF8StringEncoding);
 }
