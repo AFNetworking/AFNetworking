@@ -127,7 +127,8 @@
     expect(success).will.beTruthy();
 }
 
-- (void)testThatRedirectBlockIsCalledMultipleTimesWhen302IsEncountered {
+- (void)testThatRedirectBlockIsCalledMultipleTimesWhenMultiple302sAreEncountered {
+    [Expecta setAsynchronousTestTimeout:5.0];
     __block NSInteger numberOfRedirects = 0;
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/5" relativeToURL:self.baseURL]];
@@ -144,6 +145,56 @@
     [operation start];
     expect([operation isFinished]).will.beTruthy();
     expect(numberOfRedirects).will.equal(5);
+}
+
+- (void)testThatOperationCanBePaused{
+    [Expecta setAsynchronousTestTimeout:3.0];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    [operation start];
+    expect([operation isExecuting]).will.beTruthy();
+    
+    [operation pause];
+    expect([operation isPaused]).will.beTruthy();
+    [operation cancel];
+}
+
+- (void)testThatPausedOperationCanBeResumed{
+    [Expecta setAsynchronousTestTimeout:3.0];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    [operation start];
+    expect([operation isExecuting]).will.beTruthy();
+    
+    [operation pause];
+    expect([operation isPaused]).will.beTruthy();
+    [operation resume];
+    expect([operation isExecuting]).will.beTruthy();
+    [operation cancel];
+}
+
+- (void)testThatPausedOperationCanBeCompleted{
+    [Expecta setAsynchronousTestTimeout:3.0];
+    
+    __block id blockResponseObject = nil;
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        blockResponseObject = responseObject;
+    } failure:nil];
+    [operation start];
+    expect([operation isExecuting]).will.beTruthy();
+    
+    [operation pause];
+    expect([operation isPaused]).will.beTruthy();
+    
+    [operation resume];
+    expect([operation isExecuting]).will.beTruthy();
+    expect([operation isFinished]).will.beTruthy();
+    expect(blockResponseObject).willNot.beNil();
 }
 
 @end
