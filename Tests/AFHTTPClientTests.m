@@ -158,6 +158,31 @@
     expect([[batchOperations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
 }
 
+- (void)testAuthorizationHeaderWithUsernamePassword {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    
+    __block NSHTTPURLResponse *response = nil;
+    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        response = operation.response;
+    }];
+    
+    expect(response.statusCode).will.equal(401);
+    
+    [self.client setAuthorizationHeaderWithUsername:@"username" password:@"password"];
+    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        response = operation.response;
+    } failure:NULL];
+    
+    expect(response.statusCode).will.equal(200);
+    
+    [self.client clearAuthorizationHeader];
+    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        response = operation.response;
+    }];
+    
+    expect(response.statusCode).will.equal(401);
+}
+
 - (void)testAFQueryStringFromParametersWithEncoding {
     NSString *query1 = AFQueryStringFromParametersWithEncoding(@{ @"key": @"value" }, NSUTF8StringEncoding);
     expect(query1).to.equal(@"key=value");
