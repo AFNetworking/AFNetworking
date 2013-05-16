@@ -158,7 +158,7 @@
     expect([[batchOperations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
 }
 
-- (void)testAuthorizationHeaderWithUsernamePassword {
+- (void)testAuthorizationHeaderWithInvalidUsernamePassword {
     [Expecta setAsynchronousTestTimeout:5.0];
     
     __block NSHTTPURLResponse *response = nil;
@@ -167,59 +167,53 @@
     }];
     
     expect(response.statusCode).will.equal(401);
+}
+
+- (void)testAuthorizationHeaderWithValidUsernamePassword {
+    [Expecta setAsynchronousTestTimeout:5.0];
     
+    __block NSHTTPURLResponse *response = nil;
     [self.client setAuthorizationHeaderWithUsername:@"username" password:@"password"];
     [self.client getPath:@"/basic-auth/username/password" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         response = operation.response;
     } failure:NULL];
     
     expect(response.statusCode).will.equal(200);
-    
-    [self.client clearAuthorizationHeader];
-    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        response = operation.response;
-    }];
-    
-    expect(response.statusCode).will.equal(401);
 }
 
-- (void)testDefaultCredential {
+- (void)testThatClientClearsAuthorizationHeader {
+    [self.client setAuthorizationHeaderWithUsername:@"username" password:@"password"];
+    [self.client clearAuthorizationHeader];
+    
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    expect([request valueForHTTPHeaderField:@"Authorization"]).to.beNil();
+}
+
+- (void)testThatClientUsesDefaultCredential {
     [Expecta setAsynchronousTestTimeout:5.0];
     
     __block NSHTTPURLResponse *response = nil;
-    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        response = operation.response;
-    }];
-    
-    expect(response.statusCode).will.equal(401);
-    
     [self.client setDefaultCredential:[NSURLCredential credentialWithUser:@"username" password:@"password" persistence:NSURLCredentialPersistenceNone]];
     [self.client getPath:@"/basic-auth/username/password" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         response = operation.response;
     } failure:NULL];
     
     expect(response.statusCode).will.equal(200);
-    
-    [self.client setDefaultCredential:nil];
-    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        response = operation.response;
-    }];
-    
-    expect(response.statusCode).will.equal(401);
 }
 
-- (void)testAFQueryStringFromParametersWithEncoding {
-    NSString *query1 = AFQueryStringFromParametersWithEncoding(@{ @"key": @"value" }, NSUTF8StringEncoding);
-    expect(query1).to.equal(@"key=value");
-    
-    NSString *query2 = AFQueryStringFromParametersWithEncoding(@{ @"key": @[ @1, @"value" ] }, NSUTF8StringEncoding);
-    expect(query2).to.equal(@"key[]=1&key[]=value");
-    
-    NSString *query3 = AFQueryStringFromParametersWithEncoding(@{ @"key1": @"value1", @"key2": @"value2" }, NSUTF8StringEncoding);
-    expect(query3).to.equal(@"key1=value1&key2=value2");
-    
-    NSString *query4 = AFQueryStringFromParametersWithEncoding(@{ @"key1": @"value1", @"key2": @{ @"key": @[ @1, @"value" ] } }, NSUTF8StringEncoding);
-    expect(query4).to.equal(@"key1=value1&key2[key][]=1&key2[key][]=value");
+- (void)testAFQueryStringFromParametersWithEncodingWithPlainDictionary {
+    NSString *query = AFQueryStringFromParametersWithEncoding(@{ @"key": @"value" }, NSUTF8StringEncoding);
+    expect(query).to.equal(@"key=value");
+}
+
+- (void)testAFQueryStringFromParametersWithEncodingWithComplexNestedParameters {
+    NSString *query = AFQueryStringFromParametersWithEncoding(@{ @"key1": @"value1", @"key2": @{ @"key": @[ @1, @"value" ] } }, NSUTF8StringEncoding);
+    expect(query).to.equal(@"key1=value1&key2[key][]=1&key2[key][]=value");
+}
+
+- (void)testThatAFQueryStringFromParametersWithEncodingAppliesPercentEscapes {
+    NSString *query = AFQueryStringFromParametersWithEncoding(@{ @"key1": @"ä" }, NSUTF8StringEncoding);
+    expect(query).to.equal([@"key1=ä" stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)testCancelAllHTTPOperationsWithMethodPath {
@@ -234,6 +228,9 @@
     [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"ip"];
     NSOperation *operation = [self.client.operationQueue.operations objectAtIndex:2];
     expect([operation isCancelled]).beTruthy();
+    expect([[self.client.operationQueue.operations objectAtIndex:0] isCancelled]).beFalsy();
+    expect([[self.client.operationQueue.operations objectAtIndex:1] isCancelled]).beFalsy();
+    expect([[self.client.operationQueue.operations objectAtIndex:3] isCancelled]).beFalsy();
 }
 
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
