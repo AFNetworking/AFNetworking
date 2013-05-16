@@ -41,6 +41,8 @@
     
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
     expect([request valueForHTTPHeaderField:@"x-some-key"]).to.equal(@"SomeValue");
+    
+    expect(^{ [self.client setDefaultHeader:@"x-some-key" value:nil]; }).toNot.raise(nil);
 }
 
 - (void)testReachabilityStatus {
