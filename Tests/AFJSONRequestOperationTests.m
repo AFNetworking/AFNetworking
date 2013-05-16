@@ -45,6 +45,15 @@
     expect(operation.error).will.beNil();
 }
 
+- (void)testThatJSONRequestOperationAcceptsCustomContentType{
+    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"application/customjson"]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=application/customjson" relativeToURL:self.baseURL]];
+    AFJSONRequestOperation *operation = [[AFJSONRequestOperation alloc] initWithRequest:request];
+    [operation start];
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
 - (void)testThatJSONRequestOperationDoesNotAcceptInvalidContentType{
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=application/no-json" relativeToURL:self.baseURL]];
     AFJSONRequestOperation *operation = [[AFJSONRequestOperation alloc] initWithRequest:request];
