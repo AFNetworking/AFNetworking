@@ -43,6 +43,20 @@
     expect([request valueForHTTPHeaderField:@"x-some-key"]).to.equal(@"SomeValue");
 }
 
+- (void)testReachabilityStatus {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    
+    expect(self.client.networkReachabilityStatus).to.equal(@(AFNetworkReachabilityStatusUnknown));
+    
+    __block AFNetworkReachabilityStatus reachabilityStatus = self.client.networkReachabilityStatus;
+    
+    [self.client setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        reachabilityStatus = status;
+    }];
+    
+    expect(reachabilityStatus).will.equal(@(AFNetworkReachabilityStatusReachableViaWiFi));
+}
+
 - (void)testJSONRequestOperationContruction {
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
@@ -84,6 +98,62 @@
     [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
     operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
     expect([operation class]).to.equal([AFImageRequestOperation class]);
+}
+
+- (void)testEnqueueBatchOfHTTPRequestOperations {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    
+    __block NSDate *firstCallbackTime = nil;
+    __block NSDate *batchCallbackTime = nil;
+    
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    AFHTTPRequestOperation *firstOperation = [self.client HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        firstCallbackTime = [NSDate date];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        firstCallbackTime = [NSDate date];
+    }];
+    
+    AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    
+    [self.client enqueueBatchOfHTTPRequestOperations:@[ firstOperation, secondOperation ] progressBlock:NULL completionBlock:^(NSArray *operations) {
+        batchCallbackTime = [NSDate date];
+    }];
+    
+    expect(self.client.operationQueue.operationCount).to.equal(@3);
+    expect(firstCallbackTime).willNot.beNil();
+    expect(batchCallbackTime).willNot.beNil();
+    
+    expect(batchCallbackTime).beGreaterThan(firstCallbackTime);
+}
+
+- (void)testEnqueueBatchOfHTTPRequestOperationsWithRequests {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    
+    [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
+    
+    __block NSArray *batchOperations = nil;
+    
+    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    [firstRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSMutableURLRequest *secondeRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    [secondeRequest setValue:@"image/png" forHTTPHeaderField:@"Accept"];
+    
+    [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondeRequest ] progressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+        
+    } completionBlock:^(NSArray *operations) {
+        batchOperations = operations;
+    }];
+    
+    expect(self.client.operationQueue.operationCount).to.equal(@3);
+    expect(batchOperations).willNot.beNil();
+    
+    expect(self.client.operationQueue.operationCount).to.equal(@0);
+    expect(batchOperations.count).to.equal(@2);
+    
+    expect([[batchOperations objectAtIndex:0] class]).to.equal([AFJSONRequestOperation class]);
+    expect([[batchOperations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
 }
 
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
