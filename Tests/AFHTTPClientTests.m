@@ -216,7 +216,7 @@
     expect(query).to.equal([@"key1=ä" stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
 }
 
-- (void)testCancelAllHTTPOperationsWithMethodPath {
+- (void)testThatCancelAllHTTPOperationsWithMethodPathCancelsOnlyMatchingOperations {
     NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"POST" path:@"/post" parameters:@{ @"key": @"value" }];
     NSMutableURLRequest *secondRequest = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
     NSMutableURLRequest *thirdRequest = [self.client requestWithMethod:@"GET" path:@"/ip" parameters:nil];
@@ -228,6 +228,19 @@
     [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"ip"];
     NSOperation *operation = [self.client.operationQueue.operations objectAtIndex:2];
     expect([operation isCancelled]).beTruthy();
+}
+
+- (void)testThatCancelAllHTTPOperationsWithMethodPathDoesntCancelNotMatchingPaths {
+    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"POST" path:@"/post" parameters:@{ @"key": @"value" }];
+    NSMutableURLRequest *secondRequest = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    NSMutableURLRequest *thirdRequest = [self.client requestWithMethod:@"GET" path:@"/ip" parameters:nil];
+    
+    [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest, thirdRequest ] progressBlock:NULL completionBlock:NULL];
+    
+    expect(self.client.operationQueue.operationCount).to.equal(4);
+    
+    [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"ip"];
+    
     expect([[self.client.operationQueue.operations objectAtIndex:0] isCancelled]).beFalsy();
     expect([[self.client.operationQueue.operations objectAtIndex:1] isCancelled]).beFalsy();
     expect([[self.client.operationQueue.operations objectAtIndex:3] isCancelled]).beFalsy();
