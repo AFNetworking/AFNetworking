@@ -6,7 +6,7 @@
 
 AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of [NSURLConnection](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/Reference/Reference.html), [NSOperation](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/NSOperation_class/Reference/Reference.html), and other familiar Foundation technologies. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use. For example, here's how easy it is to get JSON from a URL:
 
-``` objective-c
+```objective-c
 NSURL *url = [NSURL URLWithString:@"https://alpha-api.app.net/stream/0/posts/stream/global"];
 NSURLRequest *request = [NSURLRequest requestWithURL:url];
 AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -15,7 +15,7 @@ AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperation
 [operation start];
 ```
 
-Perhaps the most important feature of all, however, is the amazing community of developers who use and contribute to AFNetworking every day. AFNetworking powers some of the most popular and critically-acclaimed apps on the iPhone, iPad, and Mac. 
+Perhaps the most important feature of all, however, is the amazing community of developers who use and contribute to AFNetworking every day. AFNetworking powers some of the most popular and critically-acclaimed apps on the iPhone, iPad, and Mac.
 
 Choose AFNetworking for your next project, or migrate over your existing projects—you'll be happy you did!
 
@@ -66,7 +66,7 @@ AFNetworking is architected to be as small and modular as possible, in order to 
     <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFHTTPClient.html">AFHTTPClient</a></td>
     <td>
       Captures the common patterns of communicating with an web application over HTTP, including:
-      
+
       <ul>
         <li>Making requests from relative paths of a base URL</li>
         <li>Setting HTTP headers to be added automatically to requests</li>
@@ -95,7 +95,7 @@ AFNetworking is architected to be as small and modular as possible, in order to 
 
 ### XML Request
 
-``` objective-c
+```objective-c
 NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://api.flickr.com/services/rest/?method=flickr.groups.browse&api_key=b6300e17ad3c506e706cb0072175d047&cat_id=34427469792%40N01&format=rest"]];
 AFXMLRequestOperation *operation = [AFXMLRequestOperation XMLParserRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser) {
   XMLParser.delegate = self;
@@ -106,14 +106,14 @@ AFXMLRequestOperation *operation = [AFXMLRequestOperation XMLParserRequestOperat
 
 ### Image Request
 
-``` objective-c
+```objective-c
 UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 100.0f)];
 [imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
 ```
 
 ### API Client Request
 
-``` objective-c
+```objective-c
 // AFAppDotNetAPIClient is a subclass of AFHTTPClient, which defines the base URL and default HTTP headers for NSURLRequests it creates
 [[AFAppDotNetAPIClient sharedClient] getPath:@"stream/0/posts/stream/global" parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
     NSLog(@"App.net Global Stream: %@", JSON);
@@ -122,7 +122,7 @@ UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0
 
 ### File Upload with Progress Callback
 
-``` objective-c
+```objective-c
 NSURL *url = [NSURL URLWithString:@"http://api-base-url.com"];
 AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
 NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"avatar.jpg"], 0.5);
@@ -139,7 +139,7 @@ AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequ
 
 ### Streaming Request
 
-``` objective-c
+```objective-c
 NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:8080/encode"]];
 
 AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
@@ -166,14 +166,20 @@ To set a compiler flag in Xcode, go to your active target and select the "Build 
 
 AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via CocoaPods. To do so:
 
-1. `gem install cocoapods` # If necessary
-1. `cd Tests`
-1. `pod install`
+    $ gem install cocoapods # If necessary
+    $ cd Tests
+    $ pod install
 
-Once CocoaPods has finished the installation, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode. If you wish to execute the tests from the command line or within a continuous integration environment, you will need to install [xctool](https://github.com/facebook/xctool). The recommended installation method is [Homebrew](http://mxcl.github.io/homebrew/). To install the commandline testing support via Homebrew:
+Once CocoaPods has finished the installation, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
 
-1. `brew update`
-1. `brew install xctool --HEAD`
+### Using xctool
+
+If you wish to execute the tests from the command line or within a continuous integration environment, you will need to install [xctool](https://github.com/facebook/xctool). The recommended installation method is [Homebrew](http://mxcl.github.io/homebrew/).
+
+To install the commandline testing support via Homebrew:
+
+    $ brew update
+    $ brew install xctool --HEAD
 
 Once xctool is installed, you can execute the suite via `rake test`.
 
@@ -191,13 +197,12 @@ Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking
 
 ### Creators
 
-[Mattt Thompson](http://github.com/mattt)  
+[Mattt Thompson](http://github.com/mattt)
 [@mattt](https://twitter.com/mattt)
 
-[Scott Raymond](http://github.com/sco)  
+[Scott Raymond](http://github.com/sco)
 [@sco](https://twitter.com/sco)
 
 ## License
 
 AFNetworking is available under the MIT license. See the LICENSE file for more info.
-
