@@ -56,6 +56,19 @@
     expect([operation class]).to.equal([AFJSONRequestOperation class]);
 }
 
+- (void)testXMLRequestOperationContruction {
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    [request setValue:@"application/xml" forHTTPHeaderField:@"Accept"];
+    
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFHTTPRequestOperation class]);
+    
+    expect([AFXMLRequestOperation canProcessRequest:request]).to.beTruthy();
+    [self.client registerHTTPOperationClass:[AFXMLRequestOperation class]];
+    operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFXMLRequestOperation class]);
+}
+
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
     expect(self.client.stringEncoding).to.equal(NSUTF8StringEncoding);
 }
