@@ -223,11 +223,11 @@
     
     [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest, thirdRequest ] progressBlock:NULL completionBlock:NULL];
     
-    expect(self.client.operationQueue.operationCount).to.equal(4);
+    NSArray *operations = [self.client.operationQueue.operations copy];
+    expect(operations.count).to.equal(4);
     
     [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"ip"];
-    NSOperation *operation = [self.client.operationQueue.operations objectAtIndex:2];
-    expect([operation isCancelled]).beTruthy();
+    expect([[operations objectAtIndex:2] isCancelled]).beTruthy();
 }
 
 - (void)testThatCancelAllHTTPOperationsWithMethodPathDoesntCancelNotMatchingPaths {
@@ -237,13 +237,14 @@
     
     [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest, thirdRequest ] progressBlock:NULL completionBlock:NULL];
     
-    expect(self.client.operationQueue.operationCount).to.equal(4);
+    NSArray *operations = [self.client.operationQueue.operations copy];
+    expect(operations.count).to.equal(4);
     
     [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"ip"];
     
-    expect([[self.client.operationQueue.operations objectAtIndex:0] isCancelled]).beFalsy();
-    expect([[self.client.operationQueue.operations objectAtIndex:1] isCancelled]).beFalsy();
-    expect([[self.client.operationQueue.operations objectAtIndex:3] isCancelled]).beFalsy();
+    expect([[operations objectAtIndex:0] isCancelled]).beFalsy();
+    expect([[operations objectAtIndex:1] isCancelled]).beFalsy();
+    expect([[operations objectAtIndex:3] isCancelled]).beFalsy();
 }
 
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
