@@ -158,6 +158,20 @@
     expect([[batchOperations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
 }
 
+- (void)testAFQueryStringFromParametersWithEncoding {
+    NSString *query1 = AFQueryStringFromParametersWithEncoding(@{ @"key": @"value" }, NSUTF8StringEncoding);
+    expect(query1).to.equal(@"key=value");
+    
+    NSString *query2 = AFQueryStringFromParametersWithEncoding(@{ @"key": @[ @1, @"value" ] }, NSUTF8StringEncoding);
+    expect(query2).to.equal(@"key[]=1&key[]=value");
+    
+    NSString *query3 = AFQueryStringFromParametersWithEncoding(@{ @"key1": @"value1", @"key2": @"value2" }, NSUTF8StringEncoding);
+    expect(query3).to.equal(@"key1=value1&key2=value2");
+    
+    NSString *query4 = AFQueryStringFromParametersWithEncoding(@{ @"key1": @"value1", @"key2": @{ @"key": @[ @1, @"value" ] } }, NSUTF8StringEncoding);
+    expect(query4).to.equal(@"key1=value1&key2[key][]=1&key2[key][]=value");
+}
+
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
     expect(self.client.stringEncoding).to.equal(NSUTF8StringEncoding);
 }
