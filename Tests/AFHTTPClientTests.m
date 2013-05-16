@@ -54,6 +54,10 @@
     [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
     operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
     expect([operation class]).to.equal([AFJSONRequestOperation class]);
+    
+    [self.client unregisterHTTPOperationClass:[AFJSONRequestOperation class]];
+    operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFHTTPRequestOperation class]);
 }
 
 - (void)testXMLRequestOperationContruction {
