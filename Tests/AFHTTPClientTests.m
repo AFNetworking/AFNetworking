@@ -35,6 +35,14 @@
 
 #pragma mark -
 
+- (void)testDefaultHeaders {
+    [self.client setDefaultHeader:@"x-some-key" value:@"SomeValue"];
+    expect([self.client defaultValueForHeader:@"x-some-key"]).to.equal(@"SomeValue");
+    
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    expect([request valueForHTTPHeaderField:@"x-some-key"]).to.equal(@"SomeValue");
+}
+
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
     expect(self.client.stringEncoding).to.equal(NSUTF8StringEncoding);
 }
