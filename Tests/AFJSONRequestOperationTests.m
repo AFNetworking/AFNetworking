@@ -21,7 +21,7 @@
     self.baseURL = [NSURL URLWithString:AFNetworkingTestsBaseURLString];
 }
 
-- (void)testThatJSONRequestionOperationAcceptsApplicationJSON{
+- (void)testThatJSONRequestOperationAcceptsApplicationJSON{
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=application/json" relativeToURL:self.baseURL]];
     AFJSONRequestOperation *operation = [[AFJSONRequestOperation alloc] initWithRequest:request];
     [operation start];
@@ -29,7 +29,7 @@
     expect(operation.error).will.beNil();
 }
 
-- (void)testThatJSONRequestionOperationAcceptsTextJSON{
+- (void)testThatJSONRequestOperationAcceptsTextJSON{
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=text/json" relativeToURL:self.baseURL]];
     AFJSONRequestOperation *operation = [[AFJSONRequestOperation alloc] initWithRequest:request];
     [operation start];
@@ -37,7 +37,7 @@
     expect(operation.error).will.beNil();
 }
 
-- (void)testThatJSONRequestionOperationAcceptsTextJavascript{
+- (void)testThatJSONRequestOperationAcceptsTextJavascript{
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=text/javascript" relativeToURL:self.baseURL]];
     AFJSONRequestOperation *operation = [[AFJSONRequestOperation alloc] initWithRequest:request];
     [operation start];
@@ -45,7 +45,7 @@
     expect(operation.error).will.beNil();
 }
 
-- (void)testThatJSONRequestionOperationDoesNotAcceptInvalidContentType{
+- (void)testThatJSONRequestOperationDoesNotAcceptInvalidContentType{
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=application/no-json" relativeToURL:self.baseURL]];
     AFJSONRequestOperation *operation = [[AFJSONRequestOperation alloc] initWithRequest:request];
     [operation start];
