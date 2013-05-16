@@ -183,6 +183,31 @@
     expect(response.statusCode).will.equal(401);
 }
 
+- (void)testDefaultCredential {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    
+    __block NSHTTPURLResponse *response = nil;
+    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        response = operation.response;
+    }];
+    
+    expect(response.statusCode).will.equal(401);
+    
+    [self.client setDefaultCredential:[NSURLCredential credentialWithUser:@"username" password:@"password" persistence:NSURLCredentialPersistenceNone]];
+    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        response = operation.response;
+    } failure:NULL];
+    
+    expect(response.statusCode).will.equal(200);
+    
+    [self.client setDefaultCredential:nil];
+    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        response = operation.response;
+    }];
+    
+    expect(response.statusCode).will.equal(401);
+}
+
 - (void)testAFQueryStringFromParametersWithEncoding {
     NSString *query1 = AFQueryStringFromParametersWithEncoding(@{ @"key": @"value" }, NSUTF8StringEncoding);
     expect(query1).to.equal(@"key=value");
