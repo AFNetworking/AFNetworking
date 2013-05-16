@@ -35,6 +35,57 @@
 
 #pragma mark -
 
+- (void)testDefaultHeaders {
+    [self.client setDefaultHeader:@"x-some-key" value:@"SomeValue"];
+    expect([self.client defaultValueForHeader:@"x-some-key"]).to.equal(@"SomeValue");
+    
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    expect([request valueForHTTPHeaderField:@"x-some-key"]).to.equal(@"SomeValue");
+}
+
+- (void)testJSONRequestOperationContruction {
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFHTTPRequestOperation class]);
+    
+    expect([AFJSONRequestOperation canProcessRequest:request]).to.beTruthy();
+    [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFJSONRequestOperation class]);
+    
+    [self.client unregisterHTTPOperationClass:[AFJSONRequestOperation class]];
+    operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFHTTPRequestOperation class]);
+}
+
+- (void)testXMLRequestOperationContruction {
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    [request setValue:@"application/xml" forHTTPHeaderField:@"Accept"];
+    
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFHTTPRequestOperation class]);
+    
+    expect([AFXMLRequestOperation canProcessRequest:request]).to.beTruthy();
+    [self.client registerHTTPOperationClass:[AFXMLRequestOperation class]];
+    operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFXMLRequestOperation class]);
+}
+
+- (void)testImageRequestOperationContruction {
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    [request setValue:@"image/png" forHTTPHeaderField:@"Accept"];
+    
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFHTTPRequestOperation class]);
+    
+    expect([AFImageRequestOperation canProcessRequest:request]).to.beTruthy();
+    [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
+    operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFImageRequestOperation class]);
+}
+
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
     expect(self.client.stringEncoding).to.equal(NSUTF8StringEncoding);
 }
