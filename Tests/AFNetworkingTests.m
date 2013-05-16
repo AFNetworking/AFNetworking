@@ -6,9 +6,4 @@
 //  Copyright (c) 2013 AFNetworking. All rights reserved.
 //
 
-NSString *AFNetworkingTestsBaseURLString = @"http://httpbin.org/";
-
-NSURL *AFNetworkingTestsBaseURL(void)
-{
-    return [NSURL URLWithString:AFNetworkingTestsBaseURLString];
-}
+NSString * const AFNetworkingTestsBaseURLString = @"http://httpbin.org/";

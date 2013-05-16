@@ -199,10 +199,10 @@
 		25801548173EB3B00026AA6E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */,
-				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */,
 				2580153E173EB3A70026AA6E /* AFNetworkingTests.h */,
 				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
+				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */,
+				2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */,
 			);
 			name = Tests;
 			sourceTree = "<group>";

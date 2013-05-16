@@ -13,5 +13,4 @@
 #import "Expecta.h"
 #import "OCMock.h"
 
-extern NSString *AFNetworkingTestsBaseURLString;
-NSURL *AFNetworkingTestsBaseURL(void);
+extern NSString * const AFNetworkingTestsBaseURLString;
