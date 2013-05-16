@@ -69,6 +69,19 @@
     expect([operation class]).to.equal([AFXMLRequestOperation class]);
 }
 
+- (void)testImageRequestOperationContruction {
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    [request setValue:@"image/png" forHTTPHeaderField:@"Accept"];
+    
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFHTTPRequestOperation class]);
+    
+    expect([AFImageRequestOperation canProcessRequest:request]).to.beTruthy();
+    [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
+    operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFImageRequestOperation class]);
+}
+
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
     expect(self.client.stringEncoding).to.equal(NSUTF8StringEncoding);
 }
