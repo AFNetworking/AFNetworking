@@ -86,6 +86,32 @@
     expect([operation class]).to.equal([AFImageRequestOperation class]);
 }
 
+- (void)testEnqueueBatchOfHTTPRequestOperationsWithRequests {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    
+    __block NSDate *firstCallbackTime = nil;
+    __block NSDate *batchCallbackTime = nil;
+    
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    AFHTTPRequestOperation *firstOperation = [self.client HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        firstCallbackTime = [NSDate date];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        firstCallbackTime = [NSDate date];
+    }];
+    
+    AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    
+    [self.client enqueueBatchOfHTTPRequestOperations:@[ firstOperation, secondOperation ] progressBlock:NULL completionBlock:^(NSArray *operations) {
+        batchCallbackTime = [NSDate date];
+    }];
+    
+    expect(self.client.operationQueue.operationCount).to.equal(@3);
+    expect(firstCallbackTime).willNot.beNil();
+    expect(batchCallbackTime).willNot.beNil();
+    
+    expect(batchCallbackTime).beGreaterThan(firstCallbackTime);
+}
+
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
     expect(self.client.stringEncoding).to.equal(NSUTF8StringEncoding);
 }
