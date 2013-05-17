@@ -126,7 +126,7 @@
         batchCallbackTime = [NSDate date];
     }];
     
-    expect(self.client.operationQueue.operationCount).to.equal(3);
+    expect(self.client.operationQueue.operationCount).will.equal(0);
     expect(firstCallbackTime).willNot.beNil();
     expect(secondCallbackTime).willNot.beNil();
     expect(batchCallbackTime).willNot.beNil();
@@ -135,23 +135,7 @@
     expect(batchCallbackTime).beGreaterThan(secondCallbackTime);
 }
 
-- (void)testThatEnqueueBatchOfHTTPRequestOperationsEnqueuesOperationsInTheCorrectOrder {
-    [Expecta setAsynchronousTestTimeout:5.0];
-    
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
-    AFHTTPRequestOperation *firstOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
-    AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
-    [self.client enqueueBatchOfHTTPRequestOperations:@[ firstOperation, secondOperation ] progressBlock:NULL completionBlock:NULL];
-    
-    NSArray *operations = [self.client.operationQueue.operations copy];
-    expect(operations.count).to.equal(3);
-    
-    expect([operations objectAtIndex:0]).to.equal(firstOperation);
-    expect([operations objectAtIndex:0]).toNot.equal(secondOperation);
-    expect([operations objectAtIndex:1]).to.equal(secondOperation);
-}
-
-- (void)testThatEnqueueBatchOfHTTPRequestOperationsWithRequestsCreatesCorrectOperationSubclasses {
+- (void)testThatEnqueueBatchOfHTTPRequestOperationsWithRequestsCallsCompletionBlockWithCorrectOrderedOperations {
     [Expecta setAsynchronousTestTimeout:5.0];
     
     [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
@@ -238,34 +222,23 @@
 }
 
 - (void)testThatCancelAllHTTPOperationsWithMethodPathCancelsOnlyMatchingOperations {
-    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"POST" path:@"/post" parameters:@{ @"key": @"value" }];
+    [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
+    
+    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"GET" path:@"/ip" parameters:nil];
+    [firstRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
     NSMutableURLRequest *secondRequest = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
-    NSMutableURLRequest *thirdRequest = [self.client requestWithMethod:@"GET" path:@"/ip" parameters:nil];
+    [secondRequest setValue:@"image/png" forHTTPHeaderField:@"Accept"];
+    
+    NSMutableURLRequest *thirdRequest = [self.client requestWithMethod:@"POST" path:@"/path" parameters:nil];
+    [thirdRequest setValue:@"image/png" forHTTPHeaderField:@"Accept"];
     
     [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest, thirdRequest ] progressBlock:NULL completionBlock:NULL];
+    [self.client.operationQueue setSuspended:YES];
     
-    NSArray *operations = [self.client.operationQueue.operations copy];
-    expect(operations.count).to.equal(4);
-    
-    [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"ip"];
-    expect([[operations objectAtIndex:2] isCancelled]).beTruthy();
-}
-
-- (void)testThatCancelAllHTTPOperationsWithMethodPathDoesntCancelNotMatchingPaths {
-    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"POST" path:@"/post" parameters:@{ @"key": @"value" }];
-    NSMutableURLRequest *secondRequest = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
-    NSMutableURLRequest *thirdRequest = [self.client requestWithMethod:@"GET" path:@"/ip" parameters:nil];
-    
-    [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest, thirdRequest ] progressBlock:NULL completionBlock:NULL];
-    
-    NSArray *operations = [self.client.operationQueue.operations copy];
-    expect(operations.count).to.equal(4);
-    
-    [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"ip"];
-    
-    expect([[operations objectAtIndex:0] isCancelled]).beFalsy();
-    expect([[operations objectAtIndex:1] isCancelled]).beFalsy();
-    expect([[operations objectAtIndex:3] isCancelled]).beFalsy();
+    [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"/path"];
+    expect([self.client.operationQueue.operations valueForKeyPath:@"@sum.isCancelled"]).to.equal(1);
 }
 
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
