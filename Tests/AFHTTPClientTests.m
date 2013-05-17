@@ -173,8 +173,6 @@
     
     expect(self.client.operationQueue.operationCount).to.equal(3);
     expect(batchOperations).willNot.beNil();
-    
-    expect(self.client.operationQueue.operationCount).to.equal(0);
     expect(batchOperations.count).to.equal(2);
     
     expect([[batchOperations objectAtIndex:0] class]).to.equal([AFJSONRequestOperation class]);
