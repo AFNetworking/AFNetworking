@@ -135,34 +135,6 @@
     expect(batchCallbackTime).beGreaterThan(secondCallbackTime);
 }
 
-- (void)testThatEnqueueBatchOfHTTPRequestOperationsWithRequestsCallsCompletionBlockWithCorrectOrderedOperations {
-    [Expecta setAsynchronousTestTimeout:5.0];
-    
-    [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
-    [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
-    
-    __block NSArray *batchOperations = nil;
-    
-    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
-    [firstRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    
-    NSMutableURLRequest *secondeRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
-    [secondeRequest setValue:@"image/png" forHTTPHeaderField:@"Accept"];
-    
-    [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondeRequest ] progressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
-        
-    } completionBlock:^(NSArray *operations) {
-        batchOperations = operations;
-    }];
-    
-    expect(self.client.operationQueue.operationCount).to.equal(3);
-    expect(batchOperations).willNot.beNil();
-    expect(batchOperations.count).to.equal(2);
-    
-    expect([[batchOperations objectAtIndex:0] class]).to.equal([AFJSONRequestOperation class]);
-    expect([[batchOperations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
-}
-
 - (void)testAuthorizationHeaderWithInvalidUsernamePassword {
     [Expecta setAsynchronousTestTimeout:5.0];
     
