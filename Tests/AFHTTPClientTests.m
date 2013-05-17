@@ -198,19 +198,18 @@
     [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
     
     NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"GET" path:@"/ip" parameters:nil];
-    [firstRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    
     NSMutableURLRequest *secondRequest = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
-    [secondRequest setValue:@"image/png" forHTTPHeaderField:@"Accept"];
-    
     NSMutableURLRequest *thirdRequest = [self.client requestWithMethod:@"POST" path:@"/path" parameters:nil];
-    [thirdRequest setValue:@"image/png" forHTTPHeaderField:@"Accept"];
     
     [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest, thirdRequest ] progressBlock:NULL completionBlock:NULL];
     [self.client.operationQueue setSuspended:YES];
     
     [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"/path"];
-    expect([self.client.operationQueue.operations valueForKeyPath:@"@sum.isCancelled"]).to.equal(1);
+    
+    NSUInteger numberOfCancelledOperations = [[self.client.operationQueue.operations indexesOfObjectsPassingTest:^BOOL(NSOperation *operation, NSUInteger idx, BOOL *stop) {
+        return [operation isCancelled];
+    }] count];
+    expect(numberOfCancelledOperations).to.equal(1);
 }
 
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
