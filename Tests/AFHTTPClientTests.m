@@ -102,10 +102,11 @@
     expect([operation class]).to.equal([AFImageRequestOperation class]);
 }
 
-- (void)testEnqueueBatchOfHTTPRequestOperations {
+- (void)testThatEnqueueBatchOfHTTPRequestOperationsFiresCompletionBlockAfterEveryRequestCompleted {
     [Expecta setAsynchronousTestTimeout:5.0];
     
     __block NSDate *firstCallbackTime = nil;
+    __block NSDate *secondCallbackTime = nil;
     __block NSDate *batchCallbackTime = nil;
     
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
@@ -115,20 +116,42 @@
         firstCallbackTime = [NSDate date];
     }];
     
-    AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        secondCallbackTime = [NSDate date];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        secondCallbackTime = [NSDate date];
+    }];
     
     [self.client enqueueBatchOfHTTPRequestOperations:@[ firstOperation, secondOperation ] progressBlock:NULL completionBlock:^(NSArray *operations) {
         batchCallbackTime = [NSDate date];
     }];
     
-    expect(self.client.operationQueue.operationCount).to.equal(@3);
+    expect(self.client.operationQueue.operationCount).to.equal(3);
     expect(firstCallbackTime).willNot.beNil();
+    expect(secondCallbackTime).willNot.beNil();
     expect(batchCallbackTime).willNot.beNil();
     
     expect(batchCallbackTime).beGreaterThan(firstCallbackTime);
+    expect(batchCallbackTime).beGreaterThan(secondCallbackTime);
 }
 
-- (void)testEnqueueBatchOfHTTPRequestOperationsWithRequests {
+- (void)testThatEnqueueBatchOfHTTPRequestOperationsEnqueuesOperationsInTheCorrectOrder {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    AFHTTPRequestOperation *firstOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    [self.client enqueueBatchOfHTTPRequestOperations:@[ firstOperation, secondOperation ] progressBlock:NULL completionBlock:NULL];
+    
+    NSArray *operations = [self.client.operationQueue.operations copy];
+    expect(operations.count).to.equal(3);
+    
+    expect([operations objectAtIndex:0]).to.equal(firstOperation);
+    expect([operations objectAtIndex:0]).toNot.equal(secondOperation);
+    expect([operations objectAtIndex:1]).to.equal(secondOperation);
+}
+
+- (void)testThatEnqueueBatchOfHTTPRequestOperationsWithRequestsCreatesCorrectOperationSubclasses {
     [Expecta setAsynchronousTestTimeout:5.0];
     
     [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
@@ -148,11 +171,11 @@
         batchOperations = operations;
     }];
     
-    expect(self.client.operationQueue.operationCount).to.equal(@3);
+    expect(self.client.operationQueue.operationCount).to.equal(3);
     expect(batchOperations).willNot.beNil();
     
-    expect(self.client.operationQueue.operationCount).to.equal(@0);
-    expect(batchOperations.count).to.equal(@2);
+    expect(self.client.operationQueue.operationCount).to.equal(0);
+    expect(batchOperations.count).to.equal(2);
     
     expect([[batchOperations objectAtIndex:0] class]).to.equal([AFJSONRequestOperation class]);
     expect([[batchOperations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
