@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0BAD1A5426FC47BF8790D245 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
 		2544EC45173BE382004117E8 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC44173BE382004117E8 /* SenTestingKit.framework */; };
-		2544EC47173BE382004117E8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC46173BE382004117E8 /* UIKit.framework */; };
 		2544EC48173BE382004117E8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC35173BE382004117E8 /* Foundation.framework */; };
 		2544EC96173BFAA8004117E8 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC44173BE382004117E8 /* SenTestingKit.framework */; };
 		2544EC97173BFAA8004117E8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC80173BFAA8004117E8 /* Cocoa.framework */; };
@@ -43,6 +42,9 @@
 		25DE601F173EB13C00422571 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE600D173EB13C00422571 /* UIImageView+AFNetworking.m */; };
 		29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
+		A761B1E61747825300827A4F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A761B1E51747825300827A4F /* Security.framework */; };
+		A761B1E81747825C00827A4F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A761B1E71747825C00827A4F /* UIKit.framework */; };
+		A761B1EA1747845400827A4F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A761B1E91747845400827A4F /* Security.framework */; };
 		AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 /* End PBXBuildFile section */
 
@@ -90,6 +92,9 @@
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A761B1E51747825300827A4F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		A761B1E71747825C00827A4F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		A761B1E91747845400827A4F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,10 +102,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A761B1E81747825C00827A4F /* UIKit.framework in Frameworks */,
+				A761B1E61747825300827A4F /* Security.framework in Frameworks */,
 				25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */,
 				25C4EC41173D86AE0083E116 /* SystemConfiguration.framework in Frameworks */,
 				2544EC45173BE382004117E8 /* SenTestingKit.framework in Frameworks */,
-				2544EC47173BE382004117E8 /* UIKit.framework in Frameworks */,
 				2544EC48173BE382004117E8 /* Foundation.framework in Frameworks */,
 				0BAD1A5426FC47BF8790D245 /* libPods-ios.a in Frameworks */,
 			);
@@ -110,6 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A761B1EA1747845400827A4F /* Security.framework in Frameworks */,
 				2580154C173EB6340026AA6E /* CoreServices.framework in Frameworks */,
 				2580154B173EB62E0026AA6E /* SystemConfiguration.framework in Frameworks */,
 				2544EC96173BFAA8004117E8 /* SenTestingKit.framework in Frameworks */,
@@ -145,6 +152,9 @@
 		2544EC34173BE382004117E8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A761B1E91747845400827A4F /* Security.framework */,
+				A761B1E71747825C00827A4F /* UIKit.framework */,
+				A761B1E51747825300827A4F /* Security.framework */,
 				25C4EC32173D7DD20083E116 /* SystemConfiguration.framework */,
 				25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */,
 				25C4EC2E173D7DC40083E116 /* CFNetwork.framework */,
