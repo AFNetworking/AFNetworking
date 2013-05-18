@@ -1067,11 +1067,22 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
 
 #pragma mark - NSStreamDelegate
 
-- (void)stream:(NSStream __unused *)stream
-   handleEvent:(NSStreamEvent)eventCode
-{
+/**
+ This retry works around a nasty problem in which mutli-part uploads will fail due to the stream delegate being sent a `NSStreamEventHasSpaceAvailable` event before the input stream has finished opening. This workaround simply replays the event after allowing the run-loop to cycle, providing enough time for the input stream to finish opening. It appears that this bug is in the CFNetwork layer. (See https://github.com/AFNetworking/AFNetworking/issues/948)
+ */
+- (void)retryWrite:(NSStream *)stream {
+    [self stream:stream handleEvent:NSStreamEventHasSpaceAvailable];
+}
+
+- (void)stream:(NSStream *)stream
+   handleEvent:(NSStreamEvent)eventCode {
     if (eventCode & NSStreamEventHasSpaceAvailable) {
-        [self handleOutputStreamSpaceAvailable];
+        if (self.inputStream.streamStatus < NSStreamStatusOpen) {
+            // See comments in `retryWrite:` for details
+            [self performSelector:@selector(retryWrite:) withObject:stream afterDelay:0.1];
+        } else {
+            [self handleOutputStreamSpaceAvailable];
+        }
     }
 }
 
