@@ -254,15 +254,13 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.request = urlRequest;
     
     self.shouldUseCredentialStorage = YES;
-    
-    self.outputStream = [NSOutputStream outputStreamToMemory];
-    
-    self.state = AFOperationReadyState;
 
     // #ifdef included for backwards-compatibility 
 #ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
     self.allowsInvalidSSLCertificate = YES;
 #endif
+
+    self.state = AFOperationReadyState;
 
     return self;
 }
@@ -313,7 +311,16 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [self didChangeValueForKey:@"inputStream"];
 }
 
+- (NSOutputStream *)outputStream {
+    if (!_outputStream) {
+        self.outputStream = [NSOutputStream outputStreamToMemory];
+    }
+
+    return _outputStream;
+}
+
 - (void)setOutputStream:(NSOutputStream *)outputStream {
+    [self.lock lock];
     if (outputStream == _outputStream) {
         return;
     }
@@ -324,6 +331,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
     _outputStream = outputStream;
     [self didChangeValueForKey:@"outputStream"];
+    [self.lock unlock];
 }
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
