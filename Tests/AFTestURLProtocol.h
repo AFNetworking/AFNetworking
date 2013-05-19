@@ -1,17 +1,17 @@
-// AFNetworking.h
+// AFTestURLProtocol.h
 //
 // Copyright (c) 2011 Gowalla (http://gowalla.com/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,31 +21,14 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <Security/Security.h>
-#import <Availability.h>
-#import <SystemConfiguration/SystemConfiguration.h>
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import <MobileCoreServices/MobileCoreServices.h>
-#else
-#import <CoreServices/CoreServices.h>
-#endif
 
-#ifndef _AFNETWORKING_
-    #define _AFNETWORKING_
 
-    #import "AFURLConnectionOperation.h"
+/**
+ @abstract  <#abstract comment#>
+ */
+@interface AFTestURLProtocol : NSURLProtocol <NSURLAuthenticationChallengeSender>
 
-    #import "AFHTTPRequestOperation.h"
-    #import "AFJSONRequestOperation.h"
-    #import "AFXMLRequestOperation.h"
-    #import "AFPropertyListRequestOperation.h"
-    #import "AFHTTPClient.h"
++ (void)matchURL:(NSURL *)URL withCallback:(id(^)(AFTestURLProtocol *protocol))initializationCallback;
 
-    #import "AFImageRequestOperation.h"
-
-    #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-        #import "AFNetworkActivityIndicatorManager.h"
-        #import "UIImageView+AFNetworking.h"
-    #endif
-#endif /* _AFNETWORKING_ */
+@end
