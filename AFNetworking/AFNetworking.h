@@ -21,7 +21,15 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import <Security/Security.h>
 #import <Availability.h>
+#import <SystemConfiguration/SystemConfiguration.h>
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import <MobileCoreServices/MobileCoreServices.h>
+#else
+#import <CoreServices/CoreServices.h>
+#endif
 
 #ifndef _AFNETWORKING_
     #define _AFNETWORKING_
