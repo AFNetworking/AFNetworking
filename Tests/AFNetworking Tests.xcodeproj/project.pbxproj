@@ -45,6 +45,10 @@
 		A761B1E61747825300827A4F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A761B1E51747825300827A4F /* Security.framework */; };
 		A761B1E81747825C00827A4F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A761B1E71747825C00827A4F /* UIKit.framework */; };
 		A761B1EA1747845400827A4F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A761B1E91747845400827A4F /* Security.framework */; };
+		A7EF02E91748DCB700FA6C8A /* AFTestURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7EF02E81748DCB700FA6C8A /* AFTestURLProtocol.m */; };
+		A7EF02EC1748DF1B00FA6C8A /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7EF02EB1748DF1B00FA6C8A /* AFURLConnectionOperationTests.m */; };
+		A7EF02ED1748DF6000FA6C8A /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7EF02EB1748DF1B00FA6C8A /* AFURLConnectionOperationTests.m */; };
+		A7EF02EE1748DF6900FA6C8A /* AFTestURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7EF02E81748DCB700FA6C8A /* AFTestURLProtocol.m */; };
 		AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 /* End PBXBuildFile section */
 
@@ -95,6 +99,9 @@
 		A761B1E51747825300827A4F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		A761B1E71747825C00827A4F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A761B1E91747845400827A4F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		A7EF02E71748DCB700FA6C8A /* AFTestURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTestURLProtocol.h; sourceTree = "<group>"; };
+		A7EF02E81748DCB700FA6C8A /* AFTestURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTestURLProtocol.m; sourceTree = "<group>"; };
+		A7EF02EB1748DF1B00FA6C8A /* AFURLConnectionOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperationTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,11 +219,14 @@
 		25801548173EB3B00026AA6E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				A7EF02E71748DCB700FA6C8A /* AFTestURLProtocol.h */,
+				A7EF02E81748DCB700FA6C8A /* AFTestURLProtocol.m */,
 				2580153E173EB3A70026AA6E /* AFNetworkingTests.h */,
 				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
 				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */,
 				2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */,
 				29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */,
+				A7EF02EB1748DF1B00FA6C8A /* AFURLConnectionOperationTests.m */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
@@ -351,6 +361,8 @@
 				25801542173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 				29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
+				A7EF02E91748DCB700FA6C8A /* AFTestURLProtocol.m in Sources */,
+				A7EF02EC1748DF1B00FA6C8A /* AFURLConnectionOperationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +383,8 @@
 				25801543173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 				29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
+				A7EF02ED1748DF6000FA6C8A /* AFURLConnectionOperationTests.m in Sources */,
+				A7EF02EE1748DF6900FA6C8A /* AFTestURLProtocol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -43,8 +43,7 @@
  - `connection:didFailWithError:`
  - `connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:`
  - `connection:willCacheResponse:`
- - `connection:canAuthenticateAgainstProtectionSpace:`
- - `connection:didReceiveAuthenticationChallenge:`
+ - `connection:willSendRequestForAuthenticationChallenge:`
  - `connectionShouldUseCredentialStorage:`
  - `connection:needNewBodyStream:`
 
@@ -277,7 +276,7 @@ NSCoding, NSCopying>
 /**
  Sets a block to be executed when the connection will authenticate a challenge in order to download its request, as handled by the `NSURLConnectionDelegate` method `connection:willSendRequestForAuthenticationChallenge:`.
 
- @param block A block object to be executed when the connection will authenticate a challenge in order to download its request. The block has no return type and takes two arguments: the URL connection object, and the challenge that must be authenticated.
+ @param block A block object to be executed when the connection will authenticate a challenge in order to download its request. The block has no return type and takes two arguments: the URL connection object, and the challenge that must be authenticated. This block must invoke one of the challenge-responder methods (NSURLAuthenticationChallengeSender protocol).
 
   If `allowsInvalidSSLCertificate` is set to YES, `connection:willSendRequestForAuthenticationChallenge:` will attempt to have the challenge sender use credentials with invalid SSL certificates.
  */
