@@ -321,16 +321,14 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)setOutputStream:(NSOutputStream *)outputStream {
     [self.lock lock];
-    if (outputStream == _outputStream) {
-        return;
+    if (outputStream != _outputStream) {
+        [self willChangeValueForKey:@"outputStream"];
+        if (_outputStream) {
+            [_outputStream close];
+        }
+        _outputStream = outputStream;
+        [self didChangeValueForKey:@"outputStream"];
     }
-    
-    [self willChangeValueForKey:@"outputStream"];
-    if (_outputStream) {
-        [_outputStream close];
-    }
-    _outputStream = outputStream;
-    [self didChangeValueForKey:@"outputStream"];
     [self.lock unlock];
 }
 
