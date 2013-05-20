@@ -617,7 +617,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                     originalCompletionBlock();
                 }
 
-                NSInteger numberOfFinishedOperations = [[operations indexesOfObjectsPassingTest:^BOOL(id op, NSUInteger __unused idx,  BOOL __unused *stop) {
+                NSUInteger numberOfFinishedOperations = [[operations indexesOfObjectsPassingTest:^BOOL(id op, NSUInteger __unused idx,  BOOL __unused *stop) {
                     return [op isFinished];
                 }] count];
 
@@ -1041,7 +1041,7 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
     if (_inputStream == nil) {
         CFReadStreamRef readStream;
         CFWriteStreamRef writeStream;
-        CFStreamCreateBoundPair(NULL, &readStream, &writeStream, self.bufferLength);
+        CFStreamCreateBoundPair(NULL, &readStream, &writeStream, (NSInteger)self.bufferLength);
         _inputStream = CFBridgingRelease(readStream);
         _outputStream = CFBridgingRelease(writeStream);
         
@@ -1084,7 +1084,7 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
                 return;
             }
 
-            [_buffer replaceBytesInRange:NSMakeRange(0, numberOfBytesWritten) withBytes:NULL length:0];
+            [_buffer replaceBytesInRange:NSMakeRange(0, (NSUInteger)numberOfBytesWritten) withBytes:NULL length:0];
         } else {
             if (!self.currentHTTPBodyPart) {
                 if (!self.HTTPBodyPartEnumerator) {
@@ -1106,7 +1106,7 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
                 return;
             }
             
-            [_buffer setLength:numberOfBytesRead];
+            [_buffer setLength:(NSUInteger)numberOfBytesRead];
 
             if (numberOfBytesRead == 0) {
                 self.currentHTTPBodyPart = nil;
