@@ -21,26 +21,10 @@
 		25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153F173EB3A70026AA6E /* AFNetworkingTests.m */; };
 		2580154B173EB62E0026AA6E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC2A173D7DB30083E116 /* SystemConfiguration.framework */; };
 		2580154C173EB6340026AA6E /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC2C173D7DBA0083E116 /* CoreServices.framework */; };
+		25A7530B1747FCA000F04F2F /* abide.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 25A7530A1747FCA000F04F2F /* abide.jpg */; };
+		25A7530C1747FCA000F04F2F /* abide.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 25A7530A1747FCA000F04F2F /* abide.jpg */; };
 		25C4EC41173D86AE0083E116 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC32173D7DD20083E116 /* SystemConfiguration.framework */; };
 		25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */; };
-		25DE600E173EB13C00422571 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE5FFC173EB13C00422571 /* AFHTTPClient.m */; };
-		25DE600F173EB13C00422571 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE5FFC173EB13C00422571 /* AFHTTPClient.m */; };
-		25DE6010173EB13C00422571 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE5FFE173EB13C00422571 /* AFHTTPRequestOperation.m */; };
-		25DE6011173EB13C00422571 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE5FFE173EB13C00422571 /* AFHTTPRequestOperation.m */; };
-		25DE6012173EB13C00422571 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6000173EB13C00422571 /* AFImageRequestOperation.m */; };
-		25DE6013173EB13C00422571 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6000173EB13C00422571 /* AFImageRequestOperation.m */; };
-		25DE6014173EB13C00422571 /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6002173EB13C00422571 /* AFJSONRequestOperation.m */; };
-		25DE6015173EB13C00422571 /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6002173EB13C00422571 /* AFJSONRequestOperation.m */; };
-		25DE6016173EB13C00422571 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6004173EB13C00422571 /* AFNetworkActivityIndicatorManager.m */; };
-		25DE6017173EB13C00422571 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6004173EB13C00422571 /* AFNetworkActivityIndicatorManager.m */; };
-		25DE6018173EB13C00422571 /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6007173EB13C00422571 /* AFPropertyListRequestOperation.m */; };
-		25DE6019173EB13C00422571 /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6007173EB13C00422571 /* AFPropertyListRequestOperation.m */; };
-		25DE601A173EB13C00422571 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6009173EB13C00422571 /* AFURLConnectionOperation.m */; };
-		25DE601B173EB13C00422571 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE6009173EB13C00422571 /* AFURLConnectionOperation.m */; };
-		25DE601C173EB13C00422571 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE600B173EB13C00422571 /* AFXMLRequestOperation.m */; };
-		25DE601D173EB13C00422571 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE600B173EB13C00422571 /* AFXMLRequestOperation.m */; };
-		25DE601E173EB13C00422571 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE600D173EB13C00422571 /* UIImageView+AFNetworking.m */; };
-		25DE601F173EB13C00422571 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE600D173EB13C00422571 /* UIImageView+AFNetworking.m */; };
 		29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
@@ -62,6 +46,7 @@
 		2580153F173EB3A70026AA6E /* AFNetworkingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkingTests.m; sourceTree = "<group>"; };
 		25801549173EB4B40026AA6E /* Pods-ios.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Pods-ios.xcconfig"; path = "Pods/Pods-ios.xcconfig"; sourceTree = "<group>"; };
 		2580154A173EB4B40026AA6E /* Pods-osx.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Pods-osx.xcconfig"; path = "Pods/Pods-osx.xcconfig"; sourceTree = "<group>"; };
+		25A7530A1747FCA000F04F2F /* abide.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = abide.jpg; sourceTree = "<group>"; };
 		25C4EC2A173D7DB30083E116 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		25C4EC2C173D7DBA0083E116 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		25C4EC2E173D7DC40083E116 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -128,6 +113,7 @@
 				2580154A173EB4B40026AA6E /* Pods-osx.xcconfig */,
 				25801548173EB3B00026AA6E /* Tests */,
 				2544EC37173BE382004117E8 /* AFNetworking */,
+				25A753091747FC7E00F04F2F /* Resources */,
 				2544EC34173BE382004117E8 /* Frameworks */,
 				2544EC33173BE382004117E8 /* Products */,
 			);
@@ -211,6 +197,14 @@
 			name = Tests;
 			sourceTree = "<group>";
 		};
+		25A753091747FC7E00F04F2F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				25A7530A1747FCA000F04F2F /* abide.jpg */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -282,6 +276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25A7530B1747FCA000F04F2F /* abide.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +284,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25A7530C1747FCA000F04F2F /* abide.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,15 +324,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25DE600E173EB13C00422571 /* AFHTTPClient.m in Sources */,
-				25DE6010173EB13C00422571 /* AFHTTPRequestOperation.m in Sources */,
-				25DE6012173EB13C00422571 /* AFImageRequestOperation.m in Sources */,
-				25DE6014173EB13C00422571 /* AFJSONRequestOperation.m in Sources */,
-				25DE6016173EB13C00422571 /* AFNetworkActivityIndicatorManager.m in Sources */,
-				25DE6018173EB13C00422571 /* AFPropertyListRequestOperation.m in Sources */,
-				25DE601A173EB13C00422571 /* AFURLConnectionOperation.m in Sources */,
-				25DE601C173EB13C00422571 /* AFXMLRequestOperation.m in Sources */,
-				25DE601E173EB13C00422571 /* UIImageView+AFNetworking.m in Sources */,
 				25801540173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */,
 				25801542173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
@@ -348,15 +335,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25DE600F173EB13C00422571 /* AFHTTPClient.m in Sources */,
-				25DE6011173EB13C00422571 /* AFHTTPRequestOperation.m in Sources */,
-				25DE6013173EB13C00422571 /* AFImageRequestOperation.m in Sources */,
-				25DE6015173EB13C00422571 /* AFJSONRequestOperation.m in Sources */,
-				25DE6017173EB13C00422571 /* AFNetworkActivityIndicatorManager.m in Sources */,
-				25DE6019173EB13C00422571 /* AFPropertyListRequestOperation.m in Sources */,
-				25DE601B173EB13C00422571 /* AFURLConnectionOperation.m in Sources */,
-				25DE601D173EB13C00422571 /* AFXMLRequestOperation.m in Sources */,
-				25DE601F173EB13C00422571 /* UIImageView+AFNetworking.m in Sources */,
 				25801541173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */,
 				25801543173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
