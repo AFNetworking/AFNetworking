@@ -43,6 +43,12 @@
 - (void)setImageWithURL:(NSURL *)url;
 
 /**
+  @param cacheKey allows you to specify the key to be used by AFImageCache. If `nil`, AFImageCache uses the url as the key.
+ */
+- (void)setImageWithURL:(NSURL *)url
+               cacheKey:(NSString *)key;
+
+/**
  Creates and enqueues an image request operation, which asynchronously downloads the image from the specified URL. Any previous image request for the receiver will be cancelled. If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
 
  By default, URL requests have a cache policy of `NSURLCacheStorageAllowed` and a timeout interval of 30 seconds, and are set not handle cookies. To configure URL requests differently, use `setImageWithURLRequest:placeholderImage:success:failure:`
@@ -52,6 +58,13 @@
  */
 - (void)setImageWithURL:(NSURL *)url
        placeholderImage:(UIImage *)placeholderImage;
+
+/**
+  @param cacheKey allows you to specify the key to be used by AFImageCache. If `nil`, AFImageCache uses the url as the key.
+ */
+- (void)setImageWithURL:(NSURL *)url
+       placeholderImage:(UIImage *)placeholderImage
+               cacheKey:(NSString *)key;
 
 /**
  Creates and enqueues an image request operation, which asynchronously downloads the image with the specified URL request object. Any previous image request for the receiver will be cancelled. If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
@@ -67,6 +80,15 @@
               placeholderImage:(UIImage *)placeholderImage
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+
+/**
+  @param cacheKey allows you to specify the key to be used by AFImageCache. If `nil`, AFImageCache uses the url as the key.
+ */
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
+              placeholderImage:(UIImage *)placeholderImage
+                      cacheKey:(NSString *)key
+                       success:(void (^)(NSURLRequest *, NSHTTPURLResponse *, UIImage *))success
+                       failure:(void (^)(NSURLRequest *, NSHTTPURLResponse *, NSError *))failure;
 
 /**
  Cancels any executing image request operation for the receiver, if one exists.
