@@ -43,6 +43,8 @@
 		25DE601F173EB13C00422571 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE600D173EB13C00422571 /* UIImageView+AFNetworking.m */; };
 		29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
+		2CDBDA54174BB3C700E2BBBC /* AFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CDBDA53174BB3C700E2BBBC /* AFImageCache.m */; };
+		2CDBDA55174BB3C700E2BBBC /* AFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CDBDA53174BB3C700E2BBBC /* AFImageCache.m */; };
 		AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 /* End PBXBuildFile section */
 
@@ -88,6 +90,8 @@
 		25DE600D173EB13C00422571 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONRequestOperationTests.m; sourceTree = "<group>"; };
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CDBDA52174BB3C700E2BBBC /* AFImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFImageCache.h; sourceTree = "<group>"; };
+		2CDBDA53174BB3C700E2BBBC /* AFImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageCache.m; sourceTree = "<group>"; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -165,6 +169,8 @@
 		2544EC37173BE382004117E8 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				2CDBDA52174BB3C700E2BBBC /* AFImageCache.h */,
+				2CDBDA53174BB3C700E2BBBC /* AFImageCache.m */,
 				25DE5FFB173EB13C00422571 /* AFHTTPClient.h */,
 				25DE5FFC173EB13C00422571 /* AFHTTPClient.m */,
 				25DE5FFD173EB13C00422571 /* AFHTTPRequestOperation.h */,
@@ -341,6 +347,7 @@
 				25801542173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 				29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
+				2CDBDA54174BB3C700E2BBBC /* AFImageCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,6 +368,7 @@
 				25801543173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 				29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
+				2CDBDA55174BB3C700E2BBBC /* AFImageCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
