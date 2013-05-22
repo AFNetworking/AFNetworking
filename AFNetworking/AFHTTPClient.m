@@ -461,12 +461,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
 
+    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
     if (parameters) {
         if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"] || [method isEqualToString:@"DELETE"]) {
             url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding)]];
             [request setURL:url];
         } else {
-            NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
             NSError *error = nil;
 
             switch (self.parameterEncoding) {
@@ -486,6 +486,21 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
             if (error) {
                 NSLog(@"%@ %@: %@", [self class], NSStringFromSelector(_cmd), error);
+            }
+        }
+    }
+    else {
+        if (![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"] && ![method isEqualToString:@"DELETE"]) {
+            switch (self.parameterEncoding) {
+                case AFFormURLParameterEncoding:;
+                    [request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+                    break;
+                case AFJSONParameterEncoding:;
+                    [request setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+                    break;
+                case AFPropertyListParameterEncoding:;
+                    [request setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+                    break;
             }
         }
     }
