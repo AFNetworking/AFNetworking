@@ -1,8 +1,6 @@
+// AFImageCache.m
 //
-// AFImageCache.m 
-// JetBrains AppCode
-//
-// Copyright (c) 2013 Shemet Dmitriy 
+// Copyright (c) 2011 Gowalla (http://gowalla.com/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,22 +23,19 @@
 #import "AFImageCache.h"
 #import "AFImageRequestOperation.h"
 
-const NSUInteger _AFImageCacheDefaultMemoryLimit = 1024 * 1024 * 6;
-const NSUInteger _AFImageCacheDefaultDiskLimit = 1024 * 1024 * 12;
-
 NSString * const _AFImageCachePath = @"afcache";
 
 @interface UIImage (AFImageCache)
 
 /* Return the number of bytes in bitmap of `image'. */
 
-- (NSUInteger)bitmapSize;
+- (NSUInteger)expectedBitmapSize;
 
 @end
 
 @implementation UIImage (AFImageCache)
 
-- (NSUInteger)bitmapSize {
+- (NSUInteger)expectedBitmapSize {
 	return CGImageGetBytesPerRow(self.CGImage) * CGImageGetHeight(self.CGImage);
 }
 
@@ -61,17 +56,12 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
 @implementation AFImageCache
 
 - (id)init {
-	return [self initWithMemoryCapacity:_AFImageCacheDefaultMemoryLimit diskCapacity:_AFImageCacheDefaultDiskLimit];
-}
-
-- (id)initWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity {
 	self = [super init];
 	if (self != nil) {
 		_memoryStorage = [NSCache new];
-		[_memoryStorage setTotalCostLimit:memoryCapacity];
 
 		_diskStorage = [[NSURLCache alloc] initWithMemoryCapacity:1024
-													 diskCapacity:diskCapacity
+													 diskCapacity:AFImageCacheDiskLimit
 														 diskPath:_AFImageCachePath];
 	}
 
@@ -92,7 +82,9 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
 		cachedImage = [[UIImage alloc] initWithData:[[_diskStorage cachedResponseForRequest:request] data]];
 
 		if (cachedImage != nil) {
-			[_memoryStorage setObject:cachedImage forKey:AFImageCacheKeyFromURLRequest(request)];
+			[_memoryStorage setObject:cachedImage
+							   forKey:AFImageCacheKeyFromURLRequest(request)
+								 cost:[cachedImage expectedBitmapSize]];
 		}
 	}
 
@@ -104,7 +96,7 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
 
 	[_memoryStorage setObject:operation.responseImage
 					   forKey:AFImageCacheKeyFromURLRequest(operation.request)
-						 cost:[operation.responseImage bitmapSize]];
+						 cost:[operation.responseImage expectedBitmapSize]];
 
 	NSCachedURLResponse *cachedURLResponse = [[NSCachedURLResponse alloc] initWithResponse:operation.response
 																					  data:operation.responseData];

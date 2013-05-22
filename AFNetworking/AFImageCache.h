@@ -1,8 +1,6 @@
+// AFImageCache.h
 //
-// AFImageCache.h 
-// JetBrains AppCode
-//
-// Copyright (c) 2013 Shemet Dmitriy 
+// Copyright (c) 2011 Gowalla (http://gowalla.com/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +24,9 @@
 
 @class AFImageRequestOperation;
 
-@interface AFImageCache : NSObject
+static const NSUInteger AFImageCacheDiskLimit = 1024 * 1024 * 12;
 
-- (id)initWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity;
+@interface AFImageCache : NSObject
 
 /**
  Return cached image for request.
