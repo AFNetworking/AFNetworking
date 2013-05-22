@@ -258,4 +258,16 @@
     expect(batchedOperation).to.beKindOf([NSBlockOperation class]);
 }
 
+- (void)testMultipartUploadDoesNotFailDueToStreamSentAnEventBeforeBeingOpenedError {
+    NSString *pathToImage = [[NSBundle bundleForClass:[AFHTTPClient class]] pathForResource:@"abide" ofType:@"jpg"];
+    NSData *imageData = [NSData dataWithContentsOfFile:pathToImage];
+    NSMutableURLRequest *request = [self.client multipartFormRequestWithMethod:@"POST" path:@"/post" parameters:@{ @"this": @"that" } constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithFileData:imageData name:@"item[photos_attributes][][photo]" fileName:@"item-image.png" mimeType:@"image/jpg"];
+    }];
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:nil failure:nil];
+    [self.client enqueueHTTPRequestOperation:operation];
+    expect(operation.isFinished).will.beTruthy();
+    expect(operation.error).notTo.equal(NSURLErrorTimedOut);
+}
+
 @end
