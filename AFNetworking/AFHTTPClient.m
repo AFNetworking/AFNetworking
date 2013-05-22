@@ -1145,8 +1145,8 @@ static const NSUInteger AFMultipartBodyStreamProviderDefaultBufferLength = 4096;
      
      See: https://github.com/AFNetworking/AFNetworking/issues/907
      */
-    double delayInSeconds = 2.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    NSTimeInterval delay = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^{
         outputStream.delegate = nil;
     });
