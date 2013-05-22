@@ -221,6 +221,12 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return [[self alloc] initWithBaseURL:url];
 }
 
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"%@ Failed to call designated initializer. Invoke `initWithBaseURL:` instead.", NSStringFromClass([self class])]
+                                 userInfo:nil];
+}
+
 - (id)initWithBaseURL:(NSURL *)url {
     NSParameterAssert(url);
 
