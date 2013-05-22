@@ -45,6 +45,8 @@
     
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
     expect([request valueForHTTPHeaderField:@"x-some-key"]).to.equal(@"SomeValue");
+    
+    expect(^{ [self.client setDefaultHeader:@"x-some-key" value:nil]; }).toNot.raise(nil);
 }
 
 - (void)testReachabilityStatus {
@@ -107,10 +109,11 @@
     expect([operation class]).to.equal([AFImageRequestOperation class]);
 }
 
-- (void)testEnqueueBatchOfHTTPRequestOperations {
+- (void)testThatEnqueueBatchOfHTTPRequestOperationsFiresCompletionBlockAfterEveryRequestCompleted {
     [Expecta setAsynchronousTestTimeout:5.0];
     
     __block NSDate *firstCallbackTime = nil;
+    __block NSDate *secondCallbackTime = nil;
     __block NSDate *batchCallbackTime = nil;
     
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
@@ -120,46 +123,96 @@
         firstCallbackTime = [NSDate date];
     }];
     
-    AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        secondCallbackTime = [NSDate date];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        secondCallbackTime = [NSDate date];
+    }];
     
     [self.client enqueueBatchOfHTTPRequestOperations:@[ firstOperation, secondOperation ] progressBlock:NULL completionBlock:^(NSArray *operations) {
         batchCallbackTime = [NSDate date];
     }];
     
-    expect(self.client.operationQueue.operationCount).to.equal(3);
+    expect(self.client.operationQueue.operationCount).will.equal(0);
     expect(firstCallbackTime).willNot.beNil();
+    expect(secondCallbackTime).willNot.beNil();
     expect(batchCallbackTime).willNot.beNil();
     expect(batchCallbackTime).beGreaterThan(firstCallbackTime);
+    expect(batchCallbackTime).beGreaterThan(secondCallbackTime);
 }
 
-- (void)testEnqueueBatchOfHTTPRequestOperationsWithRequests {
+- (void)testAuthorizationHeaderWithInvalidUsernamePassword {
     [Expecta setAsynchronousTestTimeout:5.0];
     
+    __block NSHTTPURLResponse *response = nil;
+    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        response = operation.response;
+    }];
+    
+    expect(response.statusCode).will.equal(401);
+}
+
+- (void)testAuthorizationHeaderWithValidUsernamePassword {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    
+    __block NSHTTPURLResponse *response = nil;
+    [self.client setAuthorizationHeaderWithUsername:@"username" password:@"password"];
+    [self.client getPath:@"/basic-auth/username/password" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        response = operation.response;
+    } failure:NULL];
+    
+    expect(response.statusCode).will.equal(200);
+}
+
+- (void)testThatClientClearsAuthorizationHeader {
+    [self.client setAuthorizationHeaderWithUsername:@"username" password:@"password"];
+    [self.client clearAuthorizationHeader];
+    
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    expect([request valueForHTTPHeaderField:@"Authorization"]).to.beNil();
+}
+
+- (void)testThatClientUsesDefaultCredential {
+    NSURLCredential *credential = [NSURLCredential credentialWithUser:@"username" password:@"password" persistence:NSURLCredentialPersistenceNone];
+    [self.client setDefaultCredential:credential];
+
+    NSURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/basic-auth/username/password" parameters:nil];
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:nil failure:nil];
+    expect(operation.credential).will.equal(credential);
+}
+
+- (void)testAFQueryStringFromParametersWithEncodingWithPlainDictionary {
+    NSString *query = AFQueryStringFromParametersWithEncoding(@{ @"key": @"value" }, NSUTF8StringEncoding);
+    expect(query).to.equal(@"key=value");
+}
+
+- (void)testAFQueryStringFromParametersWithEncodingWithComplexNestedParameters {
+    NSString *query = AFQueryStringFromParametersWithEncoding(@{ @"key1": @"value1", @"key2": @{ @"key": @[ @1, @"value" ] } }, NSUTF8StringEncoding);
+    expect(query).to.equal(@"key1=value1&key2[key][]=1&key2[key][]=value");
+}
+
+- (void)testThatAFQueryStringFromParametersWithEncodingAppliesPercentEscapes {
+    NSString *query = AFQueryStringFromParametersWithEncoding(@{ @"key1": @"ä" }, NSUTF8StringEncoding);
+    expect(query).to.equal([@"key1=ä" stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
+}
+
+- (void)testThatCancelAllHTTPOperationsWithMethodPathCancelsOnlyMatchingOperations {
     [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
     [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
     
-    __block NSArray *batchOperations = nil;
+    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"GET" path:@"/ip" parameters:nil];
+    NSMutableURLRequest *secondRequest = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    NSMutableURLRequest *thirdRequest = [self.client requestWithMethod:@"POST" path:@"/path" parameters:nil];
     
-    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
-    [firstRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest, thirdRequest ] progressBlock:NULL completionBlock:NULL];
+    [self.client.operationQueue setSuspended:YES];
     
-    NSMutableURLRequest *secondeRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
-    [secondeRequest setValue:@"image/png" forHTTPHeaderField:@"Accept"];
+    [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"/path"];
     
-    [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondeRequest ] progressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
-        
-    } completionBlock:^(NSArray *operations) {
-        batchOperations = operations;
-    }];
-    
-    expect(self.client.operationQueue.operationCount).to.equal(3);
-    expect(batchOperations).willNot.beNil();
-    
-    expect(self.client.operationQueue.operationCount).to.equal(0);
-    expect(batchOperations.count).to.equal(2);
-    
-    expect([[batchOperations objectAtIndex:0] class]).to.equal([AFJSONRequestOperation class]);
-    expect([[batchOperations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
+    NSUInteger numberOfCancelledOperations = [[self.client.operationQueue.operations indexesOfObjectsPassingTest:^BOOL(NSOperation *operation, NSUInteger idx, BOOL *stop) {
+        return [operation isCancelled];
+    }] count];
+    expect(numberOfCancelledOperations).to.equal(1);
 }
 
 - (void)testThatTheDefaultStringEncodingIsUTF8 {
