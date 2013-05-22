@@ -20,17 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "AFNetworkingTests.h"
 #import "AFHTTPRequestOperationLogger.h"
 
 NSString * const AFNetworkingTestsBaseURLString = @"http://httpbin.org/";
 
-@interface AFNetworkingTests : NSObject
-@end
-
 @implementation AFNetworkingTests
-+ (void)load
-{
-    NSString *loggingEnabled = [[[NSProcessInfo processInfo] environment][@"AFTestsLoggingEnabled"] uppercaseString];
-    if ([loggingEnabled isEqualToString:@"YES"]) [[AFHTTPRequestOperationLogger sharedLogger] startLogging];
+
++ (void)load {
+    if ([[[[NSProcessInfo processInfo] environment][@"AFTestsLoggingEnabled"] uppercaseString] isEqualToString:@"YES"]) {
+        [[AFHTTPRequestOperationLogger sharedLogger] startLogging];
+    }
 }
+
 @end

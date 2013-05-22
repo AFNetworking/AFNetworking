@@ -28,3 +28,6 @@
 #import "OCMock.h"
 
 extern NSString * const AFNetworkingTestsBaseURLString;
+
+@interface AFNetworkingTests : NSObject
+@end

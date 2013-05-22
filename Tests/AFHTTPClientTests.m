@@ -64,11 +64,12 @@
 - (void)testJSONRequestOperationContruction {
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    
+
+    expect([AFJSONRequestOperation canProcessRequest:request]).to.beTruthy();
+
     AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
     expect([operation class]).to.equal([AFHTTPRequestOperation class]);
     
-    expect([AFJSONRequestOperation canProcessRequest:request]).to.beTruthy();
     [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
     operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
     expect([operation class]).to.equal([AFJSONRequestOperation class]);
@@ -81,11 +82,12 @@
 - (void)testXMLRequestOperationContruction {
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
     [request setValue:@"application/xml" forHTTPHeaderField:@"Accept"];
-    
-    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
-    expect([operation class]).to.equal([AFHTTPRequestOperation class]);
-    
+
     expect([AFXMLRequestOperation canProcessRequest:request]).to.beTruthy();
+
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    expect([operation class]).to.equal([AFHTTPRequestOperation class]);    
+
     [self.client registerHTTPOperationClass:[AFXMLRequestOperation class]];
     operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
     expect([operation class]).to.equal([AFXMLRequestOperation class]);
@@ -94,11 +96,12 @@
 - (void)testImageRequestOperationContruction {
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
     [request setValue:@"image/png" forHTTPHeaderField:@"Accept"];
-    
+
+    expect([AFImageRequestOperation canProcessRequest:request]).to.beTruthy();
+
     AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
     expect([operation class]).to.equal([AFHTTPRequestOperation class]);
     
-    expect([AFImageRequestOperation canProcessRequest:request]).to.beTruthy();
     [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
     operation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
     expect([operation class]).to.equal([AFImageRequestOperation class]);
@@ -123,10 +126,9 @@
         batchCallbackTime = [NSDate date];
     }];
     
-    expect(self.client.operationQueue.operationCount).to.equal(@3);
+    expect(self.client.operationQueue.operationCount).to.equal(3);
     expect(firstCallbackTime).willNot.beNil();
     expect(batchCallbackTime).willNot.beNil();
-    
     expect(batchCallbackTime).beGreaterThan(firstCallbackTime);
 }
 
@@ -150,11 +152,11 @@
         batchOperations = operations;
     }];
     
-    expect(self.client.operationQueue.operationCount).to.equal(@3);
+    expect(self.client.operationQueue.operationCount).to.equal(3);
     expect(batchOperations).willNot.beNil();
     
-    expect(self.client.operationQueue.operationCount).to.equal(@0);
-    expect(batchOperations.count).to.equal(@2);
+    expect(self.client.operationQueue.operationCount).to.equal(0);
+    expect(batchOperations.count).to.equal(2);
     
     expect([[batchOperations objectAtIndex:0] class]).to.equal([AFJSONRequestOperation class]);
     expect([[batchOperations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
@@ -203,8 +205,7 @@
     expect(responseDictionary[@"form"]).to.equal(@{ @"key": @"value" });
 }
 
-- (void)testThatEnqueueBatchOfHTTPRequestOperationsConstructsOperationsWithAppropriateRegisteredHTTPRequestOperationClasses
-{
+- (void)testThatEnqueueBatchOfHTTPRequestOperationsConstructsOperationsWithAppropriateRegisteredHTTPRequestOperationClasses {
     [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
     [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
     
@@ -229,8 +230,7 @@
     expect([operations[1] class]).to.equal([AFImageRequestOperation class]);
 }
 
-- (void)testThatEnqueueBatchOfHTTPRequestOperationsEnqueuesOperationsInTheCorrectOrder
-{
+- (void)testThatEnqueueBatchOfHTTPRequestOperationsEnqueuesOperationsInTheCorrectOrder {
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
     AFHTTPRequestOperation *firstOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
     AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
@@ -254,6 +254,7 @@
     
     expect(operations[0]).to.equal(firstOperation);
     expect(operations[1]).to.equal(secondOperation);
+    
     expect(batchedOperation).notTo.beNil();
     expect(batchedOperation).to.beKindOf([NSBlockOperation class]);
 }
@@ -265,6 +266,7 @@
         [formData appendPartWithFileData:imageData name:@"item[photos_attributes][][photo]" fileName:@"item-image.png" mimeType:@"image/jpg"];
     }];
     AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:nil failure:nil];
+
     [self.client enqueueHTTPRequestOperation:operation];
     expect(operation.isFinished).will.beTruthy();
     expect(operation.error).notTo.equal(NSURLErrorTimedOut);

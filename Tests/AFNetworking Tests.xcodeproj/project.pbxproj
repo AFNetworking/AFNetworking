@@ -191,8 +191,8 @@
 				2580153E173EB3A70026AA6E /* AFNetworkingTests.h */,
 				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
 				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */,
-				2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */,
 				29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */,
+				2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */,
 			);
 			name = Tests;
 			sourceTree = "<group>";

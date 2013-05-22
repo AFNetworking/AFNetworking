@@ -149,7 +149,7 @@
 
 #pragma mark - Pause
 
-- (void)testThatOperationCanBePaused{
+- (void)testThatOperationCanBePaused {
     [Expecta setAsynchronousTestTimeout:3.0];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
@@ -162,7 +162,7 @@
     [operation cancel];
 }
 
-- (void)testThatPausedOperationCanBeResumed{
+- (void)testThatPausedOperationCanBeResumed {
     [Expecta setAsynchronousTestTimeout:3.0];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
@@ -172,12 +172,14 @@
     
     [operation pause];
     expect([operation isPaused]).will.beTruthy();
+
     [operation resume];
     expect([operation isExecuting]).will.beTruthy();
+
     [operation cancel];
 }
 
-- (void)testThatPausedOperationCanBeCompleted{
+- (void)testThatPausedOperationCanBeCompleted {
     [Expecta setAsynchronousTestTimeout:3.0];
     
     __block id blockResponseObject = nil;
@@ -187,6 +189,7 @@
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         blockResponseObject = responseObject;
     } failure:nil];
+
     [operation start];
     expect([operation isExecuting]).will.beTruthy();
     
@@ -201,33 +204,37 @@
 
 #pragma mark - Response String Encoding
 
-- (void) testThatTextStringEncodingIsISOLatin1WhenNoCharsetParameterIsProvided {
+- (void)testThatTextStringEncodingIsISOLatin1WhenNoCharsetParameterIsProvided {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=text/plain" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
     [operation start];
     expect([operation isFinished]).will.beTruthy();
     expect(operation.responseStringEncoding).will.equal(NSISOLatin1StringEncoding);
 }
 
-- (void) testThatTextStringEncodingIsShiftJISWhenShiftJISCharsetParameterIsProvided {
+- (void)testThatTextStringEncodingIsShiftJISWhenShiftJISCharsetParameterIsProvided {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=text/plain;%20charset=%22Shift_JIS%22" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
     [operation start];
     expect([operation isFinished]).will.beTruthy();
     expect(operation.responseStringEncoding).will.equal(NSShiftJISStringEncoding);
 }
 
-- (void) testThatTextStringEncodingIsUTF8WhenInvalidCharsetParameterIsProvided {
+- (void)testThatTextStringEncodingIsUTF8WhenInvalidCharsetParameterIsProvided {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=text/plain;%20charset=%22invalid%22" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
     [operation start];
     expect([operation isFinished]).will.beTruthy();
     expect(operation.responseStringEncoding).will.equal(NSUTF8StringEncoding);
 }
 
-- (void) testThatTextStringEncodingIsUTF8WhenUTF8CharsetParameterIsProvided {
+- (void)testThatTextStringEncodingIsUTF8WhenUTF8CharsetParameterIsProvided {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=text/plain;%20charset=%22UTF-8%22" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
     [operation start];
     expect([operation isFinished]).will.beTruthy();
     expect(operation.responseStringEncoding).will.equal(NSUTF8StringEncoding);
