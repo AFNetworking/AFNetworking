@@ -271,7 +271,10 @@
     __block NSArray *operations = nil;
     id mockClient = [OCMockObject partialMockForObject:self.client];
     void (^theBlock)(NSInvocation *) = ^(NSInvocation *invocation) {
-        [invocation getArgument:&operations atIndex:2];
+        __unsafe_unretained id argument = nil;
+        [invocation getArgument:&argument atIndex:2];
+        
+        operations = argument;
     };
     [[[mockClient stub] andDo:theBlock] enqueueBatchOfHTTPRequestOperations:[OCMArg any] progressBlock:nil completionBlock:nil];
     [mockClient enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest ] progressBlock:nil completionBlock:nil];
@@ -294,12 +297,18 @@
     
     __block NSArray *operations = nil;
     [[[mockOperationQueue stub] andDo:^(NSInvocation *invocation) {
-        [invocation getArgument:&operations atIndex:2];
+        __unsafe_unretained id argument = nil;
+        [invocation getArgument:&argument atIndex:2];
+        
+        operations = argument;
     }] addOperations:OCMOCK_ANY waitUntilFinished:NO];
     
     __block NSBlockOperation *batchedOperation = nil;
     [[[mockOperationQueue stub] andDo:^(NSInvocation *invocation) {
-        [invocation getArgument:&batchedOperation atIndex:2];
+        __unsafe_unretained id argument = nil;
+        [invocation getArgument:&argument atIndex:2];
+        
+        batchedOperation = argument;
     }] addOperation:OCMOCK_ANY];
     [mockClient enqueueBatchOfHTTPRequestOperations:@[ firstOperation, secondOperation ] progressBlock:NULL completionBlock:NULL];
     
