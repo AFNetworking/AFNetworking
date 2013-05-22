@@ -203,4 +203,59 @@
     expect(responseDictionary[@"form"]).to.equal(@{ @"key": @"value" });
 }
 
+- (void)testThatEnqueueBatchOfHTTPRequestOperationsConstructsOperationsWithAppropriateRegisteredHTTPRequestOperationClasses
+{
+    [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
+    
+    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    [firstRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSMutableURLRequest *secondRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    [secondRequest setValue:@"image/png" forHTTPHeaderField:@"Accept"];
+    
+    __block NSArray *operations = nil;
+    id mockClient = [OCMockObject partialMockForObject:self.client];
+    void (^theBlock)(NSInvocation *) = ^(NSInvocation *invocation) {
+        [invocation getArgument:&operations atIndex:2];
+    };
+    [[[mockClient stub] andDo:theBlock] enqueueBatchOfHTTPRequestOperations:[OCMArg any] progressBlock:nil completionBlock:nil];
+    [mockClient enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest ] progressBlock:nil completionBlock:nil];
+    
+    expect(operations).notTo.beNil();
+    expect(operations).to.haveCountOf(2);
+    
+    expect([operations[0] class]).to.equal([AFJSONRequestOperation class]);
+    expect([operations[1] class]).to.equal([AFImageRequestOperation class]);
+}
+
+- (void)testThatEnqueueBatchOfHTTPRequestOperationsEnqueuesOperationsInTheCorrectOrder
+{
+    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    AFHTTPRequestOperation *firstOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:NULL failure:NULL];
+    
+    id mockClient = [OCMockObject partialMockForObject:self.client];
+    id mockOperationQueue = [OCMockObject mockForClass:[NSOperationQueue class]];
+    [[[mockClient stub] andReturn:mockOperationQueue] operationQueue];
+    
+    __block NSArray *operations = nil;
+    [[[mockOperationQueue stub] andDo:^(NSInvocation *invocation) {
+        [invocation getArgument:&operations atIndex:2];
+    }] addOperations:OCMOCK_ANY waitUntilFinished:NO];
+    
+    __block NSBlockOperation *batchedOperation = nil;
+    [[[mockOperationQueue stub] andDo:^(NSInvocation *invocation) {
+        [invocation getArgument:&batchedOperation atIndex:2];
+    }] addOperation:OCMOCK_ANY];
+    [mockClient enqueueBatchOfHTTPRequestOperations:@[ firstOperation, secondOperation ] progressBlock:NULL completionBlock:NULL];
+    
+    expect(operations).to.haveCountOf(2);
+    
+    expect(operations[0]).to.equal(firstOperation);
+    expect(operations[1]).to.equal(secondOperation);
+    expect(batchedOperation).notTo.beNil();
+    expect(batchedOperation).to.beKindOf([NSBlockOperation class]);
+}
+
 @end
