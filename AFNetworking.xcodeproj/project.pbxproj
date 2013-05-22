@@ -81,7 +81,6 @@
 		223B953E174CDF52007765BC = {
 			isa = PBXGroup;
 			children = (
-				223B9595174CE4E8007765BC /* SystemConfiguration.framework */,
 				223B9551174CDF52007765BC /* AFNetworking */,
 				223B954A174CDF52007765BC /* Frameworks */,
 				223B9549174CDF52007765BC /* Products */,
@@ -99,6 +98,7 @@
 		223B954A174CDF52007765BC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				223B9595174CE4E8007765BC /* SystemConfiguration.framework */,
 				223B954B174CDF52007765BC /* Cocoa.framework */,
 				223B954D174CDF52007765BC /* Other Frameworks */,
 			);
