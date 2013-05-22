@@ -35,6 +35,10 @@
 
 #pragma mark -
 
+- (void)testInitRaisesException {
+    expect(^{ (void)[[AFHTTPClient alloc] init]; }).to.raiseAny();
+}
+
 - (void)testDefaultHeaders {
     [self.client setDefaultHeader:@"x-some-key" value:@"SomeValue"];
     expect([self.client defaultValueForHeader:@"x-some-key"]).to.equal(@"SomeValue");
