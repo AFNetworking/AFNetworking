@@ -260,10 +260,10 @@
 }
 
 - (void)testMultipartUploadDoesNotFailDueToStreamSentAnEventBeforeBeingOpenedError {
-    NSString *pathToImage = [[NSBundle bundleForClass:[AFHTTPClient class]] pathForResource:@"abide" ofType:@"jpg"];
+    NSString *pathToImage = [[NSBundle bundleForClass:[AFHTTPClient class]] pathForResource:@"Icon" ofType:@"png"];
     NSData *imageData = [NSData dataWithContentsOfFile:pathToImage];
-    NSMutableURLRequest *request = [self.client multipartFormRequestWithMethod:@"POST" path:@"/post" parameters:@{ @"this": @"that" } constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        [formData appendPartWithFileData:imageData name:@"item[photos_attributes][][photo]" fileName:@"item-image.png" mimeType:@"image/jpg"];
+    NSMutableURLRequest *request = [self.client multipartFormRequestWithMethod:@"POST" path:@"/post" parameters:@{ @"foo": @"bar" } constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithFileData:imageData name:@"icon[image]" fileName:@"icon.png" mimeType:@"image/png"];
     }];
     AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:nil failure:nil];
 
