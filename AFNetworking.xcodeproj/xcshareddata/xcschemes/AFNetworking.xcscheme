@@ -29,7 +29,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "22DB9EE8174E7C9500586D79"
-               BuildableName = "liblibrary.a"
+               BuildableName = "libAFNetworking.a"
                BlueprintName = "AFNetworking library"
                ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
