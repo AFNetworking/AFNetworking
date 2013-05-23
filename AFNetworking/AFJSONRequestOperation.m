@@ -70,7 +70,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
         // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
         // See https://github.com/rails/rails/issues/1742
-        if ([self.responseData length] == 0 || [self.responseString isEqualToString:@" "]) {
+        //Addition responseString check because it can be nil if responseData does not represents valid data for encoding. So NSJSONSerialization crashs.
+        if ([self.responseData length] == 0 || !self.responseString || [self.responseString isEqualToString:@" "]) {
             self.responseJSON = nil;
         } else {
             // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
