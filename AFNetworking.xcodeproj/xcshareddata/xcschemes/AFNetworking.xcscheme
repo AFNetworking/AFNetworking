@@ -16,7 +16,21 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "223B9547174CDF52007765BC"
                BuildableName = "AFNetworking.framework"
-               BlueprintName = "AFNetworking"
+               BlueprintName = "AFNetworking Framework"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "22DB9EE8174E7C9500586D79"
+               BuildableName = "liblibrary.a"
+               BlueprintName = "AFNetworking library"
                ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
