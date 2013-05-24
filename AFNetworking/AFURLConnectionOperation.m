@@ -200,6 +200,32 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     return _pinnedCertificates;
 }
 
++(NSData *)exportKey:(SecKeyRef) key {
+    SecItemImportExportKeyParameters params;
+    CFMutableArrayRef keyUsage
+    = (__bridge CFMutableArrayRef) [ NSMutableArray
+                           arrayWithObjects: kSecAttrCanEncrypt, kSecAttrCanDecrypt, nil ];
+    CFMutableArrayRef keyAttributes
+    = (__bridge CFMutableArrayRef) [ NSMutableArray array ];
+    SecExternalFormat format = kSecFormatUnknown;
+    CFDataRef keyData;
+    OSStatus oserr;
+    int flags = 0;
+    
+    memset(&params, 0, sizeof(params));
+    params.version = SEC_KEY_IMPORT_EXPORT_PARAMS_VERSION;
+    params.keyUsage = keyUsage;
+    params.keyAttributes = keyAttributes;
+    
+    oserr = SecItemExport(key, format, flags, &params, &keyData);
+    if (oserr) {
+        fprintf(stderr, "SecItemExport failed %d\n", oserr);
+        return nil;
+    }
+    
+    return (NSData *) CFBridgingRelease(keyData);
+}
+
 + (NSArray *)pinnedPublicKeys {
     static NSArray *_pinnedPublicKeys = nil;
     static dispatch_once_t onceToken;
@@ -595,10 +621,18 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
         switch (self.SSLPinningMode) {
             case AFSSLPinningModePublicKey: {
                 for (id publicKey in trustChain) {
-                    if ([[self.class pinnedPublicKeys] containsObject:publicKey]) {
-                        NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
-                        [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-                        return;
+                    
+                    NSData* publicKeyData=[AFURLConnectionOperation exportKey:(SecKeyRef)publicKey];
+                    
+                    for (id keyRef in [self.class pinnedPublicKeys])
+                    {
+                        NSData *keyRefData=[AFURLConnectionOperation exportKey:(SecKeyRef)keyRef];
+                        if ([publicKeyData isEqualToData:keyRefData])
+                        {
+                            NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+                            [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+                            return;
+                        }
                     }
                 }
                 
