@@ -89,6 +89,7 @@ typedef enum {
     AFSSLPinningModeNone,
     AFSSLPinningModePublicKey,
     AFSSLPinningModeCertificate,
+    AFSSLPinningModeRootCA,
 } AFURLConnectionOperationSSLPinningMode;
 #endif
 

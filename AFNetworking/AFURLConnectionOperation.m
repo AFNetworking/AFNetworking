@@ -238,6 +238,30 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     return _pinnedPublicKeys;
 }
+
++ (NSArray *)pinnedRootCAs {
+    static NSArray *_pinnedRootCAs = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        NSArray *paths = [bundle pathsForResourcesOfType:@"der" inDirectory:@"."];
+        
+        NSMutableArray *rootCAs = [NSMutableArray arrayWithCapacity:[paths count]];
+        for (NSString *path in paths) {
+            NSData *rootCAData = [NSData dataWithContentsOfFile:path];
+            
+            SecCertificateRef rootCARef = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)rootCAData);
+            if (!rootCARef)
+                continue;
+            
+            [rootCAs addObject:(__bridge id)(rootCARef)];
+        }
+        
+        _pinnedRootCAs = [[NSArray alloc] initWithArray:rootCAs];
+    });
+    
+    return _pinnedRootCAs;
+}
 #endif
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
@@ -559,6 +583,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
     if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        
         SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
         
         SecPolicyRef policy = SecPolicyCreateBasicX509();
@@ -615,6 +640,49 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 }
                 
                 [[challenge sender] cancelAuthenticationChallenge:challenge];
+                break;
+            }
+            case AFSSLPinningModeRootCA: {
+                SecTrustResultType result;
+                OSStatus err = errSecSuccess;
+                
+                if (err == errSecSuccess)
+                    err = SecTrustSetAnchorCertificates(serverTrust, (__bridge CFArrayRef)[self.class pinnedRootCAs]);
+                
+                if (err == errSecSuccess)
+                    err = SecTrustSetAnchorCertificatesOnly(serverTrust, YES);
+                
+                if (err == errSecSuccess)
+                    err = SecTrustEvaluate(serverTrust, &result);
+                
+                BOOL verified = NO;
+                
+                if (err == errSecSuccess) {
+                    switch (result) {
+                        case kSecTrustResultProceed:
+                        case kSecTrustResultUnspecified:
+                            verified = YES;
+                            break;
+                        case kSecTrustResultInvalid:
+                        case kSecTrustResultDeny:
+                        case kSecTrustResultFatalTrustFailure:
+                        case kSecTrustResultOtherError:
+                        case kSecTrustResultRecoverableTrustFailure:
+                            verified = NO;
+                            break;
+                        default:
+                            NSAssert(NO, @"Unexpected result: %ld", result);
+                            break;
+                    }
+                }
+                
+                if ( verified ) {
+                    NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+                    [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+                    return;
+                }
+                
+                [challenge.sender cancelAuthenticationChallenge:challenge];
                 break;
             }
             case AFSSLPinningModeNone: {
