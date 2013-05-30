@@ -33,6 +33,12 @@
     self.client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:AFNetworkingTestsBaseURLString]];
 }
 
+- (void)setUpTestWithSelector:(SEL)testMethod
+{
+    self.client.successCallbackQueue = nil;
+    self.client.failureCallbackQueue = nil;
+}
+
 #pragma mark -
 
 - (void)testInitRaisesException {
@@ -61,6 +67,52 @@
     }];
     
     expect(reachabilityStatus).will.equal(@(AFNetworkReachabilityStatusReachableViaWiFi));
+}
+
+- (void)testGetPathHandlersInMainQueue {
+    self.client.successCallbackQueue = dispatch_get_main_queue();
+    self.client.failureCallbackQueue = dispatch_get_main_queue();
+
+    __block dispatch_queue_t successCallbackQueue = nil;
+    __block dispatch_queue_t failureCallbackQueue = nil;
+
+    [self.client getPath:@"/" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+      successCallbackQueue = operation.successCallbackQueue;
+    } failure:NULL];
+
+    expect(successCallbackQueue).will.to.equal(dispatch_get_main_queue());
+
+    successCallbackQueue = nil;
+    failureCallbackQueue = nil;
+
+    [self.client getPath:@"/status/404" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+      failureCallbackQueue = operation.failureCallbackQueue;
+    }];
+
+    expect(failureCallbackQueue).will.to.equal(dispatch_get_main_queue());
+}
+
+- (void)testGetPathHandlersInNonMainQueue {
+    self.client.successCallbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+    self.client.failureCallbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+
+    __block dispatch_queue_t successCallbackQueue = nil;
+    __block dispatch_queue_t failureCallbackQueue = nil;
+
+    [self.client getPath:@"/" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+      successCallbackQueue = operation.successCallbackQueue;
+    } failure:NULL];
+
+    expect(successCallbackQueue).will.to.equal(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+
+    successCallbackQueue = nil;
+    failureCallbackQueue = nil;
+
+    [self.client getPath:@"/status/404" parameters:nil success:NULL failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+      failureCallbackQueue = operation.failureCallbackQueue;
+    }];
+
+    expect(failureCallbackQueue).will.to.equal(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
 }
 
 - (void)testJSONRequestOperationContruction {
