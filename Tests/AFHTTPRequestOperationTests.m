@@ -68,6 +68,7 @@
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 
     [operation start];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
     expect([operation isExecuting]).will.beTruthy();
 
     [operation cancel];
@@ -85,6 +86,7 @@
     }];
 
     [operation start];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
     expect([operation isExecuting]).will.beTruthy();
 
     [operation cancel];
