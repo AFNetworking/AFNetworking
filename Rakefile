@@ -1,11 +1,15 @@
 namespace :test do
+  task :prepare do
+    system(%Q{mkdir -p "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes" && cp Tests/Schemes/*.xcscheme "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes/"})
+  end
+  
   desc "Run the AFNetworking Tests for iOS"
-  task :ios do
+  task :ios => :prepare do
     $ios_success = system("xctool -workspace AFNetworking.xcworkspace -scheme 'iOS Tests' test -test-sdk iphonesimulator -configuration Release")
   end
   
   desc "Run the AFNetworking Tests for Mac OS X"
-  task :osx do
+  task :osx => :prepare do
     $osx_success = system("xctool -workspace AFNetworking.xcworkspace -scheme 'OS X Tests' test -test-sdk macosx -sdk macosx -configuration Release")
   end
 end

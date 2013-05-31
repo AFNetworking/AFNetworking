@@ -17,3 +17,4 @@ profile
 DerivedData
 .idea/
 Tests/Pods
+Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes/
