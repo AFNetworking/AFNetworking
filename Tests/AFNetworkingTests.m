@@ -28,7 +28,7 @@ NSString * const AFNetworkingTestsBaseURLString = @"http://httpbin.org/";
 @implementation AFNetworkingTests
 
 + (void)load {
-    if ([[[[NSProcessInfo processInfo] environment][@"AFTestsLoggingEnabled"] uppercaseString] isEqualToString:@"YES"]) {
+    if ([[[[[NSProcessInfo processInfo] environment] valueForKey:@"AFTestsLoggingEnabled"] uppercaseString] isEqualToString:@"YES"]) {
         [[AFHTTPRequestOperationLogger sharedLogger] startLogging];
     }
 }
