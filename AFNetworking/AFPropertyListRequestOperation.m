@@ -109,6 +109,7 @@ static dispatch_queue_t property_list_request_operation_processing_queue() {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wgnu"
     self.completionBlock = ^ {
         if (self.error) {
             if (failure) {
