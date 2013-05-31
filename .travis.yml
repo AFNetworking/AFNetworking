@@ -3,5 +3,4 @@ before_install:
     - brew update
     - brew install xctool --HEAD
     - cd Tests && pod install && cd $TRAVIS_BUILD_DIR
-    - mkdir -p "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes" && cp Tests/Schemes/*.xcscheme "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes/"
 script: rake test
