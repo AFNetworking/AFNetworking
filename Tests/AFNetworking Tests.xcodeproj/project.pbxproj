@@ -25,6 +25,10 @@
 		25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */; };
 		29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
+		A7DC62A617592E4200EBEC2F /* AFTestURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */; };
+		A7DC62A717592E4200EBEC2F /* AFTestURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */; };
+		A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
+		A7DC62AA17592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
 		AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 		F8C6F282174D2C6200B154D5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
 		F8C6F283174D2C6200B154D5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
@@ -74,6 +78,9 @@
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7DC62A417592E4200EBEC2F /* AFTestURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTestURLProtocol.h; sourceTree = "<group>"; };
+		A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTestURLProtocol.m; sourceTree = "<group>"; };
+		A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperationTests.m; sourceTree = "<group>"; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -188,11 +195,14 @@
 		25801548173EB3B00026AA6E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				A7DC62A417592E4200EBEC2F /* AFTestURLProtocol.h */,
+				A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */,
 				2580153E173EB3A70026AA6E /* AFNetworkingTests.h */,
 				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
 				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */,
 				29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */,
 				2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */,
+				A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
@@ -328,6 +338,8 @@
 				25801542173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 				29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
+				A7DC62A617592E4200EBEC2F /* AFTestURLProtocol.m in Sources */,
+				A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +351,8 @@
 				25801543173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 				29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
+				A7DC62A717592E4200EBEC2F /* AFTestURLProtocol.m in Sources */,
+				A7DC62AA17592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
