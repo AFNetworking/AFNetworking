@@ -1,6 +1,6 @@
 // AFTestURLProtocol.m
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,28 @@
 
 #import "AFTestURLProtocol.h"
 
-typedef id(^AFTestURLProtocolInitializationCallback)(AFTestURLProtocol *protocol);
-static NSURL *matchingURL = nil;
-static AFTestURLProtocolInitializationCallback initializationCallback = NULL;
+typedef id (^AFTestURLProtocolInitializationCallback)(AFTestURLProtocol *protocol);
 
-
+static NSURL * _matchingURL = nil;
+static AFTestURLProtocolInitializationCallback _initializationCallback = nil;
 
 @implementation AFTestURLProtocol
-
-+ (void)matchURL:(NSURL *)URL withCallback:(id(^)(AFTestURLProtocol *protocol))callback {
-    matchingURL = URL;
-    initializationCallback = callback;
-}
 
 + (void)load {
     [NSURLProtocol registerClass:[AFTestURLProtocol class]];
 }
 
++ (void)matchURL:(NSURL *)URL
+    withCallback:(id(^)(AFTestURLProtocol *protocol))callback
+{
+    _matchingURL = URL;
+    _initializationCallback = callback;
+}
+
 #pragma mark - NSURLProtocol
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
-    return [request.URL isEqual:matchingURL] && initializationCallback;
+    return [request.URL isEqual:_matchingURL] && _initializationCallback;
 }
 
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
@@ -53,46 +54,40 @@ static AFTestURLProtocolInitializationCallback initializationCallback = NULL;
     return NO;
 }
 
-- (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
-    NSParameterAssert(initializationCallback);
+- (id)initWithRequest:(NSURLRequest *)request
+       cachedResponse:(NSCachedURLResponse *)cachedResponse
+               client:(id <NSURLProtocolClient>)client
+{
+    NSParameterAssert(_initializationCallback);
     
-    if (self = [super initWithRequest:request cachedResponse:cachedResponse client:client]) {
-        self = initializationCallback(self);
-        
-        matchingURL = nil;
-        initializationCallback = NULL;
+    self = [super initWithRequest:request cachedResponse:cachedResponse client:client];
+    if (!self) {
+        return nil;
     }
+
+    self = _initializationCallback(self);
+
+    _matchingURL = nil;
+    _initializationCallback = nil;
+
     return self;
 }
 
-- (void)startLoading {
-    
-}
+- (void)startLoading {}
 
-- (void)stopLoading {
-    
-}
+- (void)stopLoading {}
 
 #pragma mark - NSURLAuthenticationChallengeSender
 
-- (void)useCredential:(NSURLCredential *)credential forAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    
-}
+- (void)cancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {}
 
-- (void)continueWithoutCredentialForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    
-}
+- (void)continueWithoutCredentialForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {}
 
-- (void)cancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    
-}
+- (void)useCredential:(NSURLCredential *)credential
+forAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {}
 
-- (void)performDefaultHandlingForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    
-}
+- (void)performDefaultHandlingForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {}
 
-- (void)rejectProtectionSpaceAndContinueWithChallenge:(NSURLAuthenticationChallenge *)challenge {
-    
-}
+- (void)rejectProtectionSpaceAndContinueWithChallenge:(NSURLAuthenticationChallenge *)challenge {}
 
 @end
