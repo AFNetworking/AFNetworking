@@ -75,15 +75,15 @@ static dispatch_queue_t json_request_operation_processing_queue() {
         } else {
             // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
             // See http://stackoverflow.com/a/12843465/157142
-            NSData *JSONData = [self.responseString dataUsingEncoding:NSUTF8StringEncoding];
+            NSData *data = [self.responseString dataUsingEncoding:NSUTF8StringEncoding];
 
-            if (JSONData) {
-                self.responseJSON = [NSJSONSerialization JSONObjectWithData:JSONData options:self.JSONReadingOptions error:&error];
+            if (data) {
+                self.responseJSON = [NSJSONSerialization JSONObjectWithData:data options:self.JSONReadingOptions error:&error];
             } else {
-                //Could not decode response string
-                error = [[NSError alloc]initWithDomain:AFNetworkingErrorDomain
-                                                  code:NSURLErrorCannotDecodeContentData
-                                              userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Could not decode:\n%@",self.responseString]}];
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+                [userInfo setValue:@"Operation responseData failed decoding as a UTF-8 string" forKey:NSLocalizedDescriptionKey];
+                [userInfo setValue:[NSString stringWithFormat:@"Could not decode string: %@", self.responseString] forKey:NSLocalizedFailureReasonErrorKey];
+                error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
             }
         }
 
