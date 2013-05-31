@@ -82,10 +82,12 @@ static dispatch_queue_t image_request_operation_processing_queue() {
             if (imageProcessingBlock) {
                 dispatch_async(image_request_operation_processing_queue(), ^(void) {
                     UIImage *processedImage = imageProcessingBlock(image);
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
                     dispatch_async(operation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, processedImage);
                     });
+#pragma clang diagnostic pop
                 });
             } else {
                 success(operation.request, operation.response, image);
@@ -203,6 +205,8 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wgnu"
+
     self.completionBlock = ^ {
         dispatch_async(image_request_operation_processing_queue(), ^(void) {
             if (self.error) {
