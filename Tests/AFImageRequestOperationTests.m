@@ -74,4 +74,38 @@
     expect(operation.responseImage).will.beNil();
 }
 
+- (void)testImageProcessingBlockIsRunOnSuccess {
+    __block UIImage *blockImage = nil;
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/png" relativeToURL:self.baseURL]];
+
+    AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
+        blockImage = [[UIImage alloc] init];
+        return blockImage;
+    } success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+    }];
+
+    [operation start];
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+    expect(blockImage).willNot.beNil();
+}
+
+- (void)testImageProcessingBlockIsNotRunOnFailure {
+    __block UIImage *blockImage = nil;
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
+
+    AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
+        blockImage = [[UIImage alloc] init];
+        return blockImage;
+    } success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+    }];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).willNot.beNil();
+    expect(blockImage).will.beNil();
+}
+
 @end
