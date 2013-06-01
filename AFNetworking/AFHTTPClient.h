@@ -176,6 +176,16 @@ typedef enum {
  */
 - (id)initWithBaseURL:(NSURL *)url;
 
+/**
+ Disabled. Invoke the designated initializer `initWithBaseURL:` instead.
+ */
+-(id) init __attribute__((unavailable("Invoke the designated initializer `initWithBaseURL:` instead.")));
+
+/**
+ Disabled. Invoke the designated initializer `initWithBaseURL:` instead.
+ */
++(id) new __attribute__((unavailable("Invoke the designated initializer `initWithBaseURL:` instead.")));
+
 ///-----------------------------------
 /// @name Managing Reachability Status
 ///-----------------------------------
