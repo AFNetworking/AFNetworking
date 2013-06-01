@@ -25,6 +25,8 @@
 		25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */; };
 		29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
+		A70F4A96175A529400386DF5 /* root_certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = A70F4A95175A529400386DF5 /* root_certificate.cer */; };
+		A70F4A97175A529400386DF5 /* root_certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = A70F4A95175A529400386DF5 /* root_certificate.cer */; };
 		A7DC62A617592E4200EBEC2F /* AFTestURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */; };
 		A7DC62A717592E4200EBEC2F /* AFTestURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */; };
 		A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
@@ -78,6 +80,7 @@
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A70F4A95175A529400386DF5 /* root_certificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = root_certificate.cer; path = Resources/root_certificate.cer; sourceTree = "<group>"; };
 		A7DC62A417592E4200EBEC2F /* AFTestURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTestURLProtocol.h; sourceTree = "<group>"; };
 		A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTestURLProtocol.m; sourceTree = "<group>"; };
 		A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperationTests.m; sourceTree = "<group>"; };
@@ -119,6 +122,7 @@
 				25801549173EB4B40026AA6E /* Pods-ios.xcconfig */,
 				2580154A173EB4B40026AA6E /* Pods-osx.xcconfig */,
 				25801548173EB3B00026AA6E /* Tests */,
+				A70F4A91175A4E0000386DF5 /* Certificates */,
 				2544EC37173BE382004117E8 /* AFNetworking */,
 				25A753091747FC7E00F04F2F /* Resources */,
 				2544EC34173BE382004117E8 /* Frameworks */,
@@ -215,6 +219,14 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		A70F4A91175A4E0000386DF5 /* Certificates */ = {
+			isa = PBXGroup;
+			children = (
+				A70F4A95175A529400386DF5 /* root_certificate.cer */,
+			);
+			name = Certificates;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -287,6 +299,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8C6F282174D2C6200B154D5 /* Icon.png in Resources */,
+				A70F4A96175A529400386DF5 /* root_certificate.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8C6F283174D2C6200B154D5 /* Icon.png in Resources */,
+				A70F4A97175A529400386DF5 /* root_certificate.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

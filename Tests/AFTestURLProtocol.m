@@ -58,14 +58,12 @@ static AFTestURLProtocolInitializationCallback _initializationCallback = nil;
        cachedResponse:(NSCachedURLResponse *)cachedResponse
                client:(id <NSURLProtocolClient>)client
 {
-    NSParameterAssert(_initializationCallback);
-    
     self = [super initWithRequest:request cachedResponse:cachedResponse client:client];
     if (!self) {
         return nil;
     }
 
-    self = _initializationCallback(self);
+    self = _initializationCallback ? _initializationCallback(self) : self;
 
     _matchingURL = nil;
     _initializationCallback = nil;
@@ -79,15 +77,25 @@ static AFTestURLProtocolInitializationCallback _initializationCallback = nil;
 
 #pragma mark - NSURLAuthenticationChallengeSender
 
-- (void)cancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {}
+- (void)cancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    [self doesNotRecognizeSelector:_cmd];
+}
 
-- (void)continueWithoutCredentialForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {}
+- (void)continueWithoutCredentialForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    [self doesNotRecognizeSelector:_cmd];
+}
 
 - (void)useCredential:(NSURLCredential *)credential
-forAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {}
+forAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    [self doesNotRecognizeSelector:_cmd];
+}
 
-- (void)performDefaultHandlingForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {}
+- (void)performDefaultHandlingForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    [self doesNotRecognizeSelector:_cmd];
+}
 
-- (void)rejectProtectionSpaceAndContinueWithChallenge:(NSURLAuthenticationChallenge *)challenge {}
+- (void)rejectProtectionSpaceAndContinueWithChallenge:(NSURLAuthenticationChallenge *)challenge {
+    [self doesNotRecognizeSelector:_cmd];
+}
 
 @end
