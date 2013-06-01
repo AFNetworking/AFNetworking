@@ -22,7 +22,7 @@
 
 #import "AFNetworkingTests.h"
 #import "AFURLConnectionOperation.h"
-#import "AFTestURLProtocol.h"
+#import "AFMockURLProtocol.h"
 
 @interface AFURLConnectionOperationTests : SenTestCase
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
@@ -46,20 +46,17 @@
         willSendRequestForAuthenticationChallengeBlockInvoked = YES;
     }];
     
-    [AFTestURLProtocol matchURL:request.URL withCallback:^id(AFTestURLProtocol *protocol) {
-        id mockedProtocol = [OCMockObject partialMockForObject:protocol];
+    [AFMockURLProtocol handleNextRequestForURL:request.URL usingBlock:^(AFMockURLProtocol <AFMockURLProtocolProxy> * protocol) {
         
         void(^startOperation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
-            __unsafe_unretained AFTestURLProtocol *protocol = nil;
+            __unsafe_unretained AFMockURLProtocol *protocol = nil;
             [invocation getArgument:&protocol atIndex:0];
             
             NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:request.URL.host port:request.URL.port.integerValue protocol:request.URL.scheme realm:nil authenticationMethod:NSURLAuthenticationMethodDefault];
             NSURLAuthenticationChallenge *authenticationChallenge = [[NSURLAuthenticationChallenge alloc] initWithProtectionSpace:protectionSpace proposedCredential:nil previousFailureCount:0 failureResponse:nil error:nil sender:protocol];
             [protocol.client URLProtocol:protocol didReceiveAuthenticationChallenge:authenticationChallenge];
         };
-        [[[mockedProtocol stub] andDo:startOperation] startLoading];
-        
-        return mockedProtocol;
+        [[[protocol stub] andDo:startOperation] startLoading];
     }];
     
     [operation start];
@@ -101,7 +98,7 @@
         [invocation setReturnValue:(void *)&trust];
     }] serverTrust];
     
-    AFTestURLProtocol *protocol = [[AFTestURLProtocol alloc] initWithRequest:request cachedResponse:nil client:nil];
+    AFMockURLProtocol *protocol = [[AFMockURLProtocol alloc] initWithRequest:request cachedResponse:nil client:nil];
     id mockedProtocol = [OCMockObject partialMockForObject:protocol];
     
     void(^useCredential)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
@@ -157,7 +154,7 @@
         [invocation setReturnValue:(void *)&trust];
     }] serverTrust];
     
-    AFTestURLProtocol *protocol = [[AFTestURLProtocol alloc] initWithRequest:request cachedResponse:nil client:nil];
+    AFMockURLProtocol *protocol = [[AFMockURLProtocol alloc] initWithRequest:request cachedResponse:nil client:nil];
     id mockedProtocol = [OCMockObject partialMockForObject:protocol];
     
     void(^useCredential)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
@@ -219,7 +216,7 @@
         [invocation setReturnValue:(void *)&trust];
     }] serverTrust];
     
-    AFTestURLProtocol *protocol = [[AFTestURLProtocol alloc] initWithRequest:request cachedResponse:nil client:nil];
+    AFMockURLProtocol *protocol = [[AFMockURLProtocol alloc] initWithRequest:request cachedResponse:nil client:nil];
     id mockedProtocol = [OCMockObject partialMockForObject:protocol];
     
     void(^useCredential)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
@@ -282,7 +279,7 @@
         [invocation setReturnValue:(void *)&trust];
     }] serverTrust];
     
-    AFTestURLProtocol *protocol = [[AFTestURLProtocol alloc] initWithRequest:request cachedResponse:nil client:nil];
+    AFMockURLProtocol *protocol = [[AFMockURLProtocol alloc] initWithRequest:request cachedResponse:nil client:nil];
     id mockedProtocol = [OCMockObject partialMockForObject:protocol];
     
     void(^useCredential)(NSInvocation *invocation) = ^(NSInvocation *invocation) {

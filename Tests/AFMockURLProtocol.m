@@ -1,4 +1,4 @@
-// AFTestURLProtocol.m
+// AFMockURLProtocol.m
 //
 // Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
@@ -20,24 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFTestURLProtocol.h"
+#import "AFMockURLProtocol.h"
 
-typedef id (^AFTestURLProtocolInitializationCallback)(AFTestURLProtocol *protocol);
+typedef void (^AFTestURLProtocolInitializationCallback)(AFMockURLProtocol *protocol);
 
-static NSURL * _matchingURL = nil;
-static AFTestURLProtocolInitializationCallback _initializationCallback = nil;
+static volatile NSURL * _matchingURL = nil;
+static volatile AFTestURLProtocolInitializationCallback _initializationCallback = nil;
 
-@implementation AFTestURLProtocol
+@implementation AFMockURLProtocol
 
 + (void)load {
-    [NSURLProtocol registerClass:[AFTestURLProtocol class]];
+    [NSURLProtocol registerClass:[AFMockURLProtocol class]];
 }
 
-+ (void)matchURL:(NSURL *)URL
-    withCallback:(id(^)(AFTestURLProtocol *protocol))callback
++ (void)handleNextRequestForURL:(NSURL *)URL
+                     usingBlock:(void (^)(AFMockURLProtocol <AFMockURLProtocolProxy> * protocol))block;
 {
     _matchingURL = URL;
-    _initializationCallback = callback;
+    _initializationCallback = block;
 }
 
 #pragma mark - NSURLProtocol
@@ -50,7 +50,9 @@ static AFTestURLProtocolInitializationCallback _initializationCallback = nil;
     return request;
 }
 
-+ (BOOL)requestIsCacheEquivalent:(NSURLRequest *)a toRequest:(NSURLRequest *)b {
++ (BOOL)requestIsCacheEquivalent:(NSURLRequest *)a
+                       toRequest:(NSURLRequest *)b
+{
     return NO;
 }
 
@@ -63,10 +65,14 @@ static AFTestURLProtocolInitializationCallback _initializationCallback = nil;
         return nil;
     }
 
-    self = _initializationCallback ? _initializationCallback(self) : self;
+    if (_initializationCallback) {
+        self = [OCMockObject partialMockForObject:self];
 
-    _matchingURL = nil;
+        _initializationCallback(self);
+    }
+
     _initializationCallback = nil;
+    _matchingURL = nil;
 
     return self;
 }

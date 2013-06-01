@@ -1,4 +1,4 @@
-// AFTestURLProtocol.h
+// AFMockURLProtocol.h
 //
 // Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
@@ -22,9 +22,17 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AFTestURLProtocol : NSURLProtocol <NSURLAuthenticationChallengeSender>
+#import "OCMock.h"
 
-+ (void)matchURL:(NSURL *)URL
-    withCallback:(id (^)(AFTestURLProtocol *protocol))initializationCallback;
+@protocol AFMockURLProtocolProxy <NSObject>
+- (id)stub;
+- (id)expect;
+- (id)reject;
+@end
+
+@interface AFMockURLProtocol : NSURLProtocol <NSURLAuthenticationChallengeSender>
+
++ (void)handleNextRequestForURL:(NSURL *)URL
+                     usingBlock:(void (^)(AFMockURLProtocol <AFMockURLProtocolProxy> * protocol))block;
 
 @end
