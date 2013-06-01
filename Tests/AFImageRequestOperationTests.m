@@ -56,4 +56,22 @@
     expect(operation.error).willNot.beNil();
 }
 
+- (void)testThatImageResponseIsNotNilWhenRequestSucceeds {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/png" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.responseImage).willNot.beNil();
+}
+
+- (void)testThatImageResponseIsNilWhenRequestFails {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.responseImage).will.beNil();
+}
+
 @end
