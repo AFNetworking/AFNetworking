@@ -38,13 +38,99 @@
 - (void)testThatImageRequestOperationAcceptsCorrectFormatTypes {
     NSArray *acceptedFormats = @[@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon", @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap"];
     for (NSString *format in acceptedFormats) {
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"/response-headers?Content-Type=%@", format] relativeToURL:self.baseURL]];
-        AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
-        [operation start];
-
-        expect([operation isFinished]).will.beTruthy();
-        expect(operation.error).will.beNil();
     }
+}
+
+- (void)testThatImageRequestOperationAcceptsTiff {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/tiff" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
+- (void)testThatImageRequestOperationAcceptsJpeg {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/jpeg" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
+- (void)testThatImageRequestOperationAcceptsGif {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/gif" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
+- (void)testThatImageRequestOperationAcceptsPng {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/png" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
+- (void)testThatImageRequestOperationAcceptsIco {
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/ico" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
+- (void)testThatImageRequestOperationAcceptsXicon {
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/x-icon" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
+- (void)testThatImageRequestOperationAcceptsBmp {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/bmp" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
+- (void)testThatImageRequestOperationAcceptsXbmp {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/x-bmp" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
+- (void)testThatImageRequestOperationAcceptsXxbitmap {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/x-xbitmap" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
+}
+
+- (void)testThatImageRequestOperationAcceptsXwinbitmap {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/x-win-bitmap" relativeToURL:self.baseURL]];
+    AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(operation.error).will.beNil();
 }
 
 - (void)testThatImageRequestOperationDoesNotAcceptInvalidFormatTypes {
