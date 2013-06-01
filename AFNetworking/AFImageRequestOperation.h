@@ -32,7 +32,7 @@
 #endif
 
 /**
- `AFImageRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading an processing images.
+ `AFImageRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and processing images.
 
  ## Acceptable Content Types
 
@@ -71,7 +71,7 @@
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
 
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param success A block object to be executed when the request finishes successfully. This block has no return value and takes a single arguments, the image created from the response data of the request.
+ @param success A block object to be executed when the request finishes successfully. This block has no return value and takes a single argument, the image created from the response data of the request.
 
  @return A new image request operation
  */

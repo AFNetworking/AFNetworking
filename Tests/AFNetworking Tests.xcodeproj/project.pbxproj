@@ -25,6 +25,7 @@
 		25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */; };
 		29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
+		667B268117599C5800764906 /* AFImageRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 667B268017599C5800764906 /* AFImageRequestOperationTests.m */; };
 		A7DC62A617592E4200EBEC2F /* AFTestURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */; };
 		A7DC62A717592E4200EBEC2F /* AFTestURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */; };
 		A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
@@ -77,6 +78,7 @@
 		29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONRequestOperationTests.m; sourceTree = "<group>"; };
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		667B268017599C5800764906 /* AFImageRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageRequestOperationTests.m; sourceTree = "<group>"; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7DC62A417592E4200EBEC2F /* AFTestURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTestURLProtocol.h; sourceTree = "<group>"; };
 		A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTestURLProtocol.m; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				2580153E173EB3A70026AA6E /* AFNetworkingTests.h */,
+				667B268017599C5800764906 /* AFImageRequestOperationTests.m */,
 				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
 				A7DC62A417592E4200EBEC2F /* AFTestURLProtocol.h */,
 				A7DC62A517592E4200EBEC2F /* AFTestURLProtocol.m */,
@@ -340,6 +343,7 @@
 				29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
 				A7DC62A617592E4200EBEC2F /* AFTestURLProtocol.m in Sources */,
 				A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */,
+				667B268117599C5800764906 /* AFImageRequestOperationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
