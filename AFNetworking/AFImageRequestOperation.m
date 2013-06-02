@@ -230,7 +230,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                     });
                 }
             }
-        });        
+        });
     };
 #pragma clang diagnostic pop
 }

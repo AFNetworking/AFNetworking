@@ -25,19 +25,22 @@
 		25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */; };
 		29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
-		A70F4A96175A529400386DF5 /* root_certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = A70F4A95175A529400386DF5 /* root_certificate.cer */; };
-		A70F4A97175A529400386DF5 /* root_certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = A70F4A95175A529400386DF5 /* root_certificate.cer */; };
-		A70F4A9E175A726B00386DF5 /* ca.cer in Resources */ = {isa = PBXBuildFile; fileRef = A70F4A9C175A726B00386DF5 /* ca.cer */; };
-		A70F4A9F175A726B00386DF5 /* ca.cer in Resources */ = {isa = PBXBuildFile; fileRef = A70F4A9C175A726B00386DF5 /* ca.cer */; };
-		A70F4AA0175A726B00386DF5 /* derived.cert in Resources */ = {isa = PBXBuildFile; fileRef = A70F4A9D175A726B00386DF5 /* derived.cert */; };
-		A70F4AA1175A726B00386DF5 /* derived.cert in Resources */ = {isa = PBXBuildFile; fileRef = A70F4A9D175A726B00386DF5 /* derived.cert */; };
-		A7DC62A617592E4200EBEC2F /* AFMockURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A517592E4200EBEC2F /* AFMockURLProtocol.m */; };
-		A7DC62A717592E4200EBEC2F /* AFMockURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A517592E4200EBEC2F /* AFMockURLProtocol.m */; };
+		667B268117599C5800764906 /* AFImageRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 667B268017599C5800764906 /* AFImageRequestOperationTests.m */; };
 		A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
 		A7DC62AA17592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
 		AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 		F8C6F282174D2C6200B154D5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
 		F8C6F283174D2C6200B154D5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
+		F8D62D3B175ABF5E00C717C3 /* AFMockURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D62D3A175ABF5E00C717C3 /* AFMockURLProtocol.m */; };
+		F8D62D3C175ABF5E00C717C3 /* AFMockURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D62D3A175ABF5E00C717C3 /* AFMockURLProtocol.m */; };
+		F8E801E1175AC349008D3886 /* ca.cer in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DD175AC349008D3886 /* ca.cer */; };
+		F8E801E2175AC349008D3886 /* ca.cer in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DD175AC349008D3886 /* ca.cer */; };
+		F8E801E3175AC349008D3886 /* derived.cert in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DE175AC349008D3886 /* derived.cert */; };
+		F8E801E4175AC349008D3886 /* derived.cert in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DE175AC349008D3886 /* derived.cert */; };
+		F8E801E5175AC349008D3886 /* root_certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DF175AC349008D3886 /* root_certificate.cer */; };
+		F8E801E6175AC349008D3886 /* root_certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DF175AC349008D3886 /* root_certificate.cer */; };
+		F8E801E7175AC349008D3886 /* root_certificate.key in Resources */ = {isa = PBXBuildFile; fileRef = F8E801E0175AC349008D3886 /* root_certificate.key */; };
+		F8E801E8175AC349008D3886 /* root_certificate.key in Resources */ = {isa = PBXBuildFile; fileRef = F8E801E0175AC349008D3886 /* root_certificate.key */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,14 +86,16 @@
 		29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONRequestOperationTests.m; sourceTree = "<group>"; };
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		667B268017599C5800764906 /* AFImageRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageRequestOperationTests.m; sourceTree = "<group>"; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A70F4A95175A529400386DF5 /* root_certificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = root_certificate.cer; path = Resources/root_certificate.cer; sourceTree = "<group>"; };
-		A70F4A9C175A726B00386DF5 /* ca.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = ca.cer; path = Resources/ca.cer; sourceTree = "<group>"; };
-		A70F4A9D175A726B00386DF5 /* derived.cert */ = {isa = PBXFileReference; lastKnownFileType = file; name = derived.cert; path = Resources/derived.cert; sourceTree = "<group>"; };
-		A7DC62A417592E4200EBEC2F /* AFMockURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFMockURLProtocol.h; sourceTree = "<group>"; };
-		A7DC62A517592E4200EBEC2F /* AFMockURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFMockURLProtocol.m; sourceTree = "<group>"; };
 		A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperationTests.m; sourceTree = "<group>"; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
+		F8D62D39175ABF5E00C717C3 /* AFMockURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFMockURLProtocol.h; sourceTree = "<group>"; };
+		F8D62D3A175ABF5E00C717C3 /* AFMockURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFMockURLProtocol.m; sourceTree = "<group>"; };
+		F8E801DD175AC349008D3886 /* ca.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = ca.cer; path = Resources/ca.cer; sourceTree = "<group>"; };
+		F8E801DE175AC349008D3886 /* derived.cert */ = {isa = PBXFileReference; lastKnownFileType = file; name = derived.cert; path = Resources/derived.cert; sourceTree = "<group>"; };
+		F8E801DF175AC349008D3886 /* root_certificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = root_certificate.cer; path = Resources/root_certificate.cer; sourceTree = "<group>"; };
+		F8E801E0175AC349008D3886 /* root_certificate.key */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = root_certificate.key; path = Resources/root_certificate.key; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,12 +210,13 @@
 			isa = PBXGroup;
 			children = (
 				2580153E173EB3A70026AA6E /* AFNetworkingTests.h */,
+				F8D62D39175ABF5E00C717C3 /* AFMockURLProtocol.h */,
+				F8D62D3A175ABF5E00C717C3 /* AFMockURLProtocol.m */,
 				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
-				A7DC62A417592E4200EBEC2F /* AFMockURLProtocol.h */,
-				A7DC62A517592E4200EBEC2F /* AFMockURLProtocol.m */,
 				A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */,
 				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */,
 				29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */,
+				667B268017599C5800764906 /* AFImageRequestOperationTests.m */,
 				2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */,
 			);
 			name = Tests;
@@ -219,18 +225,19 @@
 		25A753091747FC7E00F04F2F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A70F4A91175A4E0000386DF5 /* Certificates */,
 				F8C6F281174D2C6200B154D5 /* Icon.png */,
+				F8E801E9175AC34D008D3886 /* Certificates */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		A70F4A91175A4E0000386DF5 /* Certificates */ = {
+		F8E801E9175AC34D008D3886 /* Certificates */ = {
 			isa = PBXGroup;
 			children = (
-				A70F4A9C175A726B00386DF5 /* ca.cer */,
-				A70F4A9D175A726B00386DF5 /* derived.cert */,
-				A70F4A95175A529400386DF5 /* root_certificate.cer */,
+				F8E801DD175AC349008D3886 /* ca.cer */,
+				F8E801DE175AC349008D3886 /* derived.cert */,
+				F8E801DF175AC349008D3886 /* root_certificate.cer */,
+				F8E801E0175AC349008D3886 /* root_certificate.key */,
 			);
 			name = Certificates;
 			sourceTree = "<group>";
@@ -307,9 +314,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8C6F282174D2C6200B154D5 /* Icon.png in Resources */,
-				A70F4A96175A529400386DF5 /* root_certificate.cer in Resources */,
-				A70F4A9E175A726B00386DF5 /* ca.cer in Resources */,
-				A70F4AA0175A726B00386DF5 /* derived.cert in Resources */,
+				F8E801E1175AC349008D3886 /* ca.cer in Resources */,
+				F8E801E3175AC349008D3886 /* derived.cert in Resources */,
+				F8E801E5175AC349008D3886 /* root_certificate.cer in Resources */,
+				F8E801E7175AC349008D3886 /* root_certificate.key in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,9 +326,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8C6F283174D2C6200B154D5 /* Icon.png in Resources */,
-				A70F4A97175A529400386DF5 /* root_certificate.cer in Resources */,
-				A70F4A9F175A726B00386DF5 /* ca.cer in Resources */,
-				A70F4AA1175A726B00386DF5 /* derived.cert in Resources */,
+				F8E801E2175AC349008D3886 /* ca.cer in Resources */,
+				F8E801E4175AC349008D3886 /* derived.cert in Resources */,
+				F8E801E6175AC349008D3886 /* root_certificate.cer in Resources */,
+				F8E801E8175AC349008D3886 /* root_certificate.key in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,8 +373,9 @@
 				25801542173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 				29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
-				A7DC62A617592E4200EBEC2F /* AFMockURLProtocol.m in Sources */,
 				A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */,
+				667B268117599C5800764906 /* AFImageRequestOperationTests.m in Sources */,
+				F8D62D3B175ABF5E00C717C3 /* AFMockURLProtocol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,8 +387,8 @@
 				25801543173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
 				25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
 				29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
-				A7DC62A717592E4200EBEC2F /* AFMockURLProtocol.m in Sources */,
 				A7DC62AA17592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */,
+				F8D62D3C175ABF5E00C717C3 /* AFMockURLProtocol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
