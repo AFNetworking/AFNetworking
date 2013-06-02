@@ -43,11 +43,17 @@
  - `connection:didFailWithError:`
  - `connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:`
  - `connection:willCacheResponse:`
- - `connection:willSendRequestForAuthenticationChallenge:`
- - `connection:canAuthenticateAgainstProtectionSpace:`
- - `connection:didReceiveAuthenticationChallenge:`
  - `connectionShouldUseCredentialStorage:`
  - `connection:needNewBodyStream:`
+ 
+ When _AFNETWORKING_PIN_SSL_CERTIFICATES_ is defined, the following authentication delegate method is implemented:
+ 
+ - `connection:willSendRequestForAuthenticationChallenge:`
+ 
+ Otherwise, the following authentication delegate methods are implemented:
+ 
+ - `connection:canAuthenticateAgainstProtectionSpace:`
+ - `connection:didReceiveAuthenticationChallenge:`
 
  If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
 
