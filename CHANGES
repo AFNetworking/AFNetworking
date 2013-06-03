@@ -1,8 +1,18 @@
 = 1.3.0 (2013-06-01)
 
- * Change in `AFURLConnectionOperation` `NSURLConnection` authentication delegate methods and associated block setters. If `_AFNETWORKING_PIN_SSL_CERTIFICATES_` is defined, `-setWillSendRequestForAuthenticationChallengeBlock:` will be available, and `-connection:willSendRequestForAuthenticationChallenge:` will be implemented. Otherwise, `-setAuthenticationAgainstProtectionSpaceBlock:` & `-setAuthenticationChallengeBlock:` will be available, and `-connection:canAuthenticateAgainstProtectionSpace:` & `-connection:didReceiveAuthenticationChallenge:` will be implemented instead (Oliver Letterer)
+ * Change in `AFURLConnectionOperation` `NSURLConnection` authentication
+delegate methods and associated block setters. If
+`_AFNETWORKING_PIN_SSL_CERTIFICATES_` is defined,
+`-setWillSendRequestForAuthenticationChallengeBlock:` will be available, and
+`-connection:willSendRequestForAuthenticationChallenge:` will be implemented.
+Otherwise, `-setAuthenticationAgainstProtectionSpaceBlock:` &
+`-setAuthenticationChallengeBlock:` will be available, and
+`-connection:canAuthenticateAgainstProtectionSpace:` &
+`-connection:didReceiveAuthenticationChallenge:` will be implemented instead
+(Oliver Letterer)
 
- * Change in AFNetworking podspec to include Security framework (Kevin Harwood, Oliver Letterer, Sam Soffes)
+ * Change in AFNetworking podspec to include Security framework (Kevin Harwood,
+Oliver Letterer, Sam Soffes)
 
  * Change in AFHTTPClient to @throw exception when non-designated intializer is
 used (Kyle Fuller)
@@ -721,7 +731,8 @@ where % is used as a literal rather than as part of a percent escape code
  -multipartFormRequestWithMethod:path:parameters:constructing BodyWithBlock:`
  (Ray Morgan, Mattt Thompson, Sam Soffes)
 
- * Fix "File Upload with Progress Callback" code snippet in README (Larry Legend)
+ * Fix "File Upload with Progress Callback" code snippet in README (Larry
+Legend)
 
  * Fix to SBJSON invocations in `AFJSONEncode` and `AFJSONDecode` (Matthias
  Tretter, James Frye)
