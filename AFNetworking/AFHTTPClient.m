@@ -251,6 +251,12 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSMutableArray *acceptLanguagesComponents = [NSMutableArray array];
     [[NSLocale preferredLanguages] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         float q = 1.0f - (idx * 0.1f);
+        
+        if ([(NSString*)obj compare:@"zh-Hant"] == NSOrderedSame)
+            obj = @"zh-TW";
+        else if ([(NSString*)obj compare:@"zh-Hans"] == NSOrderedSame)
+            obj = @"zh-CN";
+    
         [acceptLanguagesComponents addObject:[NSString stringWithFormat:@"%@;q=%0.1g", obj, q]];
         *stop = q <= 0.5f;
     }];
