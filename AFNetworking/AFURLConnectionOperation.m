@@ -576,7 +576,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 - (void)cancelConnection {
     NSDictionary *userInfo = nil;
     if ([self.request URL]) {
-        userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
+        userInfo = @{NSURLErrorFailingURLErrorKey: [self.request URL]};
     }
     self.error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
     
@@ -882,8 +882,8 @@ didReceiveResponse:(NSURLResponse *)response
     [aCoder encodeObject:self.response forKey:@"response"];
     [aCoder encodeObject:self.error forKey:@"error"];
     [aCoder encodeObject:self.responseData forKey:@"responseData"];
-    [aCoder encodeObject:[NSNumber numberWithLongLong:self.totalBytesRead] forKey:@"totalBytesRead"];
-    [aCoder encodeObject:[NSNumber numberWithBool:self.allowsInvalidSSLCertificate] forKey:@"allowsInvalidSSLCertificate"];
+    [aCoder encodeObject:@(self.totalBytesRead) forKey:@"totalBytesRead"];
+    [aCoder encodeObject:@(self.allowsInvalidSSLCertificate) forKey:@"allowsInvalidSSLCertificate"];
 }
 
 #pragma mark - NSCopying
