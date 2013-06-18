@@ -37,6 +37,10 @@
 
 #pragma mark -
 
+- (void)testInitWithNilRequestRaisesException {
+    expect(^{ (void)[[AFURLConnectionOperation alloc] initWithRequest:nil]; }).to.raiseAny();
+}
+
 - (void)testThatAFURLConnectionOperationInvokesWillSendRequestForAuthenticationChallengeBlock {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/path" relativeToURL:self.baseURL]];
     AFURLConnectionOperation *operation = [[AFURLConnectionOperation alloc] initWithRequest:request];
