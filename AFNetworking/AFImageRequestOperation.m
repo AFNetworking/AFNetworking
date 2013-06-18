@@ -49,7 +49,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         return nil;
     }
 
-    CGImageRef imageRef;
+    CGImageRef imageRef = nil;
 
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
 
@@ -58,7 +58,9 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         imageRef = CGImageCreateWithPNGDataProvider(dataProvider,  NULL, true, kCGRenderingIntentDefault);
     } else if ([contentTypes containsObject:@"image/jpeg"]) {
         imageRef = CGImageCreateWithJPEGDataProvider(dataProvider, NULL, true, kCGRenderingIntentDefault);
-    } else {
+    }
+    
+    if (!imageRef) {
         UIImage *image = AFImageWithDataAtScale(data, scale);
         if (image.images) {
             CGDataProviderRelease(dataProvider);
