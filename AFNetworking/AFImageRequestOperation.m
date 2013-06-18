@@ -32,6 +32,90 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     return af_image_request_operation_processing_queue;
 }
 
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#import <CoreGraphics/CoreGraphics.h>
+
+static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
+    if ([UIImage instancesRespondToSelector:@selector(initWithData:scale:)]) {
+        return [[UIImage alloc] initWithData:data scale:scale];
+    } else {
+        UIImage *image = [[UIImage alloc] initWithData:data];
+        return [[UIImage alloc] initWithCGImage:[image CGImage] scale:scale orientation:image.imageOrientation];
+    }
+}
+
+static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *response, NSData *data, CGFloat scale) {
+    if (!data || [data length] == 0) {
+        return nil;
+    }
+
+    CGImageRef imageRef;
+
+    CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+
+    NSSet *contentTypes = AFContentTypesFromHTTPHeader([[response allHeaderFields] valueForKey:@"Content-Type"]);
+    if ([contentTypes containsObject:@"image/png"]) {
+        imageRef = CGImageCreateWithPNGDataProvider(dataProvider,  NULL, true, kCGRenderingIntentDefault);
+    } else if ([contentTypes containsObject:@"image/jpeg"]) {
+        imageRef = CGImageCreateWithJPEGDataProvider(dataProvider, NULL, true, kCGRenderingIntentDefault);
+    } else {
+        UIImage *image = AFImageWithDataAtScale(data, scale);
+        if (image.images) {
+            CGDataProviderRelease(dataProvider);
+            
+            return image;
+        }
+        
+        imageRef = CGImageCreateCopy([image CGImage]);
+    }
+
+    CGDataProviderRelease(dataProvider);
+
+    if (!imageRef) {
+        return nil;
+    }
+
+    size_t width = CGImageGetWidth(imageRef);
+    size_t height = CGImageGetHeight(imageRef);
+    size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
+    size_t bytesPerRow = NULL; // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate()
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
+
+    if (CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
+        int alpha = (bitmapInfo & kCGBitmapAlphaInfoMask);
+        if (alpha == kCGImageAlphaNone) {
+            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
+            bitmapInfo |= kCGImageAlphaNoneSkipFirst;
+        } else if (!(alpha == kCGImageAlphaNoneSkipFirst || alpha == kCGImageAlphaNoneSkipLast)) {
+            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
+            bitmapInfo |= kCGImageAlphaPremultipliedFirst;
+        }
+    }
+
+    CGContextRef context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
+
+    CGColorSpaceRelease(colorSpace);
+
+    if (!context) {
+        CGImageRelease(imageRef);
+
+        return [[UIImage alloc] initWithData:data];
+    }
+
+    CGRect rect = CGRectMake(0.0f, 0.0f, width, height);
+    CGContextDrawImage(context, rect, imageRef);
+    CGImageRef inflatedImageRef = CGBitmapContextCreateImage(context);
+    CGContextRelease(context);
+
+    UIImage *inflatedImage = [[UIImage alloc] initWithCGImage:inflatedImageRef scale:scale orientation:UIImageOrientationUp];
+    CGImageRelease(inflatedImageRef);
+    CGImageRelease(imageRef);
+    
+    return inflatedImage;
+}
+#endif
+
 @interface AFImageRequestOperation ()
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 @property (readwrite, nonatomic, strong) UIImage *responseImage;
@@ -142,6 +226,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     self.imageScale = [[UIScreen mainScreen] scale];
+    self.automaticallyInflatesResponseImage = YES;
 #endif
 
     return self;
@@ -151,9 +236,11 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 - (UIImage *)responseImage {
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
-        UIImage *image = [UIImage imageWithData:self.responseData];
-
-        self.responseImage = [UIImage imageWithCGImage:[image CGImage] scale:self.imageScale orientation:image.imageOrientation];
+        if (self.automaticallyInflatesResponseImage) {
+            self.responseImage = AFInflatedImageFromResponseWithDataAtScale(self.response, self.responseData, self.imageScale);
+        } else {
+            self.responseImage = AFImageWithDataAtScale(self.responseData, self.imageScale);
+        }
     }
 
     return _responseImage;
