@@ -35,8 +35,8 @@
 
 #pragma mark -
 
-- (void)testInitRaisesException {
-    expect(^{ (void)[[AFHTTPClient alloc] init]; }).to.raiseAny();
+- (void)testNewRaisesException {
+    expect(^{ (void)[AFHTTPClient performSelector:(@selector(new))]; }).to.raiseAny();
 }
 
 - (void)testDefaultHeaders {
