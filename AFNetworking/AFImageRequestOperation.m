@@ -35,6 +35,15 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import <CoreGraphics/CoreGraphics.h>
 
+static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
+    if ([UIImage instancesRespondToSelector:@selector(initWithData:scale:)]) {
+        return [[UIImage alloc] initWithData:data scale:scale];
+    } else {
+        UIImage *image = [[UIImage alloc] initWithData:data];
+        return [[UIImage alloc] initWithCGImage:[image CGImage] scale:scale orientation:image.imageOrientation];
+    }
+}
+
 static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *response, NSData *data, CGFloat scale) {
     if (!data || [data length] == 0) {
         return nil;
@@ -50,9 +59,10 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     } else if ([contentTypes containsObject:@"image/jpeg"]) {
         imageRef = CGImageCreateWithJPEGDataProvider(dataProvider, NULL, true, kCGRenderingIntentDefault);
     } else {
-        UIImage *image = [[UIImage alloc] initWithData:data scale:scale];
+        UIImage *image = AFImageWithDataAtScale(data, scale);
         if (image.images) {
             CGDataProviderRelease(dataProvider);
+            
             return image;
         }
         
@@ -68,17 +78,19 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     size_t width = CGImageGetWidth(imageRef);
     size_t height = CGImageGetHeight(imageRef);
     size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
-    size_t bytesPerRow = CGImageGetBytesPerRow(imageRef);
+    size_t bytesPerRow = NULL; // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate()
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
 
-    int alpha = (bitmapInfo & kCGBitmapAlphaInfoMask);
-    if (alpha == kCGImageAlphaNone && CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
-        bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-        bitmapInfo |= kCGImageAlphaNoneSkipFirst;
-    } else if (!(alpha == kCGImageAlphaNoneSkipFirst || alpha == kCGImageAlphaNoneSkipLast) && CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
-        bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-        bitmapInfo |= kCGImageAlphaPremultipliedFirst;
+    if (CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
+        int alpha = (bitmapInfo & kCGBitmapAlphaInfoMask);
+        if (alpha == kCGImageAlphaNone) {
+            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
+            bitmapInfo |= kCGImageAlphaNoneSkipFirst;
+        } else if (!(alpha == kCGImageAlphaNoneSkipFirst || alpha == kCGImageAlphaNoneSkipLast)) {
+            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
+            bitmapInfo |= kCGImageAlphaPremultipliedFirst;
+        }
     }
 
     CGContextRef context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
@@ -88,7 +100,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     if (!context) {
         CGImageRelease(imageRef);
 
-        return [[UIImage alloc] initWithData:data scale:scale];
+        return [[UIImage alloc] initWithData:data];
     }
 
     CGRect rect = CGRectMake(0.0f, 0.0f, width, height);
@@ -214,6 +226,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     self.imageScale = [[UIScreen mainScreen] scale];
+    self.automaticallyInflatesResponseImage = YES;
 #endif
 
     return self;
@@ -223,7 +236,11 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 - (UIImage *)responseImage {
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
-        self.responseImage = AFInflatedImageFromResponseWithDataAtScale(self.response, self.responseData, self.imageScale);
+        if (self.automaticallyInflatesResponseImage) {
+            self.responseImage = AFInflatedImageFromResponseWithDataAtScale(self.response, self.responseData, self.imageScale);
+        } else {
+            self.responseImage = AFImageWithDataAtScale(self.responseData, self.imageScale);
+        }
     }
 
     return _responseImage;
