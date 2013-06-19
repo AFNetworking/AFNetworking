@@ -187,8 +187,13 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 @synthesize lock = _lock;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
-    [[NSThread currentThread] setName:@"AFNetworking"];
-    [[NSRunLoop currentRunLoop] run];
+    @autoreleasepool {
+        [[NSThread currentThread] setName:@"AFNetworking"];
+
+        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+        [runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
+        [runLoop run];
+    }
 }
 
 + (NSThread *)networkRequestThread {
