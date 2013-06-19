@@ -1,3 +1,98 @@
+= 1.3.1 (2013-06-18)
+
+ * Add `automaticallyInflatesResponseImage` property to
+`AFImageRequestOperation`, which when enabled, offers significant performance
+improvements for drawing images loaded through `UIImageView+AFNetworking` by
+inflating compressed image data in the background (Mattt Thompson, Peter
+Steinberger)
+
+ * Add `NSParameterAssert` check for `nil` `urlRequest` parameter in
+`AFURLConnectionOperation` initializer (Kyle Fuller)
+
+ * Fix reachability to detect the case where a connection is required but can
+be automatically established (Joshua Vickery)
+
+ * Fix to Test target Podfile (Kyle Fuller)
+
+= 1.3.0 (2013-06-01)
+
+ * Change in `AFURLConnectionOperation` `NSURLConnection` authentication
+delegate methods and associated block setters. If
+`_AFNETWORKING_PIN_SSL_CERTIFICATES_` is defined,
+`-setWillSendRequestForAuthenticationChallengeBlock:` will be available, and
+`-connection:willSendRequestForAuthenticationChallenge:` will be implemented.
+Otherwise, `-setAuthenticationAgainstProtectionSpaceBlock:` &
+`-setAuthenticationChallengeBlock:` will be available, and
+`-connection:canAuthenticateAgainstProtectionSpace:` &
+`-connection:didReceiveAuthenticationChallenge:` will be implemented instead
+(Oliver Letterer)
+
+ * Change in AFNetworking podspec to include Security framework (Kevin Harwood,
+Oliver Letterer, Sam Soffes)
+
+ * Change in AFHTTPClient to @throw exception when non-designated intializer is
+used (Kyle Fuller)
+
+ * Change in behavior of connection:didReceiveAuthenticationChallenge: to not
+use URL-encoded credentials, which should already have been applied (@xjdrew)
+
+ * Change to set AFJSONRequestOperation error when unable to decode response
+string (Chris Pickslay, Geoff Nix)
+
+ * Change AFURLConnectionOperation to lazily initialize outputStream property
+(@fumoboy007)
+
+ * Change instances of (CFStringRef)NSRunLoopCommonModes to
+kCFRunLoopCommonModes
+
+ * Change #warning to #pragma message for dynamic framework linking warnings
+(@michael_r_may)
+
+ * Add unit testing and continuous integration system (Blake Watters, Oliver
+Letterer, Kevin Harwood, Cédric Luthi, Adam Fraser, Carson McDonald, Mattt
+Thompson)
+
+ * Fix multipart input stream implementation (Blake Watters, OliverLetterer,
+Aleksey Kononov, @mattyohe, @mythodeia, @JD-)
+
+ * Fix implementation of authentication delegate methods (Oliver Letterer,
+Kevin Harwood)
+
+ * Fix implementation of AFSSLPinningModePublicKey on Mac OS X (Oliver Letterer)
+
+ * Fix error caused by loading file:// requests with AFHTTPRequestOperation
+subclasses (Dave Anderson, Oliver Letterer)
+
+ * Fix threading-related crash in AFNetworkActivityIndicatorManager (Dave Keck)
+
+ * Fix to suppress GNU expression and enum assignment warnings from Clang
+(Henrik Hartz)
+
+ * Fix leak caused by CFStringConvertEncodingToIANACharSetName in AFHTTPClient
+-requestWithMethod:path:parameters: (Daniel Demiss)
+
+ * Fix missing __bridge casts in AFHTTPClient (@apouche, Mattt Thompson)
+
+ * Fix Objective-C++ compatibility (Audun Holm Ellertsen)
+
+ * Fix to not escape tildes (@joein3d)
+
+ * Fix warnings caused by unsynthesized properties (Jeff Hunter)
+
+ * Fix to network reachability calls to provide correct  status on
+initialization (@djmadcat, Mattt Thompson)
+
+ * Fix to suppress warnings about implicit signedness conversion (Matt Rubin)
+
+ * Fix AFJSONRequestOperation -responseJSON failing cases (Andrew Vyazovoy,
+Mattt Thompson)
+
+ * Fix use of object subscripting to avoid incompatibility with iOS < 6 and OS
+X < 10.8 (Paul Melnikow)
+
+ * Various fixes to reverted multipart stream provider implementation (Yaron
+Inger, Alex Burgel)
+
 = 1.2.1 (2013-04-18)
 
  * Add `allowsInvalidSSLCertificate` property to `AFURLConnectionOperation` and
@@ -652,7 +747,8 @@ where % is used as a literal rather than as part of a percent escape code
  -multipartFormRequestWithMethod:path:parameters:constructing BodyWithBlock:`
  (Ray Morgan, Mattt Thompson, Sam Soffes)
 
- * Fix "File Upload with Progress Callback" code snippet in README (Larry Legend)
+ * Fix "File Upload with Progress Callback" code snippet in README (Larry
+Legend)
 
  * Fix to SBJSON invocations in `AFJSONEncode` and `AFJSONDecode` (Matthias
  Tretter, James Frye)

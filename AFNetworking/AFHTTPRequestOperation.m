@@ -58,6 +58,10 @@ NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
 }
 
 static void AFGetMediaTypeAndSubtypeWithString(NSString *string, NSString **type, NSString **subtype) {
+    if (!string) {
+        return;
+    }
+
     NSScanner *scanner = [NSScanner scannerWithString:string];
     [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [scanner scanUpToString:@"/" intoString:type];
@@ -261,6 +265,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
     // completionBlock is manually nilled out in AFURLConnectionOperation to break the retain cycle.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wgnu"
     self.completionBlock = ^{
         if (self.error) {
             if (failure) {

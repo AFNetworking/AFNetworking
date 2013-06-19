@@ -70,14 +70,19 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 
         // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
         // See https://github.com/rails/rails/issues/1742
-        //Addition responseString check because it can be nil if responseData does not represents valid data for encoding. So NSJSONSerialization crashs.
-        if ([self.responseData length] == 0 || !self.responseString || [self.responseString isEqualToString:@" "]) {
-            self.responseJSON = nil;
-        } else {
+        if (self.responseString && ![self.responseString isEqualToString:@" "]) {
             // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
             // See http://stackoverflow.com/a/12843465/157142
-            NSData *JSONData = [self.responseString dataUsingEncoding:NSUTF8StringEncoding];
-            self.responseJSON = [NSJSONSerialization JSONObjectWithData:JSONData options:self.JSONReadingOptions error:&error];
+            NSData *data = [self.responseString dataUsingEncoding:NSUTF8StringEncoding];
+
+            if (data) {
+                self.responseJSON = [NSJSONSerialization JSONObjectWithData:data options:self.JSONReadingOptions error:&error];
+            } else {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+                [userInfo setValue:@"Operation responseData failed decoding as a UTF-8 string" forKey:NSLocalizedDescriptionKey];
+                [userInfo setValue:[NSString stringWithFormat:@"Could not decode string: %@", self.responseString] forKey:NSLocalizedFailureReasonErrorKey];
+                error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+            }
         }
 
         self.JSONError = error;
@@ -110,6 +115,8 @@ static dispatch_queue_t json_request_operation_processing_queue() {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wgnu"
+
     self.completionBlock = ^ {
         if (self.error) {
             if (failure) {

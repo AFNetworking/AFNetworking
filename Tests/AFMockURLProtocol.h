@@ -1,4 +1,4 @@
-// AFNetworkingTests.m
+// AFMockURLProtocol.h
 //
 // Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
@@ -20,17 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFNetworkingTests.h"
-#import "AFHTTPRequestOperationLogger.h"
+#import <Foundation/Foundation.h>
 
-NSString * const AFNetworkingTestsBaseURLString = @"http://httpbin.org/";
+#import "OCMock.h"
 
-@implementation AFNetworkingTests
+@protocol AFMockURLProtocolProxy <NSObject>
+- (id)stub;
+- (id)expect;
+- (id)reject;
+@end
 
-+ (void)load {
-    if ([[[[[NSProcessInfo processInfo] environment] valueForKey:@"AFTestsLoggingEnabled"] uppercaseString] isEqualToString:@"YES"]) {
-        [[AFHTTPRequestOperationLogger sharedLogger] startLogging];
-    }
-}
+@interface AFMockURLProtocol : NSURLProtocol <NSURLAuthenticationChallengeSender>
+
++ (void)handleNextRequestForURL:(NSURL *)URL
+                     usingBlock:(void (^)(AFMockURLProtocol <AFMockURLProtocolProxy> * protocol))block;
 
 @end

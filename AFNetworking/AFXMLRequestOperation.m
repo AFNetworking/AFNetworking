@@ -141,6 +141,7 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wgnu"
     self.completionBlock = ^ {
         dispatch_async(xml_request_operation_processing_queue(), ^(void) {
             NSXMLParser *XMLParser = self.responseXMLParser;

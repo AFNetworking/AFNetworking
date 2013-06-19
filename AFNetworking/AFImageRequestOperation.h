@@ -32,7 +32,7 @@
 #endif
 
 /**
- `AFImageRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading an processing images.
+ `AFImageRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and processing images.
 
  ## Acceptable Content Types
 
@@ -65,13 +65,18 @@
  The scale factor used when interpreting the image data to construct `responseImage`. Specifying a scale factor of 1.0 results in an image whose size matches the pixel-based dimensions of the image. Applying a different scale factor changes the size of the image as reported by the size property. This is set to the value of scale of the main screen by default, which automatically scales images for retina displays, for instance.
  */
 @property (nonatomic, assign) CGFloat imageScale;
+
+/**
+ Whether to automatically inflate response image data for compressed formats (such as PNG or JPEG). Enabling this can significantly improve drawing performance on iOS when used with `setCompletionBlockWithSuccess:failure:`, as it allows a bitmap representation to be constructed in the background rather than on the main thread. `YES` by default.
+ */
+@property (nonatomic, assign) BOOL automaticallyInflatesResponseImage;
 #endif
 
 /**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
 
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
- @param success A block object to be executed when the request finishes successfully. This block has no return value and takes a single arguments, the image created from the response data of the request.
+ @param success A block object to be executed when the request finishes successfully. This block has no return value and takes a single argument, the image created from the response data of the request.
 
  @return A new image request operation
  */
