@@ -39,6 +39,19 @@
     expect(^{ (void)[[AFHTTPClient alloc] init]; }).to.raiseAny();
 }
 
+- (void)testInitAppendsTerminatingSlashToPath {
+    AFHTTPClient *client = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://httpbin.org/test"]];
+    expect([[client baseURL] absoluteString]).to.equal(@"http://httpbin.org/test/");
+}
+
+- (void)testDefaultStringEncoding {
+    expect([[self client] stringEncoding]).to.equal(NSUTF8StringEncoding);
+}
+
+- (void)testDefaultParameterEncoding {
+    expect([[self client] parameterEncoding]).to.equal(AFFormURLParameterEncoding);
+}
+
 - (void)testDefaultHeaders {
     [self.client setDefaultHeader:@"x-some-key" value:@"SomeValue"];
     expect([self.client defaultValueForHeader:@"x-some-key"]).to.equal(@"SomeValue");
