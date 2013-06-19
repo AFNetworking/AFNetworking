@@ -53,6 +53,8 @@ static NSString * const kAFAppDotNetAPIBaseURLString = @"https://alpha-api.app.n
     if ([[url scheme] isEqualToString:@"https"] && [[url host] isEqualToString:@"alpha-api.app.net"]) {
         [self setDefaultSSLPinningMode:AFSSLPinningModePublicKey];
     }
+
+    self.defaultSSLPinningMode = AFSSLPinningModeNone;
     
     return self;
 }
