@@ -47,18 +47,18 @@
 #pragma mark -
 
 + (void)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block {
-    [[AFAppDotNetAPIClient sharedClient] getPath:@"stream/0/posts/stream/global" parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
+    [[AFAppDotNetAPIClient sharedClient] GET:@"stream/0/posts/stream/global" parameters:nil success:^(id JSON) {
         NSArray *postsFromResponse = [JSON valueForKeyPath:@"data"];
         NSMutableArray *mutablePosts = [NSMutableArray arrayWithCapacity:[postsFromResponse count]];
         for (NSDictionary *attributes in postsFromResponse) {
             Post *post = [[Post alloc] initWithAttributes:attributes];
             [mutablePosts addObject:post];
         }
-        
+
         if (block) {
             block([NSArray arrayWithArray:mutablePosts], nil);
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(NSError *error) {
         if (block) {
             block([NSArray array], error);
         }

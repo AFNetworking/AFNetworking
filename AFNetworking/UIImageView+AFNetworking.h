@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFImageRequestOperation.h"
 
 #import <Availability.h>
 
@@ -71,7 +70,7 @@
 /**
  Cancels any executing image request operation for the receiver, if one exists.
  */
-- (void)cancelImageRequestOperation;
+- (void)cancelImageDataTask;
 
 @end
 

@@ -23,6 +23,9 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 
+#import "AFHTTPRequestOperation.h"
+#import "AFHTTPClient.h"
+
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import "UIImageView+AFNetworking.h"
 
@@ -34,37 +37,29 @@
 
 #pragma mark -
 
-static char kAFImageRequestOperationObjectKey;
+static char kAFImageDataTaskKey;
 
 @interface UIImageView (_AFNetworking)
-@property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFImageRequestOperation *af_imageRequestOperation;
+@property (readwrite, nonatomic, strong, setter = af_setImageDataTask:) NSURLSessionDataTask *af_imageDataTask;
 @end
 
 @implementation UIImageView (_AFNetworking)
-@dynamic af_imageRequestOperation;
+@dynamic af_imageDataTask;
 @end
 
 #pragma mark -
 
 @implementation UIImageView (AFNetworking)
 
-- (AFHTTPRequestOperation *)af_imageRequestOperation {
-    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFImageRequestOperationObjectKey);
-}
-
-- (void)af_setImageRequestOperation:(AFImageRequestOperation *)imageRequestOperation {
-    objc_setAssociatedObject(self, &kAFImageRequestOperationObjectKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-+ (NSOperationQueue *)af_sharedImageRequestOperationQueue {
-    static NSOperationQueue *_af_imageRequestOperationQueue = nil;
++ (AFHTTPClient *)af_sharedHTTPClient {
+    static AFHTTPClient *_af_sharedHTTPClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _af_imageRequestOperationQueue = [[NSOperationQueue alloc] init];
-        [_af_imageRequestOperationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
+        _af_sharedHTTPClient = [[AFHTTPClient alloc] initWithSessionConfiguration:nil]; // TODO allow anonymous HTTP clients
+        _af_sharedHTTPClient.responseSerializers = @[[AFImageSerializer serializer]];
     });
 
-    return _af_imageRequestOperationQueue;
+    return _af_sharedHTTPClient;
 }
 
 + (AFImageCache *)af_sharedImageCache {
@@ -75,6 +70,14 @@ static char kAFImageRequestOperationObjectKey;
     });
 
     return _af_imageCache;
+}
+
+- (NSURLSessionDataTask *)af_imageDataTask {
+    return (NSURLSessionDataTask *)objc_getAssociatedObject(self, &kAFImageDataTaskKey);
+}
+
+- (void)af_setImageDataTask:(NSURLSessionDataTask *)dataTask {
+    objc_setAssociatedObject(self, &kAFImageDataTaskKey, dataTask, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark -
@@ -97,7 +100,7 @@ static char kAFImageRequestOperationObjectKey;
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    [self cancelImageRequestOperation];
+    [self cancelImageDataTask];
 
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
@@ -107,46 +110,41 @@ static char kAFImageRequestOperationObjectKey;
             self.image = cachedImage;
         }
 
-        self.af_imageRequestOperation = nil;
+        self.af_imageDataTask = nil;
     } else {
         self.image = placeholderImage;
 
-        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
-        [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
+        self.af_imageDataTask = [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSURLSessionDataTask *task, id responseObject) {
+            if ([[urlRequest URL] isEqual:[self.af_imageDataTask.response URL]]) {
                 if (success) {
-                    success(operation.request, operation.response, responseObject);
+                    success(urlRequest, (NSHTTPURLResponse *)task.response, responseObject);
                 } else if (responseObject) {
                     self.image = responseObject;
                 }
 
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
+                if (self.af_imageDataTask == task) {
+                    self.af_imageDataTask = nil;
                 }
             }
 
             [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            if ([[urlRequest URL] isEqual:[self.af_imageDataTask.response URL]]) {
                 if (failure) {
-                    failure(operation.request, operation.response, error);
+                    failure(urlRequest, (NSHTTPURLResponse *)task.response, error);
                 }
 
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
+                if (self.af_imageDataTask == task) {
+                    self.af_imageDataTask = nil;
                 }
             }
         }];
-
-        self.af_imageRequestOperation = requestOperation;
-
-        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
     }
 }
 
-- (void)cancelImageRequestOperation {
-    [self.af_imageRequestOperation cancel];
-    self.af_imageRequestOperation = nil;
+- (void)cancelImageDataTask {
+    [self.af_imageDataTask cancel];
+    self.af_imageDataTask = nil;
 }
 
 @end
