@@ -46,7 +46,7 @@
         willSendRequestForAuthenticationChallengeBlockInvoked = YES;
     }];
     
-    [AFMockURLProtocol handleNextRequestForURL:request.URL usingBlock:^(AFMockURLProtocol <AFMockURLProtocolProxy> * protocol) {
+    [AFMockURLProtocol handleNextRequestForURL:request.URL usingBlock:^(AFMockURLProtocol <AFMockURLProtocolProxy> *mockProtocol) {
         
         void(^startOperation)(NSInvocation *invocation) = ^(NSInvocation *invocation) {
             __unsafe_unretained AFMockURLProtocol *protocol = nil;
@@ -56,7 +56,7 @@
             NSURLAuthenticationChallenge *authenticationChallenge = [[NSURLAuthenticationChallenge alloc] initWithProtectionSpace:protectionSpace proposedCredential:nil previousFailureCount:0 failureResponse:nil error:nil sender:protocol];
             [protocol.client URLProtocol:protocol didReceiveAuthenticationChallenge:authenticationChallenge];
         };
-        [[[protocol stub] andDo:startOperation] startLoading];
+        [[[mockProtocol stub] andDo:startOperation] startLoading];
     }];
     
     [operation start];
