@@ -94,6 +94,47 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
 
 #pragma mark -
 
+- (NSArray *)tasksForKeyPath:(NSString *)keyPath {
+    __block NSArray *tasks = nil;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        if ([keyPath isEqualToString:@"dataTasks"]) {
+            tasks = dataTasks;
+        } else if ([keyPath isEqualToString:@"uploadTasks"]) {
+            tasks = uploadTasks;
+        } else if ([keyPath isEqualToString:@"downloadTasks"]) {
+            tasks = downloadTasks;
+        } else if ([keyPath isEqualToString:@"tasks"]) {
+            tasks = [@[dataTasks, uploadTasks, downloadTasks] valueForKeyPath:@"@unionOfArrays.self"];
+        }
+
+        dispatch_semaphore_signal(semaphore);
+    }];
+
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    dispatch_release(semaphore);
+
+    return tasks;
+}
+
+- (NSArray *)tasks {
+    return [self tasksForKeyPath:NSStringFromSelector(_cmd)];
+}
+
+- (NSArray *)dataTasks {
+    return [self tasksForKeyPath:NSStringFromSelector(_cmd)];
+}
+
+- (NSArray *)uploadTasks {
+    return [self tasksForKeyPath:NSStringFromSelector(_cmd)];
+}
+
+- (NSArray *)downloadTasks {
+    return [self tasksForKeyPath:NSStringFromSelector(_cmd)];
+}
+
+#pragma mark -
+
 - (void)setSessionDidBecomeInvalidBlock:(void (^)(NSURLSession *session, NSError *error))block {
     self.sessionDidBecomeInvalid = block;
 }
