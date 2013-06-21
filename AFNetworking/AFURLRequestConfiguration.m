@@ -86,10 +86,6 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
     return [NSDictionary dictionaryWithDictionary:self.mutableHeaders];
 }
 
-- (NSString *)defaultValueForHeader:(NSString *)header {
-	return [self.mutableHeaders valueForKey:header];
-}
-
 - (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field {
 	[self.mutableHeaders setValue:value forKey:field];
 }
