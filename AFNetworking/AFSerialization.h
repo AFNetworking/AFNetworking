@@ -24,31 +24,58 @@
 
 #import "AFHTTPRequestOperation.h"
 
+/**
+ 
+ */
 @protocol AFURLRequestSerialization
 
+/**
+ 
+ */
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(NSDictionary *)parameters
                                         error:(NSError *__autoreleasing *)error;
 
 @end
 
+/**
+ 
+ */
 @protocol AFURLResponseSerialization
 
+/**
+ 
+ */
 - (BOOL)canProcessResponse:(NSHTTPURLResponse *)response;
 
+/**
+ 
+ */
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error;
-
 @end
 
-// TODO: Create serializer from block?
+#pragma mark -
 
+/**
+ 
+ */
 @interface AFHTTPSerializer : NSObject <AFURLRequestSerialization, AFURLResponseSerialization>
 
+/**
+ 
+ */
 @property (nonatomic, strong) NSIndexSet *acceptableStatusCodes;
+
+/**
+ 
+ */
 @property (nonatomic, strong) NSSet *acceptableContentTypes;
 
+/**
+ 
+ */
 - (void)validateResponse:(NSHTTPURLResponse *)response
                     data:(NSData *)data
                    error:(NSError *__autoreleasing *)error;
@@ -57,12 +84,29 @@
 
 #pragma mark -
 
+/**
+ 
+ */
 @interface AFJSONSerializer : AFHTTPSerializer
 
+/**
+ 
+ */
 @property (readonly, nonatomic, assign) NSJSONReadingOptions readingOptions;
+
+/**
+ 
+ */
 @property (readonly, nonatomic, assign) NSJSONWritingOptions writingOptions;
 
+/**
+ 
+ */
 + (instancetype)serializer;
+
+/**
+ 
+ */
 + (instancetype)serializerWithReadingOptions:(NSJSONReadingOptions)readingOptions
                               writingOptions:(NSJSONWritingOptions)writingOptions;
 
@@ -70,6 +114,59 @@
 
 #pragma mark -
 
+/**
+ 
+ */
+@interface AFXMLParserSerializer : AFHTTPSerializer
+
+/**
+ 
+ */
++ (instancetype)serializer;
+
+@end
+
+#pragma mark -
+
+/**
+ 
+ */
+@interface AFPropertyListSerializer : AFHTTPSerializer
+
+/**
+ 
+ */
+@property (readonly, nonatomic, assign) NSPropertyListFormat format;
+
+/**
+ 
+ */
+@property (readonly, nonatomic, assign) NSPropertyListReadOptions readOptions;
+
+/**
+ 
+ */
+@property (readonly, nonatomic, assign) NSPropertyListWriteOptions writeOptions;
+
+/**
+ 
+ */
++ (instancetype)serializer;
+
+/**
+ 
+ */
++ (instancetype)serializerWithFormat:(NSPropertyListFormat)format
+                         readOptions:(NSPropertyListReadOptions)readOptions
+                        writeOptions:(NSPropertyListWriteOptions)writeOptions;
+
+@end
+
+#pragma mark -
+
+/**
+ 
+ */
 @interface AFImageSerializer : AFHTTPSerializer
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
@@ -84,21 +181,9 @@
 @property (nonatomic, assign) BOOL automaticallyInflatesResponseImage;
 #endif
 
+/**
+ 
+ */
 + (instancetype)serializer;
 
 @end
-
-@interface AFPropertyListSerializer : AFHTTPSerializer
-
-@property (readonly, nonatomic, assign) NSPropertyListFormat format;
-@property (readonly, nonatomic, assign) NSPropertyListReadOptions readOptions;
-@property (readonly, nonatomic, assign) NSPropertyListWriteOptions writeOptions;
-
-+ (instancetype)serializer;
-+ (instancetype)serializerWithFormat:(NSPropertyListFormat)format
-                         readOptions:(NSPropertyListReadOptions)readOptions
-                        writeOptions:(NSPropertyListWriteOptions)writeOptions;
-
-@end
-
-

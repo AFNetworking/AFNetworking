@@ -94,7 +94,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     }
 }
 
-#pragma mark - AFURLRequestSerializer
+#pragma mark AFURLRequestSerializer
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(NSDictionary *)parameters
@@ -103,7 +103,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return request; // TODO
 }
 
-#pragma mark - AFURLResponseSerializer
+#pragma mark AFURLResponseSerializer
 
 - (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
     return YES;
@@ -120,6 +120,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 @end
 
+#pragma mark -
 
 @interface AFJSONSerializer ()
 @property (readwrite, nonatomic, assign) NSJSONReadingOptions readingOptions;
@@ -153,7 +154,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return self;
 }
 
-#pragma mark - AFHTTPRequestSerialization
+#pragma mark AFHTTPRequestSerialization
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(NSDictionary *)parameters
@@ -172,7 +173,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return mutableRequest;
 }
 
-#pragma mark - AFHTTPRequestSerialization
+#pragma mark AFHTTPRequestSerialization
 
 - (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
     return [[[response URL] pathExtension] isEqualToString:@"json"] || [super canProcessResponse:response];
@@ -201,6 +202,120 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     }
 
     return nil;
+}
+
+@end
+
+#pragma mark -
+
+@implementation AFXMLParserSerializer
+
++ (instancetype)serializer {
+    AFXMLParserSerializer *serializer = [[self alloc] init];
+
+    return serializer;
+}
+
+- (id)init {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    self.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"application/xml", @"text/xml", nil];
+
+    return self;
+}
+
+#pragma mark AFHTTPResponseSerializer
+
+- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
+    return [[[response URL] pathExtension] isEqualToString:@"xml"] || [super canProcessResponse:response];
+}
+
+- (id)responseObjectForResponse:(NSHTTPURLResponse *)response
+                           data:(NSData *)data
+                          error:(NSError *__autoreleasing *)error
+{
+    return [[NSXMLParser alloc] initWithData:data];
+}
+
+@end
+
+#pragma mark -
+
+@interface AFPropertyListSerializer ()
+@property (readwrite, nonatomic, assign) NSPropertyListFormat format;
+@property (readwrite, nonatomic, assign) NSPropertyListReadOptions readOptions;
+@property (readwrite, nonatomic, assign) NSPropertyListWriteOptions writeOptions;
+@end
+
+@implementation AFPropertyListSerializer
+
++ (instancetype)serializer {
+    return [self serializerWithFormat:NSPropertyListXMLFormat_v1_0 readOptions:0 writeOptions:0];
+}
+
++ (instancetype)serializerWithFormat:(NSPropertyListFormat)format
+                         readOptions:(NSPropertyListReadOptions)readOptions
+                        writeOptions:(NSPropertyListWriteOptions)writeOptions
+{
+    AFPropertyListSerializer *serializer = [[self alloc] init];
+    serializer.format = format;
+    serializer.readOptions = readOptions;
+    serializer.writeOptions = writeOptions;
+
+    return serializer;
+}
+
+- (id)init {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    self.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"application/x-plist", nil];
+
+    return self;
+}
+
++ (NSSet *)acceptablePathExtensions {
+    static NSSet * _acceptablePathExtension = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _acceptablePathExtension = [[NSSet alloc] initWithObjects:@"plist", nil];
+    });
+
+    return _acceptablePathExtension;
+}
+
+#pragma mark AFHTTPRequestSerializer
+
+- (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
+                               withParameters:(NSDictionary *)parameters
+                                        error:(NSError *__autoreleasing *)error
+{
+    NSMutableURLRequest *mutableRequest = [request mutableCopy];
+
+    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
+
+    [mutableRequest setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+    [mutableRequest setHTTPBody:[NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error]];
+
+    return mutableRequest;
+}
+
+#pragma mark AFHTTPResponseSerializer
+
+- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
+    return [[[response URL] pathExtension] isEqualToString:@"plist"] || [super canProcessResponse:response];
+}
+
+- (id)responseObjectForResponse:(NSHTTPURLResponse *)response
+                           data:(NSData *)data
+                          error:(NSError *__autoreleasing *)error
+{
+    return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:nil error:error];
 }
 
 @end
@@ -260,84 +375,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 #endif
 
     return nil;
-}
-
-@end
-
-#pragma mark -
-
-@interface AFPropertyListSerializer ()
-@property (readwrite, nonatomic, assign) NSPropertyListFormat format;
-@property (readwrite, nonatomic, assign) NSPropertyListReadOptions readOptions;
-@property (readwrite, nonatomic, assign) NSPropertyListWriteOptions writeOptions;
-@end
-
-@implementation AFPropertyListSerializer
-
-+ (instancetype)serializer {
-    return [self serializerWithFormat:NSPropertyListXMLFormat_v1_0 readOptions:0 writeOptions:0];
-}
-
-+ (instancetype)serializerWithFormat:(NSPropertyListFormat)format
-                         readOptions:(NSPropertyListReadOptions)readOptions
-                        writeOptions:(NSPropertyListWriteOptions)writeOptions
-{
-    AFPropertyListSerializer *serializer = [[self alloc] init];
-    serializer.format = format;
-    serializer.readOptions = readOptions;
-    serializer.writeOptions = writeOptions;
-
-    return serializer;
-}
-
-- (id)init {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-
-    self.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"application/x-plist", nil];
-
-    return self;
-}
-
-+ (NSSet *)acceptablePathExtensions {
-    static NSSet * _acceptablePathExtension = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _acceptablePathExtension = [[NSSet alloc] initWithObjects:@"plist", nil];
-    });
-
-    return _acceptablePathExtension;
-}
-
-#pragma mark -
-
-- (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
-                               withParameters:(NSDictionary *)parameters
-                                        error:(NSError *__autoreleasing *)error
-{
-    NSMutableURLRequest *mutableRequest = [request mutableCopy];
-
-    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
-
-    [mutableRequest setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-    [mutableRequest setHTTPBody:[NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error]];
-
-    return mutableRequest;
-}
-
-#pragma mark -
-
-- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
-    return [[[response URL] pathExtension] isEqualToString:@"plist"] || [super canProcessResponse:response];
-}
-
-- (id)responseObjectForResponse:(NSHTTPURLResponse *)response
-                           data:(NSData *)data
-                          error:(NSError *__autoreleasing *)error
-{
-    return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:nil error:error];
 }
 
 @end
