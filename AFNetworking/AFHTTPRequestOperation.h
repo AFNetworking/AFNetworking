@@ -1,6 +1,6 @@
 // AFHTTPRequestOperation.h
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +28,9 @@
  */
 @interface AFHTTPRequestOperation : AFURLConnectionOperation
 
-///----------------------------------------------
+///------------------------------------------------
 /// @name Getting HTTP URL Connection Information
-///----------------------------------------------
+///------------------------------------------------
 
 /**
  The last HTTP response received by the operation's connection.
@@ -38,7 +38,22 @@
 @property (readonly, nonatomic, strong) NSHTTPURLResponse *response;
 
 
-@property (nonatomic, strong) NSArray *responseSerializers;
+@property (readwrite, nonatomic, strong) NSArray *responseSerializers;
+
+///---------------------------------
+/// @name Managing Callback Queues
+///---------------------------------
+
+/**
+ The callback dispatch queue on success. If `NULL` (default), the main queue is used.
+ */
+@property (nonatomic, assign) dispatch_queue_t successCallbackQueue;
+
+/**
+ The callback dispatch queue on failure. If `NULL` (default), the main queue is used.
+ */
+@property (nonatomic, assign) dispatch_queue_t failureCallbackQueue;
+
 
 ///-----------------------------------------------------------
 /// @name Setting Completion Block Success / Failure Callbacks

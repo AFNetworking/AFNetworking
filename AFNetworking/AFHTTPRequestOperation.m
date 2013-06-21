@@ -1,6 +1,6 @@
 // AFHTTPRequestOperation.m
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -80,6 +80,18 @@ static void AFGetMediaTypeAndSubtypeWithString(NSString *string, NSString **type
 
 @implementation AFHTTPRequestOperation
 
+- (void)dealloc {
+    if (_successCallbackQueue) {
+        dispatch_release(_successCallbackQueue);
+        _successCallbackQueue = NULL;
+    }
+
+    if (_failureCallbackQueue) {
+        dispatch_release(_failureCallbackQueue);
+        _failureCallbackQueue = NULL;
+    }
+}
+
 - (id <AFURLResponseSerialization>)serializerForResponse:(NSHTTPURLResponse *)response {
     for (id <AFURLResponseSerialization> serializer in self.responseSerializers) {
         if ([serializer canProcessResponse:response]) {
@@ -119,7 +131,7 @@ static void AFGetMediaTypeAndSubtypeWithString(NSString *string, NSString **type
         dispatch_async(http_request_operation_processing_queue(), ^{
             if (self.error) {
                 if (failure) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
                         failure(self, self.error);
                     });
                 }
@@ -130,13 +142,13 @@ static void AFGetMediaTypeAndSubtypeWithString(NSString *string, NSString **type
 
                 if (error) {
                     if (failure) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
+                        dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
                             failure(self, self.error);
                         });
                     }
                 } else {
                     if (success) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
+                        dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
                             success(self, responseObject);
                         });
                     }

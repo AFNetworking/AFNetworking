@@ -1,6 +1,6 @@
 // AFSerialization.m
 // 
-// Copyright (c) 2013 AFNetworking
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -122,11 +122,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 #pragma mark -
 
-@interface AFJSONSerializer ()
-@property (readwrite, nonatomic, assign) NSJSONReadingOptions readingOptions;
-@property (readwrite, nonatomic, assign) NSJSONWritingOptions writingOptions;
-@end
-
 @implementation AFJSONSerializer
 
 + (instancetype)serializer {
@@ -244,11 +239,50 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 #pragma mark -
 
-@interface AFPropertyListSerializer ()
-@property (readwrite, nonatomic, assign) NSPropertyListFormat format;
-@property (readwrite, nonatomic, assign) NSPropertyListReadOptions readOptions;
-@property (readwrite, nonatomic, assign) NSPropertyListWriteOptions writeOptions;
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+
+@implementation AFXMLDocumentSerializer
+
++ (instancetype)serializer {
+    return [self serializerWithXMLDocumentOptions:0];
+}
+
++ (instancetype)serializerWithXMLDocumentOptions:(NSUInteger)mask {
+    AFXMLDocumentSerializer *serializer = [[self alloc] init];
+    serializer.options = mask;
+    
+    return serializer;
+}
+
+- (id)init {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    self.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"application/xml", @"text/xml", nil];
+
+    return self;
+}
+
+#pragma mark AFHTTPResponseSerializer
+
+- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
+    return [[[response URL] pathExtension] isEqualToString:@"xml"] || [super canProcessResponse:response];
+}
+
+- (id)responseObjectForResponse:(NSHTTPURLResponse *)response
+                           data:(NSData *)data
+                          error:(NSError *__autoreleasing *)error
+{
+    return [[NSXMLDocument alloc] initWithData:data options:self.options error:error];
+}
+
 @end
+
+#endif
+
+#pragma mark -
 
 @implementation AFPropertyListSerializer
 

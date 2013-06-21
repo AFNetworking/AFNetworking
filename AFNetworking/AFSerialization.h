@@ -1,6 +1,6 @@
 // AFSerialization.h
 // 
-// Copyright (c) 2013 AFNetworking
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -92,12 +92,12 @@
 /**
  
  */
-@property (readonly, nonatomic, assign) NSJSONReadingOptions readingOptions;
+@property (nonatomic, assign) NSJSONReadingOptions readingOptions;
 
 /**
  
  */
-@property (readonly, nonatomic, assign) NSJSONWritingOptions writingOptions;
+@property (nonatomic, assign) NSJSONWritingOptions writingOptions;
 
 /**
  
@@ -128,6 +128,28 @@
 
 #pragma mark -
 
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+
+@interface AFXMLDocumentSerializer : AFHTTPSerializer
+
+@property (nonatomic, assign) NSUInteger options;
+
+/**
+ 
+ */
++ (instancetype)serializer;
+
+/**
+
+ */
++ (instancetype)serializerWithXMLDocumentOptions:(NSUInteger)mask;
+
+@end
+
+#endif
+
+#pragma mark -
+
 /**
  
  */
@@ -136,17 +158,17 @@
 /**
  
  */
-@property (readonly, nonatomic, assign) NSPropertyListFormat format;
+@property (nonatomic, assign) NSPropertyListFormat format;
 
 /**
  
  */
-@property (readonly, nonatomic, assign) NSPropertyListReadOptions readOptions;
+@property (nonatomic, assign) NSPropertyListReadOptions readOptions;
 
 /**
  
  */
-@property (readonly, nonatomic, assign) NSPropertyListWriteOptions writeOptions;
+@property (nonatomic, assign) NSPropertyListWriteOptions writeOptions;
 
 /**
  
