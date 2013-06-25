@@ -96,23 +96,21 @@
 {
     // TODO invoke supersequent implementation
     
-    if (![object isKindOfClass:[NSURLSessionTask class]]) {
-        return;
-    }
-
-    if ([keyPath isEqualToString:@"countOfBytesSent"]) {
-        if ([object countOfBytesExpectedToSend] > 0) {
-            self.progress = [object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f);
+    if ([object isKindOfClass:[NSURLSessionTask class]]) {
+        if ([keyPath isEqualToString:@"countOfBytesSent"]) {
+            if ([object countOfBytesExpectedToSend] > 0) {
+                self.progress = [object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f);
+            }
+        } else if ([keyPath isEqualToString:@"countOfBytesReceived"]) {
+            if ([object countOfBytesExpectedToReceive] > 0) {
+                self.progress = [object countOfBytesReceived] / ([object countOfBytesExpectedToReceive] * 1.0f);
+            }
+        } else if ([keyPath isEqualToString:@"state"]) {
+            if ([object state] == NSURLSessionTaskStateCompleted) {
+                [object removeObserver:self];
+            }
         }
-    } else if ([keyPath isEqualToString:@"countOfBytesReceived"]) {
-        if ([object countOfBytesExpectedToReceive] > 0) {
-            self.progress = [object countOfBytesReceived] / ([object countOfBytesExpectedToReceive] * 1.0f);
-        }
-    } else if ([keyPath isEqualToString:@"state"]) {
-        if ([object state] != NSURLSessionTaskStateRunning) {
-            [object removeObserver:self];
-        }
-    }
+    }    
 }
 
 @end
