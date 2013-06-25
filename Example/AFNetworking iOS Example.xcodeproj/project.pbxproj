@@ -18,6 +18,7 @@
 		F8A847C5161F524200940F39 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A847C4161F524200940F39 /* Default@2x.png */; };
 		F8C1477E177A38CD00FDCC95 /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C1477D177A38CD00FDCC95 /* UIProgressView+AFNetworking.m */; };
 		F8C14781177A3EED00FDCC95 /* UIActivityIndicatorView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C14780177A3EED00FDCC95 /* UIActivityIndicatorView+AFNetworking.m */; };
+		F8C14784177A411800FDCC95 /* UIButton+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C14783177A411800FDCC95 /* UIButton+AFNetworking.m */; };
 		F8D0701B14310F4A00653FD3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */; };
 		F8DA09E41396AC040057D0CC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09E31396AC040057D0CC /* main.m */; };
 		F8E469651395739D00DB05C8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469641395739D00DB05C8 /* UIKit.framework */; };
@@ -63,6 +64,8 @@
 		F8C1477D177A38CD00FDCC95 /* UIProgressView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIProgressView+AFNetworking.m"; sourceTree = "<group>"; };
 		F8C1477F177A3EED00FDCC95 /* UIActivityIndicatorView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActivityIndicatorView+AFNetworking.h"; sourceTree = "<group>"; };
 		F8C14780177A3EED00FDCC95 /* UIActivityIndicatorView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActivityIndicatorView+AFNetworking.m"; sourceTree = "<group>"; };
+		F8C14782177A411800FDCC95 /* UIButton+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+AFNetworking.h"; sourceTree = "<group>"; };
+		F8C14783177A411800FDCC95 /* UIButton+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+AFNetworking.m"; sourceTree = "<group>"; };
 		F8DA09E31396AC040057D0CC /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = SOURCE_ROOT; };
 		F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E469641395739D00DB05C8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -271,6 +274,8 @@
 				F86A37DA177379A400407E52 /* AFURLRequestConfiguration.m */,
 				F86A37DE177397D900407E52 /* AFURLSessionManager.h */,
 				F86A37DF177397D900407E52 /* AFURLSessionManager.m */,
+				F8C14782177A411800FDCC95 /* UIButton+AFNetworking.h */,
+				F8C14783177A411800FDCC95 /* UIButton+AFNetworking.m */,
 				F8C1477C177A38CD00FDCC95 /* UIProgressView+AFNetworking.h */,
 				F8C1477D177A38CD00FDCC95 /* UIProgressView+AFNetworking.m */,
 				F8C1477F177A3EED00FDCC95 /* UIActivityIndicatorView+AFNetworking.h */,
@@ -376,6 +381,7 @@
 			files = (
 				F8C1477E177A38CD00FDCC95 /* UIProgressView+AFNetworking.m in Sources */,
 				F86A37E0177397D900407E52 /* AFURLSessionManager.m in Sources */,
+				F8C14784177A411800FDCC95 /* UIButton+AFNetworking.m in Sources */,
 				F8DA09E41396AC040057D0CC /* main.m in Sources */,
 				F86A37DB177379A400407E52 /* AFURLRequestConfiguration.m in Sources */,
 				F8FA9491150EF8C100ED4EAD /* AFAppDotNetAPIClient.m in Sources */,
