@@ -28,6 +28,8 @@
 
 @interface AFURLRequestConfiguration : NSObject
 
+@property (nonatomic, strong) NSURLComponents *URLComponents;
+
 @property (nonatomic, assign) BOOL allowsCellularAccess;
 @property (nonatomic, assign) BOOL shouldHandleCookies;
 @property (nonatomic, assign) BOOL shouldUsePipelining;

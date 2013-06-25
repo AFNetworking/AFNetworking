@@ -219,7 +219,7 @@ typedef enum {
 
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
-- (NSURLSessionDataTask *)GET:(NSString *)path
+- (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
                       success:(void (^)(id responseObject))success
                       failure:(void (^)(NSError *error))failure;

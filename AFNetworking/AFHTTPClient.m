@@ -402,12 +402,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     return nil;
 }
 
-- (NSURLSessionDataTask *)GET:(NSString *)pathOrURLString
+- (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
                       success:(void (^)(id responseObject))success
                       failure:(void (^)(NSError *error))failure
 {
-    NSMutableURLRequest *request = [self requestWithMethod:@"GET" path:pathOrURLString parameters:parameters];
+    NSMutableURLRequest *request = [self requestWithMethod:@"GET" path:URLString parameters:parameters];
     return [self runDataTaskWithRequest:request success:^(NSURLSessionDataTask *task, id responseObject) {
         if (success) {
             success(responseObject);
