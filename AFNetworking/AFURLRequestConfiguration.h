@@ -24,6 +24,12 @@
 
 #import "AFSerialization.h"
 
+/*
+ It's not clear whether this class is necessary, or if this should be the responsibility of AFHTTPClient. The default headers are the one bit of crucial functionality that doesn't quite fit anywhere... 
+ 
+ This could turn into a request object factory, but factories are kinda lame, and what is an `AFURLRequest` anyway?
+ */
+
 // Necessary if most properties are configured on session now?
 
 @interface AFURLRequestConfiguration : NSObject
