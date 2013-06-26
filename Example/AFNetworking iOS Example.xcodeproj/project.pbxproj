@@ -304,12 +304,12 @@
 			isa = PBXGroup;
 			children = (
 				F8FFAD771774D67900297E16 /* AFImageRequestOperation.h */,
-				F8FFAD781774D67900297E16 /* AFJSONRequestOperation.h */,
-				F8FFAD791774D67900297E16 /* AFPropertyListRequestOperation.h */,
-				F8FFAD7A1774D67900297E16 /* AFXMLRequestOperation.h */,
 				F8FFAD7B1774D67900297E16 /* AFImageRequestOperation.m */,
+				F8FFAD781774D67900297E16 /* AFJSONRequestOperation.h */,
 				F8FFAD7C1774D67900297E16 /* AFJSONRequestOperation.m */,
+				F8FFAD791774D67900297E16 /* AFPropertyListRequestOperation.h */,
 				F8FFAD7D1774D67900297E16 /* AFPropertyListRequestOperation.m */,
+				F8FFAD7A1774D67900297E16 /* AFXMLRequestOperation.h */,
 				F8FFAD7E1774D67900297E16 /* AFXMLRequestOperation.m */,
 			);
 			name = "1.0 Compatibility";
