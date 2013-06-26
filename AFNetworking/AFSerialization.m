@@ -52,13 +52,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     return string;
 }
 
-static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
-    static NSString * const kAFCharactersToBeEscaped = @":/?&=;+!@#$()',*";
-    static NSString * const kAFCharactersToLeaveUnescaped = @"[].";
-
-	return (__bridge_transfer  NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (__bridge CFStringRef)string, (__bridge CFStringRef)kAFCharactersToLeaveUnescaped, (__bridge CFStringRef)kAFCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding));
-}
-
 #pragma mark -
 
 @interface AFQueryStringPair : NSObject
@@ -88,9 +81,9 @@ static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NS
 
 - (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding {
     if (!self.value || [self.value isEqual:[NSNull null]]) {
-        return AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.field description], stringEncoding);
+        return [[self.field description] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     } else {
-        return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.field description], stringEncoding), AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.value description], stringEncoding)];
+        return [NSString stringWithFormat:@"%@=%@", [[self.field description] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]], [[self.value description] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
     }
 }
 
