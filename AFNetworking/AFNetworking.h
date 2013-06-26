@@ -1,6 +1,6 @@
 // AFNetworking.h
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,15 +27,10 @@
     #define _AFNETWORKING_
 
     #import "AFURLConnectionOperation.h"
-
     #import "AFHTTPRequestOperation.h"
     #import "AFHTTPClient.h"
+    #import "AFURLSessionManager.h"
 
     #import "AFSerialization.h"
     #import "AFURLRequestConfiguration.h"
-
-    #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-        #import "AFNetworkActivityIndicatorManager.h"
-        #import "UIImageView+AFNetworking.h"
-    #endif
 #endif /* _AFNETWORKING_ */
