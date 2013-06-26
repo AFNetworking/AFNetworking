@@ -103,7 +103,7 @@ static void AFGetMediaTypeAndSubtypeWithString(NSString *string, NSString **type
 }
 
 - (void)pause {
-    unsigned long long offset = 0;
+    int64_t offset = 0;
     if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
         offset = [[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
     } else {

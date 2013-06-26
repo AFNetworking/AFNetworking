@@ -535,14 +535,14 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 @property (nonatomic, strong) NSDictionary *headers;
 @property (nonatomic, strong) id body;
-@property (nonatomic, assign) unsigned long long bodyContentLength;
+@property (nonatomic, assign) int64_t bodyContentLength;
 @property (nonatomic, strong) NSInputStream *inputStream;
 
 @property (nonatomic, assign) BOOL hasInitialBoundary;
 @property (nonatomic, assign) BOOL hasFinalBoundary;
 
 @property (nonatomic, readonly, getter = hasBytesAvailable) BOOL bytesAvailable;
-@property (nonatomic, readonly) unsigned long long contentLength;
+@property (nonatomic, readonly) int64_t contentLength;
 
 - (NSInteger)read:(uint8_t *)buffer
         maxLength:(NSUInteger)length;
@@ -552,7 +552,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (nonatomic, assign) NSUInteger numberOfBytesInPacket;
 @property (nonatomic, assign) NSTimeInterval delay;
 @property (nonatomic, strong) NSInputStream *inputStream;
-@property (nonatomic, readonly) unsigned long long contentLength;
+@property (nonatomic, readonly) int64_t contentLength;
 @property (nonatomic, readonly, getter = isEmpty) BOOL empty;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
@@ -649,7 +649,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 - (void)appendPartWithInputStream:(NSInputStream *)inputStream
                              name:(NSString *)name
                          fileName:(NSString *)fileName
-                           length:(unsigned long long)length
+                           length:(int64_t)length
                          mimeType:(NSString *)mimeType
 {
     NSParameterAssert(name);
@@ -865,8 +865,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                   forMode:(__unused NSString *)mode
 {}
 
-- (unsigned long long)contentLength {
-    unsigned long long length = 0;
+- (int64_t)contentLength {
+    int64_t length = 0;
     for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
         length += [bodyPart contentLength];
     }
@@ -918,7 +918,7 @@ typedef enum {
 @interface AFHTTPBodyPart () <NSCopying> {
     AFHTTPBodyPartReadPhase _phase;
     NSInputStream *_inputStream;
-    unsigned long long _phaseReadOffset;
+    int64_t _phaseReadOffset;
 }
 
 - (BOOL)transitionToNextPhase;
@@ -978,8 +978,8 @@ typedef enum {
     return [NSString stringWithString:headerString];
 }
 
-- (unsigned long long)contentLength {
-    unsigned long long length = 0;
+- (int64_t)contentLength {
+    int64_t length = 0;
 
     NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary() : AFMultipartFormEncapsulationBoundary()) dataUsingEncoding:self.stringEncoding];
     length += [encapsulationBoundaryData length];
