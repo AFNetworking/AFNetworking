@@ -34,42 +34,6 @@ static dispatch_queue_t http_request_operation_processing_queue() {
     return af_http_request_operation_processing_queue;
 }
 
-NSSet * AFContentTypesFromHTTPHeader(NSString *string) {
-    if (!string) {
-        return nil;
-    }
-
-    NSArray *mediaRanges = [string componentsSeparatedByString:@","];
-    NSMutableSet *mutableContentTypes = [NSMutableSet setWithCapacity:mediaRanges.count];
-
-    [mediaRanges enumerateObjectsUsingBlock:^(NSString *mediaRange, __unused NSUInteger idx, __unused BOOL *stop) {
-        NSRange parametersRange = [mediaRange rangeOfString:@";"];
-        if (parametersRange.location != NSNotFound) {
-            mediaRange = [mediaRange substringToIndex:parametersRange.location];
-        }
-
-        mediaRange = [mediaRange stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-        if (mediaRange.length > 0) {
-            [mutableContentTypes addObject:mediaRange];
-        }
-    }];
-
-    return [NSSet setWithSet:mutableContentTypes];
-}
-
-static void AFGetMediaTypeAndSubtypeWithString(NSString *string, NSString **type, NSString **subtype) {
-    if (!string) {
-        return;
-    }
-
-    NSScanner *scanner = [NSScanner scannerWithString:string];
-    [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    [scanner scanUpToString:@"/" intoString:type];
-    [scanner scanString:@"/" intoString:nil];
-    [scanner scanUpToString:@";" intoString:subtype];
-}
-
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()

@@ -71,13 +71,3 @@
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 @end
-
-///----------------
-/// @name Functions
-///----------------
-
-/**
- Returns a set of MIME types detected in an HTTP `Accept` or `Content-Type` header.
- */
-extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
-
