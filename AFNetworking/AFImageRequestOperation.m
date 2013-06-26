@@ -84,7 +84,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                     UIImage *processedImage = imageProcessingBlock(image);
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-                    dispatch_async(operation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
+                    dispatch_async(operation.completionQueue ?: dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, processedImage);
                     });
 #pragma clang diagnostic pop

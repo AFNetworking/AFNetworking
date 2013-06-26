@@ -34,6 +34,16 @@ static dispatch_queue_t http_request_operation_processing_queue() {
     return af_http_request_operation_processing_queue;
 }
 
+static dispatch_group_t http_request_operation_completion_group() {
+    static dispatch_group_t af_http_request_operation_completion_group;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        af_http_request_operation_completion_group = dispatch_group_create();
+    });
+
+    return af_http_request_operation_completion_group;
+}
+
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()
@@ -43,18 +53,6 @@ static dispatch_queue_t http_request_operation_processing_queue() {
 @end
 
 @implementation AFHTTPRequestOperation
-
-- (void)dealloc {
-    if (_successCallbackQueue) {
-        dispatch_release(_successCallbackQueue);
-        _successCallbackQueue = NULL;
-    }
-
-    if (_failureCallbackQueue) {
-        dispatch_release(_failureCallbackQueue);
-        _failureCallbackQueue = NULL;
-    }
-}
 
 - (id <AFURLResponseSerialization>)serializerForResponse:(NSHTTPURLResponse *)response {
     for (id <AFURLResponseSerialization> serializer in self.responseSerializers) {
@@ -95,7 +93,7 @@ static dispatch_queue_t http_request_operation_processing_queue() {
         dispatch_async(http_request_operation_processing_queue(), ^{
             if (self.error) {
                 if (failure) {
-                    dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+                    dispatch_group_async(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                         failure(self, self.error);
                     });
                 }
@@ -106,13 +104,13 @@ static dispatch_queue_t http_request_operation_processing_queue() {
 
                 if (error) {
                     if (failure) {
-                        dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+                        dispatch_group_async(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                             failure(self, self.error);
                         });
                     }
                 } else {
                     if (success) {
-                        dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
+                        dispatch_group_async(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                             success(self, responseObject);
                         });
                     }
