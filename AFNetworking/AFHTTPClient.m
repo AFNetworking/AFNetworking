@@ -51,98 +51,6 @@ typedef id AFNetworkReachabilityRef;
 
 typedef void (^AFCompletionBlock)(void);
 
-static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
-    static NSString * const kAFCharactersToBeEscaped = @":/?&=;+!@#$()',*";
-    static NSString * const kAFCharactersToLeaveUnescaped = @"[].";
-
-	return (__bridge_transfer  NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (__bridge CFStringRef)string, (__bridge CFStringRef)kAFCharactersToLeaveUnescaped, (__bridge CFStringRef)kAFCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding));
-}
-
-#pragma mark -
-
-@interface AFQueryStringPair : NSObject
-@property (readwrite, nonatomic, strong) id field;
-@property (readwrite, nonatomic, strong) id value;
-
-- (id)initWithField:(id)field value:(id)value;
-
-- (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding;
-@end
-
-@implementation AFQueryStringPair
-@synthesize field = _field;
-@synthesize value = _value;
-
-- (id)initWithField:(id)field value:(id)value {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-
-    self.field = field;
-    self.value = value;
-
-    return self;
-}
-
-- (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding {
-    if (!self.value || [self.value isEqual:[NSNull null]]) {
-        return AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.field description], stringEncoding);
-    } else {
-        return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.field description], stringEncoding), AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.value description], stringEncoding)];
-    }
-}
-
-@end
-
-#pragma mark -
-
-extern NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary);
-extern NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value);
-
-NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding stringEncoding) {
-    NSMutableArray *mutablePairs = [NSMutableArray array];
-    for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
-        [mutablePairs addObject:[pair URLEncodedStringValueWithEncoding:stringEncoding]];
-    }
-
-    return [mutablePairs componentsJoinedByString:@"&"];
-}
-
-NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) {
-    return AFQueryStringPairsFromKeyAndValue(nil, dictionary);
-}
-
-NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
-    NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
-
-    if ([value isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *dictionary = value;
-        // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries
-        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        for (id nestedKey in [dictionary.allKeys sortedArrayUsingDescriptors:@[ sortDescriptor ]]) {
-            id nestedValue = [dictionary objectForKey:nestedKey];
-            if (nestedValue) {
-                [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@"%@[%@]", key, nestedKey] : nestedKey), nestedValue)];
-            }
-        }
-    } else if ([value isKindOfClass:[NSArray class]]) {
-        NSArray *array = value;
-        for (id nestedValue in array) {
-            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
-        }
-    } else if ([value isKindOfClass:[NSSet class]]) {
-        NSSet *set = value;
-        for (id obj in set) {
-            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue(key, obj)];
-        }
-    } else {
-        [mutableQueryStringComponents addObject:[[AFQueryStringPair alloc] initWithField:key value:value]];
-    }
-
-    return mutableQueryStringComponents;
-}
-
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
 - (id)initWithURLRequest:(NSMutableURLRequest *)urlRequest
           stringEncoding:(NSStringEncoding)encoding;
@@ -368,22 +276,22 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:NSUTF8StringEncoding];
 
-    if (parameters) {
-        for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
-            NSData *data = nil;
-            if ([pair.value isKindOfClass:[NSData class]]) {
-                data = pair.value;
-            } else if ([pair.value isEqual:[NSNull null]]) {
-                data = [NSData data];
-            } else {
-                data = [[pair.value description] dataUsingEncoding:NSUTF8StringEncoding];
-            }
-
-            if (data) {
-                [formData appendPartWithFormData:data name:[pair.field description]];
-            }
-        }
-    }
+//    if (parameters) {
+//        for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
+//            NSData *data = nil;
+//            if ([pair.value isKindOfClass:[NSData class]]) {
+//                data = pair.value;
+//            } else if ([pair.value isEqual:[NSNull null]]) {
+//                data = [NSData data];
+//            } else {
+//                data = [[pair.value description] dataUsingEncoding:NSUTF8StringEncoding];
+//            }
+//
+//            if (data) {
+//                [formData appendPartWithFormData:data name:[pair.field description]];
+//            }
+//        }
+//    }
 
     if (block) {
         block(formData);
