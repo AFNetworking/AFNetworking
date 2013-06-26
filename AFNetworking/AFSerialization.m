@@ -58,16 +58,17 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 @property (readwrite, nonatomic, strong) id field;
 @property (readwrite, nonatomic, strong) id value;
 
-- (id)initWithField:(id)field value:(id)value;
+- (id)initWithField:(id)field
+              value:(id)value;
 
 - (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding;
 @end
 
 @implementation AFQueryStringPair
-@synthesize field = _field;
-@synthesize value = _value;
 
-- (id)initWithField:(id)field value:(id)value {
+- (id)initWithField:(id)field
+              value:(id)value
+{
     self = [super init];
     if (!self) {
         return nil;
@@ -136,6 +137,8 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
     return mutableQueryStringComponents;
 }
+
+#pragma mark -
 
 @implementation AFHTTPSerializer
 
