@@ -187,13 +187,13 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 @synthesize lock = _lock;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
-    @autoreleasepool {
-        [[NSThread currentThread] setName:@"AFNetworking"];
+        @autoreleasepool {
+            [[NSThread currentThread] setName:@"AFNetworking"];
 
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         [runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
         [runLoop run];
-    }
+        }
 }
 
 + (NSThread *)networkRequestThread {
@@ -245,19 +245,23 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
             SecTrustRef allowedTrust = NULL;
             OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &allowedTrust);
             NSAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
-            
-            SecTrustResultType result = 0;
-            status = SecTrustEvaluate(allowedTrust, &result);
-            NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
-            
-            SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);            
-            NSParameterAssert(allowedPublicKey);
-            [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
-            
-            CFRelease(allowedTrust);
-            CFRelease(policy);
-            CFRelease(certificates);
-            CFRelease(allowedCertificate);
+            if (status == errSecSuccess && allowedTrust) {
+                SecTrustResultType result = 0;
+                status = SecTrustEvaluate(allowedTrust, &result);
+                NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
+                if (status == errSecSuccess) {
+                    SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
+                    NSParameterAssert(allowedPublicKey);
+                    if (allowedPublicKey) {
+                        [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
+                    }
+                }
+            }
+          
+            if (allowedTrust) CFRelease(allowedTrust);
+            if (policy) CFRelease(policy);
+            if (certificates) CFRelease(certificates);
+            if (allowedCertificate) CFRelease(allowedCertificate);
         }
         
         _pinnedPublicKeys = [[NSArray alloc] initWithArray:publicKeys];
