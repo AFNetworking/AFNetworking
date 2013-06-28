@@ -68,6 +68,15 @@
 #endif
 
 /**
+ Should the operation create partial image as data is obtained. Specifying this property after the operation has begun will result in a no-op.
+ */
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+- (void)setPartialImageBlock:(void (^)(UIImage *image))block;
+#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+- (void)setPartialImageBlock:(void (^)(NSImage *image))block;
+#endif
+
+/**
  Creates and returns an `AFImageRequestOperation` object and sets the specified success callback.
 
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
