@@ -56,9 +56,6 @@ NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.net
 NSString * const AFNetworkingOperationDidFinishNotification = @"com.alamofire.networking.operation.finish";
 
 typedef void (^AFURLConnectionOperationProgressBlock)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
-#ifndef _AFNETWORKING_PIN_SSL_CERTIFICATES_
-typedef BOOL (^AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock)(NSURLConnection *connection, NSURLProtectionSpace *protectionSpace);
-#endif
 typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
 typedef NSCachedURLResponse * (^AFURLConnectionOperationCacheResponseBlock)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse);
 typedef NSURLRequest * (^AFURLConnectionOperationRedirectResponseBlock)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse);
@@ -142,9 +139,6 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 @property (readwrite, nonatomic, assign) AFBackgroundTaskIdentifier backgroundTaskIdentifier;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock uploadProgress;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationProgressBlock downloadProgress;
-#ifndef _AFNETWORKING_PIN_SSL_CERTIFICATES_
-@property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock authenticationAgainstProtectionSpace;
-#endif
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationChallengeBlock authenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationCacheResponseBlock cacheResponse;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationRedirectResponseBlock redirectResponse;
@@ -170,18 +164,13 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 @dynamic inputStream;
 @synthesize outputStream = _outputStream;
 @synthesize credential = _credential;
-#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
 @synthesize SSLPinningMode = _SSLPinningMode;
-#endif
 @synthesize shouldUseCredentialStorage = _shouldUseCredentialStorage;
 @synthesize userInfo = _userInfo;
 @synthesize backgroundTaskIdentifier = _backgroundTaskIdentifier;
 @synthesize uploadProgress = _uploadProgress;
 @synthesize downloadProgress = _downloadProgress;
 @synthesize authenticationChallenge = _authenticationChallenge;
-#ifndef _AFNETWORKING_PIN_SSL_CERTIFICATES_
-@synthesize authenticationAgainstProtectionSpace = _authenticationAgainstProtectionSpace;
-#endif
 @synthesize cacheResponse = _cacheResponse;
 @synthesize redirectResponse = _redirectResponse;
 @synthesize lock = _lock;
@@ -207,7 +196,6 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
     return _networkRequestThread;
 }
 
-#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
 + (NSArray *)pinnedCertificates {
     static NSArray *_pinnedCertificates = nil;
     static dispatch_once_t onceToken;
@@ -265,7 +253,6 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
     
     return _pinnedPublicKeys;
 }
-#endif
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
     NSParameterAssert(urlRequest);
@@ -394,23 +381,9 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
     self.downloadProgress = block;
 }
 
-#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
-
 - (void)setWillSendRequestForAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block {
     self.authenticationChallenge = block;
 }
-
-#else
-
-- (void)setAuthenticationAgainstProtectionSpaceBlock:(BOOL (^)(NSURLConnection *, NSURLProtectionSpace *))block {
-    self.authenticationAgainstProtectionSpace = block;
-}
-
-- (void)setAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block {
-    self.authenticationChallenge = block;
-}
-
-#endif
 
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block {
     self.cacheResponse = block;
@@ -593,8 +566,6 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 
 #pragma mark - NSURLConnectionDelegate
 
-#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
-
 - (void)connection:(NSURLConnection *)connection
 willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
@@ -697,52 +668,6 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
         }
     }
 }
-
-#else
-
-- (BOOL)connection:(NSURLConnection *)connection
-canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
-{
-    if (self.allowsInvalidSSLCertificate &&
-       [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            return YES;
-    }
-    
-    if (self.authenticationAgainstProtectionSpace) {
-        return self.authenticationAgainstProtectionSpace(connection, protectionSpace);
-    } else if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust] || [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodClientCertificate]) {
-        return NO;
-    } else {
-        return YES;
-    }
-}
-
-- (void)connection:(NSURLConnection *)connection
-didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
-{
-
-    if (self.allowsInvalidSSLCertificate
-       && [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
-        return;
-    }
-
-    if (self.authenticationChallenge) {
-        self.authenticationChallenge(connection, challenge);
-    } else {
-        if ([challenge previousFailureCount] == 0) {
-            if (self.credential) {
-                [[challenge sender] useCredential:self.credential forAuthenticationChallenge:challenge];
-            } else {
-                [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
-            }
-        } else {
-            [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
-        }
-    }
-}
-
-#endif
 
 - (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection __unused *)connection {
     return self.shouldUseCredentialStorage;
@@ -896,9 +821,6 @@ didReceiveResponse:(NSURLResponse *)response
     
     operation.uploadProgress = self.uploadProgress;
     operation.downloadProgress = self.downloadProgress;
-#ifndef _AFNETWORKING_PIN_SSL_CERTIFICATES_
-    operation.authenticationAgainstProtectionSpace = self.authenticationAgainstProtectionSpace;
-#endif
     operation.authenticationChallenge = self.authenticationChallenge;
     operation.cacheResponse = self.cacheResponse;
     operation.redirectResponse = self.redirectResponse;
