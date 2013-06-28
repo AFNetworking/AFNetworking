@@ -65,7 +65,7 @@
  
  SSL with certificate pinning is strongly recommended for any application that transmits sensitive information to an external webservice.
 
- When `_AFNETWORKING_PIN_SSL_CERTIFICATES_` is defined and the Security framework is linked, connections will be validated on all matching certificates with a `.cer` extension in the bundle root.
+ When `defaultSSLPinningMode` is defined on `AFHTTPClient` and the Security framework is linked, connections will be validated on all matching certificates with a `.cer` extension in the bundle root.
 
  ## NSCoding & NSCopying Conformance
 
@@ -173,7 +173,7 @@ NSCoding, NSCopying>
 /**
  The pinning mode which will be used for SSL connections. `AFSSLPinningModePublicKey` by default.
  
- To enable SSL Pinning, `#define _AFNETWORKING_PIN_SSL_CERTIFICATES_` in `Prefix.pch`. Also, make sure that the Security framework is linked with the binary. See the "SSL Pinning" section in the `AFURLConnectionOperation`" header for more information.
+ SSL Pinning requires that the Security framework is linked with the binary. See the "SSL Pinning" section in the `AFURLConnectionOperation`" header for more information.
  */
 @property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
 
