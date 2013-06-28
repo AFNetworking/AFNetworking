@@ -44,6 +44,7 @@
  - `image/png`
  - `image/ico`
  - `image/x-icon`
+ - `image/x-png`
  - `image/bmp`
  - `image/x-bmp`
  - `image/x-xbitmap`
