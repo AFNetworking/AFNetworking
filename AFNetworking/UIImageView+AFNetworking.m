@@ -35,6 +35,7 @@
 #pragma mark -
 
 static char kAFImageRequestOperationObjectKey;
+static char kAFImageRequestDefaultAcceptHeaderKey;
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFImageRequestOperation *af_imageRequestOperation;
@@ -87,7 +88,7 @@ static char kAFImageRequestOperationObjectKey;
        placeholderImage:(UIImage *)placeholderImage
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    [request addValue:[[self class] AFNetworkingAcceptHeader] forHTTPHeaderField:@"Accept"];
 
     [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
 }
@@ -147,6 +148,18 @@ static char kAFImageRequestOperationObjectKey;
 - (void)cancelImageRequestOperation {
     [self.af_imageRequestOperation cancel];
     self.af_imageRequestOperation = nil;
+}
+
++ (void)setAFNetworkingAcceptHeader:(NSString *)acceptHeader {
+	objc_setAssociatedObject(self, &kAFImageRequestDefaultAcceptHeaderKey, acceptHeader, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
++ (NSString *)AFNetworkingAcceptHeader {
+	return objc_getAssociatedObject(self, &kAFImageRequestDefaultAcceptHeaderKey);
+}
+
++ (void)load {
+	[self setAFNetworkingAcceptHeader:@"image/*"];
 }
 
 @end
