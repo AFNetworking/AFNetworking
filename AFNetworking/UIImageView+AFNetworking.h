@@ -73,6 +73,10 @@
  */
 - (void)cancelImageRequestOperation;
 
++ (void)setAFNetworkingAcceptHeader:(NSString *)acceptHeader;
+
++ (NSString *)AFNetworkingAcceptHeader;
+
 @end
 
 #endif
