@@ -26,7 +26,6 @@
 #import <Availability.h>
 
 #import "AFSerialization.h"
-#import "AFURLRequestConfiguration.h"
 #import "AFURLSessionManager.h"
 
 /**
@@ -117,6 +116,22 @@ typedef enum {
 @property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
 #endif
 
+@property (nonatomic, strong) NSURLCredential *credential;
+
+/**
+ Default SSL pinning mode for each `AFHTTPRequestOperation` created by `HTTPRequestOperationWithRequest:success:failure:`.
+ */
+#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
+@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
+#endif
+
+/**
+ Whether each `AFHTTPRequestOperation` created by `HTTPRequestOperationWithRequest:success:failure:` should accept an invalid SSL certificate.
+
+ If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to `YES` for backwards compatibility. Otherwise, this property defaults to `NO`.
+ */
+@property (nonatomic, assign) BOOL allowsInvalidSSLCertificate;
+
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
 ///---------------------------------------------
@@ -147,10 +162,18 @@ typedef enum {
 - (id)initWithBaseURL:(NSURL *)url
         configuration:(NSURLSessionConfiguration *)configuration;
 
-@property (nonatomic, strong) AFURLRequestConfiguration *requestConfiguration;
+///------------------------------------
+/// @name Accessing Request Serializers
+///------------------------------------
 
-@property (nonatomic, strong) id <AFURLRequestSerialization> requestSerializer; // Should this be part of request configuration?
+/**
+ 
+ */
+@property (nonatomic, strong) id <AFURLRequestSerialization> requestSerializer;
 
+/**
+ 
+ */
 @property (nonatomic, strong) NSArray *responseSerializers;
 
 ///-----------------------------------

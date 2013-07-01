@@ -22,6 +22,8 @@
 
 #import "AFSerialization.h"
 
+typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, NSDictionary *parameters, NSError *__autoreleasing *error);
+
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     NSMutableString *string = [NSMutableString string];
 
@@ -140,6 +142,12 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 #pragma mark -
 
+@interface AFHTTPSerializer ()
+@property (readwrite, nonatomic, strong) NSMutableDictionary *mutableHTTPRequestHeaders;
+@property (readwrite, nonatomic, assign) AFHTTPRequestQueryStringSerializationStyle queryStringSerializationStyle;
+@property (readwrite, nonatomic, copy) AFQueryStringSerializationBlock queryStringSerialization;
+@end
+
 @implementation AFHTTPSerializer
 
 - (id)init {
@@ -148,11 +156,68 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
         return nil;
     }
 
+    self.mutableHTTPRequestHeaders = [NSMutableDictionary dictionary];
+
+    // Accept-Language HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
+    NSMutableArray *acceptLanguagesComponents = [NSMutableArray array];
+    [[NSLocale preferredLanguages] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        float q = 1.0f - (idx * 0.1f);
+        [acceptLanguagesComponents addObject:[NSString stringWithFormat:@"%@;q=%0.1g", obj, q]];
+        *stop = q <= 0.5f;
+    }];
+    [self setValue:[acceptLanguagesComponents componentsJoinedByString:@", "] forHTTPHeaderField:@"Accept-Language"];
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+    // User-Agent Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
+    [self setValue:[NSString stringWithFormat:@"%@/%@ (%@; iOS %@; Scale/%0.2f)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(__bridge NSString *)kCFBundleExecutableKey] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(__bridge NSString *)kCFBundleIdentifierKey], (__bridge id)CFBundleGetValueForInfoDictionaryKey(CFBundleGetMainBundle(), kCFBundleVersionKey) ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(__bridge NSString *)kCFBundleVersionKey], [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion], ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0f)] forHTTPHeaderField:@"User-Agent"];
+#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+    [self setValue:[NSString stringWithFormat:@"%@/%@ (Mac OS X %@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:(__bridge NSString *)kCFBundleExecutableKey] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(__bridge NSString *)kCFBundleIdentifierKey], [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] ?: [[[NSBundle mainBundle] infoDictionary] objectForKey:(__bridge NSString *)kCFBundleVersionKey], [[NSProcessInfo processInfo] operatingSystemVersionString]] forHTTPHeaderField:@"User-Agent"];
+#endif
+#pragma clang diagnostic pop
+
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
     self.acceptableContentTypes = nil;
 
     return self;
 }
+
+#pragma mark -
+
+- (NSDictionary *)HTTPRequestHeaders {
+    return [NSDictionary dictionaryWithDictionary:self.mutableHTTPRequestHeaders];
+}
+
+- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field {
+	[self.mutableHTTPRequestHeaders setValue:value forKey:field];
+}
+
+- (void)setAuthorizationHeaderFieldWithUsername:(NSString *)username password:(NSString *)password {
+	NSString *basicAuthCredentials = [NSString stringWithFormat:@"%@:%@", username, password];
+    [self setValue:[NSString stringWithFormat:@"Basic %@", [[basicAuthCredentials dataUsingEncoding:NSUTF8StringEncoding] base64Encoding]] forHTTPHeaderField:@"Authorization"];
+}
+
+- (void)setAuthorizationHeaderFieldWithToken:(NSString *)token {
+    [self setValue:[NSString stringWithFormat:@"Token token=\"%@\"", token] forHTTPHeaderField:@"Authorization"];
+}
+
+- (void)clearAuthorizationHeader {
+	[self.mutableHTTPRequestHeaders removeObjectForKey:@"Authorization"];
+}
+
+#pragma mark -
+
+- (void)setQueryStringSerializationWithStyle:(AFHTTPRequestQueryStringSerializationStyle)style {
+    self.queryStringSerializationStyle = style;
+    self.queryStringSerialization = nil;
+}
+
+- (void)setQueryStringSerializationWithBlock:(NSString *(^)(NSURLRequest *, NSDictionary *, NSError *__autoreleasing *))block {
+    self.queryStringSerialization = block;
+}
+
+#pragma mark -
 
 - (void)validateResponse:(NSHTTPURLResponse *)response
                     data:(NSData *)data
@@ -188,7 +253,39 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                                withParameters:(NSDictionary *)parameters
                                         error:(NSError *__autoreleasing *)error
 {
-    return request; // TODO
+    NSParameterAssert(request);
+
+    if (!parameters) {
+        return request;
+    }
+
+    NSMutableURLRequest *mutableRequest = [request mutableCopy];
+
+    NSString *query = nil;
+    if (self.queryStringSerialization) {
+        query = self.queryStringSerialization(request, parameters, error);
+    } else {
+        switch (self.queryStringSerializationStyle) {
+            case AFHTTPRequestQueryStringDefaultStyle:
+                query = AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding);
+                break;
+            default:
+                break;
+        }
+    }
+
+    if ([[request HTTPMethod] isEqualToString:@"GET"] && [[request HTTPMethod] isEqualToString:@"HEAD"]) {
+        NSURLComponents *components = [NSURLComponents componentsWithString:[[request URL] absoluteString]];
+        components.query = components.query ? [components.query stringByAppendingFormat:@"&%@", query] : query;
+
+        mutableRequest.URL = [components URL];
+    } else {
+        NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+        [mutableRequest setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+        [mutableRequest setHTTPBody:[query dataUsingEncoding:self.stringEncoding]];
+    }
+
+    return mutableRequest;
 }
 
 #pragma mark AFURLResponseSerializer

@@ -257,11 +257,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:method];
-    [request setAllHTTPHeaderFields:self.requestConfiguration.headers];
     
-//    request = [[self.requestSerializer requestBySerializingRequest:request withParameters:parameters error:nil] mutableCopy];
-
-	return request;
+	return [[self.requestSerializer requestBySerializingRequest:request withParameters:parameters error:nil] mutableCopy];
 }
 
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
