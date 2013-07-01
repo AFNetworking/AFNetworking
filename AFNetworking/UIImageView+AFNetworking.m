@@ -129,7 +129,9 @@ static char kAFImageRequestOperationObjectKey;
         // If the user supplied a progress block
         if (progress) {
             [requestOperation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-                progress((float)totalBytesRead / (float)totalBytesExpectedToRead);
+                if (totalBytesExpectedToRead) {
+                    progress((float)totalBytesRead / (float)totalBytesExpectedToRead);
+                }
             }];
         }
         
