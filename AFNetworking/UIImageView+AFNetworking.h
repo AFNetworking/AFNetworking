@@ -54,6 +54,31 @@
        placeholderImage:(UIImage *)placeholderImage;
 
 /**
+ Creates and enqueues an image request operation, which asynchronously downloads the image from the specified URL. Any previous image request for the receiver will be cancelled. If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
+ 
+ This is a convenience method ignoring the local cache.
+ 
+ @param url The URL used for the image request.
+ @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
+ */
+- (void)setImageWithURLIgnoringCache:(NSURL *)url
+                    placeholderImage:(UIImage *)placeholderImage;
+
+/**
+ Creates and enqueues an image request operation, which asynchronously downloads the image from the specified URL, putting it into the cache as a result.
+ 
+ @param url The URL used for the image request.
+ */
++ (void)prefetchImageWithURL:(NSURL *)url;
+
+/**
+ Returns the cached image for the URL or nil if the image is not in the cache
+ 
+ @param url The URL used for the associated image request in cache.
+ */
++ (UIImage*)cachedImageForURL:(NSURL *)url;
+
+/**
  Creates and enqueues an image request operation, which asynchronously downloads the image with the specified URL request object. Any previous image request for the receiver will be cancelled. If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
  
  If a success block is specified, it is the responsibility of the block to set the image of the image view before returning. If no success block is specified, the default behavior of setting the image with `self.image = image` is executed.
