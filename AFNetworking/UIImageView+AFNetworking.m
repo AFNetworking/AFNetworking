@@ -93,13 +93,16 @@ static char kAFImageRequestOperationObjectKey;
 }
 
 - (void)setImageWithURLIgnoringCache:(NSURL *)url
-       placeholderImage:(UIImage *)placeholderImage
+                    placeholderImage:(UIImage *)placeholderImage
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
     [request setCachePolicy:NSURLRequestReloadIgnoringCacheData];
     
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    if(self.image != nil)
+        [self setImageWithURLRequest:request placeholderImage:nil success:nil failure:nil];
+    else
+        [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
 }
 
 + (void)prefetchImageWithURL:(NSURL *)url
