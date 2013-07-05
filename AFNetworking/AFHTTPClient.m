@@ -739,8 +739,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
     HTTPClient.stringEncoding = self.stringEncoding;
     HTTPClient.parameterEncoding = self.parameterEncoding;
-    HTTPClient.registeredHTTPOperationClassNames = [self.registeredHTTPOperationClassNames copyWithZone:zone];
-    HTTPClient.defaultHeaders = [self.defaultHeaders copyWithZone:zone];
+    HTTPClient.registeredHTTPOperationClassNames = [self.registeredHTTPOperationClassNames mutableCopyWithZone:zone];
+    HTTPClient.defaultHeaders = [self.defaultHeaders mutableCopyWithZone:zone];
 #ifdef _SYSTEMCONFIGURATION_H
     HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
 #endif
