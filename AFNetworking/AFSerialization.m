@@ -222,12 +222,12 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 #pragma mark -
 
-- (void)validateResponse:(NSHTTPURLResponse *)response
+- (BOOL)validateResponse:(NSHTTPURLResponse *)response
                     data:(NSData *)data
                    error:(NSError *__autoreleasing *)error
 {
     if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
-        return;
+        return NO;
     }
 
     if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:response.statusCode]) {
@@ -248,6 +248,8 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
             *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
         }
     }
+
+    return YES;
 }
 
 #pragma mark AFURLRequestSerializer

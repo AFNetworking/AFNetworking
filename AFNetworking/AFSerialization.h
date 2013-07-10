@@ -147,7 +147,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 /**
  
  */
-- (void)validateResponse:(NSHTTPURLResponse *)response
+- (BOOL)validateResponse:(NSHTTPURLResponse *)response
                     data:(NSData *)data
                    error:(NSError *__autoreleasing *)error;
 
