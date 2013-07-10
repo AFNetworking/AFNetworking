@@ -150,6 +150,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 @implementation AFHTTPSerializer
 
++ (instancetype)serializer {
+    return [[self alloc] init];
+}
+
 - (instancetype)init {
     self = [super init];
     if (!self) {

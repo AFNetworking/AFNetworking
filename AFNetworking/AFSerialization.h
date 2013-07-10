@@ -82,6 +82,11 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @property (readonly, nonatomic, strong) NSDictionary *HTTPRequestHeaders;
 
 /**
+
+ */
++ (instancetype)serializer;
+
+/**
  Sets the value for the HTTP headers set in request objects made by the HTTP client. If `nil`, removes the existing value for that header.
 
  @param header The HTTP header to set a default value for
@@ -173,11 +178,6 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 /**
  
  */
-+ (instancetype)serializer;
-
-/**
- 
- */
 + (instancetype)serializerWithReadingOptions:(NSJSONReadingOptions)readingOptions
                               writingOptions:(NSJSONWritingOptions)writingOptions;
 
@@ -190,11 +190,6 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
  */
 @interface AFXMLParserSerializer : AFHTTPSerializer
 
-/**
- 
- */
-+ (instancetype)serializer;
-
 @end
 
 #pragma mark -
@@ -204,11 +199,6 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @interface AFXMLDocumentSerializer : AFHTTPSerializer
 
 @property (nonatomic, assign) NSUInteger options;
-
-/**
- 
- */
-+ (instancetype)serializer;
 
 /**
 
@@ -244,11 +234,6 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 /**
  
  */
-+ (instancetype)serializer;
-
-/**
- 
- */
 + (instancetype)serializerWithFormat:(NSPropertyListFormat)format
                          readOptions:(NSPropertyListReadOptions)readOptions
                         writeOptions:(NSPropertyListWriteOptions)writeOptions;
@@ -273,10 +258,5 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
  */
 @property (nonatomic, assign) BOOL automaticallyInflatesResponseImage;
 #endif
-
-/**
- 
- */
-+ (instancetype)serializer;
 
 @end
