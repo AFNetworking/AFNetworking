@@ -244,47 +244,47 @@ typedef enum {
  */
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
+                      failure:(void (^)(NSError *error))failure;
 
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response))success
-                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                       success:(void (^)(NSHTTPURLResponse *response))success
+                       failure:(void (^)(NSError *error))failure;
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
+                       failure:(void (^)(NSError *error))failure;
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
+                       failure:(void (^)(NSError *error))failure;
 
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
+                      failure:(void (^)(NSError *error))failure;
 
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
-                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
-                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                        success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
+                        failure:(void (^)(NSError *error))failure;
 
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
-                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
-                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                         success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
+                         failure:(void (^)(NSError *error))failure;
 
 ///-------------------------
 /// @name Running Data Tasks
 ///-------------------------
 
 - (NSURLSessionDataTask *)runDataTaskWithRequest:(NSURLRequest *)request
-                                         success:(void (^)(NSURLSessionDataTask *task, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+                                         success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                         failure:(void (^)(NSError *error))failure;
 
 @end
 

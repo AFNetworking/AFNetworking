@@ -57,8 +57,8 @@
 - (void)setImageForState:(UIControlState)state
           withURLRequest:(NSURLRequest *)urlRequest
         placeholderImage:(UIImage *)placeholderImage
-                 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                 success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
+                 failure:(void (^)(NSError *error))failure;
 
 
 ///-------------------------------
@@ -84,8 +84,8 @@
 - (void)setBackgroundImageForState:(UIControlState)state
                     withURLRequest:(NSURLRequest *)urlRequest
                   placeholderImage:(UIImage *)placeholderImage
-                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                           failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                           success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
+                           failure:(void (^)(NSError *error))failure;
 
 
 ///-------------------------------

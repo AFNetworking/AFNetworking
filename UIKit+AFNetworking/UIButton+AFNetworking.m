@@ -62,8 +62,8 @@
 - (void)setImageForState:(UIControlState)state
           withURLRequest:(NSURLRequest *)urlRequest
         placeholderImage:(UIImage *)placeholderImage
-                 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                 failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                 success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
+                 failure:(void (^)(NSError *error))failure
 {
     [self setImageAtKeyPath:@"image" forState:state withURLRequest:urlRequest placeholderImage:placeholderImage success:success failure:failure];
 }
@@ -89,8 +89,8 @@
 - (void)setBackgroundImageForState:(UIControlState)state
                     withURLRequest:(NSURLRequest *)urlRequest
                   placeholderImage:(UIImage *)placeholderImage
-                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                           failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                           success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
+                           failure:(void (^)(NSError *error))failure
 {
     [self setImageAtKeyPath:@"backgroundImage" forState:state withURLRequest:urlRequest placeholderImage:placeholderImage success:success failure:failure];
 }
@@ -101,21 +101,21 @@
                  forState:(UIControlState)state
            withURLRequest:(NSURLRequest *)urlRequest
          placeholderImage:(UIImage *)placeholderImage
-                  success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                  failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+                  success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
+                  failure:(void (^)(NSError *error))failure
 {
     
     [self setValue:placeholderImage forKeyPath:keyPath];
 
-    [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
-            success(urlRequest, (NSHTTPURLResponse *)task.response, responseObject);
+            success(response, responseObject);
         } else if (responseObject) {
             [self setValue:responseObject forKeyPath:keyPath];
         }
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+    } failure:^(NSError *error) {
         if (failure) {
-            failure(urlRequest, (NSHTTPURLResponse *)task.response, error);
+            failure(error);
         }
     }];
 }

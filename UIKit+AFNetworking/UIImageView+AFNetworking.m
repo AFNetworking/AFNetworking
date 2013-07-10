@@ -114,28 +114,20 @@ static char kAFImageDataTaskKey;
     } else {
         self.image = placeholderImage;
 
-        self.af_imageDataTask = [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+        self.af_imageDataTask = [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
             if ([[urlRequest URL] isEqual:[self.af_imageDataTask.response URL]]) {
                 if (success) {
-                    success(urlRequest, (NSHTTPURLResponse *)task.response, responseObject);
+                    success(urlRequest, response, responseObject);
                 } else if (responseObject) {
                     self.image = responseObject;
-                }
-
-                if (self.af_imageDataTask == task) {
-                    self.af_imageDataTask = nil;
                 }
             }
 
             [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        } failure:^(NSError *error) {
             if ([[urlRequest URL] isEqual:[self.af_imageDataTask.response URL]]) {
                 if (failure) {
-                    failure(urlRequest, (NSHTTPURLResponse *)task.response, error);
-                }
-
-                if (self.af_imageDataTask == task) {
-                    self.af_imageDataTask = nil;
+                    failure(urlRequest, (NSHTTPURLResponse *)self.af_imageDataTask .response, error);
                 }
             }
         }];
