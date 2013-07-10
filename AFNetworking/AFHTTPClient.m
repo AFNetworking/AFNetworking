@@ -52,8 +52,8 @@ typedef id AFNetworkReachabilityRef;
 typedef void (^AFCompletionBlock)(void);
 
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
-- (id)initWithURLRequest:(NSMutableURLRequest *)urlRequest
-          stringEncoding:(NSStringEncoding)encoding;
+- (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
+                    stringEncoding:(NSStringEncoding)encoding;
 
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData;
 @end
@@ -81,16 +81,16 @@ typedef void (^AFCompletionBlock)(void);
     return [[self alloc] initWithBaseURL:url];
 }
 
-- (id)init {
+- (instancetype)init {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%@ Failed to call designated initializer. Invoke `initWithBaseURL:` instead.", NSStringFromClass([self class])] userInfo:nil];
 }
 
-- (id)initWithBaseURL:(NSURL *)url {
+- (instancetype)initWithBaseURL:(NSURL *)url {
     return [self initWithBaseURL:url configuration:nil];
 }
 
-- (id)initWithBaseURL:(NSURL *)url
-        configuration:(NSURLSessionConfiguration *)configuration
+- (instancetype)initWithBaseURL:(NSURL *)url
+                  configuration:(NSURLSessionConfiguration *)configuration
 {
     NSParameterAssert(url);
 
@@ -951,7 +951,7 @@ typedef enum {
 @synthesize hasInitialBoundary = _hasInitialBoundary;
 @synthesize hasFinalBoundary = _hasFinalBoundary;
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;

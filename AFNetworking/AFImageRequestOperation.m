@@ -134,7 +134,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 #endif
 
-- (id)initWithRequest:(NSURLRequest *)urlRequest {
+- (instancetype)initWithRequest:(NSURLRequest *)urlRequest {
     self = [super initWithRequest:urlRequest];
     if (!self) {
         return nil;

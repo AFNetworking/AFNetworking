@@ -62,7 +62,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
 
 @implementation AFURLSessionManager
 
-- (id)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
     self = [super init];
     if (!self) {
         return nil;

@@ -36,7 +36,7 @@ static NSString * const kAFAppDotNetAPIBaseURLString = @"https://alpha-api.app.n
     return _sharedClient;
 }
 
-- (id)initWithBaseURL:(NSURL *)url {
+- (instancetype)initWithBaseURL:(NSURL *)url {
     self = [super initWithBaseURL:url];
     if (!self) {
         return nil;

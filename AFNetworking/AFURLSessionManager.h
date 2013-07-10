@@ -65,7 +65,7 @@ extern NSString * const AFURLSessionDidInvalidateNotification;
 /**
  
  */
-- (id)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration;
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration;
 
 /**
  

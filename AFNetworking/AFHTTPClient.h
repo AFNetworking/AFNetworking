@@ -154,13 +154,13 @@ typedef enum {
 
  @return The newly-initialized HTTP client
  */
-- (id)initWithBaseURL:(NSURL *)url;
+- (instancetype)initWithBaseURL:(NSURL *)url;
 
 /**
  
  */
-- (id)initWithBaseURL:(NSURL *)url
-        configuration:(NSURLSessionConfiguration *)configuration;
+- (instancetype)initWithBaseURL:(NSURL *)url
+                  configuration:(NSURLSessionConfiguration *)configuration;
 
 ///------------------------------------
 /// @name Accessing Request Serializers

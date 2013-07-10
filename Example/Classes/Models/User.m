@@ -40,7 +40,7 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
 @synthesize userID = _userID;
 @synthesize username = _username;
 
-- (id)initWithAttributes:(NSDictionary *)attributes {
+- (instancetype)initWithAttributes:(NSDictionary *)attributes {
     self = [super init];
     if (!self) {
         return nil;

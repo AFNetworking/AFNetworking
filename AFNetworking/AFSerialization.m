@@ -60,16 +60,16 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 @property (readwrite, nonatomic, strong) id field;
 @property (readwrite, nonatomic, strong) id value;
 
-- (id)initWithField:(id)field
-              value:(id)value;
+- (instancetype)initWithField:(id)field
+                        value:(id)value;
 
 - (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding;
 @end
 
 @implementation AFQueryStringPair
 
-- (id)initWithField:(id)field
-              value:(id)value
+- (instancetype)initWithField:(id)field
+                value:(id)value
 {
     self = [super init];
     if (!self) {
@@ -150,7 +150,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 @implementation AFHTTPSerializer
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
@@ -326,7 +326,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return serializer;
 }
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
@@ -368,7 +368,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return [[[response URL] pathExtension] isEqualToString:@"json"] || [super canProcessResponse:response];
 }
 
-- (id)responseObjectForResponse:(NSHTTPURLResponse *)response
+- (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
@@ -405,7 +405,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return serializer;
 }
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
@@ -448,7 +448,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return serializer;
 }
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
@@ -465,7 +465,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return [[[response URL] pathExtension] isEqualToString:@"xml"] || [super canProcessResponse:response];
 }
 
-- (id)responseObjectForResponse:(NSHTTPURLResponse *)response
+- (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
@@ -496,7 +496,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return serializer;
 }
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
@@ -545,7 +545,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return [[[response URL] pathExtension] isEqualToString:@"plist"] || [super canProcessResponse:response];
 }
 
-- (id)responseObjectForResponse:(NSHTTPURLResponse *)response
+- (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
@@ -566,7 +566,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return serializer;
 }
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
@@ -593,7 +593,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return [[[self class] acceptablePathExtensions] containsObject:[[response URL] pathExtension]] || [super canProcessResponse:response];
 }
 
-- (id)responseObjectForResponse:(NSHTTPURLResponse *)response
+- (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {

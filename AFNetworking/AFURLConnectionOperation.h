@@ -227,7 +227,7 @@ NSCoding, NSCopying>
  
  @param urlRequest The request object to be used by the operation connection.
  */
-- (id)initWithRequest:(NSURLRequest *)urlRequest;
+- (instancetype)initWithRequest:(NSURLRequest *)urlRequest;
 
 ///----------------------------------
 /// @name Pausing / Resuming Requests

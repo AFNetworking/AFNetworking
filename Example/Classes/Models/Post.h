@@ -31,7 +31,7 @@
 
 @property (strong) User *user;
 
-- (id)initWithAttributes:(NSDictionary *)attributes;
+- (instancetype)initWithAttributes:(NSDictionary *)attributes;
 
 + (void)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block;
 
