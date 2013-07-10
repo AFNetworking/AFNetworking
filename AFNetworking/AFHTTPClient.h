@@ -216,8 +216,8 @@ typedef enum {
  @param method The HTTP method for the request. This parameter must not be `GET` or `HEAD`, or `nil`.
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
- @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. This can be used to upload files, encode HTTP body as JSON or XML, or specify multiple values for the same parameter, as one might for array values.
-
+ @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol. 
+ 
  @return An `NSMutableURLRequest` object
  */
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
@@ -231,46 +231,107 @@ typedef enum {
 ///---------------------------
 
 /**
- Creates an `AFHTTPRequestOperation` with a `GET` request, and enqueues it to the HTTP client's operation queue.
+ Creates and runs an `NSURLSessionDataTask` with a `GET` request.
 
  @param path The path to be appended to the HTTP client's base URL and used as the request URL.
- @param parameters The parameters to be encoded and appended as the query string for the request URL.
- @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes two arguments: the created request operation and the `NSError` object describing the network or parsing error that occurred.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
 
- @see -HTTPRequestOperationWithRequest:success:failure:
+ @see -runDataTaskWithRequest:success:failure:
  */
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                       failure:(void (^)(NSError *error))failure;
 
+/**
+ Creates and runs an `NSURLSessionDataTask` with a `HEAD` request.
+
+ @param path The path to be appended to the HTTP client's base URL and used as the request URL.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes a single arguments: the server response.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
+
+ @see -runDataTaskWithRequest:success:failure:
+ */
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
                        success:(void (^)(NSHTTPURLResponse *response))success
                        failure:(void (^)(NSError *error))failure;
 
+/**
+ Creates and runs an `NSURLSessionDataTask` with a `POST` request.
+
+ @param path The path to be appended to the HTTP client's base URL and used as the request URL.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
+
+ @see -runDataTaskWithRequest:success:failure:
+ */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
                        success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                        failure:(void (^)(NSError *error))failure;
 
+/**
+ Creates and runs an `NSURLSessionDataTask` with a multipart `POST` request.
+
+ @param path The path to be appended to the HTTP client's base URL and used as the request URL.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
+
+ @see -runDataTaskWithRequest:success:failure:
+ */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
                        success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                        failure:(void (^)(NSError *error))failure;
 
+/**
+ Creates and runs an `NSURLSessionDataTask` with a `PUT` request.
+
+ @param path The path to be appended to the HTTP client's base URL and used as the request URL.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
+
+ @see -runDataTaskWithRequest:success:failure:
+ */
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                       failure:(void (^)(NSError *error))failure;
 
+/**
+ Creates and runs an `NSURLSessionDataTask` with a `PATCH` request.
+
+ @param path The path to be appended to the HTTP client's base URL and used as the request URL.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
+
+ @see -runDataTaskWithRequest:success:failure:
+ */
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
                         success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                         failure:(void (^)(NSError *error))failure;
 
+/**
+ Creates and runs an `NSURLSessionDataTask` with a `DELETE` request.
+
+ @param path The path to be appended to the HTTP client's base URL and used as the request URL.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
+
+ @see -runDataTaskWithRequest:success:failure:
+ */
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
                          success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
@@ -280,6 +341,9 @@ typedef enum {
 /// @name Running Data Tasks
 ///-------------------------
 
+/**
+ 
+ */
 - (NSURLSessionDataTask *)runDataTaskWithRequest:(NSURLRequest *)request
                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
                                          failure:(void (^)(NSError *error))failure;
