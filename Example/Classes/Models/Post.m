@@ -26,9 +26,6 @@
 #import "AFAppDotNetAPIClient.h"
 
 @implementation Post
-@synthesize postID = _postID;
-@synthesize text = _text;
-@synthesize user = _user;
 
 - (id)initWithAttributes:(NSDictionary *)attributes {
     self = [super init];
@@ -36,10 +33,10 @@
         return nil;
     }
     
-    _postID = [[attributes valueForKeyPath:@"id"] integerValue];
-    _text = [attributes valueForKeyPath:@"text"];
+    self.postID = [[attributes valueForKeyPath:@"id"] integerValue];
+    self.text = [attributes valueForKeyPath:@"text"];
     
-    _user = [[User alloc] initWithAttributes:[attributes valueForKeyPath:@"user"]];
+    self.user = [[User alloc] initWithAttributes:[attributes valueForKeyPath:@"user"]];
     
     return self;
 }
@@ -47,7 +44,7 @@
 #pragma mark -
 
 + (void)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block {
-    [[AFAppDotNetAPIClient sharedClient] GET:@"stream/0/posts/stream/global" parameters:nil success:^(id JSON) {
+    [[AFAppDotNetAPIClient sharedClient] GET:@"stream/0/posts/stream/global" parameters:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSArray *postsFromResponse = [JSON valueForKeyPath:@"data"];
         NSMutableArray *mutablePosts = [NSMutableArray arrayWithCapacity:[postsFromResponse count]];
         for (NSDictionary *attributes in postsFromResponse) {
@@ -58,7 +55,7 @@
         if (block) {
             block([NSArray arrayWithArray:mutablePosts], nil);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
         if (block) {
             block([NSArray array], error);
         }

@@ -26,10 +26,10 @@
 
 @interface Post : NSObject
 
-@property (readonly) NSUInteger postID;
-@property (readonly) NSString *text;
+@property (assign) NSUInteger postID;
+@property (strong) NSString *text;
 
-@property (readonly) User *user;
+@property (strong) User *user;
 
 - (id)initWithAttributes:(NSDictionary *)attributes;
 

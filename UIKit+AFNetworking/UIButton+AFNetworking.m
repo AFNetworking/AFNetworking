@@ -107,7 +107,7 @@
     
     [self setValue:placeholderImage forKeyPath:keyPath];
 
-    [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSURLSessionDataTask *task, id responseObject) {
+    [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
             success(urlRequest, (NSHTTPURLResponse *)task.response, responseObject);
         } else if (responseObject) {

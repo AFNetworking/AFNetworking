@@ -114,7 +114,7 @@ static char kAFImageDataTaskKey;
     } else {
         self.image = placeholderImage;
 
-        self.af_imageDataTask = [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSURLSessionDataTask *task, id responseObject) {
+        self.af_imageDataTask = [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
             if ([[urlRequest URL] isEqual:[self.af_imageDataTask.response URL]]) {
                 if (success) {
                     success(urlRequest, (NSHTTPURLResponse *)task.response, responseObject);
