@@ -180,6 +180,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
     self.acceptableContentTypes = nil;
 
+    // HTTP Method Definitions; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+    self.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", @"DELETE", nil];
+
     return self;
 }
 
@@ -274,7 +277,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
         }
     }
 
-    if ([[request HTTPMethod] isEqualToString:@"GET"] && [[request HTTPMethod] isEqualToString:@"HEAD"]) {
+    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
         NSURLComponents *components = [NSURLComponents componentsWithString:[[request URL] absoluteString]];
         components.query = components.query ? [components.query stringByAppendingFormat:@"&%@", query] : query;
 
@@ -340,6 +343,12 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                                withParameters:(NSDictionary *)parameters
                                         error:(NSError *__autoreleasing *)error
 {
+    NSParameterAssert(request);
+
+    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+        return [super requestBySerializingRequest:request withParameters:parameters error:error];
+    }
+
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
@@ -514,6 +523,12 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                                withParameters:(NSDictionary *)parameters
                                         error:(NSError *__autoreleasing *)error
 {
+    NSParameterAssert(request);
+
+    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+        return [super requestBySerializingRequest:request withParameters:parameters error:error];
+    }
+
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));

@@ -116,6 +116,11 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 ///-------------------------------------------------------
 
 /**
+ `GET`, `HEAD`, and `DELETE` by default.
+ */
+@property (nonatomic, strong) NSSet *HTTPMethodsEncodingParametersInURI;
+
+/**
  
  */
 - (void)setQueryStringSerializationWithStyle:(AFHTTPRequestQueryStringSerializationStyle)style;
