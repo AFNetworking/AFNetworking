@@ -25,17 +25,19 @@
 NSString * const AFURLSessionDidInvalidateNotification = @"com.alamofire.networking.session.invalidate";
 
 typedef void (^AFURLSessionDidBecomeInvalidBlock)(NSURLSession *session, NSError *error);
-typedef void (^AFURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge);
+typedef NSURLSessionResponseDisposition (^AFURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential);
 
-typedef void (^AFURLSessionTaskWillPerformHTTPRedirectionBlock)(NSURLSession *session, NSURLSessionTask *dataTask, NSURLResponse *response, NSURLRequest *request);
-typedef void (^AFURLSessionTaskDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLSessionTask *dataTask, NSURLAuthenticationChallenge *challenge);
+typedef NSURLRequest * (^AFURLSessionTaskWillPerformHTTPRedirectionBlock)(NSURLSession *session, NSURLSessionTask *dataTask, NSURLResponse *response, NSURLRequest *request);
+typedef NSURLSessionResponseDisposition (^AFURLSessionTaskDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential);
+
+typedef NSInputStream * (^AFURLSessionTaskNeedNewBodyStreamBlock)(NSURLSession *session, NSURLSessionTask *dataTask);
 typedef void (^AFURLSessionTaskDidSendBodyDataBlock)(NSURLSession *session, NSURLSessionTask *dataTask, int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend);
 typedef void (^AFURLSessionTaskDidCompleteBlock)(NSURLSession *session, NSURLSessionTask *dataTask, NSError *error);
 
-typedef void (^AFURLSessionDataTaskDidReceiveResponseBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response);
+typedef NSURLSessionResponseDisposition (^AFURLSessionDataTaskDidReceiveResponseBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response);
 typedef void (^AFURLSessionDataTaskDidBecomeDownloadTaskBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLSessionDownloadTask *downloadTask);
 typedef void (^AFURLSessionDataTaskDidReceiveDataBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data);
-typedef void (^AFURLSessionDataTaskWillCacheResponseBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse);
+typedef NSCachedURLResponse * (^AFURLSessionDataTaskWillCacheResponseBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse);
 
 typedef void (^AFURLSessionDownloadTaskDidFinishDownloadingBlock)(NSURLSession *session, NSURLSessionDownloadTask *dataTask, NSURL *location);
 typedef void (^AFURLSessionDownloadTaskDidWriteDataBlock)(NSURLSession *session, NSURLSessionDownloadTask *dataTask, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
@@ -49,6 +51,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
 @property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskWillPerformHTTPRedirectionBlock taskWillPerformHTTPRedirection;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskDidReceiveAuthenticationChallengeBlock taskDidReceiveAuthenticationChallenge;
+@property (readwrite, nonatomic, copy) AFURLSessionTaskNeedNewBodyStreamBlock taskNeedNewBodyStream;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskDidSendBodyDataBlock taskDidSendBodyData;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskDidCompleteBlock taskDidComplete;
 @property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidReceiveResponseBlock dataTaskDidReceiveResponse;
@@ -76,10 +79,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
     self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
 
     self.sessionConfiguration = configuration;
-
-    // TODO disabling temporarily, until docs are released to clear up the responsibilities of the delegate; the current implementation appears to be missing certain critical functionality in its base implementation...
-//    self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
-    self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration];
+    self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
 
     return self;
 }
@@ -139,17 +139,17 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
     self.sessionDidBecomeInvalid = block;
 }
 
-- (void)setSessionDidReceiveAuthenticationChallengeBlock:(void (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge))block {
+- (void)setSessionDidReceiveAuthenticationChallengeBlock:(NSURLSessionResponseDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block {
     self.sessionDidReceiveAuthenticationChallenge = block;
 }
 
 #pragma mark -
 
-- (void)setTaskWillPerformHTTPRedirectionBlock:(void (^)(NSURLSession *session, NSURLSessionTask *dataTask, NSURLResponse *response, NSURLRequest *request))block {
+- (void)setTaskWillPerformHTTPRedirectionBlock:(NSURLRequest * (^)(NSURLSession *session, NSURLSessionTask *dataTask, NSURLResponse *response, NSURLRequest *request))block {
     self.taskWillPerformHTTPRedirection = block;
 }
 
-- (void)setTaskDidReceiveAuthenticationChallengeBlock:(void (^)(NSURLSession *session, NSURLSessionTask *dataTask, NSURLAuthenticationChallenge *challenge))block {
+- (void)setTaskDidReceiveAuthenticationChallengeBlock:(NSURLSessionResponseDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block {
     self.taskDidReceiveAuthenticationChallenge = block;
 }
 
@@ -163,7 +163,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
 
 #pragma mark -
 
-- (void)setDataTaskDidReceiveResponseBlock:(void (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response))block {
+- (void)setDataTaskDidReceiveResponseBlock:(NSURLSessionResponseDisposition (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response))block {
     self.dataTaskDidReceiveResponse = block;
 }
 
@@ -175,7 +175,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
     self.dataTaskDidReceiveData = block;
 }
 
-- (void)setDataTaskWillCacheResponseBlock:(void (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse))block {
+- (void)setDataTaskWillCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse))block {
     self.dataTaskWillCacheResponse = block;
 }
 
@@ -209,8 +209,15 @@ didBecomeInvalidWithError:(NSError *)error
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
+    NSURLSessionResponseDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+    __block NSURLCredential *credential = nil;
+
     if (self.sessionDidReceiveAuthenticationChallenge) {
-        self.sessionDidReceiveAuthenticationChallenge(session, challenge);
+        disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
+    }
+
+    if (completionHandler) {
+        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, credential);
     }
 }
 
@@ -222,8 +229,14 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
         newRequest:(NSURLRequest *)request
  completionHandler:(void (^)(NSURLRequest *))completionHandler
 {
+    NSURLRequest *redirectRequest = request;
+
     if (self.taskWillPerformHTTPRedirection) {
-        self.taskWillPerformHTTPRedirection(session, task, response, request);
+        redirectRequest = self.taskWillPerformHTTPRedirection(session, task, response, request);
+    }
+
+    if (completionHandler) {
+        completionHandler(redirectRequest);
     }
 }
 
@@ -232,8 +245,18 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
+    NSURLSessionResponseDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+    __block NSURLCredential *credential = nil;
+
     if (self.taskDidReceiveAuthenticationChallenge) {
-        self.taskDidReceiveAuthenticationChallenge(session, task, challenge);
+        disposition = self.taskDidReceiveAuthenticationChallenge(session, task, challenge, &credential);
+    } else {
+        [self URLSession:session didReceiveChallenge:challenge completionHandler:completionHandler];
+        return;
+    }
+
+    if (completionHandler) {
+        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, credential);
     }
 }
 
@@ -241,7 +264,17 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
               task:(NSURLSessionTask *)task
  needNewBodyStream:(void (^)(NSInputStream *bodyStream))completionHandler
 {
-    // TODO
+    NSInputStream *inputStream = nil;
+    
+    if (self.taskNeedNewBodyStream) {
+        inputStream = self.taskNeedNewBodyStream(session, task);
+    } else if (task.originalRequest.HTTPBodyStream && [task.originalRequest.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
+        inputStream = [task.originalRequest.HTTPBodyStream copy];
+    }
+
+    if (completionHandler) {
+        completionHandler(inputStream);
+    }
 }
 
 /* Sent periodically to notify the delegate of upload progress.  This
@@ -270,7 +303,6 @@ didCompleteWithError:(NSError *)error
     }
 }
 
-
 #pragma mark - NSURLSessionDataDelegate
 
 - (void)URLSession:(NSURLSession *)session
@@ -278,8 +310,14 @@ didCompleteWithError:(NSError *)error
 didReceiveResponse:(NSURLResponse *)response
  completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler
 {
+    NSURLSessionResponseDisposition disposition = NSURLSessionResponseAllow;
+
     if (self.dataTaskDidReceiveResponse) {
-        self.dataTaskDidReceiveResponse(session, dataTask, response);
+        disposition = self.dataTaskDidReceiveResponse(session, dataTask, response);
+    }
+
+    if (completionHandler) {
+        completionHandler(disposition);
     }
 }
 
@@ -306,8 +344,14 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
  willCacheResponse:(NSCachedURLResponse *)proposedResponse
  completionHandler:(void (^)(NSCachedURLResponse *cachedResponse))completionHandler
 {
+    NSCachedURLResponse *cachedResponse = proposedResponse;
+
     if (self.dataTaskWillCacheResponse) {
-        self.dataTaskWillCacheResponse(session, dataTask, proposedResponse);
+       cachedResponse = self.dataTaskWillCacheResponse(session, dataTask, proposedResponse);
+    }
+
+    if (completionHandler) {
+        completionHandler(cachedResponse);
     }
 }
 

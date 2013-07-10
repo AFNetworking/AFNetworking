@@ -84,7 +84,7 @@ extern NSString * const AFURLSessionDidInvalidateNotification;
 /**
  
  */
-- (void)setSessionDidReceiveAuthenticationChallengeBlock:(void (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge))block;
+- (void)setSessionDidReceiveAuthenticationChallengeBlock:(NSURLSessionResponseDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block;
 
 ///------------------------------
 /// @name Task Delegate Callbacks
@@ -93,12 +93,12 @@ extern NSString * const AFURLSessionDidInvalidateNotification;
 /**
  
  */
-- (void)setTaskWillPerformHTTPRedirectionBlock:(void (^)(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request))block;
+- (void)setTaskWillPerformHTTPRedirectionBlock:(NSURLRequest * (^)(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request))block;
 
 /**
  
  */
-- (void)setTaskDidReceiveAuthenticationChallengeBlock:(void (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge))block;
+- (void)setTaskDidReceiveAuthenticationChallengeBlock:(NSURLSessionResponseDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block;
 
 /**
  
@@ -117,7 +117,7 @@ extern NSString * const AFURLSessionDidInvalidateNotification;
 /**
  
  */
-- (void)setDataTaskDidReceiveResponseBlock:(void (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response))block;
+- (void)setDataTaskDidReceiveResponseBlock:(NSURLSessionResponseDisposition (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response))block;
 
 /**
  
@@ -132,7 +132,7 @@ extern NSString * const AFURLSessionDidInvalidateNotification;
 /**
  
  */
-- (void)setDataTaskWillCacheResponseBlock:(void (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse))block;
+- (void)setDataTaskWillCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse))block;
 
 ///---------------------------------------
 /// @name Download Task Delegate Callbacks
