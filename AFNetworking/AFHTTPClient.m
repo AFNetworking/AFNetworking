@@ -309,23 +309,133 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(id responseObject))success
-                      failure:(void (^)(NSError *error))failure
+                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
+                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"GET" path:URLString parameters:parameters];
-    return [self runDataTaskWithRequest:request success:^(NSURLSessionDataTask *task, id responseObject) {
+
+    return [self runDataTaskWithRequest:request success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
-            success(responseObject);
+            success(task.currentRequest, (NSHTTPURLResponse *)task.response, responseObject);
         }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         if (failure) {
-            failure(error);
+            failure(task.currentRequest, (NSHTTPURLResponse *)task.response, error);
+        }
+    }];
+}
+
+- (NSURLSessionDataTask *)HEAD:(NSString *)URLString
+                    parameters:(NSDictionary *)parameters
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    NSMutableURLRequest *request = [self requestWithMethod:@"HEAD" path:URLString parameters:parameters];
+
+    return [self runDataTaskWithRequest:request success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id __unused responseObject) {
+        if (success) {
+            success(task.currentRequest, (NSHTTPURLResponse *)task.response);
+        }
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        if (failure) {
+            failure(task.currentRequest, (NSHTTPURLResponse *)task.response, error);
+        }
+    }];
+}
+
+- (NSURLSessionDataTask *)POST:(NSString *)URLString
+                    parameters:(NSDictionary *)parameters
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:URLString parameters:parameters];
+
+    return [self runDataTaskWithRequest:request success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+        if (success) {
+            success(task.currentRequest, (NSHTTPURLResponse *)task.response, responseObject);
+        }
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        if (failure) {
+            failure(task.currentRequest, (NSHTTPURLResponse *)task.response, error);
+        }
+    }];
+}
+
+- (NSURLSessionDataTask *)POST:(NSString *)URLString
+                    parameters:(NSDictionary *)parameters
+     constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    NSMutableURLRequest *request = [self multipartFormRequestWithMethod:@"POST" path:URLString parameters:parameters constructingBodyWithBlock:block];
+
+    return [self runDataTaskWithRequest:request success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+        if (success) {
+            success(task.currentRequest, (NSHTTPURLResponse *)task.response, responseObject);
+        }
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        if (failure) {
+            failure(task.currentRequest, (NSHTTPURLResponse *)task.response, error);
+        }
+    }];
+}
+
+- (NSURLSessionDataTask *)PUT:(NSString *)URLString
+                   parameters:(NSDictionary *)parameters
+                      success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
+                      failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    NSMutableURLRequest *request = [self requestWithMethod:@"PUT" path:URLString parameters:parameters];
+
+    return [self runDataTaskWithRequest:request success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+        if (success) {
+            success(task.currentRequest, (NSHTTPURLResponse *)task.response, responseObject);
+        }
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        if (failure) {
+            failure(task.currentRequest, (NSHTTPURLResponse *)task.response, error);
+        }
+    }];
+}
+
+- (NSURLSessionDataTask *)PATCH:(NSString *)URLString
+                     parameters:(NSDictionary *)parameters
+                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
+                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    NSMutableURLRequest *request = [self requestWithMethod:@"PATCH" path:URLString parameters:parameters];
+
+    return [self runDataTaskWithRequest:request success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+        if (success) {
+            success(task.currentRequest, (NSHTTPURLResponse *)task.response, responseObject);
+        }
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        if (failure) {
+            failure(task.currentRequest, (NSHTTPURLResponse *)task.response, error);
+        }
+    }];
+}
+
+- (NSURLSessionDataTask *)DELETE:(NSString *)URLString
+                      parameters:(NSDictionary *)parameters
+                         success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject))success
+                         failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    NSMutableURLRequest *request = [self requestWithMethod:@"DELETE" path:URLString parameters:parameters];
+
+    return [self runDataTaskWithRequest:request success:^(NSURLSessionDataTask *task, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+        if (success) {
+            success(task.currentRequest, (NSHTTPURLResponse *)task.response, responseObject);
+        }
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        if (failure) {
+            failure(task.currentRequest, (NSHTTPURLResponse *)task.response, error);
         }
     }];
 }
 
 - (NSURLSessionDataTask *)runDataTaskWithRequest:(NSURLRequest *)request
-                                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                                         success:(void (^)(NSURLSessionDataTask *task, id <AFURLResponseSerialization> serializer, id responseObject))success
                                          failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -344,7 +454,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                         }
                     } else {
                         if (success) {
-                            success(task, responseObject);
+                            success(task, serializer, responseObject);
                         }
                     }
                 });
