@@ -45,6 +45,59 @@ NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworking
 
 typedef SCNetworkReachabilityRef AFNetworkReachabilityRef;
 typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus status);
+
+static BOOL AFURLHostIsIPAddress(NSURL *url) {
+    struct sockaddr_in sa_in;
+    struct sockaddr_in6 sa_in6;
+
+    return [url host] && (inet_pton(AF_INET, [[url host] UTF8String], &sa_in) == 1 || inet_pton(AF_INET6, [[url host] UTF8String], &sa_in6) == 1);
+}
+
+static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
+    BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
+    BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
+    BOOL canConnectionAutomatically = (((flags & kSCNetworkReachabilityFlagsConnectionOnDemand ) != 0) || ((flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0));
+    BOOL canConnectWithoutUserInteraction = (canConnectionAutomatically && (flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0);
+    BOOL isNetworkReachable = (isReachable && (!needsConnection || canConnectWithoutUserInteraction));
+
+    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusUnknown;
+    if (isNetworkReachable == NO) {
+        status = AFNetworkReachabilityStatusNotReachable;
+    }
+#if	TARGET_OS_IPHONE
+    else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0) {
+        status = AFNetworkReachabilityStatusReachableViaWWAN;
+    }
+#endif
+    else {
+        status = AFNetworkReachabilityStatusReachableViaWiFi;
+    }
+
+    return status;
+}
+
+static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
+    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
+    AFNetworkReachabilityStatusBlock block = (__bridge AFNetworkReachabilityStatusBlock)info;
+    if (block) {
+        block(status);
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:status] forKey:AFNetworkingReachabilityNotificationStatusItem]];
+    });
+}
+
+static const void * AFNetworkReachabilityRetainCallback(const void *info) {
+    return Block_copy(info);
+}
+
+static void AFNetworkReachabilityReleaseCallback(const void *info) {
+    if (info) {
+        Block_release(info);
+    }
+}
 #else
 typedef id AFNetworkReachabilityRef;
 #endif
@@ -134,59 +187,6 @@ typedef void (^AFCompletionBlock)(void);
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
-static BOOL AFURLHostIsIPAddress(NSURL *url) {
-    struct sockaddr_in sa_in;
-    struct sockaddr_in6 sa_in6;
-
-    return [url host] && (inet_pton(AF_INET, [[url host] UTF8String], &sa_in) == 1 || inet_pton(AF_INET6, [[url host] UTF8String], &sa_in6) == 1);
-}
-
-static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
-    BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
-    BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
-    BOOL canConnectionAutomatically = (((flags & kSCNetworkReachabilityFlagsConnectionOnDemand ) != 0) || ((flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0));
-    BOOL canConnectWithoutUserInteraction = (canConnectionAutomatically && (flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0);
-    BOOL isNetworkReachable = (isReachable && (!needsConnection || canConnectWithoutUserInteraction));
-
-    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusUnknown;
-    if (isNetworkReachable == NO) {
-        status = AFNetworkReachabilityStatusNotReachable;
-    }
-#if	TARGET_OS_IPHONE
-    else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0) {
-        status = AFNetworkReachabilityStatusReachableViaWWAN;
-    }
-#endif
-    else {
-        status = AFNetworkReachabilityStatusReachableViaWiFi;
-    }
-
-    return status;
-}
-
-static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
-    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
-    AFNetworkReachabilityStatusBlock block = (__bridge AFNetworkReachabilityStatusBlock)info;
-    if (block) {
-        block(status);
-    }
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:status] forKey:AFNetworkingReachabilityNotificationStatusItem]];
-    });
-}
-
-static const void * AFNetworkReachabilityRetainCallback(const void *info) {
-    return Block_copy(info);
-}
-
-static void AFNetworkReachabilityReleaseCallback(const void *info) {
-    if (info) {
-        Block_release(info);
-    }
-}
-
 - (void)startMonitoringNetworkReachability {
     [self stopMonitoringNetworkReachability];
 
