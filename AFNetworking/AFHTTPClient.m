@@ -160,6 +160,7 @@ typedef void (^AFCompletionBlock)(void);
     self.baseURL = url;
 
     self.requestSerializer = [AFHTTPSerializer serializer];
+    self.responseSerializers = @[[AFHTTPSerializer serializer]];
 
 #ifdef _SYSTEMCONFIGURATION_H
     self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
