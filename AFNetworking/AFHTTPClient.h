@@ -399,7 +399,7 @@ typedef enum {
 
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
-- (void)postPath:(NSString *)path
+- (AFHTTPRequestOperation *)postPath:(NSString *)path
       parameters:(NSDictionary *)parameters
          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
@@ -414,7 +414,7 @@ typedef enum {
 
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
-- (void)putPath:(NSString *)path
+- (AFHTTPRequestOperation *)putPath:(NSString *)path
      parameters:(NSDictionary *)parameters
         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
@@ -429,7 +429,7 @@ typedef enum {
 
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
-- (void)deletePath:(NSString *)path
+- (AFHTTPRequestOperation *)deletePath:(NSString *)path
         parameters:(NSDictionary *)parameters
            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
@@ -444,7 +444,7 @@ typedef enum {
 
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
-- (void)patchPath:(NSString *)path
+- (AFHTTPRequestOperation *)patchPath:(NSString *)path
        parameters:(NSDictionary *)parameters
           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
