@@ -105,7 +105,9 @@
 }
 
 - (void)testThatImageResponseIsNotNilWhenRequestSucceeds {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/response-headers?Content-Type=image/png" relativeToURL:self.baseURL]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"/image" relativeToURL:self.baseURL]];
+    [request setValue:@"image/png" forHTTPHeaderField:@"Accept"];
+
     AFImageRequestOperation *operation = [[AFImageRequestOperation alloc] initWithRequest:request];
     [operation start];
 
