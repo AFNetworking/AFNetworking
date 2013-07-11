@@ -1,5 +1,5 @@
 <p align="center" >
-  <img src="http://afnetworking.com/images/afnetworking.png?1344631552" alt="AFNetworking" title="AFNetworking">
+  <img src="https://raw.github.com/AFNetworking/AFNetworking/assets/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking">
 </p>
 
 [![Build Status](https://travis-ci.org/AFNetworking/AFNetworking.png?branch=master)](https://travis-ci.org/AFNetworking/AFNetworking)
@@ -28,10 +28,6 @@ Choose AFNetworking for your next project, or migrate over your existing project
 - Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
 
 ## Overview
-
-<p align="center">
-  <img src="https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-architecture-diagram.png" alt="AFNetworking Architecture Diagram"/>
-</p>
 
 AFNetworking is architected to be as small and modular as possible, in order to make it simple to use and extend.
 
