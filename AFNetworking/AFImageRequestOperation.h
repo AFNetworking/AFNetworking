@@ -115,7 +115,7 @@
  
  @param urlRequest The request object to be loaded asynchronously during execution of the operation.
  @param imageProcessingBlock A block object to be executed after the image request finishes successfully, but before the image is returned in the `success` block. This block takes a single argument, the image loaded from the response body, and returns the processed image.
- @param successWithResponseObject A block object to be executed when the request finishes successfully, with a status code in the 2xx range, the original `responseObject` and with an acceptable content type (e.g. `image/png`). This block has no return value and takes five arguments: the `AFHTTPRequestOperation`, the request object of the operation, the response for the request, the original `responseObject`, and the image created from the response data.
+ @param success A block object to be executed when the request finishes successfully, with a status code in the 2xx range, the original `responseObject` and with an acceptable content type (e.g. `image/png`). This block has no return value and takes five arguments: the `AFHTTPRequestOperation`, the request object of the operation, the response for the request, the original `responseObject`, and the image created from the response data.
  @param failure A block object to be executed when the request finishes unsuccessfully. This block has no return value and takes four arguments: the `AFHTTPRequestOperation`, the request object of the operation, the response for the request, and the error associated with the cause for the unsuccessful operation.
  
  @return A new image request operation
