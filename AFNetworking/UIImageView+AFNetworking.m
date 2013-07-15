@@ -22,6 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+#import <CommonCrypto/CommonDigest.h>
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import "UIImageView+AFNetworking.h"
@@ -86,10 +87,19 @@ static char kAFImageRequestOperationObjectKey;
 - (void)setImageWithURL:(NSURL *)url
        placeholderImage:(UIImage *)placeholderImage
 {
+    [self setImageWithURL:url
+         placeholderImage:placeholderImage
+                  options:kAFNetworkingImageViewOptionsCacheTypeRAM];
+}
+
+- (void)setImageWithURL:(NSURL *)url
+       placeholderImage:(UIImage *)placeholderImage
+                options:(AFNetworkImageViewOptions)options
+{
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
 
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage options:options success:nil failure:nil];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
@@ -97,58 +107,162 @@ static char kAFImageRequestOperationObjectKey;
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
+    [self setImageWithURLRequest:urlRequest
+                placeholderImage:placeholderImage
+                         options:kAFNetworkingImageViewOptionsCacheTypeRAM
+                         success:success
+                         failure:failure];
+}
+
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
+              placeholderImage:(UIImage *)placeholderImage
+                       options:(AFNetworkImageViewOptions)options
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
     [self cancelImageRequestOperation];
 
-    UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
-    if (cachedImage) {
-        if (success) {
-            success(nil, nil, cachedImage);
-        } else {
-            self.image = cachedImage;
-        }
-
-        self.af_imageRequestOperation = nil;
-    } else {
-        if (placeholderImage) {
-            self.image = placeholderImage;
-        }
-
-        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
-        [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-                if (success) {
-                    success(operation.request, operation.response, responseObject);
-                } else if (responseObject) {
-                    self.image = responseObject;
-                }
-
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
-                }
+    // retrieve image from RAM cache
+    
+    UIImage *cachedImage;
+    
+    if (options & kAFNetworkingImageViewOptionsCacheTypeRAM)
+    {
+        cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
+        if (cachedImage) {
+            if (success) {
+                success(nil, nil, cachedImage);
+            } else {
+                self.image = cachedImage;
             }
-
-            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-                if (failure) {
-                    failure(operation.request, operation.response, error);
-                }
-
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
-                }
-            }
-        }];
-
-        self.af_imageRequestOperation = requestOperation;
-
-        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
+            
+            self.af_imageRequestOperation = nil;
+            
+            return;
+        }
     }
+    
+    // retrieve image from RAM cache
+    
+    if (options & kAFNetworkingImageViewOptionsCacheTypeDisk)
+    {
+        NSData *cachedData = [self diskCachedImageForURL:[urlRequest URL]];
+        
+        if (cachedData)
+        {
+            if (options & kAFNetworkingImageViewOptionsCacheTypeRAM)
+                cachedImage = [UIImage imageWithData:cachedData];
+            
+            if (cachedImage) {
+                [[[self class] af_sharedImageCache] cacheImage:cachedImage forRequest:urlRequest];
+
+                if (success) {
+                    success(nil, nil, cachedImage);
+                } else {
+                    self.image = cachedImage;
+                }
+                
+                self.af_imageRequestOperation = nil;
+                
+                return;
+            }
+        }
+    }
+    
+    // retrieve image from network
+    
+    if (placeholderImage) {
+        self.image = placeholderImage;
+    }
+    
+    AFImageRequestOperation *requestOperation = [AFImageRequestOperation imageRequestOperationWithRequest:urlRequest imageProcessingBlock:nil successWithResponseObject:^(AFHTTPRequestOperation *operation, NSURLRequest *request, NSHTTPURLResponse *response, id responseObject, UIImage *image) {
+        if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
+            if (success) {
+                success(request, response, image);
+            } else if (responseObject) {
+                self.image = image;
+            }
+            
+            if (self.af_imageRequestOperation == operation) {
+                self.af_imageRequestOperation = nil;
+            }
+        }
+        
+        if (options & kAFNetworkingImageViewOptionsCacheTypeRAM)
+            [[[self class] af_sharedImageCache] cacheImage:image forRequest:urlRequest];
+        
+        if (options & kAFNetworkingImageViewOptionsCacheTypeDisk)
+            [self cacheImageData:responseObject forURL:[urlRequest URL]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
+            if (failure) {
+                failure(request, response, error);
+            }
+            
+            if (self.af_imageRequestOperation == operation) {
+                self.af_imageRequestOperation = nil;
+            }
+        }
+    }];
+    
+    self.af_imageRequestOperation = requestOperation;
+    
+    [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
 }
 
 - (void)cancelImageRequestOperation {
     [self.af_imageRequestOperation cancel];
     self.af_imageRequestOperation = nil;
+}
+
+#pragma mark -
+
+- (NSString *)diskCacheFolder
+{
+    NSString *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+    return [cachePath stringByAppendingPathComponent:@"AFNetworking/images"];
+}
+
+- (NSString *)diskCachePathForURL:(NSURL *)URL
+{
+    NSString *cachePath = [self diskCacheFolder];
+    
+    // Generate MD5 value
+    
+    const char *ptr = [[URL absoluteString] UTF8String];
+    unsigned char md5Buffer[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(ptr, strlen(ptr), md5Buffer);
+    
+    // Convert MD5 value into hashString
+
+    NSMutableString *hashString = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
+    for (NSInteger i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
+        [hashString appendFormat:@"%02x", md5Buffer[i]];
+
+    return [cachePath stringByAppendingPathComponent:hashString];
+}
+
+- (NSData *)diskCachedImageForURL:(NSURL *)URL
+{
+    NSString *path = [self diskCachePathForURL:URL];
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    
+    return data;
+}
+
+- (BOOL)cacheImageData:(NSData *)imageData forURL:(NSURL *)URL
+{
+    NSString *path = [self diskCachePathForURL:URL];
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath:[path stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    return [imageData writeToFile:path atomically:YES];
+}
+
+- (BOOL)emptyDiskCache
+{
+    return [[NSFileManager defaultManager] removeItemAtPath:[self diskCacheFolder] error:nil];
 }
 
 @end

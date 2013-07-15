@@ -3,7 +3,7 @@
  * Add `automaticallyInflatesResponseImage` property to
 `AFImageRequestOperation`, which when enabled, offers significant performance
 improvements for drawing images loaded through `UIImageView+AFNetworking` by
-inflating compressed image data in the background (Mattt Thompson, Peter
+inflating compressed image data in the background (Matt Thompson, Peter
 Steinberger)
 
  * Add `NSParameterAssert` check for `nil` `urlRequest` parameter in
