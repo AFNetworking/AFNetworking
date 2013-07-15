@@ -164,7 +164,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     AFImageRequestOperation *requestOperation = [(AFImageRequestOperation *)[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
-            UIImage *image = responseObject;
+            UIImage *image = [(AFImageRequestOperation *)operation responseImage];;
             if (imageProcessingBlock) {
                 dispatch_async(image_request_operation_processing_queue(), ^(void) {
                     UIImage *processedImage = imageProcessingBlock(image);
@@ -184,8 +184,8 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
             failure(operation.request, operation.response, error);
         }
     }];
-
-
+    
+    
     return requestOperation;
 }
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
@@ -197,11 +197,11 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     AFImageRequestOperation *requestOperation = [(AFImageRequestOperation *)[self alloc] initWithRequest:urlRequest];
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
-            NSImage *image = responseObject;
+            NSImage *image = [(AFImageRequestOperation *)operation responseImage];;
             if (imageProcessingBlock) {
                 dispatch_async(image_request_operation_processing_queue(), ^(void) {
                     NSImage *processedImage = imageProcessingBlock(image);
-
+                    
                     dispatch_async(operation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, processedImage);
                     });
@@ -215,7 +215,72 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
             failure(operation.request, operation.response, error);
         }
     }];
+    
+    return requestOperation;
+}
+#endif
 
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
++ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+							imageProcessingBlock:(UIImage *(^)(UIImage *))imageProcessingBlock
+                       successWithResponseObject:(void (^)(AFHTTPRequestOperation *operation, NSURLRequest *request, NSHTTPURLResponse *response, id responseObject, UIImage *image))success
+										 failure:(void (^)(AFHTTPRequestOperation *operation, NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    AFImageRequestOperation *requestOperation = [(AFImageRequestOperation *)[self alloc] initWithRequest:urlRequest];
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if (success) {
+            UIImage *image = [(AFImageRequestOperation *)operation responseImage];
+            if (imageProcessingBlock) {
+                dispatch_async(image_request_operation_processing_queue(), ^(void) {
+                    UIImage *processedImage = imageProcessingBlock(image);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+                    dispatch_async(operation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
+                        success(operation, operation.request, operation.response, responseObject, processedImage);
+                    });
+#pragma clang diagnostic pop
+                });
+            } else {
+                success(operation, operation.request, operation.response, responseObject, image);
+            }
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (failure) {
+            failure(operation, operation.request, operation.response, error);
+        }
+    }];
+    
+    
+    return requestOperation;
+}
+#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
++ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+							imageProcessingBlock:(NSImage *(^)(NSImage *))imageProcessingBlock
+                       successWithResponseObject:(void (^)(AFHTTPRequestOperation *operation, NSURLRequest *request, NSHTTPURLResponse *response, id responseObject, NSImage *image))success
+										 failure:(void (^)(AFHTTPRequestOperation *operation, NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    AFImageRequestOperation *requestOperation = [(AFImageRequestOperation *)[self alloc] initWithRequest:urlRequest];
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if (success) {
+            UIImage *image = [(AFImageRequestOperation *)operation responseImage];
+            if (imageProcessingBlock) {
+                dispatch_async(image_request_operation_processing_queue(), ^(void) {
+                    NSImage *processedImage = imageProcessingBlock(image);
+                    
+                    dispatch_async(operation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
+                        success(operation, operation.request, operation.response, responseObject, processedImage);
+                    });
+                });
+            } else {
+                success(operation, operation.request, operation.response, responseObject, image);
+            }
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (failure) {
+            failure(operation, operation.request, operation.response, error);
+        }
+    }];
+    
     return requestOperation;
 }
 #endif
@@ -287,41 +352,6 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     });
 
     return [_acceptablePathExtension containsObject:[[request URL] pathExtension]] || [super canProcessRequest:request];
-}
-
-- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
-#pragma clang diagnostic ignored "-Wgnu"
-
-    self.completionBlock = ^ {
-        dispatch_async(image_request_operation_processing_queue(), ^(void) {
-            if (self.error) {
-                if (failure) {
-                    dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
-                        failure(self, self.error);
-                    });
-                }
-            } else {
-                if (success) {
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-                    UIImage *image = nil;
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-                    NSImage *image = nil;
-#endif
-
-                    image = self.responseImage;
-
-                    dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
-                        success(self, image);
-                    });
-                }
-            }
-        });
-    };
-#pragma clang diagnostic pop
 }
 
 @end
