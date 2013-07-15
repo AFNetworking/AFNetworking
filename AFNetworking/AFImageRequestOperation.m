@@ -354,39 +354,4 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     return [_acceptablePathExtension containsObject:[[request URL] pathExtension]] || [super canProcessRequest:request];
 }
 
-//- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-//                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-//{
-//#pragma clang diagnostic push
-//#pragma clang diagnostic ignored "-Warc-retain-cycles"
-//#pragma clang diagnostic ignored "-Wgnu"
-//
-//    self.completionBlock = ^ {
-//        dispatch_async(image_request_operation_processing_queue(), ^(void) {
-//            if (self.error) {
-//                if (failure) {
-//                    dispatch_async(self.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
-//                        failure(self, self.error);
-//                    });
-//                }
-//            } else {
-//                if (success) {
-//#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-//                    UIImage *image = nil;
-//#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-//                    NSImage *image = nil;
-//#endif
-//
-//                    image = self.responseImage;
-//
-//                    dispatch_async(self.successCallbackQueue ?: dispatch_get_main_queue(), ^{
-//                        success(self, image);
-//                    });
-//                }
-//            }
-//        });
-//    };
-//#pragma clang diagnostic pop
-//}
-
 @end
