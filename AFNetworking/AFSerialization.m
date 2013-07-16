@@ -256,7 +256,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return YES;
 }
 
-#pragma mark AFURLRequestSerializer
+#pragma mark - AFURLRequestSerializer
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(NSDictionary *)parameters
@@ -297,7 +297,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return mutableRequest;
 }
 
-#pragma mark AFURLResponseSerializer
+#pragma mark - AFURLResponseSerializer
 
 - (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
     return YES;
@@ -310,6 +310,36 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     [self validateResponse:(NSHTTPURLResponse *)response data:data error:error];
 
     return data;
+}
+
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [self init];
+    if (!self) {
+        return nil;
+    }
+
+    self.mutableHTTPRequestHeaders = [aDecoder decodeObjectForKey:@"mutableHTTPRequestHeaders"];
+    self.queryStringSerializationStyle = [aDecoder decodeIntegerForKey:@"queryStringSerializationStyle"];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.mutableHTTPRequestHeaders forKey:@"mutableHTTPRequestHeaders"];
+    [aCoder encodeInteger:self.queryStringSerializationStyle forKey:@"queryStringSerializationStyle"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFHTTPSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    serializer.mutableHTTPRequestHeaders = [self.mutableHTTPRequestHeaders copy];
+    serializer.queryStringSerializationStyle = self.queryStringSerializationStyle;
+    serializer.queryStringSerialization = self.queryStringSerialization;
+    
+    return serializer;
 }
 
 @end
@@ -343,7 +373,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return self;
 }
 
-#pragma mark AFHTTPRequestSerialization
+#pragma mark - AFURLRequestSerialization
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(NSDictionary *)parameters
@@ -368,7 +398,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return mutableRequest;
 }
 
-#pragma mark AFHTTPRequestSerialization
+#pragma mark - AFURLRequestSerialization
 
 - (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
     return [[[response URL] pathExtension] isEqualToString:@"json"] || [super canProcessResponse:response];
@@ -397,6 +427,37 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     }
 
     return nil;
+}
+
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (!self) {
+        return nil;
+    }
+
+    self.readingOptions = [aDecoder decodeIntegerForKey:@"readingOptions"];
+    self.writingOptions = [aDecoder decodeIntegerForKey:@"writingOptions"];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+    
+    [aCoder encodeInteger:self.readingOptions forKey:@"readingOptions"];
+    [aCoder encodeInteger:self.writingOptions forKey:@"writingOptions"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFJSONSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    serializer.readingOptions = self.readingOptions;
+    serializer.writingOptions = self.writingOptions;
+
+    return serializer;
 }
 
 @end
@@ -478,6 +539,34 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return [[NSXMLDocument alloc] initWithData:data options:self.options error:error];
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (!self) {
+        return nil;
+    }
+
+    self.options = [aDecoder decodeIntegerForKey:@"options"];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+
+    [aCoder encodeInteger:self.options forKey:@"options"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFXMLDocumentSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    serializer.options = self.options;
+
+    return serializer;
+}
+
 @end
 
 #endif
@@ -523,7 +612,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return _acceptablePathExtension;
 }
 
-#pragma mark AFHTTPRequestSerializer
+#pragma mark - AFURLRequestSerializer
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(NSDictionary *)parameters
@@ -545,7 +634,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return mutableRequest;
 }
 
-#pragma mark AFHTTPResponseSerializer
+#pragma mark - AFURLResponseSerializer
 
 - (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
     return [[[response URL] pathExtension] isEqualToString:@"plist"] || [super canProcessResponse:response];
@@ -556,6 +645,40 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                           error:(NSError *__autoreleasing *)error
 {
     return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:nil error:error];
+}
+
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (!self) {
+        return nil;
+    }
+
+    self.format = [aDecoder decodeIntegerForKey:@"format"];
+    self.readOptions = [aDecoder decodeIntegerForKey:@"readOptions"];
+    self.writeOptions = [aDecoder decodeIntegerForKey:@"writeOptions"];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+    
+    [aCoder encodeInteger:self.format forKey:@"format"];
+    [aCoder encodeInteger:self.readOptions forKey:@"readOptions"];
+    [aCoder encodeInteger:self.writeOptions forKey:@"writeOptions"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFPropertyListSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    serializer.format = self.format;
+    serializer.readOptions = self.readOptions;
+    serializer.writeOptions = self.writeOptions;
+
+    return serializer;
 }
 
 @end
@@ -615,6 +738,37 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 #endif
 
     return nil;
+}
+
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (!self) {
+        return nil;
+    }
+
+    self.imageScale = [aDecoder decodeFloatForKey:@"imageScale"];
+    self.automaticallyInflatesResponseImage = [aDecoder decodeBoolForKey:@"automaticallyInflatesResponseImage"];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+
+    [aCoder encodeFloat:self.imageScale forKey:@"imageScale"];
+    [aCoder encodeBool:self.automaticallyInflatesResponseImage forKey:@"automaticallyInflatesResponseImage"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFImageSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    serializer.imageScale = self.imageScale;
+    serializer.automaticallyInflatesResponseImage = self.automaticallyInflatesResponseImage;
+
+    return serializer;
 }
 
 @end

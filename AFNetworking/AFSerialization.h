@@ -27,7 +27,7 @@
 /**
  
  */
-@protocol AFURLRequestSerialization
+@protocol AFURLRequestSerialization <NSCoding, NSCopying>
 
 /**
  
@@ -41,7 +41,7 @@
 /**
  
  */
-@protocol AFURLResponseSerialization
+@protocol AFURLResponseSerialization <NSCoding, NSCopying>
 
 /**
  
