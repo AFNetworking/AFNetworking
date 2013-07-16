@@ -287,9 +287,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
-/* Sent periodically to notify the delegate of upload progress.  This
- * information is also available as properties of the task.
- */
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
    didSendBodyData:(int64_t)bytesSent
@@ -301,9 +298,6 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
     }
 }
 
-/* Sent as the last message related to a specific task.  Error may be
- * nil, which implies that no error occurred and this task is complete.
- */
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error

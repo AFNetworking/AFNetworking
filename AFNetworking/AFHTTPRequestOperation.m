@@ -147,7 +147,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 - (id)copyWithZone:(NSZone *)zone {
     AFHTTPRequestOperation *operation = [[[self class] allocWithZone:zone] initWithRequest:self.request];
 
-    operation.responseSerializers = self.responseSerializers;
+    operation.responseSerializers = [self.responseSerializers copy];
     operation.completionQueue = self.completionQueue;
     operation.completionGroup = self.completionGroup;
 

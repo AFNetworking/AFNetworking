@@ -510,8 +510,8 @@ typedef id AFNetworkReachabilityRef;
 - (id)copyWithZone:(NSZone *)zone {
     AFHTTPClient *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL configuration:self.session.configuration];
 
-    HTTPClient.requestSerializer = self.requestSerializer;
-    HTTPClient.responseSerializers = self.responseSerializers;
+    HTTPClient.requestSerializer = [self.requestSerializer copyWithZone:zone];
+    HTTPClient.responseSerializers = [self.responseSerializers copy];
     HTTPClient.SSLPinningMode = self.SSLPinningMode;
     HTTPClient.allowsInvalidSSLCertificate = self.allowsInvalidSSLCertificate;
     HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
