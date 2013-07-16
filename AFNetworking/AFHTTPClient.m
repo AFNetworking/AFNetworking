@@ -280,22 +280,20 @@ typedef void (^AFCompletionBlock)(void);
 
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:NSUTF8StringEncoding];
 
-//    if (parameters) {
-//        for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
-//            NSData *data = nil;
-//            if ([pair.value isKindOfClass:[NSData class]]) {
-//                data = pair.value;
-//            } else if ([pair.value isEqual:[NSNull null]]) {
-//                data = [NSData data];
-//            } else {
-//                data = [[pair.value description] dataUsingEncoding:NSUTF8StringEncoding];
-//            }
-//
-//            if (data) {
-//                [formData appendPartWithFormData:data name:[pair.field description]];
-//            }
-//        }
-//    }
+    [parameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        NSData *data = nil;
+        if ([obj isKindOfClass:[NSData class]]) {
+            data = obj;
+        } else if ([obj isEqual:[NSNull null]]) {
+            data = [NSData data];
+        } else {
+            data = [[obj description] dataUsingEncoding:NSUTF8StringEncoding];
+        }
+
+        if (data) {
+            [formData appendPartWithFormData:data name:[key description]];
+        }
+    }];
 
     if (block) {
         block(formData);
