@@ -102,8 +102,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 typedef id AFNetworkReachabilityRef;
 #endif
 
-typedef void (^AFCompletionBlock)(void);
-
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
 - (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
                     stringEncoding:(NSStringEncoding)encoding;
