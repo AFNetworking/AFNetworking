@@ -21,9 +21,16 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFURLConnectionOperation.h"
-
+#import <SystemConfiguration/SystemConfiguration.h>
 #import <Availability.h>
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import <MobileCoreServices/MobileCoreServices.h>
+#else
+#import <CoreServices/CoreServices.h>
+#endif
+
+#import "AFURLConnectionOperation.h"
 
 #import "AFSerialization.h"
 #import "AFURLSessionManager.h"
@@ -76,27 +83,15 @@
  - NSCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
  */
 
-#ifdef _SYSTEMCONFIGURATION_H
 typedef enum {
     AFNetworkReachabilityStatusUnknown          = -1,
     AFNetworkReachabilityStatusNotReachable     = 0,
     AFNetworkReachabilityStatusReachableViaWWAN = 1,
     AFNetworkReachabilityStatusReachableViaWiFi = 2,
 } AFNetworkReachabilityStatus;
-#else
-#pragma message("SystemConfiguration framework not found in project, or not included in precompiled header. Network reachability functionality will not be available.")
-#endif
-
-#ifndef __UTTYPE__
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-#pragma message("MobileCoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.")
-#else
-#pragma message("CoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.")
-#endif
-#endif
 
 @protocol AFMultipartFormData;
-@interface AFHTTPClient : AFURLSessionManager //<NSCoding, NSCopying>
+@interface AFHTTPClient : AFURLSessionManager <NSCoding, NSCopying>
 
 ///---------------------------------------
 /// @name Accessing HTTP Client Properties
@@ -108,15 +103,19 @@ typedef enum {
 @property (readonly, nonatomic, strong) NSURL *baseURL;
 
 /**
- The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
 
- @warning This property requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (`Prefix.pch`).
  */
-#ifdef _SYSTEMCONFIGURATION_H
-@property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
-#endif
+@property (nonatomic, strong) id <AFURLRequestSerialization> requestSerializer;
 
-@property (nonatomic, strong) NSURLCredential *credential;
+/**
+
+ */
+@property (nonatomic, strong) NSArray *responseSerializers;
+
+/**
+ The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
+ */
+@property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
 
 /**
  Default SSL pinning mode for each `AFHTTPRequestOperation` created by `HTTPRequestOperationWithRequest:success:failure:`.
@@ -159,20 +158,6 @@ typedef enum {
  */
 - (instancetype)initWithBaseURL:(NSURL *)url
                   configuration:(NSURLSessionConfiguration *)configuration;
-
-///------------------------------------
-/// @name Accessing Request Serializers
-///------------------------------------
-
-/**
- 
- */
-@property (nonatomic, strong) id <AFURLRequestSerialization> requestSerializer;
-
-/**
- 
- */
-@property (nonatomic, strong) NSArray *responseSerializers;
 
 ///-----------------------------------
 /// @name Managing Reachability Status

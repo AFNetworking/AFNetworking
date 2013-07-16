@@ -65,6 +65,10 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
 
 @implementation AFURLSessionManager
 
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%@ Failed to call designated initializer. Invoke `initWithBaseURL:` instead.", NSStringFromClass([self class])] userInfo:nil];
+}
+
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
     self = [super init];
     if (!self) {
@@ -83,6 +87,12 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
 
     return self;
 }
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, self.session, self.operationQueue];
+}
+
+#pragma mark -
 
 - (void)invalidateSessionCancellingTasks:(BOOL)cancelPendingTasks {
     if (cancelPendingTasks) {
@@ -385,6 +395,29 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
     if (self.downloadTaskDidResume) {
         self.downloadTaskDidResume(session, downloadTask, fileOffset, expectedTotalBytes);
     }
+}
+
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    NSURLSessionConfiguration *configuration = [aDecoder decodeObjectForKey:@"sessionConfiguration"];
+
+    self = [self initWithSessionConfiguration:configuration];
+    if (!self) {
+        return nil;
+    }
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    return [[[self class] allocWithZone:zone] initWithSessionConfiguration:self.session.configuration];
 }
 
 @end

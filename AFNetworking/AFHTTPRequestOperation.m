@@ -121,4 +121,37 @@ static dispatch_group_t http_request_operation_completion_group() {
 #pragma clang diagnostic pop
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    NSURLRequest *request = [aDecoder decodeObjectForKey:@"request"];
+
+    self = [self initWithRequest:request];
+    if (!self) {
+        return nil;
+    }
+
+    self.responseSerializers = [aDecoder decodeObjectForKey:@"responseSerializers"];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+
+    [aCoder encodeObject:self.responseSerializers forKey:@"responseSerializers"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFHTTPRequestOperation *operation = [[[self class] allocWithZone:zone] initWithRequest:self.request];
+
+    operation.responseSerializers = self.responseSerializers;
+    operation.completionQueue = self.completionQueue;
+    operation.completionGroup = self.completionGroup;
+
+    return operation;
+}
+
 @end

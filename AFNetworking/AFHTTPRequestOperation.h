@@ -37,8 +37,10 @@
  */
 @property (readonly, nonatomic, strong) NSHTTPURLResponse *response;
 
-
-@property (readwrite, nonatomic, strong) NSArray *responseSerializers;
+/**
+ 
+ */
+@property (nonatomic, strong) NSArray *responseSerializers;
 
 ///---------------------------------
 /// @name Managing Callback Queues

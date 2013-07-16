@@ -113,7 +113,6 @@ typedef id AFNetworkReachabilityRef;
 
 @interface AFHTTPClient ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
-@property (readwrite, nonatomic, strong) NSURLCredential *defaultCredential;
 #ifdef _SYSTEMCONFIGURATION_H
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
@@ -179,9 +178,9 @@ typedef id AFNetworkReachabilityRef;
 #endif
 }
 
-//- (NSString *)description {
-//    return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, defaultHeaders: %@, registeredOperationClasses: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.defaultHeaders, self.registeredHTTPOperationClassNames, self.operationQueue];
-//}
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.session, self.operationQueue];
+}
 
 #pragma mark -
 
@@ -477,47 +476,48 @@ typedef id AFNetworkReachabilityRef;
     return task;
 }
 
+#pragma mark - NSCoding
 
-//#pragma mark - NSCoding
-//
-//- (id)initWithCoder:(NSCoder *)aDecoder {
-//    NSURL *baseURL = [aDecoder decodeObjectForKey:@"baseURL"];
-//
-//    self = [self initWithBaseURL:baseURL];
-//    if (!self) {
-//        return nil;
-//    }
-//
-//    self.stringEncoding = [aDecoder decodeIntegerForKey:@"stringEncoding"];
-//    self.parameterEncoding = (AFHTTPClientParameterEncoding) [aDecoder decodeIntegerForKey:@"parameterEncoding"];
-//    self.registeredHTTPOperationClassNames = [aDecoder decodeObjectForKey:@"registeredHTTPOperationClassNames"];
-//    self.defaultHeaders = [aDecoder decodeObjectForKey:@"defaultHeaders"];
-//
-//    return self;
-//}
-//
-//- (void)encodeWithCoder:(NSCoder *)aCoder {
-//    [aCoder encodeObject:self.baseURL forKey:@"baseURL"];
-//    [aCoder encodeInteger:(NSInteger)self.stringEncoding forKey:@"stringEncoding"];
-//    [aCoder encodeInteger:self.parameterEncoding forKey:@"parameterEncoding"];
-//    [aCoder encodeObject:self.registeredHTTPOperationClassNames forKey:@"registeredHTTPOperationClassNames"];
-//    [aCoder encodeObject:self.defaultHeaders forKey:@"defaultHeaders"];
-//}
-//
-//#pragma mark - NSCopying
-//
-//- (id)copyWithZone:(NSZone *)zone {
-//    AFHTTPClient *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL];
-//
-//    HTTPClient.stringEncoding = self.stringEncoding;
-//    HTTPClient.parameterEncoding = self.parameterEncoding;
-//    HTTPClient.registeredHTTPOperationClassNames = [self.registeredHTTPOperationClassNames copyWithZone:zone];
-//    HTTPClient.defaultHeaders = [self.defaultHeaders copyWithZone:zone];
-//#ifdef _SYSTEMCONFIGURATION_H
-//    HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
-//#endif
-//    return HTTPClient;
-//}
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    NSURL *baseURL = [aDecoder decodeObjectForKey:@"baseURL"];
+    NSURLSessionConfiguration *configuration = [aDecoder decodeObjectForKey:@"sessionConfiguration"];
+
+    self = [self initWithBaseURL:baseURL configuration:configuration];
+    if (!self) {
+        return nil;
+    }
+
+    self.requestSerializer = [aDecoder decodeObjectForKey:@"requestSerializer"];
+    self.responseSerializers = [aDecoder decodeObjectForKey:@"responseSerializers"];
+    self.SSLPinningMode = [aDecoder decodeIntegerForKey:@"SSLPinningMode"];
+    self.allowsInvalidSSLCertificate = [aDecoder decodeBoolForKey:@"allowsInvalidSSLCertificate"];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+
+    [aCoder encodeObject:self.baseURL forKey:@"baseURL"];
+    [aCoder encodeObject:self.requestSerializer forKey:@"requestSerializer"];
+    [aCoder encodeObject:self.responseSerializers forKey:@"responseSerializers"];
+    [aCoder encodeInteger:self.SSLPinningMode forKey:@"SSLPinningMode"];
+    [aCoder encodeBool:self.allowsInvalidSSLCertificate forKey:@"allowsInvalidSSLCertificate"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFHTTPClient *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL configuration:self.session.configuration];
+
+    HTTPClient.requestSerializer = self.requestSerializer;
+    HTTPClient.responseSerializers = self.responseSerializers;
+    HTTPClient.SSLPinningMode = self.SSLPinningMode;
+    HTTPClient.allowsInvalidSSLCertificate = self.allowsInvalidSSLCertificate;
+    HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
+    
+    return HTTPClient;
+}
 
 @end
 

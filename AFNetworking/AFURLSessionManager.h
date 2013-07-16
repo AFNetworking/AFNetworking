@@ -22,17 +22,20 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * const AFURLSessionDidInvalidateNotification;
-
 /**
  
  */
-@interface AFURLSessionManager : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate>
+@interface AFURLSessionManager : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSCoding, NSCopying>
 
 /**
  
  */
 @property (readonly, nonatomic, strong) NSURLSession *session;
+
+/**
+ 
+ */
+@property (readonly, nonatomic, strong) NSOperationQueue *operationQueue;
 
 ///----------------------------
 /// @name Getting Session Tasks
@@ -154,3 +157,12 @@ extern NSString * const AFURLSessionDidInvalidateNotification;
 - (void)setDownloadTaskDidResumeBlock:(void (^)(NSURLSession *session, NSURLSessionDownloadTask *dataTask, int64_t fileOffset, int64_t expectedTotalBytes))block;
 
 @end
+
+///----------------
+/// @name Constants
+///----------------
+
+/**
+ 
+ */
+extern NSString * const AFURLSessionDidInvalidateNotification;
