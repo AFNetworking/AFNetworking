@@ -217,8 +217,7 @@ typedef void (^AFCompletionBlock)(void);
     SCNetworkReachabilityContext context = {0, (__bridge void *)callback, AFNetworkReachabilityRetainCallback, AFNetworkReachabilityReleaseCallback, NULL};
     SCNetworkReachabilitySetCallback(self.networkReachability, AFNetworkReachabilityCallback, &context);
 
-    /* Network reachability monitoring does not establish a baseline for IP addresses as it does for hostnames, so if the base URL host is an IP address, the initial reachability callback is manually triggered.
-     */
+    // Network reachability monitoring does not establish a baseline for IP addresses as it does for hostnames, so if the base URL host is an IP address, the initial reachability callback is manually triggered.
     if (AFURLHostIsIPAddress(self.baseURL)) {
         SCNetworkReachabilityFlags flags;
         SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
@@ -300,6 +299,12 @@ typedef void (^AFCompletionBlock)(void);
     }
 
     return [formData requestByFinalizingMultipartFormData];
+}
+
+- (void)setRequestSerializer:(id<AFURLRequestSerialization>)requestSerializer {
+    NSParameterAssert(requestSerializer);
+
+    _requestSerializer = requestSerializer;
 }
 
 - (id <AFURLResponseSerialization>)serializerForResponse:(NSHTTPURLResponse *)response {
@@ -916,7 +921,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 #pragma mark - NSCopying
 
--(id)copyWithZone:(NSZone *)zone {
+- (id)copyWithZone:(NSZone *)zone {
     AFMultipartBodyStream *bodyStreamCopy = [[[self class] allocWithZone:zone] initWithStringEncoding:self.stringEncoding];
 
     for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
