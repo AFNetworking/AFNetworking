@@ -22,7 +22,7 @@
 
 #import "AFHTTPRequestOperation.h"
 
-#import "AFSerialization.m"
+#import "AFSerialization.h"
 
 static dispatch_queue_t http_request_operation_processing_queue() {
     static dispatch_queue_t af_http_request_operation_processing_queue;
