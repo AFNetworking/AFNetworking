@@ -244,9 +244,10 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
                         [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
                     }
                 }
-            }
-          
-            CFRelease(allowedTrust);
+                
+                CFRelease(allowedTrust);
+            }          
+            
             CFRelease(policy);
             CFRelease(certificates);
             CFRelease(allowedCertificate);
@@ -605,9 +606,10 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     if (status == errSecSuccess) {
                         [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
                     }
+
+                    CFRelease(trust);
                 }
               
-                CFRelease(trust);
                 CFRelease(certificates);
             }
         }
