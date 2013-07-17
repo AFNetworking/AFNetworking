@@ -32,5 +32,4 @@
     #import "AFURLSessionManager.h"
 
     #import "AFSerialization.h"
-    #import "AFURLRequestConfiguration.h"
 #endif /* _AFNETWORKING_ */
