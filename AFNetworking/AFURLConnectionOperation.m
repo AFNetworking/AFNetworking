@@ -233,19 +233,23 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
             SecTrustRef allowedTrust = NULL;
             OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &allowedTrust);
             NSAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
-            
-            SecTrustResultType result = 0;
-            status = SecTrustEvaluate(allowedTrust, &result);
-            NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
-            
-            SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);            
-            NSParameterAssert(allowedPublicKey);
-            [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
-            
-            CFRelease(allowedTrust);
-            CFRelease(policy);
-            CFRelease(certificates);
-            CFRelease(allowedCertificate);
+            if (status == errSecSuccess && allowedTrust) {
+                SecTrustResultType result = 0;
+                status = SecTrustEvaluate(allowedTrust, &result);
+                NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
+                if (status == errSecSuccess) {
+                    SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
+                    NSParameterAssert(allowedPublicKey);
+                    if (allowedPublicKey) {
+                        [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
+                    }
+                }
+            }
+          
+            if (allowedTrust) CFRelease(allowedTrust);
+            if (policy) CFRelease(policy);
+            if (certificates) CFRelease(certificates);
+            if (allowedCertificate) CFRelease(allowedCertificate);
         }
         
         _pinnedPublicKeys = [[NSArray alloc] initWithArray:publicKeys];
@@ -594,15 +598,17 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 
                 OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &trust);
                 NSAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
-                
-                SecTrustResultType result;
-                status = SecTrustEvaluate(trust, &result);
-                NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
-                
-                [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
-                
-                CFRelease(trust);
-                CFRelease(certificates);
+                if (status == errSecSuccess && trust) {
+                    SecTrustResultType result;
+                    status = SecTrustEvaluate(trust, &result);
+                    NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
+                    if (status == errSecSuccess) {
+                        [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
+                    }
+                }
+              
+                if (trust) CFRelease(trust);
+                if (certificates) CFRelease(certificates);
             }
         }
         
@@ -646,7 +652,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     OSStatus status = SecTrustEvaluate(serverTrust, &result);
                     NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
                     
-                    if (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed) {
+                    if (status == errSecSuccess && (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed)) {
                         NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
                         [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
                     } else {
