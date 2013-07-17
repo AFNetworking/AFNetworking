@@ -473,6 +473,8 @@ typedef id AFNetworkReachabilityRef;
         }
     }];
 
+    [task resume];
+
     return task;
 }
 
