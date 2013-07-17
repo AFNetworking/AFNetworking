@@ -246,10 +246,10 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
                 }
             }
           
-            if (allowedTrust) CFRelease(allowedTrust);
-            if (policy) CFRelease(policy);
-            if (certificates) CFRelease(certificates);
-            if (allowedCertificate) CFRelease(allowedCertificate);
+            CFRelease(allowedTrust);
+            CFRelease(policy);
+            CFRelease(certificates);
+            CFRelease(allowedCertificate);
         }
         
         _pinnedPublicKeys = [[NSArray alloc] initWithArray:publicKeys];
@@ -607,8 +607,8 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     }
                 }
               
-                if (trust) CFRelease(trust);
-                if (certificates) CFRelease(certificates);
+                CFRelease(trust);
+                CFRelease(certificates);
             }
         }
         
