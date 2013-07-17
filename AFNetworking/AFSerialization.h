@@ -59,6 +59,9 @@
 
 #pragma mark -
 
+/**
+ 
+ */
 typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
     AFHTTPRequestQueryStringDefaultStyle = 0,
 };
