@@ -175,7 +175,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 @synthesize redirectResponse = _redirectResponse;
 @synthesize lock = _lock;
 
-+ (void)networkRequestThreadEntryPoint:(id)__unused object {
++ (void)networkRequestThreadEntryPoint:(id __unused)object {
     @autoreleasepool {
         [[NSThread currentThread] setName:@"AFNetworking"];
 
