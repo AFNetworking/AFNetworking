@@ -197,7 +197,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                                    NSURLErrorFailingURLErrorKey:[response URL],
                                    AFNetworkingOperationFailingURLResponseErrorKey: response
                                   };
-        *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
+        if (error) {
+            *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
+        }
     } else if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:[response MIMEType]]) {
         // Don't invalidate content type if there is no content
         if ([data length] > 0) {
@@ -206,7 +208,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                                         NSURLErrorFailingURLErrorKey:[response URL],
                                         AFNetworkingOperationFailingURLResponseErrorKey: response
                                       };
-            *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+            if (error) {
+                *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+            }
         }
     }
 
@@ -379,7 +383,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:NSLocalizedStringFromTable(@"Data failed decoding as a UTF-8 string", nil, @"AFNetworking") forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Could not decode string: %@", nil, @"AFNetworking"), responseString] forKey:NSLocalizedFailureReasonErrorKey];
-            *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+            if (error) {
+                *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+            }
         }
     }
 
