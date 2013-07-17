@@ -56,54 +56,11 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 #pragma mark -
 
-@interface AFQueryStringPair : NSObject
-@property (readwrite, nonatomic, strong) id field;
-@property (readwrite, nonatomic, strong) id value;
-
-- (instancetype)initWithField:(id)field
-                        value:(id)value;
-
-- (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding;
-@end
-
-@implementation AFQueryStringPair
-
-- (instancetype)initWithField:(id)field
-                value:(id)value
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-
-    self.field = field;
-    self.value = value;
-
-    return self;
-}
-
-- (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding {
-    if (!self.value || [self.value isEqual:[NSNull null]]) {
-        return [[self.field description] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    } else {
-        return [NSString stringWithFormat:@"%@=%@", [[self.field description] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]], [[self.value description] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
-    }
-}
-
-@end
-
-#pragma mark -
-
 extern NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary);
 extern NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value);
 
-NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding stringEncoding) {
-    NSMutableArray *mutablePairs = [NSMutableArray array];
-    for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
-        [mutablePairs addObject:[pair URLEncodedStringValueWithEncoding:stringEncoding]];
-    }
-
-    return [mutablePairs componentsJoinedByString:@"&"];
+NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters) {
+    return [AFQueryStringPairsFromDictionary(parameters) componentsJoinedByString:@"&"];
 }
 
 NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) {
@@ -134,7 +91,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue(key, obj)];
         }
     } else {
-        [mutableQueryStringComponents addObject:[[AFQueryStringPair alloc] initWithField:key value:value]];
+        [mutableQueryStringComponents addObject:[NSString stringWithFormat:@"%@=%@", key, value]];
     }
 
     return mutableQueryStringComponents;
@@ -276,7 +233,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     } else {
         switch (self.queryStringSerializationStyle) {
             case AFHTTPRequestQueryStringDefaultStyle:
-                query = AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding);
+                query = AFQueryStringFromParametersWithEncoding(parameters);
                 break;
             default:
                 break;
