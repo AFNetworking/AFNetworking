@@ -55,7 +55,7 @@ static char kAFImageDataTaskKey;
     static AFHTTPClient *_af_sharedHTTPClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _af_sharedHTTPClient = [[AFHTTPClient alloc] initWithSessionConfiguration:nil]; // TODO allow anonymous HTTP clients
+        _af_sharedHTTPClient = [[AFHTTPClient alloc] initWithSessionConfiguration:nil];
         _af_sharedHTTPClient.responseSerializers = @[[AFImageSerializer serializer]];
     });
 
