@@ -41,28 +41,28 @@
          location = "group:AFNetworking"
          name = "1.0 Compatibility">
          <FileRef
-            location = "group:AFNetworking/AFJSONRequestOperation.h">
-         </FileRef>
-         <FileRef
-            location = "group:AFNetworking/AFXMLRequestOperation.h">
-         </FileRef>
-         <FileRef
-            location = "group:AFNetworking/AFPropertyListRequestOperation.h">
-         </FileRef>
-         <FileRef
             location = "group:AFNetworking/AFImageRequestOperation.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFImageRequestOperation.m">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFJSONRequestOperation.h">
          </FileRef>
          <FileRef
             location = "group:AFNetworking/AFJSONRequestOperation.m">
          </FileRef>
          <FileRef
-            location = "group:AFNetworking/AFXMLRequestOperation.m">
+            location = "group:AFNetworking/AFPropertyListRequestOperation.h">
          </FileRef>
          <FileRef
             location = "group:AFNetworking/AFPropertyListRequestOperation.m">
          </FileRef>
          <FileRef
-            location = "group:AFNetworking/AFImageRequestOperation.m">
+            location = "group:AFNetworking/AFXMLRequestOperation.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFXMLRequestOperation.m">
          </FileRef>
       </Group>
    </Group>
