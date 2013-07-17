@@ -59,7 +59,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 extern NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary);
 extern NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value);
 
-NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
+static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
     return [AFQueryStringPairsFromDictionary(parameters) componentsJoinedByString:@"&"];
 }
 
