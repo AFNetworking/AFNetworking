@@ -1,7 +1,5 @@
 #import <Availability.h>
 
-#define _AFNETWORKING_PIN_SSL_CERTIFICATES_
-
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
   #ifndef __IPHONE_3_0
     #warning "This project uses features only available in iPhone SDK 3.0 and later."

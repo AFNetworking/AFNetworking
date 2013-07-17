@@ -2,8 +2,6 @@
 // Prefix header for all source files of the 'AFNetworking' target in the 'AFNetworking' project
 //
 
-#define _AFNETWORKING_PIN_SSL_CERTIFICATES_
-
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
 
