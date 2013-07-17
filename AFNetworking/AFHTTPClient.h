@@ -391,24 +391,6 @@ typedef enum {
  Parameters are encoded into a property list in the message body.
  */
 
-///----------------
-/// @name Functions
-///----------------
-
-/**
- Returns a query string constructed by a set of parameters, using the specified encoding.
-
- Query strings are constructed by collecting each key-value pair, percent escaping a string representation of the key-value pair, and then joining the pairs with "&".
- 
- If a query string pair has a an `NSArray` for its value, each member of the array will be represented in the format `field[]=value1&field[]value2`. Otherwise, the pair will be formatted as "field=value". String representations of both keys and values are derived using the `-description` method. The constructed query string does not include the ? character used to delimit the query component.
- 
- @param parameters The parameters used to construct the query string
- @param encoding The encoding to use in constructing the query string. If you are uncertain of the correct encoding, you should use UTF-8 (`NSUTF8StringEncoding`), which is the encoding designated by RFC 3986 as the correct encoding for use in URLs.
-
- @return A percent-escaped query string
- */
-extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding encoding);
-
 ///--------------------
 /// @name Notifications
 ///--------------------

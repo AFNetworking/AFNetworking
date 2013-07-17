@@ -59,7 +59,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 extern NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary);
 extern NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value);
 
-NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters) {
+NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
     return [AFQueryStringPairsFromDictionary(parameters) componentsJoinedByString:@"&"];
 }
 
@@ -233,7 +233,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     } else {
         switch (self.queryStringSerializationStyle) {
             case AFHTTPRequestQueryStringDefaultStyle:
-                query = AFQueryStringFromParametersWithEncoding(parameters);
+                query = AFQueryStringFromParameters(parameters);
                 break;
             default:
                 break;
