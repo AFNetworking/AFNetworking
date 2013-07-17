@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFImageRequestOperation.h"
+#import <ImageIO/ImageIO.h>
 
 static dispatch_queue_t image_request_operation_processing_queue() {
     static dispatch_queue_t af_image_request_operation_processing_queue;
@@ -31,6 +32,8 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
     return af_image_request_operation_processing_queue;
 }
+
+typedef void (^AFImageRequestOperationPartialImageBlock)(CGImageRef image);
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import <CoreGraphics/CoreGraphics.h>
@@ -124,6 +127,8 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
 @property (readwrite, nonatomic, strong) NSImage *responseImage;
 #endif
+@property (readwrite, nonatomic) dispatch_queue_t partialImageQueue;
+@property (readwrite, nonatomic) CGImageSourceRef partialImageSource;
 @end
 
 @implementation AFImageRequestOperation
@@ -225,7 +230,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     if (!self) {
         return nil;
     }
-
+    self.partialImageQueue = dispatch_queue_create("com.alamofire.networking.partial-image.processing", DISPATCH_QUEUE_SERIAL);
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     self.imageScale = [[UIScreen mainScreen] scale];
     self.automaticallyInflatesResponseImage = YES;
@@ -272,6 +277,63 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     return _responseImage;
 }
 #endif
+
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+- (void)setPartialImageBlock:(void (^)(UIImage *image))block {
+    AFImageRequestOperationPartialImageBlock partialImageBlock = NULL;
+    if (block) {
+        partialImageBlock = ^(CGImageRef image){
+            UIImage *partialImage = [UIImage imageWithCGImage:image];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(partialImage);
+            });
+        };
+    }
+    [self setPartialImage:partialImageBlock];
+}
+
+#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+- (void)setPartialImageBlock:(void (^)(NSImage *image))block {
+    AFImageRequestOperationPartialImageBlock partialImageBlock = NULL;
+    if (block) {
+        partialImageBlock = ^(CGImageRef image){
+            NSSize size = NSMakeSize(CGImageGetWidth(image), CGImageGetHeight(image));
+            NSImage *partialImage = [[NSImage alloc] initWithCGImage:image size:size];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(partialImage);
+            });
+        };
+    }
+    [self setPartialImage:partialImageBlock];
+}
+#endif
+     
+- (void)setPartialImage:(AFImageRequestOperationPartialImageBlock)block {
+     if (block) {
+         if (!_partialImageSource) {
+             self.partialImageSource = CGImageSourceCreateIncremental(NULL);
+         }
+         __weak typeof(self)weakSelf = self;
+         [self setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+             dispatch_async(weakSelf.partialImageQueue, ^{
+                 if ([weakSelf isFinished]) {
+                     return;
+                 }
+                 NSData *partialData = [weakSelf.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+                 if (weakSelf.partialImageSource != NULL) {
+                     CGImageSourceUpdateData(weakSelf.partialImageSource, (__bridge CFDataRef)(partialData), totalBytesRead == totalBytesExpectedToRead);
+                     CGImageRef partialImage = CGImageSourceCreateImageAtIndex(weakSelf.partialImageSource, 0, NULL);
+                     if (!partialImage) {
+                         return;
+                     }
+                     block(partialImage);
+                 }
+             });
+         }];
+     } else {
+         [self setDownloadProgressBlock:NULL];
+     }
+}
 
 #pragma mark - AFHTTPRequestOperation
 
