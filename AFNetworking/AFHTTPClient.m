@@ -1056,7 +1056,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     }
     NSInteger bytesRead = 0;
 
-    while ((NSUInteger)bytesRead < MIN(length, self.numberOfBytesInPacket)) {
+    while ((NSUInteger)bytesRead < fmin(length, self.numberOfBytesInPacket)) {
         if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
             if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
                 break;
@@ -1307,11 +1307,8 @@ typedef enum {
            intoBuffer:(uint8_t *)buffer
             maxLength:(NSUInteger)length
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
-    NSRange range = NSMakeRange((NSUInteger)_phaseReadOffset, MIN([data length] - ((NSUInteger)_phaseReadOffset), length));
+    NSRange range = NSMakeRange((NSUInteger)_phaseReadOffset, fmin([data length] - ((NSUInteger)_phaseReadOffset), length));
     [data getBytes:buffer range:range];
-#pragma clang diagnostic pop
 
     _phaseReadOffset += range.length;
 
