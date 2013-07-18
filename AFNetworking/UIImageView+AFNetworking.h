@@ -59,7 +59,7 @@
  This is a convenience method ignoring the local cache.
  
  @param url The URL used for the image request.
- @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
+ @param placeholderImage the image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
  */
 - (void)setImageWithURLIgnoringCache:(NSURL *)url
                     placeholderImage:(UIImage *)placeholderImage;

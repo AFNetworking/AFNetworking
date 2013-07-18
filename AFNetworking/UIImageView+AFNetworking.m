@@ -144,8 +144,9 @@ static char kAFImageRequestOperationObjectKey;
 
         self.af_imageRequestOperation = nil;
     } else {
-        if(placeholderImage)
+        if (placeholderImage) {
             self.image = placeholderImage;
+        }
 
         AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {

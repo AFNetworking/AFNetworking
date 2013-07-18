@@ -1,5 +1,5 @@
 <p align="center" >
-  <img src="https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking">
+  <img src="https://raw.github.com/AFNetworking/AFNetworking/assets/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking">
 </p>
 
 [![Build Status](https://travis-ci.org/AFNetworking/AFNetworking.png?branch=master)](https://travis-ci.org/AFNetworking/AFNetworking)
@@ -23,47 +23,43 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/zipball/master) and try out the included Mac and iPhone example apps
 - Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles in the wiki](https://github.com/AFNetworking/AFNetworking/wiki)
-- Check out the [complete documentation](http://afnetworking.github.com/AFNetworking/) for a comprehensive look at the APIs available in AFNetworking
+- Check out the [complete documentation](http://cocoadocs.org/docsets/AFNetworking/) for a comprehensive look at the APIs available in AFNetworking
 - Watch the [NSScreencast episode about AFNetworking](http://nsscreencast.com/episodes/6-afnetworking) for a quick introduction to how to use it in your application
 - Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
 
 ## Overview
-
-<p align="center">
-  <img src="https://github.com/AFNetworking/AFNetworking/raw/gh-pages/afnetworking-architecture-diagram.png" alt="AFNetworking Architecture Diagram"/>
-</p>
 
 AFNetworking is architected to be as small and modular as possible, in order to make it simple to use and extend.
 
 <table>
   <tr><th colspan="2" style="text-align:center;">Core</th></tr>
   <tr>
-    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFURLConnectionOperation.html">AFURLConnectionOperation</a></td>
+    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFURLConnectionOperation.html">AFURLConnectionOperation</a></td>
     <td>An <tt>NSOperation</tt> that implements the <tt>NSURLConnection</tt> delegate methods.</td>
   </tr>
 
   <tr><th colspan="2" style="text-align:center;">HTTP Requests</th></tr>
 
   <tr>
-    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFHTTPRequestOperation.html">AFHTTPRequestOperation</a></td>
+    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFHTTPRequestOperation.html">AFHTTPRequestOperation</a></td>
     <td>A subclass of <tt>AFURLConnectionOperation</tt> for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.</td>
   </tr>
   <tr>
-    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFJSONRequestOperation.html">AFJSONRequestOperation</a></td>
+    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFJSONRequestOperation.html">AFJSONRequestOperation</a></td>
     <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and working with JSON response data.</td>
   </tr>
   <tr>
-    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFXMLRequestOperation.html">AFXMLRequestOperation</a></td>
+    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFXMLRequestOperation.html">AFXMLRequestOperation</a></td>
     <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and working with XML response data.</td>
   </tr>
   <tr>
-    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFPropertyListRequestOperation.html">AFPropertyListRequestOperation</a></td>
+    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFPropertyListRequestOperation.html">AFPropertyListRequestOperation</a></td>
     <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and deserializing objects with <a href="http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/PropertyLists/index.html">property list</a> response data.</td>
   </tr>
 
   <tr><th colspan="2" style="text-align:center;">HTTP Client</th></tr>
   <tr>
-    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFHTTPClient.html">AFHTTPClient</a></td>
+    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFHTTPClient.html">AFHTTPClient</a></td>
     <td>
       Captures the common patterns of communicating with an web application over HTTP, including:
 
@@ -82,7 +78,7 @@ AFNetworking is architected to be as small and modular as possible, in order to 
 
   <tr><th colspan="2" style="text-align:center;">Images</th></tr>
   <tr>
-    <td><a href="http://afnetworking.github.com/AFNetworking/Classes/AFImageRequestOperation.html">AFImageRequestOperation</a></td>
+    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFImageRequestOperation.html">AFImageRequestOperation</a></td>
     <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and processing images.</td>
   </tr>
   <tr>
