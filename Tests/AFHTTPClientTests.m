@@ -257,6 +257,8 @@
 }
 
 - (void)testPostWithParameters {
+    [Expecta setAsynchronousTestTimeout:5.0];
+
     __block id blockResponseObject = nil;
     [self.client postPath:@"/post" parameters:@{ @"key": @"value" } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         blockResponseObject = responseObject;
