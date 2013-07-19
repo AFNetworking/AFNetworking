@@ -265,7 +265,7 @@
     } failure:nil];
 
     expect([self.client.operationQueue operationCount]).will.equal(0);
-    expect(blockResponseObject).notTo.beNil();
+    expect(blockResponseObject).willNot.beNil();
     expect(blockResponseObject).to.beKindOf([NSData class]);
 
     NSError *error = nil;
