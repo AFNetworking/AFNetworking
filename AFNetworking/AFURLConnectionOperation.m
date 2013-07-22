@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFURLConnectionOperation.h"
+#import <objc/runtime.h>
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import <UIKit/UIKit.h>
@@ -30,6 +31,27 @@
 #error AFNetworking must be built with ARC.
 // You can turn on ARC for only AFNetworking files by adding -fobjc-arc to the build phase for each of its files.
 #endif
+
+@implementation NSURLResponse (NSHTTPURLResponse)
+
++ (void)load
+{
+    if (![NSURLResponse instancesRespondToSelector:@selector(allHeaderFields)]) {
+        IMP implementation = imp_implementationWithBlock(^NSDictionary *(id self) {
+            return [NSDictionary dictionary];
+        });
+        class_addMethod(self, @selector(allHeaderFields), implementation, "@@:");
+    }
+    
+    if (![NSURLResponse instancesRespondToSelector:@selector(statusCode)]) {
+        IMP implementation = imp_implementationWithBlock(^NSInteger(id self) {
+            return 200;
+        });
+        class_addMethod(self, @selector(statusCode), implementation, "i@:");
+    }
+}
+
+@end
 
 typedef enum {
     AFOperationPausedState      = -1,
