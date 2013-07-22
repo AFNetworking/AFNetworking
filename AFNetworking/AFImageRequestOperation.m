@@ -53,7 +53,17 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
 
-    NSSet *contentTypes = AFContentTypesFromHTTPHeader([[response allHeaderFields] valueForKey:@"Content-Type"]);
+    NSSet *contentTypes = nil;
+    // Test for all allHeaderField ie. NSHTTPURLResponse
+    if ([response respondsToSelector:@selector(allHeaderFields)]){
+        contentTypes = AFContentTypesFromHTTPHeader([[response allHeaderFields] valueForKey:@"Content-Type"]);
+    }else{
+        // Use reponse.MIMEType if NSURLResponse
+        // This test could probably be replaced by this line. If nil it should
+        // continue through the rest of this function without causing and exception.
+        contentTypes = AFContentTypesFromHTTPHeader(response.MIMEType);
+    }
+    
     if ([contentTypes containsObject:@"image/png"]) {
         imageRef = CGImageCreateWithPNGDataProvider(dataProvider,  NULL, true, kCGRenderingIntentDefault);
     } else if ([contentTypes containsObject:@"image/jpeg"]) {
