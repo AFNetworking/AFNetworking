@@ -50,13 +50,11 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     }
 
     CGImageRef imageRef = nil;
-
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
 
-    NSSet *contentTypes = AFContentTypesFromHTTPHeader([[response allHeaderFields] valueForKey:@"Content-Type"]);
-    if ([contentTypes containsObject:@"image/png"]) {
+    if ([response.MIMEType isEqualToString:@"image/png"]) {
         imageRef = CGImageCreateWithPNGDataProvider(dataProvider,  NULL, true, kCGRenderingIntentDefault);
-    } else if ([contentTypes containsObject:@"image/jpeg"]) {
+    } else if ([response.MIMEType isEqualToString:@"image/jpeg"]) {
         imageRef = CGImageCreateWithJPEGDataProvider(dataProvider, NULL, true, kCGRenderingIntentDefault);
     }
     
