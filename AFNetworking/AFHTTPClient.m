@@ -478,6 +478,129 @@ typedef id AFNetworkReachabilityRef;
     return task;
 }
 
+#pragma mark -
+
+- (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
+                                            fromFile:(NSURL *)fileURL
+                                             success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                             failure:(void (^)(NSError *error))failure
+{
+    NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromFile:fileURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error && failure) {
+            failure(error);
+        } else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+                id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
+                NSError *serializationError = nil;
+                id responseObject = [serializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
+
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    if (serializationError) {
+                        if (failure) {
+                            failure(serializationError);
+                        }
+                    } else {
+                        if (success) {
+                            success((NSHTTPURLResponse *)response, serializer, responseObject);
+                        }
+                    }
+                });
+            });
+        }
+    }];
+
+    [task resume];
+
+    return task;
+}
+
+- (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
+                                            fromData:(NSData *)bodyData
+                                             success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                             failure:(void (^)(NSError *error))failure
+{
+    NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromData:bodyData completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error && failure) {
+            failure(error);
+        } else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+                id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
+                NSError *serializationError = nil;
+                id responseObject = [serializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
+
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    if (serializationError) {
+                        if (failure) {
+                            failure(serializationError);
+                        }
+                    } else {
+                        if (success) {
+                            success((NSHTTPURLResponse *)response, serializer, responseObject);
+                        }
+                    }
+                });
+            });
+        }
+    }];
+
+    [task resume];
+    
+    return task;
+}
+
+#pragma mark -
+
+- (NSURLSessionDownloadTask *)runDownloadTaskWithRequest:(NSURLRequest *)request
+                                                 success:(NSURL * (^)(NSHTTPURLResponse *response))success
+                                                 failure:(void (^)(NSError *error))failure
+{
+    NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
+        if (error && failure) {
+            failure(error);
+        } else {
+            if (success) {
+                NSURL *destinationPath = success((NSHTTPURLResponse *)response);
+
+                NSError *fileManagerError = nil;
+                [[NSFileManager defaultManager] moveItemAtURL:targetPath toURL:destinationPath error:&fileManagerError];
+                if (fileManagerError && failure) {
+                    failure(fileManagerError);
+                }
+            }
+        }
+    }];
+
+    [task resume];
+
+    return task;
+}
+
+- (NSURLSessionDownloadTask *)runDownloadTaskWithResumeData:(NSData *)resumeData
+                                                    success:(NSURL * (^)(NSHTTPURLResponse *response))success
+                                                    failure:(void (^)(NSError *error))failure
+{
+    NSURLSessionDownloadTask *task = [self.session downloadTaskWithResumeData:resumeData completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
+        if (error && failure) {
+            failure(error);
+        } else {
+            if (success) {
+                NSURL *destinationPath = success((NSHTTPURLResponse *)response);
+
+                NSError *fileManagerError = nil;
+                [[NSFileManager defaultManager] moveItemAtURL:targetPath toURL:destinationPath error:&fileManagerError];
+                if (fileManagerError && failure) {
+                    failure(fileManagerError);
+                }
+            }
+        }
+    }];
+
+    [task resume];
+
+    return task;
+}
+
+
 #pragma mark - NSCoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder {

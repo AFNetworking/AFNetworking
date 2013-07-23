@@ -331,6 +331,45 @@ typedef enum {
                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
                                          failure:(void (^)(NSError *error))failure;
 
+
+///---------------------------
+/// @name Running Upload Tasks
+///---------------------------
+
+/**
+ 
+ */
+- (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
+                                            fromFile:(NSURL *)fileURL
+                                             success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                             failure:(void (^)(NSError *error))failure;
+
+/**
+ 
+ */
+- (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
+                                            fromData:(NSData *)bodyData
+                                             success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                             failure:(void (^)(NSError *error))failure;
+
+///-----------------------------
+/// @name Running Download Tasks
+///-----------------------------
+
+/**
+ 
+ */
+- (NSURLSessionDownloadTask *)runDownloadTaskWithRequest:(NSURLRequest *)request
+                                               success:(NSURL * (^)(NSHTTPURLResponse *response))success
+                                               failure:(void (^)(NSError *error))failure;
+
+/**
+ 
+ */
+- (NSURLSessionDownloadTask *)runDownloadTaskWithResumeData:(NSData *)resumeData
+                                                    success:(NSURL * (^)(NSHTTPURLResponse *response))success
+                                                    failure:(void (^)(NSError *error))failure;
+
 @end
 
 ///----------------
