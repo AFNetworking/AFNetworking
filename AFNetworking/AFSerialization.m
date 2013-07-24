@@ -187,8 +187,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                     data:(NSData *)data
                    error:(NSError *__autoreleasing *)error
 {
-    if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
-        return NO;
+    // TODO determine whether this is the correct behavior; is there a better way to extend functionality of serializers, or a better place to put HTTP validation?
+    if (!response || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
+        return YES;
     }
 
     if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:response.statusCode]) {
@@ -268,8 +269,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
-    [self validateResponse:(NSHTTPURLResponse *)response data:data error:error];
-
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+        return nil;
+    }
+    
     return data;
 }
 
