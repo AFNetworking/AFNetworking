@@ -369,6 +369,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+        return nil;
+    }
+
     // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
     // See https://github.com/rails/rails/issues/1742
     NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -499,6 +503,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+        return nil;
+    }
+
     return [[NSXMLDocument alloc] initWithData:data options:self.options error:error];
 }
 
@@ -607,6 +615,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+        return nil;
+    }
+
     return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:nil error:error];
 }
 
@@ -689,6 +701,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+        return nil;
+    }
+
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     return [[UIImage alloc] initWithData:data scale:self.imageScale]; // TODO port AFImageReqOp implementation
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
