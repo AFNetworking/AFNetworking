@@ -85,7 +85,7 @@ static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused targ
 
     dispatch_async(dispatch_get_main_queue(), ^{
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:status] forKey:AFNetworkingReachabilityNotificationStatusItem]];
+        [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:@{ AFNetworkingReachabilityNotificationStatusItem: @(status) }];
     });
 }
 
@@ -721,9 +721,6 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @end
 
 @implementation AFStreamingMultipartFormData
-@synthesize request = _request;
-@synthesize bodyStream = _bodyStream;
-@synthesize stringEncoding = _stringEncoding;
 
 - (id)initWithURLRequest:(NSMutableURLRequest *)urlRequest
           stringEncoding:(NSStringEncoding)encoding
@@ -765,14 +762,14 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(mimeType);
 
     if (![fileURL isFileURL]) {
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedStringFromTable(@"Expected URL to be a file URL", @"AFNetworking", nil) forKey:NSLocalizedFailureReasonErrorKey];
+        NSDictionary *userInfo = @{ NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"Expected URL to be a file URL", @"AFNetworking", nil) };
         if (error != NULL) {
             *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo];
         }
 
         return NO;
     } else if ([fileURL checkResourceIsReachableAndReturnError:error] == NO) {
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:NSLocalizedStringFromTable(@"File URL not reachable.", @"AFNetworking", nil) forKey:NSLocalizedFailureReasonErrorKey];
+        NSDictionary *userInfo = @{ NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"File URL not reachable.", @"AFNetworking", nil) };
         if (error != NULL) {
             *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadURL userInfo:userInfo];
         }
@@ -902,17 +899,6 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @end
 
 @implementation AFMultipartBodyStream
-@synthesize streamStatus = _streamStatus;
-@synthesize streamError = _streamError;
-@synthesize stringEncoding = _stringEncoding;
-@synthesize HTTPBodyParts = _HTTPBodyParts;
-@synthesize HTTPBodyPartEnumerator = _HTTPBodyPartEnumerator;
-@synthesize currentHTTPBodyPart = _currentHTTPBodyPart;
-@synthesize inputStream = _inputStream;
-@synthesize outputStream = _outputStream;
-@synthesize buffer = _buffer;
-@synthesize numberOfBytesInPacket = _numberOfBytesInPacket;
-@synthesize delay = _delay;
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding {
     self = [super init];
@@ -1060,12 +1046,12 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 #pragma mark -
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, AFHTTPBodyPartReadPhase) {
     AFEncapsulationBoundaryPhase = 1,
     AFHeaderPhase                = 2,
     AFBodyPhase                  = 3,
     AFFinalBoundaryPhase         = 4,
-} AFHTTPBodyPartReadPhase;
+};
 
 @interface AFHTTPBodyPart () <NSCopying> {
     AFHTTPBodyPartReadPhase _phase;
@@ -1080,13 +1066,6 @@ typedef enum {
 @end
 
 @implementation AFHTTPBodyPart
-@synthesize stringEncoding = _stringEncoding;
-@synthesize headers = _headers;
-@synthesize body = _body;
-@synthesize bodyContentLength = _bodyContentLength;
-@synthesize inputStream = _inputStream;
-@synthesize hasInitialBoundary = _hasInitialBoundary;
-@synthesize hasFinalBoundary = _hasFinalBoundary;
 
 - (instancetype)init {
     self = [super init];

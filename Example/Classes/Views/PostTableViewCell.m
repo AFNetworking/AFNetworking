@@ -27,12 +27,7 @@
 
 #import "UIImageView+AFNetworking.h"
 
-@implementation PostTableViewCell {
-@private
-    __strong Post *_post;
-}
-
-@synthesize post = _post;
+@implementation PostTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style
               reuseIdentifier:(NSString *)reuseIdentifier

@@ -29,7 +29,6 @@
 @end
 
 @implementation AFURLConnectionOperationTests
-@synthesize baseURL = _baseURL;
 
 - (void)setUp {
     self.baseURL = [NSURL URLWithString:AFNetworkingTestsBaseURLString];

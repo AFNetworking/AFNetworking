@@ -37,9 +37,6 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
     AFHTTPRequestOperation *_avatarImageRequestOperation;
 }
 
-@synthesize userID = _userID;
-@synthesize username = _username;
-
 - (instancetype)initWithAttributes:(NSDictionary *)attributes {
     self = [super init];
     if (!self) {

@@ -37,9 +37,6 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 @end
 
 @implementation AFNetworkActivityIndicatorManager
-@synthesize activityCount = _activityCount;
-@synthesize activityIndicatorVisibilityTimer = _activityIndicatorVisibilityTimer;
-@synthesize enabled = _enabled;
 @dynamic networkActivityIndicatorVisible;
 
 + (instancetype)sharedManager {
@@ -82,22 +79,17 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
             self.activityIndicatorVisibilityTimer = [NSTimer timerWithTimeInterval:kAFNetworkActivityIndicatorInvisibilityDelay target:self selector:@selector(updateNetworkActivityIndicatorVisibility) userInfo:nil repeats:NO];
             [[NSRunLoop mainRunLoop] addTimer:self.activityIndicatorVisibilityTimer forMode:NSRunLoopCommonModes];
         } else {
-            [self performSelectorOnMainThread:@selector(updateNetworkActivityIndicatorVisibility) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+            [self performSelectorOnMainThread:@selector(updateNetworkActivityIndicatorVisibility) withObject:nil waitUntilDone:NO modes:@[NSRunLoopCommonModes]];
         }
     }
 }
 
 - (BOOL)isNetworkActivityIndicatorVisible {
-    return _activityCount > 0;
+    return self.activityCount > 0;
 }
 
 - (void)updateNetworkActivityIndicatorVisibility {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:[self isNetworkActivityIndicatorVisible]];
-}
-
-// Not exposed, but used if activityCount is set via KVC.
-- (NSInteger)activityCount {
-	return _activityCount;
 }
 
 - (void)setActivityCount:(NSInteger)activityCount {

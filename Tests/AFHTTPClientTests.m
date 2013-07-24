@@ -27,7 +27,6 @@
 @end
 
 @implementation AFHTTPClientTests
-@synthesize client = _client;
 
 - (void)setUp {
     self.client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:AFNetworkingTestsBaseURLString]];
