@@ -13,6 +13,7 @@
 		F818101615E6A0C600EF93C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */; };
 		F86A37E0177397D900407E52 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F86A37DF177397D900407E52 /* AFURLSessionManager.m */; };
 		F88812F016C533D6003C8B8C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E013957DF100DB05C8 /* Security.framework */; };
+		F88DE17D17A08BC0006D695E /* AFEventSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F88DE17C17A08BC0006D695E /* AFEventSource.m */; };
 		F8A847C1161F51A300940F39 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A847C0161F51A300940F39 /* Default-568h@2x.png */; };
 		F8A847C3161F523E00940F39 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A847C2161F523E00940F39 /* Default.png */; };
 		F8A847C5161F524200940F39 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A847C4161F524200940F39 /* Default@2x.png */; };
@@ -57,6 +58,8 @@
 		F8129C7315910C37009BFE23 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		F86A37DE177397D900407E52 /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
 		F86A37DF177397D900407E52 /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
+		F88DE17B17A08BC0006D695E /* AFEventSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFEventSource.h; sourceTree = "<group>"; };
+		F88DE17C17A08BC0006D695E /* AFEventSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFEventSource.m; sourceTree = "<group>"; };
 		F8A847C0161F51A300940F39 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F8A847C2161F523E00940F39 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		F8A847C4161F524200940F39 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
@@ -132,6 +135,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F88DE17E17A08BC5006D695E /* Rocket */ = {
+			isa = PBXGroup;
+			children = (
+				F88DE17B17A08BC0006D695E /* AFEventSource.h */,
+				F88DE17C17A08BC0006D695E /* AFEventSource.m */,
+				F8064B141799995A00E7C1D3 /* AFJSONPatchSerializer.h */,
+				F8064B151799995A00E7C1D3 /* AFJSONPatchSerializer.m */,
+			);
+			name = Rocket;
+			sourceTree = "<group>";
+		};
 		F8DA09C61396AB690057D0CC /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,8 +296,6 @@
 		F8FA949B150EFEC100ED4EAD /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
-				F8064B141799995A00E7C1D3 /* AFJSONPatchSerializer.h */,
-				F8064B151799995A00E7C1D3 /* AFJSONPatchSerializer.m */,
 				F8FA94A8150EFEC100ED4EAD /* AFNetworking.h */,
 				F8FA94AB150EFEC100ED4EAD /* AFURLConnectionOperation.h */,
 				F8FA94AC150EFEC100ED4EAD /* AFURLConnectionOperation.m */,
@@ -296,6 +308,7 @@
 				F8AF73EB1796FCF200F63037 /* AFSerialization.h */,
 				F8AF73EC1796FCF200F63037 /* AFSerialization.m */,
 				F8FFAD831774D70A00297E16 /* 1.0 Compatibility */,
+				F88DE17E17A08BC5006D695E /* Rocket */,
 			);
 			name = AFNetworking;
 			path = ../AFNetworking;
@@ -398,6 +411,7 @@
 				F8DA09E41396AC040057D0CC /* main.m in Sources */,
 				F8FA9491150EF8C100ED4EAD /* AFAppDotNetAPIClient.m in Sources */,
 				F8FA9494150EF97E00ED4EAD /* Post.m in Sources */,
+				F88DE17D17A08BC0006D695E /* AFEventSource.m in Sources */,
 				F8FA9497150EF98800ED4EAD /* User.m in Sources */,
 				F8E02CF8177A8B710087BB23 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				F8E02CFB177A8B710087BB23 /* UIProgressView+AFNetworking.m in Sources */,
