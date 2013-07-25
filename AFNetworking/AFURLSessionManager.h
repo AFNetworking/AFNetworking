@@ -87,7 +87,7 @@
 /**
  
  */
-- (void)setSessionDidReceiveAuthenticationChallengeBlock:(NSURLSessionResponseDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block;
+- (void)setSessionDidReceiveAuthenticationChallengeBlock:(NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block;
 
 ///------------------------------
 /// @name Task Delegate Callbacks
@@ -101,7 +101,7 @@
 /**
  
  */
-- (void)setTaskDidReceiveAuthenticationChallengeBlock:(NSURLSessionResponseDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block;
+- (void)setTaskDidReceiveAuthenticationChallengeBlock:(NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block;
 
 /**
  

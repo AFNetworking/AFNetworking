@@ -22,6 +22,12 @@
 
 #import "AFSerialization.h"
 
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#import <UIKit/UIKit.h>
+#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+#import <Cocoa/Cocoa.h>
+#endif
+
 typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, NSDictionary *parameters, NSError *__autoreleasing *error);
 
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
@@ -752,9 +758,12 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 + (instancetype)serializer {
     AFImageSerializer *serializer = [[self alloc] init];
+
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     serializer.imageScale = [[UIScreen mainScreen] scale];
     serializer.automaticallyInflatesResponseImage = YES;
-
+#endif
+    
     return serializer;
 }
 
@@ -819,26 +828,33 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         return nil;
     }
 
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     self.imageScale = [aDecoder decodeFloatForKey:@"imageScale"];
     self.automaticallyInflatesResponseImage = [aDecoder decodeBoolForKey:@"automaticallyInflatesResponseImage"];
-
+#endif
+    
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     [aCoder encodeFloat:self.imageScale forKey:@"imageScale"];
     [aCoder encodeBool:self.automaticallyInflatesResponseImage forKey:@"automaticallyInflatesResponseImage"];
+#endif
 }
 
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
     AFImageSerializer *serializer = [[[self class] allocWithZone:zone] init];
+
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     serializer.imageScale = self.imageScale;
     serializer.automaticallyInflatesResponseImage = self.automaticallyInflatesResponseImage;
-
+#endif
+    
     return serializer;
 }
 

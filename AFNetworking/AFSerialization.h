@@ -71,7 +71,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
  */
 @interface AFHTTPSerializer : NSObject <AFURLRequestSerialization, AFURLResponseSerialization>
 
-@property (nonatomic, assign) NSStringEncoding *stringEncoding;
+@property (nonatomic, assign) NSStringEncoding stringEncoding;
 
 #pragma mark AFURLRequestSerialization
 
