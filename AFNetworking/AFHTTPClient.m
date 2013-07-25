@@ -128,11 +128,7 @@ typedef id AFNetworkReachabilityRef;
 @implementation AFHTTPClient
 
 + (instancetype)client {
-    return [[AFHTTPClient alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];    
-}
-
-- (instancetype)init {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%@ Failed to call designated initializer. Invoke `initWithBaseURL:` instead.", NSStringFromClass([self class])] userInfo:nil];
+    return [[AFHTTPClient alloc] initWithBaseURL:nil];
 }
 
 - (instancetype)initWithBaseURL:(NSURL *)url {
@@ -142,8 +138,6 @@ typedef id AFNetworkReachabilityRef;
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration
 {
-    NSParameterAssert(url);
-
     self = [super initWithSessionConfiguration:configuration];
     if (!self) {
         return nil;
