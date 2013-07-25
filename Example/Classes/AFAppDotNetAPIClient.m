@@ -22,7 +22,7 @@
 
 #import "AFAppDotNetAPIClient.h"
 
-static NSString * const kAFAppDotNetAPIBaseURLString = @"https://alpha-api.app.net/";
+static NSString * const AFAppDotNetAPIBaseURLString = @"https://alpha-api.app.net/";
 
 @implementation AFAppDotNetAPIClient
 
@@ -30,7 +30,7 @@ static NSString * const kAFAppDotNetAPIBaseURLString = @"https://alpha-api.app.n
     static AFAppDotNetAPIClient *_sharedClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedClient = [[AFAppDotNetAPIClient alloc] initWithBaseURL:[NSURL URLWithString:kAFAppDotNetAPIBaseURLString]];
+        _sharedClient = [[AFAppDotNetAPIClient alloc] initWithBaseURL:[NSURL URLWithString:AFAppDotNetAPIBaseURLString]];
     });
     
     return _sharedClient;
