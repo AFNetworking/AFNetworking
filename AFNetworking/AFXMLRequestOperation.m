@@ -24,20 +24,11 @@
 #import "AFSerialization.h"
 #include <Availability.h>
 
-static dispatch_queue_t xml_request_operation_processing_queue() {
-    static dispatch_queue_t af_xml_request_operation_processing_queue;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        af_xml_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.xml-request.processing", DISPATCH_QUEUE_CONCURRENT);
-    });
-
-    return af_xml_request_operation_processing_queue;
-}
-
 @interface AFXMLRequestOperation ()
 @property (readwrite, nonatomic, strong) AFXMLParserSerializer *XMLParserSerializer;
 @property (readwrite, nonatomic, strong) NSXMLParser *responseXMLParser;
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+@property (readwrite, nonatomic, strong) AFXMLDocumentSerializer *XMLDocumentSerializer;
 @property (readwrite, nonatomic, strong) NSXMLDocument *responseXMLDocument;
 @property (readwrite, nonatomic, strong) NSError *XMLDocumentError;
 #endif
@@ -95,6 +86,10 @@ static dispatch_queue_t xml_request_operation_processing_queue() {
     }
 
     self.XMLParserSerializer = [AFXMLParserSerializer serializer];
+
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+    self.XMLDocumentSerializer = [AFXMLDocumentSerializer serializer];
+#endif
 
     return self;
 }
