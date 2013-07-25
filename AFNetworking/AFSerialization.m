@@ -237,11 +237,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     }
 
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
-    
-    for( NSString *httpHeaderField in self.HTTPRequestHeaders.allKeys ) {
-    	[mutableRequest setValue:self.HTTPRequestHeaders[headerField] 
-    	      forHTTPHeaderField:headerField];
-    }
+
+    [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL *stop) {
+        [mutableRequest setValue:value forHTTPHeaderField:field];
+    }];
 
     NSString *query = nil;
     if (self.queryStringSerialization) {
