@@ -127,8 +127,8 @@ typedef id AFNetworkReachabilityRef;
 
 @implementation AFHTTPClient
 
-+ (instancetype)clientWithBaseURL:(NSURL *)url {
-    return [[self alloc] initWithBaseURL:url];
++ (instancetype)client {
+    return [[AFHTTPClient alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];    
 }
 
 - (instancetype)init {
@@ -136,11 +136,11 @@ typedef id AFNetworkReachabilityRef;
 }
 
 - (instancetype)initWithBaseURL:(NSURL *)url {
-    return [self initWithBaseURL:url configuration:nil];
+    return [self initWithBaseURL:url sessionConfiguration:nil];
 }
 
 - (instancetype)initWithBaseURL:(NSURL *)url
-                  configuration:(NSURLSessionConfiguration *)configuration
+           sessionConfiguration:(NSURLSessionConfiguration *)configuration
 {
     NSParameterAssert(url);
 
@@ -157,7 +157,7 @@ typedef id AFNetworkReachabilityRef;
     self.baseURL = url;
 
     self.requestSerializer = [AFHTTPSerializer serializer];
-    self.responseSerializers = @[[AFHTTPSerializer serializer]];
+    self.responseSerializers = @[ [AFHTTPSerializer serializer] ];
 
 #ifdef _SYSTEMCONFIGURATION_H
     self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
@@ -298,7 +298,7 @@ typedef id AFNetworkReachabilityRef;
     return [formData requestByFinalizingMultipartFormData];
 }
 
-- (void)setRequestSerializer:(id<AFURLRequestSerialization>)requestSerializer {
+- (void)setRequestSerializer:(id <AFURLRequestSerialization>)requestSerializer {
     NSParameterAssert(requestSerializer);
 
     _requestSerializer = requestSerializer;
@@ -600,14 +600,13 @@ typedef id AFNetworkReachabilityRef;
     return task;
 }
 
-
 #pragma mark - NSCoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     NSURL *baseURL = [aDecoder decodeObjectForKey:@"baseURL"];
     NSURLSessionConfiguration *configuration = [aDecoder decodeObjectForKey:@"sessionConfiguration"];
 
-    self = [self initWithBaseURL:baseURL configuration:configuration];
+    self = [self initWithBaseURL:baseURL sessionConfiguration:configuration];
     if (!self) {
         return nil;
     }
@@ -633,7 +632,7 @@ typedef id AFNetworkReachabilityRef;
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
-    AFHTTPClient *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL configuration:self.session.configuration];
+    AFHTTPClient *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL sessionConfiguration:self.session.configuration];
 
     HTTPClient.requestSerializer = [self.requestSerializer copyWithZone:zone];
     HTTPClient.responseSerializers = [self.responseSerializers copy];

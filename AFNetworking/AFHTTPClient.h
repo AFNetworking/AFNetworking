@@ -132,13 +132,9 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 ///---------------------------------------------
 
 /**
- Creates and initializes an `AFHTTPClient` object with the specified base URL.
-
- @param url The base URL for the HTTP client. This argument must not be `nil`.
-
- @return The newly-initialized HTTP client
+ 
  */
-+ (instancetype)clientWithBaseURL:(NSURL *)url;
++ (instancetype)client;
 
 /**
  Initializes an `AFHTTPClient` object with the specified base URL.
@@ -155,7 +151,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  
  */
 - (instancetype)initWithBaseURL:(NSURL *)url
-                  configuration:(NSURLSessionConfiguration *)configuration;
+           sessionConfiguration:(NSURLSessionConfiguration *)configuration;
 
 ///-----------------------------------
 /// @name Managing Reachability Status
