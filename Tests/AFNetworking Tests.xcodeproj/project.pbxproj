@@ -26,6 +26,10 @@
 		29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
 		667B268117599C5800764906 /* AFImageRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 667B268017599C5800764906 /* AFImageRequestOperationTests.m */; };
+		A7D5BAF617A29C2A0068CBA9 /* *.afnetworking.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = A7D5BAF317A29C2A0068CBA9 /* *.afnetworking.com.cer */; };
+		A7D5BAF717A29C2A0068CBA9 /* *.afnetworking.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = A7D5BAF317A29C2A0068CBA9 /* *.afnetworking.com.cer */; };
+		A7D5BAF817A29C2A0068CBA9 /* api.afnetworking.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = A7D5BAF417A29C2A0068CBA9 /* api.afnetworking.com.cer */; };
+		A7D5BAF917A29C2A0068CBA9 /* api.afnetworking.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = A7D5BAF417A29C2A0068CBA9 /* api.afnetworking.com.cer */; };
 		A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
 		A7DC62AA17592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
 		AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
@@ -35,12 +39,6 @@
 		F8D62D3C175ABF5E00C717C3 /* AFMockURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D62D3A175ABF5E00C717C3 /* AFMockURLProtocol.m */; };
 		F8E801E1175AC349008D3886 /* ca.cer in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DD175AC349008D3886 /* ca.cer */; };
 		F8E801E2175AC349008D3886 /* ca.cer in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DD175AC349008D3886 /* ca.cer */; };
-		F8E801E3175AC349008D3886 /* derived.cert in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DE175AC349008D3886 /* derived.cert */; };
-		F8E801E4175AC349008D3886 /* derived.cert in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DE175AC349008D3886 /* derived.cert */; };
-		F8E801E5175AC349008D3886 /* root_certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DF175AC349008D3886 /* root_certificate.cer */; };
-		F8E801E6175AC349008D3886 /* root_certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = F8E801DF175AC349008D3886 /* root_certificate.cer */; };
-		F8E801E7175AC349008D3886 /* root_certificate.key in Resources */ = {isa = PBXBuildFile; fileRef = F8E801E0175AC349008D3886 /* root_certificate.key */; };
-		F8E801E8175AC349008D3886 /* root_certificate.key in Resources */ = {isa = PBXBuildFile; fileRef = F8E801E0175AC349008D3886 /* root_certificate.key */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,14 +67,13 @@
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		667B268017599C5800764906 /* AFImageRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageRequestOperationTests.m; sourceTree = "<group>"; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7D5BAF317A29C2A0068CBA9 /* *.afnetworking.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = "*.afnetworking.com.cer"; path = "Resources/*.afnetworking.com.cer"; sourceTree = "<group>"; };
+		A7D5BAF417A29C2A0068CBA9 /* api.afnetworking.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = api.afnetworking.com.cer; path = Resources/api.afnetworking.com.cer; sourceTree = "<group>"; };
 		A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperationTests.m; sourceTree = "<group>"; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
 		F8D62D39175ABF5E00C717C3 /* AFMockURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFMockURLProtocol.h; sourceTree = "<group>"; };
 		F8D62D3A175ABF5E00C717C3 /* AFMockURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFMockURLProtocol.m; sourceTree = "<group>"; };
 		F8E801DD175AC349008D3886 /* ca.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = ca.cer; path = Resources/ca.cer; sourceTree = "<group>"; };
-		F8E801DE175AC349008D3886 /* derived.cert */ = {isa = PBXFileReference; lastKnownFileType = file; name = derived.cert; path = Resources/derived.cert; sourceTree = "<group>"; };
-		F8E801DF175AC349008D3886 /* root_certificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = root_certificate.cer; path = Resources/root_certificate.cer; sourceTree = "<group>"; };
-		F8E801E0175AC349008D3886 /* root_certificate.key */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = root_certificate.key; path = Resources/root_certificate.key; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,10 +184,9 @@
 		F8E801E9175AC34D008D3886 /* Certificates */ = {
 			isa = PBXGroup;
 			children = (
+				A7D5BAF317A29C2A0068CBA9 /* *.afnetworking.com.cer */,
+				A7D5BAF417A29C2A0068CBA9 /* api.afnetworking.com.cer */,
 				F8E801DD175AC349008D3886 /* ca.cer */,
-				F8E801DE175AC349008D3886 /* derived.cert */,
-				F8E801DF175AC349008D3886 /* root_certificate.cer */,
-				F8E801E0175AC349008D3886 /* root_certificate.key */,
 			);
 			name = Certificates;
 			sourceTree = "<group>";
@@ -266,11 +262,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7D5BAF817A29C2A0068CBA9 /* api.afnetworking.com.cer in Resources */,
 				F8C6F282174D2C6200B154D5 /* Icon.png in Resources */,
+				A7D5BAF617A29C2A0068CBA9 /* *.afnetworking.com.cer in Resources */,
 				F8E801E1175AC349008D3886 /* ca.cer in Resources */,
-				F8E801E3175AC349008D3886 /* derived.cert in Resources */,
-				F8E801E5175AC349008D3886 /* root_certificate.cer in Resources */,
-				F8E801E7175AC349008D3886 /* root_certificate.key in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,11 +273,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7D5BAF917A29C2A0068CBA9 /* api.afnetworking.com.cer in Resources */,
 				F8C6F283174D2C6200B154D5 /* Icon.png in Resources */,
+				A7D5BAF717A29C2A0068CBA9 /* *.afnetworking.com.cer in Resources */,
 				F8E801E2175AC349008D3886 /* ca.cer in Resources */,
-				F8E801E4175AC349008D3886 /* derived.cert in Resources */,
-				F8E801E6175AC349008D3886 /* root_certificate.cer in Resources */,
-				F8E801E8175AC349008D3886 /* root_certificate.key in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
