@@ -446,7 +446,7 @@ typedef id AFNetworkReachabilityRef;
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error && failure) {
             failure(error);
-        } else {
+        } else if (!error) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
                 NSError *serializationError = nil;
