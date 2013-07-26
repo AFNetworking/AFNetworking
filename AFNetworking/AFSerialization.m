@@ -234,15 +234,17 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 {
     NSParameterAssert(request);
 
-    if (!parameters) {
-        return request;
-    }
 
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL *stop) {
         [mutableRequest setValue:value forHTTPHeaderField:field];
     }];
+    
+    
+    if (!parameters) {
+        return mutableRequest;
+    }
 
     NSString *query = nil;
     if (self.queryStringSerialization) {
