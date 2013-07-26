@@ -444,8 +444,10 @@ typedef id AFNetworkReachabilityRef;
                                          failure:(void (^)(NSError *error))failure
 {
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error && failure) {
-            failure(error);
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
         } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
@@ -480,8 +482,10 @@ typedef id AFNetworkReachabilityRef;
                                              failure:(void (^)(NSError *error))failure
 {
     NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromFile:fileURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error && failure) {
-            failure(error);
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
         } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
@@ -514,8 +518,10 @@ typedef id AFNetworkReachabilityRef;
                                              failure:(void (^)(NSError *error))failure
 {
     NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromData:bodyData completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error && failure) {
-            failure(error);
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
         } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
@@ -549,8 +555,10 @@ typedef id AFNetworkReachabilityRef;
                                                  failure:(void (^)(NSError *error))failure
 {
     NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
-        if (error && failure) {
-            failure(error);
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
         } else {
             if (success) {
                 NSURL *destinationPath = success((NSHTTPURLResponse *)response);
@@ -574,8 +582,10 @@ typedef id AFNetworkReachabilityRef;
                                                     failure:(void (^)(NSError *error))failure
 {
     NSURLSessionDownloadTask *task = [self.session downloadTaskWithResumeData:resumeData completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
-        if (error && failure) {
-            failure(error);
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
         } else {
             if (success) {
                 NSURL *destinationPath = success((NSHTTPURLResponse *)response);
