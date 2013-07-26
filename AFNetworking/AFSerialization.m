@@ -194,34 +194,34 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                    error:(NSError *__autoreleasing *)error
 {
     // TODO determine whether this is the correct behavior; is there a better way to extend functionality of serializers, or a better place to put HTTP validation?
-    if (!response || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
-        return YES;
-    }
-
-    if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:response.statusCode]) {
-        NSDictionary *userInfo = @{
-                                   NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Expected status code in (%@), got %d", @"AFNetworking", nil), AFStringFromIndexSet(self.acceptableStatusCodes), response.statusCode],
-                                   NSURLErrorFailingURLErrorKey:[response URL],
-                                   AFNetworkingOperationFailingURLResponseErrorKey: response
-                                  };
-        if (error) {
-            *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
-        }
-    } else if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:[response MIMEType]]) {
-        // Don't invalidate content type if there is no content
-        if ([data length] > 0) {
+    BOOL validated = YES;
+    if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
+        if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:response.statusCode]) {
             NSDictionary *userInfo = @{
-                                        NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Expected content type %@, got %@", @"AFNetworking", nil), self.acceptableContentTypes, [response MIMEType]],
-                                        NSURLErrorFailingURLErrorKey:[response URL],
-                                        AFNetworkingOperationFailingURLResponseErrorKey: response
-                                      };
+                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Expected status code in (%@), got %d", @"AFNetworking", nil), AFStringFromIndexSet(self.acceptableStatusCodes), response.statusCode],
+                                       NSURLErrorFailingURLErrorKey:[response URL],
+                                       AFNetworkingOperationFailingURLResponseErrorKey: response
+                                       };
             if (error) {
-                *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+                *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
+            }
+            validated = NO;
+        } else if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:[response MIMEType]]) {
+            // Don't invalidate content type if there is no content
+            if ([data length] > 0) {
+                NSDictionary *userInfo = @{
+                                           NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Expected content type %@, got %@", @"AFNetworking", nil), self.acceptableContentTypes, [response MIMEType]],
+                                           NSURLErrorFailingURLErrorKey:[response URL],
+                                           AFNetworkingOperationFailingURLResponseErrorKey: response
+                                           };
+                if (error) {
+                    *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+                }
+                validated = NO;
             }
         }
     }
-
-    return YES;
+    return validated;
 }
 
 #pragma mark - AFURLRequestSerializer
