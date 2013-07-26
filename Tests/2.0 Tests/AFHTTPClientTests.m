@@ -127,4 +127,47 @@
     expect(task.state == NSURLSessionTaskStateCompleted).will.beTruthy();
 }
 
+- (void)testThatRedirectBlockIsCalledWhen302IsEncountered {
+    __block BOOL success;
+    
+    [Expecta setAsynchronousTestTimeout:3.0];
+    NSURLSessionTask * dataTask = [self.client
+                                   GET:@"/redirect/1"
+                                   parameters:nil
+                                   success:nil
+                                   failure:nil];
+    [self.client
+     setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
+         if(response){
+             success = YES;
+         }
+         return request;
+     }];
+    
+    expect(dataTask.state == NSURLSessionTaskStateCompleted).will.beTruthy();
+    expect(success).will.beTruthy();
+    [self.client setTaskWillPerformHTTPRedirectionBlock:nil];
+}
+
+- (void)testThatRedirectBlockIsCalledMultipleTimesWhenMultiple302sAreEncountered {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    __block NSInteger numberOfRedirects = 0;
+    NSURLSessionTask * dataTask = [self.client
+                                   GET:@"/redirect/5"
+                                   parameters:nil
+                                   success:nil
+                                   failure:nil];
+    [self.client
+     setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
+         if(response){
+            numberOfRedirects++;
+         }
+         return request;
+     }];
+    
+    expect(dataTask.state == NSURLSessionTaskStateCompleted).will.beTruthy();
+    expect(numberOfRedirects).will.equal(5);
+    [self.client setTaskWillPerformHTTPRedirectionBlock:nil];
+}
+
 @end
