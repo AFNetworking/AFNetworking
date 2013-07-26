@@ -22,7 +22,7 @@
 
 #import "AFNetworkingTests.h"
 
-@interface AFHTTPRequestOperationTests : SenTestCase
+@interface AFHTTPRequestOperationTests : XCTestCase
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
 @end
 

@@ -24,7 +24,7 @@
 #import "AFURLConnectionOperation.h"
 #import "AFMockURLProtocol.h"
 
-@interface AFURLConnectionOperationTests : SenTestCase
+@interface AFURLConnectionOperationTests : XCTestCase
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
 @end
 
