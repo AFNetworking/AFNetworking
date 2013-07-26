@@ -81,4 +81,50 @@
     expect(blockError.code).to.equal(NSURLErrorCancelled);
 }
 
+- (void)testThatTaskCanBeSuspended {
+    [Expecta setAsynchronousTestTimeout:3.0];
+    NSURLSessionTask * task = [self.client
+                               GET:@"/delay/1"
+                               parameters:nil
+                               success:nil
+                               failure:nil];
+    
+    expect(task.state == NSURLSessionTaskStateRunning).will.beTruthy();
+    [task suspend];
+    expect(task.state == NSURLSessionTaskStateSuspended).will.beTruthy();
+    [task cancel];
+}
+
+
+- (void)testThatSuspendedTaskCanBeResumed {
+    [Expecta setAsynchronousTestTimeout:3.0];
+    NSURLSessionTask * task = [self.client
+                               GET:@"/delay/1"
+                               parameters:nil
+                               success:nil
+                               failure:nil];
+    
+    expect(task.state == NSURLSessionTaskStateRunning).will.beTruthy();
+    [task suspend];
+    expect(task.state == NSURLSessionTaskStateSuspended).will.beTruthy();
+    [task resume];
+    expect(task.state == NSURLSessionTaskStateRunning).will.beTruthy();
+    [task cancel];
+}
+
+- (void)testThatSuspendedTaskCanBeCompleted {
+    [Expecta setAsynchronousTestTimeout:3.0];
+    NSURLSessionTask * task = [self.client
+                               GET:@"/delay/1"
+                               parameters:nil
+                               success:nil
+                               failure:nil];
+    
+    expect(task.state == NSURLSessionTaskStateRunning).will.beTruthy();
+    [task suspend];
+    expect(task.state == NSURLSessionTaskStateSuspended).will.beTruthy();
+    [task resume];
+    expect(task.state == NSURLSessionTaskStateCompleted).will.beTruthy();
+}
+
 @end
