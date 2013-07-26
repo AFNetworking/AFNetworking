@@ -654,6 +654,10 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     if (AFSecKeyIsEqualToKey(pinnedPublicKey, publicKey)) {
                         if (!AFVerifyWildcardHosts((__bridge_transfer NSString *)SecCertificateCopySubjectSummary(pinnedCertificate), challenge.protectionSpace.host)) {
                             [challenge.sender cancelAuthenticationChallenge:challenge];
+                            
+                            CFRelease(pinnedPublicKey);
+                            CFRelease(pinnedCertificate);
+                            CFRelease(publicKey);
                             return;
                         }
                     }
