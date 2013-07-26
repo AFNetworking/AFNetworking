@@ -549,7 +549,7 @@ static NSArray *pinnedCertificates;
     expect(useCredentialInvoked).will.beTruthy();
 }
 
-- (void)testThatAFURLConnectionOperationDoesntInvalidHostNotMatchingCertificatesHost {
+- (void)testThatAFURLConnectionOperationDoesntTrustInvalidHostNotMatchingCertificatesHost {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://ping.afnetworking.com/path"]];
     AFURLConnectionOperation *operation = [[AFURLConnectionOperation alloc] initWithRequest:request];
     operation.SSLPinningMode = AFSSLPinningModePublicKey;
@@ -614,7 +614,7 @@ static NSArray *pinnedCertificates;
     expect(cancelAuthenticationChallengeInvoked).will.beTruthy();
 }
 
-- (void)testThatAFURLConnectionOperationDoesntInvalidHostNotMatchingWildcardHost {
+- (void)testThatAFURLConnectionOperationDoesntTrustInvalidHostNotMatchingWildcardHost {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://api.sparrow-labs.com/path"]];
     AFURLConnectionOperation *operation = [[AFURLConnectionOperation alloc] initWithRequest:request];
     operation.SSLPinningMode = AFSSLPinningModePublicKey;

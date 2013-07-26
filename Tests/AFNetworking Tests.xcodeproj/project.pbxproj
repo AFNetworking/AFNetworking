@@ -160,9 +160,9 @@
 			isa = PBXGroup;
 			children = (
 				2580153E173EB3A70026AA6E /* AFNetworkingTests.h */,
+				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
 				F8D62D39175ABF5E00C717C3 /* AFMockURLProtocol.h */,
 				F8D62D3A175ABF5E00C717C3 /* AFMockURLProtocol.m */,
-				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
 				A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */,
 				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */,
 				29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */,
