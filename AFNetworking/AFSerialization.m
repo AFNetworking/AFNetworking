@@ -194,7 +194,6 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                    error:(NSError *__autoreleasing *)error
 {
     // TODO determine whether this is the correct behavior; is there a better way to extend functionality of serializers, or a better place to put HTTP validation?
-    BOOL validated = YES;
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
         if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:response.statusCode]) {
             NSDictionary *userInfo = @{
@@ -205,7 +204,8 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
             if (error) {
                 *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
             }
-            validated = NO;
+
+            return NO;
         } else if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:[response MIMEType]]) {
             // Don't invalidate content type if there is no content
             if ([data length] > 0) {
@@ -217,11 +217,13 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                 if (error) {
                     *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
                 }
-                validated = NO;
+
+                return NO;
             }
         }
     }
-    return validated;
+    
+    return YES;
 }
 
 #pragma mark - AFURLRequestSerializer
