@@ -446,7 +446,7 @@ typedef id AFNetworkReachabilityRef;
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error && failure) {
             failure(error);
-        } else {
+        } else if (!error) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
                 NSError *serializationError = nil;
@@ -482,7 +482,7 @@ typedef id AFNetworkReachabilityRef;
     NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromFile:fileURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error && failure) {
             failure(error);
-        } else {
+        } else if (!error) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
                 NSError *serializationError = nil;
@@ -516,7 +516,7 @@ typedef id AFNetworkReachabilityRef;
     NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromData:bodyData completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error && failure) {
             failure(error);
-        } else {
+        } else if (!error) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
                 NSError *serializationError = nil;
@@ -551,7 +551,7 @@ typedef id AFNetworkReachabilityRef;
     NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
         if (error && failure) {
             failure(error);
-        } else {
+        } else if (!error) {
             if (success) {
                 NSURL *destinationPath = success((NSHTTPURLResponse *)response);
 
@@ -576,7 +576,7 @@ typedef id AFNetworkReachabilityRef;
     NSURLSessionDownloadTask *task = [self.session downloadTaskWithResumeData:resumeData completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
         if (error && failure) {
             failure(error);
-        } else {
+        } else if (!error) {
             if (success) {
                 NSURL *destinationPath = success((NSHTTPURLResponse *)response);
 
