@@ -127,6 +127,22 @@
     expect(task.state == NSURLSessionTaskStateCompleted).will.beTruthy();
 }
 
+- (void)testThatTaskCancelledImmediatelyCallsFailureBlock{
+    [Expecta setAsynchronousTestTimeout:5.0];
+    __block NSError * blockError;
+    NSURLSessionDataTask * task = [self.client
+                                   GET:@"/delay/5"
+                                   parameters:nil
+                                   success:nil
+                                   failure:^(NSError *error) {
+                                       blockError = error;
+                                   }];
+    [task cancel];
+    expect(task.state == NSURLSessionTaskStateCompleted).will.beTruthy();
+    expect(blockError).willNot.beNil();
+    expect(blockError.code).to.equal(NSURLErrorCancelled);
+}
+
 - (void)testThatRedirectBlockIsCalledWhen302IsEncountered {
     __block BOOL success;
     
