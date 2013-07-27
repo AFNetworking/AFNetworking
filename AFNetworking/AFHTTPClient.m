@@ -26,6 +26,7 @@
 #import "AFHTTPRequestOperation.h"
 
 #import <Availability.h>
+#import <Security/Security.h>
 
 #ifdef _SYSTEMCONFIGURATION_H
 #import <netinet/in.h>
@@ -38,6 +39,26 @@
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import <UIKit/UIKit.h>
 #endif
+
+#if !defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+static NSData *AFSecKeyGetData(SecKeyRef key) {
+    CFDataRef data = NULL;
+    
+    OSStatus status = SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
+    NSCAssert(status == errSecSuccess, @"SecItemExport error: %ld", (long int)status);
+    NSCParameterAssert(data);
+    
+    return (__bridge_transfer NSData *)data;
+}
+#endif
+
+static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+    return [(__bridge id)key1 isEqual:(__bridge id)key2];
+#else
+    return [AFSecKeyGetData(key1) isEqual:AFSecKeyGetData(key2)];
+#endif
+}
 
 #ifdef _SYSTEMCONFIGURATION_H
 NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
@@ -749,6 +770,180 @@ typedef id AFNetworkReachabilityRef;
     HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
     
     return HTTPClient;
+}
+
+#pragma mark - SSL Pinning
++ (NSArray *)pinnedCertificates {
+    static NSArray *_pinnedCertificates = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
+        
+        NSMutableArray *certificates = [NSMutableArray arrayWithCapacity:[paths count]];
+        for (NSString *path in paths) {
+            NSData *certificateData = [NSData dataWithContentsOfFile:path];
+            [certificates addObject:certificateData];
+        }
+        
+        _pinnedCertificates = [[NSArray alloc] initWithArray:certificates];
+    });
+    
+    return _pinnedCertificates;
+}
+
++ (NSArray *)pinnedPublicKeys {
+    static NSArray *_pinnedPublicKeys = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSArray *pinnedCertificates = [self pinnedCertificates];
+        NSMutableArray *publicKeys = [NSMutableArray arrayWithCapacity:[pinnedCertificates count]];
+        
+        for (NSData *data in pinnedCertificates) {
+            SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)data);
+            NSParameterAssert(allowedCertificate);
+            
+            SecCertificateRef allowedCertificates[] = {allowedCertificate};
+            CFArrayRef certificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
+            
+            SecPolicyRef policy = SecPolicyCreateBasicX509();
+            SecTrustRef allowedTrust = NULL;
+            OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &allowedTrust);
+            NSAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
+            
+            SecTrustResultType result = 0;
+            status = SecTrustEvaluate(allowedTrust, &result);
+            NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
+            
+            SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
+            NSParameterAssert(allowedPublicKey);
+            [publicKeys addObject:(__bridge_transfer id)allowedPublicKey];
+            
+            CFRelease(allowedTrust);
+            CFRelease(policy);
+            CFRelease(certificates);
+            CFRelease(allowedCertificate);
+        }
+        
+        _pinnedPublicKeys = [[NSArray alloc] initWithArray:publicKeys];
+    });
+    
+    return _pinnedPublicKeys;
+}
+
+#pragma mark - NSURLSessionDelegate
+-(void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler{
+    
+    if(!completionHandler){
+        return;
+    }
+    __weak __typeof(&*self)weakSelf = self;
+    [super
+     URLSession:session
+     didReceiveChallenge:challenge
+     completionHandler:^(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential) {
+        
+         if(disposition != NSURLSessionAuthChallengePerformDefaultHandling){
+             completionHandler(disposition,credential);
+             return;
+         }
+         else {
+             if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+                 SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
+                 
+                 SecPolicyRef policy = SecPolicyCreateBasicX509();
+                 CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
+                 NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:certificateCount];
+                 
+                 for (CFIndex i = 0; i < certificateCount; i++) {
+                     SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
+                     
+                     if (weakSelf.SSLPinningMode == AFSSLPinningModeCertificate) {
+                         [trustChain addObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)];
+                     } else if (weakSelf.SSLPinningMode == AFSSLPinningModePublicKey) {
+                         SecCertificateRef someCertificates[] = {certificate};
+                         CFArrayRef certificates = CFArrayCreate(NULL, (const void **)someCertificates, 1, NULL);
+                         
+                         SecTrustRef trust = NULL;
+                         
+                         OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &trust);
+                         NSAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
+                         
+                         SecTrustResultType result;
+                         status = SecTrustEvaluate(trust, &result);
+                         NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
+                         
+                         [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
+                         
+                         CFRelease(trust);
+                         CFRelease(certificates);
+                     }
+                 }
+                 
+                 CFRelease(policy);
+                 
+                 switch (weakSelf.SSLPinningMode) {
+                     case AFSSLPinningModePublicKey: {
+                         NSArray *pinnedPublicKeys = [weakSelf.class pinnedPublicKeys];
+                         
+                         for (id publicKey in trustChain) {
+                             for (id pinnedPublicKey in pinnedPublicKeys) {
+                                 if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)publicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
+                                     credential = [NSURLCredential credentialForTrust:serverTrust];
+                                     completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
+                                     return;
+                                 }
+                             }
+                         }
+                         completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
+                         return;
+                     }
+                     case AFSSLPinningModeCertificate: {
+                         for (id serverCertificateData in trustChain) {
+                             if ([[weakSelf.class pinnedCertificates] containsObject:serverCertificateData]) {
+                                 credential = [NSURLCredential credentialForTrust:serverTrust];
+                                 completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
+                                 return;
+                             }
+                         }
+                         completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
+                         return;
+                     }
+                     case AFSSLPinningModeNone: {
+                         if (weakSelf.allowsInvalidSSLCertificate){
+                             completionHandler(disposition,credential);
+                             return;
+                         } else {
+                             SecTrustResultType result = 0;
+                             OSStatus status = SecTrustEvaluate(serverTrust, &result);
+                             NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
+                             
+                             if (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed) {
+                                 completionHandler(disposition,credential);
+                                 return;
+                             } else {
+                                 disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                                 completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
+                                 return;
+                             }
+                         }
+                         break;
+                     }
+                 }
+             }
+//             else {
+//                if ([challenge previousFailureCount] == 0) {
+//                    if (weakSelf.credential) {
+//                        completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
+//                    } else {
+//                        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling,nil);
+//                    }
+//                } else {
+//                    completionHandler(NSURLSessionAuthChallengePerformDefaultHandling,nil);
+//                }
+//             }
+         }
+    }];
 }
 
 @end
