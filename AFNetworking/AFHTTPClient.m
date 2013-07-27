@@ -831,8 +831,68 @@ typedef id AFNetworkReachabilityRef;
     return _pinnedPublicKeys;
 }
 
+- (NSArray*)certificateTrustChainForServerTrust:(SecTrustRef)serverTrust{
+    CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
+    NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:certificateCount];
+    
+    for (CFIndex i = 0; i < certificateCount; i++) {
+        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
+        [trustChain addObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)];
+    }
+    return [NSArray arrayWithArray:trustChain];
+}
+
+- (NSArray*)publicKeyTrustChainForServerTrust:(SecTrustRef)serverTrust{
+    SecPolicyRef policy = SecPolicyCreateBasicX509();
+    CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
+    NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:certificateCount];
+    for (CFIndex i = 0; i < certificateCount; i++) {
+        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
+        
+        SecCertificateRef someCertificates[] = {certificate};
+        CFArrayRef certificates = CFArrayCreate(NULL, (const void **)someCertificates, 1, NULL);
+        
+        SecTrustRef trust = NULL;
+        
+        OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &trust);
+        NSAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
+        
+        SecTrustResultType result;
+        status = SecTrustEvaluate(trust, &result);
+        NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
+        
+        [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
+        
+        CFRelease(trust);
+        CFRelease(certificates);
+    }
+    CFRelease(policy);
+    return [NSArray arrayWithArray:trustChain];
+}
+
+- (BOOL)trustChain:(NSArray*)trustChain containsKeyInPinnedPublicKeys:(NSArray*)pinnedPublicKeys{
+    for (id publicKey in trustChain) {
+        for (id pinnedPublicKey in pinnedPublicKeys) {
+            if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)publicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
+- (BOOL)trustChain:(NSArray*)trustChain containsCertificateInPinnedCertificates:(NSArray*)pinnedCertificates{
+    for (id serverCertificateData in trustChain) {
+        if ([pinnedCertificates containsObject:serverCertificateData]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
 #pragma mark - NSURLSessionDelegate
--(void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler{
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler{
     
     if(!completionHandler){
         return;
@@ -851,67 +911,31 @@ typedef id AFNetworkReachabilityRef;
              if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
                  SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
                  
-                 SecPolicyRef policy = SecPolicyCreateBasicX509();
-                 CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
-                 NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:certificateCount];
-                 
-                 for (CFIndex i = 0; i < certificateCount; i++) {
-                     SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
-                     
-                     if (weakSelf.SSLPinningMode == AFSSLPinningModeCertificate) {
-                         [trustChain addObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)];
-                     } else if (weakSelf.SSLPinningMode == AFSSLPinningModePublicKey) {
-                         SecCertificateRef someCertificates[] = {certificate};
-                         CFArrayRef certificates = CFArrayCreate(NULL, (const void **)someCertificates, 1, NULL);
-                         
-                         SecTrustRef trust = NULL;
-                         
-                         OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &trust);
-                         NSAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
-                         
-                         SecTrustResultType result;
-                         status = SecTrustEvaluate(trust, &result);
-                         NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
-                         
-                         [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
-                         
-                         CFRelease(trust);
-                         CFRelease(certificates);
-                     }
-                 }
-                 
-                 CFRelease(policy);
-                 
                  switch (weakSelf.SSLPinningMode) {
                      case AFSSLPinningModePublicKey: {
-                         NSArray *pinnedPublicKeys = [weakSelf.class pinnedPublicKeys];
-                         
-                         for (id publicKey in trustChain) {
-                             for (id pinnedPublicKey in pinnedPublicKeys) {
-                                 if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)publicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
-                                     credential = [NSURLCredential credentialForTrust:serverTrust];
-                                     completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
-                                     return;
-                                 }
-                             }
+                         NSArray *trustChain = [weakSelf publicKeyTrustChainForServerTrust:serverTrust];
+                         if([weakSelf trustChain:trustChain containsKeyInPinnedPublicKeys:[self.class pinnedPublicKeys]]){
+                             credential = [NSURLCredential credentialForTrust:serverTrust];
+                             completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
+                         } else {
+                             completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
                          }
-                         completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
                          return;
                      }
                      case AFSSLPinningModeCertificate: {
-                         for (id serverCertificateData in trustChain) {
-                             if ([[weakSelf.class pinnedCertificates] containsObject:serverCertificateData]) {
-                                 credential = [NSURLCredential credentialForTrust:serverTrust];
-                                 completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
-                                 return;
-                             }
+                         NSArray *trustChain = [weakSelf certificateTrustChainForServerTrust:serverTrust];
+                         if([weakSelf trustChain:trustChain containsCertificateInPinnedCertificates:[self.class pinnedCertificates]]){
+                             credential = [NSURLCredential credentialForTrust:serverTrust];
+                             completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
+                         } else {
+                             completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
                          }
-                         completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
                          return;
                      }
                      case AFSSLPinningModeNone: {
                          if (weakSelf.allowsInvalidSSLCertificate){
-                             completionHandler(disposition,credential);
+                             credential = [NSURLCredential credentialForTrust:serverTrust];
+                             completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
                              return;
                          } else {
                              SecTrustResultType result = 0;
@@ -919,18 +943,17 @@ typedef id AFNetworkReachabilityRef;
                              NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
                              
                              if (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed) {
-                                 completionHandler(disposition,credential);
-                                 return;
+                                 credential = [NSURLCredential credentialForTrust:serverTrust];
+                                 completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
                              } else {
-                                 disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
                                  completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
-                                 return;
                              }
+                             return;
                          }
-                         break;
                      }
                  }
              }
+             //2.0 doesnt support credentials yet
 //             else {
 //                if ([challenge previousFailureCount] == 0) {
 //                    if (weakSelf.credential) {
