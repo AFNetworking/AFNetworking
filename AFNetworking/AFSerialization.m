@@ -165,7 +165,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 - (void)setAuthorizationHeaderFieldWithUsername:(NSString *)username password:(NSString *)password {
 	NSString *basicAuthCredentials = [NSString stringWithFormat:@"%@:%@", username, password];
-    [self setValue:[NSString stringWithFormat:@"Basic %@", [[basicAuthCredentials dataUsingEncoding:NSUTF8StringEncoding] base64Encoding]] forHTTPHeaderField:@"Authorization"];
+    [self setValue:[NSString stringWithFormat:@"Basic %@", [[basicAuthCredentials dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0]] forHTTPHeaderField:@"Authorization"];
 }
 
 - (void)setAuthorizationHeaderFieldWithToken:(NSString *)token {
