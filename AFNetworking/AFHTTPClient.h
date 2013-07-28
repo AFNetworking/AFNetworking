@@ -204,6 +204,70 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
                                              parameters:(NSDictionary *)parameters
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
 
+///-------------------------------
+/// @name Creating HTTP Operations
+///-------------------------------
+
+/**
+ Creates an `AFHTTPRequestOperation`.
+
+ @param urlRequest The request object to be loaded asynchronously during execution of the operation.
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes two arguments:, the created request operation and the `NSError` object describing the network or parsing error that occurred.
+ */
+- (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)request
+                                                    success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                                                    failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+///----------------------------------------
+/// @name Managing Enqueued HTTP Operations
+///----------------------------------------
+
+/**
+ Enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue.
+
+ @param operation The HTTP request operation to be enqueued.
+ */
+- (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation;
+
+/**
+ Cancels all operations in the HTTP client's operation queue whose URLs match the specified HTTP method and path.
+
+ This method only cancels `AFHTTPRequestOperations` whose request URL matches the HTTP client base URL with the path appended. For complete control over the lifecycle of enqueued operations, you can access the `operationQueue` property directly, which allows you to, for instance, cancel operations filtered by a predicate, or simply use `-cancelAllRequests`. Note that the operation queue may include non-HTTP operations, so be sure to check the type before attempting to directly introspect an operation's `request` property.
+
+ @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`. If `nil`, all request operations with URLs matching the path will be cancelled.
+ @param path The path appended to the HTTP client base URL to match against the cancelled requests. If `nil`, no path will be appended to the base URL.
+ */
+- (void)cancelAllHTTPOperationsWithMethod:(NSString *)method
+                                     path:(NSString *)path;
+
+///---------------------------------------
+/// @name Batching HTTP Request Operations
+///---------------------------------------
+
+/**
+ Creates and enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue for each specified request object into a batch. When each request operation finishes, the specified progress block is executed, until all of the request operations have finished, at which point the completion block also executes.
+
+ Operations are created by passing the specified `NSURLRequest` objects in `requests`, using `-HTTPRequestOperationWithRequest:success:failure:`, with `nil` for both the `success` and `failure` parameters.
+
+ @param urlRequests The `NSURLRequest` objects used to create and enqueue operations.
+ @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations.
+ */
+- (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests
+                                          progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
+                                        completionBlock:(void (^)(NSArray *operations))completionBlock;
+
+/**
+ Enqueues the specified request operations into a batch. When each request operation finishes, the specified progress block is executed, until all of the request operations have finished, at which point the completion block also executes.
+
+ @param operations The request operations used to be batched and enqueued.
+ @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations.
+ */
+- (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations
+                              progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
+                            completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 ///---------------------------
 /// @name Making HTTP Requests
@@ -356,8 +420,8 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  
  */
 - (NSURLSessionDownloadTask *)runDownloadTaskWithRequest:(NSURLRequest *)request
-                                               success:(NSURL * (^)(NSHTTPURLResponse *response))success
-                                               failure:(void (^)(NSError *error))failure;
+                                                 success:(NSURL * (^)(NSHTTPURLResponse *response))success
+                                                 failure:(void (^)(NSError *error))failure;
 
 /**
  
