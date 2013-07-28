@@ -276,7 +276,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 #pragma mark - AFURLResponseSerializer
 
 - (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
-    return YES;
+    return [self.acceptableContentTypes containsObject:response.MIMEType];
 }
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
