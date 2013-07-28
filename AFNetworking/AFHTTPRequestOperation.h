@@ -50,12 +50,12 @@
 /**
  
  */
-@property (nonatomic, assign) dispatch_queue_t completionQueue;
+@property (nonatomic, copy) dispatch_queue_t completionQueue;
 
 /**
 
  */
-@property (nonatomic, assign) dispatch_group_t completionGroup;
+@property (nonatomic, copy) dispatch_group_t completionGroup;
 
 
 ///-----------------------------------------------------------
