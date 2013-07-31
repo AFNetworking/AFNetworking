@@ -121,6 +121,11 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 @property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
 
 /**
+ Default to include all *.cer file included in the main bundle.
+ */
+@property (nonatomic, strong) NSArray * pinnedCertificates;
+
+/**
  Whether each `AFHTTPRequestOperation` created by `HTTPRequestOperationWithRequest:success:failure:` should accept an invalid SSL certificate.
 
  If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to `YES` for backwards compatibility. Otherwise, this property defaults to `NO`.
