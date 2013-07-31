@@ -40,11 +40,12 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
 @property (readwrite, nonatomic, strong) NSImage *responseImage;
 #endif
-@property (readwrite, nonatomic, strong) NSError *imageError;
+@property (readwrite, nonatomic, strong) NSError *error;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
 @implementation AFImageRequestOperation
+@dynamic error;
 @dynamic lock;
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
@@ -152,7 +153,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     return self;
 }
 
-#pragma mark AFImageRequestOperation
+#pragma mark - AFImageRequestOperation
 
 #if defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
 - (NSImage *)responseImage {
@@ -162,7 +163,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         self.responseImage = [self.imageSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
 
         if (error) {
-            self.imageError = error;
+            self.error = error;
         }
     }
     [self.lock unlock];
@@ -175,7 +176,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
         self.responseImage = [self.imageSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
-        self.imageError = error;
+        self.error = error;
     }
     [self.lock unlock];
 
@@ -200,7 +201,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 #endif
 
-#pragma mark AFHTTPRequestOperation
+#pragma mark - AFHTTPRequestOperation
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
@@ -219,18 +220,8 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         #endif
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         __strong __typeof(weakSelf)strongSelf = weakSelf;
-        [strongSelf setImageError:error];
+        [strongSelf setError:error];
     }];
-}
-
-#pragma mark AFURLRequestOperation
-
-- (NSError *)error {
-    if (self.imageError) {
-        return self.imageError;
-    } else {
-        return [super error];
-    }
 }
 
 @end

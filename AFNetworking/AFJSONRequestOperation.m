@@ -26,11 +26,12 @@
 @interface AFJSONRequestOperation ()
 @property (readwrite, nonatomic, strong) AFJSONSerializer *JSONSerializer;
 @property (readwrite, nonatomic, strong) id responseJSON;
-@property (readwrite, nonatomic, strong) NSError *JSONError;
+@property (readwrite, nonatomic, strong) NSError *error;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
 @implementation AFJSONRequestOperation
+@dynamic error;
 @dynamic lock;
 
 + (instancetype)JSONRequestOperationWithRequest:(NSURLRequest *)urlRequest
@@ -66,10 +67,10 @@
 
 - (id)responseJSON {
     [self.lock lock];
-    if (!_responseJSON && [self.responseData length] > 0 && [self isFinished] && !self.JSONError) {
+    if (!_responseJSON && [self.responseData length] > 0 && [self isFinished] && !self.error) {
         NSError *error = nil;
         self.responseJSON = [self.JSONSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
-        self.JSONError = error;
+        self.error = error;
     }
     [self.lock unlock];
 
@@ -90,7 +91,7 @@
     [self.lock unlock];
 }
 
-#pragma mark AFHTTPRequestOperation
+#pragma mark - AFHTTPRequestOperation
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
@@ -103,18 +104,8 @@
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         __strong __typeof(weakSelf)strongSelf = weakSelf;
-        [strongSelf setJSONError:error];
+        [strongSelf setError:error];
     }];
-}
-
-#pragma mark AFURLRequestOperation
-
-- (NSError *)error {
-    if (self.JSONError) {
-        return self.JSONError;
-    } else {
-        return [super error];
-    }
 }
 
 @end

@@ -30,13 +30,13 @@
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (readwrite, nonatomic, strong) AFXMLDocumentSerializer *XMLDocumentSerializer;
 @property (readwrite, nonatomic, strong) NSXMLDocument *responseXMLDocument;
-@property (readwrite, nonatomic, strong) NSError *XMLDocumentError;
 #endif
-@property (readwrite, nonatomic, strong) NSError *XMLParserError;
+@property (readwrite, nonatomic, strong) NSError *error;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
 @implementation AFXMLRequestOperation
+@dynamic error;
 @dynamic lock;
 
 + (instancetype)XMLParserRequestOperationWithRequest:(NSURLRequest *)urlRequest
@@ -94,12 +94,14 @@
     return self;
 }
 
+#pragma mark - AFXMLRequestOperation
+
 - (NSXMLParser *)responseXMLParser {
     [self.lock lock];
     if (!_responseXMLParser && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
         self.responseXMLParser = [self.XMLParserSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
-        self.XMLParserError = error;
+        self.error = error;
     }
     [self.lock unlock];
 
@@ -127,7 +129,7 @@
     if (!_responseXMLDocument && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
         self.responseXMLDocument = [self.XMLDocumentSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
-        self.XMLDocumentError = error;
+        self.error = error;
     }
     [self.lock unlock];
 
@@ -135,7 +137,8 @@
 }
 #endif
 
-#pragma mark AFHTTPRequestOperation
+#pragma mark - AFHTTPRequestOperation
+
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
@@ -153,21 +156,11 @@
 #endif
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         __strong __typeof(weakSelf)strongSelf = weakSelf;
-        [strongSelf setXMLParserError:error];
+        [strongSelf setError:error];
     }];
 }
 
-#pragma mark AFURLRequestOperation
-
-- (NSError *)error {
-    if (self.XMLParserError) {
-        return self.XMLParserError;
-    } else {
-        return [super error];
-    }
-}
-
-#pragma mark NSOperation
+#pragma mark - NSOperation
 
 - (void)cancel {
     [super cancel];

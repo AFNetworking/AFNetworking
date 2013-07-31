@@ -47,7 +47,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
-@property (readwrite, nonatomic, strong) NSError *HTTPError;
+@property (readwrite, nonatomic, strong) NSError *error;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -62,23 +62,7 @@ static dispatch_group_t http_request_operation_completion_group() {
     return nil;
 }
 
-- (void)pause {
-    int64_t offset = 0;
-    if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
-        offset = [[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
-    } else {
-        offset = [[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
-    }
-
-    NSMutableURLRequest *mutableURLRequest = [self.request mutableCopy];
-    if ([self.response respondsToSelector:@selector(allHeaderFields)] && [[self.response allHeaderFields] valueForKey:@"ETag"]) {
-        [mutableURLRequest setValue:[[self.response allHeaderFields] valueForKey:@"ETag"] forHTTPHeaderField:@"If-Range"];
-    }
-    [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", offset] forHTTPHeaderField:@"Range"];
-    self.request = mutableURLRequest;
-
-    [super pause];
-}
+#pragma mark - AFHTTPRequestOperation
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
@@ -101,6 +85,8 @@ static dispatch_group_t http_request_operation_completion_group() {
                 id responseObject = [serializer responseObjectForResponse:self.response data:self.responseData error:&error];
 
                 if (error) {
+                    self.error = error;
+
                     if (failure) {
                         dispatch_group_async(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                             failure(self, self.error);
@@ -117,6 +103,26 @@ static dispatch_group_t http_request_operation_completion_group() {
         });
     };
 #pragma clang diagnostic pop
+}
+
+#pragma mark - AFURLRequestOperation
+
+- (void)pause {
+    int64_t offset = 0;
+    if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
+        offset = [[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
+    } else {
+        offset = [[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
+    }
+
+    NSMutableURLRequest *mutableURLRequest = [self.request mutableCopy];
+    if ([self.response respondsToSelector:@selector(allHeaderFields)] && [[self.response allHeaderFields] valueForKey:@"ETag"]) {
+        [mutableURLRequest setValue:[[self.response allHeaderFields] valueForKey:@"ETag"] forHTTPHeaderField:@"If-Range"];
+    }
+    [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", offset] forHTTPHeaderField:@"Range"];
+    self.request = mutableURLRequest;
+
+    [super pause];
 }
 
 #pragma mark - NSCoding

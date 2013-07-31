@@ -28,11 +28,12 @@
 @property (readwrite, nonatomic, strong) AFPropertyListSerializer *propertyListSerializer;
 @property (readwrite, nonatomic, strong) id responsePropertyList;
 @property (readwrite, nonatomic, assign) NSPropertyListFormat responsePropertyListFormat;
-@property (readwrite, nonatomic, strong) NSError *propertyListError;
+@property (readwrite, nonatomic, strong) NSError *error;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
 @implementation AFPropertyListRequestOperation
+@dynamic error;
 @dynamic lock;
 
 + (instancetype)propertyListRequestOperationWithRequest:(NSURLRequest *)request
@@ -87,7 +88,7 @@
         NSError *error = nil;
         self.responsePropertyList = [NSPropertyListSerialization propertyListWithData:self.responseData options:self.propertyListReadOptions format:&format error:&error];
         self.responsePropertyListFormat = format;
-        self.propertyListError = error;
+        self.error = error;
     }
     [self.lock unlock];
 
@@ -107,18 +108,8 @@
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         __strong __typeof(weakSelf)strongSelf = weakSelf;
-        [strongSelf setPropertyListError:error];
+        [strongSelf setError:error];
     }];
-}
-
-#pragma mark AFURLConnectionOperation
-
-- (NSError *)error {
-    if (self.propertyListError) {
-        return self.propertyListError;
-    } else {
-        return [super error];
-    }
 }
 
 @end
