@@ -101,13 +101,13 @@ static char kAFImageRequestOperationObjectKey;
 
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
+        self.af_imageRequestOperation = nil;
+
         if (success) {
             success(nil, nil, cachedImage);
         } else {
             self.image = cachedImage;
         }
-
-        self.af_imageRequestOperation = nil;
     } else {
         if (placeholderImage) {
             self.image = placeholderImage;
@@ -116,26 +116,26 @@ static char kAFImageRequestOperationObjectKey;
         AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
+                if (self.af_imageRequestOperation == operation) {
+                    self.af_imageRequestOperation = nil;
+                }
+
                 if (success) {
                     success(operation.request, operation.response, responseObject);
                 } else if (responseObject) {
                     self.image = responseObject;
-                }
-
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
                 }
             }
 
             [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-                if (failure) {
-                    failure(operation.request, operation.response, error);
-                }
-
                 if (self.af_imageRequestOperation == operation) {
                     self.af_imageRequestOperation = nil;
+                }
+
+                if (failure) {
+                    failure(operation.request, operation.response, error);
                 }
             }
         }];
