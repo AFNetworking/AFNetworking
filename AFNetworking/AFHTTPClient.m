@@ -248,9 +248,9 @@ typedef id AFNetworkReachabilityRef;
     }
 
     NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
-	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:method];
-
+    [request setAllHTTPHeaderFields:[self.session.configuration HTTPAdditionalHeaders]];
     if (self.requestSerializer) {
         request = [[self.requestSerializer requestBySerializingRequest:request withParameters:parameters error:nil] mutableCopy];
     }
