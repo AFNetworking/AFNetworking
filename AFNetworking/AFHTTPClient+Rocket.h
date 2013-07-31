@@ -1,4 +1,4 @@
-// AFHTTPClient+ServerSentEvents.h
+// AFHTTPClient+Rocket.h
 //
 // Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
@@ -23,14 +23,26 @@
 #import "AFHTTPClient.h"
 
 #import "AFEventSource.h"
+#import "AFJSONPatchSerializer.h"
 
-// TODO extract into extension
+/**
+ 
+ */
+@interface AFHTTPClient (Rocket)
 
-// TODO consider expanding scope to encapsulate Rocket pattern (SSE + JSON Patch)
+/**
+ 
+ */
+- (AFEventSource *)SUBSCRIBE:(NSString *)URLString
+                  usingBlock:(void (^)(NSArray *operations, NSError *error))block
+                       error:(NSError * __autoreleasing *)error;
 
-@interface AFHTTPClient (ServerSentEvents)
-
-- (AFEventSource *)eventSourceWithPath:(NSString *)URLString
-        listeningForMessagesUsingBlock:(void (^)(AFServerSentEvent *event))block;
+/**
+ 
+ */
+- (AFEventSource *)openEventSourceWithRequest:(NSURLRequest *)request
+                                   serializer:(AFJSONPatchSerializer *)serializer
+                                   usingBlock:(void (^)(NSArray *operations, NSError *error))block
+                                        error:(NSError * __autoreleasing *)error;
 
 @end

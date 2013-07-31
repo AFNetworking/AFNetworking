@@ -80,6 +80,12 @@
          <FileRef
             location = "group:AFJSONPatchSerializer.m">
          </FileRef>
+         <FileRef
+            location = "group:AFHTTPClient+Rocket.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFHTTPClient+Rocket.m">
+         </FileRef>
       </Group>
    </Group>
    <Group
