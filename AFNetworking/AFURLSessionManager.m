@@ -27,6 +27,9 @@ NSString * const AFURLSessionDidInvalidateNotification = @"com.alamofire.network
 typedef void (^AFURLSessionDidBecomeInvalidBlock)(NSURLSession *session, NSError *error);
 typedef NSURLSessionAuthChallengeDisposition (^AFURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential);
 
+typedef void (^AFURLSessionTaskUploadProgressBlock)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite);
+typedef void (^AFURLSessionTaskDownloadProgressBlock)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead);
+
 typedef NSURLRequest * (^AFURLSessionTaskWillPerformHTTPRedirectionBlock)(NSURLSession *session, NSURLSessionTask *dataTask, NSURLResponse *response, NSURLRequest *request);
 typedef NSURLSessionAuthChallengeDisposition (^AFURLSessionTaskDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential);
 
@@ -47,6 +50,8 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
 @property (readwrite, nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @property (readwrite, nonatomic, strong) NSURLSession *session;
+@property (readwrite, nonatomic, strong) NSMutableDictionary *mutableUploadProgressBlocksKeyedByTaskIdentifier;
+@property (readwrite, nonatomic, strong) NSMutableDictionary *mutableDownloadProgressBlocksKeyedByTaskIdentifier;
 @property (readwrite, nonatomic, copy) AFURLSessionDidBecomeInvalidBlock sessionDidBecomeInvalid;
 @property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskWillPerformHTTPRedirectionBlock taskWillPerformHTTPRedirection;
@@ -85,21 +90,14 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
     self.sessionConfiguration = configuration;
     self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
 
+    self.mutableUploadProgressBlocksKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
+    self.mutableDownloadProgressBlocksKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
+
     return self;
 }
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, self.session, self.operationQueue];
-}
-
-#pragma mark -
-
-- (void)invalidateSessionCancellingTasks:(BOOL)cancelPendingTasks {
-    if (cancelPendingTasks) {
-        [self.session invalidateAndCancel];
-    } else {
-        [self.session finishTasksAndInvalidate];
-    }
 }
 
 #pragma mark -
@@ -122,7 +120,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
     }];
 
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
+
     return tasks;
 }
 
@@ -140,6 +138,38 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
 
 - (NSArray *)downloadTasks {
     return [self tasksForKeyPath:NSStringFromSelector(_cmd)];
+}
+
+#pragma mark -
+
+- (void)invalidateSessionCancellingTasks:(BOOL)cancelPendingTasks {
+    if (cancelPendingTasks) {
+        [self.session invalidateAndCancel];
+    } else {
+        [self.session finishTasksAndInvalidate];
+    }
+}
+
+#pragma mark -
+
+- (void)setUploadProgressForTask:(NSURLSessionTask *)task
+                      usingBlock:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))block
+{
+    if (task.state == NSURLSessionTaskStateCompleted) {
+        return;
+    }
+
+    self.mutableUploadProgressBlocksKeyedByTaskIdentifier[@(task.taskIdentifier)] = [block copy];
+}
+
+- (void)setDownloadProgressForTask:(NSURLSessionTask *)task
+                        usingBlock:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))block
+{
+    if (task.state == NSURLSessionTaskStateCompleted) {
+        return;
+    }
+
+    self.mutableDownloadProgressBlocksKeyedByTaskIdentifier[@(task.taskIdentifier)] = [block copy];
 }
 
 #pragma mark -
@@ -292,6 +322,11 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
+    AFURLSessionTaskUploadProgressBlock uploadProgress = self.mutableUploadProgressBlocksKeyedByTaskIdentifier[@(task.taskIdentifier)];
+    if (uploadProgress) {
+        uploadProgress(bytesSent, totalBytesSent, totalBytesExpectedToSend);
+    }
+
     if (self.taskDidSendBodyData) {
         self.taskDidSendBodyData(session, task, bytesSent, totalBytesSent, totalBytesExpectedToSend);
     }
@@ -304,6 +339,9 @@ didCompleteWithError:(NSError *)error
     if (self.taskDidComplete) {
         self.taskDidComplete(session, task, error);
     }
+
+    [self.mutableUploadProgressBlocksKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
+    [self.mutableDownloadProgressBlocksKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
 }
 
 #pragma mark - NSURLSessionDataDelegate
@@ -337,6 +375,11 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
           dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
+    AFURLSessionTaskDownloadProgressBlock downloadProgress = self.mutableDownloadProgressBlocksKeyedByTaskIdentifier[@(dataTask.taskIdentifier)];
+    if (downloadProgress) {
+        downloadProgress(data.length, dataTask.countOfBytesReceived, dataTask.countOfBytesExpectedToReceive);
+    }
+
     if (self.dataTaskDidReceiveData) {
         self.dataTaskDidReceiveData(session, dataTask, data);
     }
@@ -375,6 +418,11 @@ didFinishDownloadingToURL:(NSURL *)location
  totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
+    AFURLSessionTaskDownloadProgressBlock downloadProgress = self.mutableDownloadProgressBlocksKeyedByTaskIdentifier[@(downloadTask.taskIdentifier)];
+    if (downloadProgress) {
+        downloadProgress(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+    }
+
     if (self.downloadTaskDidWriteData) {
         self.downloadTaskDidWriteData(session, downloadTask, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
     }

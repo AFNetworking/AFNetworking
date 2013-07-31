@@ -76,8 +76,28 @@
 - (void)invalidateSessionCancellingTasks:(BOOL)cancelPendingTasks;
 
 ///---------------------------------
-/// @name Session Delegate Callbacks
+/// @name Setting Progress Callbacks
 ///---------------------------------
+
+/**
+ Sets a callback to be called when an undetermined number of bytes have been uploaded to the server.
+
+ @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes three arguments: the number of bytes written since the last time the upload progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times, and will execute on the main thread.
+ */
+- (void)setUploadProgressForTask:(NSURLSessionTask *)task
+                      usingBlock:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))block;
+
+/**
+ Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
+
+ @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes three arguments: the number of bytes read since the last time the download progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times, and will execute on the main thread.
+ */
+- (void)setDownloadProgressForTask:(NSURLSessionTask *)task
+                        usingBlock:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))block;
+
+///-----------------------------------------
+/// @name Setting Session Delegate Callbacks
+///-----------------------------------------
 
 /**
  
@@ -89,9 +109,9 @@
  */
 - (void)setSessionDidReceiveAuthenticationChallengeBlock:(NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block;
 
-///------------------------------
-/// @name Task Delegate Callbacks
-///------------------------------
+///--------------------------------------
+/// @name Setting Task Delegate Callbacks
+///--------------------------------------
 
 /**
  
@@ -113,9 +133,9 @@
  */
 - (void)setTaskDidCompleteBlock:(void (^)(NSURLSession *session, NSURLSessionTask *task, NSError *error))block;
 
-///-----------------------------------
-/// @name Data Task Delegate Callbacks
-///-----------------------------------
+///-------------------------------------------
+/// @name Setting Data Task Delegate Callbacks
+///-------------------------------------------
 
 /**
  
@@ -137,9 +157,9 @@
  */
 - (void)setDataTaskWillCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse))block;
 
-///---------------------------------------
-/// @name Download Task Delegate Callbacks
-///---------------------------------------
+///-----------------------------------------------
+/// @name Setting Download Task Delegate Callbacks
+///-----------------------------------------------
 
 /**
  
