@@ -777,44 +777,16 @@ typedef id AFNetworkReachabilityRef;
          else {
              if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
                  SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
-                 
-                 switch (weakSelf.SSLPinningMode) {
-                     case AFSSLPinningModePublicKey: {
-                         NSArray *trustChain = [AFSecurity publicKeyTrustChainForServerTrust:serverTrust];
-                         NSArray *pinnedPublicKeys = [AFSecurity publicKeysForCertificates:[weakSelf pinnedCertificates]];
-                         if([AFSecurity trustChain:trustChain containsPublicKeyInPinnedPublicKeys:pinnedPublicKeys]){
-                             credential = [NSURLCredential credentialForTrust:serverTrust];
-                             completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
-                         } else {
-                             completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
-                         }
-                         return;
-                     }
-                     case AFSSLPinningModeCertificate: {
-                         NSArray *trustChain = [AFSecurity certificateTrustChainForServerTrust:serverTrust];
-                         if([AFSecurity trustChain:trustChain containsCertificateInPinnedCertificates:[self pinnedCertificates]]){
-                             credential = [NSURLCredential credentialForTrust:serverTrust];
-                             completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
-                         } else {
-                             completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
-                         }
-                         return;
-                     }
-                     case AFSSLPinningModeNone: {
-                         if (weakSelf.allowsInvalidSSLCertificate){
-                             credential = [NSURLCredential credentialForTrust:serverTrust];
-                             completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
-                             return;
-                         } else {
-                             if ([AFSecurity shouldTrustServerTrust:serverTrust]) {
-                                 credential = [NSURLCredential credentialForTrust:serverTrust];
-                                 completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
-                             } else {
-                                 completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
-                             }
-                             return;
-                         }
-                     }
+                 BOOL shouldTrustServerTrust = [AFSecurity shouldTrustServerTrust:serverTrust
+                                                                  withPinningMode:weakSelf.SSLPinningMode
+                                                               pinnedCertificates:weakSelf.pinnedCertificates
+                                                      allowInvalidSSLCertificates:weakSelf.allowsInvalidSSLCertificate];
+                 if(shouldTrustServerTrust){
+                     credential = [NSURLCredential credentialForTrust:serverTrust];
+                     completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
+                 }
+                 else {
+                     completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
                  }
              }
              //2.0 doesnt support credentials yet

@@ -48,6 +48,45 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
     return _defaultPinnedCertificates;
 }
 
+
++ (BOOL)shouldTrustServerTrust:(SecTrustRef)serverTrust
+               withPinningMode:(AFSSLPinningMode)pinningMode
+            pinnedCertificates:(NSArray*)pinnedCertificates
+   allowInvalidSSLCertificates:(BOOL)allowInvalidSSLCertificates{
+    switch (pinningMode) {
+        case AFSSLPinningModePublicKey: {
+            NSArray *trustChain = [AFSecurity publicKeyTrustChainForServerTrust:serverTrust];
+            NSArray *pinnedPublicKeys = [AFSecurity publicKeysForCertificates:pinnedCertificates];
+            if([AFSecurity trustChain:trustChain containsPublicKeyInPinnedPublicKeys:pinnedPublicKeys]){
+                return YES;
+            } else {
+                return NO;
+            }
+        }
+        case AFSSLPinningModeCertificate: {
+            NSArray *trustChain = [AFSecurity certificateTrustChainForServerTrust:serverTrust];
+            if([AFSecurity trustChain:trustChain containsCertificateInPinnedCertificates:pinnedCertificates]){
+                return YES;
+            } else {
+                return NO;
+            }
+        }
+        case AFSSLPinningModeNone: {
+            if (allowInvalidSSLCertificates){
+                return YES;
+            } else {
+                if ([AFSecurity shouldTrustServerTrust:serverTrust]) {
+                    return YES;
+                } else {
+                    return YES;
+                }
+            }
+        }
+    }
+}
+
+#pragma mark - Private Methods
+
 + (NSArray*)publicKeysForCertificates:(NSArray*)certificates{
     NSMutableArray *publicKeys = [NSMutableArray arrayWithCapacity:[certificates count]];
     

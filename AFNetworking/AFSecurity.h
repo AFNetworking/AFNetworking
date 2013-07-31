@@ -18,15 +18,8 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 @interface AFSecurity : NSObject
 + (NSArray*)defaultPinnedCertificates;
 
-+ (NSArray*)publicKeysForCertificates:(NSArray*)certificates;
-
-+ (NSArray*)certificateTrustChainForServerTrust:(SecTrustRef)serverTrust;
-
-+ (NSArray*)publicKeyTrustChainForServerTrust:(SecTrustRef)serverTrust;
-
-+ (BOOL)trustChain:(NSArray*)trustChain containsPublicKeyInPinnedPublicKeys:(NSArray*)pinnedPublicKeys;
-
-+ (BOOL)trustChain:(NSArray*)trustChain containsCertificateInPinnedCertificates:(NSArray*)pinnedCertificates;
-
-+ (BOOL)shouldTrustServerTrust:(SecTrustRef)serverTrust;
++ (BOOL)shouldTrustServerTrust:(SecTrustRef)serverTrust
+               withPinningMode:(AFSSLPinningMode)pinningMode
+            pinnedCertificates:(NSArray*)pinnedCertificates
+   allowInvalidSSLCertificates:(BOOL)allowInvalidSSLCertificates;
 @end
