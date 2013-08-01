@@ -77,6 +77,11 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
     size_t width = CGImageGetWidth(imageRef);
     size_t height = CGImageGetHeight(imageRef);
+    
+    if (width*height > 2048*2048) {
+        return nil;
+    }
+    
     size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
     size_t bytesPerRow = 0; // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate()
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
