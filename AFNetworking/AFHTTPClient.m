@@ -26,6 +26,7 @@
 #import "AFHTTPRequestOperation.h"
 
 #import <Availability.h>
+#import <Security/Security.h>
 
 #ifdef _SYSTEMCONFIGURATION_H
 #import <netinet/in.h>
@@ -163,6 +164,8 @@ typedef id AFNetworkReachabilityRef;
     self.allowsInvalidSSLCertificate = YES;
 #endif
 
+    self.pinnedCertificates = [AFSecurity defaultPinnedCertificates];
+    
     return self;
 }
 
@@ -320,6 +323,10 @@ typedef id AFNetworkReachabilityRef;
     [operation setCompletionBlockWithSuccess:success failure:failure];
 
     operation.allowsInvalidSSLCertificate = self.allowsInvalidSSLCertificate;
+    
+    operation.pinnedCertificates = self.pinnedCertificates;
+    
+    operation.SSLPinningMode = self.SSLPinningMode;
 
     return operation;
 }
@@ -749,6 +756,53 @@ typedef id AFNetworkReachabilityRef;
     HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
     
     return HTTPClient;
+}
+
+#pragma mark - NSURLSessionDelegate
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler{
+    
+    if(!completionHandler){
+        return;
+    }
+    __weak __typeof(&*self)weakSelf = self;
+    [super
+     URLSession:session
+     didReceiveChallenge:challenge
+     completionHandler:^(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential) {
+        
+         if(disposition != NSURLSessionAuthChallengePerformDefaultHandling){
+             completionHandler(disposition,credential);
+             return;
+         }
+         else {
+             if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+                 SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
+                 BOOL shouldTrustServerTrust = [AFSecurity shouldTrustServerTrust:serverTrust
+                                                                  withPinningMode:weakSelf.SSLPinningMode
+                                                               pinnedCertificates:weakSelf.pinnedCertificates
+                                                      allowInvalidSSLCertificates:weakSelf.allowsInvalidSSLCertificate];
+                 if(shouldTrustServerTrust){
+                     credential = [NSURLCredential credentialForTrust:serverTrust];
+                     completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
+                 }
+                 else {
+                     completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
+                 }
+             }
+             //2.0 doesnt support credentials yet
+//             else {
+//                if ([challenge previousFailureCount] == 0) {
+//                    if (weakSelf.credential) {
+//                        completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
+//                    } else {
+//                        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling,nil);
+//                    }
+//                } else {
+//                    completionHandler(NSURLSessionAuthChallengePerformDefaultHandling,nil);
+//                }
+//             }
+         }
+    }];
 }
 
 @end

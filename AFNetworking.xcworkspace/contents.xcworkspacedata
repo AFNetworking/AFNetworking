@@ -37,6 +37,12 @@
       <FileRef
          location = "group:AFSerialization.m">
       </FileRef>
+      <FileRef
+         location = "group:AFSecurity.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFSecurity.m">
+      </FileRef>
       <Group
          location = "group:AFNetworking"
          name = "1.0 Compatibility">

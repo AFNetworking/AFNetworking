@@ -32,6 +32,7 @@
 
 #import "AFURLSessionManager.h"
 #import "AFSerialization.h"
+#import "AFSecurity.h"
 
 /**
  `AFHTTPClient` captures the common patterns of communicating with an web application over HTTP. It encapsulates information like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
@@ -118,7 +119,12 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 /**
  Default SSL pinning mode for each `AFHTTPRequestOperation` created by `HTTPRequestOperationWithRequest:success:failure:`.
  */
-@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
+@property (nonatomic, assign) AFSSLPinningMode SSLPinningMode;
+
+/**
+ Default to include all *.cer files included in the main bundle.
+ */
+@property (nonatomic, strong) NSArray * pinnedCertificates;
 
 /**
  Whether each `AFHTTPRequestOperation` created by `HTTPRequestOperationWithRequest:success:failure:` should accept an invalid SSL certificate.
