@@ -789,18 +789,9 @@ typedef id AFNetworkReachabilityRef;
                      completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
                  }
              }
-             //2.0 doesnt support credentials yet
-//             else {
-//                if ([challenge previousFailureCount] == 0) {
-//                    if (weakSelf.credential) {
-//                        completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
-//                    } else {
-//                        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling,nil);
-//                    }
-//                } else {
-//                    completionHandler(NSURLSessionAuthChallengePerformDefaultHandling,nil);
-//                }
-//             }
+             else {
+                completionHandler(NSURLSessionAuthChallengePerformDefaultHandling,nil);
+             }
          }
     }];
 }
