@@ -120,9 +120,7 @@ typedef NS_ENUM(NSUInteger, AFURLConnectionOperationSSLPinningMode) {
 @property (readonly, nonatomic, strong) NSError *error;
 
 /**
- Whether the connection should accept an invalid SSL certificate.
- 
- If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to `YES` for backwards compatibility. Otherwise, this property defaults to `NO`.
+ Whether the connection should accept an invalid SSL certificate. `NO` by default.
  */
 @property (nonatomic, assign) BOOL allowsInvalidSSLCertificate;
 
