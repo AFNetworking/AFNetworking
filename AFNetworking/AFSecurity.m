@@ -57,30 +57,15 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
         case AFSSLPinningModePublicKey: {
             NSArray *trustChain = [AFSecurity publicKeyTrustChainForServerTrust:serverTrust];
             NSArray *pinnedPublicKeys = [AFSecurity publicKeysForCertificates:pinnedCertificates];
-            if([AFSecurity trustChain:trustChain containsPublicKeyInPinnedPublicKeys:pinnedPublicKeys]){
-                return YES;
-            } else {
-                return NO;
-            }
+            return [AFSecurity trustChain:trustChain containsPublicKeyInPinnedPublicKeys:pinnedPublicKeys];
         }
         case AFSSLPinningModeCertificate: {
             NSArray *trustChain = [AFSecurity certificateTrustChainForServerTrust:serverTrust];
-            if([AFSecurity trustChain:trustChain containsCertificateInPinnedCertificates:pinnedCertificates]){
-                return YES;
-            } else {
-                return NO;
-            }
+            return [AFSecurity trustChain:trustChain containsCertificateInPinnedCertificates:pinnedCertificates];
         }
         case AFSSLPinningModeNone: {
-            if (allowInvalidSSLCertificates){
-                return YES;
-            } else {
-                if ([AFSecurity shouldTrustServerTrust:serverTrust]) {
-                    return YES;
-                } else {
-                    return YES;
-                }
-            }
+            return (allowInvalidSSLCertificates ||
+                    [AFSecurity shouldTrustServerTrust:serverTrust]);
         }
     }
 }
