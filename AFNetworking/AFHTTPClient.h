@@ -401,6 +401,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
                                             fromFile:(NSURL *)fileURL
+                                            progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
                                              success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
                                              failure:(void (^)(NSError *error))failure;
 
@@ -409,6 +410,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
                                             fromData:(NSData *)bodyData
+                                            progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
                                              success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
                                              failure:(void (^)(NSError *error))failure;
 
@@ -420,6 +422,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  
  */
 - (NSURLSessionDownloadTask *)runDownloadTaskWithRequest:(NSURLRequest *)request
+                                                progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
                                                  success:(NSURL * (^)(NSHTTPURLResponse *response))success
                                                  failure:(void (^)(NSError *error))failure;
 
@@ -427,6 +430,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  
  */
 - (NSURLSessionDownloadTask *)runDownloadTaskWithResumeData:(NSData *)resumeData
+                                                   progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
                                                     success:(NSURL * (^)(NSHTTPURLResponse *response))success
                                                     failure:(void (^)(NSError *error))failure;
 

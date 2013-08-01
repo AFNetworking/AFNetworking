@@ -577,6 +577,7 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
                                             fromFile:(NSURL *)fileURL
+                                            progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
                                              success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
                                              failure:(void (^)(NSError *error))failure
 {
@@ -606,6 +607,10 @@ typedef id AFNetworkReachabilityRef;
         }
     }];
 
+    if (progress) {
+        [self setUploadProgressForTask:task usingBlock:progress];
+    }
+    
     [task resume];
 
     return task;
@@ -613,6 +618,7 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
                                             fromData:(NSData *)bodyData
+                                            progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
                                              success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
                                              failure:(void (^)(NSError *error))failure
 {
@@ -642,6 +648,10 @@ typedef id AFNetworkReachabilityRef;
         }
     }];
 
+    if (progress) {
+        [self setUploadProgressForTask:task usingBlock:progress];
+    }
+
     [task resume];
     
     return task;
@@ -650,6 +660,7 @@ typedef id AFNetworkReachabilityRef;
 #pragma mark -
 
 - (NSURLSessionDownloadTask *)runDownloadTaskWithRequest:(NSURLRequest *)request
+                                                progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
                                                  success:(NSURL * (^)(NSHTTPURLResponse *response))success
                                                  failure:(void (^)(NSError *error))failure
 {
@@ -671,12 +682,17 @@ typedef id AFNetworkReachabilityRef;
         }
     }];
 
+    if (progress) {
+        [self setDownloadProgressForTask:task usingBlock:progress];
+    }
+
     [task resume];
 
     return task;
 }
 
 - (NSURLSessionDownloadTask *)runDownloadTaskWithResumeData:(NSData *)resumeData
+                                                   progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
                                                     success:(NSURL * (^)(NSHTTPURLResponse *response))success
                                                     failure:(void (^)(NSError *error))failure
 {
@@ -697,6 +713,10 @@ typedef id AFNetworkReachabilityRef;
             }
         }
     }];
+
+    if (progress) {
+        [self setDownloadProgressForTask:task usingBlock:progress];
+    }
 
     [task resume];
 
