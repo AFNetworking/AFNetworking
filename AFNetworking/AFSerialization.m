@@ -722,6 +722,13 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
     size_t width = CGImageGetWidth(imageRef);
     size_t height = CGImageGetHeight(imageRef);
+
+    if (width * height > 1024 * 1024) {
+        CGImageRelease(imageRef);
+        
+        return AFImageWithDataAtScale(data, scale);
+    }
+
     size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
     size_t bytesPerRow = 0; // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate()
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -745,7 +752,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     if (!context) {
         CGImageRelease(imageRef);
 
-        return [[UIImage alloc] initWithData:data];
+        return AFImageWithDataAtScale(data, scale);
     }
 
     CGRect rect = CGRectMake(0.0f, 0.0f, width, height);
