@@ -158,11 +158,6 @@ typedef id AFNetworkReachabilityRef;
     [self startMonitoringNetworkReachability];
 #endif
 
-    // #ifdef included for backwards-compatibility
-#ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
-    self.allowsInvalidSSLCertificate = YES;
-#endif
-
     return self;
 }
 
