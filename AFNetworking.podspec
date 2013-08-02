@@ -1,12 +1,11 @@
 Pod::Spec.new do |s|
   s.name     = 'AFNetworking'
-  s.version  = '1.3.1'
+  s.version  = '2.0.0-RC1'
   s.license  = 'MIT'
   s.summary  = 'A delightful iOS and OS X networking framework.'
   s.homepage = 'https://github.com/AFNetworking/AFNetworking'
   s.authors  = { 'Mattt Thompson' => 'm@mattt.me', 'Scott Raymond' => 'sco@gowalla.com' }
-  s.source   = { :git => 'https://github.com/AFNetworking/AFNetworking.git', :tag => '1.3.1' }
-  s.source_files = 'AFNetworking'
+  s.source   = { :git => 'https://github.com/AFNetworking/AFNetworking.git', :tag => '2.0.0-RC1' }
   s.requires_arc = true
 
   s.ios.deployment_target = '7.0'
@@ -15,19 +14,11 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.7'
   s.osx.frameworks = 'CoreServices', 'SystemConfiguration', 'Security'
 
-  s.prefix_header_contents = <<-EOS
-#import <Availability.h>
+  s.subspec 'Core' do |ss|
+    ss.source_files = 'AFNetworking'
+  end
 
-#define _AFNETWORKING_PIN_SSL_CERTIFICATES_
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-  #import <SystemConfiguration/SystemConfiguration.h>
-  #import <MobileCoreServices/MobileCoreServices.h>
-  #import <Security/Security.h>
-#else
-  #import <SystemConfiguration/SystemConfiguration.h>
-  #import <CoreServices/CoreServices.h>
-  #import <Security/Security.h>
-#endif
-EOS
+  s.subspec 'UIKit+AFNetworking' do |ss|
+    ss.source_files = 'UIKit+AFNetworking'
+  end
 end
