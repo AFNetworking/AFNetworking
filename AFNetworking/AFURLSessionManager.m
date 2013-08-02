@@ -22,6 +22,8 @@
 
 #import "AFURLSessionManager.h"
 
+NSString * const AFNetworkingTaskDidStartNotification = @"com.alamofire.networking.task.start";
+NSString * const AFNetworkingTaskDidFinishNotification = @"com.alamofire.networking.task.finish";
 NSString * const AFURLSessionDidInvalidateNotification = @"com.alamofire.networking.session.invalidate";
 
 typedef void (^AFURLSessionDidBecomeInvalidBlock)(NSURLSession *session, NSError *error);
@@ -336,6 +338,8 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidStartNotification object:task];
+
     if (self.taskDidComplete) {
         self.taskDidComplete(session, task, error);
     }
@@ -407,6 +411,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidStartNotification object:downloadTask];
+
     if (self.downloadTaskDidFinishDownloading) {
         self.downloadTaskDidFinishDownloading(session, downloadTask, location);
     }
