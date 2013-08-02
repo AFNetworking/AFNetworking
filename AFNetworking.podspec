@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '7.0'
   s.ios.frameworks = 'MobileCoreServices', 'SystemConfiguration', 'Security', 'CoreGraphics'
 
-  s.osx.deployment_target = '10.7'
+  s.osx.deployment_target = '10.9'
   s.osx.frameworks = 'CoreServices', 'SystemConfiguration', 'Security'
 
   s.subspec 'Core' do |ss|
