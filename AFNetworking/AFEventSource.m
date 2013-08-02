@@ -171,12 +171,14 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
     self.outputStream = [NSOutputStream outputStreamToMemory];
     self.outputStream.delegate = self;
     self.requestOperation.outputStream = self.outputStream;
+
+    // TODO Determine correct retry behavior / customization
+//    [self.requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        NSLog(@"Success: %@", responseObject);
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        NSLog(@"Failure: %@", error);
+//    }];
     
-    [self.requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"Success: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Failure: %@", error);
-    }];
     [self.requestOperation start];
 
     self.state = AFEventSourceOpen;
