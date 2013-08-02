@@ -33,6 +33,11 @@
 @interface UIImageView (AFNetworking)
 
 /**
+
+ */
+@property (nonatomic, strong) NSArray *responseSerializers;
+
+/**
  Creates and enqueues an image request operation, which asynchronously downloads the image from the specified URL, and sets it the request is finished. Any previous image request for the receiver will be cancelled. If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
 
  By default, URL requests have a cache policy of `NSURLCacheStorageAllowed` and a timeout interval of 30 seconds, and are set not handle cookies. To configure URL requests differently, use `setImageWithURLRequest:placeholderImage:success:failure:`
@@ -70,7 +75,7 @@
 /**
  Cancels any executing image request operation for the receiver, if one exists.
  */
-- (void)cancelImageDataTask;
+- (void)cancelImageRequestOperation;
 
 @end
 

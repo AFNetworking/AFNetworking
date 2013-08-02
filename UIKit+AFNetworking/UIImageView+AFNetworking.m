@@ -37,29 +37,31 @@
 
 #pragma mark -
 
-static char kAFImageDataTaskKey;
+static char kAFImageRequestOperationKey;
+static char kAFResponseSerializersKey;
 
 @interface UIImageView (_AFNetworking)
-@property (readwrite, nonatomic, strong, setter = af_setImageDataTask:) NSURLSessionDataTask *af_imageDataTask;
+@property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFHTTPRequestOperation *af_imageRequestOperation;
 @end
 
 @implementation UIImageView (_AFNetworking)
-@dynamic af_imageDataTask;
+@dynamic af_imageRequestOperation;
 @end
 
 #pragma mark -
 
 @implementation UIImageView (AFNetworking)
+@dynamic responseSerializers;
 
-+ (AFHTTPClient *)af_sharedHTTPClient {
-    static AFHTTPClient *_af_sharedHTTPClient = nil;
++ (NSOperationQueue *)af_sharedImageRequestOperationQueue {
+    static NSOperationQueue *_af_sharedImageRequestOperationQueue = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _af_sharedHTTPClient = [[AFHTTPClient alloc] initWithSessionConfiguration:nil];
-        _af_sharedHTTPClient.responseSerializers = @[[AFImageSerializer serializer]];
+        _af_sharedImageRequestOperationQueue = [[NSOperationQueue alloc] init];
+        _af_sharedImageRequestOperationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
     });
 
-    return _af_sharedHTTPClient;
+    return _af_sharedImageRequestOperationQueue;
 }
 
 + (AFImageCache *)af_sharedImageCache {
@@ -72,12 +74,26 @@ static char kAFImageDataTaskKey;
     return _af_imageCache;
 }
 
-- (NSURLSessionDataTask *)af_imageDataTask {
-    return (NSURLSessionDataTask *)objc_getAssociatedObject(self, &kAFImageDataTaskKey);
+- (AFHTTPRequestOperation *)af_imageRequestOperation {
+    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFImageRequestOperationKey);
 }
 
-- (void)af_setImageDataTask:(NSURLSessionDataTask *)dataTask {
-    objc_setAssociatedObject(self, &kAFImageDataTaskKey, dataTask, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)af_setImageRequestOperation:(AFHTTPRequestOperation *)imageRequestOperation {
+    objc_setAssociatedObject(self, &kAFImageRequestOperationKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSArray *)responseSerializers {
+    static NSArray *_af_defaultResponseSerializers = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _af_defaultResponseSerializers = [[NSArray alloc] initWithObjects:[AFImageSerializer serializer], nil];
+    });
+
+    return (NSArray *)objc_getAssociatedObject(self, &kAFResponseSerializersKey) ?: _af_defaultResponseSerializers;
+}
+
+- (void)setResponseSerializers:(NSArray *)serializers {
+    objc_setAssociatedObject(self, &kAFResponseSerializersKey, serializers, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark -
@@ -100,7 +116,7 @@ static char kAFImageDataTaskKey;
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    [self cancelImageDataTask];
+    [self cancelImageRequestOperation];
 
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
@@ -110,33 +126,38 @@ static char kAFImageDataTaskKey;
             self.image = cachedImage;
         }
 
-        self.af_imageDataTask = nil;
+        self.af_imageRequestOperation = nil;
     } else {
         self.image = placeholderImage;
 
-        self.af_imageDataTask = [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
-            if ([[urlRequest URL] isEqual:[self.af_imageDataTask.response URL]]) {
+        __weak __typeof(&*self)weakSelf = self;
+        self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
+        self.af_imageRequestOperation.responseSerializers = self.responseSerializers;
+        [self.af_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            __strong __typeof(&*weakSelf)strongSelf = weakSelf;
+            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
                 if (success) {
-                    success(urlRequest, response, responseObject);
+                    success(urlRequest, operation.response, responseObject);
                 } else if (responseObject) {
-                    self.image = responseObject;
+                    strongSelf.image = responseObject;
                 }
             }
 
-            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
-        } failure:^(NSError *error) {
-            if ([[urlRequest URL] isEqual:[self.af_imageDataTask.response URL]]) {
+            [[[strongSelf class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            if ([[urlRequest URL] isEqual:[operation.response URL]]) {
                 if (failure) {
-                    failure(urlRequest, (NSHTTPURLResponse *)self.af_imageDataTask .response, error);
+                    failure(urlRequest, operation.response, error);
                 }
             }
         }];
+        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
     }
 }
 
-- (void)cancelImageDataTask {
-    [self.af_imageDataTask cancel];
-    self.af_imageDataTask = nil;
+- (void)cancelImageRequestOperation {
+    [self.af_imageRequestOperation cancel];
+    self.af_imageRequestOperation = nil;
 }
 
 @end
