@@ -20,21 +20,26 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 ```ruby
 platform :ios, '7.0'
-pod "AFNetworking", "~> 2.0"
+pod "AFNetworking", "2.0RC1"
 ```
 
 ## 2.0
 
 AFNetworking 2.0 is a major update to the framework. Building on 2 years of development, this new version introduces powerful new features, while providing an easy upgrade path for existing users.
 
-### Features
+### What's New
 
-- NSURLSession Stack
-- Serializations
-- UIKit Extensions
+- Support for NSURLSession
+- Serialization Modules
+- Expanded UIKit Extensions
+- Real-time functionality with [Rocket](http://rocket.github.io)
 
-- AFIncrementalStore
-- AFRocketClient
+### Coming Soon
+
+- Complete & Updated Documentation
+- Unit Tests Ported to 2.0
+- Migration Guide from 1.x
+- Proper Modularization with Sub-Specs
 
 ## Requirements
 
