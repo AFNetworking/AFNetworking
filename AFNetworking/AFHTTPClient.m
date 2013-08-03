@@ -180,6 +180,12 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 @end
 
 #pragma mark -
+NSString *const AFHTTPMethodGET = @"GET";
+NSString *const AFHTTPMethodPOST = @"POST";
+NSString *const AFHTTPMethodPUT = @"PUT";
+NSString *const AFHTTPMethodPATCH = @"PATCH";
+NSString *const AFHTTPMethodHEAD = @"HEAD";
+NSString *const AFHTTPMethodDELETE = @"DELETE";
 
 @interface AFHTTPClient ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;

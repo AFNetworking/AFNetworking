@@ -92,13 +92,12 @@ typedef enum {
 #endif
 #endif
 
-
-#define AFHTTPMethodGET @"GET"
-#define AFHTTPMethodPOST @"POST"
-#define AFHTTPMethodPUT @"PUT"
-#define AFHTTPMethodPATCH @"PATCH"
-#define AFHTTPMethodHEAD @"HEAD"
-#define AFHTTPMethodDELETE @"DELETE"
+extern NSString *const AFHTTPMethodGET;
+extern NSString *const AFHTTPMethodPOST;
+extern NSString *const AFHTTPMethodPUT;
+extern NSString *const AFHTTPMethodPATCH;
+extern NSString *const AFHTTPMethodHEAD;
+extern NSString *const AFHTTPMethodDELETE;
 
 typedef enum {
     AFFormURLParameterEncoding,
