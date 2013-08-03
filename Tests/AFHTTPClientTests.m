@@ -56,7 +56,7 @@
     [self.client setDefaultHeader:@"x-some-key" value:@"SomeValue"];
     expect([self.client defaultValueForHeader:@"x-some-key"]).to.equal(@"SomeValue");
 
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodGET path:@"/path" parameters:nil];
     expect([request valueForHTTPHeaderField:@"x-some-key"]).to.equal(@"SomeValue");
 
     expect(^{ [self.client setDefaultHeader:@"x-some-key" value:nil]; }).toNot.raise(nil);
@@ -77,7 +77,7 @@
 }
 
 - (void)testJSONRequestOperationContruction {
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodGET path:@"/path" parameters:nil];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 
     expect([AFJSONRequestOperation canProcessRequest:request]).to.beTruthy();
@@ -95,7 +95,7 @@
 }
 
 - (void)testXMLRequestOperationContruction {
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodGET path:@"/path" parameters:nil];
     [request setValue:@"application/xml" forHTTPHeaderField:@"Accept"];
 
     expect([AFXMLRequestOperation canProcessRequest:request]).to.beTruthy();
@@ -109,7 +109,7 @@
 }
 
 - (void)testImageRequestOperationContruction {
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodGET path:@"/path" parameters:nil];
     [request setValue:@"image/png" forHTTPHeaderField:@"Accept"];
 
     expect([AFImageRequestOperation canProcessRequest:request]).to.beTruthy();
@@ -129,7 +129,7 @@
     __block NSDate *secondCallbackTime = nil;
     __block NSDate *batchCallbackTime = nil;
 
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodGET path:@"/" parameters:nil];
     AFHTTPRequestOperation *firstOperation = [self.client HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
         firstCallbackTime = [NSDate date];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -181,7 +181,7 @@
     [self.client setAuthorizationHeaderWithUsername:@"username" password:@"password"];
     [self.client clearAuthorizationHeader];
 
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodGET path:@"/path" parameters:nil];
     expect([request valueForHTTPHeaderField:@"Authorization"]).to.beNil();
 }
 
@@ -189,7 +189,7 @@
     NSURLCredential *credential = [NSURLCredential credentialWithUser:@"username" password:@"password" persistence:NSURLCredentialPersistenceNone];
     [self.client setDefaultCredential:credential];
 
-    NSURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/basic-auth/username/password" parameters:nil];
+    NSURLRequest *request = [self.client requestWithMethod:AFHTTPMethodGET path:@"/basic-auth/username/password" parameters:nil];
     AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:nil failure:nil];
     expect(operation.credential).will.equal(credential);
 }
@@ -213,14 +213,14 @@
     [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
     [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
 
-    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"GET" path:@"/ip" parameters:nil];
-    NSMutableURLRequest *secondRequest = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
-    NSMutableURLRequest *thirdRequest = [self.client requestWithMethod:@"POST" path:@"/path" parameters:nil];
+    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:AFHTTPMethodGET path:@"/ip" parameters:nil];
+    NSMutableURLRequest *secondRequest = [self.client requestWithMethod:AFHTTPMethodGET path:@"/path" parameters:nil];
+    NSMutableURLRequest *thirdRequest = [self.client requestWithMethod:AFHTTPMethodPOST path:@"/path" parameters:nil];
 
     [self.client enqueueBatchOfHTTPRequestOperationsWithRequests:@[ firstRequest, secondRequest, thirdRequest ] progressBlock:nil completionBlock:nil];
     [self.client.operationQueue setSuspended:YES];
 
-    [self.client cancelAllHTTPOperationsWithMethod:@"GET" path:@"/path"];
+    [self.client cancelAllHTTPOperationsWithMethod:AFHTTPMethodGET path:@"/path"];
 
     NSUInteger numberOfCancelledOperations = [[self.client.operationQueue.operations indexesOfObjectsPassingTest:^BOOL(NSOperation *operation, NSUInteger idx, BOOL *stop) {
         return [operation isCancelled];
@@ -235,7 +235,7 @@
 - (void)testConstructingPOSTRequestWithParametersInFormURLParameterEncoding {
     self.client.parameterEncoding = AFFormURLParameterEncoding;
 
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"POST" path:@"/post" parameters:@{ @"key": @"value" }];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodPOST path:@"/post" parameters:@{ @"key": @"value" }];
     NSString *requestBody = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
     expect(requestBody).to.equal(@"key=value");
 }
@@ -243,7 +243,7 @@
 - (void)testConstructingPOSTRequestWithParametersInJSONParameterEncoding {
     self.client.parameterEncoding = AFJSONParameterEncoding;
 
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"POST" path:@"/post" parameters:@{ @"key": @"value" }];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodPOST path:@"/post" parameters:@{ @"key": @"value" }];
     NSString *requestBody = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
     expect(requestBody).to.equal(@"{\"key\":\"value\"}");
 }
@@ -251,7 +251,7 @@
 - (void)testConstructingPOSTRequestWithParametersInPropertyListParameterEncoding {
     self.client.parameterEncoding = AFPropertyListParameterEncoding;
 
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"POST" path:@"/post" parameters:@{ @"key": @"value" }];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodPOST path:@"/post" parameters:@{ @"key": @"value" }];
     NSString *requestBody = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
     expect(requestBody).to.equal(@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict>\n	<key>key</key>\n	<string>value</string>\n</dict>\n</plist>\n");
 }
@@ -277,10 +277,10 @@
     [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
     [self.client registerHTTPOperationClass:[AFImageRequestOperation class]];
 
-    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    NSMutableURLRequest *firstRequest = [self.client requestWithMethod:AFHTTPMethodGET path:@"/" parameters:nil];
     [firstRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 
-    NSMutableURLRequest *secondRequest = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    NSMutableURLRequest *secondRequest = [self.client requestWithMethod:AFHTTPMethodGET path:@"/" parameters:nil];
     [secondRequest setValue:@"image/png" forHTTPHeaderField:@"Accept"];
 
     __block NSArray *operations = nil;
@@ -302,7 +302,7 @@
 }
 
 - (void)testThatEnqueueBatchOfHTTPRequestOperationsEnqueuesOperationsInTheCorrectOrder {
-    NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/" parameters:nil];
+    NSMutableURLRequest *request = [self.client requestWithMethod:AFHTTPMethodGET path:@"/" parameters:nil];
     AFHTTPRequestOperation *firstOperation = [self.client HTTPRequestOperationWithRequest:request success:nil failure:nil];
     AFHTTPRequestOperation *secondOperation = [self.client HTTPRequestOperationWithRequest:request success:nil failure:nil];
 
@@ -339,7 +339,7 @@
 - (void)testMultipartUploadDoesNotFailDueToStreamSentAnEventBeforeBeingOpenedError {
     NSString *pathToImage = [[NSBundle bundleForClass:[AFHTTPClient class]] pathForResource:@"Icon" ofType:@"png"];
     NSData *imageData = [NSData dataWithContentsOfFile:pathToImage];
-    NSMutableURLRequest *request = [self.client multipartFormRequestWithMethod:@"POST" path:@"/post" parameters:@{ @"foo": @"bar" } constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    NSMutableURLRequest *request = [self.client multipartFormRequestWithMethod:AFHTTPMethodPOST path:@"/post" parameters:@{ @"foo": @"bar" } constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:@"icon[image]" fileName:@"icon.png" mimeType:@"image/png"];
     }];
     AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:nil failure:nil];

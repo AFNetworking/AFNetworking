@@ -92,6 +92,14 @@ typedef enum {
 #endif
 #endif
 
+
+#define AFHTTPMethodGET @"GET"
+#define AFHTTPMethodPOST @"POST"
+#define AFHTTPMethodPUT @"PUT"
+#define AFHTTPMethodPATCH @"PATCH"
+#define AFHTTPMethodHEAD @"HEAD"
+#define AFHTTPMethodDELETE @"DELETE"
+
 typedef enum {
     AFFormURLParameterEncoding,
     AFJSONParameterEncoding,

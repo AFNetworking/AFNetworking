@@ -463,7 +463,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [request setAllHTTPHeaderFields:self.defaultHeaders];
 
     if (parameters) {
-        if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"] || [method isEqualToString:@"DELETE"]) {
+        if ([method isEqualToString:AFHTTPMethodGET] || [method isEqualToString:AFHTTPMethodHEAD] || [method isEqualToString:AFHTTPMethodDELETE]) {
             url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding)]];
             [request setURL:url];
         } else {
@@ -503,7 +503,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
 {
     NSParameterAssert(method);
-    NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
+    NSParameterAssert(![method isEqualToString:AFHTTPMethodGET] && ![method isEqualToString:AFHTTPMethodHEAD]);
 
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
 
@@ -571,7 +571,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-    NSString *pathToBeMatched = [[[self requestWithMethod:(method ?: @"GET") path:path parameters:nil] URL] path];
+    NSString *pathToBeMatched = [[[self requestWithMethod:(method ?: AFHTTPMethodGET) path:path parameters:nil] URL] path];
 #pragma clang diagnostic pop
 
     for (NSOperation *operation in [self.operationQueue operations]) {
@@ -657,7 +657,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-	NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
+	NSURLRequest *request = [self requestWithMethod:AFHTTPMethodGET path:path parameters:parameters];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self enqueueHTTPRequestOperation:operation];
 }
@@ -667,7 +667,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-	NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:parameters];
+	NSURLRequest *request = [self requestWithMethod:AFHTTPMethodPOST path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self enqueueHTTPRequestOperation:operation];
 }
@@ -677,7 +677,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-	NSURLRequest *request = [self requestWithMethod:@"PUT" path:path parameters:parameters];
+	NSURLRequest *request = [self requestWithMethod:AFHTTPMethodPUT path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self enqueueHTTPRequestOperation:operation];
 }
@@ -687,7 +687,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-	NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path parameters:parameters];
+	NSURLRequest *request = [self requestWithMethod:AFHTTPMethodDELETE path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self enqueueHTTPRequestOperation:operation];
 }
@@ -697,7 +697,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
-    NSURLRequest *request = [self requestWithMethod:@"PATCH" path:path parameters:parameters];
+    NSURLRequest *request = [self requestWithMethod:AFHTTPMethodPATCH path:path parameters:parameters];
 	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self enqueueHTTPRequestOperation:operation];
 }
