@@ -383,9 +383,9 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 /**
  
  */
-- (NSURLSessionDataTask *)runDataTaskWithRequest:(NSURLRequest *)request
-                                         success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                         failure:(void (^)(NSError *error))failure;
+- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+                                      success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                      failure:(void (^)(NSError *error))failure;
 
 
 ///---------------------------
@@ -395,20 +395,20 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 /**
  
  */
-- (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
-                                            fromFile:(NSURL *)fileURL
-                                            progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
-                                             success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                             failure:(void (^)(NSError *error))failure;
+- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
+                                         fromFile:(NSURL *)fileURL
+                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
+                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                          failure:(void (^)(NSError *error))failure;
 
 /**
  
  */
-- (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
-                                            fromData:(NSData *)bodyData
-                                            progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
-                                             success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                             failure:(void (^)(NSError *error))failure;
+- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
+                                         fromData:(NSData *)bodyData
+                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
+                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                          failure:(void (^)(NSError *error))failure;
 
 ///-----------------------------
 /// @name Running Download Tasks
@@ -417,18 +417,18 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 /**
  
  */
-- (NSURLSessionDownloadTask *)runDownloadTaskWithRequest:(NSURLRequest *)request
-                                                progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
-                                                 success:(NSURL * (^)(NSHTTPURLResponse *response))success
-                                                 failure:(void (^)(NSError *error))failure;
+- (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
+                                             progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
+                                              success:(NSURL * (^)(NSHTTPURLResponse *response))success
+                                              failure:(void (^)(NSError *error))failure;
 
 /**
  
  */
-- (NSURLSessionDownloadTask *)runDownloadTaskWithResumeData:(NSData *)resumeData
-                                                   progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
-                                                    success:(NSURL * (^)(NSHTTPURLResponse *response))success
-                                                    failure:(void (^)(NSError *error))failure;
+- (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
+                                                progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
+                                                 success:(NSURL * (^)(NSHTTPURLResponse *response))success
+                                                 failure:(void (^)(NSError *error))failure;
 
 @end
 
