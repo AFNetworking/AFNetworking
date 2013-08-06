@@ -416,7 +416,7 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"GET" path:URLString parameters:parameters];
 
-    return [self runDataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
             success(response, responseObject);
         }
@@ -425,6 +425,10 @@ typedef id AFNetworkReachabilityRef;
             failure(error);
         }
     }];
+
+    [task resume];
+
+    return task;
 }
 
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
@@ -434,7 +438,7 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"HEAD" path:URLString parameters:parameters];
 
-    return [self runDataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id __unused responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id __unused responseObject) {
         if (success) {
             success(response);
         }
@@ -443,6 +447,10 @@ typedef id AFNetworkReachabilityRef;
             failure(error);
         }
     }];
+
+    [task resume];
+
+    return task;
 }
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
@@ -452,7 +460,7 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:URLString parameters:parameters];
 
-    return [self runDataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
             success(response, responseObject);
         }
@@ -461,6 +469,10 @@ typedef id AFNetworkReachabilityRef;
             failure(error);
         }
     }];
+
+    [task resume];
+
+    return task;
 }
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
@@ -471,7 +483,7 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self multipartFormRequestWithMethod:@"POST" path:URLString parameters:parameters constructingBodyWithBlock:block];
 
-    return [self runDataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
             success(response, responseObject);
         }
@@ -480,6 +492,10 @@ typedef id AFNetworkReachabilityRef;
             failure(error);
         }
     }];
+
+    [task resume];
+
+    return task;
 }
 
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
@@ -489,7 +505,7 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PUT" path:URLString parameters:parameters];
 
-    return [self runDataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
             success(response, responseObject);
         }
@@ -498,6 +514,10 @@ typedef id AFNetworkReachabilityRef;
             failure(error);
         }
     }];
+
+    [task resume];
+
+    return task;
 }
 
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
@@ -507,7 +527,7 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PATCH" path:URLString parameters:parameters];
 
-    return [self runDataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
             success(response, responseObject);
         }
@@ -516,6 +536,10 @@ typedef id AFNetworkReachabilityRef;
             failure(error);
         }
     }];
+    
+    [task resume];
+
+    return task;
 }
 
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
@@ -525,7 +549,7 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"DELETE" path:URLString parameters:parameters];
 
-    return [self runDataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
             success(response, responseObject);
         }
@@ -534,13 +558,17 @@ typedef id AFNetworkReachabilityRef;
             failure(error);
         }
     }];
+
+    [task resume];
+
+    return task;
 }
 
 #pragma mark -
 
-- (NSURLSessionDataTask *)runDataTaskWithRequest:(NSURLRequest *)request
-                                         success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                         failure:(void (^)(NSError *error))failure
+- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+                                      success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                      failure:(void (^)(NSError *error))failure
 {
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
@@ -568,18 +596,16 @@ typedef id AFNetworkReachabilityRef;
         }
     }];
 
-    [task resume];
-
     return task;
 }
 
 #pragma mark -
 
-- (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
-                                            fromFile:(NSURL *)fileURL
-                                            progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
-                                             success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                             failure:(void (^)(NSError *error))failure
+- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
+                                         fromFile:(NSURL *)fileURL
+                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
+                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                          failure:(void (^)(NSError *error))failure
 {
     NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromFile:fileURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
@@ -611,16 +637,14 @@ typedef id AFNetworkReachabilityRef;
         [self setUploadProgressForTask:task usingBlock:progress];
     }
     
-    [task resume];
-
     return task;
 }
 
-- (NSURLSessionUploadTask *)runUploadTaskWithRequest:(NSURLRequest *)request
-                                            fromData:(NSData *)bodyData
-                                            progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
-                                             success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                             failure:(void (^)(NSError *error))failure
+- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
+                                         fromData:(NSData *)bodyData
+                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
+                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
+                                          failure:(void (^)(NSError *error))failure
 {
     NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromData:bodyData completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
@@ -651,18 +675,16 @@ typedef id AFNetworkReachabilityRef;
     if (progress) {
         [self setUploadProgressForTask:task usingBlock:progress];
     }
-
-    [task resume];
     
     return task;
 }
 
 #pragma mark -
 
-- (NSURLSessionDownloadTask *)runDownloadTaskWithRequest:(NSURLRequest *)request
-                                                progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
-                                                 success:(NSURL * (^)(NSHTTPURLResponse *response))success
-                                                 failure:(void (^)(NSError *error))failure
+- (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
+                                             progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
+                                              success:(NSURL * (^)(NSHTTPURLResponse *response))success
+                                              failure:(void (^)(NSError *error))failure
 {
     NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
         if (error) {
@@ -686,15 +708,13 @@ typedef id AFNetworkReachabilityRef;
         [self setDownloadProgressForTask:task usingBlock:progress];
     }
 
-    [task resume];
-
     return task;
 }
 
-- (NSURLSessionDownloadTask *)runDownloadTaskWithResumeData:(NSData *)resumeData
-                                                   progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
-                                                    success:(NSURL * (^)(NSHTTPURLResponse *response))success
-                                                    failure:(void (^)(NSError *error))failure
+- (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
+                                                progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
+                                                 success:(NSURL * (^)(NSHTTPURLResponse *response))success
+                                                 failure:(void (^)(NSError *error))failure
 {
     NSURLSessionDownloadTask *task = [self.session downloadTaskWithResumeData:resumeData completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
         if (error) {
@@ -717,8 +737,6 @@ typedef id AFNetworkReachabilityRef;
     if (progress) {
         [self setDownloadProgressForTask:task usingBlock:progress];
     }
-
-    [task resume];
 
     return task;
 }

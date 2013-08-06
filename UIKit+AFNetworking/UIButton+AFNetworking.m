@@ -107,7 +107,7 @@
     
     [self setValue:placeholderImage forKeyPath:keyPath];
 
-    [[[self class] af_sharedHTTPClient] runDataTaskWithRequest:urlRequest success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionTask *task = [[[self class] af_sharedHTTPClient] dataTaskWithRequest:urlRequest success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
             success(response, responseObject);
         } else if (responseObject) {
@@ -118,6 +118,8 @@
             failure(error);
         }
     }];
+
+    [task resume];
 }
 
 - (void)cancelImageDataTasks {
