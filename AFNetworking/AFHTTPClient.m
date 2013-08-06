@@ -151,7 +151,7 @@ typedef id AFNetworkReachabilityRef;
     self.baseURL = url;
 
     self.requestSerializer = [AFHTTPSerializer serializer];
-    self.responseSerializers = @[ [AFJSONSerializer serializer], [AFHTTPSerializer serializer] ];
+    self.responseSerializer = [AFJSONSerializer serializer];
 
 #ifdef _SYSTEMCONFIGURATION_H
     self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
@@ -293,14 +293,10 @@ typedef id AFNetworkReachabilityRef;
     _requestSerializer = requestSerializer;
 }
 
-- (id <AFURLResponseSerialization>)serializerForResponse:(NSHTTPURLResponse *)response {
-    for (id <AFURLResponseSerialization> serializer in self.responseSerializers) {
-        if ([serializer canProcessResponse:response]) {
-            return serializer;
-        }
-    }
+- (void)setResponseSerializer:(id<AFURLResponseSerialization>)responseSerializer {
+    NSParameterAssert(responseSerializer);
 
-    return nil;
+    _responseSerializer = responseSerializer;
 }
 
 #pragma mark -
@@ -310,7 +306,7 @@ typedef id AFNetworkReachabilityRef;
                                                     failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    operation.responseSerializers = self.responseSerializers;
+    operation.responseSerializer = self.responseSerializer;
 
     [operation setCompletionBlockWithSuccess:success failure:failure];
 
@@ -577,9 +573,8 @@ typedef id AFNetworkReachabilityRef;
             }
         } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
                 NSError *serializationError = nil;
-                id responseObject = [serializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
+                id responseObject = [self.responseSerializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (serializationError) {
@@ -588,7 +583,7 @@ typedef id AFNetworkReachabilityRef;
                         }
                     } else {
                         if (success) {
-                            success((NSHTTPURLResponse *)response, serializer, responseObject);
+                            success((NSHTTPURLResponse *)response, self.responseSerializer, responseObject);
                         }
                     }
                 });
@@ -614,9 +609,8 @@ typedef id AFNetworkReachabilityRef;
             }
         } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
                 NSError *serializationError = nil;
-                id responseObject = [serializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
+                id responseObject = [self.responseSerializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (serializationError) {
@@ -625,7 +619,7 @@ typedef id AFNetworkReachabilityRef;
                         }
                     } else {
                         if (success) {
-                            success((NSHTTPURLResponse *)response, serializer, responseObject);
+                            success((NSHTTPURLResponse *)response, self.responseSerializer, responseObject);
                         }
                     }
                 });
@@ -653,9 +647,8 @@ typedef id AFNetworkReachabilityRef;
             }
         } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                id <AFURLResponseSerialization> serializer = [self serializerForResponse:(NSHTTPURLResponse *)response];
                 NSError *serializationError = nil;
-                id responseObject = [serializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
+                id responseObject = [self.responseSerializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (serializationError) {
@@ -664,7 +657,7 @@ typedef id AFNetworkReachabilityRef;
                         }
                     } else {
                         if (success) {
-                            success((NSHTTPURLResponse *)response, serializer, responseObject);
+                            success((NSHTTPURLResponse *)response, self.responseSerializer, responseObject);
                         }
                     }
                 });
@@ -753,8 +746,7 @@ typedef id AFNetworkReachabilityRef;
     }
 
     self.requestSerializer = [aDecoder decodeObjectForKey:@"requestSerializer"];
-    self.responseSerializers = [aDecoder decodeObjectForKey:@"responseSerializers"];
-    self.SSLPinningMode = [aDecoder decodeIntegerForKey:@"SSLPinningMode"];
+    self.responseSerializer = [aDecoder decodeObjectForKey:@"responseSerializer"];
     self.allowsInvalidSSLCertificate = [aDecoder decodeBoolForKey:@"allowsInvalidSSLCertificate"];
 
     return self;
@@ -765,8 +757,7 @@ typedef id AFNetworkReachabilityRef;
 
     [aCoder encodeObject:self.baseURL forKey:@"baseURL"];
     [aCoder encodeObject:self.requestSerializer forKey:@"requestSerializer"];
-    [aCoder encodeObject:self.responseSerializers forKey:@"responseSerializers"];
-    [aCoder encodeInteger:self.SSLPinningMode forKey:@"SSLPinningMode"];
+    [aCoder encodeObject:self.responseSerializer forKey:@"responseSerializer"];
     [aCoder encodeBool:self.allowsInvalidSSLCertificate forKey:@"allowsInvalidSSLCertificate"];
 }
 
@@ -776,8 +767,7 @@ typedef id AFNetworkReachabilityRef;
     AFHTTPClient *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL sessionConfiguration:self.session.configuration];
 
     HTTPClient.requestSerializer = [self.requestSerializer copyWithZone:zone];
-    HTTPClient.responseSerializers = [self.responseSerializers copy];
-    HTTPClient.SSLPinningMode = self.SSLPinningMode;
+    HTTPClient.responseSerializer = [self.responseSerializer copyWithZone:zone];
     HTTPClient.allowsInvalidSSLCertificate = self.allowsInvalidSSLCertificate;
     HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
     

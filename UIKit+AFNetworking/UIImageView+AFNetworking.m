@@ -51,7 +51,7 @@ static char kAFResponseSerializersKey;
 #pragma mark -
 
 @implementation UIImageView (AFNetworking)
-@dynamic responseSerializers;
+@dynamic responseSerializer;
 
 + (NSOperationQueue *)af_sharedImageRequestOperationQueue {
     static NSOperationQueue *_af_sharedImageRequestOperationQueue = nil;
@@ -82,14 +82,14 @@ static char kAFResponseSerializersKey;
     objc_setAssociatedObject(self, &kAFImageRequestOperationKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSArray *)responseSerializers {
-    static NSArray *_af_defaultResponseSerializers = nil;
+- (id <AFURLResponseSerialization>)responseSerializer {
+    static id <AFURLResponseSerialization> _af_defaultResponseSerializer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _af_defaultResponseSerializers = [[NSArray alloc] initWithObjects:[AFImageSerializer serializer], nil];
+        _af_defaultResponseSerializer = [AFImageSerializer serializer];
     });
 
-    return (NSArray *)objc_getAssociatedObject(self, &kAFResponseSerializersKey) ?: _af_defaultResponseSerializers;
+    return objc_getAssociatedObject(self, &kAFResponseSerializersKey) ?: _af_defaultResponseSerializer;
 }
 
 - (void)setResponseSerializers:(NSArray *)serializers {
@@ -132,7 +132,7 @@ static char kAFResponseSerializersKey;
 
         __weak __typeof(&*self)weakSelf = self;
         self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
-        self.af_imageRequestOperation.responseSerializers = self.responseSerializers;
+        self.af_imageRequestOperation.responseSerializer = self.responseSerializer;
         [self.af_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             __strong __typeof(&*weakSelf)strongSelf = weakSelf;
             if ([[urlRequest URL] isEqual:[operation.request URL]]) {

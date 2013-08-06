@@ -28,6 +28,8 @@
 #import <Cocoa/Cocoa.h>
 #endif
 
+#import "AFHTTPRequestOperation.h"
+
 typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, NSDictionary *parameters, NSError *__autoreleasing *error);
 
 static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
