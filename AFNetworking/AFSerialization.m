@@ -237,7 +237,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return YES;
 }
 
-#pragma mark - AFURLRequestSerializer
+#pragma mark - AFURLRequestSerialization
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(NSDictionary *)parameters
@@ -284,11 +284,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return mutableRequest;
 }
 
-#pragma mark - AFURLResponseSerializer
-
-- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
-    return !self.acceptableContentTypes || [self.acceptableContentTypes containsObject:response.MIMEType];
-}
+#pragma mark - AFURLResponseSerialization
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
@@ -389,10 +385,6 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 #pragma mark - AFURLRequestSerialization
 
-- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
-    return [[[response URL] pathExtension] isEqualToString:@"json"] || [super canProcessResponse:response];
-}
-
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
@@ -478,11 +470,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return self;
 }
 
-#pragma mark AFHTTPResponseSerializer
-
-- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
-    return [[[response URL] pathExtension] isEqualToString:@"xml"] || [super canProcessResponse:response];
-}
+#pragma mark - AFURLResponseSerialization
 
 - (id)responseObjectForResponse:(NSHTTPURLResponse *)response
                            data:(NSData *)data
@@ -521,11 +509,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return self;
 }
 
-#pragma mark AFHTTPResponseSerializer
-
-- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
-    return [[[response URL] pathExtension] isEqualToString:@"xml"] || [super canProcessResponse:response];
-}
+#pragma mark - AFURLResponseSerialization
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
@@ -633,11 +617,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return mutableRequest;
 }
 
-#pragma mark - AFURLResponseSerializer
-
-- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
-    return [[[response URL] pathExtension] isEqualToString:@"plist"] || [super canProcessResponse:response];
-}
+#pragma mark - AFURLResponseSerialization
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
@@ -816,10 +796,6 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 #pragma mark -
 
-- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response {
-    return [[[self class] acceptablePathExtensions] containsObject:[[response URL] pathExtension]] || [super canProcessResponse:response];
-}
-
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
@@ -883,5 +859,42 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     
     return serializer;
 }
+
+@end
+
+#pragma mark -
+
+@interface AFCompoundSerializer ()
+@property (readwrite, nonatomic, strong) NSArray *responseSerializers;
+@end
+
+@implementation AFCompoundSerializer
+
++ (instancetype)compoundSerializerWithResponseSerializers:(NSArray *)responseSerializers {
+    AFCompoundSerializer *serializer = [[self alloc] init];
+    serializer.responseSerializers = responseSerializers;
+
+    return serializer;
+}
+
+#pragma mark - AFURLResponseSerialization
+
+- (id)responseObjectForResponse:(NSURLResponse *)response
+                           data:(NSData *)data
+                          error:(NSError *__autoreleasing *)error
+{
+    for (id serializer in self.responseSerializers) {
+        if (![serializer isKindOfClass:[AFHTTPSerializer class]]) {
+            continue;
+        }
+
+        if ([(AFHTTPSerializer *)serializer validateResponse:(NSHTTPURLResponse *)response data:data error:nil]) {
+            return [serializer responseObjectForResponse:response data:data error:error];
+        }
+    }
+
+    return [super responseObjectForResponse:response data:data error:error];
+}
+
 
 @end

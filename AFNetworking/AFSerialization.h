@@ -52,17 +52,6 @@
 @protocol AFURLResponseSerialization <NSCoding, NSCopying>
 
 /**
- Whether the serializer can process the specified response. 
- 
- Classes like `AFHTTPRequestOperation` & `AFHTTPClient` are configured with an array of potential response serializers. In order to determine the correct decoding behavior, response serializers perform passed the response to `canProcessResponse` until a serializer returns `YES`.
- 
- @param response The response to be processed.
- 
- @return `YES` if the serializer can process the specified response, otherwise `NO`.
- */
-- (BOOL)canProcessResponse:(NSHTTPURLResponse *)response;
-
-/**
  The response object decoded from the data associated with a specified response.
  
  @param response The response to be processed.
@@ -349,5 +338,26 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
  */
 @property (nonatomic, assign) BOOL automaticallyInflatesResponseImage;
 #endif
+
+@end
+
+#pragma mark -
+
+/**
+ `AFCompoundSerializer` is a subclass of `AFHTTPSerializer` that delegates the response serialization to the first `AFHTTPSerializer` object that returns `YES` to `validateResponse:data:error:`, falling back on the default behavior of `AFHTTPSerializer`. This is useful for supporting multiple potential types and structures of server responses with a single serializer. 
+ */
+@interface AFCompoundSerializer : AFHTTPSerializer
+
+/**
+ The component response serializers.
+ */
+@property (readonly, nonatomic, strong) NSArray *responseSerializers;
+
+/**
+ Creates and returns a compound serializer comprised of the specified response serializers.
+ 
+ @warning Each response serializer specified must be a subclass of `AFHTTPSerializer`, and response to `-validateResponse:data:error:`.
+ */
++ (instancetype)compoundSerializerWithResponseSerializers:(NSArray *)responseSerializers;
 
 @end
