@@ -34,11 +34,7 @@
 #import "AFSerialization.h"
 
 /**
- `AFHTTPClient` captures the common patterns of communicating with an web application over HTTP. It encapsulates information like base URL, authorization credentials, and HTTP headers, and uses them to construct and manage the execution of HTTP request operations.
-
- ## Automatic Content Parsing
-
- Instances of `AFHTTPClient` may specify which types of requests it expects and should handle by registering HTTP operation classes for automatic parsing. Registered classes will determine whether they can handle a particular request, and then construct a request operation accordingly in `enqueueHTTPRequestOperationWithRequest:success:failure`.
+ `AFHTTPClient` encapsulates the common patterns of communicating with an web application over HTTP, including request creation, response serialization, network reachability monitoring, and security, as well as both request operation and session task management.
 
  ## Subclassing Notes
 
