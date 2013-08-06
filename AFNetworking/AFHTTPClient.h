@@ -46,18 +46,19 @@
 
  To change the behavior of all request operation construction for an `AFHTTPClient` subclass, override `HTTPRequestOperationWithRequest:success:failure`.
 
- ## Default Headers
-
- By default, `AFHTTPClient` sets the following HTTP headers:
-
- - `Accept-Language: (comma-delimited preferred languages), en-us;q=0.8`
- - `User-Agent: (generated user agent)`
-
- You can override these HTTP headers or define new ones using `setDefaultHeader:value:`.
+ To change the behavior of all data task operation construction, which is also used in the `GET` / `POST` / et al. convenience methods, override `dataTaskWithRequest:success:failure:`.
+ 
+ ## Serialization
+ 
+ Requests created by an HTTP client will contain default headers and encode parameters according to the `requestSerializer` object, which is an object conforming to `AFURLRequestSerialization`. Responses received from the server are automatically validated and serialized by the first object conforming to `AFURLResponseSerialization` in `responseSerializers` that returns `YES` to `-canProcessResponse:`.
 
  ## URL Construction Using Relative Paths
 
- Both `-requestWithMethod:path:parameters:` and `-multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `-baseURL`, using `NSURL +URLWithString:relativeToURL:`. Below are a few examples of how `baseURL` and relative paths interact:
+ Both `-requestWithMethod:path:parameters:` and `-multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `-baseURL`, using `NSURL +URLWithString:relativeToURL:`, when provided. 
+ 
+ If `baseURL` is `nil`, `path` needs to resolve to a valid `NSURL` object using `NSURL +URLWithString:`.
+ 
+ Below are a few examples of how `baseURL` and relative paths interact:
 
     NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
     [NSURL URLWithString:@"foo" relativeToURL:baseURL];                  // http://example.com/v1/foo
@@ -67,7 +68,13 @@
     [NSURL URLWithString:@"/foo/" relativeToURL:baseURL];                // http://example.com/foo/
     [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL]; // http://example2.com/
 
- Also important to note is that a trailing slash will be added to any `baseURL` without one, which would otherwise cause unexpected behavior when constructing URLs using paths without a leading slash.
+ Also important to note is that a trailing slash will be added to any `baseURL` without one. This would otherwise cause unexpected behavior when constructing URLs using paths without a leading slash.
+ 
+ ## Network Reachability Monitoring
+ 
+ Network reachability status and change monitoring is available to any `AFHTTPClient` created with a specified `baseURL`. Applications may choose to monitor network reachability conditions in order to prevent or suspend any outbound requests.
+ 
+ The current reachability status can be accessed with the `networkReachabilityStatus` property. Changes can be monitored by doing `setReachabilityStatusChangeBlock:`, or listening for an `AFNetworkingReachabilityDidChangeNotification` notification.
 
  ## NSCoding / NSCopying Conformance
 
@@ -92,17 +99,17 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 ///---------------------------------------
 
 /**
- The url used as the base for paths specified in methods such as `getPath:parameters:success:failure`
+ The URL used to monitor reachability, and construct requests from relative paths in methods like `requestWithMethod:path:parameters:`, and the `GET` / `POST` / et al. convenience methods.
  */
 @property (readonly, nonatomic, strong) NSURL *baseURL;
 
 /**
-
+ Requests created with `requestWithMethod:path:parameters:` & `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` are constructed with a set of default headers using a parameter serialization specified by this property. By default, this is set to an instance of `AFHTTPSerializer`, which serializes query string parameters for `GET`, `HEAD`, and `DELETE` requests, or otherwise URL-form-encodes HTTP message bodies.
  */
 @property (nonatomic, strong) id <AFURLRequestSerialization> requestSerializer;
 
 /**
-
+ Responses sent from the server in data tasks created with `dataTaskWithRequest:success:failure:` and run using the `GET` / `POST` / et al. convenience methods are automatically validated and serialized by the first object of this property property to return `YES` when sent `canProcessResponse:` with a particular response. By default, this property is set to an array containing an `AFJSONSerializer` object, which serializes data from responses with a `Content-Type: application/json` header, as well as an `AFHTTPSerializer` object, which simply returns the raw NSData`. Both response serializers validate the status code to be in the `2XX` range, denoting success. If a response serializer generates an error in `-responseObjectForResponse:data:error:`, the `failure` callback of the session task or request operation will be executed; otherwise, the `success` callback will be executed.
  */
 @property (nonatomic, strong) NSArray *responseSerializers;
 
@@ -128,23 +135,28 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 ///---------------------------------------------
 
 /**
- 
+ Creates and returns an `AFHTTPClient` object.
  */
 + (instancetype)client;
 
 /**
  Initializes an `AFHTTPClient` object with the specified base URL.
  
- This is the designated initializer.
-
- @param url The base URL for the HTTP client. This argument must not be `nil`.
+ @param url The base URL for the HTTP client.
 
  @return The newly-initialized HTTP client
  */
 - (instancetype)initWithBaseURL:(NSURL *)url;
 
 /**
- 
+ Initializes an `AFHTTPClient` object with the specified base URL.
+
+ This is the designated initializer.
+
+ @param url The base URL for the HTTP client.
+ @param configuration The configuration used to create the managed session.
+
+ @return The newly-initialized HTTP client
  */
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration;
@@ -177,7 +189,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @param path The path to be appended to the HTTP client's base URL and used as the request URL. If `nil`, no path will be appended to the base URL.
  @param parameters The parameters to be either set as a query string for `GET` requests, or the request HTTP body.
 
- @return An `NSMutableURLRequest` object
+ @return An `NSMutableURLRequest` object.
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method
                                       path:(NSString *)path
@@ -200,24 +212,20 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
                                              parameters:(NSDictionary *)parameters
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block;
 
-///-------------------------------
-/// @name Creating HTTP Operations
-///-------------------------------
+///---------------------------------------
+/// @name Managing HTTP Request Operations
+///---------------------------------------
 
 /**
- Creates an `AFHTTPRequestOperation`.
+ Creates an `AFHTTPRequestOperation`, setting the operation's request serializer and response serializers to those of the HTTP client.
 
- @param urlRequest The request object to be loaded asynchronously during execution of the operation.
+ @param request The request object to be loaded asynchronously during execution of the operation.
  @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes two arguments:, the created request operation and the `NSError` object describing the network or parsing error that occurred.
  */
 - (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)request
                                                     success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                                                     failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
-
-///----------------------------------------
-/// @name Managing Enqueued HTTP Operations
-///----------------------------------------
 
 /**
  Enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue.
@@ -246,7 +254,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 
  Operations are created by passing the specified `NSURLRequest` objects in `requests`, using `-HTTPRequestOperationWithRequest:success:failure:`, with `nil` for both the `success` and `failure` parameters.
 
- @param urlRequests The `NSURLRequest` objects used to create and enqueue operations.
+ @param requests The `NSURLRequest` objects used to create and enqueue operations.
  @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
  @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations.
  */
@@ -381,7 +389,11 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 ///-------------------------
 
 /**
+ Creates an `NSURLSessionDataTask` with the specified request.
  
+ @param request The HTTP request for the request.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes three arguments: the server response, the serializer used to serialize the response data, and the response object created by that serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
  */
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
                                       success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
@@ -393,7 +405,13 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 ///---------------------------
 
 /**
- 
+ Creates an `NSURLSessionUploadTask` with the specified request for a local file.
+
+ @param request The HTTP request for the request.
+ @param fileURL A URL to the local file to be uploaded.
+ @param progress A block object to be executed multiple times as data is uploaded. This block has no return value and takes three arguments: the number of bytes written since the last time the progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes three arguments: the server response, the serializer used to serialize the response data, and the response object created by that serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
  */
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromFile:(NSURL *)fileURL
@@ -402,7 +420,13 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
                                           failure:(void (^)(NSError *error))failure;
 
 /**
- 
+ Creates an `NSURLSessionUploadTask` with the specified request for an HTTP body.
+
+ @param request The HTTP request for the request.
+ @param bodyData A data object containing the HTTP body to be uploaded. 
+ @param progress A block object to be executed multiple times as data is uploaded. This block has no return value and takes three arguments: the number of bytes written since the last time the progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body.
+ @param success A block object to be executed when the task finishes successfully. This block has no return value and takes three arguments: the server response, the serializer used to serialize the response data, and the response object created by that serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
  */
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromData:(NSData *)bodyData
@@ -415,7 +439,12 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 ///-----------------------------
 
 /**
- 
+ Creates an `NSURLSessionDownloadTask` with the specified request.
+
+ @param request The HTTP request for the request.
+ @param progress A block object to be executed multiple times as data is downloaded. This block has no return value and takes three arguments: the number of bytes read since the last time the progress block was called, the total bytes read, and the total bytes expected to be read from the server, as initially determined by the expected content size of the response object.
+ @param success A block object to be executed when the task finishes successfully. This block takes a single argument, the server response, and returns the desired file URL of the resulting download. The temporary file used during the download will be automatically deleted after being moved to the returned URL.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
                                              progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
@@ -423,7 +452,12 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
                                               failure:(void (^)(NSError *error))failure;
 
 /**
- 
+ Creates an `NSURLSessionDownloadTask` with the specified resume data.
+
+ @param resumeData The data used to resume downloading.
+ @param progress A block object to be executed multiple times as data is downloaded. This block has no return value and takes three arguments: the number of bytes read since the last time the progress block was called, the total bytes read, and the total bytes expected to be read from the server, as initially determined by the expected content size of the response object.
+ @param success A block object to be executed when the task finishes successfully. This block takes a single argument, the server response, and returns the desired file URL of the resulting download. The temporary file used during the download will be automatically deleted after being moved to the returned URL.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
                                                 progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
@@ -442,10 +476,10 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  The following constants are provided by `AFHTTPClient` as possible network reachability statuses.
 
  enum {
- AFNetworkReachabilityStatusUnknown,
- AFNetworkReachabilityStatusNotReachable,
- AFNetworkReachabilityStatusReachableViaWWAN,
- AFNetworkReachabilityStatusReachableViaWiFi,
+    AFNetworkReachabilityStatusUnknown,
+    AFNetworkReachabilityStatusNotReachable,
+    AFNetworkReachabilityStatusReachableViaWWAN,
+    AFNetworkReachabilityStatusReachableViaWiFi,
  }
 
  `AFNetworkReachabilityStatusUnknown`
@@ -467,25 +501,6 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  `AFNetworkingReachabilityNotificationStatusItem`
  A key in the userInfo dictionary in a `AFNetworkingReachabilityDidChangeNotification` notification.
  The corresponding value is an `NSNumber` object representing the `AFNetworkReachabilityStatus` value for the current reachability status.
-
- ## Parameter Encoding
-
- The following constants are provided by `AFHTTPClient` as possible methods for serializing parameters into query string or message body values.
-
- enum {
- AFFormURLParameterEncoding,
- AFJSONParameterEncoding,
- AFPropertyListParameterEncoding,
- }
-
- `AFFormURLParameterEncoding`
- Parameters are encoded into field/key pairs in the URL query string for `GET` `HEAD` and `DELETE` requests, and in the message body otherwise. Dictionary keys are sorted with the `caseInsensitiveCompare:` selector of their description, in order to mitigate the possibility of ambiguous query strings being generated non-deterministically. See the warning for the `parameterEncoding` property for additional information.
-
- `AFJSONParameterEncoding`
- Parameters are encoded into JSON in the message body.
-
- `AFPropertyListParameterEncoding`
- Parameters are encoded into a property list in the message body.
  */
 
 ///--------------------
@@ -596,12 +611,28 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 /**
  Throttles request bandwidth by limiting the packet size and adding a delay for each chunk read from the upload stream.
 
- When uploading over a 3G or EDGE connection, requests may fail with "request body stream exhausted". Setting a maximum packet size and delay according to the recommended values (`kAFUploadStream3GSuggestedPacketSize` and `kAFUploadStream3GSuggestedDelay`) lowers the risk of the input stream exceeding its allocated bandwidth. Unfortunately, as of iOS 6, there is no definite way to distinguish between a 3G, EDGE, or LTE connection. As such, it is not recommended that you throttle bandwidth based solely on network reachability. Instead, you should consider checking for the "request body stream exhausted" in a failure block, and then retrying the request with throttled bandwidth.
+ When uploading over a 3G or EDGE connection, requests may fail with "request body stream exhausted". Setting a maximum packet size and delay according to the recommended values (`kAFUploadStream3GSuggestedPacketSize` and `kAFUploadStream3GSuggestedDelay`) lowers the risk of the input stream exceeding its allocated bandwidth. Unfortunately, there is no definite way to distinguish between a 3G, EDGE, or LTE connection over `NSURLConnection`. As such, it is not recommended that you throttle bandwidth based solely on network reachability. Instead, you should consider checking for the "request body stream exhausted" in a failure block, and then retrying the request with throttled bandwidth.
 
- @param numberOfBytes Maximum packet size, in number of bytes. The default packet size for an input stream is 32kb.
+ @param numberOfBytes Maximum packet size, in number of bytes. The default packet size for an input stream is 16kb.
  @param delay Duration of delay each time a packet is read. By default, no delay is set.
  */
 - (void)throttleBandwidthWithPacketSize:(NSUInteger)numberOfBytes
                                   delay:(NSTimeInterval)delay;
 
 @end
+
+///----------------
+/// @name Constants
+///----------------
+
+/**
+ ## Throttling Bandwidth for HTTP Request Input Streams
+ 
+ @see -throttleBandwidthWithPacketSize:delay:
+ 
+ `kAFUploadStream3GSuggestedPacketSize`
+ Maximum packet size, in number of bytes. Equal to 16kb.
+ 
+ `kAFUploadStream3GSuggestedDelay`
+ Duration of delay each time a packet is read. Equal to 0.2 seconds.
+ */
