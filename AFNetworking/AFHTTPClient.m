@@ -151,7 +151,7 @@ typedef id AFNetworkReachabilityRef;
     self.baseURL = url;
 
     self.requestSerializer = [AFHTTPSerializer serializer];
-    self.responseSerializer = [AFJSONSerializer serializer];
+    self.responseSerializer = [AFCompoundSerializer compoundSerializerWithResponseSerializers:@[[AFJSONSerializer serializer]]];
 
 #ifdef _SYSTEMCONFIGURATION_H
     self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
