@@ -154,9 +154,17 @@
             [strongSelf setResponseXMLDocument:responseObject];
         }
 #endif
+
+        if (success) {
+            success(operation, responseObject);
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         __strong __typeof(weakSelf)strongSelf = weakSelf;
         [strongSelf setError:error];
+
+        if (failure) {
+            failure(operation, error);
+        }
     }];
 }
 
