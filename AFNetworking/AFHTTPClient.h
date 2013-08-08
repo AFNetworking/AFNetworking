@@ -31,6 +31,7 @@
 #endif
 
 #import "AFURLSessionManager.h"
+#import "AFHTTPRequestOperation.h"
 #import "AFSerialization.h"
 
 /**
@@ -50,7 +51,7 @@
  
  ## Serialization
  
- Requests created by an HTTP client will contain default headers and encode parameters according to the `requestSerializer` object, which is an object conforming to `AFURLRequestSerialization`. Responses received from the server are automatically validated and serialized by the first object conforming to `AFURLResponseSerialization` in `responseSerializers` that returns `YES` to `-canProcessResponse:`.
+ Requests created by an HTTP client will contain default headers and encode parameters according to the `requestSerializer` property, which is an object conforming to `<AFURLRequestSerialization>`. Responses received from the server are automatically validated and serialized by the `responseSerializers` property, which is an object conforming to `<AFURLResponseSerialization>`
 
  ## URL Construction Using Relative Paths
 
@@ -105,13 +106,17 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 
 /**
  Requests created with `requestWithMethod:path:parameters:` & `multipartFormRequestWithMethod:path:parameters:constructingBodyWithBlock:` are constructed with a set of default headers using a parameter serialization specified by this property. By default, this is set to an instance of `AFHTTPSerializer`, which serializes query string parameters for `GET`, `HEAD`, and `DELETE` requests, or otherwise URL-form-encodes HTTP message bodies.
+ 
+ @warning `requestSerializer` must not be `nil`.
  */
 @property (nonatomic, strong) id <AFURLRequestSerialization> requestSerializer;
 
 /**
- Responses sent from the server in data tasks created with `dataTaskWithRequest:success:failure:` and run using the `GET` / `POST` / et al. convenience methods are automatically validated and serialized by the first object of this property property to return `YES` when sent `canProcessResponse:` with a particular response. By default, this property is set to an array containing an `AFJSONSerializer` object, which serializes data from responses with a `Content-Type: application/json` header, as well as an `AFHTTPSerializer` object, which simply returns the raw NSData`. Both response serializers validate the status code to be in the `2XX` range, denoting success. If a response serializer generates an error in `-responseObjectForResponse:data:error:`, the `failure` callback of the session task or request operation will be executed; otherwise, the `success` callback will be executed.
+ Responses sent from the server in data tasks created with `dataTaskWithRequest:success:failure:` and run using the `GET` / `POST` / et al. convenience methods are automatically validated and serialized by the response serializer. By default, this property is set to a compound serializer, which serializes data from responses with either a `application/json` or `application/x-plist` MIME type, and falls back to the raw data object. The serializer validates the status code to be in the `2XX` range, denoting success. If the response serializer generates an error in `-responseObjectForResponse:data:error:`, the `failure` callback of the session task or request operation will be executed; otherwise, the `success` callback will be executed.
+ 
+ @warning `responseSerializer` must not be `nil`.
  */
-@property (nonatomic, strong) NSArray *responseSerializers;
+@property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
 
 /**
  The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
@@ -119,14 +124,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 @property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
 
 /**
- Default SSL pinning mode for each `AFHTTPRequestOperation` created by `HTTPRequestOperationWithRequest:success:failure:`.
- */
-@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
-
-/**
  Whether each `AFHTTPRequestOperation` created by `HTTPRequestOperationWithRequest:success:failure:` should accept an invalid SSL certificate.
-
- If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to `YES` for backwards compatibility. Otherwise, this property defaults to `NO`.
  */
 @property (nonatomic, assign) BOOL allowsInvalidSSLCertificate;
 

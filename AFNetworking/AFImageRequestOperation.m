@@ -148,7 +148,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     self.imageSerializer.automaticallyInflatesResponseImage = YES;
 #endif
 
-    self.responseSerializers = @[ self.imageSerializer ];
+    self.responseSerializer = self.imageSerializer;
 
     return self;
 }

@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFJSONPatchSerializer.h"
+#import "AFHTTPRequestOperation.h"
 
 @implementation AFJSONPatchSerializer
 

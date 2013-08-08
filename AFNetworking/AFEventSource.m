@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFEventSource.h"
+#import "AFHTTPRequestOperation.h"
 
 typedef void (^AFServerSentEventBlock)(AFServerSentEvent *event);
 
@@ -167,7 +168,7 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
     self.state = AFEventSourceConnecting;
 
     self.requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:self.request];
-    self.requestOperation.responseSerializers = @[ [AFServerSentEventSerializer serializer] ];
+    self.requestOperation.responseSerializer = [AFServerSentEventSerializer serializer];
     self.outputStream = [NSOutputStream outputStreamToMemory];
     self.outputStream.delegate = self;
     self.requestOperation.outputStream = self.outputStream;

@@ -52,16 +52,6 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 @implementation AFHTTPRequestOperation
 
-- (id <AFURLResponseSerialization>)serializerForResponse:(NSHTTPURLResponse *)response {
-    for (id <AFURLResponseSerialization> serializer in self.responseSerializers) {
-        if ([serializer canProcessResponse:response]) {
-            return serializer;
-        }
-    }
-
-    return nil;
-}
-
 #pragma mark - AFHTTPRequestOperation
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
@@ -81,8 +71,7 @@ static dispatch_group_t http_request_operation_completion_group() {
                 }
             } else {
                 NSError *error = nil;
-                id <AFURLResponseSerialization> serializer = [self serializerForResponse:self.response];
-                id responseObject = [serializer responseObjectForResponse:self.response data:self.responseData error:&error];
+                id responseObject = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
 
                 if (error) {
                     self.error = error;
@@ -135,7 +124,7 @@ static dispatch_group_t http_request_operation_completion_group() {
         return nil;
     }
 
-    self.responseSerializers = [aDecoder decodeObjectForKey:@"responseSerializers"];
+    self.responseSerializer = [aDecoder decodeObjectForKey:@"responseSerializer"];
 
     return self;
 }
@@ -143,7 +132,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
-    [aCoder encodeObject:self.responseSerializers forKey:@"responseSerializers"];
+    [aCoder encodeObject:self.responseSerializer forKey:@"responseSerializer"];
 }
 
 #pragma mark - NSCopying
@@ -151,7 +140,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 - (id)copyWithZone:(NSZone *)zone {
     AFHTTPRequestOperation *operation = [[[self class] allocWithZone:zone] initWithRequest:self.request];
 
-    operation.responseSerializers = [self.responseSerializers copy];
+    operation.responseSerializer = [self.responseSerializer copyWithZone:zone];
     operation.completionQueue = self.completionQueue;
     operation.completionGroup = self.completionGroup;
 
