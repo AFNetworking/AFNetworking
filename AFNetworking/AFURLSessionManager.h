@@ -60,11 +60,11 @@
  
  If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
  
- ### NSCoding Caveats
+ ## NSCoding Caveats
  
  - Encoded managers do not include any block properties. Be sure to set delegate callback blocks when using `-initWithCoder:` or `NSKeyedUnarchiver`.
 
- ### NSCopying Caveats
+ ## NSCopying Caveats
 
  - `-copy` and `-copyWithZone:` return a new manager with a new `NSURLSession` created from the configuration of the original.
  - Operation copies do not include any delegate callback blocks, as they often strongly captures a reference to `self`, which would otherwise have the unintuitive side-effect of pointing to the _original_ session manager when copied.
