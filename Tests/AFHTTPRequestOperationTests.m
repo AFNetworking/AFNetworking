@@ -76,6 +76,8 @@
 }
 
 - (void)testThatCancellationOfRequestOperationInvokesFailureCompletionBlock {
+    [Expecta setAsynchronousTestTimeout:10.0];
+
     __block NSError *blockError = nil;
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
