@@ -24,7 +24,6 @@
 #import "AFSerialization.h"
 
 @interface AFJSONRequestOperation ()
-@property (readwrite, nonatomic, strong) AFJSONSerializer *JSONSerializer;
 @property (readwrite, nonatomic, strong) id responseJSON;
 @property (readwrite, nonatomic, strong) NSError *error;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
@@ -58,7 +57,7 @@
         return nil;
     }
 
-    self.JSONSerializer = [AFJSONSerializer serializer];
+    self.responseSerializer = [AFJSONSerializer serializer];
 
     return self;
 }
@@ -69,7 +68,7 @@
     [self.lock lock];
     if (!_responseJSON && [self.responseData length] > 0 && [self isFinished] && !self.error) {
         NSError *error = nil;
-        self.responseJSON = [self.JSONSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
+        self.responseJSON = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
         self.error = error;
     }
     [self.lock unlock];
@@ -78,13 +77,13 @@
 }
 
 - (NSJSONReadingOptions)JSONReadingOptions {
-    return self.JSONSerializer.readingOptions;
+    return [(AFJSONSerializer *)self.responseSerializer readingOptions];
 }
 
 - (void)setJSONReadingOptions:(NSJSONReadingOptions)JSONReadingOptions {
     [self.lock lock];
     if (self.JSONReadingOptions != JSONReadingOptions) {
-        self.JSONSerializer.readingOptions = JSONReadingOptions;
+        [(AFJSONSerializer *)self.responseSerializer setReadingOptions:JSONReadingOptions];
 
         self.responseJSON = nil;
     }

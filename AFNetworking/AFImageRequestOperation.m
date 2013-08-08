@@ -34,7 +34,6 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 
 @interface AFImageRequestOperation ()
-@property (readwrite, nonatomic, strong) AFImageSerializer *imageSerializer;
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 @property (readwrite, nonatomic, strong) UIImage *responseImage;
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
@@ -141,14 +140,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         return nil;
     }
     
-    self.imageSerializer = [AFImageSerializer serializer];
-
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    self.imageSerializer.imageScale = [[UIScreen mainScreen] scale];
-    self.imageSerializer.automaticallyInflatesResponseImage = YES;
-#endif
-
-    self.responseSerializer = self.imageSerializer;
+    self.responseSerializer = [AFImageSerializer serializer];
 
     return self;
 }
@@ -160,7 +152,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     [self.lock lock];
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
-        self.responseImage = [self.imageSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
+        self.responseImage = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
 
         if (error) {
             self.error = error;
@@ -175,7 +167,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
     [self.lock lock];
     if (!_responseImage && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
-        self.responseImage = [self.imageSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
+        self.responseImage = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
         self.error = error;
     }
     [self.lock unlock];
@@ -184,15 +176,15 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 
 - (CGFloat)imageScale {
-    return self.imageSerializer.imageScale;
+    return [(AFImageSerializer *)self.responseSerializer imageScale];
 }
 
 - (void)setImageScale:(CGFloat)imageScale {
     [self.lock lock];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wfloat-equal"
-    if (imageScale != self.imageSerializer.imageScale) {
-        self.imageSerializer.imageScale = imageScale;
+    if (imageScale != [(AFImageSerializer *)self.responseSerializer imageScale]) {
+        [(AFImageSerializer *)self.responseSerializer setImageScale:imageScale];
 
         self.responseImage = nil;
     }

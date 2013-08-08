@@ -24,13 +24,7 @@
 #import "AFHTTPRequestOperation.h"
 
 /**
- `AFPropertyListRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and deserializing objects with property list (plist) response data.
-
- ## Acceptable Content Types
-
- By default, `AFPropertyListRequestOperation` accepts the following MIME types:
-
- - `application/x-plist`
+ `AFPropertyListRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and deserializing objects with property list (plist) response data. It uses an instance of `AFPropertyListSerializer` to handle response validation and serialization.
  */
 @interface AFPropertyListRequestOperation : AFHTTPRequestOperation
 
@@ -44,7 +38,7 @@
 @property (readonly, nonatomic, strong) id responsePropertyList;
 
 /**
- 
+ The format of the response property list. See "NSPropertyListFormat" for possible values.
  */
 @property (readonly, nonatomic, assign) NSPropertyListFormat responsePropertyListFormat;
 

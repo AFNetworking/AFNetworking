@@ -25,7 +25,6 @@
 #include <Availability.h>
 
 @interface AFXMLRequestOperation ()
-@property (readwrite, nonatomic, strong) AFXMLParserSerializer *XMLParserSerializer;
 @property (readwrite, nonatomic, strong) NSXMLParser *responseXMLParser;
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (readwrite, nonatomic, strong) AFXMLDocumentSerializer *XMLDocumentSerializer;
@@ -85,7 +84,7 @@
         return nil;
     }
 
-    self.XMLParserSerializer = [AFXMLParserSerializer serializer];
+    self.responseSerializer = [AFXMLParserSerializer serializer];
 
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
     self.XMLDocumentSerializer = [AFXMLDocumentSerializer serializer];
@@ -100,7 +99,7 @@
     [self.lock lock];
     if (!_responseXMLParser && [self.responseData length] > 0 && [self isFinished]) {
         NSError *error = nil;
-        self.responseXMLParser = [self.XMLParserSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
+        self.responseXMLParser = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
         self.error = error;
     }
     [self.lock unlock];

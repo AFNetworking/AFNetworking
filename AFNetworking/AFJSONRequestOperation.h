@@ -24,23 +24,13 @@
 #import "AFHTTPRequestOperation.h"
 
 /**
- `AFJSONRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and working with JSON response data.
- 
- ## Acceptable Content Types
- 
- By default, `AFJSONRequestOperation` accepts the following MIME types, which includes the official standard, `application/json`, as well as other commonly-used types:
- 
- - `application/json`
- - `text/json`
-
- @warning JSON parsing will use the built-in `NSJSONSerialization` class.
+ `AFJSONRequestOperation` is a subclass of `AFHTTPRequestOperation` for downloading and working with JSON response data. It uses an instance of `AFJSONSerialization` to handle response validation and serialization.
  */
 @interface AFJSONRequestOperation : AFHTTPRequestOperation
 
 ///------------------------------
 /// @name Getting Response Data
 ///------------------------------
-
 
 /**
 Options for reading the response JSON data and creating the Foundation objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONReadingOptions".

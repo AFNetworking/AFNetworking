@@ -770,17 +770,6 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 @implementation AFImageSerializer
 
-+ (instancetype)serializer {
-    AFImageSerializer *serializer = [[self alloc] init];
-
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    serializer.imageScale = [[UIScreen mainScreen] scale];
-    serializer.automaticallyInflatesResponseImage = YES;
-#endif
-    
-    return serializer;
-}
-
 - (instancetype)init {
     self = [super init];
     if (!self) {
@@ -788,6 +777,11 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     }
 
     self.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon", @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
+
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+    self.imageScale = [[UIScreen mainScreen] scale];
+    self.automaticallyInflatesResponseImage = YES;
+#endif
 
     return self;
 }
