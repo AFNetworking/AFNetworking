@@ -1,0 +1,24 @@
+PODS:
+  - AFHTTPRequestOperationLogger (0.10.0):
+    - AFNetworking (>= 0.9.0)
+  - AFNetworking (1.3.2)
+  - Expecta (0.2.1)
+  - OCMock (2.1.1)
+
+DEPENDENCIES:
+  - AFHTTPRequestOperationLogger (~> 0.10.0)
+  - AFNetworking (from `../`)
+  - Expecta (~> 0.2.1)
+  - OCMock (~> 2.1.1)
+
+EXTERNAL SOURCES:
+  AFNetworking:
+    :path: ../
+
+SPEC CHECKSUMS:
+  AFHTTPRequestOperationLogger: 34ba125cb9eeb77a3b67aaaca105720ba3a0798c
+  AFNetworking: 91bb494e2bd884a93d60a7a3126bc65b873486b4
+  Expecta: d46fb1bd78c90a83da0158b9b1e108de106e369f
+  OCMock: 79212e5e328378af5cfd6edb5feacfd6c49cd8a3
+
+COCOAPODS: 0.22.2
