@@ -36,12 +36,17 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 #import <CoreGraphics/CoreGraphics.h>
 
 static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
+    #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000)
     if ([UIImage instancesRespondToSelector:@selector(initWithData:scale:)]) {
         return [[UIImage alloc] initWithData:data scale:scale];
     } else {
         UIImage *image = [[UIImage alloc] initWithData:data];
         return [[UIImage alloc] initWithCGImage:[image CGImage] scale:scale orientation:image.imageOrientation];
     }
+    #else
+    UIImage *image = [[UIImage alloc] initWithData:data];
+    return [[UIImage alloc] initWithCGImage:[image CGImage] scale:scale orientation:image.imageOrientation];
+    #endif
 }
 
 static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *response, NSData *data, CGFloat scale) {
