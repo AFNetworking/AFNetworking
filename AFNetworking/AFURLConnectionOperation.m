@@ -200,7 +200,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
     static NSArray *_pinnedCertificates = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        NSBundle *bundle = [NSBundle mainBundle];
         NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
         
         NSMutableArray *certificates = [NSMutableArray arrayWithCapacity:[paths count]];
