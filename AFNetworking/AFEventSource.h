@@ -177,35 +177,48 @@
 /// @name Constants
 ///----------------
 
+/**
+ Indicates an event source connection error.
+ */
 extern NSString * const AFEventSourceErrorDomain;
 
 #pragma mark -
 
 /**
- 
+ The `AFEventSourceDelegate` protocol defines the methods that a delegate of an `AFEventSource` object should implement to handle events during the event source lifecycle.
  */
 @protocol AFEventSourceDelegate <NSObject>
 
 @optional
 
 /**
+ Tells the delegate that an event source has opened its connection.
  
+ @param source The event source.
  */
 - (void)eventSourceDidOpen:(AFEventSource *)source;
 
 /**
- 
+ Tells the delegate that an event source has received an event.
+
+ @param source The event source.
+ @param event The received event.
  */
 - (void)eventSource:(AFEventSource *)source
   didReceiveMessage:(AFServerSentEvent *)event;
 
 /**
- 
+ Tells the delegate that an event source has closed its connection.
+
+ @param source The event source.
  */
 - (void)eventSourceDidClose:(AFEventSource *)source;
 
 /**
- 
+ Tells the delegate that an event source has failed.
+
+ @param source The event source.
+ @param error The error associated with the event source.
  */
 - (void)eventSource:(AFEventSource *)source
    didFailWithError:(NSError *)error;
@@ -215,7 +228,7 @@ extern NSString * const AFEventSourceErrorDomain;
 #pragma mark -
 
 /**
-
+ `AFServerSentEvent` objects represent events received from the server by an event source. A server-sent event has associated `event` type, an `identifier`, associated `data`, and a `retry` inteval. Any additional fields not defined by the EventSource API spec are stored in a `userInfo` dictionary.
  */
 @interface AFServerSentEvent : NSObject <NSCoding, NSCopying>
 
@@ -224,27 +237,27 @@ extern NSString * const AFEventSourceErrorDomain;
 ///---------------------------------
 
 /**
- 
+ The event type.
  */
 @property (nonatomic, copy) NSString *event;
 
 /**
- 
+ The event identifier.
  */
 @property (nonatomic, copy) NSString *identifier;
 
 /**
- 
+ The data associated with the event.
  */
 @property (nonatomic, strong) NSData *data;
 
 /**
- 
+ The retry interval sent with the event.
  */
 @property (nonatomic, assign) NSTimeInterval retry;
 
 /**
- 
+ Any additional fields in the event.
  */
 @property (nonatomic, strong) NSDictionary *userInfo;
 
@@ -262,7 +275,9 @@ extern NSString * const AFEventSourceErrorDomain;
 #pragma mark -
 
 /**
- 
+ `AFServerSentEventSerializer` is a subclass of `AFHTTPSerializer` that validates and decodes server sent event messages.
+
+ By default, `AFServerSentEventSerializer` accepts responses with a MIME type of `text/event-stream`. 
  */
 @interface AFServerSentEventSerializer : AFHTTPSerializer
 
