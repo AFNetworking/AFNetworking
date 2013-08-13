@@ -85,6 +85,41 @@ static NSDictionary * AFServerSentEventFieldsFromData(NSData *data, NSError * __
     return event;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [self init];
+    if (!self) {
+        return nil;
+    }
+
+    self.event = [aDecoder decodeObjectForKey:@"event"];
+    self.identifier = [aDecoder decodeObjectForKey:@"identifier"];
+    self.data = [aDecoder decodeObjectForKey:@"data"];
+    self.retry = [aDecoder decodeIntegerForKey:@"retry"];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.event forKey:@"event"];
+    [aCoder encodeObject:self.identifier forKey:@"identifier"];
+    [aCoder encodeObject:self.data forKey:@"data"];
+    [aCoder encodeInteger:self.retry forKey:@"retry"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFServerSentEvent *event = [[[self class] allocWithZone:zone] init];
+    event.event = self.event;
+    event.identifier = self.identifier;
+    event.data = self.data;
+    event.retry = self.retry;
+
+    return event;
+}
+
 @end
 
 #pragma mark -

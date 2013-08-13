@@ -121,7 +121,7 @@ extern NSString * const AFEventSourceErrorDomain;
 /**
 
  */
-@interface AFServerSentEvent : NSObject
+@interface AFServerSentEvent : NSObject <NSCoding, NSCopying>
 
 @property (nonatomic, copy) NSString *event;
 @property (nonatomic, copy) NSString *identifier;
