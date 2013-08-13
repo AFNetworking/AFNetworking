@@ -236,13 +236,22 @@ typedef id AFNetworkReachabilityRef;
                                       path:(NSString *)path
                                 parameters:(NSDictionary *)parameters
 {
+    return [self requestWithMethod:method URLString:path parameters:parameters];
+}
+
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method
+                                 URLString:(NSString *)URLString
+                                parameters:(NSDictionary *)parameters
+{
     NSParameterAssert(method);
 
-    if (!path) {
-        path = @"";
-    }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+    NSURL *url = [NSURL URLWithString:(URLString ?: @"") relativeToURL:self.baseURL];
+#pragma clang diagnostic pop
 
-    NSURL *url = [NSURL URLWithString:path relativeToURL:self.baseURL];
+    NSParameterAssert(url);
+
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:[self.session.configuration HTTPAdditionalHeaders]];
@@ -258,10 +267,18 @@ typedef id AFNetworkReachabilityRef;
                                              parameters:(NSDictionary *)parameters
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
 {
+    return [self multipartFormRequestWithMethod:method URLString:path parameters:parameters constructingBodyWithBlock:block];
+}
+
+- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
+                                              URLString:(NSString *)URLString
+                                             parameters:(NSDictionary *)parameters
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+{
     NSParameterAssert(method);
     NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
 
-    NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
+    NSMutableURLRequest *request = [self requestWithMethod:method URLString:URLString parameters:nil];
 
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:NSUTF8StringEncoding];
 
@@ -324,9 +341,15 @@ typedef id AFNetworkReachabilityRef;
 - (void)cancelAllHTTPOperationsWithMethod:(NSString *)method
                                      path:(NSString *)path
 {
+    [self cancelAllHTTPOperationsWithMethod:method URLString:path];
+}
+
+- (void)cancelAllHTTPOperationsWithMethod:(NSString *)method
+                                URLString:(NSString *)URLString
+{
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-    NSString *pathToBeMatched = [[[self requestWithMethod:(method ?: @"GET") path:path parameters:nil] URL] path];
+    NSURL *URLToBeMatched = [[self requestWithMethod:(method ?: @"GET") URLString:URLString parameters:nil] URL];
 #pragma clang diagnostic pop
 
     for (NSOperation *operation in [self.operationQueue operations]) {
@@ -335,9 +358,9 @@ typedef id AFNetworkReachabilityRef;
         }
 
         BOOL hasMatchingMethod = !method || [method isEqualToString:[[(AFHTTPRequestOperation *)operation request] HTTPMethod]];
-        BOOL hasMatchingPath = [[[[(AFHTTPRequestOperation *)operation request] URL] path] isEqual:pathToBeMatched];
+        BOOL hasMatchingURL = [[[(AFHTTPRequestOperation *)operation request] URL] isEqual:URLToBeMatched];
 
-        if (hasMatchingMethod && hasMatchingPath) {
+        if (hasMatchingMethod && hasMatchingURL) {
             [operation cancel];
         }
     }
@@ -410,7 +433,7 @@ typedef id AFNetworkReachabilityRef;
                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                       failure:(void (^)(NSError *error))failure
 {
-    NSMutableURLRequest *request = [self requestWithMethod:@"GET" path:URLString parameters:parameters];
+    NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:URLString parameters:parameters];
 
     NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
@@ -432,7 +455,7 @@ typedef id AFNetworkReachabilityRef;
                        success:(void (^)(NSHTTPURLResponse *response))success
                        failure:(void (^)(NSError *error))failure
 {
-    NSMutableURLRequest *request = [self requestWithMethod:@"HEAD" path:URLString parameters:parameters];
+    NSMutableURLRequest *request = [self requestWithMethod:@"HEAD" URLString:URLString parameters:parameters];
 
     NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id __unused responseObject) {
         if (success) {
@@ -454,7 +477,7 @@ typedef id AFNetworkReachabilityRef;
                        success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                        failure:(void (^)(NSError *error))failure
 {
-    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:URLString parameters:parameters];
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST" URLString:URLString parameters:parameters];
 
     NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
@@ -477,7 +500,7 @@ typedef id AFNetworkReachabilityRef;
                        success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                        failure:(void (^)(NSError *error))failure
 {
-    NSMutableURLRequest *request = [self multipartFormRequestWithMethod:@"POST" path:URLString parameters:parameters constructingBodyWithBlock:block];
+    NSMutableURLRequest *request = [self multipartFormRequestWithMethod:@"POST" URLString:URLString parameters:parameters constructingBodyWithBlock:block];
 
     NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
@@ -499,7 +522,7 @@ typedef id AFNetworkReachabilityRef;
                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                       failure:(void (^)(NSError *error))failure
 {
-    NSMutableURLRequest *request = [self requestWithMethod:@"PUT" path:URLString parameters:parameters];
+    NSMutableURLRequest *request = [self requestWithMethod:@"PUT" URLString:URLString parameters:parameters];
 
     NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
@@ -521,7 +544,7 @@ typedef id AFNetworkReachabilityRef;
                         success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                         failure:(void (^)(NSError *error))failure
 {
-    NSMutableURLRequest *request = [self requestWithMethod:@"PATCH" path:URLString parameters:parameters];
+    NSMutableURLRequest *request = [self requestWithMethod:@"PATCH" URLString:URLString parameters:parameters];
 
     NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
@@ -543,7 +566,7 @@ typedef id AFNetworkReachabilityRef;
                          success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                          failure:(void (^)(NSError *error))failure
 {
-    NSMutableURLRequest *request = [self requestWithMethod:@"DELETE" path:URLString parameters:parameters];
+    NSMutableURLRequest *request = [self requestWithMethod:@"DELETE" URLString:URLString parameters:parameters];
 
     NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
         if (success) {
