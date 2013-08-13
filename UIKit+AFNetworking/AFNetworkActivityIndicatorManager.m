@@ -23,9 +23,21 @@
 #import "AFNetworkActivityIndicatorManager.h"
 
 #import "AFHTTPRequestOperation.h"
+#import "AFURLSessionManager.h"
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
+
+static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notification) {
+    NSURLRequest *request = nil;
+    if ([[notification object] isKindOfClass:[AFURLConnectionOperation class]]) {
+        request = [(AFURLConnectionOperation *)[notification object] request];
+    } else if ([[notification object] isKindOfClass:[NSURLSessionTask class]]) {
+        request = [(NSURLSessionTask *)[notification object] originalRequest];
+    }
+
+    return request;
+}
 
 @interface AFNetworkActivityIndicatorManager ()
 @property (readwrite, nonatomic, assign) NSInteger activityCount;
@@ -59,8 +71,11 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
         return nil;
     }
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkingOperationDidStart:) name:AFNetworkingOperationDidStartNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkingOperationDidFinish:) name:AFNetworkingOperationDidFinishNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingOperationDidStartNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingOperationDidFinishNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingTaskDidStartNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidFinishNotification object:nil];
 
     return self;
 }
@@ -129,16 +144,14 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
     });
 }
 
-- (void)networkingOperationDidStart:(NSNotification *)notification {
-    AFURLConnectionOperation *connectionOperation = [notification object];
-    if (connectionOperation.request.URL) {
+- (void)networkRequestDidStart:(NSNotification *)notification {
+    if ([AFNetworkRequestFromNotification(notification) URL]) {
         [self incrementActivityCount];
     }
 }
 
-- (void)networkingOperationDidFinish:(NSNotification *)notification {
-    AFURLConnectionOperation *connectionOperation = [notification object];
-    if (connectionOperation.request.URL) {
+- (void)networkRequestDidFinish:(NSNotification *)notification {
+    if ([AFNetworkRequestFromNotification(notification) URL]) {
         [self decrementActivityCount];
     }
 }
