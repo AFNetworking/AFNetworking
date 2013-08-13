@@ -38,7 +38,8 @@ static NSDictionary * AFServerSentEventFieldsFromData(NSData *data, NSError * __
     NSMutableDictionary *mutableFields = [NSMutableDictionary dictionary];
 
     for (NSString *line in [string componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]]) {
-        if (!line || [line length] == 0) {
+        // Ignore nil or blank lines, as well as lines beginning with a colon
+        if (!line || [line length] == 0 || [line hasPrefix:@":"]) {
             continue;
         }
 
