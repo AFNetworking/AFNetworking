@@ -32,7 +32,7 @@
 /** 
  @see http://www.w3.org/TR/eventsource/
  */
-@interface AFEventSource : NSObject
+@interface AFEventSource : NSObject <NSCoding, NSCopying>
 
 @property (nonatomic, weak) id <AFEventSourceDelegate> delegate;
 
@@ -79,7 +79,9 @@
 
 @end
 
-///
+///----------------
+/// @name Constants
+///----------------
 
 extern NSString * const AFEventSourceErrorDomain;
 
@@ -138,6 +140,9 @@ extern NSString * const AFEventSourceErrorDomain;
 
 #pragma mark -
 
+/**
+ 
+ */
 @interface AFServerSentEventSerializer : AFHTTPSerializer
 
 @end

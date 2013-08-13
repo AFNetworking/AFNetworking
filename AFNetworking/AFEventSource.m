@@ -295,6 +295,29 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
     }
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    NSURLRequest *request = [aDecoder decodeObjectForKey:@"request"];
+
+    self = [self initWithRequest:request];
+    if (!self) {
+        return nil;
+    }
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.request forKey:@"request"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    return [[[self class] allocWithZone:zone] initWithRequest:self.request];
+}
+
 @end
 
 #pragma mark -
