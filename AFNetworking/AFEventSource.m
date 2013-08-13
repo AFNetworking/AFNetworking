@@ -28,6 +28,7 @@ typedef void (^AFServerSentEventBlock)(AFServerSentEvent *event);
 NSString * const AFEventSourceErrorDomain = @"com.alamofire.networking.event-source.error";
 
 static NSString * const AFEventSourceLockName = @"com.alamofire.networking.event-source.lock";
+static NSUInteger const AFEventSourceListenersCapacity = 100;
 
 static NSDictionary * AFServerSentEventFieldsFromData(NSData *data, NSError * __autoreleasing *error) {
     if (!data || [data length] == 0) {
@@ -159,7 +160,7 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
 
     self.request = request;
 
-    self.listenersKeyedByEvent = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsCopyIn valueOptions:NSPointerFunctionsStrongMemory capacity:100];
+    self.listenersKeyedByEvent = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsCopyIn valueOptions:NSPointerFunctionsStrongMemory capacity:AFEventSourceListenersCapacity];
 
     self.lock = [[NSRecursiveLock alloc] init];
     self.lock.name = AFEventSourceLockName;
@@ -244,20 +245,36 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
 
 #pragma mark -
 
-- (void)addEventListener:(NSString *)event
-              usingBlock:(void (^)(AFServerSentEvent *event))block
+- (NSUInteger)addListenerForEvent:(NSString *)event
+                       usingBlock:(void (^)(AFServerSentEvent *event))block
 {
-    NSMutableArray *mutableListeners = [self.listenersKeyedByEvent objectForKey:event];
-    if (!mutableListeners) {
-        mutableListeners = [NSMutableArray array];
+    NSMutableDictionary *mutableListenersKeyedByIdentifier = [self.listenersKeyedByEvent objectForKey:event];
+    if (!mutableListenersKeyedByIdentifier) {
+        mutableListenersKeyedByIdentifier = [NSMutableDictionary dictionary];
     }
 
-    [mutableListeners addObject:[block copy]];
+    NSUInteger identifier = [[NSUUID UUID] hash];
+    mutableListenersKeyedByIdentifier[@(identifier)] = [block copy];
     
-    [self.listenersKeyedByEvent setObject:mutableListeners forKey:event];
+    [self.listenersKeyedByEvent setObject:mutableListenersKeyedByIdentifier forKey:event];
+
+    return identifier;
 }
 
-- (void)removeListenersForEvent:(NSString *)event {
+- (void)removeEventListenerWithIdentifier:(NSUInteger)identifier {
+    NSEnumerator *enumerator = [self.listenersKeyedByEvent keyEnumerator];
+    id event = nil;
+    while ((event = [enumerator nextObject])) {
+        NSMutableDictionary *mutableListenersKeyedByIdentifier = [self.listenersKeyedByEvent objectForKey:event];
+        if ([mutableListenersKeyedByIdentifier objectForKey:@(identifier)]) {
+            [mutableListenersKeyedByIdentifier removeObjectForKey:@(identifier)];
+            [self.listenersKeyedByEvent setObject:mutableListenersKeyedByIdentifier forKey:event];
+            return;
+        }
+    }
+}
+
+- (void)removeAllListenersForEvent:(NSString *)event {
     [self.listenersKeyedByEvent removeObjectForKey:event];
 }
 

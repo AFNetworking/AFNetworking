@@ -40,7 +40,7 @@
                                         error:(NSError * __autoreleasing *)error
 {
     AFEventSource *eventSource = [[AFEventSource alloc] initWithRequest:request];
-    [eventSource addEventListener:@"patch" usingBlock:^(AFServerSentEvent *event) {
+    [eventSource addListenerForEvent:@"patch" usingBlock:^(AFServerSentEvent *event) {
         NSError *serializationError = nil;
         NSArray *operations = [serializer responseObjectForResponse:nil data:event.data error:&serializationError];
         if (block) {
