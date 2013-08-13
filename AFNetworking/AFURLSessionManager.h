@@ -23,7 +23,7 @@
 #import <Foundation/Foundation.h>
 
 /**
- `AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which implements the `NSURLSessionTaskDelegate`, `NSURLSessionDataDelegate`, `NSURLSessionDownloadDelegate`, and `NSURLSessionDelegate` protocols.
+ `AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
  
  ## Subclassing Notes
  
@@ -110,7 +110,7 @@
 ///---------------------
 
 /**
- Creates and returns a manager for a session created with the specified configuration.
+ Creates and returns a manager for a session created with the specified configuration. This is the designated initializer.
  
  @param configuration The configuration used to create the managed session.
  
