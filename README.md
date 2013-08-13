@@ -27,6 +27,8 @@ pod "AFNetworking", "2.0RC1"
 
 AFNetworking 2.0 is a major update to the framework. Building on 2 years of development, this new version introduces powerful new features, while providing an easy upgrade path for existing users.
 
+- Read the [AFNetworking 2.0 Migration Guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-2.0-Migration-Guide) for an overview of the architectural and API changes.
+
 ### What's New
 
 - Support for NSURLSession
@@ -38,8 +40,10 @@ AFNetworking 2.0 is a major update to the framework. Building on 2 years of deve
 
 - Complete & Updated Documentation
 - Unit Tests Ported to 2.0
-- Migration Guide from 1.x
 - Proper Modularization with Sub-Specs
+- AFSecurity Extension
+- Core Image Serializer Extension
+- MsgPack Serializer Extension
 
 ## Requirements
 
