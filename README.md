@@ -20,7 +20,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 ```ruby
 platform :ios, '7.0'
-pod "AFNetworking", "2.0RC1"
+pod "AFNetworking", "2.0.0-RC1"
 ```
 
 ## 2.0
