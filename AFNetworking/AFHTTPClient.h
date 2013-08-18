@@ -90,6 +90,9 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
     AFNetworkReachabilityStatusReachableViaWiFi = 2,
 };
 
+typedef void (^AFSuccessResponseBlock)(NSHTTPURLResponse *response, id responseObject);
+typedef void (^AFFailureResponseBlock)(NSHTTPURLResponse *response, id responseObject, NSError *error);
+
 @protocol AFMultipartFormData;
 @interface AFHTTPClient : AFURLSessionManager <NSCoding, NSCopying>
 
@@ -297,8 +300,8 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSError *error))failure;
+                      success:(AFSuccessResponseBlock)success
+                      failure:(AFFailureResponseBlock)failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `HEAD` request.
@@ -313,7 +316,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
                        success:(void (^)(NSHTTPURLResponse *response))success
-                       failure:(void (^)(NSError *error))failure;
+                       failure:(AFFailureResponseBlock)failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `POST` request.
@@ -327,8 +330,8 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSError *error))failure;
+                       success:(AFSuccessResponseBlock)success
+                       failure:(AFFailureResponseBlock)failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a multipart `POST` request.
@@ -344,8 +347,8 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSError *error))failure;
+                       success:(AFSuccessResponseBlock)success
+                       failure:(AFFailureResponseBlock)failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `PUT` request.
@@ -359,8 +362,8 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSError *error))failure;
+                      success:(AFSuccessResponseBlock)success
+                      failure:(AFFailureResponseBlock)failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `PATCH` request.
@@ -374,8 +377,8 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
-                        success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                        failure:(void (^)(NSError *error))failure;
+                        success:(AFSuccessResponseBlock)success
+                        failure:(AFFailureResponseBlock)failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `DELETE` request.
@@ -389,8 +392,8 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
-                         success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                         failure:(void (^)(NSError *error))failure;
+                         success:(AFSuccessResponseBlock)success
+                         failure:(AFFailureResponseBlock)failure;
 
 ///-------------------------
 /// @name Running Data Tasks
@@ -405,7 +408,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
                                       success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                      failure:(void (^)(NSError *error))failure;
+                                      failure:(AFFailureResponseBlock)failure;
 
 
 ///---------------------------

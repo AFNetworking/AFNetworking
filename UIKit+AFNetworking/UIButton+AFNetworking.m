@@ -113,7 +113,7 @@
         } else if (responseObject) {
             [self setValue:responseObject forKeyPath:keyPath];
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         if (failure) {
             failure(error);
         }

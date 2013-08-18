@@ -430,8 +430,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSError *error))failure
+                      success:(AFSuccessResponseBlock)success
+                      failure:(AFFailureResponseBlock)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:URLString parameters:parameters];
 
@@ -439,9 +439,9 @@ typedef id AFNetworkReachabilityRef;
         if (success) {
             success(response, responseObject);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         if (failure) {
-            failure(error);
+            failure(response, responseObject, error);
         }
     }];
 
@@ -453,7 +453,7 @@ typedef id AFNetworkReachabilityRef;
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
                        success:(void (^)(NSHTTPURLResponse *response))success
-                       failure:(void (^)(NSError *error))failure
+                       failure:(AFFailureResponseBlock)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"HEAD" URLString:URLString parameters:parameters];
 
@@ -461,9 +461,9 @@ typedef id AFNetworkReachabilityRef;
         if (success) {
             success(response);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         if (failure) {
-            failure(error);
+            failure(response, responseObject, error);
         }
     }];
 
@@ -474,8 +474,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSError *error))failure
+                       success:(AFSuccessResponseBlock)success
+                       failure:(AFFailureResponseBlock)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"POST" URLString:URLString parameters:parameters];
 
@@ -483,9 +483,9 @@ typedef id AFNetworkReachabilityRef;
         if (success) {
             success(response, responseObject);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         if (failure) {
-            failure(error);
+            failure(response, responseObject, error);
         }
     }];
 
@@ -497,8 +497,8 @@ typedef id AFNetworkReachabilityRef;
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSError *error))failure
+                       success:(AFSuccessResponseBlock)success
+                       failure:(AFFailureResponseBlock)failure
 {
     NSMutableURLRequest *request = [self multipartFormRequestWithMethod:@"POST" URLString:URLString parameters:parameters constructingBodyWithBlock:block];
 
@@ -506,9 +506,9 @@ typedef id AFNetworkReachabilityRef;
         if (success) {
             success(response, responseObject);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         if (failure) {
-            failure(error);
+            failure(response, responseObject, error);
         }
     }];
 
@@ -519,8 +519,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSError *error))failure
+                      success:(AFSuccessResponseBlock)success
+                      failure:(AFFailureResponseBlock)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PUT" URLString:URLString parameters:parameters];
 
@@ -528,9 +528,9 @@ typedef id AFNetworkReachabilityRef;
         if (success) {
             success(response, responseObject);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         if (failure) {
-            failure(error);
+            failure(response, responseObject, error);
         }
     }];
 
@@ -541,8 +541,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
-                        success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                        failure:(void (^)(NSError *error))failure
+                        success:(AFSuccessResponseBlock)success
+                        failure:(AFFailureResponseBlock)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PATCH" URLString:URLString parameters:parameters];
 
@@ -550,9 +550,9 @@ typedef id AFNetworkReachabilityRef;
         if (success) {
             success(response, responseObject);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         if (failure) {
-            failure(error);
+            failure(response, responseObject, error);
         }
     }];
     
@@ -563,8 +563,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
-                         success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                         failure:(void (^)(NSError *error))failure
+                         success:(AFSuccessResponseBlock)success
+                         failure:(AFFailureResponseBlock)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"DELETE" URLString:URLString parameters:parameters];
 
@@ -572,9 +572,9 @@ typedef id AFNetworkReachabilityRef;
         if (success) {
             success(response, responseObject);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         if (failure) {
-            failure(error);
+            failure(response, responseObject, error);
         }
     }];
 
@@ -587,12 +587,13 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
                                       success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                      failure:(void (^)(NSError *error))failure
+                                      failure:(AFFailureResponseBlock)failure
 {
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
         if (error) {
             if (failure) {
-                failure(error);
+                failure(HTTPResponse, data, error);
             }
         } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
@@ -602,11 +603,11 @@ typedef id AFNetworkReachabilityRef;
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (serializationError) {
                         if (failure) {
-                            failure(serializationError);
+                            failure(HTTPResponse, data, serializationError);
                         }
                     } else {
                         if (success) {
-                            success((NSHTTPURLResponse *)response, self.responseSerializer, responseObject);
+                            success(HTTPResponse, self.responseSerializer, responseObject);
                         }
                     }
                 });
@@ -671,7 +672,8 @@ typedef id AFNetworkReachabilityRef;
         } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 NSError *serializationError = nil;
-                id responseObject = [self.responseSerializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
+                NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
+                id responseObject = [self.responseSerializer responseObjectForResponse:HTTPResponse data:data error:&serializationError];
 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (serializationError) {
@@ -680,7 +682,7 @@ typedef id AFNetworkReachabilityRef;
                         }
                     } else {
                         if (success) {
-                            success((NSHTTPURLResponse *)response, self.responseSerializer, responseObject);
+                            success(HTTPResponse, self.responseSerializer, responseObject);
                         }
                     }
                 });
