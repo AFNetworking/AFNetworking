@@ -62,7 +62,7 @@
     expect(reachabilityStatus).will.equal(@(AFNetworkReachabilityStatusReachableViaWiFi));
 }
 
-- (void)testJSONRequestOperationContruction {
+- (void)testJSONRequestOperationConstruction {
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 
@@ -80,7 +80,7 @@
     expect([operation class]).to.equal([AFHTTPRequestOperation class]);
 }
 
-- (void)testXMLRequestOperationContruction {
+- (void)testXMLRequestOperationConstruction {
     NSMutableURLRequest *request = [self.client requestWithMethod:@"GET" path:@"/path" parameters:nil];
     [request setValue:@"application/xml" forHTTPHeaderField:@"Accept"];
 
