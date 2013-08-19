@@ -613,6 +613,8 @@ typedef id AFNetworkReachabilityRef;
             });
         }
     }];
+    
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
 
     return task;
 }
@@ -649,6 +651,8 @@ typedef id AFNetworkReachabilityRef;
             });
         }
     }];
+    
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
 
     if (progress) {
         [self setUploadProgressForTask:task usingBlock:progress];
@@ -687,6 +691,8 @@ typedef id AFNetworkReachabilityRef;
             });
         }
     }];
+    
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
 
     if (progress) {
         [self setUploadProgressForTask:task usingBlock:progress];
@@ -755,6 +761,27 @@ typedef id AFNetworkReachabilityRef;
     }
 
     return task;
+}
+
+#pragma mark - NSKeyValueObserving 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+    if([keyPath isEqualToString:@"state"]){
+        NSURLSessionTask * task = (NSURLSessionTask*)object;
+        switch (task.state) {
+            case NSURLSessionTaskStateRunning:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidStartNotification object:task];
+                break;
+            case NSURLSessionTaskStateSuspended:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidSuspendNotification object:task];
+                break;
+            case NSURLSessionTaskStateCompleted:
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task];
+                [task removeObserver:self forKeyPath:@"state"];
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 #pragma mark - NSCoding

@@ -24,6 +24,7 @@
 
 NSString * const AFNetworkingTaskDidStartNotification = @"com.alamofire.networking.task.start";
 NSString * const AFNetworkingTaskDidFinishNotification = @"com.alamofire.networking.task.finish";
+NSString * const AFNetworkingTaskDidSuspendNotification = @"com.alamofire.networking.task.suspend";;
 NSString * const AFURLSessionDidInvalidateNotification = @"com.alamofire.networking.session.invalidate";
 NSString * const AFURLSessionDownloadTaskDidFailToMoveFileNotification = @"com.alamofire.networking.session.download.file-manager-error";
 
@@ -339,8 +340,6 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task];
-
     if (self.taskDidComplete) {
         self.taskDidComplete(session, task, error);
     }
@@ -412,8 +411,6 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:downloadTask];
-
     if (self.downloadTaskDidFinishDownloading) {
         NSURL *fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
         if (fileURL) {
