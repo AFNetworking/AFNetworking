@@ -67,16 +67,14 @@ static dispatch_queue_t json_request_operation_processing_queue() {
     [self.lock lock];
     if (!_responseJSON && [self.responseData length] > 0 && [self isFinished] && !self.JSONError) {
         NSError *error = nil;
-
+        
         // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
         // See https://github.com/rails/rails/issues/1742
-        if (self.responseString && ![self.responseString isEqualToString:@" "]) {
+        if (self.responseData && !(self.responseData.length == 1 && [self.responseString isEqualToString:@" "])) {
             // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
             // See http://stackoverflow.com/a/12843465/157142
-            NSData *data = [self.responseString dataUsingEncoding:NSUTF8StringEncoding];
-
-            if (data) {
-                self.responseJSON = [NSJSONSerialization JSONObjectWithData:data options:self.JSONReadingOptions error:&error];
+            if (self.responseData) {
+                self.responseJSON = [NSJSONSerialization JSONObjectWithData:self.responseData options:self.JSONReadingOptions error:&error];
             } else {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
                 [userInfo setValue:@"Operation responseData failed decoding as a UTF-8 string" forKey:NSLocalizedDescriptionKey];
@@ -84,11 +82,11 @@ static dispatch_queue_t json_request_operation_processing_queue() {
                 error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
             }
         }
-
+        
         self.JSONError = error;
     }
     [self.lock unlock];
-
+    
     return _responseJSON;
 }
 
