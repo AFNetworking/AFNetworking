@@ -430,8 +430,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(AFSuccessResponseBlock)success
-                      failure:(AFFailureResponseBlock)failure
+                      success:(NSHTTPURLResponse *response, id responseObject)success
+                      failure:(NSHTTPURLResponse *response, id responseObject, NSError *error)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:URLString parameters:parameters];
 
@@ -453,7 +453,7 @@ typedef id AFNetworkReachabilityRef;
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
                        success:(void (^)(NSHTTPURLResponse *response))success
-                       failure:(AFFailureResponseBlock)failure
+                       failure:(NSHTTPURLResponse *response, id responseObject, NSError *error)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"HEAD" URLString:URLString parameters:parameters];
 
@@ -474,8 +474,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
-                       success:(AFSuccessResponseBlock)success
-                       failure:(AFFailureResponseBlock)failure
+                       success:(NSHTTPURLResponse *response, id responseObject)success
+                       failure:(NSHTTPURLResponse *response, id responseObject, NSError *error)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"POST" URLString:URLString parameters:parameters];
 
@@ -497,8 +497,8 @@ typedef id AFNetworkReachabilityRef;
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                       success:(AFSuccessResponseBlock)success
-                       failure:(AFFailureResponseBlock)failure
+                       success:(NSHTTPURLResponse *response, id responseObject)success
+                       failure:(NSHTTPURLResponse *response, id responseObject, NSError *error)failure
 {
     NSMutableURLRequest *request = [self multipartFormRequestWithMethod:@"POST" URLString:URLString parameters:parameters constructingBodyWithBlock:block];
 
@@ -519,8 +519,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(AFSuccessResponseBlock)success
-                      failure:(AFFailureResponseBlock)failure
+                      success:(NSHTTPURLResponse *response, id responseObject)success
+                      failure:(NSHTTPURLResponse *response, id responseObject, NSError *error)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PUT" URLString:URLString parameters:parameters];
 
@@ -541,8 +541,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
-                        success:(AFSuccessResponseBlock)success
-                        failure:(AFFailureResponseBlock)failure
+                        success:(NSHTTPURLResponse *response, id responseObject)success
+                        failure:(NSHTTPURLResponse *response, id responseObject, NSError *error)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PATCH" URLString:URLString parameters:parameters];
 
@@ -563,8 +563,8 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
-                         success:(AFSuccessResponseBlock)success
-                         failure:(AFFailureResponseBlock)failure
+                         success:(NSHTTPURLResponse *response, id responseObject)success
+                         failure:(NSHTTPURLResponse *response, id responseObject, NSError *error)failure
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"DELETE" URLString:URLString parameters:parameters];
 
@@ -587,7 +587,7 @@ typedef id AFNetworkReachabilityRef;
 
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
                                       success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                      failure:(AFFailureResponseBlock)failure
+                                      failure:(NSHTTPURLResponse *response, id responseObject, NSError *error)failure
 {
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
