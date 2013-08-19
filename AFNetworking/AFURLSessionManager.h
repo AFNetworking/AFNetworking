@@ -269,6 +269,11 @@ extern NSString * const AFNetworkingTaskDidStartNotification; // TODO Unclear ho
 extern NSString * const AFNetworkingTaskDidFinishNotification;
 
 /**
+ Posted when a task suspends.
+ */
+extern NSString * const AFNetworkingTaskDidSuspendNotification;
+
+/**
  Posted when a session is invalidated.
  */
 extern NSString * const AFURLSessionDidInvalidateNotification;
