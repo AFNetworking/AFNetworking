@@ -55,8 +55,9 @@
         if (block) {
             block([NSArray arrayWithArray:mutablePosts], nil);
         }
-    } failure:^(NSError *error) {
+    } failure:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         if (block) {
+            NSLog(@"Error response code: %d", [response statusCode]);
             block([NSArray array], error);
         }
     }];
