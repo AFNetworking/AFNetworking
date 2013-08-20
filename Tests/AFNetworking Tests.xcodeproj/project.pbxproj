@@ -8,26 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		0BAD1A5426FC47BF8790D245 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
-		2544EC45173BE382004117E8 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC44173BE382004117E8 /* SenTestingKit.framework */; };
 		2544EC47173BE382004117E8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC46173BE382004117E8 /* UIKit.framework */; };
 		2544EC48173BE382004117E8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC35173BE382004117E8 /* Foundation.framework */; };
-		2544EC96173BFAA8004117E8 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC44173BE382004117E8 /* SenTestingKit.framework */; };
 		2544EC97173BFAA8004117E8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC80173BFAA8004117E8 /* Cocoa.framework */; };
-		25801540173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */; };
-		25801541173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */; };
-		25801542173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */; };
-		25801543173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */; };
-		25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153F173EB3A70026AA6E /* AFNetworkingTests.m */; };
-		25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153F173EB3A70026AA6E /* AFNetworkingTests.m */; };
 		2580154B173EB62E0026AA6E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC2A173D7DB30083E116 /* SystemConfiguration.framework */; };
 		2580154C173EB6340026AA6E /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC2C173D7DBA0083E116 /* CoreServices.framework */; };
 		25C4EC41173D86AE0083E116 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC32173D7DD20083E116 /* SystemConfiguration.framework */; };
 		25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */; };
-		29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
-		29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */; };
-		667B268117599C5800764906 /* AFImageRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 667B268017599C5800764906 /* AFImageRequestOperationTests.m */; };
-		A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
-		A7DC62AA17592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */; };
+		29C59C2C17A2F78F00EF1450 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29C59C2B17A2F78F00EF1450 /* XCTest.framework */; };
+		29C59C2D17A2F79300EF1450 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29C59C2B17A2F78F00EF1450 /* XCTest.framework */; };
+		29C59C3317A3086700EF1450 /* AFNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153F173EB3A70026AA6E /* AFNetworkingTests.m */; };
+		29C59C3417A3086700EF1450 /* AFNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2580153F173EB3A70026AA6E /* AFNetworkingTests.m */; };
+		29C59C4717A30A2500EF1450 /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C59C3F17A30A2000EF1450 /* AFHTTPClientTests.m */; };
+		29C59C4817A30A2500EF1450 /* AFHTTPSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C59C4017A30A2000EF1450 /* AFHTTPSerializerTests.m */; };
+		29C59C4917A30A2600EF1450 /* AFHTTPClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C59C3F17A30A2000EF1450 /* AFHTTPClientTests.m */; };
+		29C59C4A17A30A2600EF1450 /* AFHTTPSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C59C4017A30A2000EF1450 /* AFHTTPSerializerTests.m */; };
+		29C59C4C17A30ACB00EF1450 /* AFJSONSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C59C4B17A30ACB00EF1450 /* AFJSONSerializerTests.m */; };
+		29C59C4D17A30ACB00EF1450 /* AFJSONSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C59C4B17A30ACB00EF1450 /* AFJSONSerializerTests.m */; };
+		29D68C0E17A2F450005312F6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29D68C0D17A2F450005312F6 /* CoreGraphics.framework */; };
+		29D68C0F17A2F454005312F6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29D68C0D17A2F450005312F6 /* CoreGraphics.framework */; };
 		AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 		F8C6F282174D2C6200B154D5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
 		F8C6F283174D2C6200B154D5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
@@ -45,16 +44,13 @@
 
 /* Begin PBXFileReference section */
 		2544EC35173BE382004117E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		2544EC43173BE382004117E8 /* iOS Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2544EC44173BE382004117E8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		2544EC43173BE382004117E8 /* iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2544EC46173BE382004117E8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		2544EC80173BFAA8004117E8 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		2544EC83173BFAA8004117E8 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		2544EC84173BFAA8004117E8 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2544EC85173BFAA8004117E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2544EC95173BFAA8004117E8 /* OS X Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OS X Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
-		2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationTests.m; sourceTree = "<group>"; };
 		2580153E173EB3A70026AA6E /* AFNetworkingTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkingTests.h; sourceTree = "<group>"; };
 		2580153F173EB3A70026AA6E /* AFNetworkingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkingTests.m; sourceTree = "<group>"; };
 		25801549173EB4B40026AA6E /* Pods-ios.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Pods-ios.xcconfig"; path = "Pods/Pods-ios.xcconfig"; sourceTree = "<group>"; };
@@ -64,12 +60,19 @@
 		25C4EC2E173D7DC40083E116 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		25C4EC32173D7DD20083E116 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONRequestOperationTests.m; sourceTree = "<group>"; };
+		29C59C2B17A2F78F00EF1450 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		29C59C3F17A30A2000EF1450 /* AFHTTPClientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
+		29C59C4017A30A2000EF1450 /* AFHTTPSerializerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSerializerTests.m; sourceTree = "<group>"; };
+		29C59C4217A30A2000EF1450 /* AFHTTPClientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
+		29C59C4317A30A2000EF1450 /* AFHTTPRequestOperationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationTests.m; sourceTree = "<group>"; };
+		29C59C4417A30A2000EF1450 /* AFImageRequestOperationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFImageRequestOperationTests.m; sourceTree = "<group>"; };
+		29C59C4517A30A2000EF1450 /* AFJSONRequestOperationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFJSONRequestOperationTests.m; sourceTree = "<group>"; };
+		29C59C4617A30A2000EF1450 /* AFURLConnectionOperationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperationTests.m; sourceTree = "<group>"; };
+		29C59C4B17A30ACB00EF1450 /* AFJSONSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONSerializerTests.m; sourceTree = "<group>"; };
+		29D68C0D17A2F450005312F6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		667B268017599C5800764906 /* AFImageRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageRequestOperationTests.m; sourceTree = "<group>"; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperationTests.m; sourceTree = "<group>"; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
 		F8D62D39175ABF5E00C717C3 /* AFMockURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFMockURLProtocol.h; sourceTree = "<group>"; };
 		F8D62D3A175ABF5E00C717C3 /* AFMockURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFMockURLProtocol.m; sourceTree = "<group>"; };
@@ -84,9 +87,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29C59C2C17A2F78F00EF1450 /* XCTest.framework in Frameworks */,
+				29D68C0E17A2F450005312F6 /* CoreGraphics.framework in Frameworks */,
 				25C4EC42173D86B60083E116 /* MobileCoreServices.framework in Frameworks */,
 				25C4EC41173D86AE0083E116 /* SystemConfiguration.framework in Frameworks */,
-				2544EC45173BE382004117E8 /* SenTestingKit.framework in Frameworks */,
 				2544EC47173BE382004117E8 /* UIKit.framework in Frameworks */,
 				2544EC48173BE382004117E8 /* Foundation.framework in Frameworks */,
 				0BAD1A5426FC47BF8790D245 /* libPods-ios.a in Frameworks */,
@@ -97,9 +101,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29D68C0F17A2F454005312F6 /* CoreGraphics.framework in Frameworks */,
+				29C59C2D17A2F79300EF1450 /* XCTest.framework in Frameworks */,
 				2580154C173EB6340026AA6E /* CoreServices.framework in Frameworks */,
 				2580154B173EB62E0026AA6E /* SystemConfiguration.framework in Frameworks */,
-				2544EC96173BFAA8004117E8 /* SenTestingKit.framework in Frameworks */,
 				2544EC97173BFAA8004117E8 /* Cocoa.framework in Frameworks */,
 				AC11A74923B64A3096ACADFC /* libPods-osx.a in Frameworks */,
 			);
@@ -123,7 +128,7 @@
 		2544EC33173BE382004117E8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2544EC43173BE382004117E8 /* iOS Tests.octest */,
+				2544EC43173BE382004117E8 /* iOS Tests.xctest */,
 				2544EC95173BFAA8004117E8 /* OS X Tests.octest */,
 			);
 			name = Products;
@@ -132,13 +137,14 @@
 		2544EC34173BE382004117E8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				29C59C2B17A2F78F00EF1450 /* XCTest.framework */,
+				29D68C0D17A2F450005312F6 /* CoreGraphics.framework */,
 				25C4EC32173D7DD20083E116 /* SystemConfiguration.framework */,
 				25C4EC30173D7DCA0083E116 /* MobileCoreServices.framework */,
 				25C4EC2E173D7DC40083E116 /* CFNetwork.framework */,
 				25C4EC2C173D7DBA0083E116 /* CoreServices.framework */,
 				25C4EC2A173D7DB30083E116 /* SystemConfiguration.framework */,
 				2544EC35173BE382004117E8 /* Foundation.framework */,
-				2544EC44173BE382004117E8 /* SenTestingKit.framework */,
 				2544EC46173BE382004117E8 /* UIKit.framework */,
 				2544EC80173BFAA8004117E8 /* Cocoa.framework */,
 				2544EC82173BFAA8004117E8 /* Other Frameworks */,
@@ -162,15 +168,12 @@
 		25801548173EB3B00026AA6E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				29C59C3E17A30A2000EF1450 /* 2.0 Tests */,
+				29C59C4117A30A2000EF1450 /* LegacyTests */,
 				2580153E173EB3A70026AA6E /* AFNetworkingTests.h */,
+				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
 				F8D62D39175ABF5E00C717C3 /* AFMockURLProtocol.h */,
 				F8D62D3A175ABF5E00C717C3 /* AFMockURLProtocol.m */,
-				2580153F173EB3A70026AA6E /* AFNetworkingTests.m */,
-				A7DC62A817592E4800EBEC2F /* AFURLConnectionOperationTests.m */,
-				2580153B173EB3A70026AA6E /* AFHTTPRequestOperationTests.m */,
-				29A9CE2017456336002360C8 /* AFJSONRequestOperationTests.m */,
-				667B268017599C5800764906 /* AFImageRequestOperationTests.m */,
-				2580153A173EB3A70026AA6E /* AFHTTPClientTests.m */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
@@ -182,6 +185,28 @@
 				F8E801E9175AC34D008D3886 /* Certificates */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		29C59C3E17A30A2000EF1450 /* 2.0 Tests */ = {
+			isa = PBXGroup;
+			children = (
+				29C59C3F17A30A2000EF1450 /* AFHTTPClientTests.m */,
+				29C59C4017A30A2000EF1450 /* AFHTTPSerializerTests.m */,
+				29C59C4B17A30ACB00EF1450 /* AFJSONSerializerTests.m */,
+			);
+			path = "2.0 Tests";
+			sourceTree = "<group>";
+		};
+		29C59C4117A30A2000EF1450 /* LegacyTests */ = {
+			isa = PBXGroup;
+			children = (
+				29C59C4217A30A2000EF1450 /* AFHTTPClientTests.m */,
+				29C59C4317A30A2000EF1450 /* AFHTTPRequestOperationTests.m */,
+				29C59C4417A30A2000EF1450 /* AFImageRequestOperationTests.m */,
+				29C59C4517A30A2000EF1450 /* AFJSONRequestOperationTests.m */,
+				29C59C4617A30A2000EF1450 /* AFURLConnectionOperationTests.m */,
+			);
+			path = LegacyTests;
 			sourceTree = "<group>";
 		};
 		F8E801E9175AC34D008D3886 /* Certificates */ = {
@@ -213,8 +238,8 @@
 			);
 			name = "iOS Tests";
 			productName = AFNetworkingTests;
-			productReference = 2544EC43173BE382004117E8 /* iOS Tests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 2544EC43173BE382004117E8 /* iOS Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		2544EC94173BFAA8004117E8 /* OS X Tests */ = {
 			isa = PBXNativeTarget;
@@ -322,12 +347,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25801540173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */,
-				25801542173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
-				25801546173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
-				29A9CE2117456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
-				A7DC62A917592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */,
-				667B268117599C5800764906 /* AFImageRequestOperationTests.m in Sources */,
+				29C59C4C17A30ACB00EF1450 /* AFJSONSerializerTests.m in Sources */,
+				29C59C4717A30A2500EF1450 /* AFHTTPClientTests.m in Sources */,
+				29C59C3317A3086700EF1450 /* AFNetworkingTests.m in Sources */,
+				29C59C4817A30A2500EF1450 /* AFHTTPSerializerTests.m in Sources */,
 				F8D62D3B175ABF5E00C717C3 /* AFMockURLProtocol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -336,11 +359,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25801541173EB3A70026AA6E /* AFHTTPClientTests.m in Sources */,
-				25801543173EB3A70026AA6E /* AFHTTPRequestOperationTests.m in Sources */,
-				25801547173EB3A70026AA6E /* AFNetworkingTests.m in Sources */,
-				29A9CE2217456336002360C8 /* AFJSONRequestOperationTests.m in Sources */,
-				A7DC62AA17592E4800EBEC2F /* AFURLConnectionOperationTests.m in Sources */,
+				29C59C4D17A30ACB00EF1450 /* AFJSONSerializerTests.m in Sources */,
+				29C59C4917A30A2600EF1450 /* AFHTTPClientTests.m in Sources */,
+				29C59C3417A3086700EF1450 /* AFNetworkingTests.m in Sources */,
+				29C59C4A17A30A2600EF1450 /* AFHTTPSerializerTests.m in Sources */,
 				F8D62D3C175ABF5E00C717C3 /* AFMockURLProtocol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -406,14 +428,13 @@
 			baseConfigurationReference = 25801549173EB4B40026AA6E /* Pods-ios.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(SYSTEM_APPS_DIR)/Xcode5-DP3.app/Contents/Developer/Library/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AFNetworking-Prefix.pch";
 				INFOPLIST_FILE = "AFNetworkingTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -422,14 +443,13 @@
 			baseConfigurationReference = 25801549173EB4B40026AA6E /* Pods-ios.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(SYSTEM_APPS_DIR)/Xcode5-DP3.app/Contents/Developer/Library/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AFNetworking-Prefix.pch";
 				INFOPLIST_FILE = "AFNetworkingTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};
