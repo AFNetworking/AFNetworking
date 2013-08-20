@@ -93,10 +93,6 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 @protocol AFMultipartFormData;
 @interface AFHTTPClient : AFURLSessionManager <NSCoding, NSCopying>
 
-///---------------------------------------
-/// @name Accessing HTTP Client Properties
-///---------------------------------------
-
 /**
  The URL used to monitor reachability, and construct requests from relative paths in methods like `requestWithMethod:URLString:parameters:`, and the `GET` / `POST` / et al. convenience methods.
  */
@@ -108,13 +104,6 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @warning `requestSerializer` must not be `nil`.
  */
 @property (nonatomic, strong) id <AFURLRequestSerialization> requestSerializer;
-
-/**
- Responses sent from the server in data tasks created with `dataTaskWithRequest:success:failure:` and run using the `GET` / `POST` / et al. convenience methods are automatically validated and serialized by the response serializer. By default, this property is set to a compound serializer, which serializes data from responses with either a `application/json` or `application/x-plist` MIME type, and falls back to the raw data object. The serializer validates the status code to be in the `2XX` range, denoting success. If the response serializer generates an error in `-responseObjectForResponse:data:error:`, the `failure` callback of the session task or request operation will be executed; otherwise, the `success` callback will be executed.
- 
- @warning `responseSerializer` must not be `nil`.
- */
-@property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
 
 /**
  The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
@@ -293,7 +282,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
 
- @see -runDataTaskWithRequest:success:failure:
+ @see -dataTaskWithRequest:success:failure:
  */
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
@@ -308,7 +297,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @param success A block object to be executed when the task finishes successfully. This block has no return value and takes a single arguments: the server response.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
 
- @see -runDataTaskWithRequest:success:failure:
+ @see -dataTaskWithRequest:success:failure:
  */
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
@@ -323,7 +312,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
 
- @see -runDataTaskWithRequest:success:failure:
+ @see -dataTaskWithRequest:success:failure:
  */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
@@ -339,7 +328,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
 
- @see -runDataTaskWithRequest:success:failure:
+ @see -dataTaskWithRequest:success:failure:
  */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
@@ -355,7 +344,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
 
- @see -runDataTaskWithRequest:success:failure:
+ @see -dataTaskWithRequest:success:failure:
  */
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
@@ -370,7 +359,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
 
- @see -runDataTaskWithRequest:success:failure:
+ @see -dataTaskWithRequest:success:failure:
  */
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
@@ -385,92 +374,12 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the server response, and the response object created by the client response serializer.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
 
- @see -runDataTaskWithRequest:success:failure:
+ @see -dataTaskWithRequest:success:failure:
  */
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
                          success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
                          failure:(void (^)(NSError *error))failure;
-
-///-------------------------
-/// @name Running Data Tasks
-///-------------------------
-
-/**
- Creates an `NSURLSessionDataTask` with the specified request.
- 
- @param request The HTTP request for the request.
- @param success A block object to be executed when the task finishes successfully. This block has no return value and takes three arguments: the server response, the serializer used to serialize the response data, and the response object created by that serializer.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
- */
-- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
-                                      success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                      failure:(void (^)(NSError *error))failure;
-
-
-///---------------------------
-/// @name Running Upload Tasks
-///---------------------------
-
-/**
- Creates an `NSURLSessionUploadTask` with the specified request for a local file.
-
- @param request The HTTP request for the request.
- @param fileURL A URL to the local file to be uploaded.
- @param progress A block object to be executed multiple times as data is uploaded. This block has no return value and takes three arguments: the number of bytes written since the last time the progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body.
- @param success A block object to be executed when the task finishes successfully. This block has no return value and takes three arguments: the server response, the serializer used to serialize the response data, and the response object created by that serializer.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
- */
-- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
-                                         fromFile:(NSURL *)fileURL
-                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
-                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                          failure:(void (^)(NSError *error))failure;
-
-/**
- Creates an `NSURLSessionUploadTask` with the specified request for an HTTP body.
-
- @param request The HTTP request for the request.
- @param bodyData A data object containing the HTTP body to be uploaded. 
- @param progress A block object to be executed multiple times as data is uploaded. This block has no return value and takes three arguments: the number of bytes written since the last time the progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body.
- @param success A block object to be executed when the task finishes successfully. This block has no return value and takes three arguments: the server response, the serializer used to serialize the response data, and the response object created by that serializer.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
- */
-- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
-                                         fromData:(NSData *)bodyData
-                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
-                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                          failure:(void (^)(NSError *error))failure;
-
-///-----------------------------
-/// @name Running Download Tasks
-///-----------------------------
-
-/**
- Creates an `NSURLSessionDownloadTask` with the specified request.
-
- @param request The HTTP request for the request.
- @param progress A block object to be executed multiple times as data is downloaded. This block has no return value and takes three arguments: the number of bytes read since the last time the progress block was called, the total bytes read, and the total bytes expected to be read from the server, as initially determined by the expected content size of the response object.
- @param success A block object to be executed when the task finishes successfully. This block takes a single argument, the server response, and returns the desired file URL of the resulting download. The temporary file used during the download will be automatically deleted after being moved to the returned URL.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
- */
-- (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
-                                             progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
-                                              success:(NSURL * (^)(NSHTTPURLResponse *response))success
-                                              failure:(void (^)(NSError *error))failure;
-
-/**
- Creates an `NSURLSessionDownloadTask` with the specified resume data.
-
- @param resumeData The data used to resume downloading.
- @param progress A block object to be executed multiple times as data is downloaded. This block has no return value and takes three arguments: the number of bytes read since the last time the progress block was called, the total bytes read, and the total bytes expected to be read from the server, as initially determined by the expected content size of the response object.
- @param success A block object to be executed when the task finishes successfully. This block takes a single argument, the server response, and returns the desired file URL of the resulting download. The temporary file used during the download will be automatically deleted after being moved to the returned URL.
- @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred.
- */
-- (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
-                                                progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
-                                                 success:(NSURL * (^)(NSHTTPURLResponse *response))success
-                                                 failure:(void (^)(NSError *error))failure;
 
 @end
 

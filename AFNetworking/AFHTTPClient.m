@@ -43,8 +43,6 @@
 NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
 NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworkingReachabilityNotificationStatusItem";
 
-static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
-
 typedef SCNetworkReachabilityRef AFNetworkReachabilityRef;
 typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus status);
 
@@ -312,12 +310,6 @@ typedef id AFNetworkReachabilityRef;
     _requestSerializer = requestSerializer;
 }
 
-- (void)setResponseSerializer:(id<AFURLResponseSerialization>)responseSerializer {
-    NSParameterAssert(responseSerializer);
-
-    _responseSerializer = responseSerializer;
-}
-
 #pragma mark -
 
 - (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)request
@@ -437,9 +429,9 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
         if (success) {
-            success(response, responseObject);
+            success((NSHTTPURLResponse *)response, responseObject);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -459,9 +451,9 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"HEAD" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id __unused responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
         if (success) {
-            success(response);
+            success((NSHTTPURLResponse *)response);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -481,9 +473,9 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"POST" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
         if (success) {
-            success(response, responseObject);
+            success((NSHTTPURLResponse *)response, responseObject);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -504,9 +496,9 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self multipartFormRequestWithMethod:@"POST" URLString:URLString parameters:parameters constructingBodyWithBlock:block];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
         if (success) {
-            success(response, responseObject);
+            success((NSHTTPURLResponse *)response, responseObject);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -526,9 +518,9 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PUT" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
         if (success) {
-            success(response, responseObject);
+            success((NSHTTPURLResponse *)response, responseObject);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -548,9 +540,9 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PATCH" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
         if (success) {
-            success(response, responseObject);
+            success((NSHTTPURLResponse *)response, responseObject);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -570,9 +562,9 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"DELETE" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
         if (success) {
-            success(response, responseObject);
+            success((NSHTTPURLResponse *)response, responseObject);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -583,221 +575,6 @@ typedef id AFNetworkReachabilityRef;
     [task resume];
 
     return task;
-}
-
-#pragma mark -
-
-- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
-                                      success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                      failure:(void (^)(NSError *error))failure
-{
-    NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error) {
-            if (failure) {
-                failure(error);
-            }
-        } else {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                NSError *serializationError = nil;
-                id responseObject = [self.responseSerializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
-
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if (serializationError) {
-                        if (failure) {
-                            failure(serializationError);
-                        }
-                    } else {
-                        if (success) {
-                            success((NSHTTPURLResponse *)response, self.responseSerializer, responseObject);
-                        }
-                    }
-                });
-            });
-        }
-    }];
-    
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
-
-    return task;
-}
-
-#pragma mark -
-
-- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
-                                         fromFile:(NSURL *)fileURL
-                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
-                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                          failure:(void (^)(NSError *error))failure
-{
-    NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromFile:fileURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error) {
-            if (failure) {
-                failure(error);
-            }
-        } else {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                NSError *serializationError = nil;
-                id responseObject = [self.responseSerializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
-
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if (serializationError) {
-                        if (failure) {
-                            failure(serializationError);
-                        }
-                    } else {
-                        if (success) {
-                            success((NSHTTPURLResponse *)response, self.responseSerializer, responseObject);
-                        }
-                    }
-                });
-            });
-        }
-    }];
-    
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
-
-    if (progress) {
-        [self setUploadProgressForTask:task usingBlock:progress];
-    }
-    
-    return task;
-}
-
-- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
-                                         fromData:(NSData *)bodyData
-                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
-                                          success:(void (^)(NSHTTPURLResponse *response, id <AFURLResponseSerialization> serializer, id responseObject))success
-                                          failure:(void (^)(NSError *error))failure
-{
-    NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromData:bodyData completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error) {
-            if (failure) {
-                failure(error);
-            }
-        } else {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                NSError *serializationError = nil;
-                id responseObject = [self.responseSerializer responseObjectForResponse:(NSHTTPURLResponse *)response data:data error:&serializationError];
-
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if (serializationError) {
-                        if (failure) {
-                            failure(serializationError);
-                        }
-                    } else {
-                        if (success) {
-                            success((NSHTTPURLResponse *)response, self.responseSerializer, responseObject);
-                        }
-                    }
-                });
-            });
-        }
-    }];
-    
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
-
-    if (progress) {
-        [self setUploadProgressForTask:task usingBlock:progress];
-    }
-    
-    return task;
-}
-
-#pragma mark -
-
-- (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
-                                             progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
-                                              success:(NSURL * (^)(NSHTTPURLResponse *response))success
-                                              failure:(void (^)(NSError *error))failure
-{
-    NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
-        if (error) {
-            if (failure) {
-                failure(error);
-            }
-        } else {
-            if (success) {
-                NSURL *destinationPath = success((NSHTTPURLResponse *)response);
-
-                NSError *fileManagerError = nil;
-                [[NSFileManager defaultManager] moveItemAtURL:targetPath toURL:destinationPath error:&fileManagerError];
-                if (fileManagerError && failure) {
-                    failure(fileManagerError);
-                }
-            }
-        }
-    }];
-
-    if (progress) {
-        [self setDownloadProgressForTask:task usingBlock:progress];
-    }
-
-    return task;
-}
-
-- (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
-                                                progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
-                                                 success:(NSURL * (^)(NSHTTPURLResponse *response))success
-                                                 failure:(void (^)(NSError *error))failure
-{
-    NSURLSessionDownloadTask *task = [self.session downloadTaskWithResumeData:resumeData completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
-        if (error) {
-            if (failure) {
-                failure(error);
-            }
-        } else {
-            if (success) {
-                NSURL *destinationPath = success((NSHTTPURLResponse *)response);
-
-                NSError *fileManagerError = nil;
-                [[NSFileManager defaultManager] moveItemAtURL:targetPath toURL:destinationPath error:&fileManagerError];
-                if (fileManagerError && failure) {
-                    failure(fileManagerError);
-                }
-            }
-        }
-    }];
-
-    if (progress) {
-        [self setDownloadProgressForTask:task usingBlock:progress];
-    }
-
-    return task;
-}
-
-#pragma mark - NSKeyValueObserving
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
-{
-    if (context == AFTaskStateChangedContext && [object respondsToSelector:@selector(state)]) {
-        NSString *notificationName = nil;
-        switch ([(NSURLSessionTask *)object state]) {
-            case NSURLSessionTaskStateRunning:
-                notificationName = AFNetworkingTaskDidStartNotification;
-                break;
-            case NSURLSessionTaskStateSuspended:
-                notificationName = AFNetworkingTaskDidSuspendNotification;
-                break;
-            case NSURLSessionTaskStateCompleted:
-                notificationName = AFNetworkingTaskDidFinishNotification;
-                [object removeObserver:self forKeyPath:@"state" context:context];
-                break;
-            default:
-                break;
-        }
-
-        if (notificationName) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-                [notificationCenter postNotificationName:notificationName object:object];
-            });
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 #pragma mark - NSCoding

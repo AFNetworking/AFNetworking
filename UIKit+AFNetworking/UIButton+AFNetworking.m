@@ -104,12 +104,11 @@
                   success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
                   failure:(void (^)(NSError *error))failure
 {
-    
     [self setValue:placeholderImage forKeyPath:keyPath];
 
-    NSURLSessionTask *task = [[[self class] af_sharedHTTPClient] dataTaskWithRequest:urlRequest success:^(NSHTTPURLResponse *response, id <AFURLResponseSerialization> __unused serializer, id responseObject) {
+    NSURLSessionTask *task = [[[self class] af_sharedHTTPClient] dataTaskWithRequest:urlRequest success:^(NSURLResponse *response, id responseObject) {
         if (success) {
-            success(response, responseObject);
+            success((NSHTTPURLResponse *)response, responseObject);
         } else if (responseObject) {
             [self setValue:responseObject forKeyPath:keyPath];
         }
