@@ -70,7 +70,7 @@
     _inputStream = nil;
 }
 
-- (void) writeBytesIfPossible {
+- (void)writeBytesIfPossible {
     while ([self.outputStream hasSpaceAvailable] && self.bytesWritten < [self.data length]) {
         const uint8_t *bytes = [self.data bytes];
         NSInteger bytesWritten = [self.outputStream write:bytes maxLength:[self.data length] - self.bytesWritten];
