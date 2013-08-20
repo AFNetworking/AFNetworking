@@ -43,6 +43,8 @@
 NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
 NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworkingReachabilityNotificationStatusItem";
 
+static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
+
 typedef SCNetworkReachabilityRef AFNetworkReachabilityRef;
 typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus status);
 
@@ -101,8 +103,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #else
 typedef id AFNetworkReachabilityRef;
 #endif
-
-static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
 
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
 - (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
@@ -767,22 +767,33 @@ static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
 
 #pragma mark - NSKeyValueObserving
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-    if (context == AFTaskStateChangedContext) {
-        NSURLSessionTask * task = (NSURLSessionTask*)object;
-        switch (task.state) {
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if (context == AFTaskStateChangedContext && [object respondsToSelector:@selector(state)]) {
+        NSString *notificationName = nil;
+        switch ([(NSURLSessionTask *)object state]) {
             case NSURLSessionTaskStateRunning:
-                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidStartNotification object:task];
+                notificationName = AFNetworkingTaskDidStartNotification;
                 break;
             case NSURLSessionTaskStateSuspended:
-                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidSuspendNotification object:task];
+                notificationName = AFNetworkingTaskDidSuspendNotification;
                 break;
             case NSURLSessionTaskStateCompleted:
-                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task];
-                [task removeObserver:self forKeyPath:@"state" context:context];
+                notificationName = AFNetworkingTaskDidFinishNotification;
+                [object removeObserver:self forKeyPath:@"state" context:context];
                 break;
             default:
                 break;
+        }
+
+        if (notificationName) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+                [notificationCenter postNotificationName:notificationName object:object];
+            });
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
