@@ -102,6 +102,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 typedef id AFNetworkReachabilityRef;
 #endif
 
+static void * TaskStateChangedContext = &TaskStateChangedContext;
+
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
 - (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
                     stringEncoding:(NSStringEncoding)encoding;
@@ -614,7 +616,7 @@ typedef id AFNetworkReachabilityRef;
         }
     }];
     
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:TaskStateChangedContext];
 
     return task;
 }
@@ -652,7 +654,7 @@ typedef id AFNetworkReachabilityRef;
         }
     }];
     
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:TaskStateChangedContext];
 
     if (progress) {
         [self setUploadProgressForTask:task usingBlock:progress];
@@ -692,7 +694,7 @@ typedef id AFNetworkReachabilityRef;
         }
     }];
     
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:TaskStateChangedContext];
 
     if (progress) {
         [self setUploadProgressForTask:task usingBlock:progress];
@@ -765,7 +767,7 @@ typedef id AFNetworkReachabilityRef;
 
 #pragma mark - NSKeyValueObserving 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-    if([keyPath isEqualToString:@"state"]){
+    if(context == TaskStateChangedContext){
         NSURLSessionTask * task = (NSURLSessionTask*)object;
         switch (task.state) {
             case NSURLSessionTaskStateRunning:
@@ -776,11 +778,13 @@ typedef id AFNetworkReachabilityRef;
                 break;
             case NSURLSessionTaskStateCompleted:
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task];
-                [task removeObserver:self forKeyPath:@"state"];
+                [task removeObserver:self forKeyPath:@"state" context:context];
                 break;
             default:
                 break;
         }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
