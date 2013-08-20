@@ -261,7 +261,7 @@
 /**
  Posted when a task begins executing.
  */
-extern NSString * const AFNetworkingTaskDidStartNotification; // TODO Unclear how, or if possible, to determine when tasks start, with no corresponding delegate methods
+extern NSString * const AFNetworkingTaskDidStartNotification;
 
 /**
  Posted when a task finishes.
