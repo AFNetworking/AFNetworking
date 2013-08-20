@@ -21,7 +21,85 @@
 // THE SOFTWARE.
 
 #import "AFNetworkingTests.h"
-#import "AFBufferedInputStreamProvider.h"
+
+@interface AFBufferedInputStreamProvider : NSObject <NSStreamDelegate>
+@property (nonatomic, strong) NSData *data;
+@property (nonatomic, strong) NSInputStream *inputStream;
+@property (nonatomic, strong) NSOutputStream *outputStream;
+@property (nonatomic, readonly) NSUInteger bytesWritten;
+
+- (id)initWithData:(NSData *)data;
+@end
+
+@implementation AFBufferedInputStreamProvider
+
+- (id)initWithData:(NSData *)data {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    self.data = data;
+
+    CFReadStreamRef readStream;
+    CFWriteStreamRef writeStream;
+    CFStreamCreateBoundPair(NULL, &readStream, &writeStream, 16);
+    
+    self.inputStream = CFBridgingRelease(readStream);
+    
+    self.outputStream = CFBridgingRelease(writeStream);
+    self.outputStream.delegate = self;
+    [self.outputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    
+    [self.outputStream open];
+
+    return self;
+}
+
+- (void)dealloc {
+    [self cleanup];
+}
+
+- (void)cleanup {
+    [self.outputStream close];
+    self.outputStream.delegate = nil;
+    [self.outputStream removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    _outputStream = nil;
+
+    [self.inputStream close];
+    _inputStream = nil;
+}
+
+- (void)writeBytesIfPossible {
+    [self.data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop) {
+        NSInteger bytesWritten = [self.outputStream write:bytes maxLength:[self.data length] - self.bytesWritten];
+        if (bytesWritten < 0) {
+            *stop = YES;
+        } else {
+            _bytesWritten += bytesWritten;
+        }
+    }];
+
+    if (self.bytesWritten >= [self.data length]) {
+        [self cleanup];
+    }
+}
+
+#pragma mark - NSStreamDelegate
+
+- (void)stream:(NSStream *)stream
+   handleEvent:(NSStreamEvent)eventCode
+{
+    if (stream == self.outputStream && (eventCode & NSStreamEventHasSpaceAvailable)) {
+        [self writeBytesIfPossible];
+    } else if (eventCode & NSStreamEventErrorOccurred || eventCode & NSStreamEventEndEncountered) {
+        [self cleanup];
+    }
+}
+
+@end
+
+#pragma mark -
 
 @interface AFHTTPClientTests : SenTestCase
 @property (readwrite, nonatomic, strong) AFHTTPClient *client;
@@ -351,21 +429,25 @@
 }
 
 - (void)testMultipartUploadDoesNotPrematurelyCloseInputStream {
-    NSData *data = [@"Here is some data. Its length is larger than that of the buffer size of the bound stream pair." dataUsingEncoding:NSUTF8StringEncoding];
-    NSInputStream *inputStream;
-    __block AFBufferedInputStreamProvider *streamProvider = [[AFBufferedInputStreamProvider alloc] initWithData:data inputStream:&inputStream];
+    NSMutableString *mutableString = [NSMutableString string];
+    for (NSUInteger i = 0; i < 10; i++) {
+        [mutableString appendString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
+    }
+
+    NSData *data = [mutableString dataUsingEncoding:NSUTF8StringEncoding];
+    __block AFBufferedInputStreamProvider *streamProvider = [[AFBufferedInputStreamProvider alloc] initWithData:data];
     __block NSUInteger bytesWritten = 0;
-    
+    NSInputStream *inputStream = streamProvider.inputStream;
+
     NSMutableURLRequest *request = [self.client multipartFormRequestWithMethod:@"POST" path:@"/post" parameters:@{ @"foo": @"bar" } constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithInputStream:inputStream name:@"data" fileName:@"string.txt" length:[data length] mimeType:@"text/plain"];
     }];
-    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    operation.completionBlock = ^{
         bytesWritten = streamProvider.bytesWritten;
         streamProvider = nil;
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        bytesWritten = streamProvider.bytesWritten;
-        streamProvider = nil;
-    }];
+    };
     
     [self.client enqueueHTTPRequestOperation:operation];
     expect(operation.isFinished).will.beTruthy();
