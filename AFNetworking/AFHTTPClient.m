@@ -102,7 +102,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 typedef id AFNetworkReachabilityRef;
 #endif
 
-static void * TaskStateChangedContext = &TaskStateChangedContext;
+static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
 
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
 - (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
@@ -616,7 +616,7 @@ static void * TaskStateChangedContext = &TaskStateChangedContext;
         }
     }];
     
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:TaskStateChangedContext];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
 
     return task;
 }
@@ -654,7 +654,7 @@ static void * TaskStateChangedContext = &TaskStateChangedContext;
         }
     }];
     
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:TaskStateChangedContext];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
 
     if (progress) {
         [self setUploadProgressForTask:task usingBlock:progress];
@@ -694,7 +694,7 @@ static void * TaskStateChangedContext = &TaskStateChangedContext;
         }
     }];
     
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:TaskStateChangedContext];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
 
     if (progress) {
         [self setUploadProgressForTask:task usingBlock:progress];
@@ -768,7 +768,7 @@ static void * TaskStateChangedContext = &TaskStateChangedContext;
 #pragma mark - NSKeyValueObserving
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-    if (context == TaskStateChangedContext) {
+    if (context == AFTaskStateChangedContext) {
         NSURLSessionTask * task = (NSURLSessionTask*)object;
         switch (task.state) {
             case NSURLSessionTaskStateRunning:
