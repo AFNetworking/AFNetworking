@@ -187,9 +187,9 @@ typedef id AFNetworkReachabilityRef;
         return;
     }
 
-    __weak __typeof(&*self)weakSelf = self;
+    __weak __typeof(self)weakSelf = self;
     AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status) {
-        __strong __typeof(&*weakSelf)strongSelf = weakSelf;
+        __strong __typeof(weakSelf)strongSelf = weakSelf;
         if (!strongSelf) {
             return;
         }
@@ -389,9 +389,9 @@ typedef id AFNetworkReachabilityRef;
     for (AFHTTPRequestOperation *operation in operations) {
         operation.completionGroup = group;
         void (^originalCompletionBlock)(void) = [operation.completionBlock copy];
-        __weak __typeof(&*operation)weakOperation = operation;
+        __weak __typeof(operation)weakOperation = operation;
         operation.completionBlock = ^{
-            __strong __typeof(&*weakOperation)strongOperation = weakOperation;
+            __strong __typeof(weakOperation)strongOperation = weakOperation;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
             dispatch_queue_t queue = strongOperation.completionQueue ?: dispatch_get_main_queue();
