@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFNetworkingTests.h"
+#import "AFBufferedInputStreamProvider.h"
 
 @interface AFHTTPClientTests : SenTestCase
 @property (readwrite, nonatomic, strong) AFHTTPClient *client;
@@ -347,6 +348,28 @@
     [self.client enqueueHTTPRequestOperation:operation];
     expect(operation.isFinished).will.beTruthy();
     expect(operation.error).notTo.equal(NSURLErrorTimedOut);
+}
+
+- (void)testMultipartUploadDoesNotPrematurelyCloseInputStream {
+    NSData *data = [@"Here is some data. Its length is larger than that of the buffer size of the bound stream pair." dataUsingEncoding:NSUTF8StringEncoding];
+    NSInputStream *inputStream;
+    __block AFBufferedInputStreamProvider *streamProvider = [[AFBufferedInputStreamProvider alloc] initWithData:data inputStream:&inputStream];
+    __block NSUInteger bytesWritten = 0;
+    
+    NSMutableURLRequest *request = [self.client multipartFormRequestWithMethod:@"POST" path:@"/post" parameters:@{ @"foo": @"bar" } constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithInputStream:inputStream name:@"data" fileName:@"string.txt" length:[data length] mimeType:@"text/plain"];
+    }];
+    AFHTTPRequestOperation *operation = [self.client HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        bytesWritten = streamProvider.bytesWritten;
+        streamProvider = nil;
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        bytesWritten = streamProvider.bytesWritten;
+        streamProvider = nil;
+    }];
+    
+    [self.client enqueueHTTPRequestOperation:operation];
+    expect(operation.isFinished).will.beTruthy();
+    expect(bytesWritten).will.equal([data length]);
 }
 
 @end
