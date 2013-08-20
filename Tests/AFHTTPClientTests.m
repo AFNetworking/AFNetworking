@@ -432,12 +432,7 @@
 }
 
 - (void)testMultipartUploadDoesNotPrematurelyCloseInputStream {
-    NSMutableString *mutableString = [NSMutableString string];
-    for (NSUInteger i = 0; i < 10; i++) {
-        [mutableString appendString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
-    }
-
-    NSData *data = [mutableString dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [@"ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" dataUsingEncoding:NSUTF8StringEncoding];
     __block AFBufferedInputStreamProvider *streamProvider = [[AFBufferedInputStreamProvider alloc] initWithData:data];
     __block NSUInteger bytesWritten = 0;
     NSInputStream *inputStream = streamProvider.inputStream;
