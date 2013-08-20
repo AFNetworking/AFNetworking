@@ -70,15 +70,18 @@
     _inputStream = nil;
 }
 
-- (void)writeBytesIfPossible {
-    [self.data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop) {
+- (void) writeBytesIfPossible {
+    while ([self.outputStream hasSpaceAvailable] && self.bytesWritten < [self.data length]) {
+        const uint8_t *bytes = [self.data bytes];
         NSInteger bytesWritten = [self.outputStream write:bytes maxLength:[self.data length] - self.bytesWritten];
+
         if (bytesWritten < 0) {
-            *stop = YES;
-        } else {
-            _bytesWritten += bytesWritten;
+            [self cleanup];
+            return;
         }
-    }];
+
+        _bytesWritten += bytesWritten;
+    }
 
     if (self.bytesWritten >= [self.data length]) {
         [self cleanup];
