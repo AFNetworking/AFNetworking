@@ -646,7 +646,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-    if (context == AFTaskStateChangedContext && [object respondsToSelector:@selector(state)]) {
+    if (context == AFTaskStateChangedContext && [keyPath isEqualToString:@"state"]) {
         NSString *notificationName = nil;
         switch ([(NSURLSessionTask *)object state]) {
             case NSURLSessionTaskStateRunning:
