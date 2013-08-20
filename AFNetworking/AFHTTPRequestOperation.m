@@ -108,6 +108,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()
+@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
 @property (readwrite, strong) NSError *HTTPError;
@@ -117,8 +118,27 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @synthesize HTTPError = _HTTPError;
 @synthesize successCallbackQueue = _successCallbackQueue;
 @synthesize failureCallbackQueue = _failureCallbackQueue;
+@dynamic lock;
 @dynamic request;
 @dynamic response;
+
+- (NSError *)HTTPError
+{
+    [self.lock lock];
+    NSError *HTTPError = _HTTPError;
+    [self.lock unlock];
+    
+    return HTTPError;
+}
+
+- (void)setHTTPError:(NSError *)HTTPError
+{
+    [self.lock lock];
+    if (HTTPError != _HTTPError) {
+        _HTTPError = HTTPError;
+    }
+    [self.lock unlock];
+}
 
 - (void)dealloc {
     if (_successCallbackQueue) {
