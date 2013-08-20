@@ -765,7 +765,8 @@ static void * TaskStateChangedContext = &TaskStateChangedContext;
     return task;
 }
 
-#pragma mark - NSKeyValueObserving 
+#pragma mark - NSKeyValueObserving
+
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
     if (context == TaskStateChangedContext) {
         NSURLSessionTask * task = (NSURLSessionTask*)object;
