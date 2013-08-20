@@ -108,10 +108,10 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()
-@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
-@property (readwrite, strong) NSError *HTTPError;
+@property (readwrite, nonatomic, strong) NSError *HTTPError;
+@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -121,24 +121,6 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 @dynamic lock;
 @dynamic request;
 @dynamic response;
-
-- (NSError *)HTTPError
-{
-    [self.lock lock];
-    NSError *HTTPError = _HTTPError;
-    [self.lock unlock];
-    
-    return HTTPError;
-}
-
-- (void)setHTTPError:(NSError *)HTTPError
-{
-    [self.lock lock];
-    if (HTTPError != _HTTPError) {
-        _HTTPError = HTTPError;
-    }
-    [self.lock unlock];
-}
 
 - (void)dealloc {
     if (_successCallbackQueue) {
@@ -157,6 +139,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 }
 
 - (NSError *)error {
+    [self.lock lock];
     if (!self.HTTPError && self.response) {
         if (![self hasAcceptableStatusCode] || ![self hasAcceptableContentType]) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
@@ -178,6 +161,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
             }
         }
     }
+    [self.lock unlock];
 
     if (self.HTTPError) {
         return self.HTTPError;
