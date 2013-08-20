@@ -352,12 +352,12 @@
 extern NSString * const AFNetworkingTaskDidStartNotification;
 
 /**
- Posted when a task finishes.
+ Posted when a task finishes executing.
  */
 extern NSString * const AFNetworkingTaskDidFinishNotification;
 
 /**
- Posted when a task suspends.
+ Posted when a task suspends its execution.
  */
 extern NSString * const AFNetworkingTaskDidSuspendNotification;
 
