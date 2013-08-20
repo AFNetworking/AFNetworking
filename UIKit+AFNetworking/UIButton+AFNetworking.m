@@ -34,7 +34,7 @@
     static AFHTTPClient *_af_sharedHTTPClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _af_sharedHTTPClient = [[AFHTTPClient alloc] initWithSessionConfiguration:nil]; // TODO allow anonymous HTTP clients
+        _af_sharedHTTPClient = [[AFHTTPClient alloc] init];
         _af_sharedHTTPClient.responseSerializer = [AFImageSerializer serializer];
     });
 
