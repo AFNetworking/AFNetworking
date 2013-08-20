@@ -47,6 +47,15 @@ typedef SCNetworkReachabilityRef AFNetworkReachabilityRef;
 typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus status);
 #else
 typedef id AFNetworkReachabilityRef;
+#pragma message("SystemConfiguration framework not found in project, or not included in precompiled header. Network reachability functionality will not be available.")
+#endif
+
+#ifndef __UTTYPE__
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#pragma message("MobileCoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.")
+#else
+#pragma message("CoreServices framework not found in project, or not included in precompiled header. Automatic MIME type detection when uploading files in multipart requests will not be available.")
+#endif
 #endif
 
 typedef void (^AFCompletionBlock)(void);
