@@ -357,6 +357,8 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
     self.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", nil];
 
+    [self setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+
     return self;
 }
 
@@ -473,6 +475,8 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
     self.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"application/xml", @"text/xml", nil];
 
+    [self setValue:@"application/xml" forHTTPHeaderField:@"Accept"];
+
     return self;
 }
 
@@ -511,6 +515,8 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     }
 
     self.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"application/xml", @"text/xml", nil];
+
+    [self setValue:@"application/xml" forHTTPHeaderField:@"Accept"];
 
     return self;
 }
@@ -587,6 +593,8 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     }
 
     self.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"application/x-plist", nil];
+
+    [self setValue:@"application/x-plist" forHTTPHeaderField:@"Accept"];
 
     return self;
 }
