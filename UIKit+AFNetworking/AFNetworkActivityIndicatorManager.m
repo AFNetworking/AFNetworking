@@ -30,10 +30,9 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 
 static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notification) {
     NSURLRequest *request = nil;
-    BOOL workaroundRadar14783825 = [[notification object] isKindOfClass:[NSURLSessionDataTask class]] || [[notification object] isKindOfClass:[NSURLSessionUploadTask class]] || [[notification object] isKindOfClass:[NSURLSessionDownloadTask class]];
     if ([[notification object] isKindOfClass:[AFURLConnectionOperation class]]) {
         request = [(AFURLConnectionOperation *)[notification object] request];
-    } else if ([[notification object] isKindOfClass:[NSURLSessionTask class]] || workaroundRadar14783825) {
+    } else if ([[notification object] respondsToSelector:@selector(originalRequest)]) {
         request = [(NSURLSessionTask *)[notification object] originalRequest];
     }
 
