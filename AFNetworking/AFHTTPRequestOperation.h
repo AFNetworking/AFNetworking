@@ -50,12 +50,12 @@
 /**
  The dispatch queue for `completionBlock`. If `NULL` (default), the main queue is used.
  */
-@property (nonatomic, copy) dispatch_queue_t completionQueue;
+@property (nonatomic, strong) dispatch_queue_t completionQueue;
 
 /**
  The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used. 
  */
-@property (nonatomic, copy) dispatch_group_t completionGroup;
+@property (nonatomic, strong) dispatch_group_t completionGroup;
 
 
 ///-----------------------------------------------------------
