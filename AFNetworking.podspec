@@ -14,11 +14,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.9'
   s.osx.frameworks = 'CoreServices', 'SystemConfiguration', 'Security'
 
-  s.subspec 'Core' do |ss|
-    ss.source_files = 'AFNetworking'
-  end
+  s.source_files = 'AFNetworking'
+  s.ios.source_files = 'UIKit+AFNetworking'
 
-  s.subspec 'UIKit+AFNetworking' do |ss|
-    ss.source_files = 'UIKit+AFNetworking'
-  end
 end
