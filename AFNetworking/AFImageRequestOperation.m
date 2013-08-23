@@ -67,6 +67,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         imageRef = CGImageCreateCopy([image CGImage]);
 
         if (!imageRef) {
+            CGDataProviderRelease(dataProvider);
             return image;
         }
     }
