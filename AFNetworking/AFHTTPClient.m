@@ -53,6 +53,9 @@ typedef void (^AFCompletionBlock)(void);
 
 static NSString * AFBase64EncodedStringFromString(NSString *string) {
     NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
+    return AFBase64EncoddingStringfromData(data);
+
+static NSString * AFBase64EncodedStringFromData(NSString *data) {
     NSUInteger length = [data length];
     NSMutableData *mutableData = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
 
