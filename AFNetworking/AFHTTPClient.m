@@ -51,8 +51,7 @@ typedef id AFNetworkReachabilityRef;
 
 typedef void (^AFCompletionBlock)(void);
 
-static NSString * AFBase64EncodedStringFromString(NSString *string) {
-    NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
+static NSString * AFBase64EncodedStringFromData(NSData *data) {
     NSUInteger length = [data length];
     NSMutableData *mutableData = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
 
@@ -78,6 +77,11 @@ static NSString * AFBase64EncodedStringFromString(NSString *string) {
     }
 
     return [[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding];
+}
+
+static NSString * AFBase64EncodedStringFromString(NSString *string) {
+    NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
+    return AFBase64EncodedStringFromData(data);
 }
 
 static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
