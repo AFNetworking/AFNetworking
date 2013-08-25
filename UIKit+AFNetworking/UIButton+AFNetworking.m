@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import <objc/message.h>
 
 #import "AFHTTPRequestOperation.h"
 #import "AFHTTPClient.h"
@@ -65,7 +66,7 @@
                  success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
                  failure:(void (^)(NSError *error))failure
 {
-    [self setImageAtKeyPath:@"image" forState:state withURLRequest:urlRequest placeholderImage:placeholderImage success:success failure:failure];
+    [self setImageWithSelector:@selector(setImage:forState:) forState:state withURLRequest:urlRequest placeholderImage:placeholderImage success:success failure:failure];
 }
 
 #pragma mark -
@@ -92,25 +93,26 @@
                            success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
                            failure:(void (^)(NSError *error))failure
 {
-    [self setImageAtKeyPath:@"backgroundImage" forState:state withURLRequest:urlRequest placeholderImage:placeholderImage success:success failure:failure];
+    [self setImageWithSelector:@selector(setBackgroundImage:forState:) forState:state withURLRequest:urlRequest placeholderImage:placeholderImage success:success failure:failure];
 }
 
 #pragma mark -
 
-- (void)setImageAtKeyPath:(NSString *)keyPath
-                 forState:(UIControlState)state
-           withURLRequest:(NSURLRequest *)urlRequest
-         placeholderImage:(UIImage *)placeholderImage
-                  success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
-                  failure:(void (^)(NSError *error))failure
+- (void)setImageWithSelector:(SEL)selector
+                    forState:(UIControlState)state
+              withURLRequest:(NSURLRequest *)urlRequest
+            placeholderImage:(UIImage *)placeholderImage
+                     success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
+                     failure:(void (^)(NSError *error))failure
 {
-    [self setValue:placeholderImage forKeyPath:keyPath];
+    void (*objc_msgSend_typed)(id, SEL, UIImage *, UIControlState) = (void *)objc_msgSend;
+    objc_msgSend_typed(self, selector, placeholderImage, state);
 
     NSURLSessionTask *task = [[[self class] af_sharedHTTPClient] dataTaskWithRequest:urlRequest success:^(NSURLResponse *response, id responseObject) {
         if (success) {
             success((NSHTTPURLResponse *)response, responseObject);
         } else if (responseObject) {
-            [self setValue:responseObject forKeyPath:keyPath];
+            objc_msgSend_typed(self, selector, responseObject, state);
         }
     } failure:^(NSError *error) {
         if (failure) {
