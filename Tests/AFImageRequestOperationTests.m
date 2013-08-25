@@ -131,7 +131,7 @@
     AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
         imageProcessingBlockExecuted = YES;
         return image;
-    } success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+    } success:^(NSURLRequest *operatonRequest, NSHTTPURLResponse *response, UIImage *image) {
         return;
     } failure:nil];
 

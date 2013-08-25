@@ -40,7 +40,7 @@
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operationRequest, id responseObject) {
         blockResponseObject = responseObject;
     } failure:nil];
 
@@ -54,7 +54,7 @@
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operationRequest, NSError *error) {
         blockError = error;
     }];
 
@@ -82,7 +82,7 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operationRequest, NSError *error) {
         blockError = error;
     }];
 
@@ -100,7 +100,7 @@
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/500" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operationRequest, NSError *error) {
         blockError = error;
     }];
     
@@ -115,7 +115,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:nil failure:nil];
-    [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
+    [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *operationRequest, NSURLResponse *redirectResponse) {
         if(redirectResponse){
             success = YES;
         }
@@ -135,7 +135,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:nil failure:nil];
-    [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
+    [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *operationRequest, NSURLResponse *redirectResponse) {
         if(redirectResponse){
             numberOfRedirects++;
         }
@@ -187,7 +187,7 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operationRequest, id responseObject) {
         blockResponseObject = responseObject;
     } failure:nil];
 
