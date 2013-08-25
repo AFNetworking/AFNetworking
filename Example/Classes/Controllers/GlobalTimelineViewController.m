@@ -26,6 +26,8 @@
 
 #import "PostTableViewCell.h"
 
+#import "UIActivityIndicatorView+AFNetworking.h"
+
 @interface GlobalTimelineViewController ()
 - (void)reload:(id)sender;
 @end
@@ -38,10 +40,9 @@
 }
 
 - (void)reload:(id)sender {
-    [_activityIndicatorView startAnimating];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
+    NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
         if (error) {
             [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:[error localizedDescription] delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
         } else {
@@ -49,9 +50,10 @@
             [self.tableView reloadData];
         }
         
-        [_activityIndicatorView stopAnimating];
         self.navigationItem.rightBarButtonItem.enabled = YES;
     }];
+    
+    [_activityIndicatorView setAnimatingWithStateOfTask:task];
 }
 
 #pragma mark - UIViewController
