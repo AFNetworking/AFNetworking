@@ -450,7 +450,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 
     if (completionHandler) {
-        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, credential);
+        completionHandler(disposition, credential);
     }
 }
 
@@ -489,7 +489,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 
     if (completionHandler) {
-        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, credential);
+        completionHandler(disposition, credential);
     }
 }
 
