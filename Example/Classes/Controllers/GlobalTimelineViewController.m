@@ -35,8 +35,6 @@
 @implementation GlobalTimelineViewController {
 @private
     NSArray *_posts;
-    
-    __strong UIActivityIndicatorView *_activityIndicatorView;
 }
 
 - (void)reload:(id)sender {
@@ -53,35 +51,24 @@
         self.navigationItem.rightBarButtonItem.enabled = YES;
     }];
     
-    [_activityIndicatorView setAnimatingWithStateOfTask:task];
+    UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView *)self.navigationItem.leftBarButtonItem.customView;
+    [activityIndicatorView setAnimatingWithStateOfTask:task];
 }
 
 #pragma mark - UIViewController
-
-- (void)loadView {
-    [super loadView];
-    
-    _activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    _activityIndicatorView.hidesWhenStopped = YES;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = NSLocalizedString(@"AFNetworking", nil);
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_activityIndicatorView];
+    UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicatorView];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload:)];
     
     self.tableView.rowHeight = 70.0f;
     
     [self reload:nil];
-}
-
-- (void)viewDidUnload {
-    _activityIndicatorView = nil;
-    
-    [super viewDidUnload];
 }
 
 #pragma mark - UITableViewDataSource
