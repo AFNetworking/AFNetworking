@@ -22,7 +22,9 @@
 
 #import "UIProgressView+AFNetworking.h"
 
+#import <objc/runtime.h>
 #import "AFURLConnectionOperation.h"
+#import "AFURLSessionManager.h"
 
 @interface AFURLConnectionOperation (_UIProgressView)
 @property (readwrite, nonatomic, copy) void (^uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
@@ -34,6 +36,62 @@
 @dynamic downloadProgress;
 @end
 
+static void * AFUploadTaskStateChangedContext = &AFUploadTaskStateChangedContext;
+static void * AFDownloadTaskStateChangedContext = &AFDownloadTaskStateChangedContext;
+static void * AFCountOfBytesSentChangedContext = &AFCountOfBytesSentChangedContext;
+static void * AFCountOfBytesReceivedChangedContext = &AFCountOfBytesReceivedChangedContext;
+
+@interface AFTaskProgressObserver : NSObject
+
+- (instancetype)initWithProgressView:(UIProgressView *)progressView;
+
+@property (nonatomic, weak) UIProgressView *progressView;
+
+@end
+
+@implementation AFTaskProgressObserver
+
+- (instancetype)initWithProgressView:(UIProgressView *)progressView {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    self.progressView = progressView;
+    
+    return self;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(NSURLSessionTask *)task
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    float progress = NAN;
+    if (context == AFCountOfBytesSentChangedContext && task.countOfBytesExpectedToSend > 0) {
+        progress = task.countOfBytesSent / (task.countOfBytesExpectedToSend * 1.0f);
+    } else if (context == AFCountOfBytesReceivedChangedContext && task.countOfBytesExpectedToReceive > 0) {
+        progress = task.countOfBytesReceived / (task.countOfBytesExpectedToReceive * 1.0f);
+    } else if (context == AFUploadTaskStateChangedContext || context == AFDownloadTaskStateChangedContext) {
+        if (task.state == NSURLSessionTaskStateCanceling || task.state == NSURLSessionTaskStateCompleted) {
+            [task removeObserver:self forKeyPath:@"state" context:context];
+            if (context == AFUploadTaskStateChangedContext) {
+                [task removeObserver:self forKeyPath:@"countOfBytesSent" context:AFCountOfBytesSentChangedContext];
+            } else {
+                [task removeObserver:self forKeyPath:@"countOfBytesReceived" context:AFCountOfBytesReceivedChangedContext];
+            }
+        }
+    }
+    
+    if (!isnan(progress)) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.progressView.progress = progress;
+        });
+    }
+}
+
+@end
+
 #pragma mark -
 
 @interface UIProgressView (_AFNetworking) <NSURLSessionDownloadDelegate>
@@ -41,18 +99,32 @@
 
 @implementation UIProgressView (AFNetworking)
 
+static void * AFTaskProgressObserverKey = &AFTaskProgressObserverKey;
+
+- (AFTaskProgressObserver *)af_taskProgressObserver {
+    return objc_getAssociatedObject(self, AFTaskProgressObserverKey);
+}
+
+- (void)af_setTaskProgressObserver:(AFTaskProgressObserver *)taskProgressObserver {
+    objc_setAssociatedObject(self, AFTaskProgressObserverKey, taskProgressObserver, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (void)setProgressWithUploadProgressOfTask:(NSURLSessionUploadTask *)task
                                    animated:(BOOL)animated
 {
-    [task addObserver:self forKeyPath:@"state" options:0 context:nil];
-    [task addObserver:self forKeyPath:@"countOfBytesSent" options:0 context:nil];
+    AFTaskProgressObserver *taskProgressObserver = [[AFTaskProgressObserver alloc] initWithProgressView:self];
+    [self af_setTaskProgressObserver:taskProgressObserver];
+    [task addObserver:taskProgressObserver forKeyPath:@"state" options:0 context:AFUploadTaskStateChangedContext];
+    [task addObserver:taskProgressObserver forKeyPath:@"countOfBytesSent" options:0 context:AFCountOfBytesSentChangedContext];
 }
 
 - (void)setProgressWithDownloadProgressOfTask:(NSURLSessionDownloadTask *)task
                                      animated:(BOOL)animated
 {
-    [task addObserver:self forKeyPath:@"state" options:0 context:nil];
-    [task addObserver:self forKeyPath:@"countOfBytesReceived" options:0 context:nil];
+    AFTaskProgressObserver *taskProgressObserver = [[AFTaskProgressObserver alloc] initWithProgressView:self];
+    [self af_setTaskProgressObserver:taskProgressObserver];
+    [task addObserver:taskProgressObserver forKeyPath:@"state" options:0 context:AFDownloadTaskStateChangedContext];
+    [task addObserver:taskProgressObserver forKeyPath:@"countOfBytesReceived" options:0 context:AFCountOfBytesReceivedChangedContext];
 }
 
 - (void)setProgressWithUploadProgressOfOperation:(AFURLConnectionOperation *)operation
@@ -85,32 +157,6 @@
             [weakSelf setProgress:(totalBytesRead / (totalBytesExpectedToRead  * 1.0f)) animated:animated];
         }
     }];
-}
-
-#pragma mark NSKeyValueObserving
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
-{
-    // TODO invoke supersequent implementation
-    
-    if ([object isKindOfClass:[NSURLSessionTask class]]) {
-        if ([keyPath isEqualToString:@"countOfBytesSent"]) {
-            if ([object countOfBytesExpectedToSend] > 0) {
-                self.progress = [object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f);
-            }
-        } else if ([keyPath isEqualToString:@"countOfBytesReceived"]) {
-            if ([object countOfBytesExpectedToReceive] > 0) {
-                self.progress = [object countOfBytesReceived] / ([object countOfBytesExpectedToReceive] * 1.0f);
-            }
-        } else if ([keyPath isEqualToString:@"state"]) {
-            if ([object state] == NSURLSessionTaskStateCompleted) {
-                [object removeObserver:self];
-            }
-        }
-    }    
 }
 
 @end
