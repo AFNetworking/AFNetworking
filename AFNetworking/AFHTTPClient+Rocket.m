@@ -48,7 +48,7 @@
         }
     }];
 
-    [eventSource open:error];
+    [eventSource openAndReturnError:error];
 
     return eventSource;
 }
