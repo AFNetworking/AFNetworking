@@ -131,7 +131,7 @@
 
  @return `YES` if successful, otherwise `NO`, with the associated `error` available in the out parameter.
  */
-- (BOOL)open:(NSError * __autoreleasing *)error;
+- (BOOL)openAndReturnError:(NSError * __autoreleasing *)error;
 
 /**
  Closes the event source connection.
@@ -140,7 +140,7 @@
 
  @return `YES` if successful, otherwise `NO`, with the associated `error` available in the out parameter.
  */
-- (BOOL)close:(NSError * __autoreleasing *)error;
+- (BOOL)closeAndReturnError:(NSError * __autoreleasing *)error;
 
 ///-------------------------------
 /// @name Managing Event Listeners

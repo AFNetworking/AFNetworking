@@ -166,7 +166,7 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
     self.lock.name = AFEventSourceLockName;
 
     NSError *error = nil;
-    [self open:&error];
+    [self openAndReturnError:&error];
     if (error) {
         if ([self.delegate respondsToSelector:@selector(eventSource:didFailWithError:)]) {
             [self.delegate eventSource:self didFailWithError:error];
@@ -192,7 +192,7 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
     return self.requestOperation.response;
 }
 
-- (BOOL)open:(NSError * __autoreleasing *)error {
+- (BOOL)openAndReturnError:(NSError * __autoreleasing *)error {
     if ([self isOpen]) {
         if (error) {
             *error = [NSError errorWithDomain:AFEventSourceErrorDomain code:0 userInfo:@{ NSLocalizedDescriptionKey: NSLocalizedStringFromTable(@"Even Source Already Opened", @"AFEventSource", nil) }];
@@ -225,7 +225,7 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
     return YES;
 }
 
-- (BOOL)close:(NSError * __autoreleasing *)error {
+- (BOOL)closeAndReturnError:(NSError * __autoreleasing *)error {
     if ([self isClosed]) {
         if (error) {
             *error = [NSError errorWithDomain:AFEventSourceErrorDomain code:0 userInfo:@{ NSLocalizedDescriptionKey: NSLocalizedStringFromTable(@"Even Source Already Closed", @"AFEventSource", nil) }];
