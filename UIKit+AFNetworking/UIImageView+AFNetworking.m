@@ -38,7 +38,7 @@
 #pragma mark -
 
 static char kAFImageRequestOperationKey;
-static char kAFResponseSerializersKey;
+static char kAFResponseSerializerKey;
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFHTTPRequestOperation *af_imageRequestOperation;
@@ -89,11 +89,11 @@ static char kAFResponseSerializersKey;
         _af_defaultImageResponseSerializer = [AFImageSerializer serializer];
     });
 
-    return objc_getAssociatedObject(self, &kAFResponseSerializersKey) ?: _af_defaultImageResponseSerializer;
+    return objc_getAssociatedObject(self, &kAFResponseSerializerKey) ?: _af_defaultImageResponseSerializer;
 }
 
-- (void)setResponseSerializers:(NSArray *)serializers {
-    objc_setAssociatedObject(self, &kAFResponseSerializersKey, serializers, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setImageResponseSerializer:(id <AFURLResponseSerialization>)serializer {
+    objc_setAssociatedObject(self, &kAFResponseSerializerKey, serializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark -
