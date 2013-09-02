@@ -176,7 +176,8 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
                                       success:(void (^)(NSURLResponse *response, id responseObject))success
                                       failure:(void (^)(NSError *error))failure
 {
-    NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSURLSessionDataTask *task = nil;
+    task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         [self handleDataTaskCompletionForTask:task data:data response:response error:error success:success failure:failure];
     }];
 
@@ -193,7 +194,8 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
                                           success:(void (^)(NSURLResponse *response, id responseObject))success
                                           failure:(void (^)(NSError *error))failure
 {
-    NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromFile:fileURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSURLSessionUploadTask *task = nil;
+    task = [self.session uploadTaskWithRequest:request fromFile:fileURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         [self handleUploadTaskCompletionForTask:task data:data response:response error:error success:success failure:failure];
     }];
 
@@ -212,7 +214,8 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
                                           success:(void (^)(NSURLResponse *response, id responseObject))success
                                           failure:(void (^)(NSError *error))failure
 {
-    NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:request fromData:bodyData completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSURLSessionUploadTask *task = nil;
+    task = [self.session uploadTaskWithRequest:request fromData:bodyData completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         [self handleUploadTaskCompletionForTask:task data:data response:response error:error success:success failure:failure];
     }];
 
@@ -232,7 +235,8 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
                                               success:(NSURL * (^)(NSURLResponse *response))success
                                               failure:(void (^)(NSError *error))failure
 {
-    NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
+    NSURLSessionDownloadTask *task = nil;
+    task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
         [self handleDownloadTaskCompletionForTask:task targetPath:targetPath response:response error:error success:success failure:failure];
     }];
 
@@ -250,7 +254,8 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
                                                  success:(NSURL * (^)(NSURLResponse *response))success
                                                  failure:(void (^)(NSError *error))failure
 {
-    NSURLSessionDownloadTask *task = [self.session downloadTaskWithResumeData:resumeData completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
+    NSURLSessionDownloadTask *task = nil;
+    task = [self.session downloadTaskWithResumeData:resumeData completionHandler:^(NSURL *targetPath, NSURLResponse *response, NSError *error) {
         [self handleDownloadTaskCompletionForTask:task targetPath:targetPath response:response error:error success:success failure:failure];
     }];
 
