@@ -357,6 +357,21 @@ extern NSString * const AFNetworkingTaskDidStartNotification;
 extern NSString * const AFNetworkingTaskDidFinishNotification;
 
 /**
+ Posted when a task suspends its execution.
+ */
+extern NSString * const AFNetworkingTaskDidSuspendNotification;
+
+/**
+ Posted when a session is invalidated.
+ */
+extern NSString * const AFURLSessionDidInvalidateNotification;
+
+/**
+ Posted when a session download task encountered an error when moving the temporary download file to a specified destination.
+ */
+extern NSString * const AFURLSessionDownloadTaskDidFailToMoveFileNotification;
+
+/**
  The raw response data of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if response data exists for the task.
  */
 extern NSString * const AFNetworkingTaskDidFinishResponseDataKey;
@@ -380,18 +395,3 @@ extern NSString * const AFNetworkingTaskDidFinishAssetPathKey;
  Any error assoicated with the task, or the serialization of the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an error exists.
  */
 extern NSString * const AFNetworkingTaskDidFinishErrorKey;
-
-/**
- Posted when a task suspends its execution.
- */
-extern NSString * const AFNetworkingTaskDidSuspendNotification;
-
-/**
- Posted when a session is invalidated.
- */
-extern NSString * const AFURLSessionDidInvalidateNotification;
-
-/**
- Posted when a session download task encountered an error when moving the temporary download file to a specified destination.
- */
-extern NSString * const AFURLSessionDownloadTaskDidFailToMoveFileNotification;
