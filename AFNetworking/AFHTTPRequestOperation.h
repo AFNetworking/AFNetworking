@@ -57,7 +57,6 @@
  */
 @property (nonatomic, strong) dispatch_group_t completionGroup;
 
-
 ///-----------------------------------------------------------
 /// @name Setting Completion Block Success / Failure Callbacks
 ///-----------------------------------------------------------

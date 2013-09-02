@@ -22,6 +22,26 @@
 
 #import "AFURLSessionManager.h"
 
+static dispatch_queue_t url_session_manager_processing_queue() {
+    static dispatch_queue_t af_url_session_manager_processing_queue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        af_url_session_manager_processing_queue = dispatch_queue_create("com.alamofire.networking.session.manager.processing", DISPATCH_QUEUE_CONCURRENT);
+    });
+
+    return af_url_session_manager_processing_queue;
+}
+
+static dispatch_group_t url_session_manager_completion_group() {
+    static dispatch_group_t af_url_session_manager_completion_group;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        af_url_session_manager_completion_group = dispatch_group_create();
+    });
+
+    return af_url_session_manager_completion_group;
+}
+
 NSString * const AFNetworkingTaskDidStartNotification = @"com.alamofire.networking.task.start";
 NSString * const AFNetworkingTaskDidFinishNotification = @"com.alamofire.networking.task.finish";
 NSString * const AFNetworkingTaskDidFinishResponseDataKey = @"com.alamofire.networking.task.finish.responsedata";
@@ -284,7 +304,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
     if (error) {
         userInfo[AFNetworkingTaskDidFinishErrorKey] = error;
 
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
+        dispatch_group_async(self.completionGroup ?: url_session_manager_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
             if (failure) {
                 failure(error);
             }
@@ -292,14 +312,14 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
             [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
         });
     } else {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+        dispatch_async(url_session_manager_processing_queue(), ^{
             NSError *serializationError = nil;
             id responseObject = [self.responseSerializer responseObjectForResponse:response data:data error:&serializationError];
 
             userInfo[AFNetworkingTaskDidFinishSerializedResponseKey] = responseObject;
             userInfo[AFNetworkingTaskDidFinishErrorKey] = serializationError;
 
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
+            dispatch_group_async(self.completionGroup ?: url_session_manager_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                 if (serializationError) {
                     if (failure) {
                         failure(serializationError);
@@ -337,7 +357,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
     if (error) {
         userInfo[AFNetworkingTaskDidFinishErrorKey] = error;
 
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
+        dispatch_group_async(self.completionGroup ?: url_session_manager_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
             if (failure) {
                 failure(error);
             }
@@ -346,7 +366,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
         });
 
     } else {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+        dispatch_async(url_session_manager_processing_queue(), ^{
             NSError *fileManagerError = nil;
             NSURL *destinationPath = nil;
 
@@ -361,7 +381,7 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
                 userInfo[AFNetworkingTaskDidFinishErrorKey] = fileManagerError;
             }
 
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
+            dispatch_group_async(self.completionGroup ?: url_session_manager_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                 if (fileManagerError) {
                     if (failure) {
                         failure(fileManagerError);
