@@ -43,20 +43,6 @@
  */
 @property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
 
-///---------------------------------
-/// @name Managing Callback Queues
-///---------------------------------
-
-/**
- The dispatch queue for `completionBlock`. If `NULL` (default), the main queue is used.
- */
-@property (nonatomic, strong) dispatch_queue_t completionQueue;
-
-/**
- The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used. 
- */
-@property (nonatomic, strong) dispatch_group_t completionGroup;
-
 ///-----------------------------------------------------------
 /// @name Setting Completion Block Success / Failure Callbacks
 ///-----------------------------------------------------------
