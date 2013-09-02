@@ -299,7 +299,9 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
 {
     __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     userInfo[AFNetworkingTaskDidFinishResponseSerializerKey] = self.responseSerializer;
-    userInfo[AFNetworkingTaskDidFinishResponseDataKey] = data;
+    if (data) {
+        userInfo[AFNetworkingTaskDidFinishResponseDataKey] = data;
+    }
 
     if (error) {
         userInfo[AFNetworkingTaskDidFinishErrorKey] = error;
@@ -316,8 +318,13 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
             NSError *serializationError = nil;
             id responseObject = [self.responseSerializer responseObjectForResponse:response data:data error:&serializationError];
 
-            userInfo[AFNetworkingTaskDidFinishSerializedResponseKey] = responseObject;
-            userInfo[AFNetworkingTaskDidFinishErrorKey] = serializationError;
+            if (responseObject) {
+                userInfo[AFNetworkingTaskDidFinishSerializedResponseKey] = responseObject;
+            }
+
+            if (serializationError) {
+                userInfo[AFNetworkingTaskDidFinishErrorKey] = serializationError;
+            }
 
             dispatch_group_async(self.completionGroup ?: url_session_manager_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                 if (serializationError) {
@@ -378,7 +385,10 @@ typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NS
                 [[NSFileManager defaultManager] moveItemAtURL:targetPath toURL:destinationPath error:&fileManagerError];
 
                 userInfo[AFNetworkingTaskDidFinishAssetPathKey] = destinationPath;
-                userInfo[AFNetworkingTaskDidFinishErrorKey] = fileManagerError;
+
+                if (fileManagerError) {
+                    userInfo[AFNetworkingTaskDidFinishErrorKey] = fileManagerError;
+                }
             }
 
             dispatch_group_async(self.completionGroup ?: url_session_manager_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
