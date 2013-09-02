@@ -352,9 +352,34 @@
 extern NSString * const AFNetworkingTaskDidStartNotification;
 
 /**
- Posted when a task finishes executing.
+ Posted when a task finishes executing. Includes a userInfo dictionary with additional information about the task.
  */
 extern NSString * const AFNetworkingTaskDidFinishNotification;
+
+/**
+ The raw response data of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if response data exists for the task.
+ */
+extern NSString * const AFNetworkingTaskDidFinishResponseDataKey;
+
+/**
+ The serialized response object of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the response was serialized.
+ */
+extern NSString * const AFNetworkingTaskDidFinishSerializedResponseKey;
+
+/**
+ The response serializer used to serialize the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the task has an associated response serializer.
+ */
+extern NSString * const AFNetworkingTaskDidFinishResponseSerializerKey;
+
+/**
+ The file path assoicated with the download task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an the response data has been stored directly to disk.
+ */
+extern NSString * const AFNetworkingTaskDidFinishAssetPathKey;
+
+/**
+ Any error assoicated with the task, or the serialization of the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an error exists.
+ */
+extern NSString * const AFNetworkingTaskDidFinishErrorKey;
 
 /**
  Posted when a task suspends its execution.
