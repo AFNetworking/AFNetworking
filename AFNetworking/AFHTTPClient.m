@@ -304,10 +304,16 @@ typedef id AFNetworkReachabilityRef;
     return [formData requestByFinalizingMultipartFormData];
 }
 
-- (void)setRequestSerializer:(id <AFURLRequestSerialization>)requestSerializer {
+- (void)setRequestSerializer:(AFHTTPSerializer <AFURLRequestSerialization> *)requestSerializer {
     NSParameterAssert(requestSerializer);
 
     _requestSerializer = requestSerializer;
+}
+
+- (void)setResponseSerializer:(AFHTTPSerializer<AFURLResponseSerialization> *)responseSerializer {
+    NSParameterAssert(responseSerializer);
+
+    [super setResponseSerializer:responseSerializer];
 }
 
 #pragma mark -
