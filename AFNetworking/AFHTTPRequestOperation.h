@@ -39,9 +39,11 @@
 @property (readonly, nonatomic, strong) NSHTTPURLResponse *response;
 
 /**
- Responses sent from the server are automatically validated and serialized by the first object of this property to return `YES` when sent `canProcessResponse:`. If no  By default, this property is set to an array containing an `AFHTTPSerializer` object, which simply returns the raw NSData`. Both response serializers validate the status code to be in the `2XX` range, denoting success. If a response serializer generates an error in `-responseObjectForResponse:data:error:`, the `failure` callback of the session task or request operation will be executed; otherwise, the `success` callback will be executed.
+ Responses sent from the server in data tasks created with `dataTaskWithRequest:success:failure:` and run using the `GET` / `POST` / et al. convenience methods are automatically validated and serialized by the response serializer. By default, this property is set to a compound serializer, which serializes data from responses with either a `application/json` or `application/x-plist` MIME type, and falls back to the raw data object. The serializer validates the status code to be in the `2XX` range, denoting success. If the response serializer generates an error in `-responseObjectForResponse:data:error:`, the `failure` callback of the session task or request operation will be executed; otherwise, the `success` callback will be executed.
+
+ @warning `responseSerializer` must not be `nil`.
  */
-@property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
+@property (nonatomic, strong) AFHTTPSerializer <AFURLResponseSerialization> * responseSerializer;
 
 ///---------------------------------
 /// @name Managing Callback Queues

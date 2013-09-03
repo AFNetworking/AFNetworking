@@ -52,6 +52,12 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 @implementation AFHTTPRequestOperation
 
+- (void)setResponseSerializer:(AFHTTPSerializer<AFURLResponseSerialization> *)responseSerializer {
+    NSParameterAssert(responseSerializer);
+
+    _responseSerializer = responseSerializer;
+}
+
 #pragma mark - AFHTTPRequestOperation
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
