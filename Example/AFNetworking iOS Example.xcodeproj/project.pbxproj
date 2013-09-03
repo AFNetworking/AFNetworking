@@ -19,6 +19,7 @@
 		F8A847C3161F523E00940F39 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A847C2161F523E00940F39 /* Default.png */; };
 		F8A847C5161F524200940F39 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A847C4161F524200940F39 /* Default@2x.png */; };
 		F8AF73ED1796FCF200F63037 /* AFSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F8AF73EC1796FCF200F63037 /* AFSerialization.m */; };
+		F8CBED2317D595320088ADC0 /* UIAlertView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8CBED2217D595320088ADC0 /* UIAlertView+AFNetworking.m */; };
 		F8D0701B14310F4A00653FD3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469E213957DF700DB05C8 /* SystemConfiguration.framework */; };
 		F8DA09E41396AC040057D0CC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DA09E31396AC040057D0CC /* main.m */; };
 		F8E02CF7177A8B710087BB23 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E02CEC177A8B710087BB23 /* AFNetworkActivityIndicatorManager.m */; };
@@ -68,6 +69,8 @@
 		F8A847C4161F524200940F39 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		F8AF73EB1796FCF200F63037 /* AFSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSerialization.h; sourceTree = "<group>"; };
 		F8AF73EC1796FCF200F63037 /* AFSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSerialization.m; sourceTree = "<group>"; };
+		F8CBED2117D595320088ADC0 /* UIAlertView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+AFNetworking.h"; sourceTree = "<group>"; };
+		F8CBED2217D595320088ADC0 /* UIAlertView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+AFNetworking.m"; sourceTree = "<group>"; };
 		F8DA09E31396AC040057D0CC /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = SOURCE_ROOT; };
 		F8E02CEB177A8B710087BB23 /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		F8E02CEC177A8B710087BB23 /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
@@ -190,6 +193,8 @@
 				F8E02CEC177A8B710087BB23 /* AFNetworkActivityIndicatorManager.m */,
 				F8E02CED177A8B710087BB23 /* UIActivityIndicatorView+AFNetworking.h */,
 				F8E02CEE177A8B710087BB23 /* UIActivityIndicatorView+AFNetworking.m */,
+				F8CBED2117D595320088ADC0 /* UIAlertView+AFNetworking.h */,
+				F8CBED2217D595320088ADC0 /* UIAlertView+AFNetworking.m */,
 				F8E02CEF177A8B710087BB23 /* UIButton+AFNetworking.h */,
 				F8E02CF0177A8B710087BB23 /* UIButton+AFNetworking.m */,
 				F8E02CF1177A8B710087BB23 /* UIImageView+AFNetworking.h */,
@@ -414,6 +419,7 @@
 			files = (
 				F86A37E0177397D900407E52 /* AFURLSessionManager.m in Sources */,
 				F8DA09E41396AC040057D0CC /* main.m in Sources */,
+				F8CBED2317D595320088ADC0 /* UIAlertView+AFNetworking.m in Sources */,
 				F8FA9491150EF8C100ED4EAD /* AFAppDotNetAPIClient.m in Sources */,
 				F8FA9494150EF97E00ED4EAD /* Post.m in Sources */,
 				F88DE17D17A08BC0006D695E /* AFEventSource.m in Sources */,

@@ -104,6 +104,12 @@
          location = "group:UIActivityIndicatorView+AFNetworking.m">
       </FileRef>
       <FileRef
+         location = "group:UIAlertView+AFNetworking.h">
+      </FileRef>
+      <FileRef
+         location = "group:UIAlertView+AFNetworking.m">
+      </FileRef>
+      <FileRef
          location = "group:UIButton+AFNetworking.h">
       </FileRef>
       <FileRef
