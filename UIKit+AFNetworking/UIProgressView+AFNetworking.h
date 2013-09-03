@@ -29,6 +29,8 @@
  */
 @interface UIProgressView (AFNetworking)
 
+///
+
 /**
  
  */
@@ -40,6 +42,8 @@
  */
 - (void)setProgressWithDownloadProgressOfTask:(NSURLSessionDownloadTask *)task
                                      animated:(BOOL)animated;
+
+///
 
 /**
  

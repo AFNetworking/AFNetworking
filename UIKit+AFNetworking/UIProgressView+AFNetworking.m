@@ -24,6 +24,11 @@
 
 #import "AFURLConnectionOperation.h"
 
+#import <objc/runtime.h>
+
+static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
+static void * AFTaskCountOfBytesChangedContext = &AFTaskCountOfBytesChangedContext;
+
 @interface AFURLConnectionOperation (_UIProgressView)
 @property (readwrite, nonatomic, copy) void (^uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
 @property (readwrite, nonatomic, copy) void (^downloadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
@@ -37,23 +42,36 @@
 #pragma mark -
 
 @interface UIProgressView (_AFNetworking) <NSURLSessionDownloadDelegate>
+- (void)_af_observeValueForKeyPath:(NSString *)keyPath
+                          ofObject:(id)object
+                            change:(NSDictionary *)change
+                           context:(void *)context;
 @end
 
 @implementation UIProgressView (AFNetworking)
 
++ (void)load {
+    Class class = [UIProgressView class];
+    Method originalMethod = class_getInstanceMethod(class, @selector(observeValueForKeyPath:ofObject:change:context:));
+    Method replacementMethod = class_getInstanceMethod(class, @selector(_af_observeValueForKeyPath:ofObject:change:context:));
+    method_exchangeImplementations(originalMethod, replacementMethod);
+}
+
 - (void)setProgressWithUploadProgressOfTask:(NSURLSessionUploadTask *)task
                                    animated:(BOOL)animated
 {
-    [task addObserver:self forKeyPath:@"state" options:0 context:nil];
-    [task addObserver:self forKeyPath:@"countOfBytesSent" options:0 context:nil];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
+    [task addObserver:self forKeyPath:@"countOfBytesSent" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesChangedContext];
 }
 
 - (void)setProgressWithDownloadProgressOfTask:(NSURLSessionDownloadTask *)task
                                      animated:(BOOL)animated
 {
-    [task addObserver:self forKeyPath:@"state" options:0 context:nil];
-    [task addObserver:self forKeyPath:@"countOfBytesReceived" options:0 context:nil];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
+    [task addObserver:self forKeyPath:@"countOfBytesReceived" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesChangedContext];
 }
+
+#pragma mark -
 
 - (void)setProgressWithUploadProgressOfOperation:(AFURLConnectionOperation *)operation
                                         animated:(BOOL)animated
@@ -87,16 +105,16 @@
     }];
 }
 
-#pragma mark NSKeyValueObserving
+#pragma mark - NSKeyValueObserving
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
+- (void)_af_observeValueForKeyPath:(NSString *)keyPath
+                          ofObject:(id)object
+                            change:(NSDictionary *)change
+                           context:(void *)context
 {
-    // TODO invoke supersequent implementation
-    
-    if ([object isKindOfClass:[NSURLSessionTask class]]) {
+    [self _af_observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+
+    if ([object isKindOfClass:[NSURLSessionTask class]] && (context == AFTaskStateChangedContext || context == AFTaskCountOfBytesChangedContext)) {
         if ([keyPath isEqualToString:@"countOfBytesSent"]) {
             if ([object countOfBytesExpectedToSend] > 0) {
                 self.progress = [object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f);
@@ -110,7 +128,7 @@
                 [object removeObserver:self];
             }
         }
-    }    
+    }
 }
 
 @end
