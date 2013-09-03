@@ -108,15 +108,17 @@
     void (*objc_msgSend_typed)(id, SEL, UIImage *, UIControlState) = (void *)objc_msgSend;
     objc_msgSend_typed(self, selector, placeholderImage, state);
 
-    NSURLSessionTask *task = [[[self class] af_sharedHTTPClient] dataTaskWithRequest:urlRequest success:^(NSURLResponse *response, id responseObject) {
-        if (success) {
-            success((NSHTTPURLResponse *)response, responseObject);
-        } else if (responseObject) {
-            objc_msgSend_typed(self, selector, responseObject, state);
-        }
-    } failure:^(NSError *error) {
-        if (failure) {
-            failure(error);
+    NSURLSessionTask *task = [[[self class] af_sharedHTTPClient] dataTaskWithRequest:urlRequest completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
+        } else {
+            if (success) {
+                success((NSHTTPURLResponse *)response, responseObject);
+            } else if (responseObject) {
+                objc_msgSend_typed(self, selector, responseObject, state);
+            }
         }
     }];
 

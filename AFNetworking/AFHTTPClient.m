@@ -429,13 +429,15 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
-        if (success) {
-            success((NSHTTPURLResponse *)response, responseObject);
-        }
-    } failure:^(NSError *error) {
-        if (failure) {
-            failure(error);
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
+        } else {
+            if (success) {
+                success((NSHTTPURLResponse *)response, responseObject);
+            }
         }
     }];
 
@@ -451,13 +453,15 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"HEAD" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
-        if (success) {
-            success((NSHTTPURLResponse *)response);
-        }
-    } failure:^(NSError *error) {
-        if (failure) {
-            failure(error);
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
+        } else {
+            if (success) {
+                success((NSHTTPURLResponse *)response);
+            }
         }
     }];
 
@@ -473,13 +477,15 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"POST" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
-        if (success) {
-            success((NSHTTPURLResponse *)response, responseObject);
-        }
-    } failure:^(NSError *error) {
-        if (failure) {
-            failure(error);
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
+        } else {
+            if (success) {
+                success((NSHTTPURLResponse *)response, responseObject);
+            }
         }
     }];
 
@@ -496,13 +502,15 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self multipartFormRequestWithMethod:@"POST" URLString:URLString parameters:parameters constructingBodyWithBlock:block];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
-        if (success) {
-            success((NSHTTPURLResponse *)response, responseObject);
-        }
-    } failure:^(NSError *error) {
-        if (failure) {
-            failure(error);
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
+        } else {
+            if (success) {
+                success((NSHTTPURLResponse *)response, responseObject);
+            }
         }
     }];
 
@@ -518,13 +526,15 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PUT" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
-        if (success) {
-            success((NSHTTPURLResponse *)response, responseObject);
-        }
-    } failure:^(NSError *error) {
-        if (failure) {
-            failure(error);
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
+        } else {
+            if (success) {
+                success((NSHTTPURLResponse *)response, responseObject);
+            }
         }
     }];
 
@@ -540,13 +550,15 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"PATCH" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
-        if (success) {
-            success((NSHTTPURLResponse *)response, responseObject);
-        }
-    } failure:^(NSError *error) {
-        if (failure) {
-            failure(error);
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
+        } else {
+            if (success) {
+                success((NSHTTPURLResponse *)response, responseObject);
+            }
         }
     }];
     
@@ -562,13 +574,15 @@ typedef id AFNetworkReachabilityRef;
 {
     NSMutableURLRequest *request = [self requestWithMethod:@"DELETE" URLString:URLString parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request success:^(NSURLResponse *response, id responseObject) {
-        if (success) {
-            success((NSHTTPURLResponse *)response, responseObject);
-        }
-    } failure:^(NSError *error) {
-        if (failure) {
-            failure(error);
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            if (failure) {
+                failure(error);
+            }
+        } else {
+            if (success) {
+                success((NSHTTPURLResponse *)response, responseObject);
+            }
         }
     }];
 
