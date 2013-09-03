@@ -34,6 +34,8 @@
  */
 - (void)setAnimatingWithStateOfOperation:(AFURLConnectionOperation *)operation;
 
+///
+
 /**
  
  */
