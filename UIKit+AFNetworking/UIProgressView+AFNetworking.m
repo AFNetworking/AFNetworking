@@ -114,7 +114,7 @@ static void * AFTaskCountOfBytesChangedContext = &AFTaskCountOfBytesChangedConte
 {
     [self _af_observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 
-    if ([object isKindOfClass:[NSURLSessionTask class]] && (context == AFTaskStateChangedContext || context == AFTaskCountOfBytesChangedContext)) {
+    if (context == AFTaskStateChangedContext || context == AFTaskCountOfBytesChangedContext) {
         if ([keyPath isEqualToString:@"countOfBytesSent"]) {
             if ([object countOfBytesExpectedToSend] > 0) {
                 self.progress = [object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f);
