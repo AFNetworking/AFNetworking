@@ -24,10 +24,8 @@
 
 #import "AFURLConnectionOperation.h"
 
-#import <objc/runtime.h>
-
-static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
-static void * AFTaskCountOfBytesChangedContext = &AFTaskCountOfBytesChangedContext;
+static void * AFTaskCountOfBytesSentContext = &AFTaskCountOfBytesSentContext;
+static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedContext;
 
 @interface AFURLConnectionOperation (_UIProgressView)
 @property (readwrite, nonatomic, copy) void (^uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
@@ -50,25 +48,18 @@ static void * AFTaskCountOfBytesChangedContext = &AFTaskCountOfBytesChangedConte
 
 @implementation UIProgressView (AFNetworking)
 
-+ (void)load {
-    Class class = [UIProgressView class];
-    Method originalMethod = class_getInstanceMethod(class, @selector(observeValueForKeyPath:ofObject:change:context:));
-    Method replacementMethod = class_getInstanceMethod(class, @selector(_af_observeValueForKeyPath:ofObject:change:context:));
-    method_exchangeImplementations(originalMethod, replacementMethod);
-}
-
 - (void)setProgressWithUploadProgressOfTask:(NSURLSessionUploadTask *)task
                                    animated:(BOOL)animated
 {
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
-    [task addObserver:self forKeyPath:@"countOfBytesSent" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesChangedContext];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesSentContext];
+    [task addObserver:self forKeyPath:@"countOfBytesSent" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesSentContext];
 }
 
 - (void)setProgressWithDownloadProgressOfTask:(NSURLSessionDownloadTask *)task
                                      animated:(BOOL)animated
 {
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
-    [task addObserver:self forKeyPath:@"countOfBytesReceived" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesChangedContext];
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesReceivedContext];
+    [task addObserver:self forKeyPath:@"countOfBytesReceived" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesReceivedContext];
 }
 
 #pragma mark -
@@ -107,14 +98,12 @@ static void * AFTaskCountOfBytesChangedContext = &AFTaskCountOfBytesChangedConte
 
 #pragma mark - NSKeyValueObserving
 
-- (void)_af_observeValueForKeyPath:(NSString *)keyPath
-                          ofObject:(id)object
-                            change:(NSDictionary *)change
-                           context:(void *)context
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
 {
-    [self _af_observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-
-    if (context == AFTaskStateChangedContext || context == AFTaskCountOfBytesChangedContext) {
+    if (context == AFTaskCountOfBytesSentContext || context == AFTaskCountOfBytesReceivedContext) {
         if ([keyPath isEqualToString:@"countOfBytesSent"]) {
             if ([object countOfBytesExpectedToSend] > 0) {
                 self.progress = [object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f);
@@ -125,7 +114,15 @@ static void * AFTaskCountOfBytesChangedContext = &AFTaskCountOfBytesChangedConte
             }
         } else if ([keyPath isEqualToString:@"state"]) {
             if ([object state] == NSURLSessionTaskStateCompleted) {
-                [object removeObserver:self];
+                [object removeObserver:self forKeyPath:@"state"];
+
+                if (context == AFTaskCountOfBytesSentContext) {
+                    [object removeObserver:self forKeyPath:@"countOfBytesSent"];
+                }
+
+                if (context == AFTaskCountOfBytesReceivedContext) {
+                    [object removeObserver:self forKeyPath:@"countOfBytesReceived"];
+                }
             }
         }
     }
