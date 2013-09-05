@@ -93,7 +93,7 @@ static void * AFTaskCountOfBytesChangedContext = &AFTaskCountOfBytesChangedConte
                                           animated:(BOOL)animated
 {
     __weak __typeof(self)weakSelf = self;
-    void (^original)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected) = [operation.uploadProgress copy];
+    void (^original)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected) = [operation.downloadProgress copy];
     [operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
         if (original) {
             original(bytesRead, totalBytesRead, totalBytesExpectedToRead);
