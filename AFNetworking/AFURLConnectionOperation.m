@@ -44,6 +44,16 @@ typedef UIBackgroundTaskIdentifier AFBackgroundTaskIdentifier;
 typedef id AFBackgroundTaskIdentifier;
 #endif
 
+static dispatch_group_t url_request_operation_completion_group() {
+    static dispatch_group_t af_url_request_operation_completion_group;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        af_url_request_operation_completion_group = dispatch_group_create();
+    });
+
+    return af_url_request_operation_completion_group;
+}
+
 static NSString * const kAFNetworkingLockName = @"com.alamofire.networking.operation.lock";
 
 NSString * const AFNetworkingErrorDomain = @"AFNetworkingErrorDomain";
@@ -277,9 +287,20 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
         __weak __typeof(self)weakSelf = self;
         [super setCompletionBlock:^ {
             __strong __typeof(weakSelf)strongSelf = weakSelf;
-            
-            block();
-            [strongSelf setCompletionBlock:nil];
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+            dispatch_group_t group = strongSelf.completionGroup ?: url_request_operation_completion_group();
+            dispatch_queue_t queue = strongSelf.completionQueue ?: dispatch_get_main_queue();
+#pragma clang diagnostic pop
+
+            dispatch_group_async(group, queue, ^{
+                block();
+            });
+
+            dispatch_group_notify(group, queue, ^{
+                [strongSelf setCompletionBlock:nil];
+            });
         }];
     }
     [self.lock unlock];
@@ -795,6 +816,8 @@ didReceiveResponse:(NSURLResponse *)response
     operation.cacheResponse = self.cacheResponse;
     operation.redirectResponse = self.redirectResponse;
     operation.allowsInvalidSSLCertificate = self.allowsInvalidSSLCertificate;
+    operation.completionQueue = self.completionQueue;
+    operation.completionGroup = self.completionGroup;
     
     return operation;
 }
