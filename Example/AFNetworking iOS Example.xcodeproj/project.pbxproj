@@ -164,6 +164,58 @@
 			name = Rocket;
 			sourceTree = "<group>";
 		};
+		F8D549A117DBE52C00BFF314 /* Serialization */ = {
+			isa = PBXGroup;
+			children = (
+				F8AF73EB1796FCF200F63037 /* AFSerialization.h */,
+				F8D5499B17DB0EFE00BFF314 /* AFURLRequestSerialization.h */,
+				F8D5499C17DB0EFE00BFF314 /* AFURLRequestSerialization.m */,
+				F8D5499817DB0EF300BFF314 /* AFURLResponseSerialization.h */,
+				F8D5499917DB0EF300BFF314 /* AFURLResponseSerialization.m */,
+			);
+			name = Serialization;
+			sourceTree = "<group>";
+		};
+		F8D549A217DBE53B00BFF314 /* NSURLSession */ = {
+			isa = PBXGroup;
+			children = (
+				F86A37DE177397D900407E52 /* AFURLSessionManager.h */,
+				F86A37DF177397D900407E52 /* AFURLSessionManager.m */,
+				F8FA949C150EFEC100ED4EAD /* AFHTTPClient.h */,
+				F8FA949D150EFEC100ED4EAD /* AFHTTPClient.m */,
+			);
+			name = NSURLSession;
+			sourceTree = "<group>";
+		};
+		F8D549A317DBE54700BFF314 /* NSURLConnection */ = {
+			isa = PBXGroup;
+			children = (
+				F8FA94AB150EFEC100ED4EAD /* AFURLConnectionOperation.h */,
+				F8FA94AC150EFEC100ED4EAD /* AFURLConnectionOperation.m */,
+				F8FA949E150EFEC100ED4EAD /* AFHTTPRequestOperation.h */,
+				F8FA949F150EFEC100ED4EAD /* AFHTTPRequestOperation.m */,
+			);
+			name = NSURLConnection;
+			sourceTree = "<group>";
+		};
+		F8D549A417DBE54F00BFF314 /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				F8D5499E17DB1C9100BFF314 /* AFNetworkReachabilityManager.h */,
+				F8D5499F17DB1C9100BFF314 /* AFNetworkReachabilityManager.m */,
+			);
+			name = Reachability;
+			sourceTree = "<group>";
+		};
+		F8D549A517DBE55400BFF314 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				297F56C817A9B1AB0014D95C /* AFSecurityPolicy.h */,
+				297F56C917A9B1AB0014D95C /* AFSecurityPolicy.m */,
+			);
+			name = Security;
+			sourceTree = "<group>";
+		};
 		F8DA09C61396AB690057D0CC /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -316,24 +368,12 @@
 		F8FA949B150EFEC100ED4EAD /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
-				297F56C817A9B1AB0014D95C /* AFSecurityPolicy.h */,
-				297F56C917A9B1AB0014D95C /* AFSecurityPolicy.m */,
 				F8FA94A8150EFEC100ED4EAD /* AFNetworking.h */,
-				F8FA94AB150EFEC100ED4EAD /* AFURLConnectionOperation.h */,
-				F8FA94AC150EFEC100ED4EAD /* AFURLConnectionOperation.m */,
-				F8FA949E150EFEC100ED4EAD /* AFHTTPRequestOperation.h */,
-				F8FA949F150EFEC100ED4EAD /* AFHTTPRequestOperation.m */,
-				F8FA949C150EFEC100ED4EAD /* AFHTTPClient.h */,
-				F8FA949D150EFEC100ED4EAD /* AFHTTPClient.m */,
-				F86A37DE177397D900407E52 /* AFURLSessionManager.h */,
-				F86A37DF177397D900407E52 /* AFURLSessionManager.m */,
-				F8AF73EB1796FCF200F63037 /* AFSerialization.h */,
-				F8D5499B17DB0EFE00BFF314 /* AFURLRequestSerialization.h */,
-				F8D5499C17DB0EFE00BFF314 /* AFURLRequestSerialization.m */,
-				F8D5499817DB0EF300BFF314 /* AFURLResponseSerialization.h */,
-				F8D5499917DB0EF300BFF314 /* AFURLResponseSerialization.m */,
-				F8D5499E17DB1C9100BFF314 /* AFNetworkReachabilityManager.h */,
-				F8D5499F17DB1C9100BFF314 /* AFNetworkReachabilityManager.m */,
+				F8D549A317DBE54700BFF314 /* NSURLConnection */,
+				F8D549A217DBE53B00BFF314 /* NSURLSession */,
+				F8D549A117DBE52C00BFF314 /* Serialization */,
+				F8D549A417DBE54F00BFF314 /* Reachability */,
+				F8D549A517DBE55400BFF314 /* Security */,
 				F8FFAD831774D70A00297E16 /* 1.0 Compatibility */,
 				F88DE17E17A08BC5006D695E /* Rocket */,
 			);
