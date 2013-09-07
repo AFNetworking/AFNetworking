@@ -219,7 +219,7 @@
  - `image/x-xbitmap`
  - `image/x-win-bitmap`
  */
-@interface AFImageSerializer : AFHTTPResponseSerializer
+@interface AFImageResponseSerializer : AFHTTPResponseSerializer
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 /**

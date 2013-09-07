@@ -36,7 +36,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _af_sharedHTTPClient = [[AFHTTPClient alloc] init];
-        _af_sharedHTTPClient.responseSerializer = [AFImageSerializer serializer];
+        _af_sharedHTTPClient.responseSerializer = [AFImageResponseSerializer serializer];
     });
 
     return _af_sharedHTTPClient;

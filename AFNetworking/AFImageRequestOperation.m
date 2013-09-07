@@ -140,7 +140,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
         return nil;
     }
     
-    self.responseSerializer = [AFImageSerializer serializer];
+    self.responseSerializer = [AFImageResponseSerializer serializer];
 
     return self;
 }
@@ -176,15 +176,15 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 }
 
 - (CGFloat)imageScale {
-    return [(AFImageSerializer *)self.responseSerializer imageScale];
+    return [(AFImageResponseSerializer *)self.responseSerializer imageScale];
 }
 
 - (void)setImageScale:(CGFloat)imageScale {
     [self.lock lock];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wfloat-equal"
-    if (imageScale != [(AFImageSerializer *)self.responseSerializer imageScale]) {
-        [(AFImageSerializer *)self.responseSerializer setImageScale:imageScale];
+    if (imageScale != [(AFImageResponseSerializer *)self.responseSerializer imageScale]) {
+        [(AFImageResponseSerializer *)self.responseSerializer setImageScale:imageScale];
 
         self.responseImage = nil;
     }

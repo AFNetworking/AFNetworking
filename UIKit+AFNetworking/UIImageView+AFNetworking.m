@@ -39,19 +39,24 @@
 
 static char kAFImageRequestOperationKey;
 static char kAFResponseSerializerKey;
+static char kAFSecurityPolicyKey;
+
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFHTTPRequestOperation *af_imageRequestOperation;
+@property (readwrite, nonatomic, strong, setter = af_setSecurityPolicy:) AFSecurityPolicy *af_securityPolicy;
 @end
 
 @implementation UIImageView (_AFNetworking)
 @dynamic af_imageRequestOperation;
+@dynamic af_securityPolicy;
 @end
 
 #pragma mark -
 
 @implementation UIImageView (AFNetworking)
 @dynamic imageResponseSerializer;
+@dynamic securityPolicy;
 
 + (NSOperationQueue *)af_sharedImageRequestOperationQueue {
     static NSOperationQueue *_af_sharedImageRequestOperationQueue = nil;
@@ -86,7 +91,7 @@ static char kAFResponseSerializerKey;
     static id <AFURLResponseSerialization> _af_defaultImageResponseSerializer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _af_defaultImageResponseSerializer = [AFImageSerializer serializer];
+        _af_defaultImageResponseSerializer = [AFImageResponseSerializer serializer];
     });
 
     return objc_getAssociatedObject(self, &kAFResponseSerializerKey) ?: _af_defaultImageResponseSerializer;
@@ -94,6 +99,20 @@ static char kAFResponseSerializerKey;
 
 - (void)setImageResponseSerializer:(id <AFURLResponseSerialization>)serializer {
     objc_setAssociatedObject(self, &kAFResponseSerializerKey, serializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (AFSecurityPolicy *)securityPolicy {
+    static AFSecurityPolicy *_af_defaultSecurityPolicy = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _af_defaultSecurityPolicy = [AFSecurityPolicy debugPolicy];
+    });
+
+    return objc_getAssociatedObject(self, &kAFSecurityPolicyKey) ?: _af_defaultSecurityPolicy;
+}
+
+- (void)setSecurityPolicy:(AFSecurityPolicy *)securityPolicy {
+    objc_setAssociatedObject(self, &kAFSecurityPolicyKey, securityPolicy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark -
@@ -133,6 +152,7 @@ static char kAFResponseSerializerKey;
         __weak __typeof(self)weakSelf = self;
         self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
         self.af_imageRequestOperation.responseSerializer = self.imageResponseSerializer;
+        self.af_imageRequestOperation.securityPolicy = self.securityPolicy;
         [self.af_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             __strong __typeof(weakSelf)strongSelf = weakSelf;
             if ([[urlRequest URL] isEqual:[operation.request URL]]) {
@@ -141,6 +161,8 @@ static char kAFResponseSerializerKey;
                 } else if (responseObject) {
                     strongSelf.image = responseObject;
                 }
+            } else {
+                
             }
 
             [[[strongSelf class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];

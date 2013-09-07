@@ -539,7 +539,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #endif
 
 
-@implementation AFImageSerializer
+@implementation AFImageResponseSerializer
 
 - (instancetype)init {
     self = [super init];
@@ -567,7 +567,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     return _acceptablePathExtension;
 }
 
-#pragma mark -
+#pragma mark - AFURLResponseSerializer
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
@@ -623,7 +623,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
-    AFImageSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    AFImageResponseSerializer *serializer = [[[self class] allocWithZone:zone] init];
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
     serializer.imageScale = self.imageScale;
