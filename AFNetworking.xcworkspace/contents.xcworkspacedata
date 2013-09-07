@@ -7,33 +7,77 @@
       <FileRef
          location = "group:AFNetworking.h">
       </FileRef>
-      <FileRef
-         location = "group:AFURLConnectionOperation.h">
-      </FileRef>
-      <FileRef
-         location = "group:AFURLConnectionOperation.m">
-      </FileRef>
-      <FileRef
-         location = "group:AFHTTPRequestOperation.h">
-      </FileRef>
-      <FileRef
-         location = "group:AFHTTPRequestOperation.m">
-      </FileRef>
-      <FileRef
-         location = "group:AFURLSessionManager.h">
-      </FileRef>
-      <FileRef
-         location = "group:AFURLSessionManager.m">
-      </FileRef>
-      <FileRef
-         location = "group:AFHTTPClient.h">
-      </FileRef>
-      <FileRef
-         location = "group:AFHTTPClient.m">
-      </FileRef>
-      <FileRef
-         location = "group:AFSerialization.h">
-      </FileRef>
+      <Group
+         location = "container:"
+         name = "NSURLConnection">
+         <FileRef
+            location = "group:AFNetworking/AFURLConnectionOperation.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLConnectionOperation.m">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPRequestOperation.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPRequestOperation.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
+         name = "NSURLSession">
+         <FileRef
+            location = "group:AFNetworking/AFURLSessionManager.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLSessionManager.m">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPClient.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPClient.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
+         name = "Security">
+         <FileRef
+            location = "group:AFNetworking/AFSecurityPolicy.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFSecurityPolicy.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
+         name = "Reachability">
+         <FileRef
+            location = "group:AFNetworking/AFNetworkReachabilityManager.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFNetworkReachabilityManager.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
+         name = "Serialization">
+         <FileRef
+            location = "group:AFNetworking/AFSerialization.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLRequestSerialization.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLRequestSerialization.m">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLResponseSerialization.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLResponseSerialization.m">
+         </FileRef>
+      </Group>
       <Group
          location = "group:AFNetworking"
          name = "1.0 Compatibility">
