@@ -59,7 +59,7 @@
         return nil;
     }
 
-    self.responseSerializer = [AFPropertyListSerializer serializerWithFormat:NSPropertyListXMLFormat_v1_0 readOptions:NSPropertyListImmutable writeOptions:0];
+    self.responseSerializer = [AFPropertyListResponseSerializer serializerWithFormat:NSPropertyListXMLFormat_v1_0 readOptions:NSPropertyListImmutable];
 
     return self;
 }
@@ -67,13 +67,13 @@
 #pragma mark AFPropertyListRequestOperation
 
 - (NSPropertyListReadOptions)propertyListReadOptions {
-    return [(AFPropertyListSerializer *)self.responseSerializer readOptions];
+    return [(AFPropertyListResponseSerializer *)self.responseSerializer readOptions];
 }
 
 - (void)setPropertyListReadOptions:(NSPropertyListReadOptions)propertyListReadOptions {
     [self.lock lock];
     if (self.propertyListReadOptions != propertyListReadOptions) {
-        [(AFPropertyListSerializer *)self.responseSerializer setReadOptions:propertyListReadOptions];
+        [(AFPropertyListResponseSerializer *)self.responseSerializer setReadOptions:propertyListReadOptions];
 
         self.responsePropertyList = nil;
     }

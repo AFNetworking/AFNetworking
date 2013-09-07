@@ -34,9 +34,6 @@
       <FileRef
          location = "group:AFSerialization.h">
       </FileRef>
-      <FileRef
-         location = "group:AFSerialization.m">
-      </FileRef>
       <Group
          location = "group:AFNetworking"
          name = "1.0 Compatibility">

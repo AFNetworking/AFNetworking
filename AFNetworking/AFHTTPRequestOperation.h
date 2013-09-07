@@ -43,7 +43,7 @@
 
  @warning `responseSerializer` must not be `nil`.
  */
-@property (nonatomic, strong) AFHTTPSerializer <AFURLResponseSerialization> * responseSerializer;
+@property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
 
 ///-----------------------------------------------------------
 /// @name Setting Completion Block Success / Failure Callbacks

@@ -54,7 +54,7 @@ static NSString * const AFAppDotNetAPIBaseURLString = @"https://alpha-api.app.ne
 //
 //    self.defaultSSLPinningMode = AFSSLPinningModeNone;
 
-    self.responseSerializer = [AFJSONSerializer serializer];
+    self.responseSerializer = [AFJSONResponseSerializer serializer];
 
     return self;
 }

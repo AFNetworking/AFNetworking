@@ -150,8 +150,8 @@ typedef id AFNetworkReachabilityRef;
 
     self.baseURL = url;
 
-    self.requestSerializer = [AFJSONSerializer serializer];
-    self.responseSerializer = [AFCompoundSerializer compoundSerializerWithResponseSerializers:@[[AFJSONSerializer serializer]]];
+    self.requestSerializer = [AFJSONRequestSerializer serializer];
+    self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[[AFJSONResponseSerializer serializer]]];
 
 #ifdef _SYSTEMCONFIGURATION_H
     self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
@@ -304,13 +304,13 @@ typedef id AFNetworkReachabilityRef;
     return [formData requestByFinalizingMultipartFormData];
 }
 
-- (void)setRequestSerializer:(AFHTTPSerializer <AFURLRequestSerialization> *)requestSerializer {
+- (void)setRequestSerializer:(AFHTTPRequestSerializer <AFURLRequestSerialization> *)requestSerializer {
     NSParameterAssert(requestSerializer);
 
     _requestSerializer = requestSerializer;
 }
 
-- (void)setResponseSerializer:(AFHTTPSerializer<AFURLResponseSerialization> *)responseSerializer {
+- (void)setResponseSerializer:(AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
     NSParameterAssert(responseSerializer);
 
     [super setResponseSerializer:responseSerializer];
