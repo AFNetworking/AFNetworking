@@ -27,77 +27,14 @@
 
 #import <Availability.h>
 
-#ifdef _SYSTEMCONFIGURATION_H
-#import <netinet/in.h>
-#import <netinet6/in6.h>
-#import <arpa/inet.h>
-#import <ifaddrs.h>
-#import <netdb.h>
-#endif
+
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import <UIKit/UIKit.h>
 #endif
 
 #ifdef _SYSTEMCONFIGURATION_H
-NSString * const AFNetworkingReachabilityDidChangeNotification = @"com.alamofire.networking.reachability.change";
-NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworkingReachabilityNotificationStatusItem";
 
-typedef SCNetworkReachabilityRef AFNetworkReachabilityRef;
-typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus status);
-
-static BOOL AFURLHostIsIPAddress(NSURL *url) {
-    struct sockaddr_in sa_in;
-    struct sockaddr_in6 sa_in6;
-
-    return [url host] && (inet_pton(AF_INET, [[url host] UTF8String], &sa_in) == 1 || inet_pton(AF_INET6, [[url host] UTF8String], &sa_in6) == 1);
-}
-
-static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
-    BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
-    BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
-    BOOL canConnectionAutomatically = (((flags & kSCNetworkReachabilityFlagsConnectionOnDemand ) != 0) || ((flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0));
-    BOOL canConnectWithoutUserInteraction = (canConnectionAutomatically && (flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0);
-    BOOL isNetworkReachable = (isReachable && (!needsConnection || canConnectWithoutUserInteraction));
-
-    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusUnknown;
-    if (isNetworkReachable == NO) {
-        status = AFNetworkReachabilityStatusNotReachable;
-    }
-#if	TARGET_OS_IPHONE
-    else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0) {
-        status = AFNetworkReachabilityStatusReachableViaWWAN;
-    }
-#endif
-    else {
-        status = AFNetworkReachabilityStatusReachableViaWiFi;
-    }
-
-    return status;
-}
-
-static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
-    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
-    AFNetworkReachabilityStatusBlock block = (__bridge AFNetworkReachabilityStatusBlock)info;
-    if (block) {
-        block(status);
-    }
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:@{ AFNetworkingReachabilityNotificationStatusItem: @(status) }];
-    });
-}
-
-static const void * AFNetworkReachabilityRetainCallback(const void *info) {
-    return Block_copy(info);
-}
-
-static void AFNetworkReachabilityReleaseCallback(const void *info) {
-    if (info) {
-        Block_release(info);
-    }
-}
 #else
 typedef id AFNetworkReachabilityRef;
 #endif
@@ -106,16 +43,6 @@ typedef id AFNetworkReachabilityRef;
 
 @interface AFHTTPClient ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
-#ifdef _SYSTEMCONFIGURATION_H
-@property (readwrite, nonatomic, assign) AFNetworkReachabilityRef networkReachability;
-@property (readwrite, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
-@property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
-#endif
-
-#ifdef _SYSTEMCONFIGURATION_H
-- (void)startMonitoringNetworkReachability;
-- (void)stopMonitoringNetworkReachability;
-#endif
 @end
 
 @implementation AFHTTPClient
@@ -146,18 +73,7 @@ typedef id AFNetworkReachabilityRef;
     self.requestSerializer = [AFJSONRequestSerializer serializer];
     self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[[AFJSONResponseSerializer serializer]]];
 
-#ifdef _SYSTEMCONFIGURATION_H
-    self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
-    [self startMonitoringNetworkReachability];
-#endif
-
     return self;
-}
-
-- (void)dealloc {
-#ifdef _SYSTEMCONFIGURATION_H
-    [self stopMonitoringNetworkReachability];
-#endif
 }
 
 - (NSString *)description {
@@ -167,60 +83,6 @@ typedef id AFNetworkReachabilityRef;
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
-- (void)startMonitoringNetworkReachability {
-    [self stopMonitoringNetworkReachability];
-
-    if (!self.baseURL) {
-        return;
-    }
-
-    self.networkReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [[self.baseURL host] UTF8String]);
-
-    if (!self.networkReachability) {
-        return;
-    }
-
-    __weak __typeof(self)weakSelf = self;
-    AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status) {
-        __strong __typeof(weakSelf)strongSelf = weakSelf;
-        if (!strongSelf) {
-            return;
-        }
-
-        strongSelf.networkReachabilityStatus = status;
-        if (strongSelf.networkReachabilityStatusBlock) {
-            strongSelf.networkReachabilityStatusBlock(status);
-        }
-    };
-
-    SCNetworkReachabilityContext context = {0, (__bridge void *)callback, AFNetworkReachabilityRetainCallback, AFNetworkReachabilityReleaseCallback, NULL};
-    SCNetworkReachabilitySetCallback(self.networkReachability, AFNetworkReachabilityCallback, &context);
-
-    // Network reachability monitoring does not establish a baseline for IP addresses as it does for hostnames, so if the base URL host is an IP address, the initial reachability callback is manually triggered.
-    if (AFURLHostIsIPAddress(self.baseURL)) {
-        SCNetworkReachabilityFlags flags;
-        SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
-            callback(status);
-        });
-    }
-
-    SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
-}
-
-- (void)stopMonitoringNetworkReachability {
-    if (self.networkReachability) {
-        SCNetworkReachabilityUnscheduleFromRunLoop(self.networkReachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
-
-        CFRelease(_networkReachability);
-        _networkReachability = NULL;
-    }
-}
-
-- (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block {
-    self.networkReachabilityStatusBlock = block;
-}
 #endif
 
 - (void)setRequestSerializer:(AFHTTPRequestSerializer <AFURLRequestSerialization> *)requestSerializer {
@@ -245,8 +107,6 @@ typedef id AFNetworkReachabilityRef;
     operation.responseSerializer = self.responseSerializer;
 
     [operation setCompletionBlockWithSuccess:success failure:failure];
-
-    operation.allowsInvalidSSLCertificate = self.allowsInvalidSSLCertificate;
 
     return operation;
 }
@@ -529,7 +389,6 @@ typedef id AFNetworkReachabilityRef;
 
     self.requestSerializer = [aDecoder decodeObjectForKey:@"requestSerializer"];
     self.responseSerializer = [aDecoder decodeObjectForKey:@"responseSerializer"];
-    self.allowsInvalidSSLCertificate = [aDecoder decodeBoolForKey:@"allowsInvalidSSLCertificate"];
 
     return self;
 }
@@ -540,7 +399,6 @@ typedef id AFNetworkReachabilityRef;
     [aCoder encodeObject:self.baseURL forKey:@"baseURL"];
     [aCoder encodeObject:self.requestSerializer forKey:@"requestSerializer"];
     [aCoder encodeObject:self.responseSerializer forKey:@"responseSerializer"];
-    [aCoder encodeBool:self.allowsInvalidSSLCertificate forKey:@"allowsInvalidSSLCertificate"];
 }
 
 #pragma mark - NSCopying
@@ -550,9 +408,7 @@ typedef id AFNetworkReachabilityRef;
 
     HTTPClient.requestSerializer = [self.requestSerializer copyWithZone:zone];
     HTTPClient.responseSerializer = [self.responseSerializer copyWithZone:zone];
-    HTTPClient.allowsInvalidSSLCertificate = self.allowsInvalidSSLCertificate;
-    HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
-    
+
     return HTTPClient;
 }
 

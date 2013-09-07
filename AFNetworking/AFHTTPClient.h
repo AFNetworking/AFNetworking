@@ -83,12 +83,7 @@
  - NSCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
  */
 
-typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
-    AFNetworkReachabilityStatusUnknown          = -1,
-    AFNetworkReachabilityStatusNotReachable     = 0,
-    AFNetworkReachabilityStatusReachableViaWWAN = 1,
-    AFNetworkReachabilityStatusReachableViaWiFi = 2,
-};
+
 
 @interface AFHTTPClient : AFURLSessionManager <NSCoding, NSCopying>
 
@@ -110,16 +105,6 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @warning `responseSerializer` must not be `nil`.
  */
 @property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
-
-/**
- The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
- */
-@property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
-
-/**
- Whether each `AFHTTPRequestOperation` created by `HTTPRequestOperationWithRequest:success:failure:` should accept an invalid SSL certificate.
- */
-@property (nonatomic, assign) BOOL allowsInvalidSSLCertificate;
 
 ///
 
@@ -153,23 +138,6 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration;
-
-///-----------------------------------
-/// @name Managing Reachability Status
-///-----------------------------------
-
-/**
- Sets a callback to be executed when the network availability of the `baseURL` host changes.
-
- @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument which represents the various reachability states from the device to the `baseURL`.
-
- @warning This method requires the `SystemConfiguration` framework. Add it in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (`Prefix.pch`).
- */
-#ifdef _SYSTEMCONFIGURATION_H
-- (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block;
-#endif
-
-
 
 ///---------------------------------------
 /// @name Managing HTTP Request Operations
@@ -348,54 +316,3 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 
 @end
 
-///----------------
-/// @name Constants
-///----------------
-
-/**
- ## Network Reachability
-
- The following constants are provided by `AFHTTPClient` as possible network reachability statuses.
-
- enum {
-    AFNetworkReachabilityStatusUnknown,
-    AFNetworkReachabilityStatusNotReachable,
-    AFNetworkReachabilityStatusReachableViaWWAN,
-    AFNetworkReachabilityStatusReachableViaWiFi,
- }
-
- `AFNetworkReachabilityStatusUnknown`
- The `baseURL` host reachability is not known.
-
- `AFNetworkReachabilityStatusNotReachable`
- The `baseURL` host cannot be reached.
-
- `AFNetworkReachabilityStatusReachableViaWWAN`
- The `baseURL` host can be reached via a cellular connection, such as EDGE or GPRS.
-
- `AFNetworkReachabilityStatusReachableViaWiFi`
- The `baseURL` host can be reached via a Wi-Fi connection.
-
- ### Keys for Notification UserInfo Dictionary
-
- Strings that are used as keys in a `userInfo` dictionary in a network reachability status change notification.
-
- `AFNetworkingReachabilityNotificationStatusItem`
- A key in the userInfo dictionary in a `AFNetworkingReachabilityDidChangeNotification` notification.
- The corresponding value is an `NSNumber` object representing the `AFNetworkReachabilityStatus` value for the current reachability status.
- */
-
-///--------------------
-/// @name Notifications
-///--------------------
-
-/**
- Posted when network reachability changes.
- This notification assigns no notification object. The `userInfo` dictionary contains an `NSNumber` object under the `AFNetworkingReachabilityNotificationStatusItem` key, representing the `AFNetworkReachabilityStatus` value for the current network reachability.
-
- @warning In order for network reachability to be monitored, include the `SystemConfiguration` framework in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (`Prefix.pch`).
- */
-#ifdef _SYSTEMCONFIGURATION_H
-extern NSString * const AFNetworkingReachabilityDidChangeNotification;
-extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
-#endif
