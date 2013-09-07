@@ -72,10 +72,10 @@
             location = "group:AFEventSource.m">
          </FileRef>
          <FileRef
-            location = "group:AFJSONPatchSerializer.h">
+            location = "group:/Users/mattt/Code/Objective-C/AFNetworking/AFNetworking/AFJSONPatchResponseSerializer.h">
          </FileRef>
          <FileRef
-            location = "group:AFJSONPatchSerializer.m">
+            location = "group:/Users/mattt/Code/Objective-C/AFNetworking/AFNetworking/AFJSONPatchResponseSerializer.m">
          </FileRef>
          <FileRef
             location = "group:AFHTTPClient+Rocket.h">

@@ -23,7 +23,7 @@
 #import "AFHTTPClient.h"
 
 #import "AFEventSource.h"
-#import "AFJSONPatchSerializer.h"
+#import "AFJSONPatchResponseSerializer.h"
 
 /**
  This category adds methods to AFNetworking's `AFHTTPClient` class related to real-time networking with Rocket.
@@ -57,7 +57,7 @@
  @return An event source, opened to the request created with the specified URL request.
  */
 - (AFEventSource *)openEventSourceWithRequest:(NSURLRequest *)request
-                                   serializer:(AFJSONPatchSerializer *)serializer
+                                   serializer:(AFJSONPatchResponseSerializer *)serializer
                                    usingBlock:(void (^)(NSArray *operations, NSError *error))block
                                         error:(NSError * __autoreleasing *)error;
 

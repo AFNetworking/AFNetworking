@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFJSONPatchSerializer.h"
+#import "AFJSONPatchResponseSerializer.h"
 #import "AFHTTPRequestOperation.h"
 
-@implementation AFJSONPatchSerializer
+@implementation AFJSONPatchResponseSerializer
 
 - (instancetype)init {
     self = [super init];

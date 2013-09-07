@@ -135,6 +135,6 @@ typedef NS_ENUM(NSUInteger, AFJSONPatchOperationType) {
 
  By default, `AFServerSentEventSerializer` accepts responses with a MIME type of `application/json-patch+json`.
  */
-@interface AFJSONPatchSerializer : AFJSONResponseSerializer
+@interface AFJSONPatchResponseSerializer : AFJSONResponseSerializer
 
 @end

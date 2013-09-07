@@ -31,11 +31,11 @@
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"SUBSCRIBE" URLString:URLString parameters:nil];
     [request setValue:@"text/event-stream" forHTTPHeaderField:@"Accept"];
 
-    return [self openEventSourceWithRequest:request serializer:[AFJSONPatchSerializer serializer] usingBlock:block error:error];
+    return [self openEventSourceWithRequest:request serializer:[AFJSONPatchResponseSerializer serializer] usingBlock:block error:error];
 }
 
 - (AFEventSource *)openEventSourceWithRequest:(NSURLRequest *)request
-                                   serializer:(AFJSONPatchSerializer *)serializer
+                                   serializer:(AFJSONPatchResponseSerializer *)serializer
                                    usingBlock:(void (^)(NSArray *operations, NSError *error))block
                                         error:(NSError * __autoreleasing *)error
 {
