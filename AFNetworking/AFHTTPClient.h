@@ -33,6 +33,7 @@
 #import "AFURLSessionManager.h"
 #import "AFHTTPRequestOperation.h"
 #import "AFSerialization.h"
+#import "AFSecurityPolicy.h"
 
 /**
  `AFHTTPClient` encapsulates the common patterns of communicating with an web application over HTTP, including request creation, response serialization, network reachability monitoring, and security, as well as both request operation and session task management.
@@ -106,7 +107,7 @@
  */
 @property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
 
-///
+@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients

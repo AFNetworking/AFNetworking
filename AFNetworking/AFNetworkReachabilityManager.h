@@ -44,7 +44,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 /**
  
  */
-@property (readwrite, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
+@property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
 
 
 /**

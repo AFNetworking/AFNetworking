@@ -23,6 +23,7 @@
 #import <Foundation/Foundation.h>
 
 #import <Availability.h>
+#import "AFSecurityPolicy.h"
 
 /**
  `AFURLConnectionOperation` is a subclass of `NSOperation` that implements `NSURLConnection` delegate methods.
@@ -78,12 +79,6 @@
  - A copy of an operation will not include the `outputStream` of the original.
  - Operation copies do not include `completionBlock`, as it often strongly captures a reference to `self`, which would otherwise have the unintuitive side-effect of pointing to the _original_ operation when copied.
  */
-
-typedef NS_ENUM(NSUInteger, AFURLConnectionOperationSSLPinningMode) {
-    AFSSLPinningModeNone,
-    AFSSLPinningModePublicKey,
-    AFSSLPinningModeCertificate,
-};
 
 @interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate, NSCoding, NSCopying>
 
@@ -159,10 +154,13 @@ typedef NS_ENUM(NSUInteger, AFURLConnectionOperationSSLPinningMode) {
  */
 @property (nonatomic, strong) NSURLCredential *credential;
 
+///
+
 /**
- The pinning mode which will be used for SSL connections. `AFSSLPinningModePublicKey` by default.
+ 
  */
-@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
+@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
+
 
 ///------------------------
 /// @name Accessing Streams

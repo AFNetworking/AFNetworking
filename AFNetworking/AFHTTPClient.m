@@ -26,6 +26,7 @@
 #import "AFHTTPRequestOperation.h"
 
 #import <Availability.h>
+#import <Security/Security.h>
 
 #ifdef _SYSTEMCONFIGURATION_H
 #import <netinet/in.h>
@@ -70,6 +71,8 @@
 
     self.requestSerializer = [AFJSONRequestSerializer serializer];
     self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[[AFJSONResponseSerializer serializer]]];
+
+    self.securityPolicy = [AFSecurityPolicy defaultSecurity];
 
     return self;
 }
@@ -408,6 +411,35 @@
     HTTPClient.responseSerializer = [self.responseSerializer copyWithZone:zone];
     
     return HTTPClient;
+}
+
+#pragma mark - NSURLSessionDelegate
+
+- (void)URLSession:(NSURLSession *)session
+didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler
+{
+    if (!completionHandler) {
+        return;
+    }
+    
+    [super URLSession:session didReceiveChallenge:challenge completionHandler:^(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential) {
+         if (disposition != NSURLSessionAuthChallengePerformDefaultHandling) {
+             completionHandler(disposition, credential);
+             return;
+         } else {
+             if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+                 if ([self.securityPolicy shouldTrustServerTrust:challenge.protectionSpace.serverTrust]) {
+                     credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                     completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+                 } else {
+                     completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+                 }
+             } else {
+                completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+             }
+         }
+    }];
 }
 
 @end

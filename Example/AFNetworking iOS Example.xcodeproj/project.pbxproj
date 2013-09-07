@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		297F56CA17A9B1AB0014D95C /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 297F56C917A9B1AB0014D95C /* AFSecurityPolicy.m */; };
 		2982AD3217107C0000FFF048 /* adn.cer in Resources */ = {isa = PBXBuildFile; fileRef = 2982AD3117107C0000FFF048 /* adn.cer */; };
 		F8064B161799995A00E7C1D3 /* AFJSONPatchSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = F8064B151799995A00E7C1D3 /* AFJSONPatchSerializer.m */; };
 		F8129C7415910C37009BFE23 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C7215910C37009BFE23 /* AppDelegate.m */; };
@@ -53,6 +54,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		297F56C817A9B1AB0014D95C /* AFSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSecurityPolicy.h; sourceTree = "<group>"; };
+		297F56C917A9B1AB0014D95C /* AFSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicy.m; sourceTree = "<group>"; };
 		2982AD3117107C0000FFF048 /* adn.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = adn.cer; sourceTree = SOURCE_ROOT; };
 		50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		F8064B141799995A00E7C1D3 /* AFJSONPatchSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFJSONPatchSerializer.h; sourceTree = "<group>"; };
@@ -313,6 +316,8 @@
 		F8FA949B150EFEC100ED4EAD /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				297F56C817A9B1AB0014D95C /* AFSecurityPolicy.h */,
+				297F56C917A9B1AB0014D95C /* AFSecurityPolicy.m */,
 				F8FA94A8150EFEC100ED4EAD /* AFNetworking.h */,
 				F8FA94AB150EFEC100ED4EAD /* AFURLConnectionOperation.h */,
 				F8FA94AC150EFEC100ED4EAD /* AFURLConnectionOperation.m */,
@@ -441,6 +446,7 @@
 				F8FFAD7F1774D67900297E16 /* AFImageRequestOperation.m in Sources */,
 				F8D549A017DB1C9100BFF314 /* AFNetworkReachabilityManager.m in Sources */,
 				F8E02CF7177A8B710087BB23 /* AFNetworkActivityIndicatorManager.m in Sources */,
+				297F56CA17A9B1AB0014D95C /* AFSecurityPolicy.m in Sources */,
 				F8FFAD811774D67900297E16 /* AFPropertyListRequestOperation.m in Sources */,
 				F8064B161799995A00E7C1D3 /* AFJSONPatchSerializer.m in Sources */,
 				F8E02CF9177A8B710087BB23 /* UIButton+AFNetworking.m in Sources */,
