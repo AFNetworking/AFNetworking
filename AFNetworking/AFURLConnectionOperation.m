@@ -200,7 +200,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 
     self.state = AFOperationReadyState;
 
-    self.securityPolicy = [AFSecurityPolicy defaultSecurity];
+    self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
     return self;
 }
@@ -510,7 +510,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
     }
 
     if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        if ([self.securityPolicy shouldTrustServerTrust:challenge.protectionSpace.serverTrust]) {
+        if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust]) {
             NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
             [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
         } else {

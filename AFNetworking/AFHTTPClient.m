@@ -72,7 +72,7 @@
     self.requestSerializer = [AFJSONRequestSerializer serializer];
     self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[[AFJSONResponseSerializer serializer]]];
 
-    self.securityPolicy = [AFSecurityPolicy defaultSecurity];
+    self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
     return self;
 }

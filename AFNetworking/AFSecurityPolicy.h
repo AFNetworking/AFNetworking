@@ -23,6 +23,9 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
 
+/**
+ 
+ */
 typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
     AFSSLPinningModeNone,
     AFSSLPinningModePublicKey,
@@ -49,11 +52,23 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
  */
 @property (nonatomic, assign) BOOL allowInvalidCertificates;
 
-+ (instancetype)defaultSecurity;
+///
 
-+ (instancetype)debugSecurity;
+/**
+ 
+ */
++ (instancetype)defaultPolicy;
 
-- (BOOL)shouldTrustServerTrust:(SecTrustRef)serverTrust;
+/**
+ 
+ */
++ (instancetype)debugPolicy;
 
-//- (void)setAuthenticationChallengeBlockForRequestOperation:(AFURLRequestOperation *)requestOperation;
+///
+
+/**
+ 
+ */
+- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust;
+
 @end
