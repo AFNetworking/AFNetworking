@@ -27,19 +27,17 @@
 
 #import <Availability.h>
 
-
+#ifdef _SYSTEMCONFIGURATION_H
+#import <netinet/in.h>
+#import <netinet6/in6.h>
+#import <arpa/inet.h>
+#import <ifaddrs.h>
+#import <netdb.h>
+#endif
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import <UIKit/UIKit.h>
 #endif
-
-#ifdef _SYSTEMCONFIGURATION_H
-
-#else
-typedef id AFNetworkReachabilityRef;
-#endif
-
-#pragma mark -
 
 @interface AFHTTPClient ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
@@ -408,7 +406,7 @@ typedef id AFNetworkReachabilityRef;
 
     HTTPClient.requestSerializer = [self.requestSerializer copyWithZone:zone];
     HTTPClient.responseSerializer = [self.responseSerializer copyWithZone:zone];
-
+    
     return HTTPClient;
 }
 

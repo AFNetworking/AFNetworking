@@ -1,6 +1,6 @@
 // AFNetworkReachabilityManager.h
 // 
-// Copyright (c) 2013年 Gowalla
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,23 +29,45 @@
 #import <ifaddrs.h>
 #import <netdb.h>
 
+typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
+    AFNetworkReachabilityStatusUnknown          = -1,
+    AFNetworkReachabilityStatusNotReachable     = 0,
+    AFNetworkReachabilityStatusReachableViaWWAN = 1,
+    AFNetworkReachabilityStatusReachableViaWiFi = 2,
+};
+
 /**
- AFNetworkReachabilityManager is KVO compliant on networkReachabilityStatus
+
  */
 @interface AFNetworkReachabilityManager : NSObject
+
+/**
+ 
+ */
+@property (readwrite, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
+
 
 /**
 
  */
 @property (readonly, nonatomic, assign) SCNetworkReachabilityFlags networkReachabilityFlags;
 
+/**
+ 
+ */
 @property (readonly, nonatomic, assign, getter = isReachable) BOOL reachable;
 
+/**
+ 
+ */
 @property (readonly, nonatomic, assign, getter = isReachableViaWWAN) BOOL reachableViaWWAN;
 
+/**
+ 
+ */
 @property (readonly, nonatomic, assign, getter = isReachableViaWiFi) BOOL reachableViaWiFi;
 
-
+///
 
 /**
  
@@ -83,20 +105,14 @@
 
 - (NSString *)localizedNetworkReachabilityStatusString;
 
-/**
- The reachability status from the device to the current `baseURL` of the `AFHTTPClient`.
- */
+///
 
 /**
  Sets a callback to be executed when the network availability of the `baseURL` host changes.
 
- @param block A block object to be executed when the network availability of the `baseURL` host changes. This block has no return value and takes a single argument which represents the various reachability states from the device to the `baseURL`.
-
+ @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument which represents the various reachability states from the device to the `baseURL`.
  */
-- (void)setNetworkDidBecomeReachableBlock:(void (^)())block;
-
-- (void)setNetworkDidBecomeUnreachableBlock:(void (^)())block;
-
+- (void)setReachabilityStatusChangeBlock:(void (^)(AFNetworkReachabilityStatus status))block;
 
 @end
 
