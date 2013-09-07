@@ -36,7 +36,7 @@
     return self;
 }
 
-#pragma mark - AFURLRequestSerialization
+#pragma mark - AFURLResponseSerialization
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
