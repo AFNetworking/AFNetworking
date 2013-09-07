@@ -107,8 +107,6 @@
  */
 @property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
 
-@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
-
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
 ///---------------------------------------------

@@ -23,6 +23,7 @@
 #import <Foundation/Foundation.h>
 
 #import "AFSerialization.h"
+#import "AFSecurityPolicy.h"
 
 /**
  `AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
@@ -89,6 +90,13 @@
  @warning `responseSerializer` must not be `nil`.
  */
 @property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
+
+///
+
+/**
+ 
+ */
+@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
 ///----------------------------
 /// @name Getting Session Tasks
