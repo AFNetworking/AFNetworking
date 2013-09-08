@@ -22,6 +22,12 @@
          <FileRef
             location = "group:AFNetworking/AFHTTPRequestOperation.m">
          </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPRequestOperationManager.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPRequestOperationManager.m">
+         </FileRef>
       </Group>
       <Group
          location = "container:"
