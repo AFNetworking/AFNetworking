@@ -83,7 +83,7 @@
  - Archives and copies of HTTP clients will be initialized with an empty operation queue.
  - NSCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
  */
-@interface AFHTTPSessionManager : AFURLSessionManager <NSCoding, NSCopying>
+@interface AFHTTPRequestOperationManager : NSObject <NSCoding, NSCopying>
 
 /**
  The URL used to monitor reachability, and construct requests from relative paths in methods like `requestWithMethod:URLString:parameters:`, and the `GET` / `POST` / et al. convenience methods.
@@ -104,6 +104,10 @@
  */
 @property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
 
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
+
+@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
+
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
 ///---------------------------------------------
@@ -116,24 +120,77 @@
 /**
  Initializes an `AFHTTPClient` object with the specified base URL.
  
+ This is the designated initializer.
+ 
  @param url The base URL for the HTTP client.
 
  @return The newly-initialized HTTP client
  */
 - (instancetype)initWithBaseURL:(NSURL *)url;
 
+///---------------------------------------
+/// @name Managing HTTP Request Operations
+///---------------------------------------
+
 /**
- Initializes an `AFHTTPClient` object with the specified base URL.
+ Creates an `AFHTTPRequestOperation`, setting the operation's request serializer and response serializers to those of the HTTP client.
 
- This is the designated initializer.
-
- @param url The base URL for the HTTP client.
- @param configuration The configuration used to create the managed session.
-
- @return The newly-initialized HTTP client
+ @param request The request object to be loaded asynchronously during execution of the operation.
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes two arguments:, the created request operation and the `NSError` object describing the network or parsing error that occurred.
  */
-- (instancetype)initWithBaseURL:(NSURL *)url
-           sessionConfiguration:(NSURLSessionConfiguration *)configuration;
+- (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)request
+                                                    success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                                                    failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+/**
+ Enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue.
+
+ @param operation The HTTP request operation to be enqueued.
+ */
+- (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation;
+
+/**
+ Cancels all operations in the HTTP client's operation queue whose URLs match the specified HTTP method and URL string.
+
+ This method only cancels `AFHTTPRequestOperations` whose request URL matches the HTTP client base URL with the path appended. For complete control over the lifecycle of enqueued operations, you can access the `operationQueue` property directly, which allows you to, for instance, cancel operations filtered by a predicate, or simply use `-cancelAllRequests`. Note that the operation queue may include non-HTTP operations, so be sure to check the type before attempting to directly introspect an operation's `request` property.
+
+ @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`. If `nil`, all request operations with matching URLs will be cancelled.
+ @param URLString The URL string used to create the request URL.
+ */
+- (void)cancelAllHTTPOperationsWithMethod:(NSString *)method
+                                URLString:(NSString *)URLString;
+
+- (void)cancelAllHTTPOperationsWithMethod:(NSString *)method
+                                     path:(NSString *)path __attribute__((deprecated));
+
+///---------------------------------------
+/// @name Batching HTTP Request Operations
+///---------------------------------------
+
+/**
+ Creates and enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue for each specified request object into a batch. When each request operation finishes, the specified progress block is executed, until all of the request operations have finished, at which point the completion block also executes.
+
+ Operations are created by passing the specified `NSURLRequest` objects in `requests`, using `-HTTPRequestOperationWithRequest:success:failure:`, with `nil` for both the `success` and `failure` parameters.
+
+ @param requests The `NSURLRequest` objects used to create and enqueue operations.
+ @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations.
+ */
+- (void)enqueueBatchOfHTTPRequestOperationsWithRequests:(NSArray *)requests
+                                          progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
+                                        completionBlock:(void (^)(NSArray *operations))completionBlock;
+
+/**
+ Enqueues the specified request operations into a batch. When each request operation finishes, the specified progress block is executed, until all of the request operations have finished, at which point the completion block also executes.
+
+ @param operations The request operations used to be batched and enqueued.
+ @param progressBlock A block object to be executed upon the completion of each request operation in the batch. This block has no return value and takes two arguments: the number of operations that have already finished execution, and the total number of operations.
+ @param completionBlock A block object to be executed upon the completion of all of the request operations in the batch. This block has no return value and takes a single argument: the batched request operations.
+ */
+- (void)enqueueBatchOfHTTPRequestOperations:(NSArray *)operations
+                              progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
+                            completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 ///---------------------------
 /// @name Making HTTP Requests
@@ -149,10 +206,10 @@
 
  @see -dataTaskWithRequest:success:failure:
  */
-- (NSURLSessionDataTask *)GET:(NSString *)URLString
-                   parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (AFHTTPRequestOperation *)GET:(NSString *)URLString
+                     parameters:(NSDictionary *)parameters
+                        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `HEAD` request.
@@ -164,10 +221,10 @@
 
  @see -dataTaskWithRequest:success:failure:
  */
-- (NSURLSessionDataTask *)HEAD:(NSString *)URLString
-                    parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSURLSessionDataTask *task))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (AFHTTPRequestOperation *)HEAD:(NSString *)URLString
+                      parameters:(NSDictionary *)parameters
+                         success:(void (^)(AFHTTPRequestOperation *operation))success
+                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `POST` request.
@@ -179,10 +236,10 @@
 
  @see -dataTaskWithRequest:success:failure:
  */
-- (NSURLSessionDataTask *)POST:(NSString *)URLString
-                    parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (AFHTTPRequestOperation *)POST:(NSString *)URLString
+                      parameters:(NSDictionary *)parameters
+                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a multipart `POST` request.
@@ -195,11 +252,11 @@
 
  @see -dataTaskWithRequest:success:failure:
  */
-- (NSURLSessionDataTask *)POST:(NSString *)URLString
-                    parameters:(NSDictionary *)parameters
-     constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (AFHTTPRequestOperation *)POST:(NSString *)URLString
+                      parameters:(NSDictionary *)parameters
+       constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `PUT` request.
@@ -211,10 +268,10 @@
 
  @see -dataTaskWithRequest:success:failure:
  */
-- (NSURLSessionDataTask *)PUT:(NSString *)URLString
-                   parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (AFHTTPRequestOperation *)PUT:(NSString *)URLString
+                     parameters:(NSDictionary *)parameters
+                        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `PATCH` request.
@@ -226,10 +283,10 @@
 
  @see -dataTaskWithRequest:success:failure:
  */
-- (NSURLSessionDataTask *)PATCH:(NSString *)URLString
-                     parameters:(NSDictionary *)parameters
-                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (AFHTTPRequestOperation *)PATCH:(NSString *)URLString
+                       parameters:(NSDictionary *)parameters
+                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `DELETE` request.
@@ -241,10 +298,10 @@
 
  @see -dataTaskWithRequest:success:failure:
  */
-- (NSURLSessionDataTask *)DELETE:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
-                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (AFHTTPRequestOperation *)DELETE:(NSString *)URLString
+                        parameters:(NSDictionary *)parameters
+                           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 @end
 
