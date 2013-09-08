@@ -46,7 +46,7 @@
 
 @implementation AFHTTPSessionManager
 
-+ (instancetype)client {
++ (instancetype)manager {
     return [[AFHTTPSessionManager alloc] initWithBaseURL:nil];
 }
 
@@ -210,19 +210,19 @@
 
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSError *error))failure
+                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
-                failure(error);
+                failure(task, error);
             }
         } else {
             if (success) {
-                success((NSHTTPURLResponse *)response, responseObject);
+                success(task, responseObject);
             }
         }
     }];
@@ -234,19 +234,19 @@
 
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSHTTPURLResponse *response))success
-                       failure:(void (^)(NSError *error))failure
+                       success:(void (^)(NSURLSessionDataTask *task))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"HEAD" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
-                failure(error);
+                failure(task, error);
             }
         } else {
             if (success) {
-                success((NSHTTPURLResponse *)response);
+                success(task);
             }
         }
     }];
@@ -258,19 +258,19 @@
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSError *error))failure
+                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
-                failure(error);
+                failure(task, error);
             }
         } else {
             if (success) {
-                success((NSHTTPURLResponse *)response, responseObject);
+                success(task, responseObject);
             }
         }
     }];
@@ -283,19 +283,19 @@
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSError *error))failure
+                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters constructingBodyWithBlock:block];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
-                failure(error);
+                failure(task, error);
             }
         } else {
             if (success) {
-                success((NSHTTPURLResponse *)response, responseObject);
+                success(task, responseObject);
             }
         }
     }];
@@ -307,19 +307,19 @@
 
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSError *error))failure
+                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
-                failure(error);
+                failure(task, error);
             }
         } else {
             if (success) {
-                success((NSHTTPURLResponse *)response, responseObject);
+                success(task, responseObject);
             }
         }
     }];
@@ -331,19 +331,19 @@
 
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
-                        success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                        failure:(void (^)(NSError *error))failure
+                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PATCH" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
-                failure(error);
+                failure(task, error);
             }
         } else {
             if (success) {
-                success((NSHTTPURLResponse *)response, responseObject);
+                success(task, responseObject);
             }
         }
     }];
@@ -355,19 +355,19 @@
 
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
-                         success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                         failure:(void (^)(NSError *error))failure
+                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"DELETE" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
-                failure(error);
+                failure(task, error);
             }
         } else {
             if (success) {
-                success((NSHTTPURLResponse *)response, responseObject);
+                success(task, responseObject);
             }
         }
     }];

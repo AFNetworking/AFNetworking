@@ -83,9 +83,6 @@
  - Archives and copies of HTTP clients will be initialized with an empty operation queue.
  - NSCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
  */
-
-
-
 @interface AFHTTPSessionManager : AFURLSessionManager <NSCoding, NSCopying>
 
 /**
@@ -114,7 +111,7 @@
 /**
  Creates and returns an `AFHTTPClient` object.
  */
-+ (instancetype)client;
++ (instancetype)manager;
 
 /**
  Initializes an `AFHTTPClient` object with the specified base URL.
@@ -218,8 +215,8 @@
  */
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSError *error))failure;
+                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `HEAD` request.
@@ -233,8 +230,8 @@
  */
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSHTTPURLResponse *response))success
-                       failure:(void (^)(NSError *error))failure;
+                       success:(void (^)(NSURLSessionDataTask *task))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `POST` request.
@@ -248,8 +245,8 @@
  */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
-                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSError *error))failure;
+                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a multipart `POST` request.
@@ -265,8 +262,8 @@
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(NSDictionary *)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                       success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                       failure:(void (^)(NSError *error))failure;
+                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `PUT` request.
@@ -280,8 +277,8 @@
  */
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(NSDictionary *)parameters
-                      success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                      failure:(void (^)(NSError *error))failure;
+                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `PATCH` request.
@@ -295,8 +292,8 @@
  */
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
-                        success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                        failure:(void (^)(NSError *error))failure;
+                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `DELETE` request.
@@ -310,8 +307,8 @@
  */
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
-                         success:(void (^)(NSHTTPURLResponse *response, id responseObject))success
-                         failure:(void (^)(NSError *error))failure;
+                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 @end
 

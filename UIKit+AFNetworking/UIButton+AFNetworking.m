@@ -31,11 +31,11 @@
 
 @implementation UIButton (AFNetworking)
 
-+ (AFHTTPClient *)af_sharedHTTPClient {
-    static AFHTTPClient *_af_sharedHTTPClient = nil;
++ (AFHTTPSessionManager *)af_sharedHTTPClient {
+    static AFHTTPSessionManager *_af_sharedHTTPClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _af_sharedHTTPClient = [[AFHTTPClient alloc] init];
+        _af_sharedHTTPClient = [[AFHTTPSessionManager alloc] init];
         _af_sharedHTTPClient.responseSerializer = [AFImageResponseSerializer serializer];
     });
 
