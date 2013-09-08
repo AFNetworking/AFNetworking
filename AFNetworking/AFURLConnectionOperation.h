@@ -307,7 +307,7 @@
  */
 + (NSArray *)batchOfRequestOperations:(NSArray *)operations
                         progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
-                      completionBlock:(void (^)(NSArray *operations))completionBlock
+                      completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 @end
 
