@@ -24,7 +24,7 @@
 #import <objc/runtime.h>
 
 #import "AFHTTPRequestOperation.h"
-#import "AFHTTPClient.h"
+#import "AFHTTPSessionManager.h"
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import "UIImageView+AFNetworking.h"

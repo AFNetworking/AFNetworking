@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFHTTPClient.h"
+#import "AFHTTPSessionManager.h"
 
 #import "AFEventSource.h"
 #import "AFJSONPatchResponseSerializer.h"
@@ -32,7 +32,7 @@
  
  @see http://rocket.github.io
  */
-@interface AFHTTPClient (Rocket)
+@interface AFHTTPSessionManager (Rocket)
 
 /**
  Creates and opens an event source with a `SUBSCRIBE` URL request to the specified URL string, executing a block for each received event.

@@ -28,7 +28,7 @@
 
     #import "AFURLConnectionOperation.h"
     #import "AFHTTPRequestOperation.h"
-    #import "AFHTTPClient.h"
+    #import "AFHTTPSessionManager.h"
     #import "AFURLSessionManager.h"
 
     #import "AFSerialization.h"

@@ -86,7 +86,7 @@
 
 
 
-@interface AFHTTPClient : AFURLSessionManager <NSCoding, NSCopying>
+@interface AFHTTPSessionManager : AFURLSessionManager <NSCoding, NSCopying>
 
 /**
  The URL used to monitor reachability, and construct requests from relative paths in methods like `requestWithMethod:URLString:parameters:`, and the `GET` / `POST` / et al. convenience methods.

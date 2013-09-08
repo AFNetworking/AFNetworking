@@ -23,19 +23,19 @@
 #import "AFNetworkingTests.h"
 
 @interface AFHTTPClientTests : SenTestCase
-@property (readwrite, nonatomic, strong) AFHTTPClient *client;
+@property (readwrite, nonatomic, strong) AFHTTPSessionManager *client;
 @end
 
 @implementation AFHTTPClientTests
 
 - (void)setUp {
-    self.client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:AFNetworkingTestsBaseURLString]];
+    self.client = [AFHTTPSessionManager clientWithBaseURL:[NSURL URLWithString:AFNetworkingTestsBaseURLString]];
 }
 
 #pragma mark -
 
 - (void)testInitRaisesException {
-    expect(^{ (void)[[AFHTTPClient alloc] init]; }).to.raiseAny();
+    expect(^{ (void)[[AFHTTPSessionManager alloc] init]; }).to.raiseAny();
 }
 
 - (void)testDefaultHeaders {
@@ -321,7 +321,7 @@
 }
 
 - (void)testMultipartUploadDoesNotFailDueToStreamSentAnEventBeforeBeingOpenedError {
-    NSString *pathToImage = [[NSBundle bundleForClass:[AFHTTPClient class]] pathForResource:@"Icon" ofType:@"png"];
+    NSString *pathToImage = [[NSBundle bundleForClass:[AFHTTPSessionManager class]] pathForResource:@"Icon" ofType:@"png"];
     NSData *imageData = [NSData dataWithContentsOfFile:pathToImage];
     NSMutableURLRequest *request = [self.client multipartFormRequestWithMethod:@"POST" path:@"/post" parameters:@{ @"foo": @"bar" } constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:@"icon[image]" fileName:@"icon.png" mimeType:@"image/png"];

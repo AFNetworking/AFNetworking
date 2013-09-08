@@ -22,7 +22,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AFHTTPClient.h"
+#import "AFHTTPSessionManager.h"
 #import "AFHTTPRequestOperation.h"
 
 #import <Availability.h>
@@ -40,14 +40,14 @@
 #import <UIKit/UIKit.h>
 #endif
 
-@interface AFHTTPClient ()
+@interface AFHTTPSessionManager ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
 @end
 
-@implementation AFHTTPClient
+@implementation AFHTTPSessionManager
 
 + (instancetype)client {
-    return [[AFHTTPClient alloc] initWithBaseURL:nil];
+    return [[AFHTTPSessionManager alloc] initWithBaseURL:nil];
 }
 
 - (instancetype)initWithBaseURL:(NSURL *)url {
@@ -405,7 +405,7 @@
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
-    AFHTTPClient *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL sessionConfiguration:self.session.configuration];
+    AFHTTPSessionManager *HTTPClient = [[[self class] allocWithZone:zone] initWithBaseURL:self.baseURL sessionConfiguration:self.session.configuration];
 
     HTTPClient.requestSerializer = [self.requestSerializer copyWithZone:zone];
     HTTPClient.responseSerializer = [self.responseSerializer copyWithZone:zone];

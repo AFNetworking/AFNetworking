@@ -22,7 +22,7 @@
 
 #import "AFHTTPClient+Rocket.h"
 
-@implementation AFHTTPClient (Rocket)
+@implementation AFHTTPSessionManager (Rocket)
 
 - (AFEventSource *)SUBSCRIBE:(NSString *)URLString
                   usingBlock:(void (^)(NSArray *operations, NSError *error))block
