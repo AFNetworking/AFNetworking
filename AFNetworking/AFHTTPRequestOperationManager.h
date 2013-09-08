@@ -143,24 +143,6 @@
                                                     success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                                                     failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
-/**
- Enqueues an `AFHTTPRequestOperation` to the HTTP client's operation queue.
-
- @param operation The HTTP request operation to be enqueued.
- */
-- (void)enqueueHTTPRequestOperation:(AFHTTPRequestOperation *)operation;
-
-/**
- Cancels all operations in the HTTP client's operation queue whose URLs match the specified HTTP method and URL string.
-
- This method only cancels `AFHTTPRequestOperations` whose request URL matches the HTTP client base URL with the path appended. For complete control over the lifecycle of enqueued operations, you can access the `operationQueue` property directly, which allows you to, for instance, cancel operations filtered by a predicate, or simply use `-cancelAllRequests`. Note that the operation queue may include non-HTTP operations, so be sure to check the type before attempting to directly introspect an operation's `request` property.
-
- @param method The HTTP method to match for the cancelled requests, such as `GET`, `POST`, `PUT`, or `DELETE`. If `nil`, all request operations with matching URLs will be cancelled.
- @param URLString The URL string used to create the request URL.
- */
-- (void)cancelAllHTTPOperationsWithMethod:(NSString *)method
-                                URLString:(NSString *)URLString;
-
 ///---------------------------
 /// @name Making HTTP Requests
 ///---------------------------
