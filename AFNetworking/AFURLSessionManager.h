@@ -199,6 +199,17 @@
                                          progress:(NSProgress * __autoreleasing *)progress
                                 completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 
+/**
+ Creates an `NSURLSessionUploadTask` with the specified streaming request.
+
+ @param request The HTTP request for the request.
+ @param progress A block object to be executed multiple times as data is uploaded. This block has no return value and takes three arguments: the number of bytes written since the last time the progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body.
+ @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occured, if any.
+ */
+- (NSURLSessionUploadTask *)uploadTaskWithStreamedRequest:(NSURLRequest *)request
+                                                 progress:(NSProgress * __autoreleasing *)progress
+                                        completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
+
 ///-----------------------------
 /// @name Running Download Tasks
 ///-----------------------------

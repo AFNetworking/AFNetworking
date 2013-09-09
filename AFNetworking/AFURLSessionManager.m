@@ -375,6 +375,15 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {}
     return [self uploadTaskWithTask:uploadTask progress:progress completionHandler:completionHandler];
 }
 
+- (NSURLSessionUploadTask *)uploadTaskWithStreamedRequest:(NSURLRequest *)request
+                                                 progress:(NSProgress * __autoreleasing *)progress
+                                        completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
+{
+    NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithStreamedRequest:request];
+
+    return [self uploadTaskWithTask:uploadTask progress:progress completionHandler:completionHandler];
+}
+
 - (NSURLSessionUploadTask *)uploadTaskWithTask:(NSURLSessionUploadTask *)uploadTask
                                       progress:(NSProgress * __autoreleasing *)progress
                              completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
