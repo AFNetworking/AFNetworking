@@ -173,6 +173,17 @@ didCompleteWithError:(NSError *)error
     }
 }
 
+#pragma mark - NSURLSessionDataTaskDelegate
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data
+{
+    [self.mutableData appendData:data];
+
+    self.downloadProgress.totalUnitCount += [data length];
+}
+
 #pragma mark - NSURLSessionDownloadTaskDelegate
 
 - (void)URLSession:(NSURLSession *)session
