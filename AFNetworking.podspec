@@ -8,10 +8,10 @@ Pod::Spec.new do |s|
   s.source   = { :git => 'https://github.com/AFNetworking/AFNetworking.git', :tag => '2.0.0-RC3', :submodules => true }
   s.requires_arc = true
 
-  s.ios.deployment_target = '5.0'
+  s.ios.deployment_target = '6.0'
   s.ios.frameworks = 'MobileCoreServices', 'SystemConfiguration', 'Security', 'CoreGraphics'
 
-  s.osx.deployment_target = '10.7'
+  s.osx.deployment_target = '10.8'
   s.osx.frameworks = 'CoreServices', 'SystemConfiguration', 'Security'
 
   s.subspec 'Core' do |ss|
