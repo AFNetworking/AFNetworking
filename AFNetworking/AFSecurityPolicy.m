@@ -207,7 +207,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     return NO;
 }
 
-#pragma mark - Key-Value Observing
+#pragma mark - NSKeyValueObserving
 
 + (NSSet *)keyPathsForValuesAffectingPinnedPublicKeys {
     return [NSSet setWithObject:@"pinnedCertificates"];

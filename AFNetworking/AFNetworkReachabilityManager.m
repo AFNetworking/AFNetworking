@@ -222,7 +222,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     self.networkReachabilityStatusBlock = block;
 }
 
-#pragma mark - Key-Value Observing
+#pragma mark - NSKeyValueObserving
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     if ([key isEqualToString:@"networkReachabilityFlags"] || [key isEqualToString:@"reachable"] || [key isEqualToString:@"reachableViaWWAN"] || [key isEqualToString:@"reachableViaWiFi"]) {
