@@ -201,6 +201,13 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
         return nil;
     }
+    
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        if (httpResponse.statusCode == 204) {
+            return nil;
+        }
+    }
 
     // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
     // See https://github.com/rails/rails/issues/1742
