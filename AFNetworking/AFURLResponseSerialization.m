@@ -211,7 +211,11 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         data = [responseString dataUsingEncoding:NSUTF8StringEncoding];
 
         if (data) {
-            return [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:error];
+            if ([data length] > 0) {
+                return [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:error];
+            } else {
+                return nil;
+            }
         } else {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:NSLocalizedStringFromTable(@"Data failed decoding as a UTF-8 string", nil, @"AFNetworking") forKey:NSLocalizedDescriptionKey];

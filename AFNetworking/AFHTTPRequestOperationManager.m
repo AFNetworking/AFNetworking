@@ -34,6 +34,7 @@
 
 @interface AFHTTPRequestOperationManager ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
+@property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 @end
 
 @implementation AFHTTPRequestOperationManager
@@ -59,6 +60,12 @@
     self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[[AFJSONResponseSerializer serializer]]];
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
+
+    if (self.baseURL) {
+        self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
+    } else {
+        self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+    }
 
     return self;
 }
