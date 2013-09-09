@@ -205,7 +205,7 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
     self.state = AFEventSourceConnecting;
 
     self.requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:self.request];
-    self.requestOperation.responseSerializer = [AFServerSentEventSerializer serializer];
+    self.requestOperation.responseSerializer = [AFServerSentEventResponseSerializer serializer];
     self.outputStream = [NSOutputStream outputStreamToMemory];
     self.outputStream.delegate = self;
     self.requestOperation.outputStream = self.outputStream;
@@ -285,7 +285,7 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
         case NSStreamEventHasSpaceAvailable: {
             NSData *data = [stream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
             NSError *error = nil;
-            AFServerSentEvent *event = [[AFServerSentEventSerializer serializer] responseObjectForResponse:self.lastResponse data:[data subdataWithRange:NSMakeRange(self.offset, [data length] - self.offset)] error:&error];
+            AFServerSentEvent *event = [[AFServerSentEventResponseSerializer serializer] responseObjectForResponse:self.lastResponse data:[data subdataWithRange:NSMakeRange(self.offset, [data length] - self.offset)] error:&error];
             self.offset = [data length];
 
             if (error) {
@@ -339,7 +339,7 @@ typedef NS_ENUM(NSUInteger, AFEventSourceState) {
 
 #pragma mark -
 
-@implementation AFServerSentEventSerializer
+@implementation AFServerSentEventResponseSerializer
 
 - (instancetype)init {
     self = [super init];
