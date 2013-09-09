@@ -202,10 +202,8 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         return nil;
     }
 
-    // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
-    // See https://github.com/rails/rails/issues/1742
     NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    if (responseString && ![responseString isEqualToString:@" "]) {
+    if (responseString.length) {
         // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
         // See http://stackoverflow.com/a/12843465/157142
         data = [responseString dataUsingEncoding:NSUTF8StringEncoding];
