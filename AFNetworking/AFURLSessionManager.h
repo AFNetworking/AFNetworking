@@ -183,7 +183,7 @@
  */
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromFile:(NSURL *)fileURL
-                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
+                                         progress:(NSProgress * __autoreleasing *)progress
                                 completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 
 /**
@@ -196,7 +196,7 @@
  */
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromData:(NSData *)bodyData
-                                         progress:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))progress
+                                         progress:(NSProgress * __autoreleasing *)progress
                                 completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 
 ///-----------------------------
@@ -212,7 +212,7 @@
  @param completionHandler A block to be executed when a task finishes. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred, if any.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
-                                             progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
+                                             progress:(NSProgress * __autoreleasing *)progress
                                           destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
                                     completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
@@ -225,29 +225,9 @@
  @param completionHandler A block to be executed when a task finishes. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred, if any.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
-                                                progress:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))progress
+                                                progress:(NSProgress * __autoreleasing *)progress
                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
-
-///---------------------------------
-/// @name Setting Progress Callbacks
-///---------------------------------
-
-/**
- Sets a callback to be called when an undetermined number of bytes have been uploaded to the server.
-
- @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes three arguments: the number of bytes written since the last time the upload progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times, and will execute on the session manager operation queue.
- */
-- (void)setUploadProgressForTask:(NSURLSessionTask *)task
-                      usingBlock:(void (^)(uint32_t bytesWritten, uint32_t totalBytesWritten, uint32_t totalBytesExpectedToWrite))block;
-
-/**
- Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
-
- @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes three arguments: the number of bytes read since the last time the download progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times, and will execute on the session manager operation queue.
- */
-- (void)setDownloadProgressForTask:(NSURLSessionTask *)task
-                        usingBlock:(void (^)(uint32_t bytesRead, uint32_t totalBytesRead, uint32_t totalBytesExpectedToRead))block;
 
 ///-----------------------------------------
 /// @name Setting Session Delegate Callbacks
