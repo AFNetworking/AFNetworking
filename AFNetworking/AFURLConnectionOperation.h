@@ -110,11 +110,6 @@
  */
 @property (readonly, nonatomic, strong) NSError *error;
 
-/**
- Whether the connection should accept an invalid SSL certificate. `NO` by default.
- */
-@property (nonatomic, assign) BOOL allowsInvalidSSLCertificate;
-
 ///----------------------------
 /// @name Getting Response Data
 ///----------------------------

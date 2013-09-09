@@ -698,8 +698,7 @@ didReceiveResponse:(NSURLResponse *)response
     self.response = [aDecoder decodeObjectForKey:@"response"];
     self.error = [aDecoder decodeObjectForKey:@"error"];
     self.responseData = [aDecoder decodeObjectForKey:@"responseData"];
-    self.totalBytesRead = [[aDecoder decodeObjectForKey:@"totalBytesRead"] longLongValue];
-    self.allowsInvalidSSLCertificate = [[aDecoder decodeObjectForKey:@"allowsInvalidSSLCertificate"] boolValue];
+    self.totalBytesRead = [aDecoder decodeInt64ForKey:@"totalBytesRead"];
 
     return self;
 }
@@ -723,8 +722,7 @@ didReceiveResponse:(NSURLResponse *)response
     [aCoder encodeObject:self.response forKey:@"response"];
     [aCoder encodeObject:self.error forKey:@"error"];
     [aCoder encodeObject:self.responseData forKey:@"responseData"];
-    [aCoder encodeObject:@(self.totalBytesRead) forKey:@"totalBytesRead"];
-    [aCoder encodeObject:@(self.allowsInvalidSSLCertificate) forKey:@"allowsInvalidSSLCertificate"];
+    [aCoder encodeInt64:self.totalBytesRead forKey:@"totalBytesRead"];
 }
 
 #pragma mark - NSCopying
@@ -737,7 +735,6 @@ didReceiveResponse:(NSURLResponse *)response
     operation.authenticationChallenge = self.authenticationChallenge;
     operation.cacheResponse = self.cacheResponse;
     operation.redirectResponse = self.redirectResponse;
-    operation.allowsInvalidSSLCertificate = self.allowsInvalidSSLCertificate;
     operation.completionQueue = self.completionQueue;
     operation.completionGroup = self.completionGroup;
     
