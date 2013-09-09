@@ -9,10 +9,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.ios.deployment_target = '6.0'
-  s.ios.frameworks = 'MobileCoreServices', 'SystemConfiguration', 'Security', 'CoreGraphics'
-
   s.osx.deployment_target = '10.8'
-  s.osx.frameworks = 'CoreServices', 'SystemConfiguration', 'Security'
 
   s.subspec 'Core' do |ss|
     ss.source_files = 'AFNetworking'
@@ -26,14 +23,18 @@ Pod::Spec.new do |s|
 
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
+    ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
+    ss.osx.frameworks = 'CoreServices'
   end
 
   s.subspec 'Security' do |ss|
     ss.source_files = 'AFNetworking/AFSecurityPolicy.{h,m}'
+    ss.frameworks = 'Security'
   end
 
   s.subspec 'Reachability' do |ss|
     ss.source_files = 'AFNetworking/AFNetworkReachabilityManager.{h,m}'
+    ss.frameworks = 'SystemConfiguration'
   end
 
   s.subspec 'NSURLConnection' do |ss|
