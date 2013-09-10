@@ -8,7 +8,7 @@
 
 #import "AFTestCase.h"
 
-NSString * const AFNetworkingTestsBaseURLString = @"http://httpbin.org/";
+NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
 
 @implementation AFTestCase
 
