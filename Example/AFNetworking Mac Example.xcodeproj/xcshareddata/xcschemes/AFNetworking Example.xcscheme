@@ -28,6 +28,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2544EC94173BFAA8004117E8"
+               BuildableName = "OS X Tests.octest"
+               BlueprintName = "OS X Tests"
+               ReferencedContainer = "container:../Tests/AFNetworking Tests.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

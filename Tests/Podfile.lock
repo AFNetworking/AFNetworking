@@ -1,12 +1,37 @@
 PODS:
+  - AFNetworking (2.0.0-RC3):
+    - AFNetworking/Core
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+    - AFNetworking/UIKit+AFNetworking
+  - AFNetworking/Core (2.0.0-RC3):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLConnection (2.0.0-RC3)
+  - AFNetworking/NSURLSession (2.0.0-RC3)
+  - AFNetworking/Reachability (2.0.0-RC3)
+  - AFNetworking/Security (2.0.0-RC3)
+  - AFNetworking/Serialization (2.0.0-RC3)
+  - AFNetworking/UIKit+AFNetworking (2.0.0-RC3)
   - Expecta (0.2.2)
   - OCMock (2.1.1)
 
 DEPENDENCIES:
+  - AFNetworking (from `../`)
   - Expecta (~> 0.2.1)
   - OCMock (~> 2.1.1)
 
+EXTERNAL SOURCES:
+  AFNetworking:
+    :path: ../
+
 SPEC CHECKSUMS:
+  AFNetworking: cf3c1f1019abe765bd0ec041651dd1441c950cb6
   Expecta: 99adbb2e366a02796477523bfd426143350d9caf
   OCMock: 79212e5e328378af5cfd6edb5feacfd6c49cd8a3
 
