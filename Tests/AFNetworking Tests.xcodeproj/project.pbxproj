@@ -19,6 +19,8 @@
 		2902D29D17DF4E3800C81C5A /* AFTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B9ED7617DF4D790021E4D5 /* AFTestCase.m */; };
 		29CBFC3917DF4F120021AB75 /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */; };
 		29CBFC3A17DF4F120021AB75 /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */; };
+		29CBFC3C17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */; };
+		29CBFC3D17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */; };
 		3D56634E3A564CEE86172413 /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 		6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
 /* End PBXBuildFile section */
@@ -62,6 +64,7 @@
 		29B9ED7617DF4D790021E4D5 /* AFTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTestCase.m; sourceTree = "<group>"; };
 		29B9ED7817DF4D830021E4D5 /* AFTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFTestCase.h; sourceTree = "<group>"; };
 		29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationTests.m; sourceTree = "<group>"; };
+		29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONSerializationTests.m; sourceTree = "<group>"; };
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -207,6 +210,7 @@
 				29B9ED7817DF4D830021E4D5 /* AFTestCase.h */,
 				29B9ED7617DF4D790021E4D5 /* AFTestCase.m */,
 				29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */,
+				29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -394,6 +398,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29CBFC3917DF4F120021AB75 /* AFHTTPRequestOperationTests.m in Sources */,
+				29CBFC3C17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
 				2902D29C17DF4E3700C81C5A /* AFTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,6 +408,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29CBFC3A17DF4F120021AB75 /* AFHTTPRequestOperationTests.m in Sources */,
+				29CBFC3D17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
 				2902D29D17DF4E3800C81C5A /* AFTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
