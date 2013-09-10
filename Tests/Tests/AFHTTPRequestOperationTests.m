@@ -220,4 +220,58 @@
     expect(blockResponseObject).willNot.beNil();
 }
 
+- (void)testThatOperationPostsDidStartNotificationWhenStarted{
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    __block BOOL notificationFound;
+    
+    id observer = [[NSNotificationCenter defaultCenter]
+                   addObserverForName:AFNetworkingOperationDidStartNotification
+                   object:nil
+                   queue:nil
+                   usingBlock:^(NSNotification *note) {
+                       AFHTTPRequestOperation * op = [note object];
+                       if([op.request isEqual:operation.request]){
+                           notificationFound = YES;
+                       }
+                   }];
+    
+    //AFHTTPOperation currently does not have a default response serializer
+    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    [operation start];
+    expect(notificationFound).will.beTruthy();
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:observer];
+}
+
+- (void)testThatOperationPostsDidFinishNotificationWhenFinished{
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    __block BOOL notificationFound;
+    
+    id observer = [[NSNotificationCenter defaultCenter]
+                   addObserverForName:AFNetworkingOperationDidFinishNotification
+                   object:nil
+                   queue:nil
+                   usingBlock:^(NSNotification *note) {
+                       AFHTTPRequestOperation * op = [note object];
+                       if([op.request isEqual:operation.request]){
+                           notificationFound = YES;
+                       }
+                   }];
+    
+    //AFHTTPOperation currently does not have a default response serializer
+    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    [operation start];
+    expect(notificationFound).will.beTruthy();
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:observer];
+}
+
 @end
