@@ -12,9 +12,13 @@ NSString * const AFNetworkingTestsBaseURLString = @"http://httpbin.org/";
 
 @implementation AFTestCase
 
+-(NSURL*)baseURL{
+    return [NSURL URLWithString:AFNetworkingTestsBaseURLString];
+}
 - (void)setUp
 {
     [super setUp];
+    [Expecta setAsynchronousTestTimeout:5.0];
     // Put setup code here; it will be run once, before the first test case.
 }
 
