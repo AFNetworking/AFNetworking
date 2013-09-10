@@ -109,4 +109,51 @@
     expect(blockError).willNot.beNil();
 }
 
+- (void)testThatRedirectBlockIsCalledWhen302IsEncountered {
+    __block BOOL success;
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    //AFHTTPOperation currently does not have a default response serializer
+    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    [operation setCompletionBlockWithSuccess:nil failure:nil];
+    [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
+        if(redirectResponse){
+            success = YES;
+        }
+        
+        return request;
+    }];
+    
+    [operation start];
+    expect([operation isFinished]).will.beTruthy();
+    expect(success).will.beTruthy();
+}
+
+- (void)testThatRedirectBlockIsCalledMultipleTimesWhenMultiple302sAreEncountered {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    __block NSInteger numberOfRedirects = 0;
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/5" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    //AFHTTPOperation currently does not have a default response serializer
+    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    [operation setCompletionBlockWithSuccess:nil failure:nil];
+    [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
+        if(redirectResponse){
+            numberOfRedirects++;
+        }
+        
+        return request;
+    }];
+    
+    [operation start];
+    expect([operation isFinished]).will.beTruthy();
+    expect(numberOfRedirects).will.equal(5);
+}
+
 @end
