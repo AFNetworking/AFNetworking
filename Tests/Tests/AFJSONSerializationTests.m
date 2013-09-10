@@ -81,5 +81,32 @@
     XCTAssertNotNil(error, @"Error should have been thrown for nonstandard/json");
 }
 
+- (void)testThatJSONResponseSerializerReturnsDictionaryForValidJSONDictionary{
+    AFJSONResponseSerializer * serializer = [AFJSONResponseSerializer serializer];
+    NSHTTPURLResponse * response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL
+                                                               statusCode:200
+                                                              HTTPVersion:@"1.1"
+                                                             headerFields:@{@"Content-Type":@"text/json"}];
+    NSError * error = nil;
+    id responseObject = [serializer responseObjectForResponse:response
+                                                         data:[self dummyJSONData]
+                                                        error:&error];
+    XCTAssertNil(error, @"Serialization error should be nil");
+    XCTAssert([responseObject isKindOfClass:[NSDictionary class]], @"Expected response to be a NSDictionary");
+}
+
+- (void)testThatJSONResponseSerializerReturnsErrorForInvalidJSON{
+    AFJSONResponseSerializer * serializer = [AFJSONResponseSerializer serializer];
+    NSHTTPURLResponse * response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL
+                                                               statusCode:200
+                                                              HTTPVersion:@"1.1"
+                                                             headerFields:@{@"Content-Type":@"text/json"}];
+    NSError * error = nil;
+    [serializer responseObjectForResponse:response
+                                     data:[@"{invalidJSON:}" dataUsingEncoding:NSUTF8StringEncoding]
+                                    error:&error];
+    XCTAssertNotNil(error, @"Serialization error should not be nil");
+}
+
 
 @end
