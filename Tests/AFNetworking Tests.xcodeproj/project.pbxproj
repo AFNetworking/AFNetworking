@@ -84,10 +84,6 @@
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
-		F8E801DD175AC349008D3886 /* ca.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = ca.cer; path = Resources/ca.cer; sourceTree = "<group>"; };
-		F8E801DE175AC349008D3886 /* derived.cert */ = {isa = PBXFileReference; lastKnownFileType = file; name = derived.cert; path = Resources/derived.cert; sourceTree = "<group>"; };
-		F8E801DF175AC349008D3886 /* root_certificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = root_certificate.cer; path = Resources/root_certificate.cer; sourceTree = "<group>"; };
-		F8E801E0175AC349008D3886 /* root_certificate.key */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = root_certificate.key; path = Resources/root_certificate.key; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -272,10 +268,6 @@
 			children = (
 				29CBFC7B17DF74A80021AB75 /* ADN.net */,
 				29CBFC4E17DF61920021AB75 /* HTTPBin.org */,
-				F8E801DD175AC349008D3886 /* ca.cer */,
-				F8E801DE175AC349008D3886 /* derived.cert */,
-				F8E801DF175AC349008D3886 /* root_certificate.cer */,
-				F8E801E0175AC349008D3886 /* root_certificate.key */,
 			);
 			name = Certificates;
 			sourceTree = "<group>";
