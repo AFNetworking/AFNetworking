@@ -315,11 +315,8 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 }
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
-    if ([[self class] isEqual:[AFHTTPRequestOperation class]]) {
-        return YES;
-    }
-
-    return [[self acceptableContentTypes] intersectsSet:AFContentTypesFromHTTPHeader([request valueForHTTPHeaderField:@"Accept"])];
+    NSSet *contentTypes = AFContentTypesFromHTTPHeader([request valueForHTTPHeaderField:@"Accept"]);
+    return !contentTypes || ![self acceptableContentTypes] || [[self acceptableContentTypes] intersectsSet:contentTypes];
 }
 
 @end
