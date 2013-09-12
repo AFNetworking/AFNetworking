@@ -740,14 +740,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 
 #pragma mark - NSKeyValueObserving
 
-- (void)setupKeyValueObservingForTask:(NSURLSessionTask*)task{
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
-}
-
-- (void)removeKeyValueObservingForTask:(NSURLSessionTask*)task{
-    [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
-}
-
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
