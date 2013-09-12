@@ -509,7 +509,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
 
     if (CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
-        int alpha = (bitmapInfo & kCGBitmapAlphaInfoMask);
+        uint32_t alpha = (bitmapInfo & kCGBitmapAlphaInfoMask);
         if (alpha == kCGImageAlphaNone) {
             bitmapInfo &= ~kCGBitmapAlphaInfoMask;
             bitmapInfo |= kCGImageAlphaNoneSkipFirst;
