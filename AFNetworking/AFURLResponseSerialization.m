@@ -673,4 +673,32 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     return [super responseObjectForResponse:response data:data error:error];
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (!self) {
+        return nil;
+    }
+
+    self.responseSerializers = [aDecoder decodeObjectForKey:@"responseSerializers"];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+
+    [aCoder encodeObject:self.responseSerializers forKey:@"responseSerializers"];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFCompoundResponseSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    serializer.responseSerializers = self.responseSerializers;
+
+    return serializer;
+}
+
 @end
