@@ -5,18 +5,17 @@ inhibit_all_warnings!
 def import_pods
   pod 'OCMock', '~> 2.1.1'
   pod 'Expecta', '~> 0.2.1'
-  pod 'AFHTTPRequestOperationLogger', '~> 0.10.0'
   pod 'AFNetworking', :path => '../'
 end
 
 target :ios do
-  platform :ios, '5.0'
+  platform :ios, '7.0'
   link_with 'iOS Tests'
   import_pods
 end
 
 target :osx do
-  platform :osx, '10.7'
+  platform :osx, '10.9'
   link_with 'OS X Tests'
   import_pods
 end
