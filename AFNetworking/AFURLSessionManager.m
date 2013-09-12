@@ -756,7 +756,9 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
                 break;
             case NSURLSessionTaskStateCompleted:
                 // AFNetworkingTaskDidFinishNotification posted by task completion handlers
-                [object removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
+                @try {
+                    [object removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
+                } @catch (NSException *exception) {}
                 break;
             default:
                 break;
