@@ -1,15 +1,30 @@
+// AFHTTPRequestOperationTests.m
 //
-//  AFHTTPRequestOperationTests.m
-//  AFNetworking Tests
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
-//  Created by Kevin Harwood on 9/10/13.
-//  Copyright (c) 2013 AFNetworking. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #import "AFTestCase.h"
 
-@interface AFHTTPRequestOperationTests : AFTestCase
+#import "AFHTTPRequestOperation.h"
 
+@interface AFHTTPRequestOperationTests : AFTestCase
 @end
 
 @implementation AFHTTPRequestOperationTests
@@ -20,16 +35,15 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
-    [operation
-     setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-         blockResponseObject = responseObject;
-     }
-     failure:nil];
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        blockResponseObject = responseObject;
+    } failure:nil];
     
     [operation start];
+
     expect([operation isFinished]).will.beTruthy();
     expect(blockResponseObject).willNot.beNil();
 }
@@ -40,14 +54,12 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
-    [operation
-     setCompletionBlockWithSuccess:nil
-     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-         blockError = error;
-     }];
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
     
     [operation start];
     expect([operation isFinished]).will.beTruthy();
@@ -58,7 +70,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation start];
@@ -75,7 +87,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -97,7 +109,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/500" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -115,7 +127,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation setCompletionBlockWithSuccess:nil failure:nil];
@@ -139,7 +151,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation setCompletionBlockWithSuccess:nil failure:nil];
@@ -163,7 +175,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation start];
@@ -179,7 +191,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation start];
@@ -205,7 +217,7 @@
         blockResponseObject = responseObject;
     } failure:nil];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation start];
@@ -227,18 +239,13 @@
     
     __block BOOL notificationFound;
     
-    id observer = [[NSNotificationCenter defaultCenter]
-                   addObserverForName:AFNetworkingOperationDidStartNotification
-                   object:nil
-                   queue:nil
-                   usingBlock:^(NSNotification *note) {
-                       AFHTTPRequestOperation * op = [note object];
-                       if([op.request isEqual:operation.request]){
-                           notificationFound = YES;
-                       }
-                   }];
+    id observer = [[NSNotificationCenter defaultCenter] addObserverForName:AFNetworkingOperationDidStartNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+        if([[[note object] request] isEqual:operation.request]){
+            notificationFound = YES;
+        }
+    }];
     
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation start];
@@ -247,25 +254,19 @@
     [[NSNotificationCenter defaultCenter] removeObserver:observer];
 }
 
-- (void)testThatOperationPostsDidFinishNotificationWhenFinished{
-    
+- (void)testThatOperationPostsDidFinishNotificationWhenFinished {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
     __block BOOL notificationFound;
+
+    id observer = [[NSNotificationCenter defaultCenter] addObserverForName:AFNetworkingOperationDidFinishNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+        if([[[note object] request] isEqual:operation.request]){
+            notificationFound = YES;
+        }
+    }];
     
-    id observer = [[NSNotificationCenter defaultCenter]
-                   addObserverForName:AFNetworkingOperationDidFinishNotification
-                   object:nil
-                   queue:nil
-                   usingBlock:^(NSNotification *note) {
-                       AFHTTPRequestOperation * op = [note object];
-                       if([op.request isEqual:operation.request]){
-                           notificationFound = YES;
-                       }
-                   }];
-    
-    //AFHTTPOperation currently does not have a default response serializer
+    // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation start];
