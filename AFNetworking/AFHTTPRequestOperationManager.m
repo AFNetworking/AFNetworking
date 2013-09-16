@@ -1,4 +1,4 @@
-// AFHTTPClient.m
+// AFHTTPRequestOperationManager.m
 //
 // Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
@@ -61,7 +61,7 @@
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
-    if (self.baseURL) {
+    if (self.baseURL.host) {
         self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
     } else {
         self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];

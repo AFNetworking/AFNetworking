@@ -149,13 +149,14 @@
  */
 @property (nonatomic, strong) NSURLCredential *credential;
 
-///
+///-------------------------------
+/// @name Managing Security Policy
+///-------------------------------
 
 /**
- 
+ The security policy used to evaluate server trust for secure connections.
  */
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
-
 
 ///------------------------
 /// @name Accessing Streams

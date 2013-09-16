@@ -24,13 +24,14 @@
 
 #import "AFSerialization.h"
 #import "AFSecurityPolicy.h"
+#import "AFNetworkReachabilityManager.h"
 
 /**
  `AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
  
  ## Subclassing Notes
  
- This is the base class for `AFHTTPClient`, which adds functionality specific to making HTTP requests. If you are looking to extend `AFURLSessionManager` specifically for HTTP, consider subclassing `AFHTTPClient` instead.
+ This is the base class for `AFHTTPSessionManager`, which adds functionality specific to making HTTP requests. If you are looking to extend `AFURLSessionManager` specifically for HTTP, consider subclassing `AFHTTPSessionManager` instead.
  
  ## NSURLSession & NSURLSessionTask Delegate Methods
  
@@ -62,6 +63,10 @@
  - `URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:`
  
  If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
+ 
+ ## Network Reachability Monitoring
+
+ Network reachability status and change monitoring is available through the `reachabilityManager` property. Applications may choose to monitor network reachability conditions in order to prevent or suspend any outbound requests. See `AFNetworkReachabilityManager` for more details.
  
  ## NSCoding Caveats
  
@@ -97,6 +102,11 @@
  
  */
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
+
+/**
+
+ */
+@property (readonly, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 
 ///----------------------------
 /// @name Getting Session Tasks

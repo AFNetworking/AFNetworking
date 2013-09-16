@@ -123,7 +123,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 /**
  ## Network Reachability
 
- The following constants are provided by `AFHTTPClient` as possible network reachability statuses.
+ The following constants are provided by `AFNetworkReachabilityManager` as possible network reachability statuses.
 
  enum {
  AFNetworkReachabilityStatusUnknown,

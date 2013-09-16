@@ -1,4 +1,4 @@
-// AFHTTPClient.m
+// AFHTTPSessionManager.m
 //
 // Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
@@ -42,6 +42,7 @@
 
 @interface AFHTTPSessionManager ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
+@property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 @end
 
 @implementation AFHTTPSessionManager
@@ -73,6 +74,12 @@
     self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[[AFJSONResponseSerializer serializer]]];
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
+
+    if (self.baseURL.host) {
+        self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
+    } else {
+        self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+    }
 
     return self;
 }

@@ -1,4 +1,4 @@
-// AFHTTPClient.h
+// AFHTTPSessionManager.h
 //
 // Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
@@ -31,32 +31,29 @@
 #endif
 
 #import "AFURLSessionManager.h"
-#import "AFHTTPRequestOperation.h"
-#import "AFSerialization.h"
-#import "AFSecurityPolicy.h"
 
 /**
- `AFHTTPClient` encapsulates the common patterns of communicating with an web application over HTTP, including request creation, response serialization, network reachability monitoring, and security, as well as both request operation and session task management.
-
+ `AFHTTPSessionManager` is a subclass of `AFURLSessionManager` with convenience methods for making HTTP requests. When a `baseURL` is provided, requests made with the `GET` / `POST` / et al. convenience methods can be made with relative paths; network reachability is also scoped to the host of the base URL as well.
+ 
  ## Subclassing Notes
-
- In most cases, one should create an `AFHTTPClient` subclass for each website or web application that your application communicates with. It is often useful, also, to define a class method that returns a singleton shared HTTP client in each subclass, that persists authentication credentials and other configuration across the entire application.
+ 
+ Developers targeting iOS 7 or Mac OS X 10.9 or later that deal extensively with a web service are encouraged to subclass `AFHTTPSessionManager`, providing a class method that returns a shared singleton object on which authentication and other configuration can be shared across the application.
+ 
+ For developers targeting iOS 6 or Mac OS X 10.8 or earlier, `AFHTTPRequestOperationManager` may be used to similar effect.
 
  ## Methods to Override
 
- To change the behavior of all url request construction for an `AFHTTPClient` subclass, override `requestWithMethod:URLString:parameters`.
-
- To change the behavior of all request operation construction for an `AFHTTPClient` subclass, override `HTTPRequestOperationWithRequest:success:failure`.
-
- To change the behavior of all data task operation construction, which is also used in the `GET` / `POST` / et al. convenience methods, override `dataTaskWithRequest:success:failure:`.
+ To change the behavior of all data task operation construction, which is also used in the `GET` / `POST` / et al. convenience methods, override `dataTaskWithRequest:completionHandler:`.
  
  ## Serialization
  
- Requests created by an HTTP client will contain default headers and encode parameters according to the `requestSerializer` property, which is an object conforming to `<AFURLRequestSerialization>`. Responses received from the server are automatically validated and serialized by the `responseSerializers` property, which is an object conforming to `<AFURLResponseSerialization>`
+ Requests created by an HTTP client will contain default headers and encode parameters according to the `requestSerializer` property, which is an object conforming to `<AFURLRequestSerialization>`.
+ 
+ Responses received from the server are automatically validated and serialized by the `responseSerializers` property, which is an object conforming to `<AFURLResponseSerialization>`
 
  ## URL Construction Using Relative Paths
 
- Both `-requestWithMethod:URLString:parameters:` and `-multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `-baseURL`, using `NSURL +URLWithString:relativeToURL:`, when provided. If `baseURL` is `nil`, `path` needs to resolve to a valid `NSURL` object using `NSURL +URLWithString:`.
+ For HTTP convenience methods, the request serializer constructs URLs from the path relative to the `-baseURL`, using `NSURL +URLWithString:relativeToURL:`, when provided. If `baseURL` is `nil`, `path` needs to resolve to a valid `NSURL` object using `NSURL +URLWithString:`.
  
  Below are a few examples of how `baseURL` and relative paths interact:
 
@@ -69,19 +66,6 @@
     [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL]; // http://example2.com/
 
  Also important to note is that a trailing slash will be added to any `baseURL` without one. This would otherwise cause unexpected behavior when constructing URLs using paths without a leading slash.
- 
- ## Network Reachability Monitoring
- 
- Network reachability status and change monitoring is available to any `AFHTTPClient` created with a specified `baseURL`. Applications may choose to monitor network reachability conditions in order to prevent or suspend any outbound requests.
- 
- The current reachability status can be accessed with the `networkReachabilityStatus` property. Changes can be monitored by doing `setReachabilityStatusChangeBlock:`, or listening for an `AFNetworkingReachabilityDidChangeNotification` notification.
-
- ## NSCoding / NSCopying Conformance
-
- `AFHTTPClient`  conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. There are a few minor caveats to keep in mind, however:
-
- - Archives and copies of HTTP clients will be initialized with an empty operation queue.
- - NSCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
  */
 @interface AFHTTPSessionManager : AFURLSessionManager <NSCoding, NSCopying>
 
@@ -109,12 +93,12 @@
 ///---------------------------------------------
 
 /**
- Creates and returns an `AFHTTPClient` object.
+ Creates and returns an `AFHTTPSessionManager` object.
  */
 + (instancetype)manager;
 
 /**
- Initializes an `AFHTTPClient` object with the specified base URL.
+ Initializes an `AFHTTPSessionManager` object with the specified base URL.
  
  @param url The base URL for the HTTP client.
 
@@ -123,7 +107,7 @@
 - (instancetype)initWithBaseURL:(NSURL *)url;
 
 /**
- Initializes an `AFHTTPClient` object with the specified base URL.
+ Initializes an `AFHTTPSessionManager` object with the specified base URL.
 
  This is the designated initializer.
 

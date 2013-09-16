@@ -1,4 +1,4 @@
-// AFHTTPClient.h
+// AFHTTPRequestOperationManager.h
 //
 // Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
@@ -30,35 +30,34 @@
 #import <CoreServices/CoreServices.h>
 #endif
 
-#import "AFURLSessionManager.h"
 #import "AFHTTPRequestOperation.h"
 #import "AFSerialization.h"
 #import "AFSecurityPolicy.h"
 #import "AFNetworkReachabilityManager.h"
 
 /**
- `AFHTTPClient` encapsulates the common patterns of communicating with an web application over HTTP, including request creation, response serialization, network reachability monitoring, and security, as well as both request operation and session task management.
+ `AFHTTPRequestOperationManager` encapsulates the common patterns of communicating with an web application over HTTP, including request creation, response serialization, network reachability monitoring, and security, as well as both request operation and session task management.
 
  ## Subclassing Notes
+ 
+ Developers targeting iOS 6 or Mac OS X 10.8 or earlier that deal extensively with a web service are encouraged to subclass `AFHTTPSessionManager`, providing a class method that returns a shared singleton object on which authentication and other configuration can be shared across the application.
 
- In most cases, one should create an `AFHTTPClient` subclass for each website or web application that your application communicates with. It is often useful, also, to define a class method that returns a singleton shared HTTP client in each subclass, that persists authentication credentials and other configuration across the entire application.
+ For developers targeting iOS 7 or Mac OS X 10.9 or later, `AFHTTPRequestOperationManager` may be used to similar effect.
 
  ## Methods to Override
 
- To change the behavior of all url request construction for an `AFHTTPClient` subclass, override `requestWithMethod:URLString:parameters`.
+ To change the behavior of all request operation construction for an `AFHTTPRequestOperationManager` subclass, override `HTTPRequestOperationWithRequest:success:failure`.
 
- To change the behavior of all request operation construction for an `AFHTTPClient` subclass, override `HTTPRequestOperationWithRequest:success:failure`.
-
- To change the behavior of all data task operation construction, which is also used in the `GET` / `POST` / et al. convenience methods, override `dataTaskWithRequest:success:failure:`.
- 
  ## Serialization
  
- Requests created by an HTTP client will contain default headers and encode parameters according to the `requestSerializer` property, which is an object conforming to `<AFURLRequestSerialization>`. Responses received from the server are automatically validated and serialized by the `responseSerializers` property, which is an object conforming to `<AFURLResponseSerialization>`
+ Requests created by an HTTP client will contain default headers and encode parameters according to the `requestSerializer` property, which is an object conforming to `<AFURLRequestSerialization>`. 
+ 
+ Responses received from the server are automatically validated and serialized by the `responseSerializers` property, which is an object conforming to `<AFURLResponseSerialization>`
 
  ## URL Construction Using Relative Paths
 
- Both `-requestWithMethod:URLString:parameters:` and `-multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:` construct URLs from the path relative to the `-baseURL`, using `NSURL +URLWithString:relativeToURL:`, when provided. If `baseURL` is `nil`, `path` needs to resolve to a valid `NSURL` object using `NSURL +URLWithString:`.
- 
+ For HTTP convenience methods, the request serializer constructs URLs from the path relative to the `-baseURL`, using `NSURL +URLWithString:relativeToURL:`, when provided. If `baseURL` is `nil`, `path` needs to resolve to a valid `NSURL` object using `NSURL +URLWithString:`.
+
  Below are a few examples of how `baseURL` and relative paths interact:
 
     NSURL *baseURL = [NSURL URLWithString:@"http://example.com/v1/"];
@@ -70,14 +69,12 @@
     [NSURL URLWithString:@"http://example2.com/" relativeToURL:baseURL]; // http://example2.com/
 
  Also important to note is that a trailing slash will be added to any `baseURL` without one. This would otherwise cause unexpected behavior when constructing URLs using paths without a leading slash.
- 
- ## Network Reachability Monitoring
- 
- Network reachability status and change monitoring is available to any `AFHTTPClient` created with a specified `baseURL`. Applications may choose to monitor network reachability conditions in order to prevent or suspend any outbound requests.
- 
- The current reachability status can be accessed with the `networkReachabilityStatus` property. Changes can be monitored by doing `setReachabilityStatusChangeBlock:`, or listening for an `AFNetworkingReachabilityDidChangeNotification` notification.
 
- ## NSCoding / NSCopying Conformance
+ ## Network Reachability Monitoring
+
+ Network reachability status and change monitoring is available through the `reachabilityManager` property. Applications may choose to monitor network reachability conditions in order to prevent or suspend any outbound requests. See `AFNetworkReachabilityManager` for more details.
+
+ ## NSCoding & NSCopying Caveats
 
  `AFHTTPClient`  conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. There are a few minor caveats to keep in mind, however:
 
@@ -105,10 +102,27 @@
  */
 @property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
 
+/**
+ The operation queue on which request operations are scheduled and run.
+ */
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
+///-------------------------------
+/// @name Managing Security Policy
+///-------------------------------
+
+/**
+ The security policy used by created request operations to evaluate server trust for secure connections. `AFHTTPRequestOperationManager` uses the `defaultPolicy` unless otherwise specified.
+ */
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
+///------------------------------------
+/// @name Managing Network Reachability
+///------------------------------------
+
+/**
+ The network reachability manager. `AFHTTPRequestOperationManager` uses the `sharedManager` by default.
+ */
 @property (readonly, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 
 ///---------------------------------------------
@@ -151,7 +165,7 @@
 ///---------------------------
 
 /**
- Creates and runs an `NSURLSessionDataTask` with a `GET` request.
+ Creates and runs an `AFHTTPRequestOperation` with a `GET` request.
 
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded according to the client request serializer.
@@ -166,7 +180,7 @@
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
- Creates and runs an `NSURLSessionDataTask` with a `HEAD` request.
+ Creates and runs an `AFHTTPRequestOperation` with a `HEAD` request.
 
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded according to the client request serializer.
@@ -181,7 +195,7 @@
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
- Creates and runs an `NSURLSessionDataTask` with a `POST` request.
+ Creates and runs an `AFHTTPRequestOperation` with a `POST` request.
 
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded according to the client request serializer.
@@ -196,7 +210,7 @@
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
- Creates and runs an `NSURLSessionDataTask` with a multipart `POST` request.
+ Creates and runs an `AFHTTPRequestOperation` with a multipart `POST` request.
 
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded according to the client request serializer.
@@ -213,7 +227,7 @@
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
- Creates and runs an `NSURLSessionDataTask` with a `PUT` request.
+ Creates and runs an `AFHTTPRequestOperation` with a `PUT` request.
 
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded according to the client request serializer.
@@ -228,7 +242,7 @@
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
- Creates and runs an `NSURLSessionDataTask` with a `PATCH` request.
+ Creates and runs an `AFHTTPRequestOperation` with a `PATCH` request.
 
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded according to the client request serializer.
@@ -243,7 +257,7 @@
                           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
- Creates and runs an `NSURLSessionDataTask` with a `DELETE` request.
+ Creates and runs an `AFHTTPRequestOperation` with a `DELETE` request.
 
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded according to the client request serializer.
