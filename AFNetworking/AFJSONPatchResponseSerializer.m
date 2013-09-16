@@ -86,10 +86,8 @@
             return [AFJSONPatchOperation moveOperationFrom:dictionary[@"from"] to:dictionary[@"path"]];
         } else if ([op isEqualToString:@"copy"]) {
             return [AFJSONPatchOperation copyOperationFrom:dictionary[@"from"] to:dictionary[@"path"]];
-        } else if ([op isEqualToString:@"add"]) {
-            return [AFJSONPatchOperation addOperationWithPath:dictionary[@"path"] value:dictionary[@"value"]];
-        } else if ([op isEqualToString:@"add"]) {
-            return [AFJSONPatchOperation addOperationWithPath:dictionary[@"path"] value:dictionary[@"value"]];
+        } else if ([op isEqualToString:@"test"]) {
+            return [AFJSONPatchOperation testOperationWithPath:dictionary[@"path"] value:dictionary[@"value"]];
         } else {
             return nil;
         }
