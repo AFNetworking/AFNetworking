@@ -132,6 +132,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (void)dealloc {
     [self stopMonitoring];
+
+    CFRelease(_networkReachability);
+    _networkReachability = NULL;
 }
 
 #pragma mark -
@@ -195,9 +198,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
 
     SCNetworkReachabilityUnscheduleFromRunLoop(self.networkReachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
-
-    CFRelease(_networkReachability);
-    _networkReachability = NULL;
 }
 
 #pragma mark -
