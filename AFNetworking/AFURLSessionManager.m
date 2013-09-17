@@ -208,14 +208,6 @@ didFinishDownloadingToURL:(NSURL *)location
                 }
             }
         }
-
-        dispatch_group_async(self.manager.completionGroup ?: url_session_manager_completion_group(), self.manager.completionQueue ?: dispatch_get_main_queue(), ^{
-            if (self.completionHandler) {
-                self.completionHandler(downloadTask.response, fileURL, fileManagerError);
-            }
-
-            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:downloadTask userInfo:userInfo];
-        });
     });
 }
 
@@ -451,6 +443,13 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {}
                                  completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
     AFURLSessionManagerTaskDelegate *delegate = [AFURLSessionManagerTaskDelegate delegateForManager:self completionHandler:completionHandler];
+    delegate.downloadTaskDidFinishDownloading = ^ NSURL * (NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
+        if (destination) {
+            return destination(location, task.response);
+        }
+
+        return location;
+    };
 
     if (progress) {
         *progress = delegate.downloadProgress;
