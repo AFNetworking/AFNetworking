@@ -56,6 +56,7 @@
  - `URLSession:dataTask:didBecomeDownloadTask:`
  - `URLSession:dataTask:didReceiveData:`
  - `URLSession:dataTask:willCacheResponse:completionHandler:`
+ - `URLSessionDidFinishEventsForBackgroundURLSession:`
 
  ### `NSURLSessionDownloadDelegate`
 
@@ -338,6 +339,13 @@
  @param block A block object to be executed to determine the caching behavior of a data task. The block returns the response to cache, and takes three arguments: the session, the data task, and the proposed cached URL response.
  */
 - (void)setDataTaskWillCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse))block;
+
+/**
+ Sets a block to be executed once all messages enqueued for a session have been delivered, as handled by the `NSURLSessionDataDelegate` method `URLSessionDidFinishEventsForBackgroundURLSession:`.
+ 
+ @param block A block object to be executed once all messages enqueued for a session have been delivered. The block has no return value and takes a single argument: the session.
+ */
+- (void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^)(NSURLSession *session))block;
 
 ///-----------------------------------------------
 /// @name Setting Download Task Delegate Callbacks
