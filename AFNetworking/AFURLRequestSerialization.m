@@ -26,11 +26,91 @@ extern NSString * const AFNetworkingErrorDomain;
 
 typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, NSDictionary *parameters, NSError *__autoreleasing *error);
 
+static NSString * AFBase64EncodedStringFromString(NSString *string) {
+    NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
+    NSUInteger length = [data length];
+    NSMutableData *mutableData = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
+
+    uint8_t *input = (uint8_t *)[data bytes];
+    uint8_t *output = (uint8_t *)[mutableData mutableBytes];
+
+    for (NSUInteger i = 0; i < length; i += 3) {
+        NSUInteger value = 0;
+        for (NSUInteger j = i; j < (i + 3); j++) {
+            value <<= 8;
+            if (j < length) {
+                value |= (0xFF & input[j]);
+            }
+        }
+
+        static uint8_t const kAFBase64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+        NSUInteger idx = (i / 3) * 4;
+        output[idx + 0] = kAFBase64EncodingTable[(value >> 18) & 0x3F];
+        output[idx + 1] = kAFBase64EncodingTable[(value >> 12) & 0x3F];
+        output[idx + 2] = (i + 1) < length ? kAFBase64EncodingTable[(value >> 6)  & 0x3F] : '=';
+        output[idx + 3] = (i + 2) < length ? kAFBase64EncodingTable[(value >> 0)  & 0x3F] : '=';
+    }
+
+    return [[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding];
+}
+
+static NSString * AFPercentEscapedQueryStringPairMemberFromStringWithEncoding(NSString *string, NSStringEncoding encoding) {
+    static NSString * const kAFCharactersToBeEscaped = @":/?&=;+!@#$()',*";
+    static NSString * const kAFCharactersToLeaveUnescaped = @"[].";
+
+	return (__bridge_transfer  NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (__bridge CFStringRef)string, (__bridge CFStringRef)kAFCharactersToLeaveUnescaped, (__bridge CFStringRef)kAFCharactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding));
+}
+
+#pragma mark -
+
+@interface AFQueryStringPair : NSObject
+@property (readwrite, nonatomic, strong) id field;
+@property (readwrite, nonatomic, strong) id value;
+
+- (id)initWithField:(id)field value:(id)value;
+
+- (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding;
+@end
+
+@implementation AFQueryStringPair
+@synthesize field = _field;
+@synthesize value = _value;
+
+- (id)initWithField:(id)field value:(id)value {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    self.field = field;
+    self.value = value;
+
+    return self;
+}
+
+- (NSString *)URLEncodedStringValueWithEncoding:(NSStringEncoding)stringEncoding {
+    if (!self.value || [self.value isEqual:[NSNull null]]) {
+        return AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.field description], stringEncoding);
+    } else {
+        return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.field description], stringEncoding), AFPercentEscapedQueryStringPairMemberFromStringWithEncoding([self.value description], stringEncoding)];
+    }
+}
+
+@end
+
+#pragma mark -
+
 extern NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary);
 extern NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value);
 
-static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
-    return [AFQueryStringPairsFromDictionary(parameters) componentsJoinedByString:@"&"];
+NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding stringEncoding) {
+    NSMutableArray *mutablePairs = [NSMutableArray array];
+    for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
+        [mutablePairs addObject:[pair URLEncodedStringValueWithEncoding:stringEncoding]];
+    }
+
+    return [mutablePairs componentsJoinedByString:@"&"];
 }
 
 NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) {
@@ -61,9 +141,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue(key, obj)];
         }
     } else {
-        [mutableQueryStringComponents addObject:[NSString stringWithFormat:@"%@=%@", key, value]];
+        [mutableQueryStringComponents addObject:[[AFQueryStringPair alloc] initWithField:key value:value]];
     }
-
+    
     return mutableQueryStringComponents;
 }
 
@@ -146,7 +226,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 - (void)setAuthorizationHeaderFieldWithUsername:(NSString *)username password:(NSString *)password {
 	NSString *basicAuthCredentials = [NSString stringWithFormat:@"%@:%@", username, password];
-    [self setValue:[NSString stringWithFormat:@"Basic %@", [[basicAuthCredentials dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0]] forHTTPHeaderField:@"Authorization"];
+    [self setValue:[NSString stringWithFormat:@"Basic %@", AFBase64EncodedStringFromString(basicAuthCredentials)] forHTTPHeaderField:@"Authorization"];
 }
 
 - (void)setAuthorizationHeaderFieldWithToken:(NSString *)token {
@@ -249,7 +329,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     } else {
         switch (self.queryStringSerializationStyle) {
             case AFHTTPRequestQueryStringDefaultStyle:
-                query = AFQueryStringFromParameters(parameters);
+                query = AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding);
                 break;
             default:
                 break;
@@ -257,10 +337,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     }
 
     if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
-        NSURLComponents *components = [NSURLComponents componentsWithString:[[request URL] absoluteString]];
-        components.query = components.query ? [components.query stringByAppendingFormat:@"&%@", query] : query;
-
-        mutableRequest.URL = [components URL];
+        mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding)]];
     } else {
         NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
         [mutableRequest setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
