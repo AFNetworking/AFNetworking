@@ -84,6 +84,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @property (nonatomic, strong) NSMutableData *mutableData;
 @property (nonatomic, strong) NSProgress *uploadProgress;
 @property (nonatomic, strong) NSProgress *downloadProgress;
+@property (nonatomic, copy) NSURL *downloadFileURL;
 @property (nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
 @property (nonatomic, copy) AFURLSessionTaskCompletionHandler completionHandler;
 
@@ -132,9 +133,14 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 didCompleteWithError:(NSError *)error
 {
     if (self.completionHandler) {
+        __block id responseObject = nil;
+
         __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
         userInfo[AFNetworkingTaskDidFinishResponseSerializerKey] = self.manager.responseSerializer;
-        if (self.mutableData) {
+
+        if (self.downloadFileURL) {
+            userInfo[AFNetworkingTaskDidFinishAssetPathKey] = self.downloadFileURL;
+        } else if (self.mutableData) {
             userInfo[AFNetworkingTaskDidFinishResponseDataKey] = [NSData dataWithData:self.mutableData];
         }
 
@@ -143,7 +149,7 @@ didCompleteWithError:(NSError *)error
 
             dispatch_group_async(self.manager.completionGroup ?: url_session_manager_completion_group(), self.manager.completionQueue ?: dispatch_get_main_queue(), ^{
                 if (self.completionHandler) {
-                    self.completionHandler(task.response, [NSData dataWithData:self.mutableData], error);
+                    self.completionHandler(task.response, responseObject, error);
                 }
 
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
@@ -151,7 +157,11 @@ didCompleteWithError:(NSError *)error
         } else {
             dispatch_async(url_session_manager_processing_queue(), ^{
                 NSError *serializationError = nil;
-                id responseObject = [self.manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
+                if (self.downloadFileURL) {
+                    responseObject = self.downloadFileURL;
+                } else {
+                    responseObject = [self.manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
+                }
 
                 if (responseObject) {
                     userInfo[AFNetworkingTaskDidFinishSerializedResponseKey] = responseObject;
@@ -190,20 +200,16 @@ didCompleteWithError:(NSError *)error
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     NSError *fileManagerError = nil;
-    NSURL *fileURL = nil;
+    self.downloadFileURL = nil;
 
     if (self.downloadTaskDidFinishDownloading) {
-        fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
-        if (fileURL) {
-            userInfo[AFNetworkingTaskDidFinishAssetPathKey] = fileURL;
+        self.downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
+        if (self.downloadFileURL) {
+            [[NSFileManager defaultManager] moveItemAtURL:location toURL:self.downloadFileURL error:&fileManagerError];
 
-            [[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&fileManagerError];
             if (fileManagerError) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:fileManagerError.userInfo];
-
-                userInfo[AFNetworkingTaskDidFinishErrorKey] = fileManagerError;
             }
         }
     }
