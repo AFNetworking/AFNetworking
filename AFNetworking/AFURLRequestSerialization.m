@@ -938,6 +938,10 @@ typedef NS_ENUM(NSUInteger, AFHTTPBodyPartReadPhase) {
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL *stop) {
         [mutableRequest setValue:value forHTTPHeaderField:field];
     }];
+    
+    if (!parameters) {
+        return mutableRequest;
+    }
 
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
 
