@@ -22,7 +22,7 @@
 
 #import "AFTestCase.h"
 
-#import "AFSerialization.h"
+#import "AFURLResponseSerialization.h"
 
 @interface AFHTTPSerializationTests : AFTestCase
 @end

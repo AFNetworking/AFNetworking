@@ -69,7 +69,6 @@
 		F8A847C0161F51A300940F39 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F8A847C2161F523E00940F39 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		F8A847C4161F524200940F39 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		F8AF73EB1796FCF200F63037 /* AFSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSerialization.h; sourceTree = "<group>"; };
 		F8B3944B17DBF9B900430F25 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
 		F8B3944C17DBF9B900430F25 /* AFHTTPRequestOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationManager.m; sourceTree = "<group>"; };
 		F8CBED2117D595320088ADC0 /* UIAlertView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+AFNetworking.h"; sourceTree = "<group>"; };
@@ -158,7 +157,6 @@
 		F8D549A117DBE52C00BFF314 /* Serialization */ = {
 			isa = PBXGroup;
 			children = (
-				F8AF73EB1796FCF200F63037 /* AFSerialization.h */,
 				F8D5499B17DB0EFE00BFF314 /* AFURLRequestSerialization.h */,
 				F8D5499C17DB0EFE00BFF314 /* AFURLRequestSerialization.m */,
 				F8D5499817DB0EF300BFF314 /* AFURLResponseSerialization.h */,

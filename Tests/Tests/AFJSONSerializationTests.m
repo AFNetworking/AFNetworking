@@ -22,7 +22,7 @@
 
 #import "AFTestCase.h"
 
-#import "AFSerialization.h"
+#import "AFURLResponseSerialization.h"
 
 static NSData * AFJSONTestData() {
     return [NSJSONSerialization dataWithJSONObject:@{@"foo": @"bar"} options:0 error:nil];

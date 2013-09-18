@@ -22,7 +22,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AFSerialization.h"
+#import "AFURLResponseSerialization.h"
 
 @class AFServerSentEvent;
 @protocol AFEventSourceDelegate;

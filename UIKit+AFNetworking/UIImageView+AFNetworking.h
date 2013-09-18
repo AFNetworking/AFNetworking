@@ -27,7 +27,7 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
 
-#import "AFSerialization.h"
+#import "AFURLResponseSerialization.h"
 #import "AFSecurityPolicy.h"
 
 /**

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F810D46917736CDC00EAE01F /* AFSerialization.h in Resources */ = {isa = PBXBuildFile; fileRef = F810D46717736CDC00EAE01F /* AFSerialization.h */; };
 		F8129C001591061B009BFE23 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8129BFF1591061B009BFE23 /* Cocoa.framework */; };
 		F8129C321591073C009BFE23 /* AFAppDotNetAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C251591073C009BFE23 /* AFAppDotNetAPIClient.m */; };
 		F8129C341591073C009BFE23 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C2B1591073C009BFE23 /* Post.m */; };
@@ -24,7 +23,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F810D46717736CDC00EAE01F /* AFSerialization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AFSerialization.h; path = ../AFNetworking/AFSerialization.h; sourceTree = "<group>"; };
 		F8129BFB1591061B009BFE23 /* AFNetworking Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8129BFF1591061B009BFE23 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F8129C021591061B009BFE23 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -158,7 +156,6 @@
 		F82EB083159A172500B10B56 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
-				F810D46717736CDC00EAE01F /* AFSerialization.h */,
 				F82EB075159A172000B10B56 /* AFNetworking.h */,
 				F82EB078159A172000B10B56 /* AFURLConnectionOperation.h */,
 				F82EB079159A172000B10B56 /* AFURLConnectionOperation.m */,
@@ -220,7 +217,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F810D46917736CDC00EAE01F /* AFSerialization.h in Resources */,
 				F8129C7115910B3E009BFE23 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

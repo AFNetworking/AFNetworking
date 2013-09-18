@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFSerialization.h"
+#import "AFURLResponseSerialization.h"
 
 /**
  `AFJSONPatchOperationType` represent the possible JSON Patch operation types.

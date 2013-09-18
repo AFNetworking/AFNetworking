@@ -69,9 +69,6 @@
          location = "container:"
          name = "Serialization">
          <FileRef
-            location = "group:AFNetworking/AFSerialization.h">
-         </FileRef>
-         <FileRef
             location = "group:AFNetworking/AFURLRequestSerialization.h">
          </FileRef>
          <FileRef

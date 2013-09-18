@@ -31,7 +31,8 @@
 #endif
 
 #import "AFHTTPRequestOperation.h"
-#import "AFSerialization.h"
+#import "AFURLResponseSerialization.h"
+#import "AFURLRequestSerialization.h"
 #import "AFSecurityPolicy.h"
 #import "AFNetworkReachabilityManager.h"
 
