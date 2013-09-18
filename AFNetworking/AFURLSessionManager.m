@@ -190,25 +190,23 @@ didCompleteWithError:(NSError *)error
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
-    __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-    dispatch_async(url_session_manager_processing_queue(), ^{
-        NSError *fileManagerError = nil;
-        NSURL *fileURL = nil;
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+    NSError *fileManagerError = nil;
+    NSURL *fileURL = nil;
 
-        if (self.downloadTaskDidFinishDownloading) {
-            fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
-            if (fileURL) {
-                userInfo[AFNetworkingTaskDidFinishAssetPathKey] = fileURL;
+    if (self.downloadTaskDidFinishDownloading) {
+        fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
+        if (fileURL) {
+            userInfo[AFNetworkingTaskDidFinishAssetPathKey] = fileURL;
 
-                [[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&fileManagerError];
-                if (fileManagerError) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:fileManagerError.userInfo];
+            [[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&fileManagerError];
+            if (fileManagerError) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:fileManagerError.userInfo];
 
-                    userInfo[AFNetworkingTaskDidFinishErrorKey] = fileManagerError;
-                }
+                userInfo[AFNetworkingTaskDidFinishErrorKey] = fileManagerError;
             }
         }
-    });
+    }
 }
 
 - (void)URLSession:(NSURLSession *)session
