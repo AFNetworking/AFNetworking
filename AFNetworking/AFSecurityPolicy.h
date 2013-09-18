@@ -62,7 +62,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 /**
  
  */
-+ (instancetype)debugPolicy;
++ (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode;
 
 ///
 

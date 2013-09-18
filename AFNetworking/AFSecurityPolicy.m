@@ -145,19 +145,18 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 }
 
 + (instancetype)defaultPolicy {
-    AFSecurityPolicy *security = [[self alloc] init];
-    security.SSLPinningMode = AFSSLPinningModePublicKey;
-    security.pinnedCertificates = [[self class] defaultPinnedCertificates];
+    AFSecurityPolicy *securityPolicy = [[self alloc] init];
+    securityPolicy.SSLPinningMode = AFSSLPinningModeNone;
+    securityPolicy.allowInvalidCertificates = YES;
 
-    return security;
+    return securityPolicy;
 }
 
-+ (instancetype)debugPolicy {
-    AFSecurityPolicy *security = [[self alloc] init];
-    security.SSLPinningMode = AFSSLPinningModeNone;
-    security.allowInvalidCertificates = YES;
++ (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode {
+    AFSecurityPolicy *securityPolicy = [[self alloc] init];
+    securityPolicy.SSLPinningMode = pinningMode;
 
-    return security;
+    return securityPolicy;
 }
 
 #pragma mark -
