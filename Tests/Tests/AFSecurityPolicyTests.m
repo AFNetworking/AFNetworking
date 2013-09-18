@@ -150,36 +150,19 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
 - (void)testDefaultPolicyIsSetToAFSSLPinningModePublicKey {
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
 
-    XCTAssert(policy.SSLPinningMode==AFSSLPinningModePublicKey, @"HTTPBin.org default policy is not set to AFSSLPinningModePublicKey.");
+    XCTAssert(policy.SSLPinningMode==AFSSLPinningModeNone, @"Default policy is not set to AFSSLPinningModePublicKey.");
 }
 
 - (void)testDefaultPolicyIsSetToNotAllowInvalidSSLCertificates {
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
 
-    XCTAssert(policy.allowInvalidCertificates == NO, @"HTTPBin.org default policy should not allow invalid ssl certificates");
+    XCTAssert(policy.allowInvalidCertificates == NO, @"Default policy should not allow invalid ssl certificates");
 }
 
-- (void)testDebugPolicyContainsHTTPBinOrgCertificate {
-    AFSecurityPolicy *policy = [AFSecurityPolicy debugPolicy];
-    SecCertificateRef cert = AFUTHTTPBinOrgCertificate();
-    NSData *certData = (__bridge NSData *)(SecCertificateCopyData(cert));
-    NSInteger index = [policy.pinnedCertificates indexOfObjectPassingTest:^BOOL(NSData *data, NSUInteger idx, BOOL *stop) {
-        return [data isEqualToData:certData];
-    }];
-
-    XCTAssert(index != NSNotFound, @"HTTPBin.org certificate not found in the default certificates");
-}
-
-- (void)testDebugPolicyIsSetToAFSSLPinningModePublicKey {
-    AFSecurityPolicy *policy = [AFSecurityPolicy debugPolicy];
-
-    XCTAssert(policy.SSLPinningMode == AFSSLPinningModeNone, @"HTTPBin.org debug policy is not set to AFSSLPinningModeNone.");
-}
-
-- (void)testDebugPolicyIsSetToAllowInvalidSSLCertificates {
-    AFSecurityPolicy *policy = [AFSecurityPolicy debugPolicy];
-
-    XCTAssert(policy.allowInvalidCertificates == YES, @"HTTPBin.org debug policy should allow invalid ssl certificates");
+- (void)testPolicyWithPinningModeIsSetToNotAllowInvalidSSLCertificates {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    
+    XCTAssert(policy.allowInvalidCertificates == NO, @"policyWithPinningMode: should not allow invalid ssl certificates by default.");
 }
 
 @end
