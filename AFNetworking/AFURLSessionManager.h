@@ -97,15 +97,21 @@
  */
 @property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
 
-///
+///-------------------------------
+/// @name Managing Security Policy
+///-------------------------------
 
 /**
- 
+ The security policy used by created request operations to evaluate server trust for secure connections. `AFURLSessionManager` uses the `defaultPolicy` unless otherwise specified.
  */
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
-/**
+///--------------------------------------
+/// @name Monitoring Network Reachability
+///--------------------------------------
 
+/**
+ The network reachability manager. `AFURLSessionManager` uses the `sharedManager` by default.
  */
 @property (readonly, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 
@@ -231,7 +237,7 @@
  @param request The HTTP request for the request.
  @param progress A block object to be executed multiple times as data is downloaded. This block has no return value and takes three arguments: the number of bytes read since the last time the progress block was called, the total bytes read, and the total bytes expected to be read from the server, as initially determined by the expected content size of the response object.
  @param destination A block object to be executed in order to determine the destination of the downloaded file. This block takes two arguments, the target path & the server response, and returns the desired file URL of the resulting download. The temporary file used during the download will be automatically deleted after being moved to the returned URL.
- @param completionHandler A block to be executed when a task finishes. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred, if any.
+ @param completionHandler A block to be executed when a task finishes. This block has no return value and takes three arguments: the server response, the path of the downloaded file, and the error describing the network or parsing error that occurred, if any.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
                                              progress:(NSProgress * __autoreleasing *)progress
@@ -244,7 +250,7 @@
  @param resumeData The data used to resume downloading.
  @param progress A block object to be executed multiple times as data is downloaded. This block has no return value and takes three arguments: the number of bytes read since the last time the progress block was called, the total bytes read, and the total bytes expected to be read from the server, as initially determined by the expected content size of the response object.
  @param destination A block object to be executed in order to determine the destination of the downloaded file. This block takes two arguments, the target path & the server response, and returns the desired file URL of the resulting download. The temporary file used during the download will be automatically deleted after being moved to the returned URL.
- @param completionHandler A block to be executed when a task finishes. This block has no return value and takes a single arguments: the error describing the network or parsing error that occurred, if any.
+ @param completionHandler A block to be executed when a task finishes. This block has no return value and takes three arguments: the server response, the path of the downloaded file, and the error describing the network or parsing error that occurred, if any.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
                                                 progress:(NSProgress * __autoreleasing *)progress
