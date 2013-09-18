@@ -101,6 +101,7 @@
 {
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = self.responseSerializer;
+    operation.securityPolicy = self.securityPolicy;
 
     [operation setCompletionBlockWithSuccess:success failure:failure];
 
