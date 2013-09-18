@@ -81,28 +81,6 @@
             location = "group:AFNetworking/AFURLResponseSerialization.m">
          </FileRef>
       </Group>
-      <Group
-         location = "container:AFNetworking"
-         name = "Rocket">
-         <FileRef
-            location = "group:AFEventSource.h">
-         </FileRef>
-         <FileRef
-            location = "group:AFEventSource.m">
-         </FileRef>
-         <FileRef
-            location = "group:/Users/mattt/Code/Objective-C/AFNetworking/AFNetworking/AFJSONPatchResponseSerializer.h">
-         </FileRef>
-         <FileRef
-            location = "group:/Users/mattt/Code/Objective-C/AFNetworking/AFNetworking/AFJSONPatchResponseSerializer.m">
-         </FileRef>
-         <FileRef
-            location = "group:AFHTTPClient+Rocket.h">
-         </FileRef>
-         <FileRef
-            location = "group:AFHTTPClient+Rocket.m">
-         </FileRef>
-      </Group>
    </Group>
    <Group
       location = "group:UIKit+AFNetworking"
