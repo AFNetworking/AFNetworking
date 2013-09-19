@@ -44,13 +44,13 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'NSURLSession' do |ss|
-    s.ios.deployment_target = '7.0'
-    s.osx.deployment_target = '10.9'
+    ss.ios.deployment_target = '7.0'
+    ss.osx.deployment_target = '10.9'
 
     ss.source_files = 'AFNetworking/AFURLSessionManager.{h,m}', 'AFNetworking/AFHTTPSessionManager.{h,m}'
   end
 
-  s.subspec 'UIKit+AFNetworking' do |ss|
-    ss.source_files = 'UIKit+AFNetworking'
+  s.subspec 'UIKit' do |ss|
+    ss.ios.source_files = 'UIKit+AFNetworking'
   end
 end
