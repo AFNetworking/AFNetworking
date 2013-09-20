@@ -149,7 +149,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.acceptableStatusCodes forKey:@"acceptableStatusCodes"];
-    [aCoder encodeInteger:self.acceptableContentTypes forKey:@"acceptableContentTypes"];
+    [aCoder encodeObject:self.acceptableContentTypes forKey:@"acceptableContentTypes"];
 }
 
 #pragma mark - NSCopying
@@ -424,7 +424,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         return nil;
     }
 
-    self.format = [aDecoder decodeIntegerForKey:@"format"];
+    self.format = (NSPropertyListFormat)[aDecoder decodeIntegerForKey:@"format"];
     self.readOptions = [aDecoder decodeIntegerForKey:@"readOptions"];
 
     return self;
