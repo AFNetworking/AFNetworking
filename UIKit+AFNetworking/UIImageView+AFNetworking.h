@@ -27,6 +27,10 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
 
+// Forward declaration
+@protocol AFImageCache;
+
+
 /**
  This category adds methods to the UIKit framework's `UIImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
  */
@@ -71,6 +75,29 @@
  Cancels any executing image request operation for the receiver, if one exists.
  */
 - (void)cancelImageDataTask;
+
+/**
+ Sets object that will be responsible for downloaded images caching.
+ 
+ @param cache Any object that comforms to 'AFImageCache' protocol.
+ */
++(void)setImageCache:(id<AFImageCache>)cache;
+
+
+
+@end
+
+
+/**
+ Object responsible for caching images, downloaded with 'UIImageView setImageWithURL:***' methods.
+ Acts as replacement for default AFImageCache (NSCache).
+ Could be used for custom cache implementation (disk or Core Data persistence probably).
+ */
+@protocol AFImageCache <NSObject>
+
+- (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
+- (void)cacheImage:(UIImage *)image
+        forRequest:(NSURLRequest *)request;
 
 @end
 

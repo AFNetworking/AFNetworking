@@ -29,15 +29,13 @@
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import "UIImageView+AFNetworking.h"
 
-@interface AFImageCache : NSCache
-- (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
-- (void)cacheImage:(UIImage *)image
-        forRequest:(NSURLRequest *)request;
+@interface AFImageCache : NSCache <AFImageCache>
 @end
 
 #pragma mark -
 
 static char kAFImageDataTaskKey;
+static NSString * const kAFImageCacheKey_AFNetworking = @"kAFImageCacheKey_AFNetworking";
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setImageDataTask:) NSURLSessionDataTask *af_imageDataTask;
@@ -62,14 +60,24 @@ static char kAFImageDataTaskKey;
     return _af_sharedHTTPClient;
 }
 
-+ (AFImageCache *)af_sharedImageCache {
++ (id<AFImageCache>)af_sharedImageCache {
+    
+    id<AFImageCache> currentCache = objc_getAssociatedObject([self class], (__bridge const void *)(kAFImageCacheKey_AFNetworking));
+    
+    if(currentCache) return currentCache;
+    
     static AFImageCache *_af_imageCache = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _af_imageCache = [[AFImageCache alloc] init];
+        [self setImageCache:_af_imageCache];
     });
 
     return _af_imageCache;
+}
+
++(void)setImageCache:(id<AFImageCache>)cache {
+    objc_setAssociatedObject([self class], (__bridge const void *)(kAFImageCacheKey_AFNetworking), cache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (NSURLSessionDataTask *)af_imageDataTask {
@@ -138,6 +146,9 @@ static char kAFImageDataTaskKey;
     [self.af_imageDataTask cancel];
     self.af_imageDataTask = nil;
 }
+
+
+
 
 @end
 
