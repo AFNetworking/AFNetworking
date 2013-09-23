@@ -149,7 +149,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.acceptableStatusCodes forKey:@"acceptableStatusCodes"];
-    [aCoder encodeInteger:self.acceptableContentTypes forKey:@"acceptableContentTypes"];
+    [aCoder encodeObject:self.acceptableContentTypes forKey:@"acceptableContentTypes"];
 }
 
 #pragma mark - NSCopying
