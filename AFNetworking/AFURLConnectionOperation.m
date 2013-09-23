@@ -113,26 +113,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
 }
 
-#if !defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-static NSData *AFSecKeyGetData(SecKeyRef key) {
-    CFDataRef data = NULL;
-    
-    OSStatus status = SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
-    NSCAssert(status == errSecSuccess, @"SecItemExport error: %ld", (long int)status);
-    NSCParameterAssert(data);
-    
-    return (__bridge_transfer NSData *)data;
-}
-#endif
-
-static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    return [(__bridge id)key1 isEqual:(__bridge id)key2];
-#else
-    return [AFSecKeyGetData(key1) isEqual:AFSecKeyGetData(key2)];
-#endif
-}
-
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
