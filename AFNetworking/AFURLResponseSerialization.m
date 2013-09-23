@@ -91,7 +91,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
         if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:response.statusCode]) {
             NSDictionary *userInfo = @{
-                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Expected status code in (%@), got %d", @"AFNetworking", nil), AFStringFromIndexSet(self.acceptableStatusCodes), response.statusCode],
+                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Response serializer expected HTTP response status code in (%@), got %d", @"AFNetworking", nil), AFStringFromIndexSet(self.acceptableStatusCodes), response.statusCode],
                                        NSURLErrorFailingURLErrorKey:[response URL],
                                        AFNetworkingOperationFailingURLResponseErrorKey: response
                                        };
@@ -104,7 +104,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
             // Don't invalidate content type if there is no content
             if ([data length] > 0) {
                 NSDictionary *userInfo = @{
-                                           NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Expected content type %@, got %@", @"AFNetworking", nil), self.acceptableContentTypes, [response MIMEType]],
+                                           NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Response serializer expected HTTP response content-type %@, got %@", @"AFNetworking", nil), self.acceptableContentTypes, [response MIMEType]],
                                            NSURLErrorFailingURLErrorKey:[response URL],
                                            AFNetworkingOperationFailingURLResponseErrorKey: response
                                            };
@@ -149,7 +149,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.acceptableStatusCodes forKey:@"acceptableStatusCodes"];
-    [aCoder encodeInteger:self.acceptableContentTypes forKey:@"acceptableContentTypes"];
+    [aCoder encodeObject:self.acceptableContentTypes forKey:@"acceptableContentTypes"];
 }
 
 #pragma mark - NSCopying
@@ -424,7 +424,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
         return nil;
     }
 
-    self.format = [aDecoder decodeIntegerForKey:@"format"];
+    self.format = (NSPropertyListFormat)[aDecoder decodeIntegerForKey:@"format"];
     self.readOptions = [aDecoder decodeIntegerForKey:@"readOptions"];
 
     return self;
