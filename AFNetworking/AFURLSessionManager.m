@@ -540,6 +540,8 @@ didBecomeInvalidWithError:(NSError *)error
     if (self.sessionDidBecomeInvalid) {
         self.sessionDidBecomeInvalid(session, error);
     }
+   
+   [self.mutableTaskDelegatesKeyedByTaskIdentifier removeAllObjects];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDidInvalidateNotification object:session];
 }
@@ -648,6 +650,8 @@ didCompleteWithError:(NSError *)error
     if (self.taskDidComplete) {
         self.taskDidComplete(session, task, error);
     }
+   
+   [self.mutableTaskDelegatesKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
 }
 
 #pragma mark - NSURLSessionDataDelegate
@@ -709,6 +713,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
     if (self.didFinishEventsForBackgroundURLSession) {
         self.didFinishEventsForBackgroundURLSession(session);
     }
+   
+   [self.mutableTaskDelegatesKeyedByTaskIdentifier removeAllObjects];
 }
 
 #pragma mark - NSURLSessionDownloadDelegate
