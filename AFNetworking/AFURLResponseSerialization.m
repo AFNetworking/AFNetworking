@@ -87,7 +87,6 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
                     data:(NSData *)data
                    error:(NSError *__autoreleasing *)error
 {
-    // TODO determine whether this is the correct behavior; is there a better way to extend functionality of serializers, or a better place to put HTTP validation?
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
         if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:response.statusCode]) {
             NSDictionary *userInfo = @{
