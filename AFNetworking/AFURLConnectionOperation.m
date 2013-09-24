@@ -687,18 +687,6 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
     return self.shouldUseCredentialStorage;
 }
 
-- (NSInputStream *)connection:(NSURLConnection __unused *)connection
-            needNewBodyStream:(NSURLRequest *)request
-{
-    if ([request.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
-        return [request.HTTPBodyStream copy];
-    } else {
-        [self cancelConnection];
-        
-        return nil;
-    }
-}
-
 - (NSURLRequest *)connection:(NSURLConnection *)connection
              willSendRequest:(NSURLRequest *)request
             redirectResponse:(NSURLResponse *)redirectResponse
