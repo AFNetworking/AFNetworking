@@ -721,12 +721,20 @@ didReceiveResponse:(NSURLResponse *)response
 {
     NSUInteger length = [data length];
     while (YES) {
+        NSUInteger totalNumberOfBytesWritten = 0;
         if ([self.outputStream hasSpaceAvailable]) {
             const uint8_t *dataBuffer = (uint8_t *)[data bytes];
-            if ([self.outputStream write:&dataBuffer[0] maxLength:length] == -1) {
-                [self.connection cancel];
-                [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
-                return;
+
+            NSInteger numberOfBytesWritten = 0;
+            while (totalNumberOfBytesWritten < length) {
+                numberOfBytesWritten = [self.outputStream write:&dataBuffer[0] maxLength:length];
+                if (numberOfBytesWritten == -1) {
+                    [self.connection cancel];
+                    [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
+                    return;
+                } else {
+                    totalNumberOfBytesWritten += numberOfBytesWritten;
+                }
             }
 
             break;
