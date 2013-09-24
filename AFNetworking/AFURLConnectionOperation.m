@@ -510,7 +510,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 
 - (void)operationDidStart {
     [self.lock lock];
-    if (! [self isCancelled]) {
+    if (![self isCancelled]) {
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
         
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -533,6 +533,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
             userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
         }
         self.error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
+
         [self finish];
     }
 }
@@ -564,13 +565,13 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
     if ([self.request URL]) {
         userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
     }
-    self.error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
+    NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
     
-    if (self.connection) {
+    if (![self isFinished] && self.connection) {
         [self.connection cancel];
         
         // Manually send this delegate message since `[self.connection cancel]` causes the connection to never send another message to its delegate
-        [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.error];
+        [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:error];
     }
 }
 
