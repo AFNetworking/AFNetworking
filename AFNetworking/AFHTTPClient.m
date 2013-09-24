@@ -1065,21 +1065,31 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     if ([self streamStatus] == NSStreamStatusClosed) {
         return 0;
     }
-    NSInteger bytesRead = 0;
 
-    while ((NSUInteger)bytesRead < MIN(length, self.numberOfBytesInPacket)) {
+    NSInteger totalNumberOfBytesRead = 0;
+
+    while ((NSUInteger)totalNumberOfBytesRead < MIN(length, self.numberOfBytesInPacket)) {
         if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
             if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
                 break;
             }
         } else {
-            bytesRead += [self.currentHTTPBodyPart read:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
-            if (self.delay > 0.0f) {
-                [NSThread sleepForTimeInterval:self.delay];
+            NSUInteger maxLength = length - (NSUInteger)totalNumberOfBytesRead;
+            NSInteger numberOfBytesRead = [self.currentHTTPBodyPart read:&buffer[totalNumberOfBytesRead] maxLength:maxLength];
+            if (numberOfBytesRead == -1) {
+                self.streamError = self.currentHTTPBodyPart.inputStream.streamError;
+                break;
+            } else {
+                totalNumberOfBytesRead += numberOfBytesRead;
+
+                if (self.delay > 0.0f) {
+                    [NSThread sleepForTimeInterval:self.delay];
+                }
             }
         }
     }
-    return bytesRead;
+    
+    return totalNumberOfBytesRead;
 }
 
 - (BOOL)getBuffer:(__unused uint8_t **)buffer
@@ -1284,32 +1294,39 @@ typedef enum {
 - (NSInteger)read:(uint8_t *)buffer
         maxLength:(NSUInteger)length
 {
-    NSInteger bytesRead = 0;
+    NSUInteger totalNumberOfBytesRead = 0;
 
     if (_phase == AFEncapsulationBoundaryPhase) {
         NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary() : AFMultipartFormEncapsulationBoundary()) dataUsingEncoding:self.stringEncoding];
-        bytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
+        totalNumberOfBytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
     }
 
     if (_phase == AFHeaderPhase) {
         NSData *headersData = [[self stringForHeaders] dataUsingEncoding:self.stringEncoding];
-        bytesRead += [self readData:headersData intoBuffer:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
+        totalNumberOfBytesRead += [self readData:headersData intoBuffer:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
     }
 
     if (_phase == AFBodyPhase) {
-        bytesRead += [self.inputStream read:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
+        NSInteger numberOfBytesRead = 0;
 
-        if ([self.inputStream streamStatus] >= NSStreamStatusAtEnd) {
-            [self transitionToNextPhase];
+        numberOfBytesRead = [self.inputStream read:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
+        if (numberOfBytesRead == -1) {
+            return -1;
+        } else {
+            totalNumberOfBytesRead += numberOfBytesRead;
+
+            if ([self.inputStream streamStatus] >= NSStreamStatusAtEnd) {
+                [self transitionToNextPhase];
+            }
         }
     }
 
     if (_phase == AFFinalBoundaryPhase) {
         NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary() dataUsingEncoding:self.stringEncoding] : [NSData data]);
-        bytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[bytesRead] maxLength:(length - (NSUInteger)bytesRead)];
+        totalNumberOfBytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
     }
 
-    return bytesRead;
+    return totalNumberOfBytesRead;
 }
 
 - (NSInteger)readData:(NSData *)data
