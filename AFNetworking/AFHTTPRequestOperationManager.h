@@ -41,10 +41,10 @@
 
  ## Subclassing Notes
  
- Developers targeting iOS 6 or Mac OS X 10.8 or earlier that deal extensively with a web service are encouraged to subclass `AFHTTPSessionManager`, providing a class method that returns a shared singleton object on which authentication and other configuration can be shared across the application.
-
- For developers targeting iOS 7 or Mac OS X 10.9 or later, `AFHTTPSessionManager` may be used to similar effect.
-
+ Developers targeting iOS 7 or Mac OS X 10.9 or later that deal extensively with a web service are encouraged to subclass `AFHTTPSessionManager`, providing a class method that returns a shared singleton object on which authentication and other configuration can be shared across the application.
+ 
+ For developers targeting iOS 6 or Mac OS X 10.8 or earlier, `AFHTTPRequestOperationManager` may be used to similar effect.
+ 
  ## Methods to Override
 
  To change the behavior of all request operation construction for an `AFHTTPRequestOperationManager` subclass, override `HTTPRequestOperationWithRequest:success:failure`.
