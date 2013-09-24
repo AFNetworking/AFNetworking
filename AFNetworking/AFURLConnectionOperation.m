@@ -569,8 +569,6 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
     
     if (![self isFinished] && self.connection) {
         [self.connection cancel];
-        
-        // Manually send this delegate message since `[self.connection cancel]` causes the connection to never send another message to its delegate
         [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:error];
     }
 }
@@ -722,9 +720,17 @@ didReceiveResponse:(NSURLResponse *)response
     didReceiveData:(NSData *)data
 {
     NSUInteger length = [data length];
-    if ([self.outputStream hasSpaceAvailable]) {
-        const uint8_t *dataBuffer = (uint8_t *) [data bytes];
-        [self.outputStream write:&dataBuffer[0] maxLength:length];
+    while (YES) {
+        if ([self.outputStream hasSpaceAvailable]) {
+            const uint8_t *dataBuffer = (uint8_t *)[data bytes];
+            if ([self.outputStream write:&dataBuffer[0] maxLength:length] == -1) {
+                [self.connection cancel];
+                [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
+                return;
+            }
+
+            break;
+        }
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
