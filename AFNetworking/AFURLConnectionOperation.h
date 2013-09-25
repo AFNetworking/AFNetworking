@@ -1,6 +1,6 @@
 // AFURLConnectionOperation.h
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 #import <Foundation/Foundation.h>
 
 #import <Availability.h>
+#import "AFSecurityPolicy.h"
 
 /**
  `AFURLConnectionOperation` is a subclass of `NSOperation` that implements `NSURLConnection` delegate methods.
@@ -44,13 +45,10 @@
  - `connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:`
  - `connection:willCacheResponse:`
  - `connectionShouldUseCredentialStorage:`
+ - `connection:needNewBodyStream:` 
  - `connection:willSendRequestForAuthenticationChallenge:`
 
  If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
-
- ## Class Constructors
-
- Class constructors, or methods that return an unowned instance, are the preferred way for subclasses to encapsulate any particular logic for handling the setup or parsing of response data. For instance, `AFJSONRequestOperation` provides `JSONRequestOperationWithRequest:success:failure:`, which takes block arguments, whose parameter on for a successful request is the JSON object initialized from the `response data`.
 
  ## Callbacks and Completion Blocks
 
@@ -64,7 +62,7 @@
  
  SSL with certificate pinning is strongly recommended for any application that transmits sensitive information to an external webservice.
 
- When `defaultSSLPinningMode` is defined on `AFHTTPClient` and the Security framework is linked, connections will be validated on all matching certificates with a `.cer` extension in the bundle root.
+ Connections will be validated on all matching certificates with a `.cer` extension in the bundle root.
 
  ## NSCoding & NSCopying Conformance
 
@@ -79,21 +77,10 @@
 
  - `-copy` and `-copyWithZone:` return a new operation with the `NSURLRequest` of the original. So rather than an exact copy of the operation at that particular instant, the copying mechanism returns a completely new instance, which can be useful for retrying operations.
  - A copy of an operation will not include the `outputStream` of the original.
- - Operation copies do not include `completionBlock`. `completionBlock` often strongly captures a reference to `self`, which would otherwise have the unintuitive side-effect of pointing to the _original_ operation when copied.
+ - Operation copies do not include `completionBlock`, as it often strongly captures a reference to `self`, which would otherwise have the unintuitive side-effect of pointing to the _original_ operation when copied.
  */
 
-typedef enum {
-    AFSSLPinningModeNone,
-    AFSSLPinningModePublicKey,
-    AFSSLPinningModeCertificate,
-} AFURLConnectionOperationSSLPinningMode;
-
-@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate,
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 50000) || \
-    (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1080)
-NSURLConnectionDataDelegate, 
-#endif
-NSCoding, NSCopying>
+@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate, NSCoding, NSCopying>
 
 ///-------------------------------
 /// @name Accessing Run Loop Modes
@@ -122,13 +109,6 @@ NSCoding, NSCopying>
  The error, if any, that occurred in the lifecycle of the request.
  */
 @property (readonly, nonatomic, strong) NSError *error;
-
-/**
- Whether the connection should accept an invalid SSL certificate.
- 
- If `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is set, this property defaults to `YES` for backwards compatibility. Otherwise, this property defaults to `NO`.
- */
-@property (nonatomic, assign) BOOL allowsInvalidSSLCertificate;
 
 ///----------------------------
 /// @name Getting Response Data
@@ -169,12 +149,14 @@ NSCoding, NSCopying>
  */
 @property (nonatomic, strong) NSURLCredential *credential;
 
+///-------------------------------
+/// @name Managing Security Policy
+///-------------------------------
+
 /**
- The pinning mode which will be used for SSL connections. `AFSSLPinningModePublicKey` by default.
- 
- SSL Pinning requires that the Security framework is linked with the binary. See the "SSL Pinning" section in the `AFURLConnectionOperation`" header for more information.
+ The security policy used to evaluate server trust for secure connections.
  */
-@property (nonatomic, assign) AFURLConnectionOperationSSLPinningMode SSLPinningMode;
+@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
 ///------------------------
 /// @name Accessing Streams
@@ -193,6 +175,20 @@ NSCoding, NSCopying>
  By default, data is accumulated into a buffer that is stored into `responseData` upon completion of the request. When `outputStream` is set, the data will not be accumulated into an internal buffer, and as a result, the `responseData` property of the completed request will be `nil`. The output stream will be scheduled in the network thread runloop upon being set.
  */
 @property (nonatomic, strong) NSOutputStream *outputStream;
+
+///---------------------------------
+/// @name Managing Callback Queues
+///---------------------------------
+
+/**
+ The dispatch queue for `completionBlock`. If `NULL` (default), the main queue is used.
+ */
+@property (nonatomic, strong) dispatch_queue_t completionQueue;
+
+/**
+ The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used.
+ */
+@property (nonatomic, strong) dispatch_group_t completionGroup;
 
 ///---------------------------------------------
 /// @name Managing Request Operation Information
@@ -214,7 +210,7 @@ NSCoding, NSCopying>
  
  @param urlRequest The request object to be used by the operation connection.
  */
-- (id)initWithRequest:(NSURLRequest *)urlRequest;
+- (instancetype)initWithRequest:(NSURLRequest *)urlRequest;
 
 ///----------------------------------
 /// @name Pausing / Resuming Requests
@@ -292,12 +288,22 @@ NSCoding, NSCopying>
  */
 - (void)setRedirectResponseBlock:(NSURLRequest * (^)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse))block;
 
+
 /**
  Sets a block to be executed to modify the response a connection will cache, if any, as handled by the `NSURLConnectionDelegate` method `connection:willCacheResponse:`.
 
  @param block A block object to be executed to determine what response a connection will cache, if any. The block returns an `NSCachedURLResponse` object, the cached response to store in memory or `nil` to prevent the response from being cached, and takes two arguments: the URL connection object, and the cached response provided for the request.
  */
 - (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block;
+
+///
+
+/**
+
+ */
++ (NSArray *)batchOfRequestOperations:(NSArray *)operations
+                        progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
+                      completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 @end
 

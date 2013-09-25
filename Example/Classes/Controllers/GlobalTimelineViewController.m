@@ -26,6 +26,9 @@
 
 #import "PostTableViewCell.h"
 
+#import "UIActivityIndicatorView+AFNetworking.h"
+#import "UIAlertView+AFNetworking.h"
+
 @interface GlobalTimelineViewController ()
 - (void)reload:(id)sender;
 @end
@@ -33,53 +36,40 @@
 @implementation GlobalTimelineViewController {
 @private
     NSArray *_posts;
-    
-    __strong UIActivityIndicatorView *_activityIndicatorView;
 }
 
 - (void)reload:(id)sender {
-    [_activityIndicatorView startAnimating];
     self.navigationItem.rightBarButtonItem.enabled = NO;
-    
-    [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
-        if (error) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:[error localizedDescription] delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-        } else {
+
+    NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
+        if (!error) {
             _posts = posts;
             [self.tableView reloadData];
         }
         
-        [_activityIndicatorView stopAnimating];
         self.navigationItem.rightBarButtonItem.enabled = YES;
     }];
+
+    [UIAlertView showAlertViewForTaskWithErrorOnCompletion:task delegate:nil];
+
+    UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView *)self.navigationItem.leftBarButtonItem.customView;
+    [activityIndicatorView setAnimatingWithStateOfTask:task];
 }
 
 #pragma mark - UIViewController
-
-- (void)loadView {
-    [super loadView];
-    
-    _activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    _activityIndicatorView.hidesWhenStopped = YES;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = NSLocalizedString(@"AFNetworking", nil);
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_activityIndicatorView];
+    UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicatorView];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload:)];
     
     self.tableView.rowHeight = 70.0f;
     
     [self reload:nil];
-}
-
-- (void)viewDidUnload {
-    _activityIndicatorView = nil;
-    
-    [super viewDidUnload];
 }
 
 #pragma mark - UITableViewDataSource

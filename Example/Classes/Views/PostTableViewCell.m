@@ -27,14 +27,11 @@
 
 #import "UIImageView+AFNetworking.h"
 
-@implementation PostTableViewCell {
-@private
-    __strong Post *_post;
-}
+@implementation PostTableViewCell
 
-@synthesize post = _post;
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (id)initWithStyle:(UITableViewCellStyle)style
+              reuseIdentifier:(NSString *)reuseIdentifier
+{
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (!self) {
         return nil;
@@ -60,7 +57,10 @@
 }
 
 + (CGFloat)heightForCellWithPost:(Post *)post {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     CGSize sizeToFit = [post.text sizeWithFont:[UIFont systemFontOfSize:12.0f] constrainedToSize:CGSizeMake(220.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap];
+#pragma clang diagnostic pop
     
     return fmaxf(70.0f, sizeToFit.height + 45.0f);
 }
