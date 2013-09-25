@@ -36,18 +36,11 @@ AFNetworking 2.0 is a major update to the framework. Building on 2 years of deve
 - Expanded UIKit Extensions
 - Real-time functionality with [Rocket](http://rocket.github.io)
 
-### Coming Soon
-
-- Unit Tests Ported to 2.0
-- AFSecurity Extension
-- Core Image Serializer Extension
-- MsgPack Serializer Extension
-
 ## Requirements
 
-AFNetworking 2.0 and higher requires either iOS 7.0 and above, or Mac OS 10.9 Mavericks ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
+AFNetworking 2.0 and higher requires either iOS 6.0 and above, or Mac OS 10.8 Mountain Lion ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
 
-For compatibility with iOS 5 & 6, use the latest 1.x release.
+For compatibility with iOS 5, use the latest 1.x release.
 
 For compatibility with iOS 4.3, use the latest 0.10.x release.
 
