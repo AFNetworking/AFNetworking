@@ -2,7 +2,7 @@
   <img src="https://raw.github.com/AFNetworking/AFNetworking/assets/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking">
 </p>
 
-AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of [Foundation URL Loading System](http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html), extending the powerful high-level networking abstractions built into Cocoa. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use.
+AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of the [Foundation URL Loading System](http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html), extending the powerful high-level networking abstractions built into Cocoa. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use.
 
 Perhaps the most important feature of all, however, is the amazing community of developers who use and contribute to AFNetworking every day. AFNetworking powers some of the most popular and critically-acclaimed apps on the iPhone, iPad, and Mac.
 
@@ -11,11 +11,15 @@ Choose AFNetworking for your next project, or migrate over your existing project
 ## How To Get Started
 
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/archive/master.zip) and try out the included Mac and iPhone example apps
-- Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles in the wiki](https://github.com/AFNetworking/AFNetworking/wiki)
-- Check out the [complete documentation](http://afnetworking.github.com/AFNetworking/) for a comprehensive look at the APIs available in AFNetworking
+- Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles on the Wiki](https://github.com/AFNetworking/AFNetworking/wiki)
+- Check out the [documentation](http://afnetworking.github.com/AFNetworking/) for a comprehensive look at all of the APIs available in AFNetworking
 - Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
 
 ### Installation with CocoaPods
+
+[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like AFNetworking in your projects. See the ["Getting Started" guide for more information](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking).
+
+#### Podfile
 
 ```ruby
 platform :ios, '7.0'
@@ -40,9 +44,9 @@ AFNetworking 2.0 is a major update to the framework. Building on 2 years of deve
 
 AFNetworking 2.0 and higher requires Xcode 5, targeting either iOS 6.0 and above, or Mac OS 10.8 Mountain Lion ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
 
-For compatibility with iOS 5 or Mac OS X 10.7, use the latest 1.x release.
+For compatibility with iOS 5 or Mac OS X 10.7, use the [latest 1.x release](https://github.com/AFNetworking/AFNetworking/tree/1.x).
 
-For compatibility with iOS 4.3 or Mac OS X 10.6, use the latest 0.10.x release.
+For compatibility with iOS 4.3 or Mac OS X 10.6, use the [latest 0.10.x release](https://github.com/AFNetworking/AFNetworking/tree/0.10.x).
 
 ## Architecture
 
@@ -306,17 +310,16 @@ NSArray *operations = [AFURLConnectionOperation batchOfRequestOperations:@[...] 
 
 ## Unit Tests
 
-AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via CocoaPods. To do so:
+AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via CocoaPods:
 
-    $ gem install cocoapods # If necessary
     $ cd Tests
     $ pod install
 
-Once CocoaPods has finished the installation, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
+Once testing dependencies are installed, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
 
 ### Using xctool
 
-Tests can be run from the command line or within a continuous integration environment with [`xctool`](https://github.com/facebook/xctool), which can be installed with [Homebrew](http://brew.sh):
+Tests can also be run from the command line or within a continuous integration environment with [`xctool`](https://github.com/facebook/xctool), which can be installed with [Homebrew](http://brew.sh):
 
     $ brew update
     $ brew install xctool --HEAD
