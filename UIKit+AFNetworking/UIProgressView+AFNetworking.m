@@ -68,15 +68,17 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
                                         animated:(BOOL)animated
 {
     __weak __typeof(self)weakSelf = self;
-    void (^original)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected) = [operation.uploadProgress copy];
+    void (^original)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) = [operation.uploadProgress copy];
     [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
         if (original) {
             original(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
         }
 
-        if (totalBytesExpectedToWrite > 0) {
-            [weakSelf setProgress:(totalBytesWritten / (totalBytesExpectedToWrite * 1.0f)) animated:animated];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (totalBytesExpectedToWrite > 0) {
+                [weakSelf setProgress:(totalBytesWritten / (totalBytesExpectedToWrite * 1.0f)) animated:animated];
+            }
+        });
     }];
 }
 
@@ -84,15 +86,17 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
                                           animated:(BOOL)animated
 {
     __weak __typeof(self)weakSelf = self;
-    void (^original)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected) = [operation.downloadProgress copy];
+    void (^original)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) = [operation.downloadProgress copy];
     [operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
         if (original) {
             original(bytesRead, totalBytesRead, totalBytesExpectedToRead);
         }
-        
-        if (totalBytesExpectedToRead > 0) {
-            [weakSelf setProgress:(totalBytesRead / (totalBytesExpectedToRead  * 1.0f)) animated:animated];
-        }
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (totalBytesExpectedToRead > 0) {
+                [weakSelf setProgress:(totalBytesRead / (totalBytesExpectedToRead  * 1.0f)) animated:animated];
+            }
+        });
     }];
 }
 
