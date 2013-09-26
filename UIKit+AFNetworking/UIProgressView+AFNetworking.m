@@ -24,35 +24,59 @@
 
 #import "AFURLConnectionOperation.h"
 
+#import <objc/runtime.h>
+
 static void * AFTaskCountOfBytesSentContext = &AFTaskCountOfBytesSentContext;
 static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedContext;
 
+static char kAFUploadProgressAnimated;
+static char kAFDownloadProgressAnimated;
+
 @interface AFURLConnectionOperation (_UIProgressView)
-@property (readwrite, nonatomic, copy) void (^uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
-@property (readwrite, nonatomic, copy) void (^downloadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+@property (readwrite, nonatomic, copy) void (^af_uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+@property (readwrite, nonatomic, assign, setter = af_setUploadProgressAnimated:) BOOL af_uploadProgressAnimated;
+
+@property (readwrite, nonatomic, copy) void (^af_downloadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+@property (readwrite, nonatomic, assign, setter = af_setDownloadProgressAnimated:) BOOL af_downloadProgressAnimated;
 @end
 
 @implementation AFURLConnectionOperation (_UIProgressView)
-@dynamic uploadProgress;
-@dynamic downloadProgress;
+@dynamic af_uploadProgress;
+@dynamic af_uploadProgressAnimated;
+
+@dynamic af_downloadProgress;
+@dynamic af_downloadProgressAnimated;
 @end
 
 #pragma mark -
 
-@interface UIProgressView (_AFNetworking) <NSURLSessionDownloadDelegate>
-- (void)_af_observeValueForKeyPath:(NSString *)keyPath
-                          ofObject:(id)object
-                            change:(NSDictionary *)change
-                           context:(void *)context;
-@end
-
 @implementation UIProgressView (AFNetworking)
+
+- (BOOL)af_uploadProgressAnimated {
+    return [(NSNumber *)objc_getAssociatedObject(self, &kAFUploadProgressAnimated) boolValue];
+}
+
+- (void)af_setUploadProgressAnimated:(BOOL)animated {
+    objc_setAssociatedObject(self, &kAFUploadProgressAnimated, @(animated), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL)af_downloadProgressAnimated {
+    return [(NSNumber *)objc_getAssociatedObject(self, &kAFDownloadProgressAnimated) boolValue];
+}
+
+- (void)af_setDownloadProgressAnimated:(BOOL)animated {
+    objc_setAssociatedObject(self, &kAFDownloadProgressAnimated, @(animated), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+#pragma mark -
 
 - (void)setProgressWithUploadProgressOfTask:(NSURLSessionUploadTask *)task
                                    animated:(BOOL)animated
 {
     [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesSentContext];
     [task addObserver:self forKeyPath:@"countOfBytesSent" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesSentContext];
+
+    [self af_setUploadProgressAnimated:animated];
 }
 
 - (void)setProgressWithDownloadProgressOfTask:(NSURLSessionDownloadTask *)task
@@ -60,6 +84,8 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
 {
     [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesReceivedContext];
     [task addObserver:self forKeyPath:@"countOfBytesReceived" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesReceivedContext];
+
+    [self af_setDownloadProgressAnimated:animated];
 }
 
 #pragma mark -
@@ -68,7 +94,7 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
                                         animated:(BOOL)animated
 {
     __weak __typeof(self)weakSelf = self;
-    void (^original)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) = [operation.uploadProgress copy];
+    void (^original)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) = [operation.af_uploadProgress copy];
     [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
         if (original) {
             original(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
@@ -86,7 +112,7 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
                                           animated:(BOOL)animated
 {
     __weak __typeof(self)weakSelf = self;
-    void (^original)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) = [operation.downloadProgress copy];
+    void (^original)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) = [operation.af_downloadProgress copy];
     [operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
         if (original) {
             original(bytesRead, totalBytesRead, totalBytesExpectedToRead);
@@ -104,17 +130,21 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
-                        change:(NSDictionary *)change
+                        change:(__unused NSDictionary *)change
                        context:(void *)context
 {
     if (context == AFTaskCountOfBytesSentContext || context == AFTaskCountOfBytesReceivedContext) {
         if ([keyPath isEqualToString:@"countOfBytesSent"]) {
             if ([object countOfBytesExpectedToSend] > 0) {
-                self.progress = [object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self setProgress:[object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f) animated:self.af_uploadProgressAnimated];
+                });
             }
         } else if ([keyPath isEqualToString:@"countOfBytesReceived"]) {
             if ([object countOfBytesExpectedToReceive] > 0) {
-                self.progress = [object countOfBytesReceived] / ([object countOfBytesExpectedToReceive] * 1.0f);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self setProgress:[object countOfBytesReceived] / ([object countOfBytesExpectedToReceive] * 1.0f) animated:self.af_downloadProgressAnimated];
+                });
             }
         } else if ([keyPath isEqualToString:@"state"]) {
             if ([object state] == NSURLSessionTaskStateCompleted) {
