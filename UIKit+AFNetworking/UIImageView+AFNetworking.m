@@ -93,7 +93,10 @@ static char kAFResponseSerializerKey;
         _af_defaultImageResponseSerializer = [AFImageResponseSerializer serializer];
     });
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
     return objc_getAssociatedObject(self, &kAFResponseSerializerKey) ?: _af_defaultImageResponseSerializer;
+#pragma clang diagnostic pop
 }
 
 - (void)setImageResponseSerializer:(id <AFURLResponseSerialization>)serializer {

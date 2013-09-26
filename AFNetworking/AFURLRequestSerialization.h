@@ -30,7 +30,7 @@
 
  For example, a JSON request serializer may set the HTTP body of the request to a JSON representation, and set the `Content-Type` HTTP header field value to `application/json`.
  */
-@protocol AFURLRequestSerialization <NSCoding, NSCopying>
+@protocol AFURLRequestSerialization <NSObject, NSCoding, NSCopying>
 
 /**
  Returns a request with the specified parameters encoded into a copy of the original request.
@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 /**
  Sets the value for the HTTP headers set in request objects made by the HTTP client. If `nil`, removes the existing value for that header.
 
- @param header The HTTP header to set a default value for
+ @param field The HTTP header to set a default value for
  @param value The value set as default for the specified header, or `nil`
  */
 - (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field;
@@ -313,7 +313,6 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 /**
  Creates and returns a JSON serializer with specified reading and writing options.
 
- @param readingOptions The specified JSON reading options.
  @param writingOptions The specified JSON writing options.
  */
 + (instancetype)serializerWithWritingOptions:(NSJSONWritingOptions)writingOptions;

@@ -30,20 +30,19 @@
 #import "UIAlertView+AFNetworking.h"
 
 @interface GlobalTimelineViewController ()
+@property (readwrite, nonatomic, strong) NSArray *posts;
+
 - (void)reload:(id)sender;
 @end
 
-@implementation GlobalTimelineViewController {
-@private
-    NSArray *_posts;
-}
+@implementation GlobalTimelineViewController
 
 - (void)reload:(__unused id)sender {
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
     NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
         if (!error) {
-            _posts = posts;
+            self.posts = posts;
             [self.tableView reloadData];
         }
         
@@ -77,7 +76,7 @@
 - (NSInteger)tableView:(__unused UITableView *)tableView
  numberOfRowsInSection:(__unused NSInteger)section
 {
-    return [_posts count];
+    return (NSInteger)[self.posts count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -90,7 +89,7 @@
         cell = [[PostTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    cell.post = [_posts objectAtIndex:indexPath.row];
+    cell.post = [self.posts objectAtIndex:(NSUInteger)indexPath.row];
     
     return cell;
 }
@@ -100,7 +99,7 @@
 - (CGFloat)tableView:(__unused UITableView *)tableView
 heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [PostTableViewCell heightForCellWithPost:[_posts objectAtIndex:indexPath.row]];
+    return [PostTableViewCell heightForCellWithPost:[self.posts objectAtIndex:(NSUInteger)indexPath.row]];
 }
 
 - (void)tableView:(UITableView *)tableView

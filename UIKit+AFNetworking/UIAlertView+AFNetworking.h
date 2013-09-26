@@ -38,13 +38,13 @@
 
  */
 + (void)showAlertViewForTaskWithErrorOnCompletion:(NSURLSessionTask *)task
-                                         delegate:(id /*<UIAlertViewDelegate>*/)delegate;
+                                         delegate:(id)delegate;
 
 /**
  
  */
 + (void)showAlertViewForTaskWithErrorOnCompletion:(NSURLSessionTask *)task
-                                         delegate:(id /*<UIAlertViewDelegate>*/)delegate
+                                         delegate:(id)delegate
                                 cancelButtonTitle:(NSString *)cancelButtonTitle
                                 otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
 
@@ -57,13 +57,13 @@
  
  */
 + (void)showAlertViewForRequestOperationWithErrorOnCompletion:(AFURLConnectionOperation *)operation
-                                                     delegate:(id /*<UIAlertViewDelegate>*/)delegate;
+                                                     delegate:(id)delegate;
 
 /**
  
  */
 + (void)showAlertViewForRequestOperationWithErrorOnCompletion:(AFURLConnectionOperation *)operation
-                                                     delegate:(id /*<UIAlertViewDelegate>*/)delegate
+                                                     delegate:(id)delegate
                                             cancelButtonTitle:(NSString *)cancelButtonTitle
                                             otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
 

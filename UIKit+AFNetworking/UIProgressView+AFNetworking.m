@@ -73,8 +73,8 @@ static char kAFDownloadProgressAnimated;
 - (void)setProgressWithUploadProgressOfTask:(NSURLSessionUploadTask *)task
                                    animated:(BOOL)animated
 {
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesSentContext];
-    [task addObserver:self forKeyPath:@"countOfBytesSent" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesSentContext];
+    [task addObserver:self forKeyPath:@"state" options:0 context:AFTaskCountOfBytesSentContext];
+    [task addObserver:self forKeyPath:@"countOfBytesSent" options:0 context:AFTaskCountOfBytesSentContext];
 
     [self af_setUploadProgressAnimated:animated];
 }
@@ -82,8 +82,8 @@ static char kAFDownloadProgressAnimated;
 - (void)setProgressWithDownloadProgressOfTask:(NSURLSessionDownloadTask *)task
                                      animated:(BOOL)animated
 {
-    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesReceivedContext];
-    [task addObserver:self forKeyPath:@"countOfBytesReceived" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskCountOfBytesReceivedContext];
+    [task addObserver:self forKeyPath:@"state" options:0 context:AFTaskCountOfBytesReceivedContext];
+    [task addObserver:self forKeyPath:@"countOfBytesReceived" options:0 context:AFTaskCountOfBytesReceivedContext];
 
     [self af_setDownloadProgressAnimated:animated];
 }
@@ -147,7 +147,7 @@ static char kAFDownloadProgressAnimated;
                 });
             }
         } else if ([keyPath isEqualToString:@"state"]) {
-            if ([object state] == NSURLSessionTaskStateCompleted) {
+            if ([(NSURLSessionTask *)object state] == NSURLSessionTaskStateCompleted) {
                 @try {
                     [object removeObserver:self forKeyPath:@"state"];
 
@@ -159,7 +159,7 @@ static char kAFDownloadProgressAnimated;
                         [object removeObserver:self forKeyPath:@"countOfBytesReceived"];
                     }
                 }
-                @catch (NSException *exception) {}
+                @catch (NSException * __unused exception) {}
             }
         }
     }

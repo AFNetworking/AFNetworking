@@ -133,11 +133,15 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
     if (self.completionHandler) {
+        __strong AFURLSessionManager *manager = self.manager;
+
         __block id responseObject = nil;
 
         __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-        userInfo[AFNetworkingTaskDidFinishResponseSerializerKey] = self.manager.responseSerializer;
+        userInfo[AFNetworkingTaskDidFinishResponseSerializerKey] = manager.responseSerializer;
 
         if (self.downloadFileURL) {
             userInfo[AFNetworkingTaskDidFinishAssetPathKey] = self.downloadFileURL;
@@ -148,7 +152,7 @@ didCompleteWithError:(NSError *)error
         if (error) {
             userInfo[AFNetworkingTaskDidFinishErrorKey] = error;
 
-            dispatch_group_async(self.manager.completionGroup ?: url_session_manager_completion_group(), self.manager.completionQueue ?: dispatch_get_main_queue(), ^{
+            dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
                 if (self.completionHandler) {
                     self.completionHandler(task.response, responseObject, error);
                 }
@@ -161,7 +165,7 @@ didCompleteWithError:(NSError *)error
                 if (self.downloadFileURL) {
                     responseObject = self.downloadFileURL;
                 } else {
-                    responseObject = [self.manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
+                    responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
                 }
 
                 if (responseObject) {
@@ -172,7 +176,7 @@ didCompleteWithError:(NSError *)error
                     userInfo[AFNetworkingTaskDidFinishErrorKey] = serializationError;
                 }
 
-                dispatch_group_async(self.manager.completionGroup ?: url_session_manager_completion_group(), self.manager.completionQueue ?: dispatch_get_main_queue(), ^{
+                dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
                     if (self.completionHandler) {
                         self.completionHandler(task.response, responseObject, serializationError);
                     }
@@ -182,6 +186,7 @@ didCompleteWithError:(NSError *)error
             });
         }
     }
+#pragma clang diagnostic pop
 }
 
 #pragma mark - NSURLSessionDataTaskDelegate
@@ -228,8 +233,8 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 
 - (void)URLSession:(__unused NSURLSession *)session
       downloadTask:(__unused NSURLSessionDownloadTask *)downloadTask
- didResumeAtOffset:(__unused int64_t)fileOffset
-expectedTotalBytes:(__unused int64_t)expectedTotalBytes {
+ didResumeAtOffset:(int64_t)fileOffset
+expectedTotalBytes:(int64_t)expectedTotalBytes {
     self.downloadProgress.completedUnitCount = fileOffset;
     self.downloadProgress.totalUnitCount = expectedTotalBytes;
 }

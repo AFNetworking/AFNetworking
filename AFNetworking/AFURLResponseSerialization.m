@@ -58,7 +58,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
                    error:(NSError *__autoreleasing *)error
 {
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
-        if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:response.statusCode]) {
+        if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:(NSUInteger)response.statusCode]) {
             NSDictionary *userInfo = @{
                                        NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%d), got %d", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], response.statusCode],
                                        NSURLErrorFailingURLErrorKey:[response URL],
@@ -413,7 +413,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
     [super encodeWithCoder:aCoder];
 
     [aCoder encodeInteger:self.format forKey:@"format"];
-    [aCoder encodeInteger:self.readOptions forKey:@"readOptions"];
+    [aCoder encodeInteger:(NSInteger)self.readOptions forKey:@"readOptions"];
 }
 
 #pragma mark - NSCopying
@@ -638,7 +638,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
-    for (id serializer in self.responseSerializers) {
+    for (id <AFURLResponseSerialization> serializer in self.responseSerializers) {
         if (![serializer isKindOfClass:[AFHTTPResponseSerializer class]]) {
             continue;
         }

@@ -28,7 +28,7 @@
 
  For example, a JSON response serializer may check for an acceptable status code (`2XX` range) and content type (`application/json`), decoding a valid JSON response into an object.
  */
-@protocol AFURLResponseSerialization <NSCoding, NSCopying>
+@protocol AFURLResponseSerialization <NSObject, NSCoding, NSCopying>
 
 /**
  The response object decoded from the data associated with a specified response.
@@ -119,7 +119,6 @@
  Creates and returns a JSON serializer with specified reading and writing options.
 
  @param readingOptions The specified JSON reading options.
- @param writingOptions The specified JSON writing options.
  */
 + (instancetype)serializerWithReadingOptions:(NSJSONReadingOptions)readingOptions;
 
@@ -195,7 +194,6 @@
 
  @param format The property list format.
  @param readOptions The property list reading options.
- @param writeOptions The property list write options.
  */
 + (instancetype)serializerWithFormat:(NSPropertyListFormat)format
                          readOptions:(NSPropertyListReadOptions)readOptions;

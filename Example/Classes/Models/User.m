@@ -25,17 +25,18 @@
 
 NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.profile-image.loaded";
 
-#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 @interface User ()
-+ (NSOperationQueue *)sharedProfileImageRequestOperationQueue;
-@end
-#endif
+@property (readwrite, nonatomic, assign) NSUInteger userID;
+@property (readwrite, nonatomic, copy) NSString *username;
+@property (readwrite, nonatomic, copy) NSString *avatarImageURLString;
+@property (readwrite, nonatomic, strong) AFHTTPRequestOperation *avatarImageRequestOperation;
 
-@implementation User {
-@private
-    NSString *_avatarImageURLString;
-    AFHTTPRequestOperation *_avatarImageRequestOperation;
-}
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
++ (NSOperationQueue *)sharedProfileImageRequestOperationQueue;
+#endif
+@end
+
+@implementation User
 
 - (instancetype)initWithAttributes:(NSDictionary *)attributes {
     self = [super init];
@@ -43,15 +44,15 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
         return nil;
     }
     
-    _userID = [[attributes valueForKeyPath:@"id"] integerValue];
-    _username = [attributes valueForKeyPath:@"username"];
-    _avatarImageURLString = [attributes valueForKeyPath:@"avatar_image.url"];
+    self.userID = [[attributes valueForKeyPath:@"id"] integerValue];
+    self.username = [attributes valueForKeyPath:@"username"];
+    self.avatarImageURLString = [attributes valueForKeyPath:@"avatar_image.url"];
     
     return self;
 }
 
 - (NSURL *)avatarImageURL {
-    return [NSURL URLWithString:_avatarImageURLString];
+    return [NSURL URLWithString:self.avatarImageURLString];
 }
 
 //#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED

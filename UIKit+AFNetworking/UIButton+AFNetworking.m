@@ -105,7 +105,8 @@
                      success:(void (^)(NSHTTPURLResponse *response, UIImage *image))success
                      failure:(void (^)(NSError *error))failure
 {
-    void (*objc_msgSend_typed)(id, SEL, UIImage *, UIControlState) = (void *)objc_msgSend;
+
+    void (*objc_msgSend_typed)(id, SEL, UIImage *, UIControlState) = (void (*)(id, SEL, UIImage *, UIControlState))objc_msgSend;
     objc_msgSend_typed(self, selector, placeholderImage, state);
 
     NSURLSessionTask *task = [[[self class] af_sharedHTTPClient] dataTaskWithRequest:urlRequest completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
