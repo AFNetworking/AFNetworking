@@ -284,7 +284,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:NSUTF8StringEncoding];
 
-    [parameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [parameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL * __unused stop) {
         NSData *data = nil;
         if ([obj isKindOfClass:[NSData class]]) {
             data = obj;
@@ -317,7 +317,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
-    [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL *stop) {
+    [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
         [mutableRequest setValue:value forHTTPHeaderField:field];
     }];
 
@@ -1030,7 +1030,7 @@ typedef enum {
 
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
-    [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL *stop) {
+    [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
         [mutableRequest setValue:value forHTTPHeaderField:field];
     }];
     
@@ -1080,7 +1080,7 @@ typedef enum {
 
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
-    [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL *stop) {
+    [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
         [mutableRequest setValue:value forHTTPHeaderField:field];
     }];
 

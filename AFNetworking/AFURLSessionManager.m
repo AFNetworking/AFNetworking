@@ -119,9 +119,9 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 #pragma mark - NSURLSessionTaskDelegate
 
-- (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-   didSendBodyData:(int64_t)bytesSent
+- (void)URLSession:(__unused NSURLSession *)session
+              task:(__unused NSURLSessionTask *)task
+   didSendBodyData:(__unused int64_t)bytesSent
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
@@ -129,7 +129,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
     self.uploadProgress.totalUnitCount = totalBytesExpectedToSend;
 }
 
-- (void)URLSession:(NSURLSession *)session
+- (void)URLSession:(__unused NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
@@ -186,8 +186,8 @@ didCompleteWithError:(NSError *)error
 
 #pragma mark - NSURLSessionDataTaskDelegate
 
-- (void)URLSession:(NSURLSession *)session
-          dataTask:(NSURLSessionDataTask *)dataTask
+- (void)URLSession:(__unused NSURLSession *)session
+          dataTask:(__unused NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
     [self.mutableData appendData:data];
@@ -216,9 +216,9 @@ didFinishDownloadingToURL:(NSURL *)location
     }
 }
 
-- (void)URLSession:(NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
-      didWriteData:(int64_t)bytesWritten
+- (void)URLSession:(__unused NSURLSession *)session
+      downloadTask:(__unused NSURLSessionDownloadTask *)downloadTask
+      didWriteData:(__unused int64_t)bytesWritten
  totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
@@ -226,10 +226,13 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
     self.downloadProgress.totalUnitCount = totalBytesExpectedToWrite;
 }
 
-- (void)URLSession:(NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
- didResumeAtOffset:(int64_t)fileOffset
-expectedTotalBytes:(int64_t)expectedTotalBytes {}
+- (void)URLSession:(__unused NSURLSession *)session
+      downloadTask:(__unused NSURLSessionDownloadTask *)downloadTask
+ didResumeAtOffset:(__unused int64_t)fileOffset
+expectedTotalBytes:(__unused int64_t)expectedTotalBytes {
+    self.downloadProgress.completedUnitCount = fileOffset;
+    self.downloadProgress.totalUnitCount = expectedTotalBytes;
+}
 
 @end
 
@@ -451,7 +454,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {}
                                  completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
 {
     AFURLSessionManagerTaskDelegate *delegate = [AFURLSessionManagerTaskDelegate delegateForManager:self completionHandler:completionHandler];
-    delegate.downloadTaskDidFinishDownloading = ^ NSURL * (NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
+    delegate.downloadTaskDidFinishDownloading = ^NSURL * (NSURLSession * __unused session, NSURLSessionDownloadTask *task, NSURL *location) {
         if (destination) {
             return destination(location, task.response);
         }

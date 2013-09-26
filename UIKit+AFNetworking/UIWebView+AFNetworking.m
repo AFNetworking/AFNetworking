@@ -63,10 +63,10 @@ static char kAFHTTPRequestOperationKey;
     
     __weak __typeof(self)weakSelf = self;
     [self.af_HTTPRequestOperation setDownloadProgressBlock:progress];
-    [self.af_HTTPRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.af_HTTPRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id __unused responseObject) {
         NSString *HTML = success ? success(operation.response, operation.responseString) : operation.responseString;
         [weakSelf loadHTMLString:HTML baseURL:[operation.response URL]];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(AFHTTPRequestOperation * __unused operation, NSError *error) {
         if (failure) {
             failure(error);
         }

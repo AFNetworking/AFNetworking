@@ -38,7 +38,7 @@
     NSArray *_posts;
 }
 
-- (void)reload:(id)sender {
+- (void)reload:(__unused id)sender {
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
     NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
@@ -74,11 +74,15 @@
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(__unused UITableView *)tableView
+ numberOfRowsInSection:(__unused NSInteger)section
+{
     return [_posts count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *CellIdentifier = @"Cell";
     
     PostTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -93,11 +97,15 @@
 
 #pragma mark - UITableViewDelegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(__unused UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return [PostTableViewCell heightForCellWithPost:[_posts objectAtIndex:indexPath.row]];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
