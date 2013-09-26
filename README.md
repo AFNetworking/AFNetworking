@@ -10,7 +10,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 ## How To Get Started
 
-- [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/zipball/2.0) and try out the included Mac and iPhone example apps
+- [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/archive/master.zip) and try out the included Mac and iPhone example apps
 - Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles in the wiki](https://github.com/AFNetworking/AFNetworking/wiki)
 - Check out the [complete documentation](http://afnetworking.github.com/AFNetworking/) for a comprehensive look at the APIs available in AFNetworking
 - Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
@@ -30,6 +30,7 @@ AFNetworking 2.0 is a major update to the framework. Building on 2 years of deve
 
 ### What's New
 
+- Refactored Architecture
 - Support for NSURLSession
 - Serialization Modules
 - Expanded UIKit Extensions
@@ -37,11 +38,11 @@ AFNetworking 2.0 is a major update to the framework. Building on 2 years of deve
 
 ## Requirements
 
-AFNetworking 2.0 and higher requires either iOS 6.0 and above, or Mac OS 10.8 Mountain Lion ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
+AFNetworking 2.0 and higher requires Xcode 5, targeting either iOS 6.0 and above, or Mac OS 10.8 Mountain Lion ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
 
-For compatibility with iOS 5, use the latest 1.x release.
+For compatibility with iOS 5 or Mac OS X 10.7, use the latest 1.x release.
 
-For compatibility with iOS 4.3, use the latest 0.10.x release.
+For compatibility with iOS 4.3 or Mac OS X 10.6, use the latest 0.10.x release.
 
 ## Architecture
 
@@ -71,7 +72,7 @@ For compatibility with iOS 4.3, use the latest 0.10.x release.
   - `AFImageResponseSerializer`
   - `AFCompoundResponseSerializer`
 
-### Utilities
+### Additional Functionality
 
 - `AFSecurityPolicy`
 - `AFNetworkReachabilityManager`
@@ -91,7 +92,7 @@ AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager]
 }];
 ```
 
-#### `POST` Request
+#### `POST` URL-Form-Encoded Request
 
 ```objective-c
 AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -103,7 +104,7 @@ NSDictionary *parameters = @{@"foo": @"bar"};
 }];
 ```
 
-#### `POST` Request with Multi-Part Form
+#### `POST` Multi-Part Request
 
 ```objective-c
 AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
