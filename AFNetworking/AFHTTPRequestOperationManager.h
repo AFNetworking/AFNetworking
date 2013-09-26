@@ -109,6 +109,24 @@
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
 ///-------------------------------
+/// @name Managing URL Credentials
+///-------------------------------
+
+/**
+ Whether request operations should consult the credential storage for authenticating the connection. `YES` by default.
+
+ @see AFURLConnectionOperation -shouldUseCredentialStorage
+ */
+@property (nonatomic, assign) BOOL shouldUseCredentialStorage;
+
+/**
+ The credential used by request operations for authentication challenges.
+
+ @see AFURLConnectionOperation -credential
+ */
+@property (nonatomic, strong) NSURLCredential *credential;
+
+///-------------------------------
 /// @name Managing Security Policy
 ///-------------------------------
 
