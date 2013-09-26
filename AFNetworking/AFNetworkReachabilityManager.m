@@ -94,7 +94,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 @end
 
 @implementation AFNetworkReachabilityManager
-@dynamic networkReachabilityFlags;
 
 + (instancetype)sharedManager {
     static AFNetworkReachabilityManager *_sharedManager = nil;
@@ -144,12 +143,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 #pragma mark -
-
-- (SCNetworkReachabilityFlags)networkReachabilityFlags {
-    SCNetworkReachabilityFlags flags;
-    SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
-    return flags;
-}
 
 - (BOOL)isReachable {
     return [self isReachableViaWWAN] || [self isReachableViaWiFi];
@@ -218,7 +211,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #pragma mark - NSKeyValueObserving
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
-    if ([key isEqualToString:@"networkReachabilityFlags"] || [key isEqualToString:@"reachable"] || [key isEqualToString:@"reachableViaWWAN"] || [key isEqualToString:@"reachableViaWiFi"]) {
+    if ([key isEqualToString:@"reachable"] || [key isEqualToString:@"reachableViaWWAN"] || [key isEqualToString:@"reachableViaWiFi"]) {
         return [NSSet setWithObject:@"networkReachabilityStatus"];
     }
 
