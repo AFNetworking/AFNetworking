@@ -13,7 +13,6 @@ Choose AFNetworking for your next project, or migrate over your existing project
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/zipball/2.0) and try out the included Mac and iPhone example apps
 - Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles in the wiki](https://github.com/AFNetworking/AFNetworking/wiki)
 - Check out the [complete documentation](http://afnetworking.github.com/AFNetworking/) for a comprehensive look at the APIs available in AFNetworking
-- Watch the [NSScreencast episode about AFNetworking](http://nsscreencast.com/episodes/6-afnetworking) for a quick introduction to how to use it in your application
 - Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
 
 ### Installation with CocoaPods
@@ -314,20 +313,14 @@ AFNetworking includes a suite of unit tests within the Tests subdirectory. In or
 
 Once CocoaPods has finished the installation, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
 
-### Test Logging
-
-By default, the unit tests do not emit any output during execution. For debugging purposes, it can be useful to enable logging of the requests and responses. Logging support is provided by the [AFHTTPRequestOperationLogger](https://github.com/AFNetworking/AFHTTPRequestOperationLogger) extension, which is installed via CocoaPods into the test targets. To enable logging, edit the test Scheme and add an environment variable named `AFTestsLoggingEnabled` with a value of `YES`.
-
 ### Using xctool
 
-If you wish to execute the tests from the command line or within a continuous integration environment, you will need to install [xctool](https://github.com/facebook/xctool). The recommended installation method is [Homebrew](http://mxcl.github.io/homebrew/).
-
-To install the commandline testing support via Homebrew:
+Tests can be run from the command line or within a continuous integration environment with [`xctool`](https://github.com/facebook/xctool), which can be installed with [Homebrew](http://brew.sh):
 
     $ brew update
     $ brew install xctool --HEAD
 
-Once xctool is installed, you can execute the suite via `rake test`.
+Once `xctool` is installed, you can execute the suite via `rake test`.
 
 ## Credits
 
@@ -344,6 +337,10 @@ Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking
 ### Maintainers
 
 - [Mattt Thompson](http://github.com/mattt) ([@mattt](https://twitter.com/mattt))
+
+## One More Thing...
+
+**AFNetworking: the Definitive Guide** written by Mattt Thompson and published by [O'Reilly](http://oreilly.com), will be available late 2013 / early 2014. [Sign up here to be notified about updates](http://eepurl.com/Flnvn).
 
 ## License
 
