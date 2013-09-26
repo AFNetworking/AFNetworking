@@ -88,9 +88,9 @@
  */
 @property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
 
-///---------------------------------------------
-/// @name Creating and Initializing HTTP Clients
-///---------------------------------------------
+///---------------------
+/// @name Initialization
+///---------------------
 
 /**
  Creates and returns an `AFHTTPSessionManager` object.
