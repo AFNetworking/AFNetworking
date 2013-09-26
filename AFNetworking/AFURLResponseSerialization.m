@@ -31,36 +31,6 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 #import <Cocoa/Cocoa.h>
 #endif
 
-static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
-    NSMutableString *string = [NSMutableString string];
-
-    NSRange range = NSMakeRange([indexSet firstIndex], 1);
-    while (range.location != NSNotFound) {
-        NSUInteger nextIndex = [indexSet indexGreaterThanIndex:range.location];
-        while (nextIndex == range.location + range.length) {
-            range.length++;
-            nextIndex = [indexSet indexGreaterThanIndex:nextIndex];
-        }
-
-        if (string.length) {
-            [string appendString:@","];
-        }
-
-        if (range.length == 1) {
-            [string appendFormat:@"%lu", (long)range.location];
-        } else {
-            NSUInteger firstIndex = range.location;
-            NSUInteger lastIndex = firstIndex + range.length - 1;
-            [string appendFormat:@"%lu-%lu", (long)firstIndex, (long)lastIndex];
-        }
-
-        range.location = nextIndex;
-        range.length = 1;
-    }
-    
-    return string;
-}
-
 @implementation AFHTTPResponseSerializer
 
 + (instancetype)serializer {
@@ -90,7 +60,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
         if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:response.statusCode]) {
             NSDictionary *userInfo = @{
-                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Expected HTTP response status code in (%@), got %d", @"AFNetworking", nil), AFStringFromIndexSet(self.acceptableStatusCodes), response.statusCode],
+                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%d), got %d", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], response.statusCode],
                                        NSURLErrorFailingURLErrorKey:[response URL],
                                        AFNetworkingOperationFailingURLResponseErrorKey: response
                                        };
@@ -103,7 +73,7 @@ static NSString * AFStringFromIndexSet(NSIndexSet *indexSet) {
             // Don't invalidate content type if there is no content
             if ([data length] > 0) {
                 NSDictionary *userInfo = @{
-                                           NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Expected HTTP response content-type %@, got %@", @"AFNetworking", nil), self.acceptableContentTypes, [response MIMEType]],
+                                           NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: unacceptable content-type: %@", @"AFNetworking", nil), [response MIMEType]],
                                            NSURLErrorFailingURLErrorKey:[response URL],
                                            AFNetworkingOperationFailingURLResponseErrorKey: response
                                            };
