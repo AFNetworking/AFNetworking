@@ -331,7 +331,7 @@ Once xctool is installed, you can execute the suite via `rake test`.
 
 ## Credits
 
-AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
+AFNetworking was originally created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
 
 AFNetworking's logo was designed by [Alan Defibaugh](http://www.alandefibaugh.com/).
 
@@ -341,13 +341,9 @@ And most of all, thanks to AFNetworking's [growing list of contributors](https:/
 
 Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking))
 
-### Creators
+### Maintainers
 
-[Mattt Thompson](http://github.com/mattt)
-[@mattt](https://twitter.com/mattt)
-
-[Scott Raymond](http://github.com/sco)
-[@sco](https://twitter.com/sco)
+- [Mattt Thompson](http://github.com/mattt) ([@mattt](https://twitter.com/mattt))
 
 ## License
 
