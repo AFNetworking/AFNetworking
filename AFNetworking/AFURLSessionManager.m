@@ -307,13 +307,13 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     __block NSArray *tasks = nil;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        if ([keyPath isEqualToString:@"dataTasks"]) {
+        if ([keyPath isEqualToString:NSStringFromSelector(@selector(dataTasks))]) {
             tasks = dataTasks;
-        } else if ([keyPath isEqualToString:@"uploadTasks"]) {
+        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(uploadTasks))]) {
             tasks = uploadTasks;
-        } else if ([keyPath isEqualToString:@"downloadTasks"]) {
+        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(downloadTasks))]) {
             tasks = downloadTasks;
-        } else if ([keyPath isEqualToString:@"tasks"]) {
+        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(tasks))]) {
             tasks = [@[dataTasks, uploadTasks, downloadTasks] valueForKeyPath:@"@unionOfArrays.self"];
         }
 
