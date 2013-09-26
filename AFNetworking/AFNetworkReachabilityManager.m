@@ -27,6 +27,20 @@ NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworking
 
 typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus status);
 
+NSString * AFStringFromNetworkReachabilityStatus(AFNetworkReachabilityStatus status) {
+    switch (status) {
+        case AFNetworkReachabilityStatusNotReachable:
+            return NSLocalizedStringFromTable(@"Not Reachable", @"AFNetworking", nil);
+        case AFNetworkReachabilityStatusReachableViaWWAN:
+            return NSLocalizedStringFromTable(@"Reachable via WWAN", @"AFNetworking", nil);
+        case AFNetworkReachabilityStatusReachableViaWiFi:
+            return NSLocalizedStringFromTable(@"Reachable via WiFi", @"AFNetworking", nil);
+        case AFNetworkReachabilityStatusUnknown:
+        default:
+            return NSLocalizedStringFromTable(@"Unknown", @"AFNetworking", nil);
+    }
+}
+
 static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
     BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
     BOOL canConnectionAutomatically = ((flags & kSCNetworkReachabilityFlagsTransientConnection) != 0) || ((flags & kSCNetworkReachabilityFlagsConnectionOnDemand ) != 0) || ((flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0);
@@ -192,17 +206,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #pragma mark -
 
 - (NSString *)localizedNetworkReachabilityStatusString {
-    switch (self.networkReachabilityStatus) {
-        case AFNetworkReachabilityStatusNotReachable:
-            return NSLocalizedStringFromTable(@"Network Unreachable", @"AFNetworking", nil);
-        case AFNetworkReachabilityStatusReachableViaWWAN:
-            return NSLocalizedStringFromTable(@"Network Reachable via WWAN", @"AFNetworking", nil);
-        case AFNetworkReachabilityStatusReachableViaWiFi:
-            return NSLocalizedStringFromTable(@"Network Reachable via WiFi", @"AFNetworking", nil);
-        case AFNetworkReachabilityStatusUnknown:
-        default:
-            return NSLocalizedStringFromTable(@"Unknown Network Reachability", @"AFNetworking", nil);
-    }
+    return AFStringFromNetworkReachabilityStatus(self.networkReachabilityStatus);
 }
 
 #pragma mark -
