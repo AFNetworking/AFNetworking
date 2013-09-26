@@ -134,29 +134,29 @@ static char kAFDownloadProgressAnimated;
                        context:(void *)context
 {
     if (context == AFTaskCountOfBytesSentContext || context == AFTaskCountOfBytesReceivedContext) {
-        if ([keyPath isEqualToString:@"countOfBytesSent"]) {
+        if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesSent))]) {
             if ([object countOfBytesExpectedToSend] > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self setProgress:[object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f) animated:self.af_uploadProgressAnimated];
                 });
             }
-        } else if ([keyPath isEqualToString:@"countOfBytesReceived"]) {
+        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesReceived))]) {
             if ([object countOfBytesExpectedToReceive] > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self setProgress:[object countOfBytesReceived] / ([object countOfBytesExpectedToReceive] * 1.0f) animated:self.af_downloadProgressAnimated];
                 });
             }
-        } else if ([keyPath isEqualToString:@"state"]) {
+        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
             if ([(NSURLSessionTask *)object state] == NSURLSessionTaskStateCompleted) {
                 @try {
-                    [object removeObserver:self forKeyPath:@"state"];
+                    [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
 
                     if (context == AFTaskCountOfBytesSentContext) {
-                        [object removeObserver:self forKeyPath:@"countOfBytesSent"];
+                        [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesSent))];
                     }
 
                     if (context == AFTaskCountOfBytesReceivedContext) {
-                        [object removeObserver:self forKeyPath:@"countOfBytesReceived"];
+                        [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesSent))];
                     }
                 }
                 @catch (NSException * __unused exception) {}
