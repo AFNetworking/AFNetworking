@@ -40,8 +40,8 @@
             [self stopAnimating];
         }
 
-        [notificationCenter addObserver:self selector:@selector(startAnimating) name:AFNetworkingOperationDidStartNotification object:operation];
-        [notificationCenter addObserver:self selector:@selector(stopAnimating) name:AFNetworkingOperationDidFinishNotification object:operation];
+        [notificationCenter addObserver:self selector:@selector(af_startAnimating) name:AFNetworkingOperationDidStartNotification object:operation];
+        [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingOperationDidFinishNotification object:operation];
     }
 }
 
@@ -59,10 +59,24 @@
             [self stopAnimating];
         }
 
-        [notificationCenter addObserver:self selector:@selector(startAnimating) name:AFNetworkingTaskDidStartNotification object:task];
-        [notificationCenter addObserver:self selector:@selector(stopAnimating) name:AFNetworkingTaskDidFinishNotification object:task];
-        [notificationCenter addObserver:self selector:@selector(stopAnimating) name:AFNetworkingTaskDidSuspendNotification object:task];
+        [notificationCenter addObserver:self selector:@selector(af_startAnimating) name:AFNetworkingTaskDidStartNotification object:task];
+        [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingTaskDidFinishNotification object:task];
+        [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingTaskDidSuspendNotification object:task];
     }
+}
+
+#pragma mark -
+
+- (void)af_startAnimating {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self startAnimating];
+    });
+}
+
+- (void)af_stopAnimating {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self stopAnimating];
+    });
 }
 
 @end
