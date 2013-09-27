@@ -49,6 +49,10 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'UIKit' do |ss|
+    ss.ios.deployment_target = '6.0'
+
+    ss.dependency 'AFNetworking/NSURLConnection'
+
     ss.ios.public_header_files = 'UIKit+AFNetworking/*.h'
     ss.ios.source_files = 'UIKit+AFNetworking'
     ss.osx.source_files = ''
