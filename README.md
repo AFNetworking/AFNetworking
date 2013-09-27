@@ -213,7 +213,7 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 [[AFHTTPRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters];
 ```
 
-    GET http://example.com/
+    POST http://example.com/
     Content-Type: application/x-www-form-urlencoded
 
     foo=bar&baz[]=1&baz[]=2&baz[]=3
