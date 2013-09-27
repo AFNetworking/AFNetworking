@@ -86,6 +86,9 @@
       location = "group:UIKit+AFNetworking"
       name = "UIKit+AFNetworking">
       <FileRef
+         location = "group:UIKit+AFNetworking.h">
+      </FileRef>
+      <FileRef
          location = "group:AFNetworkActivityIndicatorManager.h">
       </FileRef>
       <FileRef

@@ -52,6 +52,7 @@
 		297F56C917A9B1AB0014D95C /* AFSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicy.m; sourceTree = "<group>"; };
 		2982AD3117107C0000FFF048 /* adn.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = adn.cer; sourceTree = SOURCE_ROOT; };
 		50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		55BDA27E17F5A434005DB933 /* UIKit+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIKit+AFNetworking.h"; sourceTree = "<group>"; };
 		F8129C3815910830009BFE23 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
 		F8129C7215910C37009BFE23 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
 		F8129C7315910C37009BFE23 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
@@ -220,6 +221,7 @@
 		F8E02CEA177A8B710087BB23 /* UIKit+AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				55BDA27E17F5A434005DB933 /* UIKit+AFNetworking.h */,
 				F8E02CEB177A8B710087BB23 /* AFNetworkActivityIndicatorManager.h */,
 				F8E02CEC177A8B710087BB23 /* AFNetworkActivityIndicatorManager.m */,
 				F8E02CED177A8B710087BB23 /* UIActivityIndicatorView+AFNetworking.h */,
