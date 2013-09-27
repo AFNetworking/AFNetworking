@@ -22,9 +22,15 @@
 
 #import "UIProgressView+AFNetworking.h"
 
+#import <objc/runtime.h>
+
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+
 #import "AFURLConnectionOperation.h"
 
-#import <objc/runtime.h>
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+#import "AFURLSessionManager.h"
+#endif
 
 static void * AFTaskCountOfBytesSentContext = &AFTaskCountOfBytesSentContext;
 static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedContext;
@@ -70,6 +76,8 @@ static char kAFDownloadProgressAnimated;
 
 #pragma mark -
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+
 - (void)setProgressWithUploadProgressOfTask:(NSURLSessionUploadTask *)task
                                    animated:(BOOL)animated
 {
@@ -87,6 +95,8 @@ static char kAFDownloadProgressAnimated;
 
     [self af_setDownloadProgressAnimated:animated];
 }
+
+#endif
 
 #pragma mark -
 
@@ -140,13 +150,18 @@ static char kAFDownloadProgressAnimated;
                     [self setProgress:[object countOfBytesSent] / ([object countOfBytesExpectedToSend] * 1.0f) animated:self.af_uploadProgressAnimated];
                 });
             }
-        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesReceived))]) {
+        }
+
+        if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesReceived))]) {
             if ([object countOfBytesExpectedToReceive] > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self setProgress:[object countOfBytesReceived] / ([object countOfBytesExpectedToReceive] * 1.0f) animated:self.af_downloadProgressAnimated];
                 });
             }
-        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
+        }
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+        if ([keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
             if ([(NSURLSessionTask *)object state] == NSURLSessionTaskStateCompleted) {
                 @try {
                     [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
@@ -163,6 +178,9 @@ static char kAFDownloadProgressAnimated;
             }
         }
     }
+#endif
 }
 
 @end
+
+#endif
