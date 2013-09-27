@@ -127,9 +127,9 @@
                            failure:(void (^)(NSError *error))failure;
 
 
-///-------------------------------
-/// @name Cancelling Image Loading
-///-------------------------------
+///------------------------------
+/// @name Canceling Image Loading
+///------------------------------
 
 /**
  Cancels any executing image operation for the receiver, if one exists.
