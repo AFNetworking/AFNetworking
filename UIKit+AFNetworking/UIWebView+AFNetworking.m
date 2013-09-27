@@ -22,10 +22,14 @@
 
 #import "UIWebView+AFNetworking.h"
 
-#import "AFHTTPRequestOperation.h"
-
 #import <objc/runtime.h>
 
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+
+#import "AFHTTPRequestOperation.h"
+
+static char kAFRequestSerializerKey;
+static char kAFResponseSerializerKey;
 static char kAFHTTPRequestOperationKey;
 
 @interface UIWebView (_AFNetworking)
@@ -33,12 +37,6 @@ static char kAFHTTPRequestOperationKey;
 @end
 
 @implementation UIWebView (_AFNetworking)
-@dynamic af_HTTPRequestOperation;
-@end
-
-#pragma mark -
-
-@implementation UIWebView (AFNetworking)
 
 - (AFHTTPRequestOperation *)af_HTTPRequestOperation {
     return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFHTTPRequestOperationKey);
@@ -46,6 +44,46 @@ static char kAFHTTPRequestOperationKey;
 
 - (void)af_setHTTPRequestOperation:(AFHTTPRequestOperation *)operation {
     objc_setAssociatedObject(self, &kAFHTTPRequestOperationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+@end
+
+#pragma mark -
+
+@implementation UIWebView (AFNetworking)
+
+- (AFHTTPRequestSerializer <AFURLRequestSerialization> *)requestSerializer {
+    static AFHTTPRequestSerializer <AFURLRequestSerialization> * _af_defaultRequestSerializer = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _af_defaultRequestSerializer = [AFHTTPRequestSerializer serializer];
+    });
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+    return objc_getAssociatedObject(self, &kAFRequestSerializerKey) ?: _af_defaultRequestSerializer;
+#pragma clang diagnostic pop
+}
+
+- (void)setRequestSerializer:(AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerializer {
+    objc_setAssociatedObject(self, &kAFRequestSerializerKey, requestSerializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
+    static AFHTTPResponseSerializer <AFURLResponseSerialization> * _af_defaultResponseSerializer = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _af_defaultResponseSerializer = [AFHTTPResponseSerializer serializer];
+    });
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+    return objc_getAssociatedObject(self, &kAFRequestSerializerKey) ?: _af_defaultResponseSerializer;
+#pragma clang diagnostic pop
+}
+
+- (void)setResponseSerializer:(AFHTTPResponseSerializer<AFURLResponseSerialization> *)responseSerializer {
+    objc_setAssociatedObject(self, &kAFResponseSerializerKey, responseSerializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark -
@@ -59,7 +97,10 @@ static char kAFHTTPRequestOperationKey;
         [self.af_HTTPRequestOperation cancel];
     }
 
+    request = [self.requestSerializer requestBySerializingRequest:request withParameters:nil error:nil];
+
     self.af_HTTPRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    self.af_HTTPRequestOperation.responseSerializer = self.responseSerializer;
     
     __weak __typeof(self)weakSelf = self;
     [self.af_HTTPRequestOperation setDownloadProgressBlock:progress];
@@ -71,7 +112,10 @@ static char kAFHTTPRequestOperationKey;
             failure(error);
         }
     }];
+
     [self.af_HTTPRequestOperation start];
 }
 
 @end
+
+#endif
