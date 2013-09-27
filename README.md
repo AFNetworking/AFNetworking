@@ -85,6 +85,8 @@ For compatibility with iOS 4.3 or Mac OS X 10.6, use the [latest 0.10.x release]
 
 ### HTTP Request Operation Manager
 
+`AFHTTPRequestOperationManager` encapsulates the common patterns of communicating with an web application over HTTP, including request creation, response serialization, network reachability monitoring, and security, as well as request operation management.
+
 #### `GET` Request
 
 ```objective-c
@@ -126,6 +128,8 @@ NSURL *filePath = [NSURL fileURLWithPath:@"file://path/to/image.png"];
 ---
 
 ### AFURLSessionManager
+
+`AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
 
 #### Creating a Download Task
 
@@ -188,6 +192,8 @@ NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completion
 
 ### Request Serialization
 
+Request serializers create requests from URL strings, encoding parameters as either a query string or HTTP body. 
+
 ```objective-c
 NSString *URLString = @"http://example.com";
 NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
@@ -227,6 +233,8 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 
 ### Network Reachability Manager
 
+`AFNetworkReachabilityManager` monitors the reachability of domains, and addresses for both WWAN and WiFi network interfaces.
+
 #### Shared Network Reachability
 
 ```objective-c
@@ -236,6 +244,8 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 ```
 
 #### HTTP Manager with Base URL
+
+When a `baseURL` is provided, network reachability is scoped to the host of that base URL.
 
 ```objective-c
 NSURL *baseURL = [NSURL URLWithString:@"http://example.com/"];
@@ -260,6 +270,10 @@ NSOperationQueue *operationQueue = manager.operationQueue;
 
 ### Security Policy
 
+`AFSecurityPolicy` evaluates server trust against pinned X.509 certificates and public keys over secure connections.
+ 
+Adding pinned SSL certificates to your app helps prevent man-in-the-middle attacks and other vulnerabilities. Applications dealing with sensitive customer data or financial information are strongly encouraged to route all communication over an HTTPS connection with SSL pinning configured and enabled.
+
 #### Allowing Invalid SSL Certificates
 
 ```objective-c
@@ -270,6 +284,10 @@ manager.securityPolicy.allowInvalidCertificates = YES; // not recommended for pr
 ---
 
 ### AFHTTPRequestOperation
+
+`AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
+
+Although `AFHTTPRequestOperationManager` is usually the best way to go about making requests, `AFHTTPRequestOperation` can be used by itself.
 
 #### `GET` with `AFHTTPRequestOperation`
 
