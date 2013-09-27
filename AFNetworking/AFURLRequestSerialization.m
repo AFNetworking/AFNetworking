@@ -284,20 +284,22 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:NSUTF8StringEncoding];
 
-    [parameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL * __unused stop) {
-        NSData *data = nil;
-        if ([obj isKindOfClass:[NSData class]]) {
-            data = obj;
-        } else if ([obj isEqual:[NSNull null]]) {
-            data = [NSData data];
-        } else {
-            data = [[obj description] dataUsingEncoding:NSUTF8StringEncoding];
-        }
+    if (parameters) {
+        [parameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL * __unused stop) {
+            NSData *data = nil;
+            if ([obj isKindOfClass:[NSData class]]) {
+                data = obj;
+            } else if ([obj isEqual:[NSNull null]]) {
+                data = [NSData data];
+            } else {
+                data = [[obj description] dataUsingEncoding:NSUTF8StringEncoding];
+            }
 
-        if (data) {
-            [formData appendPartWithFormData:data name:[key description]];
-        }
-    }];
+            if (data) {
+                [formData appendPartWithFormData:data name:[key description]];
+            }
+        }];
+    }
 
     if (block) {
         block(formData);
@@ -314,13 +316,11 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 {
     NSParameterAssert(request);
 
-
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
         [mutableRequest setValue:value forHTTPHeaderField:field];
     }];
-
 
     if (!parameters) {
         return mutableRequest;
