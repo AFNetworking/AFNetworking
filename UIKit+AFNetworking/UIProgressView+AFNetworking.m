@@ -177,8 +177,8 @@ static char kAFDownloadProgressAnimated;
                 @catch (NSException * __unused exception) {}
             }
         }
-    }
 #endif
+    }
 }
 
 @end
