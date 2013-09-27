@@ -1,8 +1,8 @@
 #import <Availability.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-  #ifndef __IPHONE_3_0
-    #warning "This project uses features only available in iPhone SDK 3.0 and later."
+  #ifndef __IPHONE_6_0
+    #warning "This project uses features only available in iPhone SDK 6.0 and later."
   #endif
 
   #ifdef __OBJC__
