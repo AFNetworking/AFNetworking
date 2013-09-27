@@ -22,6 +22,14 @@
 
 #import "UIAlertView+AFNetworking.h"
 
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+
+#import "AFURLConnectionOperation.h"
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+#import "AFURLSessionManager.h"
+#endif
+
 static void AFGetAlertViewTitleAndMessageFromError(NSError *error, NSString * __autoreleasing *title, NSString * __autoreleasing *message) {
     if (error.localizedDescription && (error.localizedRecoverySuggestion || error.localizedFailureReason)) {
         *title = error.localizedDescription;
@@ -42,6 +50,7 @@ static void AFGetAlertViewTitleAndMessageFromError(NSError *error, NSString * __
 
 @implementation UIAlertView (AFNetworking)
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 + (void)showAlertViewForTaskWithErrorOnCompletion:(NSURLSessionTask *)task
                                          delegate:(id)delegate
 {
@@ -66,6 +75,7 @@ static void AFGetAlertViewTitleAndMessageFromError(NSError *error, NSString * __
         [[NSNotificationCenter defaultCenter] removeObserver:observer name:AFNetworkingTaskDidFinishNotification object:notification.object];
     }];
 }
+#endif
 
 #pragma mark -
 
@@ -97,3 +107,5 @@ static void AFGetAlertViewTitleAndMessageFromError(NSError *error, NSString * __
 }
 
 @end
+
+#endif
