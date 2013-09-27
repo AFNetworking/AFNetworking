@@ -20,14 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import "UIImageView+AFNetworking.h"
+
 #import <objc/runtime.h>
 
-#import "AFHTTPRequestOperation.h"
-#import "AFHTTPSessionManager.h"
-
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-#import "UIImageView+AFNetworking.h"
+
+#import "AFHTTPRequestOperation.h"
 
 @interface AFImageCache : NSCache
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
@@ -45,13 +44,6 @@ static char kAFResponseSerializerKey;
 @end
 
 @implementation UIImageView (_AFNetworking)
-@dynamic af_imageRequestOperation;
-@end
-
-#pragma mark -
-
-@implementation UIImageView (AFNetworking)
-@dynamic imageResponseSerializer;
 
 + (NSOperationQueue *)af_sharedImageRequestOperationQueue {
     static NSOperationQueue *_af_sharedImageRequestOperationQueue = nil;
@@ -85,6 +77,13 @@ static char kAFResponseSerializerKey;
 - (void)af_setImageRequestOperation:(AFHTTPRequestOperation *)imageRequestOperation {
     objc_setAssociatedObject(self, &kAFImageRequestOperationKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+
+@end
+
+#pragma mark -
+
+@implementation UIImageView (AFNetworking)
+@dynamic imageResponseSerializer;
 
 - (id <AFURLResponseSerialization>)imageResponseSerializer {
     static id <AFURLResponseSerialization> _af_defaultImageResponseSerializer = nil;
@@ -160,6 +159,7 @@ static char kAFResponseSerializerKey;
                 }
             }
         }];
+
         [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
     }
 }
