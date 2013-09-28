@@ -169,6 +169,30 @@ static char kAFResponseSerializerKey;
     self.af_imageRequestOperation = nil;
 }
 
+
++ (void)load {
+	@autoreleasepool {
+		// we know that original setImage: method is implemented in this class
+		// since we're category on UIImageView, so no need for conditional add
+		// or swap methods, we can just exchange implementations
+		SEL setImageSelector = @selector(setImage:);
+		SEL af_setImageSelector = @selector(af_setImage:);
+
+		Method setImageMethod  = class_getInstanceMethod(self, setImageSelector);
+		Method af_setImageMethod = class_getInstanceMethod(self, af_setImageSelector);
+		
+		method_exchangeImplementations(setImageMethod, af_setImageMethod);
+	}
+}
+
+- (void)af_setImage:(UIImage *)image {
+	[self cancelImageRequestOperation];
+	// when swizzling methods using method_exchangeImplementations we can get
+	// implementation of original method by calling selector of the method replacing
+	// the original one, following will call original setImage: method we replaced
+	[self af_setImage:image];
+}
+
 @end
 
 #pragma mark -
