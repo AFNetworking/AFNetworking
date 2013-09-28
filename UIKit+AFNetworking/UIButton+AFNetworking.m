@@ -185,6 +185,45 @@ static char kAFBackgroundImageRequestOperationKey;
     self.af_backgroundImageRequestOperation = nil;
 }
 
+// Original setImage:forState: and setBackgroundImage:forState: must cancel
+// network requested image (if any)
+
++ (void)load {
+	@autoreleasepool {
+		// see comments for load method in UIImage+AFNetworking class
+		SEL setImageSelector = @selector(setImage:forState:);
+		SEL af_setImageSelector = @selector(af_setImage:forState:);
+		
+		Method setImageMethod  = class_getInstanceMethod(self, setImageSelector);
+		Method af_setImageMethod = class_getInstanceMethod(self, af_setImageSelector);
+		
+		method_exchangeImplementations(setImageMethod, af_setImageMethod);
+
+		// swizzling for set background image
+		SEL setBackgroundImageSelector = @selector(setBackgroundImage:forState:);
+		SEL af_setBackgroundImageSelector = @selector(af_setBackgroundImage:forState:);
+		
+		Method setBackgroundImageMethod  = class_getInstanceMethod(self, setBackgroundImageSelector);
+		Method af_setBackgroundImageMethod = class_getInstanceMethod(self, af_setBackgroundImageSelector);
+		
+		method_exchangeImplementations(setBackgroundImageMethod, af_setBackgroundImageMethod);
+	}
+}
+
+- (void)af_setImage:(UIImage *)image forState:(UIControlState)state {
+	[self cancelImageRequestOperation];
+	// see implementation details in UIImage+AFNetworking class
+	[self af_setImage:image
+			 forState:state];
+}
+
+- (void)af_setBackgroundImage:(UIImage *)image forState:(UIControlState)state {
+	[self cancelBackgroundImageRequestOperation];
+	// see comments for af_setImage: method in UIImage+AFNetworking class
+	[self af_setBackgroundImage:image
+					   forState:state];
+}
+
 @end
 
 #endif
