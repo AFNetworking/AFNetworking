@@ -77,7 +77,7 @@
 
  ## NSCoding & NSCopying Caveats
 
- `AFHTTPClient`  conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. There are a few minor caveats to keep in mind, however:
+ `AFHTTPRequestOperationManager`  conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. There are a few minor caveats to keep in mind, however:
 
  - Archives and copies of HTTP clients will be initialized with an empty operation queue.
  - NSCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
@@ -149,12 +149,12 @@
 ///---------------------------------------------
 
 /**
- Creates and returns an `AFHTTPClient` object.
+ Creates and returns an `AFHTTPRequestOperationManager` object.
  */
 + (instancetype)manager;
 
 /**
- Initializes an `AFHTTPClient` object with the specified base URL.
+ Initializes an `AFHTTPRequestOperationManager` object with the specified base URL.
  
  This is the designated initializer.
  
