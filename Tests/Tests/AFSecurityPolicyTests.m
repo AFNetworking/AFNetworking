@@ -165,4 +165,14 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
     XCTAssert(policy.allowInvalidCertificates == NO, @"policyWithPinningMode: should not allow invalid ssl certificates by default.");
 }
 
+- (void)testThatSSLPinningPolicyClassMethodContainsDefaultCertificates{
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    XCTAssertNotNil(policy.pinnedCertificates, @"Default certificate array should not be empty for SSL pinning mode policy");
+}
+
+- (void)testThatDefaultPinningPolicyClassMethodContainsNoDefaultCertificates{
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    XCTAssertNil(policy.pinnedCertificates, @"Default certificate array should be empty for default policy.");
+}
+
 @end
