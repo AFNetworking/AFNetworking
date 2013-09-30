@@ -1,3 +1,93 @@
+= 1.3.3 (2013-09-25)
+
+ * Add stream error handling to `AFMultipartBodyStream` (Nicolas Bachschmidt, 
+Mattt Thompson)
+
+ * Add stream error handling to `AFURLConnectionOperation 
+-connection:didReceiveData:` (Ian Duggan, Mattt Thompson)
+
+ * Fix parameter query string encoding of square brackets according to RFC 
+3986 (Kra Larivain)
+
+ * Fix AFHTTPBodyPart determination of end of input stream data (Brian Croom) 
+
+ * Fix unit test timeouts (Carson McDonald)
+
+ * Fix truncated `User-Agent` header field when app contained non-ASCII 
+characters (Diego Torres)
+
+ * Fix outdated link in documentation (Jonas Schmid)
+
+ * Fix `AFHTTPRequestOperation` `HTTPError` property to be thread-safe 
+(Oliver Letterer, Mattt Thompson) 
+
+ * Fix API compatibility with iOS 5 (Blake Watters, Mattt Thompson)
+
+ * Fix potential race condition in `AFURLConnectionOperation 
+-cancelConnection` (@mm-jkolb, Mattt Thompson)
+
+ * Remove implementation of `connection:needNewBodyStream:` delegate method 
+in `AFURLConnectionOperation`, which fixes stream errors on authentication 
+challenges (Mattt Thompson)
+
+ * Fix calculation of network reachability from flags (Tracy Pesin, Mattt 
+Thompson)
+
+ * Update AFHTTPClient documentation to clarify scope of `parameterEncoding` 
+property (Thomas Catterall)
+
+ * Update `UIImageView` category to allow for nested calls to 
+`setImageWithURLRequest:` (Philippe Converset)
+
+  * Change `UIImageView` category to accept invalid SSL certificates when 
+`_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is defined (Flávio Caetano)
+
+ * Change to replace #pragma clang with cast (Cédric Luthi)
+
+= 1.3.2 (2013-08-08)
+
+ * Add return status checks when building list of pinned public keys (Sylvain
+Guillope)
+
+ * Add return status checks when handling connection authentication challenges
+(Sylvain Guillope)
+
+ * Add tests around `AFHTTPClient initWithBaseURL:` (Kyle Fuller)
+
+ * Change to remove all `_AFNETWORKING_PIN_SSL_CERTIFICATES_` conditional
+compilation (Dustin Barker)
+
+ * Change to allow fallback to generic image loading when PNG/JPEG data
+provider methods fail (Darryl H. Thomas)
+
+ * Change to only set placeholder image if not `nil` (Mattt Thompson)
+
+ * Change to use `response.MIMEType` rather than (potentially nonexistent)
+Content-Type headers to determine image data provider (Mattt Thompson)
+
+ * Fix image request test endpoint (Carson McDonald)
+
+ * Fix compiler warning caused by `size_t` value defaulted to `NULL` (Darryl H.
+Thomas)
+
+ * Fix mutable headers property in `AFHTTPClient -copyWithZone:` (Oliver
+Letterer)
+
+ * Fix documentation and asset references in README (Romain Pouclet, Peter
+Goldsmith)
+
+ * Fix bug in examples always using `AFSSLPinningModeNone` (Dustin Barker)
+
+ * Fix execution of tests under Travis (Blake Watters)
+
+ * Fix static analyzer warnings about CFRelease calls to NULL pointer (Mattt
+Thompson)
+
+ * Change to return early in `AFGetMediaTypeAndSubtypeWithString` if string is
+`nil` (Mattt Thompson)
+
+ * Change to opimize network thread creation (Mattt Thompson)
+
 = 1.3.1 (2013-06-18)
 
  * Add `automaticallyInflatesResponseImage` property to

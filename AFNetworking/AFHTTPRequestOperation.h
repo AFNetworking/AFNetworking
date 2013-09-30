@@ -1,6 +1,6 @@
 // AFHTTPRequestOperation.h
 //
-// Copyright (c) 2011 Gowalla (http://gowalla.com/)
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,88 +22,28 @@
 
 #import <Foundation/Foundation.h>
 #import "AFURLConnectionOperation.h"
+#import "AFURLResponseSerialization.h"
 
 /**
  `AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
  */
 @interface AFHTTPRequestOperation : AFURLConnectionOperation
 
-///----------------------------------------------
+///------------------------------------------------
 /// @name Getting HTTP URL Connection Information
-///----------------------------------------------
+///------------------------------------------------
 
 /**
  The last HTTP response received by the operation's connection.
  */
 @property (readonly, nonatomic, strong) NSHTTPURLResponse *response;
 
-///----------------------------------------------------------
-/// @name Managing And Checking For Acceptable HTTP Responses
-///----------------------------------------------------------
-
 /**
- A Boolean value that corresponds to whether the status code of the response is within the specified set of acceptable status codes. Returns `YES` if `acceptableStatusCodes` is `nil`.
+ Responses sent from the server in data tasks created with `dataTaskWithRequest:success:failure:` and run using the `GET` / `POST` / et al. convenience methods are automatically validated and serialized by the response serializer. By default, this property is set to a compound serializer, which serializes data from responses with either a `application/json` or `application/x-plist` MIME type, and falls back to the raw data object. The serializer validates the status code to be in the `2XX` range, denoting success. If the response serializer generates an error in `-responseObjectForResponse:data:error:`, the `failure` callback of the session task or request operation will be executed; otherwise, the `success` callback will be executed.
+
+ @warning `responseSerializer` must not be `nil`.
  */
-@property (nonatomic, readonly) BOOL hasAcceptableStatusCode;
-
-/**
- A Boolean value that corresponds to whether the MIME type of the response is among the specified set of acceptable content types. Returns `YES` if `acceptableContentTypes` is `nil`.
- */
-@property (nonatomic, readonly) BOOL hasAcceptableContentType;
-
-/**
- The callback dispatch queue on success. If `NULL` (default), the main queue is used.
- */
-@property (nonatomic, assign) dispatch_queue_t successCallbackQueue;
-
-/**
- The callback dispatch queue on failure. If `NULL` (default), the main queue is used.
- */
-@property (nonatomic, assign) dispatch_queue_t failureCallbackQueue;
-
-///------------------------------------------------------------
-/// @name Managing Acceptable HTTP Status Codes & Content Types
-///------------------------------------------------------------
-
-/**
- Returns an `NSIndexSet` object containing the ranges of acceptable HTTP status codes. When non-`nil`, the operation will set the `error` property to an error in `AFErrorDomain`. See http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-
- By default, this is the range 200 to 299, inclusive.
- */
-+ (NSIndexSet *)acceptableStatusCodes;
-
-/**
- Adds status codes to the set of acceptable HTTP status codes returned by `+acceptableStatusCodes` in subsequent calls by this class and its descendants.
-
- @param statusCodes The status codes to be added to the set of acceptable HTTP status codes
- */
-+ (void)addAcceptableStatusCodes:(NSIndexSet *)statusCodes;
-
-/**
- Returns an `NSSet` object containing the acceptable MIME types. When non-`nil`, the operation will set the `error` property to an error in `AFErrorDomain`. See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
-
- By default, this is `nil`.
- */
-+ (NSSet *)acceptableContentTypes;
-
-/**
- Adds content types to the set of acceptable MIME types returned by `+acceptableContentTypes` in subsequent calls by this class and its descendants.
-
- @param contentTypes The content types to be added to the set of acceptable MIME types
- */
-+ (void)addAcceptableContentTypes:(NSSet *)contentTypes;
-
-
-///-----------------------------------------------------
-/// @name Determining Whether A Request Can Be Processed
-///-----------------------------------------------------
-
-/**
- A Boolean value determining whether or not the class can process the specified request. For example, `AFJSONRequestOperation` may check to make sure the content type was `application/json` or the URL path extension was `.json`.
-
- @param urlRequest The request that is determined to be supported or not supported for this class.
- */
-+ (BOOL)canProcessRequest:(NSURLRequest *)urlRequest;
+@property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
 
 ///-----------------------------------------------------------
 /// @name Setting Completion Block Success / Failure Callbacks
@@ -121,13 +61,3 @@
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 @end
-
-///----------------
-/// @name Functions
-///----------------
-
-/**
- Returns a set of MIME types detected in an HTTP `Accept` or `Content-Type` header.
- */
-extern NSSet * AFContentTypesFromHTTPHeader(NSString *string);
-

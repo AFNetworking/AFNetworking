@@ -2,18 +2,7 @@
   <img src="https://raw.github.com/AFNetworking/AFNetworking/assets/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking">
 </p>
 
-[![Build Status](https://travis-ci.org/AFNetworking/AFNetworking.png?branch=master)](https://travis-ci.org/AFNetworking/AFNetworking)
-
-AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of [NSURLConnection](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/Reference/Reference.html), [NSOperation](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/NSOperation_class/Reference/Reference.html), and other familiar Foundation technologies. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use. For example, here's how easy it is to get JSON from a URL:
-
-```objective-c
-NSURL *url = [NSURL URLWithString:@"https://alpha-api.app.net/stream/0/posts/stream/global"];
-NSURLRequest *request = [NSURLRequest requestWithURL:url];
-AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-    NSLog(@"App.net Global Stream: %@", JSON);
-} failure:nil];
-[operation start];
-```
+AFNetworking is a delightful networking library for iOS and Mac OS X. It's built on top of the [Foundation URL Loading System](http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html), extending the powerful high-level networking abstractions built into Cocoa. It has a modular architecture with well-designed, feature-rich APIs that are a joy to use.
 
 Perhaps the most important feature of all, however, is the amazing community of developers who use and contribute to AFNetworking every day. AFNetworking powers some of the most popular and critically-acclaimed apps on the iPhone, iPad, and Mac.
 
@@ -21,171 +10,343 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 ## How To Get Started
 
-- [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/zipball/master) and try out the included Mac and iPhone example apps
-- Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles in the wiki](https://github.com/AFNetworking/AFNetworking/wiki)
-- Check out the [complete documentation](http://cocoadocs.org/docsets/AFNetworking/) for a comprehensive look at the APIs available in AFNetworking
-- Watch the [NSScreencast episode about AFNetworking](http://nsscreencast.com/episodes/6-afnetworking) for a quick introduction to how to use it in your application
+- [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/archive/master.zip) and try out the included Mac and iPhone example apps
+- Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles on the Wiki](https://github.com/AFNetworking/AFNetworking/wiki)
+- Check out the [documentation](http://cocoadocs.org/docsets/AFNetworking/2.0.0/) for a comprehensive look at all of the APIs available in AFNetworking
 - Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
 
-## Overview
+### Installation with CocoaPods
 
-AFNetworking is architected to be as small and modular as possible, in order to make it simple to use and extend.
+[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like AFNetworking in your projects. See the ["Getting Started" guide for more information](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking).
 
-<table>
-  <tr><th colspan="2" style="text-align:center;">Core</th></tr>
-  <tr>
-    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFURLConnectionOperation.html">AFURLConnectionOperation</a></td>
-    <td>An <tt>NSOperation</tt> that implements the <tt>NSURLConnection</tt> delegate methods.</td>
-  </tr>
+#### Podfile
 
-  <tr><th colspan="2" style="text-align:center;">HTTP Requests</th></tr>
-
-  <tr>
-    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFHTTPRequestOperation.html">AFHTTPRequestOperation</a></td>
-    <td>A subclass of <tt>AFURLConnectionOperation</tt> for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.</td>
-  </tr>
-  <tr>
-    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFJSONRequestOperation.html">AFJSONRequestOperation</a></td>
-    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and working with JSON response data.</td>
-  </tr>
-  <tr>
-    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFXMLRequestOperation.html">AFXMLRequestOperation</a></td>
-    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and working with XML response data.</td>
-  </tr>
-  <tr>
-    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFPropertyListRequestOperation.html">AFPropertyListRequestOperation</a></td>
-    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and deserializing objects with <a href="http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/PropertyLists/index.html">property list</a> response data.</td>
-  </tr>
-
-  <tr><th colspan="2" style="text-align:center;">HTTP Client</th></tr>
-  <tr>
-    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFHTTPClient.html">AFHTTPClient</a></td>
-    <td>
-      Captures the common patterns of communicating with an web application over HTTP, including:
-
-      <ul>
-        <li>Making requests from relative paths of a base URL</li>
-        <li>Setting HTTP headers to be added automatically to requests</li>
-        <li>Authenticating requests with HTTP Basic credentials or an OAuth token</li>
-        <li>Managing an <tt>NSOperationQueue</tt> for requests made by the client</li>
-        <li>Generating query strings or HTTP bodies from an <tt>NSDictionary</tt></li>
-        <li>Constructing multipart form requests</li>
-        <li>Automatically parsing HTTP response data into its corresponding object representation</li>
-        <li>Monitoring and responding to changes in network reachability</li>
-      </ul>
-    </td>
-  </tr>
-
-  <tr><th colspan="2" style="text-align:center;">Images</th></tr>
-  <tr>
-    <td><a href="http://cocoadocs.org/docsets/AFNetworking/1.3.1/Classes/AFImageRequestOperation.html">AFImageRequestOperation</a></td>
-    <td>A subclass of <tt>AFHTTPRequestOperation</tt> for downloading and processing images.</td>
-  </tr>
-  <tr>
-    <td><a href="http://afnetworking.github.com/AFNetworking/Categories/UIImageView+AFNetworking.html">UIImageView+AFNetworking</a></td>
-    <td>Adds methods to <tt>UIImageView</tt> for loading remote images asynchronously from a URL.</td>
-  </tr>
-</table>
-
-## Example Usage
-
-### XML Request
-
-```objective-c
-NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://api.flickr.com/services/rest/?method=flickr.groups.browse&api_key=b6300e17ad3c506e706cb0072175d047&cat_id=34427469792%40N01&format=rest"]];
-AFXMLRequestOperation *operation = [AFXMLRequestOperation XMLParserRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSXMLParser *XMLParser) {
-  XMLParser.delegate = self;
-  [XMLParser parse];
-} failure:nil];
-[operation start];
+```ruby
+platform :ios, '7.0'
+pod "AFNetworking", "~> 2.0"
 ```
 
-### Image Request
+## 2.0
 
-```objective-c
-UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 100.0f, 100.0f)];
-[imageView setImageWithURL:[NSURL URLWithString:@"http://i.imgur.com/r4uwx.jpg"] placeholderImage:[UIImage imageNamed:@"placeholder-avatar"]];
-```
+AFNetworking 2.0 is a major update to the framework. Building on 2 years of development, this new version introduces powerful new features, while providing an easy upgrade path for existing users.
 
-### API Client Request
+**Read the [AFNetworking 2.0 Migration Guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-2.0-Migration-Guide) for an overview of the architectural and API changes.**
 
-```objective-c
-// AFAppDotNetAPIClient is a subclass of AFHTTPClient, which defines the base URL and default HTTP headers for NSURLRequests it creates
-[[AFAppDotNetAPIClient sharedClient] getPath:@"stream/0/posts/stream/global" parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
-    NSLog(@"App.net Global Stream: %@", JSON);
-} failure:nil];
-```
+### What's New
 
-### File Upload with Progress Callback
-
-```objective-c
-NSURL *url = [NSURL URLWithString:@"http://api-base-url.com"];
-AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
-NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"avatar.jpg"], 0.5);
-NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:nil constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
-    [formData appendPartWithFileData:imageData name:@"avatar" fileName:@"avatar.jpg" mimeType:@"image/jpeg"];
-}];
-
-AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-[operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
-    NSLog(@"Sent %lld of %lld bytes", totalBytesWritten, totalBytesExpectedToWrite);
-}];
-[httpClient enqueueHTTPRequestOperation:operation];
-```
-
-### Streaming Request
-
-```objective-c
-NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:8080/encode"]];
-
-AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-operation.inputStream = [NSInputStream inputStreamWithFileAtPath:[[NSBundle mainBundle] pathForResource:@"large-image" ofType:@"tiff"]];
-operation.outputStream = [NSOutputStream outputStreamToMemory];
-[operation start];
-```
+- Refactored Architecture
+- Support for NSURLSession
+- Serialization Modules
+- Expanded UIKit Extensions
+- Real-time functionality with [Rocket](http://rocket.github.io)
 
 ## Requirements
 
-AFNetworking 1.0 and higher requires either [iOS 5.0](http://developer.apple.com/library/ios/#releasenotes/General/WhatsNewIniPhoneOS/Articles/iPhoneOS4.html) and above, or [Mac OS 10.7](http://developer.apple.com/library/mac/#releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_6.html#//apple_ref/doc/uid/TP40008898-SW7) ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
+AFNetworking 2.0 and higher requires Xcode 5, targeting either iOS 6.0 and above, or Mac OS 10.8 Mountain Lion ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
 
-For compatibility with iOS 4.3, use the latest 0.10.x release.
+For compatibility with iOS 5 or Mac OS X 10.7, use the [latest 1.x release](https://github.com/AFNetworking/AFNetworking/tree/1.x).
 
-### ARC
+For compatibility with iOS 4.3 or Mac OS X 10.6, use the [latest 0.10.x release](https://github.com/AFNetworking/AFNetworking/tree/0.10.x).
 
-AFNetworking uses ARC as of its 1.0 release.
+## Architecture
 
-If you are using AFNetworking 1.0 in your non-arc project, you will need to set a `-fobjc-arc` compiler flag on all of the AFNetworking source files. Conversely, if you are adding a pre-1.0 version of AFNetworking, you will need to set a `-fno-objc-arc` compiler flag.
+### NSURLConnection
 
-To set a compiler flag in Xcode, go to your active target and select the "Build Phases" tab. Now select all AFNetworking source files, press Enter, insert `-fobjc-arc` or `-fno-objc-arc` and then "Done" to enable or disable ARC for AFNetworking.
+- `AFURLConnectionOperation`
+- `AFHTTPRequestOperation`
+- `AFHTTPRequestOperationManager`
+
+### NSURLSession _(iOS 7 / Mac OS X 10.9)_
+
+- `AFURLSessionManager`
+- `AFHTTPSessionManager`
+
+### Serialization
+
+* `<AFURLRequestSerialization>`
+  - `AFHTTPRequestSerializer`
+  - `AFJSONRequestSerializer`
+  - `AFPropertyListRequestSerializer`
+* `<AFURLResponseSerialization>`
+  - `AFHTTPResponseSerializer`
+  - `AFJSONResponseSerializer`
+  - `AFXMLParserResponseSerializer`
+  - `AFXMLDocumentResponseSerializer` _(Mac OS X)_
+  - `AFPropertyListResponseSerializer`
+  - `AFImageResponseSerializer`
+  - `AFCompoundResponseSerializer`
+
+### Additional Functionality
+
+- `AFSecurityPolicy`
+- `AFNetworkReachabilityManager`
+
+## Usage
+
+### HTTP Request Operation Manager
+
+`AFHTTPRequestOperationManager` encapsulates the common patterns of communicating with an web application over HTTP, including request creation, response serialization, network reachability monitoring, and security, as well as request operation management.
+
+#### `GET` Request
+
+```objective-c
+AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+[manager GET:@"http://example.com/resources.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSLog(@"JSON: %@", responseObject);
+} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    NSLog(@"Error: %@", error);
+}];
+```
+
+#### `POST` URL-Form-Encoded Request
+
+```objective-c
+AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+NSDictionary *parameters = @{@"foo": @"bar"};
+[manager POST:@"http://example.com/resources.json" parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSLog(@"JSON: %@", responseObject);
+} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    NSLog(@"Error: %@", error);
+}];
+```
+
+#### `POST` Multi-Part Request
+
+```objective-c
+AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+NSDictionary *parameters = @{@"foo": @"bar"};
+NSURL *filePath = [NSURL fileURLWithPath:@"file://path/to/image.png"];
+[manager POST:@"http://example.com/resources.json" parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    [formData appendPartWithFileURL:filePath name:@"image" error:nil];
+} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSLog(@"Success: %@", responseObject);
+} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    NSLog(@"Error: %@", error);
+}];
+```
+
+---
+
+### AFURLSessionManager
+
+`AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
+
+#### Creating a Download Task
+
+```objective-c
+NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+
+NSURL *URL = [NSURL URLWithString:@"http://example.com/download.zip"];
+NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+
+NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+    NSURL *documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    return [documentsDirectoryPath URLByAppendingPathComponent:[targetPath lastPathComponent]];
+} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+    NSLog(@"File downloaded to: %@", filePath);
+}];
+[downloadTask resume];
+```
+
+#### Creating an Upload Task
+
+```objective-c
+NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+
+NSURL *URL = [NSURL URLWithString:@"http://example.com/upload"];
+NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+
+NSURL *filePath = [NSURL fileURLWithPath:@"file://path/to/image.png"];
+NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithRequest:request fromFile:filePath progress:nil completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    if (error) {
+        NSLog(@"Error: %@", error);
+    } else {
+        NSLog(@"Success: %@ %@", response, responseObject);
+    }
+}];
+[uploadTask resume];
+```
+
+#### Creating a Data Task
+
+```objective-c
+NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+
+NSURL *URL = [NSURL URLWithString:@"http://example.com/upload"];
+NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+
+NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    if (error) {
+        NSLog(@"Error: %@", error);
+    } else {
+        NSLog(@"%@ %@", response, responseObject);
+    }
+}];
+[dataTask resume];
+```
+
+---
+
+### Request Serialization
+
+Request serializers create requests from URL strings, encoding parameters as either a query string or HTTP body. 
+
+```objective-c
+NSString *URLString = @"http://example.com";
+NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
+```
+
+#### Query String Parameter Encoding
+
+```objective-c
+[[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:URLString parameters:parameters];
+```
+
+    GET http://example.com?foo=bar&baz[]=1&baz[]=2&baz[]=3
+
+#### URL Form Parameter Encoding
+
+```objective-c
+[[AFHTTPRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters];
+```
+
+    POST http://example.com/
+    Content-Type: application/x-www-form-urlencoded
+
+    foo=bar&baz[]=1&baz[]=2&baz[]=3
+
+#### JSON Parameter Encoding
+
+```objective-c
+[[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters];
+```
+
+    POST http://example.com/
+    Content-Type: application/json
+
+    {"foo": "bar", "baz": [1,2,3]}
+
+---
+
+### Network Reachability Manager
+
+`AFNetworkReachabilityManager` monitors the reachability of domains, and addresses for both WWAN and WiFi network interfaces.
+
+#### Shared Network Reachability
+
+```objective-c
+[[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+    NSLog(@"Reachability: %@", AFStringFromNetworkReachabilityStatus(status));
+}];
+```
+
+#### HTTP Manager with Base URL
+
+When a `baseURL` is provided, network reachability is scoped to the host of that base URL.
+
+```objective-c
+NSURL *baseURL = [NSURL URLWithString:@"http://example.com/"];
+AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
+
+NSOperationQueue *operationQueue = manager.operationQueue;
+[manager.reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+    switch (status) {
+        case AFNetworkReachabilityStatusReachableViaWWAN:
+        case AFNetworkReachabilityStatusReachableViaWiFi:
+            [operationQueue setSuspended:NO];
+            break;
+        case AFNetworkReachabilityStatusNotReachable:
+        default:
+            [operationQueue setSuspended:YES];
+            break;
+    }
+}];
+```
+
+---
+
+### Security Policy
+
+`AFSecurityPolicy` evaluates server trust against pinned X.509 certificates and public keys over secure connections.
+ 
+Adding pinned SSL certificates to your app helps prevent man-in-the-middle attacks and other vulnerabilities. Applications dealing with sensitive customer data or financial information are strongly encouraged to route all communication over an HTTPS connection with SSL pinning configured and enabled.
+
+#### Allowing Invalid SSL Certificates
+
+```objective-c
+AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+manager.securityPolicy.allowInvalidCertificates = YES; // not recommended for production
+```
+
+---
+
+### AFHTTPRequestOperation
+
+`AFHTTPRequestOperation` is a subclass of `AFURLConnectionOperation` for requests using the HTTP or HTTPS protocols. It encapsulates the concept of acceptable status codes and content types, which determine the success or failure of a request.
+
+Although `AFHTTPRequestOperationManager` is usually the best way to go about making requests, `AFHTTPRequestOperation` can be used by itself.
+
+#### `GET` with `AFHTTPRequestOperation`
+
+```objective-c
+NSURL *URL = [NSURL URLWithString:@"http://example.com/resources/123.json"];
+NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+op.responseSerializer = [AFJSONResponseSerializer serializer];
+[op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSLog(@"JSON: %@", responseObject);
+} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    NSLog(@"Error: %@", error);
+}];
+[[NSOperationQueue mainQueue] addOperation:op];
+```
+
+#### Batch of Operations
+
+```objective-c
+NSMutableArray *mutableOperations = [NSMutableArray array];
+for (NSURL *fileURL in filesToUpload) {
+    NSURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:@"http://example.com/upload" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithFileURL:fileURL name:@"images[]" error:nil];
+    }];
+
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
+    [mutableOperations addObject:operation];
+}
+
+NSArray *operations = [AFURLConnectionOperation batchOfRequestOperations:@[...] progressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+    NSLog(@"%lu of %lu complete", numberOfFinishedOperations, totalNumberOfOperations);
+} completionBlock:^(NSArray *operations) {
+    NSLog(@"All operations in batch complete");
+}];
+[[NSOperationQueue mainQueue] addOperations:operations waitUntilFinished:NO];
+```
 
 ## Unit Tests
 
-AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via CocoaPods. To do so:
+AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via CocoaPods:
 
-    $ gem install cocoapods # If necessary
     $ cd Tests
     $ pod install
 
-Once CocoaPods has finished the installation, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
-
-### Test Logging
-
-By default, the unit tests do not emit any output during execution. For debugging purposes, it can be useful to enable logging of the requests and responses. Logging support is provided by the [AFHTTPRequestOperationLogger](https://github.com/AFNetworking/AFHTTPRequestOperationLogger) extension, which is installed via CocoaPods into the test targets. To enable logging, edit the test Scheme and add an environment variable named `AFTestsLoggingEnabled` with a value of `YES`.
+Once testing dependencies are installed, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
 
 ### Using xctool
 
-If you wish to execute the tests from the command line or within a continuous integration environment, you will need to install [xctool](https://github.com/facebook/xctool). The recommended installation method is [Homebrew](http://mxcl.github.io/homebrew/).
-
-To install the commandline testing support via Homebrew:
+Tests can also be run from the command line or within a continuous integration environment with [`xctool`](https://github.com/facebook/xctool), which can be installed with [Homebrew](http://brew.sh):
 
     $ brew update
     $ brew install xctool --HEAD
 
-Once xctool is installed, you can execute the suite via `rake test`.
+Once `xctool` is installed, you can execute the suite via `rake test`.
 
 ## Credits
 
-AFNetworking was created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
+AFNetworking was originally created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
 
 AFNetworking's logo was designed by [Alan Defibaugh](http://www.alandefibaugh.com/).
 
@@ -195,13 +356,13 @@ And most of all, thanks to AFNetworking's [growing list of contributors](https:/
 
 Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking))
 
-### Creators
+### Maintainers
 
-[Mattt Thompson](http://github.com/mattt)
-[@mattt](https://twitter.com/mattt)
+- [Mattt Thompson](http://github.com/mattt) ([@mattt](https://twitter.com/mattt))
 
-[Scott Raymond](http://github.com/sco)
-[@sco](https://twitter.com/sco)
+## One More Thing...
+
+**AFNetworking: the Definitive Guide** written by Mattt Thompson and published by [O'Reilly](http://oreilly.com), will be available late 2013 / early 2014. [Sign up here to be notified about updates](http://eepurl.com/Flnvn).
 
 ## License
 

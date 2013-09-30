@@ -5,28 +5,88 @@
       location = "group:AFNetworking"
       name = "AFNetworking">
       <FileRef
-         location = "group:AFHTTPClient.h">
+         location = "group:AFNetworking.h">
       </FileRef>
+      <Group
+         location = "container:"
+         name = "NSURLConnection">
+         <FileRef
+            location = "group:AFNetworking/AFURLConnectionOperation.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLConnectionOperation.m">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPRequestOperation.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPRequestOperation.m">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPRequestOperationManager.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPRequestOperationManager.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
+         name = "NSURLSession">
+         <FileRef
+            location = "group:AFNetworking/AFURLSessionManager.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLSessionManager.m">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPSessionManager.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPSessionManager.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
+         name = "Security">
+         <FileRef
+            location = "group:AFNetworking/AFSecurityPolicy.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFSecurityPolicy.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
+         name = "Reachability">
+         <FileRef
+            location = "group:AFNetworking/AFNetworkReachabilityManager.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFNetworkReachabilityManager.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
+         name = "Serialization">
+         <FileRef
+            location = "group:AFNetworking/AFURLRequestSerialization.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLRequestSerialization.m">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLResponseSerialization.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFURLResponseSerialization.m">
+         </FileRef>
+      </Group>
+   </Group>
+   <Group
+      location = "group:UIKit+AFNetworking"
+      name = "UIKit+AFNetworking">
       <FileRef
-         location = "group:AFHTTPClient.m">
-      </FileRef>
-      <FileRef
-         location = "group:AFHTTPRequestOperation.h">
-      </FileRef>
-      <FileRef
-         location = "group:AFHTTPRequestOperation.m">
-      </FileRef>
-      <FileRef
-         location = "group:AFImageRequestOperation.h">
-      </FileRef>
-      <FileRef
-         location = "group:AFImageRequestOperation.m">
-      </FileRef>
-      <FileRef
-         location = "group:AFJSONRequestOperation.h">
-      </FileRef>
-      <FileRef
-         location = "group:AFJSONRequestOperation.m">
+         location = "group:UIKit+AFNetworking.h">
       </FileRef>
       <FileRef
          location = "group:AFNetworkActivityIndicatorManager.h">
@@ -35,31 +95,40 @@
          location = "group:AFNetworkActivityIndicatorManager.m">
       </FileRef>
       <FileRef
-         location = "group:AFNetworking.h">
+         location = "group:UIActivityIndicatorView+AFNetworking.h">
       </FileRef>
       <FileRef
-         location = "group:AFPropertyListRequestOperation.h">
+         location = "group:UIActivityIndicatorView+AFNetworking.m">
       </FileRef>
       <FileRef
-         location = "group:AFPropertyListRequestOperation.m">
+         location = "group:UIAlertView+AFNetworking.h">
       </FileRef>
       <FileRef
-         location = "group:AFURLConnectionOperation.h">
+         location = "group:UIAlertView+AFNetworking.m">
       </FileRef>
       <FileRef
-         location = "group:AFURLConnectionOperation.m">
+         location = "group:UIButton+AFNetworking.h">
       </FileRef>
       <FileRef
-         location = "group:AFXMLRequestOperation.h">
-      </FileRef>
-      <FileRef
-         location = "group:AFXMLRequestOperation.m">
+         location = "group:UIButton+AFNetworking.m">
       </FileRef>
       <FileRef
          location = "group:UIImageView+AFNetworking.h">
       </FileRef>
       <FileRef
          location = "group:UIImageView+AFNetworking.m">
+      </FileRef>
+      <FileRef
+         location = "group:UIProgressView+AFNetworking.h">
+      </FileRef>
+      <FileRef
+         location = "group:UIProgressView+AFNetworking.m">
+      </FileRef>
+      <FileRef
+         location = "group:UIWebView+AFNetworking.h">
+      </FileRef>
+      <FileRef
+         location = "group:UIWebView+AFNetworking.m">
       </FileRef>
    </Group>
    <FileRef
