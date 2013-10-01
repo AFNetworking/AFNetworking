@@ -33,14 +33,17 @@
 static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 
 static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notification) {
-    NSURLRequest *request = nil;
     if ([[notification object] isKindOfClass:[AFURLConnectionOperation class]]) {
-        request = [(AFURLConnectionOperation *)[notification object] request];
-    } else if ([[notification object] respondsToSelector:@selector(originalRequest)]) {
-        request = [(NSURLSessionTask *)[notification object] originalRequest];
+        return [(AFURLConnectionOperation *)[notification object] request];
     }
 
-    return request;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+    if ([[notification object] respondsToSelector:@selector(originalRequest)]) {
+        return [(NSURLSessionTask *)[notification object] originalRequest];
+    }
+#endif
+
+    return nil;
 }
 
 @interface AFNetworkActivityIndicatorManager ()
