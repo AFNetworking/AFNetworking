@@ -142,7 +142,7 @@ NSURLRequest *request = [NSURLRequest requestWithURL:URL];
 
 NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
     NSURL *documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    return [documentsDirectoryPath URLByAppendingPathComponent:[targetPath lastPathComponent]];
+    return [documentsDirectoryPath URLByAppendingPathComponent:[URL lastPathComponent]];
 } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
     NSLog(@"File downloaded to: %@", filePath);
 }];
