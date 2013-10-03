@@ -634,6 +634,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     }
                 }
                 
+                NSLog(@"Error: Unknown Public Key during Pinning operation");
                 [[challenge sender] cancelAuthenticationChallenge:challenge];
                 break;
             }
@@ -646,6 +647,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     }
                 }
                 
+                NSLog(@"Error: Unknown Certificate during Pinning operation");
                 [[challenge sender] cancelAuthenticationChallenge:challenge];
                 break;
             }
