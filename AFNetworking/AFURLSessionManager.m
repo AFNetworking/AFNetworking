@@ -127,8 +127,8 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
-    self.uploadProgress.completedUnitCount = totalBytesSent;
     self.uploadProgress.totalUnitCount = totalBytesExpectedToSend;
+    self.uploadProgress.completedUnitCount = totalBytesSent;
 }
 
 - (void)URLSession:(__unused NSURLSession *)session
@@ -229,16 +229,16 @@ didFinishDownloadingToURL:(NSURL *)location
  totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
-    self.downloadProgress.completedUnitCount = totalBytesWritten;
     self.downloadProgress.totalUnitCount = totalBytesExpectedToWrite;
+    self.downloadProgress.completedUnitCount = totalBytesWritten;
 }
 
 - (void)URLSession:(__unused NSURLSession *)session
       downloadTask:(__unused NSURLSessionDownloadTask *)downloadTask
  didResumeAtOffset:(int64_t)fileOffset
 expectedTotalBytes:(int64_t)expectedTotalBytes {
-    self.downloadProgress.completedUnitCount = fileOffset;
     self.downloadProgress.totalUnitCount = expectedTotalBytes;
+    self.downloadProgress.completedUnitCount = fileOffset;
 }
 
 @end

@@ -319,7 +319,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
-        [mutableRequest setValue:value forHTTPHeaderField:field];
+        if (![request valueForHTTPHeaderField:field]) {
+            [mutableRequest setValue:value forHTTPHeaderField:field];
+        }
     }];
 
     if (!parameters) {
@@ -1034,7 +1036,9 @@ typedef enum {
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
-        [mutableRequest setValue:value forHTTPHeaderField:field];
+        if (![request valueForHTTPHeaderField:field]) {
+            [mutableRequest setValue:value forHTTPHeaderField:field];
+        }
     }];
     
     if (!parameters) {
@@ -1084,7 +1088,9 @@ typedef enum {
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
-        [mutableRequest setValue:value forHTTPHeaderField:field];
+        if (![request valueForHTTPHeaderField:field]) {
+            [mutableRequest setValue:value forHTTPHeaderField:field];
+        }
     }];
 
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
