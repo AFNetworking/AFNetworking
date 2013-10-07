@@ -279,6 +279,7 @@
 {
     __block BOOL firstBlock = NO;
     __block BOOL secondBlock = NO;
+
     NSURLRequest *request1 = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation1 = [[AFHTTPRequestOperation alloc] initWithRequest:request1];
     [operation1 setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -294,17 +295,15 @@
     [operation2 setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     __block BOOL completionBlockFiredAfterOtherBlocks = NO;
-    NSArray * batchRequests = [AFURLConnectionOperation batchOfRequestOperations:@[operation1,operation2]
-                                                                   progressBlock:nil
-                                                                 completionBlock:^(NSArray *operations) {
-                                                                   if (firstBlock && secondBlock)
-                                                                   {
-                                                                       completionBlockFiredAfterOtherBlocks = YES;
-                                                                   }
-                                                                 }];
-    NSOperationQueue * queue = [NSOperationQueue new];
+    NSArray *batchRequests = [AFURLConnectionOperation batchOfRequestOperations:@[operation1, operation2] progressBlock:nil completionBlock:^(NSArray *operations) {
+        if (firstBlock && secondBlock) {
+            completionBlockFiredAfterOtherBlocks = YES;
+        }
+    }];
+
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     [queue addOperations:batchRequests waitUntilFinished:NO];
-    
+
     expect(completionBlockFiredAfterOtherBlocks).will.beTruthy();
 }
 

@@ -79,10 +79,10 @@ static dispatch_group_t http_request_operation_completion_group() {
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
 #pragma clang diagnostic ignored "-Wgnu"
     self.completionBlock = ^{
-        if (self.completionGroup)
-        {
+        if (self.completionGroup) {
             dispatch_group_enter(self.completionGroup);
         }
+
         dispatch_async(http_request_operation_processing_queue(), ^{
             if (self.error) {
                 if (failure) {
@@ -110,8 +110,8 @@ static dispatch_group_t http_request_operation_completion_group() {
                     }
                 }
             }
-            if (self.completionGroup)
-            {
+
+            if (self.completionGroup) {
                 dispatch_group_leave(self.completionGroup);
             }
         });
