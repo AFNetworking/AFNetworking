@@ -44,14 +44,14 @@ static SecTrustRef AFUTTrustChainForCertsInDirectory(NSString *directoryPath) {
 }
 
 static SecTrustRef AFUTHTTPBinOrgServerTrust() {
-    NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] bundlePath];
+    NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
     NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"HTTPBinOrgServerTrustChain"];
 
     return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
 }
 
 static SecTrustRef AFUTADNNetServerTrust() {
-    NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] bundlePath];
+    NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
     NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"ADNNetServerTrustChain"];
 
     return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
