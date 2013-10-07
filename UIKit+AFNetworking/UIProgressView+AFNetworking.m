@@ -171,7 +171,7 @@ static char kAFDownloadProgressAnimated;
                     }
 
                     if (context == AFTaskCountOfBytesReceivedContext) {
-                        [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesSent))];
+                        [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesReceived))];
                     }
                 }
                 @catch (NSException * __unused exception) {}
