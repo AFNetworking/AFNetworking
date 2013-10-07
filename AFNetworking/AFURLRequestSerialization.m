@@ -494,6 +494,16 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                      mimeType:(NSString *)mimeType
                         error:(NSError * __autoreleasing *)error
 {
+    return [self appendPartWithFileURL:fileURL name:name fileName:fileName mimeType:mimeType contentTransferEncoding:nil error:error];
+}
+
+- (BOOL)appendPartWithFileURL:(NSURL *)fileURL
+                         name:(NSString *)name
+                     fileName:(NSString *)fileName
+                     mimeType:(NSString *)mimeType
+      contentTransferEncoding:(NSString*)contentTransferEncoding
+                        error:(NSError * __autoreleasing *)error
+{
     NSParameterAssert(fileURL);
     NSParameterAssert(name);
     NSParameterAssert(fileName);
@@ -519,6 +529,10 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
 
+    if (contentTransferEncoding.length > 0 ) {
+        [mutableHeaders setValue:contentTransferEncoding forKey:@"Content-Transfer-Encoding"];
+    }
+
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
@@ -532,12 +546,21 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     return YES;
 }
 
+- (void)appendPartWithInputStream:(NSInputStream *)inputStream
+                             name:(NSString *)name
+                         fileName:(NSString *)fileName
+                           length:(int64_t)length
+                         mimeType:(NSString *)mimeType
+{
+    [self appendPartWithInputStream:inputStream name:name fileName:fileName length:length mimeType:mimeType contentTransferEncoding:nil];
+}
 
 - (void)appendPartWithInputStream:(NSInputStream *)inputStream
                              name:(NSString *)name
                          fileName:(NSString *)fileName
                            length:(int64_t)length
                          mimeType:(NSString *)mimeType
+          contentTransferEncoding:(NSString*)contentTransferEncoding
 {
     NSParameterAssert(name);
     NSParameterAssert(fileName);
@@ -547,6 +570,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
 
+    if (contentTransferEncoding.length > 0 ) {
+        [mutableHeaders setValue:contentTransferEncoding forKey:@"Content-Transfer-Encoding"];
+    }
 
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
@@ -563,6 +589,15 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                       fileName:(NSString *)fileName
                       mimeType:(NSString *)mimeType
 {
+    [self appendPartWithFileData:data name:name fileName:fileName mimeType:mimeType contentTransferEncoding:nil];
+}
+
+- (void)appendPartWithFileData:(NSData *)data
+                          name:(NSString *)name
+                      fileName:(NSString *)fileName
+                      mimeType:(NSString *)mimeType
+       contentTransferEncoding:(NSString*)contentTransferEncoding
+{
     NSParameterAssert(name);
     NSParameterAssert(fileName);
     NSParameterAssert(mimeType);
@@ -570,6 +605,10 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+
+    if (contentTransferEncoding.length > 0 ) {
+        [mutableHeaders setValue:contentTransferEncoding forKey:@"Content-Transfer-Encoding"];
+    }
 
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
