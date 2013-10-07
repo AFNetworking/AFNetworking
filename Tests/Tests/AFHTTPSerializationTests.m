@@ -35,7 +35,7 @@
         NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
 
         AFHTTPResponseSerializer *serializer = [AFHTTPResponseSerializer serializer];
-        XCTAssert([serializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %d should be acceptable");
+        XCTAssert([serializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %d should be acceptable", statusCode);
 
         NSError *error = nil;
         [serializer validateResponse:response data:[@"text" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
@@ -50,7 +50,7 @@
         NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
 
         AFHTTPResponseSerializer *serializer = [AFHTTPResponseSerializer serializer];
-        XCTAssert(![serializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %d should not be acceptable");
+        XCTAssert(![serializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %d should not be acceptable", statusCode);
 
         NSError *error = nil;
         [serializer validateResponse:response data:[@"text" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
