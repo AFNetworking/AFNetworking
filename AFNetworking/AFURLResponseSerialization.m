@@ -392,7 +392,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
         }
     }
 
-    return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:nil error:error];
+    return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:NULL error:error];
 }
 
 #pragma mark - NSCoding
