@@ -172,6 +172,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         self.pinnedPublicKeys = [NSArray arrayWithArray:mutablePinnedPublicKeys];
     } else {
         self.pinnedCertificates = nil;
+        self.pinnedPublicKeys = nil;
     }
 }
 
