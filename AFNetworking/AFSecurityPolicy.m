@@ -71,7 +71,7 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
 
 static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
     SecTrustResultType result = 0;
-    OSStatus status = SecTrustEvaluate(serverTrust, &result);
+    OSStatus status __attribute__((unused)) = SecTrustEvaluate(serverTrust, &result); // unused because NSCAssert is ignored in Release builds
     NSCAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
     return (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
 }
