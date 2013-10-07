@@ -52,6 +52,17 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 @implementation AFHTTPRequestOperation
 
+- (instancetype)initWithRequest:(NSURLRequest *)urlRequest {
+    self = [super initWithRequest:urlRequest];
+    if (!self) {
+        return nil;
+    }
+
+    self.responseSerializer = [AFJSONResponseSerializer serializer];
+
+    return self;
+}
+
 - (void)setResponseSerializer:(AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
     NSParameterAssert(responseSerializer);
 
