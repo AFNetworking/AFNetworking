@@ -25,9 +25,14 @@
 #if !defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 static NSData * AFSecKeyGetData(SecKeyRef key) {
     CFDataRef data = NULL;
-    
+
+#if defined(NS_BLOCK_ASSERTIONS)
+    SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
+#else
     OSStatus status = SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
     NSCAssert(status == errSecSuccess, @"SecItemExport error: %ld", (long int)status);
+#endif
+
     NSCParameterAssert(data);
     
     return (__bridge_transfer NSData *)data;
@@ -51,12 +56,21 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
 
     SecPolicyRef policy = SecPolicyCreateBasicX509();
     SecTrustRef allowedTrust = NULL;
+#if defined(NS_BLOCK_ASSERTIONS)
+    SecTrustCreateWithCertificates(tempCertificates, policy, &allowedTrust);
+#else
     OSStatus status = SecTrustCreateWithCertificates(tempCertificates, policy, &allowedTrust);
     NSCAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
+#endif
 
     SecTrustResultType result = 0;
+
+#if defined(NS_BLOCK_ASSERTIONS)
+    SecTrustEvaluate(allowedTrust, &result);
+#else
     status = SecTrustEvaluate(allowedTrust, &result);
     NSCAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
+#endif
 
     SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
     NSCParameterAssert(allowedPublicKey);
@@ -71,8 +85,14 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
 
 static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
     SecTrustResultType result = 0;
+
+#if defined(NS_BLOCK_ASSERTIONS)
+    SecTrustEvaluate(serverTrust, &result);
+#else
     OSStatus status = SecTrustEvaluate(serverTrust, &result);
     NSCAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
+#endif
+
     return (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
 }
 
