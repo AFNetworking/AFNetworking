@@ -232,8 +232,7 @@
     expect(blockResponseObject).willNot.beNil();
 }
 
-- (void)testThatOperationPostsDidStartNotificationWhenStarted{
-
+- (void)testThatOperationPostsDidStartNotificationWhenStarted {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
@@ -275,8 +274,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:observer];
 }
 
--(void)testThatCompletionBlockForBatchRequestsIsFiredAfterAllOperationCompletionBlocks
-{
+-(void)testThatCompletionBlockForBatchRequestsIsFiredAfterAllOperationCompletionBlocks {
     __block BOOL firstBlock = NO;
     __block BOOL secondBlock = NO;
 
