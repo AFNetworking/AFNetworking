@@ -205,7 +205,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     if (userAgent) {
         if (![userAgent canBeConvertedToEncoding:NSASCIIStringEncoding]) {
             NSMutableString *mutableUserAgent = [userAgent mutableCopy];
-            CFStringTransform((__bridge CFMutableStringRef)(mutableUserAgent), NULL, CFSTR("Any-Latin; Latin-ASCII; [:^ASCII:] Remove"), false);
+            CFStringTransform((__bridge CFMutableStringRef)(mutableUserAgent), NULL, (__bridge CFStringRef)@"Any-Latin; Latin-ASCII; [:^ASCII:] Remove", false);
             userAgent = mutableUserAgent;
         }
         [self setValue:userAgent forHTTPHeaderField:@"User-Agent"];
