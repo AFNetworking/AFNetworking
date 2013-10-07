@@ -643,8 +643,10 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
             continue;
         }
 
-        id responseObject = [serializer responseObjectForResponse:response data:data error:error];
+        NSError *serializerError = nil;
+        id responseObject = [serializer responseObjectForResponse:response data:data error:&serializerError];
         if (responseObject) {
+            *error = serializerError;
             return responseObject;
         }
     }
