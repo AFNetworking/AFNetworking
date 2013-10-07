@@ -275,4 +275,37 @@
     [[NSNotificationCenter defaultCenter] removeObserver:observer];
 }
 
+-(void)testThatCompletionBlockForBatchRequestsIsFiredAfterAllOperationCompletionBlocks
+{
+    __block BOOL firstBlock = NO;
+    __block BOOL secondBlock = NO;
+    NSURLRequest *request1 = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation1 = [[AFHTTPRequestOperation alloc] initWithRequest:request1];
+    [operation1 setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        firstBlock = YES;
+    } failure:nil];
+    [operation1 setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    NSURLRequest *request2 = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation2 = [[AFHTTPRequestOperation alloc] initWithRequest:request2];
+    [operation2 setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        secondBlock = YES;
+    } failure:nil];
+    [operation2 setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    __block BOOL completionBlockFiredAfterOtherBlocks = NO;
+    NSArray * batchRequests = [AFURLConnectionOperation batchOfRequestOperations:@[operation1,operation2]
+                                                                   progressBlock:nil
+                                                                 completionBlock:^(NSArray *operations) {
+                                                                   if (firstBlock && secondBlock)
+                                                                   {
+                                                                       completionBlockFiredAfterOtherBlocks = YES;
+                                                                   }
+                                                                 }];
+    NSOperationQueue * queue = [NSOperationQueue new];
+    [queue addOperations:batchRequests waitUntilFinished:NO];
+    
+    expect(completionBlockFiredAfterOtherBlocks).will.beTruthy();
+}
+
 @end
