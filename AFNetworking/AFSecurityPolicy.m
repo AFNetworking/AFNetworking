@@ -202,21 +202,31 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         case AFSSLPinningModeNone:
             return (self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust));
         case AFSSLPinningModeCertificate: {
+            if(!AFServerTrustIsValid(serverTrust))
+                return NO;
+            
+            NSInteger trustedCertCount = 0;
             for (NSData *trustChainCertificate in AFCertificateTrustChainForServerTrust(serverTrust)) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
-                    return YES;
+                    trustedCertCount += 1;
                 }
             }
+            return trustedCertCount > 0 && trustedCertCount == [self.pinnedCertificates count];
         }
             break;
         case AFSSLPinningModePublicKey: {
+            if(!AFServerTrustIsValid(serverTrust))
+                return NO;
+            
+            NSInteger trustedPublicKeyCount = 0;
             for (id trustChainPublicKey in AFPublicKeyTrustChainForServerTrust(serverTrust)) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
                     if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
-                        return YES;
+                        trustedPublicKeyCount += 1;
                     }
                 }
             }
+            return trustedPublicKeyCount > 0 && trustedPublicKeyCount == [self.pinnedPublicKeys count];
         }
             break;
         default:
