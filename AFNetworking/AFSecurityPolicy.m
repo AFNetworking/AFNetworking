@@ -205,7 +205,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             if(!AFServerTrustIsValid(serverTrust))
                 return NO;
             
-            NSInteger trustedCertCount = 0;
+            NSUInteger trustedCertCount = 0;
             for (NSData *trustChainCertificate in AFCertificateTrustChainForServerTrust(serverTrust)) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
                     trustedCertCount += 1;
@@ -218,7 +218,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             if(!AFServerTrustIsValid(serverTrust))
                 return NO;
             
-            NSInteger trustedPublicKeyCount = 0;
+            NSUInteger trustedPublicKeyCount = 0;
             for (id trustChainPublicKey in AFPublicKeyTrustChainForServerTrust(serverTrust)) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
                     if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
