@@ -138,7 +138,8 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
 
 - (void)testPublicKeyPinningForHTTPBinOrgFailsWhenPinnedAgainstADNServerTrust {
     AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
-    [policy setPinnedCertificates:@[]];
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
     [policy setSSLPinningMode:AFSSLPinningModePublicKey];
 
     SecTrustRef trust = AFUTADNNetServerTrust();
@@ -148,7 +149,8 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
 
 - (void)testCertificatePinningForHTTPBinOrgFailsWhenPinnedAgainstADNServerTrust {
     AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
-    [policy setPinnedCertificates:@[]];
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
     [policy setSSLPinningMode:AFSSLPinningModeCertificate];
 
     SecTrustRef trust = AFUTADNNetServerTrust();
