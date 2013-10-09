@@ -25,12 +25,12 @@
 
 typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
     AFSSLPinningModeNone,
-    AFSSLPinningModePublicKey DEPRECATED_MSG_ATTRIBUTE("Use AFSSLPinningModePublicKeyChain") = 1,
-    AFSSLPinningModePublicKeyChain = 1,
-    AFSSLPinningModeCertificate DEPRECATED_MSG_ATTRIBUTE("Use AFSSLPinningModeCertificateChain") = 2,
-    AFSSLPinningModeCertificateChain = 2,
     AFSSLPinningModeLeafPublicKey,
-    AFSSLPinningModeLeafCertificate
+    AFSSLPinningModePublicKey DEPRECATED_MSG_ATTRIBUTE("Use AFSSLPinningModeLeafPublicKey") = 1,
+    AFSSLPinningModeLeafCertificate = 2,
+    AFSSLPinningModeCertificate DEPRECATED_MSG_ATTRIBUTE("Use AFSSLPinningModeLeafCertificate") = 2,
+    AFSSLPinningModePublicKeyChain = 3,
+    AFSSLPinningModeCertificateChain = 4
 };
 
 /**
