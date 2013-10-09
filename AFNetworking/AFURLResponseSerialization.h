@@ -105,8 +105,8 @@
 
  By default, `AFJSONSerializer` accepts the following MIME types, which includes the official standard, `application/json`, as well as other commonly-used types:
 
- - `application/json`
  - `text/json`
+ - `text/javascript`
  */
 @interface AFJSONResponseSerializer : AFHTTPResponseSerializer
 
@@ -131,7 +131,6 @@
 
  By default, `AFXMLParserSerializer` accepts the following MIME types, which includes the official standard, `application/xml`, as well as other commonly-used types:
 
- - `application/xml`
  - `text/xml`
  */
 @interface AFXMLParserResponseSerializer : AFHTTPResponseSerializer
@@ -147,7 +146,6 @@
 
  By default, `AFXMLDocumentSerializer` accepts the following MIME types, which includes the official standard, `application/xml`, as well as other commonly-used types:
 
- - `application/xml`
  - `text/xml`
  */
 @interface AFXMLDocumentResponseSerializer : AFHTTPResponseSerializer
