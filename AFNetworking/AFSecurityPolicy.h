@@ -107,16 +107,24 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 
  enum {
  AFSSLPinningModeNone,
- AFSSLPinningModePublicKey,
- AFSSLPinningModeCertificate,
+ AFSSLPinningModeLeafPublicKey,
+ AFSSLPinningModeLeafCertificate,
+ AFSSLPinningModePublicKeyChain,
+ AFSSLPinningModeCertificateChain
  }
 
  `AFSSLPinningModeNone`
- Do not validate servers against pinned certificates.
+ Do not used pinned certificates to validate servers.
 
- `AFSSLPinningModePublicKey`
+ `AFSSLPinningModeLeafPublicKey`
  Validate host certificates against public keys of pinned certificates.
 
- `AFSSLPinningModeCertificate`
+ `AFSSLPinningModeLeafCertificate`
  Validate host certificates against pinned certificates.
+ 
+ `AFSSLPinningModePublicKeyChain`
+ Pin SSL connections to certificate chain public keys (SPKI).
+ 
+ `AFSSLPinningModeCertificateChain`
+ Pin SSL connections to exact certificate chain. This may cause problems when a certificate expires and needs re-issuance.
 */

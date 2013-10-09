@@ -318,19 +318,29 @@
 
  enum {
  AFSSLPinningModeNone,
- AFSSLPinningModePublicKey,
- AFSSLPinningModeCertificate,
+ AFSSLPinningModeLeafPublicKey,
+ AFSSLPinningModeLeafCertificate,
+ AFSSLPinningModePublicKeyChain,
+ AFSSLPinningModeCertificateChain
  }
  
  `AFSSLPinningModeNone`
- Do not pin SSL connections
+ Do not used pinned certificates to verify SSL connections
 
- `AFSSLPinningModePublicKey`
- Pin SSL connections to certificate public key (SPKI).
+ `AFSSLPinningModeLeafPublicKey`
+ Pin SSL connections to public key (SPKI) of leaf certificate.
 
- `AFSSLPinningModeCertificate`
- Pin SSL connections to exact certificate. This may cause problems when your certificate expires and needs re-issuance.
+ `AFSSLPinningModeLeafCertificate`
+ Pin SSL connections to exact leaf certificate. This may cause problems when your certificate expires and needs re-issuance.
 
+ `AFSSLPinningModePublicKeyChain`
+ Pin SSL connections to public keys (SPKI) of certificate chain.
+ 
+ `AFSSLPinningModeCertificateChain`
+ Pin SSL connections to exact certificate chain. This may cause problems when a certificate expires and needs re-issuance.
+ 
+ 
+ 
  ## User info dictionary keys
 
  These keys may exist in the user info dictionary, in addition to those defined for NSError.
