@@ -47,10 +47,13 @@ static dispatch_group_t http_request_operation_completion_group() {
 @interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
-@property (readwrite, nonatomic, strong) NSError *error;
+@property (readwrite, nonatomic, strong) id responseObject;
+@property (readwrite, nonatomic, strong) NSError *responseSerializationError;
+@property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
 @implementation AFHTTPRequestOperation
+@dynamic lock;
 
 - (instancetype)initWithRequest:(NSURLRequest *)urlRequest {
     self = [super initWithRequest:urlRequest];
@@ -66,7 +69,33 @@ static dispatch_group_t http_request_operation_completion_group() {
 - (void)setResponseSerializer:(AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
     NSParameterAssert(responseSerializer);
 
+    [self.lock lock];
     _responseSerializer = responseSerializer;
+    self.responseObject = nil;
+    self.responseSerializationError = nil;
+    [self.lock unlock];
+}
+
+- (id)responseObject {
+    [self.lock lock];
+    if (!_responseObject && [self.responseData length] > 0 && [self isFinished] && !self.error) {
+        NSError *error = nil;
+        self.responseObject = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
+        if (error) {
+            self.responseSerializationError = error;
+        }
+    }
+    [self.lock unlock];
+
+    return _responseObject;
+}
+
+- (NSError *)error {
+    if (_responseSerializationError) {
+        return _responseSerializationError;
+    } else {
+        return [super error];
+    }
 }
 
 #pragma mark - AFHTTPRequestOperation
@@ -91,12 +120,8 @@ static dispatch_group_t http_request_operation_completion_group() {
                     });
                 }
             } else {
-                NSError *error = nil;
-                id responseObject = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
-
-                if (error) {
-                    self.error = error;
-
+                id responseObject = self.responseObject;
+                if (self.error) {
                     if (failure) {
                         dispatch_group_async(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                             failure(self, self.error);
