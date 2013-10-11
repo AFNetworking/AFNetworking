@@ -85,7 +85,7 @@ For compatibility with iOS 4.3 or Mac OS X 10.6, use the [latest 0.10.x release]
 
 ### HTTP Request Operation Manager
 
-`AFHTTPRequestOperationManager` encapsulates the common patterns of communicating with an web application over HTTP, including request creation, response serialization, network reachability monitoring, and security, as well as request operation management.
+`AFHTTPRequestOperationManager` encapsulates the common patterns of communicating with a web application over HTTP, including request creation, response serialization, network reachability monitoring, and security, as well as request operation management.
 
 #### `GET` Request
 
