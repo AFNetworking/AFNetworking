@@ -616,8 +616,12 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
             if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
                 if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust]) {
-                    disposition = NSURLSessionAuthChallengeUseCredential;
                     credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                    if (credential) {
+                        disposition = NSURLSessionAuthChallengeUseCredential;
+                    } else {
+                        disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+                    }
                 } else {
                     disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
                 }
