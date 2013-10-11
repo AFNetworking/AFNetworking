@@ -12,7 +12,6 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.8'
 
   s.public_header_files = 'AFNetworking/*.h'
-
   s.source_files = 'AFNetworking/AFNetworking.h'
   
   s.subspec 'Serialization' do |ss|
@@ -40,7 +39,6 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'NSURLSession' do |ss|
-
     ss.dependency 'AFNetworking/Serialization'
     ss.dependency 'AFNetworking/Reachability'
     ss.dependency 'AFNetworking/Security'
