@@ -35,8 +35,8 @@
     #import "AFHTTPRequestOperation.h"
     #import "AFHTTPRequestOperationManager.h"
 
-#if ( ( defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1090) || \
-      ( defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000 ) )
+#if ( ( defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090) || \
+      ( defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000 ) )
     #import "AFURLSessionManager.h"
     #import "AFHTTPSessionManager.h"
 #endif
