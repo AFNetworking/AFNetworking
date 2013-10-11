@@ -157,8 +157,6 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
     return self;
 }
 
-
-
 #pragma mark - AFURLRequestSerialization
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
