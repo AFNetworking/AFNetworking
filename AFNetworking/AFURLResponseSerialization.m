@@ -62,6 +62,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
             NSDictionary *userInfo = @{
                                        NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%d)", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], response.statusCode],
                                        NSURLErrorFailingURLErrorKey:[response URL],
+                                       NSLocalizedRecoverySuggestionErrorKey: data,
                                        AFNetworkingOperationFailingURLResponseErrorKey: response
                                        };
             if (error) {
@@ -75,6 +76,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
                 NSDictionary *userInfo = @{
                                            NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: unacceptable content-type: %@", @"AFNetworking", nil), [response MIMEType]],
                                            NSURLErrorFailingURLErrorKey:[response URL],
+                                           NSLocalizedRecoverySuggestionErrorKey: data,
                                            AFNetworkingOperationFailingURLResponseErrorKey: response
                                            };
                 if (error) {
