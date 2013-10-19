@@ -153,7 +153,7 @@ static char kAFResponseSerializerKey;
 
             [[[strongSelf class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if ([[urlRequest URL] isEqual:[operation.response URL]]) {
+            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
                 if (failure) {
                     failure(urlRequest, operation.response, error);
                 }
