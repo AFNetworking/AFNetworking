@@ -482,10 +482,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
                         progressBlock:(void (^)(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations))progressBlock
                       completionBlock:(void (^)(NSArray *operations))completionBlock
 {
-    if (!operations || [operations count] == 0) {
-        return 0;
-    }
-
     __block dispatch_group_t group = dispatch_group_create();
     NSBlockOperation *batchedOperation = [NSBlockOperation blockOperationWithBlock:^{
         dispatch_group_notify(group, dispatch_get_main_queue(), ^{
@@ -525,8 +521,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         dispatch_group_enter(group);
         [batchedOperation addDependency:operation];
     }
-
-    return [operations arrayByAddingObject:batchedOperation];
+    
+    if (!operations || [operations count] == 0) {
+        return @[batchedOperation];
+    } else {
+        return [operations arrayByAddingObject:batchedOperation];
+    }
 }
 
 #pragma mark - NSURLConnectionDelegate
