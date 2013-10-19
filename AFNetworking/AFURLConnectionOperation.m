@@ -483,7 +483,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
                       completionBlock:(void (^)(NSArray *operations))completionBlock
 {
     if (!operations || [operations count] == 0) {
-        return 0;
+        return @[[NSBlockOperation blockOperationWithBlock:^{
+            if (completionBlock) {
+                completionBlock(@[]);
+            }
+        }]];
     }
 
     __block dispatch_group_t group = dispatch_group_create();
