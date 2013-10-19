@@ -279,28 +279,28 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    NSURL *baseURL = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(baseURL))];
-    NSURLSessionConfiguration *configuration = [aDecoder decodeObjectForKey:@"sessionConfiguration"];
+- (id)initWithCoder:(NSCoder *)decoder {
+    NSURL *baseURL = [decoder decodeObjectForKey:NSStringFromSelector(@selector(baseURL))];
+    NSURLSessionConfiguration *configuration = [decoder decodeObjectForKey:@"sessionConfiguration"];
 
     self = [self initWithBaseURL:baseURL sessionConfiguration:configuration];
     if (!self) {
         return nil;
     }
 
-    self.requestSerializer = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(requestSerializer))];
-    self.responseSerializer = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
+    self.requestSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(requestSerializer))];
+    self.responseSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeObject:self.baseURL forKey:NSStringFromSelector(@selector(baseURL))];
-    [aCoder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
-    [aCoder encodeObject:self.requestSerializer forKey:NSStringFromSelector(@selector(requestSerializer))];
-    [aCoder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
+    [coder encodeObject:self.baseURL forKey:NSStringFromSelector(@selector(baseURL))];
+    [coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
+    [coder encodeObject:self.requestSerializer forKey:NSStringFromSelector(@selector(requestSerializer))];
+    [coder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
 }
 
 #pragma mark - NSCopying

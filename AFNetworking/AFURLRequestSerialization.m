@@ -354,21 +354,21 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (id)initWithCoder:(NSCoder *)decoder {
     self = [self init];
     if (!self) {
         return nil;
     }
 
-    self.mutableHTTPRequestHeaders = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
-    self.queryStringSerializationStyle = (AFHTTPRequestQueryStringSerializationStyle)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(queryStringSerializationStyle))];
+    self.mutableHTTPRequestHeaders = [decoder decodeObjectForKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
+    self.queryStringSerializationStyle = (AFHTTPRequestQueryStringSerializationStyle)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(queryStringSerializationStyle))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:self.mutableHTTPRequestHeaders forKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
-    [aCoder encodeInteger:self.queryStringSerializationStyle forKey:NSStringFromSelector(@selector(queryStringSerializationStyle))];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.mutableHTTPRequestHeaders forKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
+    [coder encodeInteger:self.queryStringSerializationStyle forKey:NSStringFromSelector(@selector(queryStringSerializationStyle))];
 }
 
 #pragma mark - NSCopying
@@ -1103,23 +1103,23 @@ typedef enum {
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.format = (NSPropertyListFormat)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(format))];
-    self.writeOptions = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(writeOptions))];
+    self.format = (NSPropertyListFormat)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(format))];
+    self.writeOptions = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(writeOptions))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeInteger:self.format forKey:NSStringFromSelector(@selector(format))];
-    [aCoder encodeInteger:(NSInteger)self.writeOptions forKey:NSStringFromSelector(@selector(writeOptions))];
+    [coder encodeInteger:self.format forKey:NSStringFromSelector(@selector(format))];
+    [coder encodeInteger:(NSInteger)self.writeOptions forKey:NSStringFromSelector(@selector(writeOptions))];
 }
 
 #pragma mark - NSCopying

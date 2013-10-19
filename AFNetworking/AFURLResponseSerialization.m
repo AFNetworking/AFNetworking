@@ -102,21 +102,21 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (id)initWithCoder:(NSCoder *)decoder {
     self = [self init];
     if (!self) {
         return nil;
     }
 
-    self.acceptableStatusCodes = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
-    self.acceptableContentTypes = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableContentTypes))];
+    self.acceptableStatusCodes = [decoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
+    self.acceptableContentTypes = [decoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableContentTypes))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:self.acceptableStatusCodes forKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
-    [aCoder encodeObject:self.acceptableContentTypes forKey:NSStringFromSelector(@selector(acceptableContentTypes))];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.acceptableStatusCodes forKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
+    [coder encodeObject:self.acceptableContentTypes forKey:NSStringFromSelector(@selector(acceptableContentTypes))];
 }
 
 #pragma mark - NSCopying
@@ -206,21 +206,21 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.readingOptions = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(readingOptions))];
+    self.readingOptions = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(readingOptions))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeInteger:self.readingOptions forKey:NSStringFromSelector(@selector(readingOptions))];
+    [coder encodeInteger:self.readingOptions forKey:NSStringFromSelector(@selector(readingOptions))];
 }
 
 #pragma mark - NSCopying
@@ -317,21 +317,21 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.options = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(options))];
+    self.options = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(options))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeInteger:self.options forKey:NSStringFromSelector(@selector(options))];
+    [coder encodeInteger:self.options forKey:NSStringFromSelector(@selector(options))];
 }
 
 #pragma mark - NSCopying
@@ -403,23 +403,23 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.format = (NSPropertyListFormat)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(format))];
-    self.readOptions = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(readOptions))];
+    self.format = (NSPropertyListFormat)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(format))];
+    self.readOptions = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(readOptions))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeInteger:self.format forKey:NSStringFromSelector(@selector(format))];
-    [aCoder encodeInteger:(NSInteger)self.readOptions forKey:NSStringFromSelector(@selector(readOptions))];
+    [coder encodeInteger:self.format forKey:NSStringFromSelector(@selector(format))];
+    [coder encodeInteger:(NSInteger)self.readOptions forKey:NSStringFromSelector(@selector(readOptions))];
 }
 
 #pragma mark - NSCopying
@@ -585,26 +585,26 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    self.imageScale = [aDecoder decodeFloatForKey:NSStringFromSelector(@selector(imageScale))];
-    self.automaticallyInflatesResponseImage = [aDecoder decodeBoolForKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
+    self.imageScale = [decoder decodeFloatForKey:NSStringFromSelector(@selector(imageScale))];
+    self.automaticallyInflatesResponseImage = [decoder decodeBoolForKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    [aCoder encodeFloat:self.imageScale forKey:NSStringFromSelector(@selector(imageScale))];
-    [aCoder encodeBool:self.automaticallyInflatesResponseImage forKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
+    [coder encodeFloat:self.imageScale forKey:NSStringFromSelector(@selector(imageScale))];
+    [coder encodeBool:self.automaticallyInflatesResponseImage forKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
 }
 
@@ -662,21 +662,21 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.responseSerializers = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializers))];
+    self.responseSerializers = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializers))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeObject:self.responseSerializers forKey:NSStringFromSelector(@selector(responseSerializers))];
+    [coder encodeObject:self.responseSerializers forKey:NSStringFromSelector(@selector(responseSerializers))];
 }
 
 #pragma mark - NSCopying

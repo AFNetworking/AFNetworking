@@ -205,24 +205,24 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    NSURL *baseURL = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(baseURL))];
+- (id)initWithCoder:(NSCoder *)decoder {
+    NSURL *baseURL = [decoder decodeObjectForKey:NSStringFromSelector(@selector(baseURL))];
 
     self = [self initWithBaseURL:baseURL];
     if (!self) {
         return nil;
     }
 
-    self.requestSerializer = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(requestSerializer))];
-    self.responseSerializer = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
+    self.requestSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(requestSerializer))];
+    self.responseSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:self.baseURL forKey:NSStringFromSelector(@selector(baseURL))];
-    [aCoder encodeObject:self.requestSerializer forKey:NSStringFromSelector(@selector(requestSerializer))];
-    [aCoder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.baseURL forKey:NSStringFromSelector(@selector(baseURL))];
+    [coder encodeObject:self.requestSerializer forKey:NSStringFromSelector(@selector(requestSerializer))];
+    [coder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
 }
 
 #pragma mark - NSCopying
