@@ -108,15 +108,15 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
         return nil;
     }
 
-    self.acceptableStatusCodes = [aDecoder decodeObjectForKey:@"acceptableStatusCodes"];
-    self.acceptableContentTypes = [aDecoder decodeObjectForKey:@"acceptableContentTypes"];
+    self.acceptableStatusCodes = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
+    self.acceptableContentTypes = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableContentTypes))];
 
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:self.acceptableStatusCodes forKey:@"acceptableStatusCodes"];
-    [aCoder encodeObject:self.acceptableContentTypes forKey:@"acceptableContentTypes"];
+    [aCoder encodeObject:self.acceptableStatusCodes forKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
+    [aCoder encodeObject:self.acceptableContentTypes forKey:NSStringFromSelector(@selector(acceptableContentTypes))];
 }
 
 #pragma mark - NSCopying
@@ -212,7 +212,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
         return nil;
     }
 
-    self.readingOptions = [aDecoder decodeIntegerForKey:@"readingOptions"];
+    self.readingOptions = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(readingOptions))];
 
     return self;
 }
@@ -220,7 +220,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
-    [aCoder encodeInteger:self.readingOptions forKey:@"readingOptions"];
+    [aCoder encodeInteger:self.readingOptions forKey:NSStringFromSelector(@selector(readingOptions))];
 }
 
 #pragma mark - NSCopying
@@ -323,7 +323,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
         return nil;
     }
 
-    self.options = [aDecoder decodeIntegerForKey:@"options"];
+    self.options = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(options))];
 
     return self;
 }
@@ -331,7 +331,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
-    [aCoder encodeInteger:self.options forKey:@"options"];
+    [aCoder encodeInteger:self.options forKey:NSStringFromSelector(@selector(options))];
 }
 
 #pragma mark - NSCopying
@@ -409,8 +409,8 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
         return nil;
     }
 
-    self.format = (NSPropertyListFormat)[aDecoder decodeIntegerForKey:@"format"];
-    self.readOptions = [aDecoder decodeIntegerForKey:@"readOptions"];
+    self.format = (NSPropertyListFormat)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(format))];
+    self.readOptions = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(readOptions))];
 
     return self;
 }
@@ -418,8 +418,8 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
-    [aCoder encodeInteger:self.format forKey:@"format"];
-    [aCoder encodeInteger:(NSInteger)self.readOptions forKey:@"readOptions"];
+    [aCoder encodeInteger:self.format forKey:NSStringFromSelector(@selector(format))];
+    [aCoder encodeInteger:(NSInteger)self.readOptions forKey:NSStringFromSelector(@selector(readOptions))];
 }
 
 #pragma mark - NSCopying
@@ -592,8 +592,8 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     }
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    self.imageScale = [aDecoder decodeFloatForKey:@"imageScale"];
-    self.automaticallyInflatesResponseImage = [aDecoder decodeBoolForKey:@"automaticallyInflatesResponseImage"];
+    self.imageScale = [aDecoder decodeFloatForKey:NSStringFromSelector(@selector(imageScale))];
+    self.automaticallyInflatesResponseImage = [aDecoder decodeBoolForKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
 
     return self;
@@ -603,8 +603,8 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     [super encodeWithCoder:aCoder];
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    [aCoder encodeFloat:self.imageScale forKey:@"imageScale"];
-    [aCoder encodeBool:self.automaticallyInflatesResponseImage forKey:@"automaticallyInflatesResponseImage"];
+    [aCoder encodeFloat:self.imageScale forKey:NSStringFromSelector(@selector(imageScale))];
+    [aCoder encodeBool:self.automaticallyInflatesResponseImage forKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
 }
 
@@ -668,7 +668,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         return nil;
     }
 
-    self.responseSerializers = [aDecoder decodeObjectForKey:@"responseSerializers"];
+    self.responseSerializers = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializers))];
 
     return self;
 }
@@ -676,7 +676,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
-    [aCoder encodeObject:self.responseSerializers forKey:@"responseSerializers"];
+    [aCoder encodeObject:self.responseSerializers forKey:NSStringFromSelector(@selector(responseSerializers))];
 }
 
 #pragma mark - NSCopying

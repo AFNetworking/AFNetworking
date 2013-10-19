@@ -172,7 +172,7 @@ static dispatch_group_t http_request_operation_completion_group() {
         return nil;
     }
 
-    self.responseSerializer = [aDecoder decodeObjectForKey:@"responseSerializer"];
+    self.responseSerializer = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
 
     return self;
 }
@@ -180,7 +180,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [super encodeWithCoder:aCoder];
 
-    [aCoder encodeObject:self.responseSerializer forKey:@"responseSerializer"];
+    [aCoder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
 }
 
 #pragma mark - NSCopying

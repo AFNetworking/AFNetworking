@@ -667,19 +667,19 @@ didReceiveResponse:(NSURLResponse *)response
 #pragma mark - NSCoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
-    NSURLRequest *request = [aDecoder decodeObjectForKey:@"request"];
+    NSURLRequest *request = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(request))];
     
     self = [self initWithRequest:request];
     if (!self) {
         return nil;
     }
     
-    self.state = (AFOperationState)[aDecoder decodeIntegerForKey:@"state"];
-    self.cancelled = [aDecoder decodeBoolForKey:@"isCancelled"];
-    self.response = [aDecoder decodeObjectForKey:@"response"];
-    self.error = [aDecoder decodeObjectForKey:@"error"];
-    self.responseData = [aDecoder decodeObjectForKey:@"responseData"];
-    self.totalBytesRead = [aDecoder decodeInt64ForKey:@"totalBytesRead"];
+    self.state = (AFOperationState)[aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(state))];
+    self.cancelled = [aDecoder decodeBoolForKey:NSStringFromSelector(@selector(isCancelled))];
+    self.response = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(response))];
+    self.error = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(error))];
+    self.responseData = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(responseData))];
+    self.totalBytesRead = [aDecoder decodeInt64ForKey:NSStringFromSelector(@selector(totalBytesRead))];
 
     return self;
 }
@@ -687,23 +687,23 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [self pause];
     
-    [aCoder encodeObject:self.request forKey:@"request"];
+    [aCoder encodeObject:self.request forKey:NSStringFromSelector(@selector(request))];
     
     switch (self.state) {
         case AFOperationExecutingState:
         case AFOperationPausedState:
-            [aCoder encodeInteger:AFOperationReadyState forKey:@"state"];
+            [aCoder encodeInteger:AFOperationReadyState forKey:NSStringFromSelector(@selector(state))];
             break;
         default:
-            [aCoder encodeInteger:self.state forKey:@"state"];
+            [aCoder encodeInteger:self.state forKey:NSStringFromSelector(@selector(state))];
             break;
     }
     
-    [aCoder encodeBool:[self isCancelled] forKey:@"isCancelled"];
-    [aCoder encodeObject:self.response forKey:@"response"];
-    [aCoder encodeObject:self.error forKey:@"error"];
-    [aCoder encodeObject:self.responseData forKey:@"responseData"];
-    [aCoder encodeInt64:self.totalBytesRead forKey:@"totalBytesRead"];
+    [aCoder encodeBool:[self isCancelled] forKey:NSStringFromSelector(@selector(isCancelled))];
+    [aCoder encodeObject:self.response forKey:NSStringFromSelector(@selector(response))];
+    [aCoder encodeObject:self.error forKey:NSStringFromSelector(@selector(error))];
+    [aCoder encodeObject:self.responseData forKey:NSStringFromSelector(@selector(responseData))];
+    [aCoder encodeInt64:self.totalBytesRead forKey:NSStringFromSelector(@selector(totalBytesRead))];
 }
 
 #pragma mark - NSCopying
