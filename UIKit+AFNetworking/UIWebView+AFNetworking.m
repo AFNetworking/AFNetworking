@@ -48,6 +48,44 @@ static char kAFHTTPRequestOperationKey;
 
 @end
 
+@interface NSString (AFMIMEAware)
+
+@property (readonly, getter=getEncodingOrUtf8) NSString *encodingOrUtf8;
+@property (readonly, getter=getNSEncoding) NSStringEncoding nsEncoding;
+@property (readonly, getter=getMimeType) NSString *mimeType;
+
+@end
+
+@implementation NSString (AFMIMEAware)
+
+/**
+ * See http://www.w3.org/International/O-HTTP-charset
+ */
+-(NSString*)getEncodingOrUtf8 {
+    NSArray *parts = [self componentsSeparatedByString:@"charset="];
+    NSString *charset;
+    if ([parts count] == 2) {
+      charset = [[parts objectAtIndex:1] lowercaseString];
+    }
+    return charset != nil ? charset : @"utf-8";
+}
+
+/**
+ * Convert an IANA character set to a `NSStringEncoding`. If
+ * `encodingName` is `nil`, return `NSUTF8StringEncoding` as a guess.
+ */
+-(NSStringEncoding)getNSEncoding {
+    NSString *encName = self.encodingOrUtf8;
+    CFStringEncoding cfEnc = CFStringConvertIANACharSetNameToEncoding((CFStringRef)encName);
+    return CFStringConvertEncodingToNSStringEncoding(cfEnc);
+}
+
+-(NSString*)getMimeType {
+    return [[self componentsSeparatedByString:@"; "] objectAtIndex:0];
+}
+
+@end
+
 #pragma mark -
 
 @implementation UIWebView (AFNetworking)
