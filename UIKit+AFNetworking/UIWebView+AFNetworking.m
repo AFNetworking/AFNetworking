@@ -143,8 +143,14 @@ static char kAFHTTPRequestOperationKey;
     __weak __typeof(self)weakSelf = self;
     [self.af_HTTPRequestOperation setDownloadProgressBlock:progress];
     [self.af_HTTPRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id __unused responseObject) {
-        NSString *HTML = success ? success(operation.response, operation.responseString) : operation.responseString;
-        [weakSelf loadHTMLString:HTML baseURL:[operation.response URL]];
+          NSString *mimeType = [[operation.response allHeaderFields] objectForKey:@"Content-Type"];
+          NSData *data = operation.responseData;
+          NSString *modified = success ? success(operation.response, operation.responseString) : nil;
+          if (modified) {
+              data = [modified dataUsingEncoding:mimeType.nsEncoding];
+          }
+
+          [weakSelf loadData:data MIMEType:mimeType.mimeType textEncodingName:mimeType.encodingOrUtf8 baseURL:[operation.response URL]];
     } failure:^(AFHTTPRequestOperation * __unused operation, NSError *error) {
         if (failure) {
             failure(error);
