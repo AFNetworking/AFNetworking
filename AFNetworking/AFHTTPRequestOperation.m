@@ -78,7 +78,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 - (id)responseObject {
     [self.lock lock];
-    if (!_responseObject && [self.responseData length] > 0 && [self isFinished] && !self.error) {
+    if (!_responseObject && [self isFinished] && !self.error) {
         NSError *error = nil;
         self.responseObject = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
         if (error) {
