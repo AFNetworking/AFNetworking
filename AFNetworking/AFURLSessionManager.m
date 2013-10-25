@@ -615,20 +615,18 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-                if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust]) {
-                    credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
-                    if (credential) {
-                        disposition = NSURLSessionAuthChallengeUseCredential;
-                    } else {
-                        disposition = NSURLSessionAuthChallengePerformDefaultHandling;
-                    }
+            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust]) {
+                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                if (credential) {
+                    disposition = NSURLSessionAuthChallengeUseCredential;
                 } else {
-                    disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                    disposition = NSURLSessionAuthChallengePerformDefaultHandling;
                 }
             } else {
-                disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
+        } else {
+            disposition = NSURLSessionAuthChallengePerformDefaultHandling;
         }
     }
 
