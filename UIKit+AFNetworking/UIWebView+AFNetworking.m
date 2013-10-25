@@ -93,6 +93,32 @@ static char kAFHTTPRequestOperationKey;
             success:(NSString * (^)(NSHTTPURLResponse *response, NSString *HTML))success
             failure:(void (^)(NSError *error))failure
 {
+    [self loadRequest:request MIMEType:nil textEncodingName:nil progress:progress success:^NSData *(NSHTTPURLResponse *response, NSData *data) {
+        if (!success) {
+            return data;
+        }
+
+        NSStringEncoding stringEncoding = NSUTF8StringEncoding;
+        if (response.textEncodingName) {
+            CFStringEncoding encoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName);
+            if (encoding != kCFStringEncodingInvalidId) {
+                stringEncoding = CFStringConvertEncodingToNSStringEncoding(encoding);
+            }
+        }
+
+        return [[[NSString alloc] initWithData:data encoding:stringEncoding] dataUsingEncoding:stringEncoding];
+    } failure:failure];
+}
+
+- (void)loadRequest:(NSURLRequest *)request
+           MIMEType:(NSString *)MIMEType
+   textEncodingName:(NSString *)textEncodingName
+           progress:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
+            success:(NSData * (^)(NSHTTPURLResponse *response, NSData *data))success
+            failure:(void (^)(NSError *error))failure
+{
+    NSParameterAssert(request);
+
     if (self.af_HTTPRequestOperation) {
         [self.af_HTTPRequestOperation cancel];
     }
@@ -101,12 +127,16 @@ static char kAFHTTPRequestOperationKey;
 
     self.af_HTTPRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     self.af_HTTPRequestOperation.responseSerializer = self.responseSerializer;
-    
+
     __weak __typeof(self)weakSelf = self;
     [self.af_HTTPRequestOperation setDownloadProgressBlock:progress];
     [self.af_HTTPRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id __unused responseObject) {
-        NSString *HTML = success ? success(operation.response, operation.responseString) : operation.responseString;
-        [weakSelf loadHTMLString:HTML baseURL:[operation.response URL]];
+        NSData *data = success ? success(operation.response, operation.responseData) : operation.responseData;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+        [weakSelf loadData:data MIMEType:(MIMEType ?: [operation.response MIMEType]) textEncodingName:(textEncodingName ?: [operation.response textEncodingName]) baseURL:[operation.response URL]];
+#pragma clang diagnostic pop
     } failure:^(AFHTTPRequestOperation * __unused operation, NSError *error) {
         if (failure) {
             failure(error);
