@@ -48,6 +48,44 @@ static char kAFHTTPRequestOperationKey;
 
 @end
 
+@interface NSString (AFMIMEAware)
+
+@property (readonly, getter=getEncodingOrUtf8) NSString *encodingOrUtf8;
+@property (readonly, getter=getNSEncoding) NSStringEncoding nsEncoding;
+@property (readonly, getter=getMimeType) NSString *mimeType;
+
+@end
+
+@implementation NSString (AFMIMEAware)
+
+/**
+ * See http://www.w3.org/International/O-HTTP-charset
+ */
+-(NSString*)getEncodingOrUtf8 {
+    NSArray *parts = [self componentsSeparatedByString:@"charset="];
+    NSString *charset;
+    if ([parts count] == 2) {
+      charset = [[parts objectAtIndex:1] lowercaseString];
+    }
+    return charset != nil ? charset : @"utf-8";
+}
+
+/**
+ * Convert an IANA character set to a `NSStringEncoding`. If
+ * `encodingName` is `nil`, return `NSUTF8StringEncoding` as a guess.
+ */
+-(NSStringEncoding)getNSEncoding {
+    NSString *encName = self.encodingOrUtf8;
+    CFStringEncoding cfEnc = CFStringConvertIANACharSetNameToEncoding((CFStringRef)encName);
+    return CFStringConvertEncodingToNSStringEncoding(cfEnc);
+}
+
+-(NSString*)getMimeType {
+    return [[self componentsSeparatedByString:@"; "] objectAtIndex:0];
+}
+
+@end
+
 #pragma mark -
 
 @implementation UIWebView (AFNetworking)
@@ -105,8 +143,14 @@ static char kAFHTTPRequestOperationKey;
     __weak __typeof(self)weakSelf = self;
     [self.af_HTTPRequestOperation setDownloadProgressBlock:progress];
     [self.af_HTTPRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id __unused responseObject) {
-        NSString *HTML = success ? success(operation.response, operation.responseString) : operation.responseString;
-        [weakSelf loadHTMLString:HTML baseURL:[operation.response URL]];
+          NSString *mimeType = [[operation.response allHeaderFields] objectForKey:@"Content-Type"];
+          NSData *data = operation.responseData;
+          NSString *modified = success ? success(operation.response, operation.responseString) : nil;
+          if (modified) {
+              data = [modified dataUsingEncoding:mimeType.nsEncoding];
+          }
+
+          [weakSelf loadData:data MIMEType:mimeType.mimeType textEncodingName:mimeType.encodingOrUtf8 baseURL:[operation.response URL]];
     } failure:^(AFHTTPRequestOperation * __unused operation, NSError *error) {
         if (failure) {
             failure(error);
