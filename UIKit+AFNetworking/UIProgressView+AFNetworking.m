@@ -143,6 +143,7 @@ static char kAFDownloadProgressAnimated;
                         change:(__unused NSDictionary *)change
                        context:(void *)context
 {
+#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     if (context == AFTaskCountOfBytesSentContext || context == AFTaskCountOfBytesReceivedContext) {
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesSent))]) {
             if ([object countOfBytesExpectedToSend] > 0) {
@@ -160,7 +161,6 @@ static char kAFDownloadProgressAnimated;
             }
         }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
             if ([(NSURLSessionTask *)object state] == NSURLSessionTaskStateCompleted) {
                 @try {
@@ -177,8 +177,8 @@ static char kAFDownloadProgressAnimated;
                 @catch (NSException * __unused exception) {}
             }
         }
-#endif
     }
+#endif
 }
 
 @end
