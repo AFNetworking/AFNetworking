@@ -609,7 +609,7 @@ didReceiveResponse:(NSURLResponse *)response
 
             NSInteger numberOfBytesWritten = 0;
             while (totalNumberOfBytesWritten < (NSInteger)length) {
-                numberOfBytesWritten = [self.outputStream write:&dataBuffer[0] maxLength:length];
+                numberOfBytesWritten = [self.outputStream write:&dataBuffer[totalNumberOfBytesWritten] maxLength:(length - totalNumberOfBytesWritten)];
                 if (numberOfBytesWritten == -1) {
                     [self.connection cancel];
                     [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
