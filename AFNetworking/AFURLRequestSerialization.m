@@ -613,10 +613,10 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
     // Reset the initial and final boundaries to ensure correct Content-Length
     [self.bodyStream setInitialAndFinalBoundaries];
+    [self.request setHTTPBodyStream:self.bodyStream];
 
     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", kAFMultipartFormBoundary] forHTTPHeaderField:@"Content-Type"];
     [self.request setValue:[NSString stringWithFormat:@"%llu", [self.bodyStream contentLength]] forHTTPHeaderField:@"Content-Length"];
-    [self.request setHTTPBodyStream:self.bodyStream];
 
     return self.request;
 }
