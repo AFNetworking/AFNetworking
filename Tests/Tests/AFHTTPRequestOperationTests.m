@@ -29,6 +29,56 @@
 
 @implementation AFHTTPRequestOperationTests
 
+// FLAKY: This test does not deterministically fail when the AFHTTPRequestOperation logic is incorrect.
+// See comments inside for details.
+// When this test does fail, most tests in this class will also fail, since the network thread is stalled.
+// The tests should be better encapsulated - setUp and tearDown should reset the state of the network thread.
+- (void)testPauseResumeStallsNetworkThread {
+    [Expecta setAsynchronousTestTimeout:5.0];
+    
+    __block id blockResponseObject = nil;
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        blockResponseObject = responseObject;
+    } failure:nil];
+    
+    // AFHTTPOperation currently does not have a default response serializer
+    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    // FLAKY: For this test to correctly fail, 'pause' must happen on the main thread before the network thread has run the logic of 'start'.
+    // The non-intrusive fix to this is to create fine grained control over the starting/stopping of the network thread, rather than having the network thread continually process events in the background.
+
+    // Start, and then immediately pause the connection.
+    // The pause should correctly reset the state of the operation.
+    // This test fails when pause incorrectly resets the state of the operation.
+    [operation start];
+    [operation pause];
+    expect([operation isPaused]).will.beTruthy();
+    
+    // Resume the operation.
+    [operation resume];
+    expect([operation isExecuting]).will.beTruthy();
+    expect([operation isFinished]).will.beTruthy();
+    expect(blockResponseObject).willNot.beNil();
+    
+    // The first operation completed, but the network thread is now in an infinite loop.
+    // Future requests should not work.
+    blockResponseObject = nil;
+    AFHTTPRequestOperation *operation2 = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [operation2 setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        blockResponseObject = responseObject;
+    } failure:nil];
+    
+    // AFHTTPOperation currently does not have a default response serializer
+    [operation2 setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    // The network thread is stalled, so this operation could not succeed.
+    [operation2 start];
+    expect(blockResponseObject).willNot.beNil();
+}
+
 - (void)testThatOperationInvokesSuccessCompletionBlockWithResponseObjectOnSuccess {
     __block id blockResponseObject = nil;
     
