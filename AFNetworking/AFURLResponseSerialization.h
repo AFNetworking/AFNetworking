@@ -101,9 +101,9 @@
 
 
 /**
- `AFJSONSerializer` is a subclass of `AFHTTPResponseSerializer` that validates and decodes JSON responses.
+ `AFJSONResponseSerializer` is a subclass of `AFHTTPResponseSerializer` that validates and decodes JSON responses.
 
- By default, `AFJSONSerializer` accepts the following MIME types, which includes the official standard, `application/json`, as well as other commonly-used types:
+ By default, `AFJSONResponseSerializer` accepts the following MIME types, which includes the official standard, `application/json`, as well as other commonly-used types:
 
  - `application/json`
  - `text/json`
