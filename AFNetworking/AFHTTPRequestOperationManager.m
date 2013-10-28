@@ -147,8 +147,10 @@
     return [self performWith:@"HEAD"
                          url:URLString
                   parameters:parameters
-                     success:success
-                     failure:failure];
+                     success:^(AFHTTPRequestOperation *op, __unused id responseObject) {
+                         if(success)
+                             success(op);
+                     } failure:failure];
 }
 
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
