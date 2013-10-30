@@ -40,7 +40,7 @@
 @implementation AFHTTPRequestOperationManager
 
 + (instancetype)manager {
-    return [[AFHTTPRequestOperationManager alloc] initWithBaseURL:nil];
+    return [[[self class] alloc] initWithBaseURL:nil];
 }
 
 - (instancetype)initWithBaseURL:(NSURL *)url {
