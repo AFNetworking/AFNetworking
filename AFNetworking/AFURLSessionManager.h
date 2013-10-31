@@ -395,6 +395,20 @@
  */
 - (void)setDownloadTaskDidResumeBlock:(void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes))block;
 
+///-----------------------------------------------
+/// @name Setting Upload Task Callbacks
+///-----------------------------------------------
+
+/**
+ 
+ Associates a NSProgress object and a completion handler with the provided task.
+ 
+ @param task The upload task to associate the NSProgress object and the completion handler.
+ @param progress A progress object to monitor the progress of the upload taks.
+ @param completionHandler The block to be called upon completion of the upload task.
+ */
+- (void)setDelegateForUploadTask:(NSURLSessionUploadTask*)task progress:(NSProgress * __autoreleasing *)progress completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
+
 @end
 
 #endif

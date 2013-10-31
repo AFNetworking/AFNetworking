@@ -474,26 +474,35 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
                                       progress:(NSProgress * __autoreleasing *)progress
                              completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
 {
-    AFURLSessionManagerTaskDelegate *delegate = [AFURLSessionManagerTaskDelegate delegateForManager:self completionHandler:completionHandler];
+    [self setDelegateForUploadTask:uploadTask progress:progress completionHandler:completionHandler];
+    return uploadTask;
+}
 
-    delegate.uploadProgress = [NSProgress progressWithTotalUnitCount:uploadTask.countOfBytesExpectedToSend];
+#pragma mark -
+
+- (void)setDelegateForUploadTask:(NSURLSessionUploadTask*)task
+                        progress:(NSProgress * __autoreleasing *)progress
+               completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
+{
+    AFURLSessionManagerTaskDelegate *delegate = [AFURLSessionManagerTaskDelegate delegateForManager:self completionHandler:completionHandler];
+    
+    delegate.uploadProgress = [NSProgress progressWithTotalUnitCount:task.countOfBytesExpectedToSend];
     delegate.uploadProgress.pausingHandler = ^{
-        [uploadTask suspend];
+        [task suspend];
     };
     delegate.uploadProgress.cancellationHandler = ^{
-        [uploadTask cancel];
+        [task cancel];
     };
-
+    
     if (progress) {
         *progress = delegate.uploadProgress;
     }
-
-    [self setDelegate:delegate forTask:uploadTask];
-
-    [uploadTask addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
     
-    return uploadTask;
+    [self setDelegate:delegate forTask:task];
+    
+    [task addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
 }
+
 
 #pragma mark -
 
