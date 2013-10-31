@@ -72,7 +72,7 @@
 
 - (instancetype)initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration *)configuration shouldPauseDelegateQueueOnDecode:(BOOL)pauseDelegateQueue
 {
-    self = [super initWithSessionConfiguration:configuration shouldPauseDelegateQueue:pauseDelegateQueue];
+    self = [super initWithSessionConfiguration:configuration shouldPauseDelegateQueueOnDecode:pauseDelegateQueue];
     if (!self) {
         return nil;
     }
@@ -311,7 +311,7 @@
     [super encodeWithCoder:coder];
 
     [coder encodeObject:self.baseURL forKey:NSStringFromSelector(@selector(baseURL))];
-    [coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
+    //[coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
     [coder encodeObject:self.requestSerializer forKey:NSStringFromSelector(@selector(requestSerializer))];
     [coder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
 }
