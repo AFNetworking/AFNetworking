@@ -49,7 +49,7 @@
 @implementation AFHTTPSessionManager
 
 + (instancetype)manager {
-    return [[AFHTTPSessionManager alloc] initWithBaseURL:nil];
+    return [[[self class] alloc] initWithBaseURL:nil];
 }
 
 - (instancetype)init {
