@@ -164,7 +164,9 @@ didCompleteWithError:(NSError *)error
                     self.completionHandler(task.response, responseObject, error);
                 }
 
-                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
+                });
             });
         } else {
             dispatch_async(url_session_manager_processing_queue(), ^{
@@ -188,7 +190,9 @@ didCompleteWithError:(NSError *)error
                         self.completionHandler(task.response, responseObject, serializationError);
                     }
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
+                    });
                 });
             });
         }
