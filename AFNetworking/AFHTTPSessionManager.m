@@ -67,29 +67,34 @@
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration
 {
-    self = [super initWithSessionConfiguration:configuration];
+    return [self initWithBaseURL:url sessionConfiguration:configuration shouldPauseDelegateQueueOnDecode:NO];
+}
+
+- (instancetype)initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration *)configuration shouldPauseDelegateQueueOnDecode:(BOOL)pauseDelegateQueue
+{
+    self = [super initWithSessionConfiguration:configuration shouldPauseDelegateQueue:pauseDelegateQueue];
     if (!self) {
         return nil;
     }
-
+    
     // Ensure terminal slash for baseURL path, so that NSURL +URLWithString:relativeToURL: works as expected
     if ([[url path] length] > 0 && ![[url absoluteString] hasSuffix:@"/"]) {
         url = [url URLByAppendingPathComponent:@""];
     }
-
+    
     self.baseURL = url;
-
+    
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
     self.responseSerializer = [AFJSONResponseSerializer serializer];
-
+    
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
-
+    
     if (self.baseURL.host) {
         self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
     } else {
         self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
     }
-
+    
     return self;
 }
 

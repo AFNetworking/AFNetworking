@@ -122,6 +122,17 @@
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration;
 
+/**
+ Initializes an `AFHTTPSessionManager` object with the specified base URL.
+ 
+ @param url The base URL for the HTTP client.
+ @param configuration The configuration used to create the managed session.
+ @param pauseDelegateQueue Determines if the NSOperationQueue for processing delegate calls should be started in a suspended state after being decoded.
+ 
+ @return The newly-initialized HTTP client
+ */
+- (instancetype)initWithBaseURL:(NSURL*)url sessionConfiguration:(NSURLSessionConfiguration *)configuration shouldPauseDelegateQueueOnDecode:(BOOL)pauseDelegateQueue;
+
 ///---------------------------
 /// @name Making HTTP Requests
 ///---------------------------
