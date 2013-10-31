@@ -171,6 +171,26 @@
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration;
 
 /**
+ Creates and returns a manager for a session created with the specified configuration and if upon being decoded it should suspend the NSOperationQueue used for processing delegate methods.
+ 
+ @param configuration The configuration used to create the managed session.
+ @param pauseDelegateQueue Determines if the NSOperationQueue for processing delegate calls should be started in a suspended state after being decoded.
+ 
+ @return A manager for a newly-created session.
+ */
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration shouldPauseDelegateQueueOnDecode:(BOOL)pauseDelegateQueue;
+
+/**
+ Creates and returns a manager for a session created with the specified configuration.
+ 
+ @param configuration The configuration used to create the managed session.
+ @param pauseDelegateQueue Determines if the NSOperationQueue for processing delegate calls should be started in a suspended state.
+ 
+ @return A manager for a newly-created session.
+ */
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration shouldPauseDelegateQueue:(BOOL)pauseDelegateQueue;
+
+/**
  Invalidates the managed session, optionally canceling pending tasks.
  
  @param cancelPendingTasks Whether or not to cancel pending tasks.

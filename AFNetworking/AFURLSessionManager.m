@@ -272,6 +272,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 @property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
 @property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidWriteDataBlock downloadTaskDidWriteData;
 @property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidResumeBlock downloadTaskDidResume;
+@property (readwrite, nonatomic, assign) BOOL shouldPauseDelegateQueueOnDecode;
 @end
 
 @implementation AFURLSessionManager
@@ -279,8 +280,22 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 - (instancetype)init {
     return [self initWithSessionConfiguration:nil];
 }
-
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
+    return [self initWithSessionConfiguration:configuration shouldPauseDelegateQueueOnDecode:NO];
+}
+
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration shouldPauseDelegateQueueOnDecode:(BOOL)pauseDelegateQueue {
+    
+    self = [self initWithSessionConfiguration:configuration shouldPauseDelegateQueue:NO];
+    if (self)
+    {
+        self.shouldPauseDelegateQueueOnDecode = pauseDelegateQueue;
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration shouldPauseDelegateQueue:(BOOL)pauseDelegateQueue {
     self = [super init];
     if (!self) {
         return nil;
@@ -292,7 +307,8 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
     self.operationQueue = [[NSOperationQueue alloc] init];
     self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
-
+    [self.operationQueue setSuspended:pauseDelegateQueue];
+    
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 
     self.sessionConfiguration = configuration;
@@ -875,10 +891,12 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 
 - (id)initWithCoder:(NSCoder *)decoder {
     NSURLSessionConfiguration *configuration = [decoder decodeObjectForKey:@"sessionConfiguration"];
-
-    self = [self initWithSessionConfiguration:configuration];
-    if (!self) {
-        return nil;
+    BOOL shouldPauseDelegateQueueOnDecode = [decoder decodeBoolForKey:@"shouldPauseDelegateQueueOnDecode"];
+    
+    self = [self initWithSessionConfiguration:configuration shouldPauseDelegateQueue:shouldPauseDelegateQueueOnDecode];
+    if (self)
+    {
+        self.shouldPauseDelegateQueueOnDecode = shouldPauseDelegateQueueOnDecode;
     }
 
     return self;
@@ -886,6 +904,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
+    [coder encodeObject:@(self.shouldPauseDelegateQueueOnDecode) forKey:@"shouldPauseDelegateQueueOnDecode"];
 }
 
 #pragma mark - NSCopying
