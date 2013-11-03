@@ -159,9 +159,22 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
     AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
     [policy setPinnedCertificates:@[]];
     [policy setSSLPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
     XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpbin.org"] == NO, @"HTTPBin.org Certificate Pinning Should have failed with no pinned certificate");
+    CFRelease(trust);
+}
+
+- (void)testCertificatePinningFailsForHTTPBinOrgIfDomainNameDoesntMatch {
+    AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
+    CFRelease(certificate);
+    policy.validatesDomainName = YES;
+    [policy setSSLPinningMode:AFSSLPinningModePublicKey];
+    
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"www.httpbin.org"] == NO, @"HTTPBin.org Certificate Pinning Should have failed with no pinned certificate");
     CFRelease(trust);
 }
 
@@ -223,6 +236,12 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     
     XCTAssert(policy.allowInvalidCertificates == NO, @"policyWithPinningMode: should not allow invalid ssl certificates by default.");
+}
+
+- (void)testPolicyWithPinningModeIsSetToValidatesDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    
+    XCTAssert(policy.validatesDomainName == YES, @"policyWithPinningMode: should not allow invalid ssl certificates by default.");
 }
 
 - (void)testThatSSLPinningPolicyClassMethodContainsDefaultCertificates{
