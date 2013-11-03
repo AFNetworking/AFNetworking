@@ -138,6 +138,9 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 }
 
 static BOOL AFVerifyDomainNames(NSString *host1, NSString *host2) {
+    host1 = host1.lowercaseString;
+    host2 = host2.lowercaseString;
+    
     if ([host1 isEqualToString:host2]) {
         return YES;
     }
@@ -226,7 +229,7 @@ static BOOL AFVerifyDomainNames(NSString *host1, NSString *host2) {
 #pragma mark -
 
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust forDomain:(NSString *)domain {
-    __block SecCertificateRef matchingCertificate = NULL;
+    __block NSData *matchingCertificateData = NULL;
     __block BOOL shouldTrustServer = NO;
     
     switch (self.SSLPinningMode) {
@@ -235,10 +238,7 @@ static BOOL AFVerifyDomainNames(NSString *host1, NSString *host2) {
         case AFSSLPinningModeCertificate: {
             for (NSData *trustChainCertificate in AFCertificateTrustChainForServerTrust(serverTrust)) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
-                    if (self.validatesDomainName) {
-                        matchingCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)trustChainCertificate);
-                    }
-                    
+                    matchingCertificateData = trustChainCertificate;
                     shouldTrustServer = YES;
                     break;
                 }
@@ -251,8 +251,8 @@ static BOOL AFVerifyDomainNames(NSString *host1, NSString *host2) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
                     if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
                         NSData *trustChainCertificate = AFCertificateTrustChainForServerTrust(serverTrust)[idx];
-                        matchingCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)trustChainCertificate);
                         
+                        matchingCertificateData = trustChainCertificate;
                         shouldTrustServer = YES;
                         *stop = YES;
                     }
@@ -265,12 +265,12 @@ static BOOL AFVerifyDomainNames(NSString *host1, NSString *host2) {
     }
     
     if (shouldTrustServer) {
-        NSParameterAssert(matchingCertificate);
-        
         if (!self.validatesDomainName) {
-            CFRelease(matchingCertificate);
             return YES;
         }
+        
+        SecCertificateRef matchingCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)matchingCertificateData);
+        NSParameterAssert(matchingCertificate);
         
         shouldTrustServer = AFVerifyDomainNames((__bridge_transfer NSString *)SecCertificateCopySubjectSummary(matchingCertificate), domain);
         
