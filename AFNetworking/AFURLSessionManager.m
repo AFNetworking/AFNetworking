@@ -303,6 +303,8 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
     [self.reachabilityManager startMonitoring];
 
+    self.securityPolicy = [AFSecurityPolicy defaultPolicy];
+
     self.lock = [[NSLock alloc] init];
     self.lock.name = AFURLSessionManagerLockName;
 

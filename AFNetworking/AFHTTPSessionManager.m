@@ -82,8 +82,6 @@
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 
-    self.securityPolicy = [AFSecurityPolicy defaultPolicy];
-
     if (self.baseURL.host) {
         self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
     } else {
