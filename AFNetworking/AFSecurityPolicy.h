@@ -90,7 +90,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
  This method should be used when responding to an authentication challenge from a server.
  
  @param serverTrust The X.509 certificate trust of the server.
- @param domain The domain of serverTrust.
+ @param domain The domain of serverTrust. Cannot be nil if validatesDomainName is set.
  
  @return Whether or not to trust the server.
  */

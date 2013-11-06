@@ -271,6 +271,7 @@ static BOOL AFVerifyDomainNames(NSString *host1, NSString *host2) {
         
         SecCertificateRef matchingCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)matchingCertificateData);
         NSParameterAssert(matchingCertificate);
+        NSParameterAssert(domain);
         
         shouldTrustServer = AFVerifyDomainNames((__bridge_transfer NSString *)SecCertificateCopySubjectSummary(matchingCertificate), domain);
         
