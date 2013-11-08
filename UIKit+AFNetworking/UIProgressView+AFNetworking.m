@@ -178,6 +178,11 @@ static char kAFDownloadProgressAnimated;
             }
         }
     }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+#else
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];    
 #endif
 }
 
