@@ -9,6 +9,16 @@
       </FileRef>
       <Group
          location = "container:"
+         name = "Convenience Extension">
+         <FileRef
+            location = "group:AFNetworking/NSURLRequest+AFURLSubscripting.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/NSURLRequest+AFURLSubscripting.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
          name = "NSURLConnection">
          <FileRef
             location = "group:AFNetworking/AFURLConnectionOperation.h">
