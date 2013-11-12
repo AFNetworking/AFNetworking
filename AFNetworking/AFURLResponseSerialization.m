@@ -516,7 +516,8 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     CGImageRef inflatedImageRef = CGBitmapContextCreateImage(context);
     CGContextRelease(context);
 
-    UIImage *inflatedImage = [[UIImage alloc] initWithCGImage:inflatedImageRef scale:scale orientation:UIImageOrientationUp];
+    UIImage *image = [UIImage imageWithData:data];
+    UIImage *inflatedImage = [[UIImage alloc] initWithCGImage:inflatedImageRef scale:scale orientation:image.imageOrientation];
     CGImageRelease(inflatedImageRef);
     CGImageRelease(imageRef);
 
