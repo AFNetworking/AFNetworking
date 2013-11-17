@@ -371,9 +371,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)operationDidPause {
     [self.lock lock];
-    
     [self.connection cancel];
-    
     [self.lock unlock];
 }
 
@@ -423,7 +421,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)operationDidStart {
     [self.lock lock];
-    if (! [self isCancelled]) {
+    if (![self isCancelled]) {
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
         
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -475,7 +473,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             [self.connection cancel];
             [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:error];
         } else {
-            // If 'cancel' is called immediately after 'start', there is a race condition where self.connection has not yet been instantiated. We still want the callback to go through and the error to be set.
+            // Accomodate race condition where `self.connection` has not yet been set before cancellation
             self.error = error;
             [self finish];
         }
