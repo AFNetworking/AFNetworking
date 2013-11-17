@@ -739,6 +739,10 @@ didCompleteWithError:(NSError *)error
     }
 
     [self removeDelegateForTask:task];
+    
+    @try {
+        [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
+    } @catch (NSException *exception) {}
 }
 
 #pragma mark - NSURLSessionDataDelegate
@@ -865,10 +869,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
                 break;
             case NSURLSessionTaskStateCompleted:
                 // AFNetworkingTaskDidFinishNotification posted by task completion handlers
-                @try {
-                    [object removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
-                } @catch (NSException *exception) {}
-                break;
             default:
                 break;
         }
