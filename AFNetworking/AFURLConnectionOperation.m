@@ -234,11 +234,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)setInputStream:(NSInputStream *)inputStream {
-    [self willChangeValueForKey:@"inputStream"];
     NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
-    [self didChangeValueForKey:@"inputStream"];
 }
 
 - (NSOutputStream *)outputStream {
@@ -252,12 +250,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 - (void)setOutputStream:(NSOutputStream *)outputStream {
     [self.lock lock];
     if (outputStream != _outputStream) {
-        [self willChangeValueForKey:@"outputStream"];
         if (_outputStream) {
             [_outputStream close];
         }
         _outputStream = outputStream;
-        [self didChangeValueForKey:@"outputStream"];
     }
     [self.lock unlock];
 }
