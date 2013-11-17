@@ -792,8 +792,6 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
     if (self.didFinishEventsForBackgroundURLSession) {
         self.didFinishEventsForBackgroundURLSession(session);
     }
-   
-    [self removeAllDelegates];
 }
 
 #pragma mark - NSURLSessionDownloadDelegate
