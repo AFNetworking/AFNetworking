@@ -147,8 +147,6 @@ static char kAFResponseSerializerKey;
                 } else if (responseObject) {
                     strongSelf.image = responseObject;
                 }
-            } else {
-                
             }
 
             [[[strongSelf class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
