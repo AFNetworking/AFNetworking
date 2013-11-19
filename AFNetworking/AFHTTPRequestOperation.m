@@ -147,9 +147,9 @@ static dispatch_group_t http_request_operation_completion_group() {
 #pragma mark - AFURLRequestOperation
 
 - (void)pause {
-    int64_t offset = 0;
+    u_int64_t offset = 0;
     if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
-        offset = [(NSNumber *)[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] longLongValue];
+        offset = [(NSNumber *)[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
     } else {
         offset = [(NSData *)[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
     }
