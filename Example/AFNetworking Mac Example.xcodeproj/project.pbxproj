@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7756506B18037FAB00A437A8 /* .AFURLSessionManager.h.swp in Resources */ = {isa = PBXBuildFile; fileRef = 7756505618037FAB00A437A8 /* .AFURLSessionManager.h.swp */; };
-		7756506C18037FAB00A437A8 /* .AFURLSessionManager.m.swp in Resources */ = {isa = PBXBuildFile; fileRef = 7756505718037FAB00A437A8 /* .AFURLSessionManager.m.swp */; };
 		7756506D18037FAB00A437A8 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7756505918037FAB00A437A8 /* AFHTTPRequestOperation.m */; };
 		7756506E18037FAB00A437A8 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7756505B18037FAB00A437A8 /* AFHTTPRequestOperationManager.m */; };
 		7756506F18037FAB00A437A8 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7756505D18037FAB00A437A8 /* AFHTTPSessionManager.m */; };
@@ -32,8 +30,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7756505618037FAB00A437A8 /* .AFURLSessionManager.h.swp */ = {isa = PBXFileReference; lastKnownFileType = file; path = .AFURLSessionManager.h.swp; sourceTree = "<group>"; };
-		7756505718037FAB00A437A8 /* .AFURLSessionManager.m.swp */ = {isa = PBXFileReference; lastKnownFileType = file; path = .AFURLSessionManager.m.swp; sourceTree = "<group>"; };
 		7756505818037FAB00A437A8 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		7756505918037FAB00A437A8 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		7756505A18037FAB00A437A8 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -93,8 +89,6 @@
 		7756505518037FAB00A437A8 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
-				7756505618037FAB00A437A8 /* .AFURLSessionManager.h.swp */,
-				7756505718037FAB00A437A8 /* .AFURLSessionManager.m.swp */,
 				7756505818037FAB00A437A8 /* AFHTTPRequestOperation.h */,
 				7756505918037FAB00A437A8 /* AFHTTPRequestOperation.m */,
 				7756505A18037FAB00A437A8 /* AFHTTPRequestOperationManager.h */,
@@ -257,8 +251,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7756506C18037FAB00A437A8 /* .AFURLSessionManager.m.swp in Resources */,
-				7756506B18037FAB00A437A8 /* .AFURLSessionManager.h.swp in Resources */,
 				F8129C7115910B3E009BFE23 /* MainMenu.xib in Resources */,
 				B304CCE8177D58DD00F4FC85 /* adn.cer in Resources */,
 			);

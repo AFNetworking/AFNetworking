@@ -234,11 +234,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)setInputStream:(NSInputStream *)inputStream {
-    [self willChangeValueForKey:@"inputStream"];
     NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
     mutableRequest.HTTPBodyStream = inputStream;
     self.request = mutableRequest;
-    [self didChangeValueForKey:@"inputStream"];
 }
 
 - (NSOutputStream *)outputStream {
@@ -252,12 +250,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 - (void)setOutputStream:(NSOutputStream *)outputStream {
     [self.lock lock];
     if (outputStream != _outputStream) {
-        [self willChangeValueForKey:@"outputStream"];
         if (_outputStream) {
             [_outputStream close];
         }
         _outputStream = outputStream;
-        [self didChangeValueForKey:@"outputStream"];
     }
     [self.lock unlock];
 }
@@ -360,7 +356,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [self.lock lock];
     
     if ([self isExecuting]) {
-        [self.connection performSelector:@selector(cancel) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
+        [self performSelector:@selector(operationDidPause) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
@@ -370,6 +366,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     self.state = AFOperationPausedState;
     
+    [self.lock unlock];
+}
+
+- (void)operationDidPause {
+    [self.lock lock];
+    [self.connection cancel];
     [self.lock unlock];
 }
 
@@ -419,7 +421,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)operationDidStart {
     [self.lock lock];
-    if (! [self isCancelled]) {
+    if (![self isCancelled]) {
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
         
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -435,10 +437,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
     });
-    
-    if ([self isCancelled]) {
-        [self finish];
-    }
 }
 
 - (void)finish {
@@ -470,9 +468,15 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
     NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
 
-    if (![self isFinished] && self.connection) {
-        [self.connection cancel];
-        [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:error];
+    if (![self isFinished]) {
+        if (self.connection) {
+            [self.connection cancel];
+            [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:error];
+        } else {
+            // Accomodate race condition where `self.connection` has not yet been set before cancellation
+            self.error = error;
+            [self finish];
+        }
     }
 }
 
@@ -611,15 +615,19 @@ didReceiveResponse:(NSURLResponse *)response
             while (totalNumberOfBytesWritten < (NSInteger)length) {
                 numberOfBytesWritten = [self.outputStream write:&dataBuffer[(NSUInteger)totalNumberOfBytesWritten] maxLength:(length - (NSUInteger)totalNumberOfBytesWritten)];
                 if (numberOfBytesWritten == -1) {
-                    [self.connection cancel];
-                    [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
-                    return;
-                } else {
-                    totalNumberOfBytesWritten += numberOfBytesWritten;
+                    break;
                 }
+                
+                totalNumberOfBytesWritten += numberOfBytesWritten;
             }
 
             break;
+        }
+        
+        if (self.outputStream.streamError) {
+            [self.connection cancel];
+            [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
+            return;
         }
     }
 

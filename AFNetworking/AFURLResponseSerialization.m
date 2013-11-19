@@ -459,8 +459,8 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         imageRef = CGImageCreateWithJPEGDataProvider(dataProvider, NULL, true, kCGRenderingIntentDefault);
     }
 
+    UIImage *image = AFImageWithDataAtScale(data, scale);
     if (!imageRef) {
-        UIImage *image = AFImageWithDataAtScale(data, scale);
         if (image.images) {
             CGDataProviderRelease(dataProvider);
 
@@ -516,7 +516,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     CGImageRef inflatedImageRef = CGBitmapContextCreateImage(context);
     CGContextRelease(context);
 
-    UIImage *inflatedImage = [[UIImage alloc] initWithCGImage:inflatedImageRef scale:scale orientation:UIImageOrientationUp];
+    UIImage *inflatedImage = [[UIImage alloc] initWithCGImage:inflatedImageRef scale:scale orientation:image.imageOrientation];
     CGImageRelease(inflatedImageRef);
     CGImageRelease(imageRef);
 
