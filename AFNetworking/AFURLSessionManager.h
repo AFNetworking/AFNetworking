@@ -171,6 +171,26 @@
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration;
 
 /**
+ Creates and returns a manager for a session created with the specified configuration and if upon being decoded it should suspend the NSOperationQueue used for processing delegate methods.
+ 
+ @param configuration The configuration used to create the managed session.
+ @param pauseDelegateQueue Determines if the NSOperationQueue for processing delegate calls should be started in a suspended state after being decoded.
+ 
+ @return A manager for a newly-created session.
+ */
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration shouldPauseDelegateQueueOnDecode:(BOOL)pauseDelegateQueue;
+
+/**
+ Creates and returns a manager for a session created with the specified configuration.
+ 
+ @param configuration The configuration used to create the managed session.
+ @param pauseDelegateQueue Determines if the NSOperationQueue for processing delegate calls should be started in a suspended state.
+ 
+ @return A manager for a newly-created session.
+ */
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration shouldPauseDelegateQueue:(BOOL)pauseDelegateQueue;
+
+/**
  Invalidates the managed session, optionally canceling pending tasks.
  
  @param cancelPendingTasks Whether or not to cancel pending tasks.
@@ -374,6 +394,20 @@
  @param block A block object to be executed when a download task has been resumed. The block has no return value and takes four arguments: the session, the download task, the file offset of the resumed download, and the total number of bytes expected to be downloaded.
  */
 - (void)setDownloadTaskDidResumeBlock:(void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes))block;
+
+///-----------------------------------------------
+/// @name Setting Upload Task Callbacks
+///-----------------------------------------------
+
+/**
+ 
+ Associates a NSProgress object and a completion handler with the provided task.
+ 
+ @param task The upload task to associate the NSProgress object and the completion handler.
+ @param progress A progress object to monitor the progress of the upload taks.
+ @param completionHandler The block to be called upon completion of the upload task.
+ */
+- (void)setDelegateForUploadTask:(NSURLSessionUploadTask*)task progress:(NSProgress * __autoreleasing *)progress completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 
 @end
 
