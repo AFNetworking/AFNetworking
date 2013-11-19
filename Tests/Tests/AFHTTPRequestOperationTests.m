@@ -355,4 +355,37 @@
     expect(completionBlockFiredAfterOtherBlocks).will.beTruthy();
 }
 
+- (void)testThatOperationInvokesFailureCompletionBlockWithErrorOnWritingStreamFailure {
+    __block NSError *blockError;
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
+    NSError *streamError = [NSError errorWithDomain:NSStreamSocketSSLErrorDomain code:0 userInfo:nil];
+
+    [operation setOutputStream:({
+        id mockStream = [OCMockObject mockForClass:[NSOutputStream class]];
+        [[[mockStream stub] andReturn:streamError] streamError];
+        [[[mockStream stub] andReturnValue:@NO] hasSpaceAvailable];
+
+        // "Note that currently partial mocks cannot be created for instances of toll-free bridged classes". Thus, we have to fully mock it
+        [[mockStream stub] scheduleInRunLoop:OCMOCK_ANY forMode:OCMOCK_ANY];
+        [[mockStream stub] open];
+        [[mockStream stub] close];
+
+        mockStream;
+    })];
+
+    // AFHTTPOperation currently does not have a default response serializer
+    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
+
+    [operation start];
+    expect([operation isFinished]).will.beTruthy();
+    expect(blockError).will.equal(streamError);
+}
+
 @end
