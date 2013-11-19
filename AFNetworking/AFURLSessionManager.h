@@ -148,7 +148,7 @@
 ///---------------------------------
 
 /**
- The dispatch queue for `completionBlock`. If `NULL` (default), the main queue is used.
+ The dispatch queue for `completionBlock`. If `NULL` a private background queue will be used. Defaults to the main queue.
  */
 @property (nonatomic, strong) dispatch_queue_t completionQueue;
 
