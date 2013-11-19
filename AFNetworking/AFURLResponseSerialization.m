@@ -603,7 +603,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     [super encodeWithCoder:coder];
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    [coder encodeFloat:self.imageScale forKey:NSStringFromSelector(@selector(imageScale))];
+    [coder encodeObject:@(self.imageScale) forKey:NSStringFromSelector(@selector(imageScale))];
     [coder encodeBool:self.automaticallyInflatesResponseImage forKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
 }
