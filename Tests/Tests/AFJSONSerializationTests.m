@@ -40,7 +40,7 @@ static NSData * AFJSONTestData() {
 
     AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
     NSError *error = nil;
-    [serializer validateResponse:response data:AFJSONTestData() error:&error];
+    [serializer validateResponse:response data:AFJSONTestData() request:nil error:&error];
 
     XCTAssertNil(error, @"Error handling application/json");
 }
@@ -50,7 +50,7 @@ static NSData * AFJSONTestData() {
 
     AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
     NSError *error = nil;
-    [serializer validateResponse:response data:AFJSONTestData()error:&error];
+    [serializer validateResponse:response data:AFJSONTestData() request:nil error:&error];
 
     XCTAssertNil(error, @"Error handling text/json");
 }
@@ -60,7 +60,7 @@ static NSData * AFJSONTestData() {
 
     AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
     NSError *error = nil;
-    [serializer validateResponse:response data:AFJSONTestData() error:&error];
+    [serializer validateResponse:response data:AFJSONTestData() request:nil error:&error];
 
     XCTAssertNil(error, @"Error handling text/javascript");
 }
@@ -70,7 +70,7 @@ static NSData * AFJSONTestData() {
 
     AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
     NSError *error = nil;
-    [serializer validateResponse:response data:AFJSONTestData() error:&error];
+    [serializer validateResponse:response data:AFJSONTestData() request:nil error:&error];
 
     XCTAssertNotNil(error, @"Error should have been thrown for nonstandard/json");
 }
@@ -80,7 +80,7 @@ static NSData * AFJSONTestData() {
 
     AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
     NSError *error = nil;
-    id responseObject = [serializer responseObjectForResponse:response data:AFJSONTestData() error:&error];
+    id responseObject = [serializer responseObjectForResponse:response data:AFJSONTestData() request:nil error:&error];
 
     XCTAssertNil(error, @"Serialization error should be nil");
     XCTAssert([responseObject isKindOfClass:[NSDictionary class]], @"Expected response to be a NSDictionary");
@@ -91,7 +91,7 @@ static NSData * AFJSONTestData() {
 
     AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
     NSError *error = nil;
-    [serializer responseObjectForResponse:response data:[@"{invalid}" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
+    [serializer responseObjectForResponse:response data:[@"{invalid}" dataUsingEncoding:NSUTF8StringEncoding] request:nil error:&error];
 
     XCTAssertNotNil(error, @"Serialization error should not be nil");
 }
