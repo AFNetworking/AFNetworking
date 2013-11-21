@@ -179,6 +179,13 @@
                                                     success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                                                     failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
+/**
+ Queues an 'AFHTTPRequestOperation' for processing in the operationQueue. Override this method, e.g., if you need to set any dependencies between the queued operation and any existing operations in the operationQueue.
+ 
+ @param operation The HTTP request operation to be queued for processing.
+ */
+- (void) queueHttpRequestOperation:(AFHTTPRequestOperation*) operation;
+
 ///---------------------------
 /// @name Making HTTP Requests
 ///---------------------------
