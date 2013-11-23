@@ -43,7 +43,6 @@
 
 @interface AFHTTPSessionManager ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
-@property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 @end
 
 @implementation AFHTTPSessionManager
@@ -67,7 +66,12 @@
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration
 {
-    self = [super initWithSessionConfiguration:configuration];
+    AFNetworkReachabilityManager *reachabilityManager;
+    if (url.host) {
+        reachabilityManager = [AFNetworkReachabilityManager managerForDomain:url.host];
+    }
+
+    self = [super initWithSessionConfiguration:configuration reachabilityManager:reachabilityManager];
     if (!self) {
         return nil;
     }
@@ -81,12 +85,6 @@
 
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
     self.responseSerializer = [AFJSONResponseSerializer serializer];
-
-    if (self.baseURL.host) {
-        self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
-    } else {
-        self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
-    }
 
     return self;
 }

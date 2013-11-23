@@ -162,13 +162,24 @@
 ///---------------------
 
 /**
- Creates and returns a manager for a session created with the specified configuration. This is the designated initializer.
+ Creates and returns a manager for a session created with the specified configuration.
  
  @param configuration The configuration used to create the managed session.
  
  @return A manager for a newly-created session.
  */
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration;
+
+
+/**
+ Creates and returns a manager for a session created with the specified configuration with a reachability manager. This is the designated initializer.
+
+ @param configuration The configuration used to create the managed session.
+ @param reachabilityManager An optional reachability manager, defaults to the shared manager.
+
+ @return A manager for a newly-created session.
+ */
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration reachabilityManager:(AFNetworkReachabilityManager *)reachabilityManager;
 
 /**
  Invalidates the managed session, optionally canceling pending tasks.
