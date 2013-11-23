@@ -285,6 +285,10 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 }
 
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED < 70000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED < 1090)
+    NSAssert([NSURLSession class] != Nil, @"AFURLSessionManager should be used from iOS 7 and above or OS X 10.9 or above.");
+#endif
+
     self = [super init];
     if (!self) {
         return nil;
