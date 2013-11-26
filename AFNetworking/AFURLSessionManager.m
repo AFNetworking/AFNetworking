@@ -739,10 +739,8 @@ didCompleteWithError:(NSError *)error
     }
 
     [self removeDelegateForTask:task];
-    
-    @try {
-        [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
-    } @catch (NSException *exception) {}
+
+    [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
 }
 
 #pragma mark - NSURLSessionDataDelegate
@@ -767,6 +765,13 @@ didReceiveResponse:(NSURLResponse *)response
           dataTask:(NSURLSessionDataTask *)dataTask
 didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 {
+    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:dataTask];
+    [self removeDelegateForTask:dataTask];
+    [dataTask removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
+
+    [self setDelegate:delegate forTask:downloadTask];
+    [downloadTask addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
+
     if (self.dataTaskDidBecomeDownloadTask) {
         self.dataTaskDidBecomeDownloadTask(session, dataTask, downloadTask);
     }
