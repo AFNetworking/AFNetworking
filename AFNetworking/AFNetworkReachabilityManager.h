@@ -113,6 +113,11 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  */
 - (void)stopMonitoring;
 
+/**
+ If you don't call startMonitoring it will update status syncroniosly
+ */
+- (void)updateStatus;
+
 ///-------------------------------------------------
 /// @name Getting Localized Reachability Description
 ///-------------------------------------------------
