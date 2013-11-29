@@ -33,6 +33,8 @@
 		29CBFC8817DF74C60021AB75 /* ADNNetServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 29CBFC8617DF74C60021AB75 /* ADNNetServerTrustChain */; };
 		3D56634E3A564CEE86172413 /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 		6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
+		77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
+		77D65EBD1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,6 +84,7 @@
 		29CBFC8617DF74C60021AB75 /* ADNNetServerTrustChain */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ADNNetServerTrustChain; sourceTree = "<group>"; };
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListResponseSerializerTests.m; sourceTree = "<group>"; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -223,6 +226,7 @@
 				29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */,
 				29CBFC3E17DF58000021AB75 /* AFHTTPSerializationTests.m */,
 				29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */,
+				77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */,
 				29CBFC5917DF61B30021AB75 /* AFSecurityPolicyTests.m */,
 			);
 			path = Tests;
@@ -437,6 +441,7 @@
 				29CBFC5A17DF61B30021AB75 /* AFSecurityPolicyTests.m in Sources */,
 				29CBFC3F17DF58000021AB75 /* AFHTTPSerializationTests.m in Sources */,
 				29CBFC3C17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
+				77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */,
 				2902D29C17DF4E3700C81C5A /* AFTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -449,6 +454,7 @@
 				29CBFC5B17DF61B30021AB75 /* AFSecurityPolicyTests.m in Sources */,
 				29CBFC4017DF58000021AB75 /* AFHTTPSerializationTests.m in Sources */,
 				29CBFC3D17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
+				77D65EBD1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */,
 				2902D29D17DF4E3800C81C5A /* AFTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

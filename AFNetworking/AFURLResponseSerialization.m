@@ -398,7 +398,12 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
         }
     }
 
-    return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:NULL error:error];
+    id responseObject;
+    if (data) {
+        responseObject = [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:NULL error:error];
+    }
+
+    return responseObject;
 }
 
 #pragma mark - NSCoding
