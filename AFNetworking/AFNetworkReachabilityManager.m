@@ -200,21 +200,18 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         return;
     }
 
+    SCNetworkReachabilityFlags flags;
+    SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
+    AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
+
     __weak __typeof(self)weakSelf = self;
-    AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status) {
+    dispatch_async(dispatch_get_main_queue(), ^{
         __strong __typeof(weakSelf)strongSelf = weakSelf;
 
         strongSelf.networkReachabilityStatus = status;
         if (strongSelf.networkReachabilityStatusBlock) {
             strongSelf.networkReachabilityStatusBlock(status);
         }
-    };
-
-    SCNetworkReachabilityFlags flags;
-    SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
-        callback(status);
     });
 }
 
