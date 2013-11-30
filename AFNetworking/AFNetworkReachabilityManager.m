@@ -209,6 +209,10 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     self.networkReachabilityStatusBlock = block;
 }
 
+-(void)setReachabilityForUnitTest:(AFNetworkReachabilityStatus) status{
+    self.networkReachabilityStatus = status;
+}
+
 #pragma mark - NSKeyValueObserving
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
