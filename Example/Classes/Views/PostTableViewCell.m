@@ -25,7 +25,7 @@
 #import "Post.h"
 #import "User.h"
 
-#import "UIImageView+AFNetworking.h"
+#import <UIKit+AFNetworking/UIImageView+AFNetworking.h>
 
 @implementation PostTableViewCell
 
