@@ -26,7 +26,7 @@
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 
-#import "AFHTTPRequestOperation.h"
+#import <AFNetworking/AFHTTPRequestOperation.h>
 
 static char kAFImageRequestOperationKey;
 static char kAFBackgroundImageRequestOperationKey;
