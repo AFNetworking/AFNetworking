@@ -166,7 +166,9 @@ didCompleteWithError:(NSError *)error
         if (error) {
             userInfo[AFNetworkingTaskDidFinishErrorKey] = error;
 
-            dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
+            dispatch_group_t group = manager.completionGroup ?: url_session_manager_completion_group();
+            dispatch_queue_t queue = manager.completionQueue;
+            dispatch_block_t block = ^{
                 if (self.completionHandler) {
                     self.completionHandler(task.response, responseObject, error);
                 }
@@ -174,7 +176,15 @@ didCompleteWithError:(NSError *)error
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
                 });
-            });
+            };
+
+            if (queue) {
+                dispatch_group_async(group, queue, block);
+            } else {
+                dispatch_group_enter(group);
+                block();
+                dispatch_group_leave(group);
+            }
         } else {
             dispatch_async(url_session_manager_processing_queue(), ^{
                 NSError *serializationError = nil;
@@ -192,15 +202,25 @@ didCompleteWithError:(NSError *)error
                     userInfo[AFNetworkingTaskDidFinishErrorKey] = serializationError;
                 }
 
-                dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
+                dispatch_group_t group = manager.completionGroup ?: url_session_manager_completion_group();
+                dispatch_queue_t queue = manager.completionQueue;
+                dispatch_block_t block = ^{
                     if (self.completionHandler) {
                         self.completionHandler(task.response, responseObject, serializationError);
                     }
-                    
+
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
                     });
-                });
+                };
+
+                if (group) {
+                    dispatch_group_async(group, queue, block);
+                } else {
+                    dispatch_group_enter(group);
+                    block();
+                    dispatch_group_leave(group);
+                }
             });
         }
     }
@@ -318,6 +338,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
     self.lock = [[NSLock alloc] init];
     self.lock.name = AFURLSessionManagerLockName;
+    self.completionQueue = dispatch_get_main_queue();
 
     return self;
 }

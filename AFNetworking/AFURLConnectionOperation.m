@@ -181,6 +181,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
+    self.completionQueue = dispatch_get_main_queue();
+
     return self;
 }
 
@@ -214,16 +216,23 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
             dispatch_group_t group = strongSelf.completionGroup ?: url_request_operation_completion_group();
-            dispatch_queue_t queue = strongSelf.completionQueue ?: dispatch_get_main_queue();
+            dispatch_queue_t queue = strongSelf.completionQueue;
 #pragma clang diagnostic pop
 
-            dispatch_group_async(group, queue, ^{
-                block();
-            });
+            if (queue) {
+                dispatch_group_async(group, queue, ^{
+                    block();
+                });
 
-            dispatch_group_notify(group, queue, ^{
+                dispatch_group_notify(group, queue, ^{
+                    [strongSelf setCompletionBlock:nil];
+                });
+            } else {
+                dispatch_group_enter(group);
+                block();
                 [strongSelf setCompletionBlock:nil];
-            });
+                dispatch_group_leave(group);
+            }
         }];
     }
     [self.lock unlock];
@@ -513,9 +522,10 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             __strong __typeof(weakOperation)strongOperation = weakOperation;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-            dispatch_queue_t queue = strongOperation.completionQueue ?: dispatch_get_main_queue();
+            dispatch_queue_t queue = strongOperation.completionQueue;
 #pragma clang diagnostic pop
-            dispatch_group_async(group, queue, ^{
+
+            dispatch_block_t block = ^{
                 if (originalCompletionBlock) {
                     originalCompletionBlock();
                 }
@@ -529,7 +539,15 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
                 }
 
                 dispatch_group_leave(group);
-            });
+            };
+
+            if (queue) {
+                dispatch_group_async(group, queue, block);
+            } else {
+                dispatch_group_enter(group);
+                block();
+                dispatch_group_leave(group);
+            }
         };
 
         dispatch_group_enter(group);
