@@ -488,9 +488,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 {
     if (!operations || [operations count] == 0) {
         return @[[NSBlockOperation blockOperationWithBlock:^{
-            if (completionBlock) {
-                completionBlock(@[]);
-            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completionBlock) {
+                    completionBlock(@[]);
+                }
+            });
         }]];
     }
 
