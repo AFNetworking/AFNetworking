@@ -142,8 +142,7 @@ NSURLRequest *request = [NSURLRequest requestWithURL:URL];
 
 NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
     NSURL *documentsDirectoryPath = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]];
-    NSString *suggestedFilename = [response suggestedFilename];
-    return [documentsDirectoryPath URLByAppendingPathComponent:suggestedFilename];
+    return [documentsDirectoryPath URLByAppendingPathComponent:[response suggestedFilename]];
 } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
     NSLog(@"File downloaded to: %@", filePath);
 }];
@@ -193,7 +192,7 @@ NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completion
 
 ### Request Serialization
 
-Request serializers create requests from URL strings, encoding parameters as either a query string or HTTP body. 
+Request serializers create requests from URL strings, encoding parameters as either a query string or HTTP body.
 
 ```objective-c
 NSString *URLString = @"http://example.com";
@@ -272,7 +271,7 @@ NSOperationQueue *operationQueue = manager.operationQueue;
 ### Security Policy
 
 `AFSecurityPolicy` evaluates server trust against pinned X.509 certificates and public keys over secure connections.
- 
+
 Adding pinned SSL certificates to your app helps prevent man-in-the-middle attacks and other vulnerabilities. Applications dealing with sensitive customer data or financial information are strongly encouraged to route all communication over an HTTPS connection with SSL pinning configured and enabled.
 
 #### Allowing Invalid SSL Certificates
