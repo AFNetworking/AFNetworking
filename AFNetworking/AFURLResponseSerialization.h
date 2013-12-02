@@ -35,12 +35,14 @@
 
  @param response The response to be processed.
  @param data The response data to be decoded.
+ @param request The request that generated the response.
  @param error The error that occurred while attempting to decode the response data.
 
  @return The object decoded from the specified response data.
  */
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
+                        request:(NSURLRequest *)request
                           error:(NSError *__autoreleasing *)error;
 
 @end
@@ -87,12 +89,14 @@
 
  @param response The response to be validated.
  @param data The data associated with the response.
+ @param request The request that generated the response.
  @param error The error that occurred while attempting to validate the response.
 
  @return `YES` if the response is valid, otherwise `NO`.
  */
 - (BOOL)validateResponse:(NSHTTPURLResponse *)response
                     data:(NSData *)data
+                 request:(NSURLRequest *)request
                    error:(NSError *__autoreleasing *)error;
 
 @end

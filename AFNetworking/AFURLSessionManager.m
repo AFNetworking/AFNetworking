@@ -174,7 +174,7 @@ didCompleteWithError:(NSError *)error
                 if (self.downloadFileURL) {
                     responseObject = self.downloadFileURL;
                 } else {
-                    responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
+                    responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] request:task.currentRequest error:&serializationError];
                 }
 
                 if (responseObject) {

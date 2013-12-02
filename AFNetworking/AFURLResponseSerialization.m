@@ -55,6 +55,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 - (BOOL)validateResponse:(NSHTTPURLResponse *)response
                     data:(NSData *)data
+                 request:(NSURLRequest *)request
                    error:(NSError *__autoreleasing *)error
 {
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
@@ -93,9 +94,10 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
+                        request:(NSURLRequest *)request
                           error:(NSError *__autoreleasing *)error
 {
-    [self validateResponse:(NSHTTPURLResponse *)response data:data error:error];
+    [self validateResponse:(NSHTTPURLResponse *)response data:data request:request error:error];
 
     return data;
 }
@@ -161,9 +163,10 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
+                        request:(NSURLRequest *)request
                           error:(NSError *__autoreleasing *)error
 {
-    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data request:request error:error]) {
         if ([(NSError *)(*error) code] == NSURLErrorCannotDecodeContentData) {
             return nil;
         }
@@ -259,9 +262,10 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 - (id)responseObjectForResponse:(NSHTTPURLResponse *)response
                            data:(NSData *)data
+                        request:(NSURLRequest *)request
                           error:(NSError *__autoreleasing *)error
 {
-    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data request:request error:error]) {
         if ([(NSError *)(*error) code] == NSURLErrorCannotDecodeContentData) {
             return nil;
         }
@@ -304,9 +308,10 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
+                        request:(NSURLRequest *)request
                           error:(NSError *__autoreleasing *)error
 {
-    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data request:request error:error]) {
         if ([(NSError *)(*error) code] == NSURLErrorCannotDecodeContentData) {
             return nil;
         }
@@ -390,9 +395,10 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
+                        request:(NSURLRequest *)request
                           error:(NSError *__autoreleasing *)error
 {
-    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data request:request error:error]) {
         if ([(NSError *)(*error) code] == NSURLErrorCannotDecodeContentData) {
             return nil;
         }
@@ -562,9 +568,10 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
+                        request:(NSURLRequest *)request
                           error:(NSError *__autoreleasing *)error
 {
-    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data request:request error:error]) {
         if ([(NSError *)(*error) code] == NSURLErrorCannotDecodeContentData) {
             return nil;
         }
@@ -647,6 +654,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
                            data:(NSData *)data
+                        request:(NSURLRequest *)request
                           error:(NSError *__autoreleasing *)error
 {
     for (id <AFURLResponseSerialization> serializer in self.responseSerializers) {
@@ -655,14 +663,14 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         }
 
         NSError *serializerError = nil;
-        id responseObject = [serializer responseObjectForResponse:response data:data error:&serializerError];
+        id responseObject = [serializer responseObjectForResponse:response data:data request:request error:&serializerError];
         if (responseObject) {
             *error = serializerError;
             return responseObject;
         }
     }
     
-    return [super responseObjectForResponse:response data:data error:error];
+    return [super responseObjectForResponse:response data:data request:request error:error];
 }
 
 #pragma mark - NSCoding
