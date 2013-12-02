@@ -218,10 +218,18 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 #pragma clang diagnostic pop
 
             dispatch_group_async(group, queue, ^{
+                // 1. AFHTTPRequestOpeartion performs completion callback at the background queue
+                // using the http_request_operation_processing_queue() by default
+                // so the response serialization occurred at the background queue as well
+                // 2. AFHTTPRequestOperation aquires `self.lock` just before the serialization process has started
+                // at the `AFHTTPRequestOperation.responseObject` method
+                // 3. The completion queue (the main queue by default) is waiting for the `self.lock` to be released
+                // in case when there is long job to do in the response serializator (data mapping for example)
                 block();
             });
-
+            
             dispatch_group_notify(group, queue, ^{
+                // Here it is: the completion queue (main queue) is waiting for the `self.lock` to be released by the `self.responseObject` call during response serialization process
                 [strongSelf setCompletionBlock:nil];
             });
         }];

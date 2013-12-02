@@ -28,6 +28,7 @@
 
 #import "UIActivityIndicatorView+AFNetworking.h"
 #import "UIAlertView+AFNetworking.h"
+#import "AFHTTPRequestOperationManager.h"
 
 @interface GlobalTimelineViewController ()
 @property (readwrite, nonatomic, strong) NSArray *posts;
@@ -40,19 +41,28 @@
 - (void)reload:(__unused id)sender {
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
-    NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
-        if (!error) {
-            self.posts = posts;
-            [self.tableView reloadData];
-        }
-        
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://ya.ru"]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"got response");
         self.navigationItem.rightBarButtonItem.enabled = YES;
-    }];
+    } failure:nil];
+    [operation start];
+    
 
-    [UIAlertView showAlertViewForTaskWithErrorOnCompletion:task delegate:nil];
-
-    UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView *)self.navigationItem.leftBarButtonItem.customView;
-    [activityIndicatorView setAnimatingWithStateOfTask:task];
+//    NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
+//        if (!error) {
+//            self.posts = posts;
+//            [self.tableView reloadData];
+//        }
+//        
+//        self.navigationItem.rightBarButtonItem.enabled = YES;
+//    }];
+//
+//    [UIAlertView showAlertViewForTaskWithErrorOnCompletion:task delegate:nil];
+//
+//    UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView *)self.navigationItem.leftBarButtonItem.customView;
+//    [activityIndicatorView setAnimatingWithStateOfTask:task];
 }
 
 #pragma mark - UIViewController
