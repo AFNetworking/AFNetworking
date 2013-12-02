@@ -198,25 +198,61 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 #pragma mark -
 
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust {
+    if(self.SSLPinningMode == AFSSLPinningModeNone && self.allowInvalidCertificates)
+        return YES;
+    
+    // Trusts provided by NSURLProtectionSpace are SSL policies which will also
+    // require the server name to be validated and perform OSCP checks.
+    // Per Apple, SecTrustEvaluate should be performed before copying properties.
+    if(!AFServerTrustIsValid(serverTrust)) {
+        return NO;
+    }
+
+    NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);
     switch (self.SSLPinningMode) {
         case AFSSLPinningModeNone:
-            return (self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust));
-        case AFSSLPinningModeCertificate: {
-            for (NSData *trustChainCertificate in AFCertificateTrustChainForServerTrust(serverTrust)) {
+            return YES;
+
+        case AFSSLPinningModeLeafCertificate: {
+            // only check leaf certificate
+            if ([self.pinnedCertificates containsObject:[serverCertificates firstObject]])
+                return YES;
+        }
+            break;
+            
+        case AFSSLPinningModeCertificateChain: {
+            // Also handles deprecated AFSSLPinningModeCertificate == CertificateChain
+            NSUInteger trustedCertCount = 0;
+            for (NSData *trustChainCertificate in serverCertificates) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
+                    trustedCertCount += 1;
+                }
+            }
+            return trustedCertCount > 0 && trustedCertCount == [serverCertificates count];
+        }
+            break;
+            
+        case AFSSLPinningModeLeafPublicKey: {
+            id trustChainPublicKey = [AFPublicKeyTrustChainForServerTrust(serverTrust) firstObject];
+            for (id pinnedPublicKey in self.pinnedPublicKeys) {
+                if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
                     return YES;
                 }
             }
         }
             break;
-        case AFSSLPinningModePublicKey: {
+
+        case AFSSLPinningModePublicKeyChain: {
+            // Also handles deprecated AFSSLPinningModePublicKey == PublicKeyChain
+            NSUInteger trustedPublicKeyCount = 0;
             for (id trustChainPublicKey in AFPublicKeyTrustChainForServerTrust(serverTrust)) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
                     if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
-                        return YES;
+                        trustedPublicKeyCount += 1;
                     }
                 }
             }
+            return trustedPublicKeyCount > 0 && trustedPublicKeyCount == [serverCertificates count];
         }
             break;
         default:
