@@ -515,21 +515,22 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         return NO;
     }
 
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:error];
 
-    AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
-    bodyPart.stringEncoding = self.stringEncoding;
-    bodyPart.headers = mutableHeaders;
-    bodyPart.body = fileURL;
+    if (fileAttributes) {
+        NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
+        [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
+        [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
 
-    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:nil];
-    bodyPart.bodyContentLength = [[fileAttributes objectForKey:NSFileSize] unsignedLongLongValue];
+        AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
+        bodyPart.stringEncoding = self.stringEncoding;
+        bodyPart.headers = mutableHeaders;
+        bodyPart.body = fileURL;
+        bodyPart.bodyContentLength = [[fileAttributes objectForKey:NSFileSize] unsignedLongLongValue];
+        [self.bodyStream appendHTTPBodyPart:bodyPart];
+    }
 
-    [self.bodyStream appendHTTPBodyPart:bodyPart];
-
-    return YES;
+    return (fileAttributes != nil);
 }
 
 
