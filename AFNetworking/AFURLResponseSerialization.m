@@ -597,7 +597,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     }
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    self.imageScale = [decoder decodeFloatForKey:NSStringFromSelector(@selector(imageScale))];
+    self.imageScale = [[decoder decodeObjectForKey:NSStringFromSelector(@selector(imageScale))] floatValue];
     self.automaticallyInflatesResponseImage = [decoder decodeBoolForKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
 
