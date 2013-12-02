@@ -96,7 +96,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
                           error:(NSError *__autoreleasing *)error
 {
     [self validateResponse:(NSHTTPURLResponse *)response data:data error:error];
-
+    sleep(5); // simulate long running response serialization
     return data;
 }
 
