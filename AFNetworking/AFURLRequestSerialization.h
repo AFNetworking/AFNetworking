@@ -42,7 +42,7 @@
  @return A serialized request.
  */
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
-                               withParameters:(NSDictionary *)parameters
+                               withParameters:(id)parameters
                                         error:(NSError *__autoreleasing *)error;
 
 @end

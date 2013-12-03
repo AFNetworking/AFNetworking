@@ -311,7 +311,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 #pragma mark - AFURLRequestSerialization
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
-                               withParameters:(NSDictionary *)parameters
+                               withParameters:(id)parameters
                                         error:(NSError *__autoreleasing *)error
 {
     NSParameterAssert(request);
@@ -1025,7 +1025,7 @@ typedef enum {
 #pragma mark - AFURLRequestSerialization
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
-                               withParameters:(NSDictionary *)parameters
+                               withParameters:(id)parameters
                                         error:(NSError *__autoreleasing *)error
 {
     NSParameterAssert(request);
@@ -1077,7 +1077,7 @@ typedef enum {
 #pragma mark - AFURLRequestSerializer
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
-                               withParameters:(NSDictionary *)parameters
+                               withParameters:(id)parameters
                                         error:(NSError *__autoreleasing *)error
 {
     NSParameterAssert(request);
