@@ -257,6 +257,14 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
                                  URLString:(NSString *)URLString
                                 parameters:(NSDictionary *)parameters
 {
+    return [self requestWithMethod:method URLString:URLString parameters:parameters error:nil];
+}
+
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method
+                                 URLString:(NSString *)URLString
+                                parameters:(NSDictionary *)parameters
+                                     error:(NSError *__autoreleasing *)error
+{
     NSParameterAssert(method);
     NSParameterAssert(URLString);
 
@@ -267,7 +275,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:method];
 
-    request = [[self requestBySerializingRequest:request withParameters:parameters error:nil] mutableCopy];
+    request = [[self requestBySerializingRequest:request withParameters:parameters error:error] mutableCopy];
 
 	return request;
 }
