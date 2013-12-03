@@ -13,7 +13,6 @@
 		2902D28117DF4E1200C81C5A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2902D27F17DF4E1200C81C5A /* InfoPlist.strings */; };
 		2902D28D17DF4E2900C81C5A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B9ED5C17DF4D350021E4D5 /* XCTest.framework */; };
 		2902D28E17DF4E2A00C81C5A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC35173BE382004117E8 /* Foundation.framework */; };
-		2902D28F17DF4E2A00C81C5A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29133DD617DE77ED006E0493 /* UIKit.framework */; };
 		2902D29517DF4E2A00C81C5A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2902D29317DF4E2A00C81C5A /* InfoPlist.strings */; };
 		2902D29C17DF4E3700C81C5A /* AFTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B9ED7617DF4D790021E4D5 /* AFTestCase.m */; };
 		2902D29D17DF4E3800C81C5A /* AFTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B9ED7617DF4D790021E4D5 /* AFTestCase.m */; };
@@ -40,7 +39,6 @@
 /* Begin PBXFileReference section */
 		2544EC35173BE382004117E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2544EC44173BE382004117E8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		2544EC46173BE382004117E8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		2544EC80173BFAA8004117E8 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		2544EC83173BFAA8004117E8 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		2544EC84173BFAA8004117E8 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -106,7 +104,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2902D28D17DF4E2900C81C5A /* XCTest.framework in Frameworks */,
-				2902D28F17DF4E2A00C81C5A /* UIKit.framework in Frameworks */,
 				2902D28E17DF4E2A00C81C5A /* Foundation.framework in Frameworks */,
 				3D56634E3A564CEE86172413 /* libPods-osx.a in Frameworks */,
 			);
@@ -151,7 +148,6 @@
 				25C4EC2A173D7DB30083E116 /* SystemConfiguration.framework */,
 				2544EC35173BE382004117E8 /* Foundation.framework */,
 				2544EC44173BE382004117E8 /* SenTestingKit.framework */,
-				2544EC46173BE382004117E8 /* UIKit.framework */,
 				2544EC80173BFAA8004117E8 /* Cocoa.framework */,
 				29B9ED5C17DF4D350021E4D5 /* XCTest.framework */,
 				2544EC82173BFAA8004117E8 /* Other Frameworks */,
@@ -614,6 +610,7 @@
 				INFOPLIST_FILE = "OS X Tests/OS X Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -640,6 +637,7 @@
 				INFOPLIST_FILE = "OS X Tests/OS X Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
