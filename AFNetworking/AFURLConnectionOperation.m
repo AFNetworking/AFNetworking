@@ -54,6 +54,16 @@ static dispatch_group_t url_request_operation_completion_group() {
     return af_url_request_operation_completion_group;
 }
 
+static dispatch_queue_t url_request_operation_completion_queue() {
+    static dispatch_queue_t af_url_request_operation_completion_queue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        af_url_request_operation_completion_queue = dispatch_queue_create("com.alamofire.networking.operation.queue", DISPATCH_QUEUE_CONCURRENT );
+    });
+
+    return af_url_request_operation_completion_queue;
+}
+
 static NSString * const kAFNetworkingLockName = @"com.alamofire.networking.operation.lock";
 
 NSString * const AFNetworkingErrorDomain = @"AFNetworkingErrorDomain";
@@ -221,7 +231,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
                 block();
             });
 
-            dispatch_group_notify(group, queue, ^{
+            dispatch_group_notify(group, url_request_operation_completion_queue(), ^{
                 [strongSelf setCompletionBlock:nil];
             });
         }];
