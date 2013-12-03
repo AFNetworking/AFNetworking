@@ -25,14 +25,14 @@
 #if !defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 static NSData * AFSecKeyGetData(SecKeyRef key) {
     CFDataRef data = NULL;
-
+    
 #if defined(NS_BLOCK_ASSERTIONS)
     SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
 #else
     OSStatus status = SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
     NSCAssert(status == errSecSuccess, @"SecItemExport error: %ld", (long int)status);
 #endif
-
+    
     NSCParameterAssert(data);
     
     return (__bridge_transfer NSData *)data;
@@ -50,10 +50,10 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 static id AFPublicKeyForCertificate(NSData *certificate) {
     SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificate);
     NSCParameterAssert(allowedCertificate);
-
+    
     SecCertificateRef allowedCertificates[] = {allowedCertificate};
     CFArrayRef tempCertificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
-
+    
     SecPolicyRef policy = SecPolicyCreateBasicX509();
     SecTrustRef allowedTrust = NULL;
 #if defined(NS_BLOCK_ASSERTIONS)
@@ -62,44 +62,44 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
     OSStatus status = SecTrustCreateWithCertificates(tempCertificates, policy, &allowedTrust);
     NSCAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
 #endif
-
+    
     SecTrustResultType result = 0;
-
+    
 #if defined(NS_BLOCK_ASSERTIONS)
     SecTrustEvaluate(allowedTrust, &result);
 #else
     status = SecTrustEvaluate(allowedTrust, &result);
     NSCAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
 #endif
-
+    
     SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
     NSCParameterAssert(allowedPublicKey);
-
+    
     CFRelease(allowedTrust);
     CFRelease(policy);
     CFRelease(tempCertificates);
     CFRelease(allowedCertificate);
-
+    
     return (__bridge_transfer id)allowedPublicKey;
 }
 
 static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
     SecTrustResultType result = 0;
-
+    
 #if defined(NS_BLOCK_ASSERTIONS)
     SecTrustEvaluate(serverTrust, &result);
 #else
     OSStatus status = SecTrustEvaluate(serverTrust, &result);
     NSCAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
 #endif
-
+    
     return (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
 }
 
 static NSArray * AFCertificateTrustChainForServerTrust(SecTrustRef serverTrust) {
     CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
     NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:(NSUInteger)certificateCount];
-
+    
     for (CFIndex i = 0; i < certificateCount; i++) {
         SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
         [trustChain addObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)];
@@ -114,27 +114,59 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:(NSUInteger)certificateCount];
     for (CFIndex i = 0; i < certificateCount; i++) {
         SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
-
+        
         SecCertificateRef someCertificates[] = {certificate};
         CFArrayRef certificates = CFArrayCreate(NULL, (const void **)someCertificates, 1, NULL);
-
+        
         SecTrustRef trust = NULL;
-
+        
         OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &trust);
         NSCAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
-
+        
         SecTrustResultType result;
         status = SecTrustEvaluate(trust, &result);
         NSCAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
-
+        
         [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
-
+        
         CFRelease(trust);
         CFRelease(certificates);
     }
     CFRelease(policy);
     
     return [NSArray arrayWithArray:trustChain];
+}
+
+static NSComparisonResult AFDomainComponentCompare(NSString *component1, NSString *component2) {
+    if ([component1 isEqualToString:@"*"] || [component2 isEqualToString:@"*"]) {
+        return NSOrderedSame;
+    }
+
+    return [component1 compare:component2];
+}
+
+static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *domain) {
+    certificateHost = [certificateHost lowercaseString];
+    domain = [domain lowercaseString];
+    
+    if ([certificateHost isEqualToString:domain]) {
+        return YES;
+    }
+
+    NSArray *certificateHostComponents = [certificateHost componentsSeparatedByString:@"."];
+    NSArray *domainComponents = [domain componentsSeparatedByString:@"."];
+    
+    if ([certificateHostComponents count] != [domainComponents count]) {
+        return NO;
+    }
+    
+    BOOL certificateHostMatchesDomain = ([certificateHostComponents indexOfObjectPassingTest:^BOOL(NSString *certificateHostComponent, NSUInteger idx, __unused BOOL *stop) {
+        NSString *domainComponent = [domainComponents objectAtIndex:idx];
+
+        return AFDomainComponentCompare(certificateHostComponent, domainComponent) != NSOrderedSame;
+    }] == NSNotFound);
+    
+    return certificateHostMatchesDomain;
 }
 
 #pragma mark -
@@ -151,31 +183,32 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     dispatch_once(&onceToken, ^{
         NSBundle *bundle = [NSBundle bundleForClass:[self class]];
         NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
-
+        
         NSMutableArray *certificates = [NSMutableArray arrayWithCapacity:[paths count]];
         for (NSString *path in paths) {
             NSData *certificateData = [NSData dataWithContentsOfFile:path];
             [certificates addObject:certificateData];
         }
-
+        
         _defaultPinnedCertificates = [[NSArray alloc] initWithArray:certificates];
     });
-
+    
     return _defaultPinnedCertificates;
 }
 
 + (instancetype)defaultPolicy {
     AFSecurityPolicy *securityPolicy = [[self alloc] init];
     securityPolicy.SSLPinningMode = AFSSLPinningModeNone;
-
+    
     return securityPolicy;
 }
 
 + (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode {
     AFSecurityPolicy *securityPolicy = [[self alloc] init];
     securityPolicy.SSLPinningMode = pinningMode;
+    securityPolicy.validatesDomainName = YES;
     [securityPolicy setPinnedCertificates:[self defaultPinnedCertificates]];
-
+    
     return securityPolicy;
 }
 
@@ -183,7 +216,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 - (void)setPinnedCertificates:(NSArray *)pinnedCertificates {
     _pinnedCertificates = pinnedCertificates;
-
+    
     if (self.pinnedCertificates) {
         NSMutableArray *mutablePinnedPublicKeys = [NSMutableArray arrayWithCapacity:[self.pinnedCertificates count]];
         for (NSData *certificate in self.pinnedCertificates) {
@@ -198,32 +231,57 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 #pragma mark -
 
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust {
+    return [self evaluateServerTrust:serverTrust forDomain:nil];
+}
+
+- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
+                  forDomain:(NSString *)domain
+{
+    __block NSData *matchingCertificateData = nil;
+    __block BOOL shouldTrustServer = NO;
+    
     switch (self.SSLPinningMode) {
         case AFSSLPinningModeNone:
             return (self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust));
         case AFSSLPinningModeCertificate: {
             for (NSData *trustChainCertificate in AFCertificateTrustChainForServerTrust(serverTrust)) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
-                    return YES;
+                    matchingCertificateData = trustChainCertificate;
+                    shouldTrustServer = YES;
+                    break;
                 }
             }
         }
             break;
         case AFSSLPinningModePublicKey: {
-            for (id trustChainPublicKey in AFPublicKeyTrustChainForServerTrust(serverTrust)) {
+            NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust);
+            [publicKeys enumerateObjectsUsingBlock:^(id trustChainPublicKey, NSUInteger idx, BOOL *stop) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
                     if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
-                        return YES;
+                        NSData *trustChainCertificate = AFCertificateTrustChainForServerTrust(serverTrust)[idx];
+                        
+                        matchingCertificateData = trustChainCertificate;
+                        shouldTrustServer = YES;
+                        *stop = YES;
                     }
                 }
-            }
+            }];
         }
             break;
         default:
             break;
     }
+    
+    if (shouldTrustServer && domain && self.validatesDomainName) {
+        SecCertificateRef matchingCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)matchingCertificateData);
+        NSParameterAssert(matchingCertificate);
 
-    return NO;
+        shouldTrustServer = AFCertificateHostMatchesDomain((__bridge_transfer NSString *)SecCertificateCopySubjectSummary(matchingCertificate), domain);
+
+        CFRelease(matchingCertificate);
+    }
+
+    return shouldTrustServer;
 }
 
 #pragma mark - NSKeyValueObserving
