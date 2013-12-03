@@ -94,10 +94,6 @@ static char kAFHTTPRequestOperationKey;
             failure:(void (^)(NSError *error))failure
 {
     [self loadRequest:request MIMEType:nil textEncodingName:nil progress:progress success:^NSData *(NSHTTPURLResponse *response, NSData *data) {
-        if (!success) {
-            return data;
-        }
-
         NSStringEncoding stringEncoding = NSUTF8StringEncoding;
         if (response.textEncodingName) {
             CFStringEncoding encoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName);
@@ -106,7 +102,12 @@ static char kAFHTTPRequestOperationKey;
             }
         }
 
-        return [[[NSString alloc] initWithData:data encoding:stringEncoding] dataUsingEncoding:stringEncoding];
+        NSString *string = [[NSString alloc] initWithData:data encoding:stringEncoding];
+        if (success) {
+            string = success(response, string);
+        }
+
+        return [string dataUsingEncoding:stringEncoding];
     } failure:failure];
 }
 
