@@ -66,8 +66,6 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
-#pragma mark -
-
 @implementation AFSecurityPolicyTests
 
 - (void)testPublicKeyPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {

@@ -231,14 +231,14 @@
 		29B9ED6C17DF4D670021E4D5 /* 1.0 Tests */ = {
 			isa = PBXGroup;
 			children = (
-				29B9ED6D17DF4D670021E4D5 /* AFHTTPClientTests.m */,
-				29B9ED6E17DF4D670021E4D5 /* AFHTTPRequestOperationTests.m */,
-				29B9ED6F17DF4D670021E4D5 /* AFImageRequestOperationTests.m */,
-				29B9ED7017DF4D670021E4D5 /* AFJSONRequestOperationTests.m */,
 				29B9ED7117DF4D670021E4D5 /* AFMockURLProtocol.h */,
 				29B9ED7217DF4D670021E4D5 /* AFMockURLProtocol.m */,
 				29B9ED7317DF4D670021E4D5 /* AFNetworkingTests.h */,
 				29B9ED7417DF4D670021E4D5 /* AFNetworkingTests.m */,
+				29B9ED6D17DF4D670021E4D5 /* AFHTTPClientTests.m */,
+				29B9ED6E17DF4D670021E4D5 /* AFHTTPRequestOperationTests.m */,
+				29B9ED6F17DF4D670021E4D5 /* AFImageRequestOperationTests.m */,
+				29B9ED7017DF4D670021E4D5 /* AFJSONRequestOperationTests.m */,
 				29B9ED7517DF4D670021E4D5 /* AFURLConnectionOperationTests.m */,
 			);
 			path = "1.0 Tests";
