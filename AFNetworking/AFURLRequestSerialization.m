@@ -324,10 +324,6 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
         }
     }];
 
-    if (!parameters) {
-        return mutableRequest;
-    }
-
     NSString *query = nil;
     if (self.queryStringSerialization) {
         query = self.queryStringSerialization(request, parameters, error);
@@ -339,6 +335,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
             default:
                 break;
         }
+    }
+	
+    if (!query) {
+        return mutableRequest;
     }
 
     if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
