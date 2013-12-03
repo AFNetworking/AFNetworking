@@ -22,11 +22,11 @@
 
 #import "AFNetworkActivityIndicatorManager.h"
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED)
 
 #import "AFHTTPRequestOperation.h"
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
 #import "AFURLSessionManager.h"
 #endif
 
@@ -37,7 +37,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
         return [(AFURLConnectionOperation *)[notification object] request];
     }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     if ([[notification object] respondsToSelector:@selector(originalRequest)]) {
         return [(NSURLSessionTask *)[notification object] originalRequest];
     }
@@ -81,7 +81,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingOperationDidStartNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingOperationDidFinishNotification object:nil];
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingTaskDidStartNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidSuspendNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidFinishNotification object:nil];
