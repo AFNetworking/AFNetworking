@@ -51,6 +51,11 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
  */
 @property (nonatomic, assign) BOOL allowInvalidCertificates;
 
+/**
+ Whether or not to validate the domain name in the certificates CN field. Defaults to `YES` for `AFSSLPinningModePublicKey` or `AFSSLPinningModeCertificate`, otherwise `NO`.
+ */
+@property (nonatomic, assign) BOOL validatesDomainName;
+
 ///-----------------------------------------
 /// @name Getting Specific Security Policies
 ///-----------------------------------------
@@ -85,10 +90,11 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
  This method should be used when responding to an authentication challenge from a server.
  
  @param serverTrust The X.509 certificate trust of the server.
+ @param domain The domain of serverTrust. Cannot be nil if validatesDomainName is set.
  
  @return Whether or not to trust the server.
  */
-- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust;
+- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust forDomain:(NSString *)domain;
 
 @end
 
