@@ -42,6 +42,11 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 @property (nonatomic, assign) AFSSLPinningMode SSLPinningMode;
 
 /**
+ Whether to evaluate an entire SSL certificate chain, or just the leaf certificate. Defaults to `YES`.
+ */
+@property (nonatomic, assign) BOOL validatesCertificateChain;
+
+/**
  The certificates used to evaluate server trust according to the SSL pinning mode. By default, this property is set to any (`.cer`) certificates included in the app bundle.
  */
 @property (nonatomic, strong) NSArray *pinnedCertificates;
@@ -123,16 +128,24 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 
  enum {
  AFSSLPinningModeNone,
- AFSSLPinningModePublicKey,
- AFSSLPinningModeCertificate,
+ AFSSLPinningModeLeafPublicKey,
+ AFSSLPinningModeLeafCertificate,
+ AFSSLPinningModePublicKeyChain,
+ AFSSLPinningModeCertificateChain
  }
 
  `AFSSLPinningModeNone`
- Do not validate servers against pinned certificates.
+ Do not used pinned certificates to validate servers.
 
- `AFSSLPinningModePublicKey`
+ `AFSSLPinningModeLeafPublicKey`
  Validate host certificates against public keys of pinned certificates.
 
- `AFSSLPinningModeCertificate`
+ `AFSSLPinningModeLeafCertificate`
  Validate host certificates against pinned certificates.
+ 
+ `AFSSLPinningModePublicKeyChain`
+ Pin SSL connections to certificate chain public keys (SPKI).
+ 
+ `AFSSLPinningModeCertificateChain`
+ Pin SSL connections to exact certificate chain. This may cause problems when a certificate expires and needs re-issuance.
 */

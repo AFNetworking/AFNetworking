@@ -66,26 +66,66 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
+static NSArray * AFCertificateTrustChainForServerTrust(SecTrustRef serverTrust) {
+    CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
+    NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:(NSUInteger)certificateCount];
+    
+    for (CFIndex i = 0; i < certificateCount; i++) {
+        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
+        [trustChain addObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)];
+    }
+    
+    return [NSArray arrayWithArray:trustChain];
+}
+
+#pragma mark -
+
 @implementation AFSecurityPolicyTests
 
-- (void)testPublicKeyPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
+- (void)testLeafPublicKeyPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
     CFRelease(certificate);
-    [policy setSSLPinningMode:AFSSLPinningModePublicKey];
+    [policy setSSLPinningMode:AFSSLPinningModeLeafPublicKey];
+    
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust], @"HTTPBin.org Public Key Pinning Mode Failed");
+    CFRelease(trust);
+}
+
+- (void)testPublicKeyChainPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
+    AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
+    SecTrustRef clientTrust = AFUTHTTPBinOrgServerTrust();
+    NSArray * certificates = AFCertificateTrustChainForServerTrust(clientTrust);
+    CFRelease(clientTrust);
+    [policy setPinnedCertificates:certificates];
+    [policy setSSLPinningMode:AFSSLPinningModePublicKeyChain];
 
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
     XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpbin.org"], @"HTTPBin.org Public Key Pinning Mode Failed");
     CFRelease(trust);
 }
 
-- (void)testCertificatePinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
+- (void)testLeafCertificatePinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
     CFRelease(certificate);
-    [policy setSSLPinningMode:AFSSLPinningModeCertificate];
+    [policy setSSLPinningMode:AFSSLPinningModeLeafCertificate];
+    
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust], @"HTTPBin.org Public Key Pinning Mode Failed");
+    CFRelease(trust);
+}
+
+- (void)testCertificateChainPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
+    AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
+    SecTrustRef clientTrust = AFUTHTTPBinOrgServerTrust();
+    NSArray * certificates = AFCertificateTrustChainForServerTrust(clientTrust);
+    CFRelease(clientTrust);
+    [policy setPinnedCertificates:certificates];
+    [policy setSSLPinningMode:AFSSLPinningModeCertificateChain];
 
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
     XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpbin.org"], @"HTTPBin.org Public Key Pinning Mode Failed");
@@ -106,9 +146,9 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
 
 - (void)testPublicKeyPinningFailsForHTTPBinOrgIfNoCertificateIsPinned {
     AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
-    [policy setPinnedCertificates:@[]];
     [policy setSSLPinningMode:AFSSLPinningModePublicKey];
-    
+    [policy setPinnedCertificates:@[]];
+
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
     XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpbin.org"] == NO, @"HTTPBin.org Public Key Pinning Should have failed with no pinned certificate");
     CFRelease(trust);
@@ -188,8 +228,9 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
 
 - (void)testPublicKeyPinningForHTTPBinOrgFailsWhenPinnedAgainstADNServerTrust {
     AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
-    [policy setPinnedCertificates:@[]];
-    [policy setSSLPinningMode:AFSSLPinningModePublicKey];
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
+    [policy setSSLPinningMode:AFSSLPinningModeLeafPublicKey];
 
     SecTrustRef trust = AFUTADNNetServerTrust();
     XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpbin.org"] == NO, @"HTTPBin.org Public Key Pinning Should have failed against ADN");
@@ -198,8 +239,9 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
 
 - (void)testCertificatePinningForHTTPBinOrgFailsWhenPinnedAgainstADNServerTrust {
     AFSecurityPolicy *policy = [[AFSecurityPolicy alloc] init];
-    [policy setPinnedCertificates:@[]];
-    [policy setSSLPinningMode:AFSSLPinningModeCertificate];
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
+    [policy setSSLPinningMode:AFSSLPinningModeLeafCertificate];
 
     SecTrustRef trust = AFUTADNNetServerTrust();
     XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpbin.org"] == NO, @"HTTPBin.org Certificate Pinning Should have failed against ADN");
@@ -216,6 +258,49 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
     }];
 
     XCTAssert(index!=NSNotFound, @"HTTPBin.org certificate not found in the default certificates");
+}
+
+- (void)testDefaultPolicySetToCertificateChain {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificateChain];
+    SecTrustRef trust = AFUTADNNetServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust], @"Pinning with Default Certficiate Chain Failed");
+    CFRelease(trust);
+}
+
+- (void)testDefaultPolicySetToLeafCertificate {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeLeafCertificate];
+    SecTrustRef trust = AFUTADNNetServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust], @"Pinning with Default Leaf Certficiate Failed");
+    CFRelease(trust);
+}
+
+- (void)testDefaultPolicySetToPublicKeyChain {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyChain];
+    SecTrustRef trust = AFUTADNNetServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust], @"Pinning with Default Public Key Chain Failed");
+    CFRelease(trust);
+}
+
+- (void)testDefaultPolicySetToLeafPublicKey {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeLeafPublicKey];
+    SecTrustRef trust = AFUTADNNetServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust], @"Pinning with Default Leaf Public Key Failed");
+    CFRelease(trust);
+}
+
+
+- (void)testDefaultPolicySetToCertificateChainFailsWithMissingChain {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificateChain];
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust] == NO, @"Pinning with Certificate Chain Mode and Missing Chain should have failed");
+    CFRelease(trust);
+}
+
+- (void)testDefaultPolicySetToPublicKeyChainFailsWithMissingChain {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyChain];
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust] == NO, @"Pinning with Public Key Chain Mode and Missing Chain should have failed");
+    CFRelease(trust);
 }
 
 - (void)testDefaultPolicyIsSetToAFSSLPinningModePublicKey {
@@ -243,7 +328,7 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
 }
 
 - (void)testThatSSLPinningPolicyClassMethodContainsDefaultCertificates{
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeLeafPublicKey];
     XCTAssertNotNil(policy.pinnedCertificates, @"Default certificate array should not be empty for SSL pinning mode policy");
 }
 

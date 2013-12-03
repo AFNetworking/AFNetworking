@@ -212,6 +212,17 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
     return securityPolicy;
 }
 
+- (id)init {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    self.validatesCertificateChain = YES;
+
+    return self;
+}
+
 #pragma mark -
 
 - (void)setPinnedCertificates:(NSArray *)pinnedCertificates {
@@ -240,32 +251,49 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
     __block NSData *matchingCertificateData = nil;
     __block BOOL shouldTrustServer = NO;
     
+    if (self.SSLPinningMode == AFSSLPinningModeNone && self.allowInvalidCertificates) {
+        return YES;
+    }
+
+    if (!AFServerTrustIsValid(serverTrust)) {
+        return NO;
+    }
+
+    NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);
     switch (self.SSLPinningMode) {
         case AFSSLPinningModeNone:
-            return (self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust));
+            return YES;
         case AFSSLPinningModeCertificate: {
-            for (NSData *trustChainCertificate in AFCertificateTrustChainForServerTrust(serverTrust)) {
+            if (!self.validatesCertificateChain) {
+                return [self.pinnedCertificates containsObject:[serverCertificates firstObject]];
+            }
+
+            NSUInteger trustedCertificateCount = 0;
+            for (NSData *trustChainCertificate in serverCertificates) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
-                    matchingCertificateData = trustChainCertificate;
-                    shouldTrustServer = YES;
-                    break;
+                    trustedCertificateCount++;
                 }
             }
+
+            return trustedCertificateCount > 0 && trustedCertificateCount == [serverCertificates count];
         }
             break;
         case AFSSLPinningModePublicKey: {
+            NSUInteger trustedPublicKeyCount = 0;
             NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust);
-            [publicKeys enumerateObjectsUsingBlock:^(id trustChainPublicKey, NSUInteger idx, BOOL *stop) {
+            if (!self.validatesCertificateChain && [publicKeys count] > 0) {
+                publicKeys = @[[publicKeys firstObject]];
+            }
+
+            for (id trustChainPublicKey in publicKeys) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
                     if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
-                        NSData *trustChainCertificate = AFCertificateTrustChainForServerTrust(serverTrust)[idx];
-                        
-                        matchingCertificateData = trustChainCertificate;
-                        shouldTrustServer = YES;
-                        *stop = YES;
+                        trustedPublicKeyCount += 1;
                     }
                 }
-            }];
+            }
+
+            return trustedPublicKeyCount > 0 && trustedPublicKeyCount == [serverCertificates count];
         }
             break;
         default:
