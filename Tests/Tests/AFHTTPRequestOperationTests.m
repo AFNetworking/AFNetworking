@@ -123,10 +123,11 @@
     // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
-    [operation start];
-    expect([operation isExecuting]).will.beTruthy();
-    
     [operation cancel];
+    
+    [operation start];
+    expect([operation isCancelled]).will.beTruthy();
+    
     expect(operation.error).willNot.beNil();
     expect(operation.error.code).to.equal(NSURLErrorCancelled);
 }
@@ -144,10 +145,11 @@
         blockError = error;
     }];
     
-    [operation start];
-    expect([operation isExecuting]).will.beTruthy();
-    
     [operation cancel];
+    
+    [operation start];
+    expect([operation isCancelled]).will.beTruthy();
+    
     expect(operation.error).willNot.beNil();
     expect(blockError).willNot.beNil();
     expect(blockError.code).will.equal(NSURLErrorCancelled);
