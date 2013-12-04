@@ -463,6 +463,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [self.lock lock];
     if (![self isFinished] && ![self isCancelled]) {
         [super cancel];
+        // If we're currently executing, cancel the operation immediately
+        if ([self isExecuting]) {
+            // Cancel the connection on the thread it runs on to prevent race conditions
+            [self performSelector:@selector(cancelConnection) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
+        }
     }
     [self.lock unlock];
 }
