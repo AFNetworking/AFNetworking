@@ -123,11 +123,10 @@
     // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
-    [operation cancel];
-    
     [operation start];
-    expect([operation isCancelled]).will.beTruthy();
+    expect([operation isExecuting]).will.beTruthy();
     
+    [operation cancel];
     expect(operation.error).willNot.beNil();
     expect(operation.error.code).to.equal(NSURLErrorCancelled);
 }
@@ -145,10 +144,55 @@
         blockError = error;
     }];
     
-    [operation cancel];
-    
     [operation start];
+    expect([operation isExecuting]).will.beTruthy();
+    
+    [operation cancel];
+    expect(operation.error).willNot.beNil();
+    expect(blockError).willNot.beNil();
+    expect(blockError.code).will.equal(NSURLErrorCancelled);
+}
+
+- (void)testThatCancellationOfRequestBeforeStartingRequestSetsError {
+    __block NSError *blockError = nil;
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    // AFHTTPOperation currently does not have a default response serializer
+    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
+    
+    [operation cancel];
+    [operation start];
+    
     expect([operation isCancelled]).will.beTruthy();
+    expect([operation isFinished]).will.beTruthy();
+    expect([operation isExecuting]).will.beFalsy();
+    
+    expect(operation.error).willNot.beNil();
+    expect(blockError).willNot.beNil();
+    expect(blockError.code).will.equal(NSURLErrorCancelled);
+}
+
+- (void)testThatCancellationOfRequestBeforeStartingRequestSetsErrorInvokesFailureCompletionBlock {
+    __block NSError *blockError = nil;
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    // AFHTTPOperation currently does not have a default response serializer
+    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
+    
+    [operation cancel];
+    [operation start];
     
     expect(operation.error).willNot.beNil();
     expect(blockError).willNot.beNil();
