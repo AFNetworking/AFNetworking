@@ -124,7 +124,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 @interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, assign) AFOperationState state;
-@property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @property (readwrite, nonatomic, strong) NSURLConnection *connection;
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
@@ -460,10 +459,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 - (void)cancel {
     [self.lock lock];
     if (![self isFinished] && ![self isCancelled]) {
-        [self willChangeValueForKey:@"isCancelled"];
-        _cancelled = YES;
         [super cancel];
-        [self didChangeValueForKey:@"isCancelled"];
         
         // Cancel the connection on the thread it runs on to prevent race conditions
         [self performSelector:@selector(cancelConnection) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
@@ -699,7 +695,6 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     self.state = (AFOperationState)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(state))];
-    self.cancelled = [decoder decodeBoolForKey:NSStringFromSelector(@selector(isCancelled))];
     self.response = [decoder decodeObjectForKey:NSStringFromSelector(@selector(response))];
     self.error = [decoder decodeObjectForKey:NSStringFromSelector(@selector(error))];
     self.responseData = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseData))];
@@ -723,7 +718,6 @@ didReceiveResponse:(NSURLResponse *)response
             break;
     }
     
-    [coder encodeBool:[self isCancelled] forKey:NSStringFromSelector(@selector(isCancelled))];
     [coder encodeObject:self.response forKey:NSStringFromSelector(@selector(response))];
     [coder encodeObject:self.error forKey:NSStringFromSelector(@selector(error))];
     [coder encodeObject:self.responseData forKey:NSStringFromSelector(@selector(responseData))];
