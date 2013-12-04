@@ -421,8 +421,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 - (void)start {
     [self.lock lock];
     if ([self isCancelled]) {
-        self.state = AFOperationFinishedState;
-        
         // Cancel the connection on the thread it runs on to prevent race conditions
         [self performSelector:@selector(cancelConnection) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
     } else if ([self isReady]) {
