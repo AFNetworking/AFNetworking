@@ -160,6 +160,23 @@ forHTTPHeaderField:(NSString *)field;
                                 parameters:(NSDictionary *)parameters;
 
 /**
+ Creates an `NSMutableURLRequest` object with the specified HTTP method and URL string.
+ 
+ If the HTTP method is `GET`, `HEAD`, or `DELETE`, the parameters will be used to construct a url-encoded query string that is appended to the request's URL. Otherwise, the parameters will be encoded according to the value of the `parameterEncoding` property, and set as the request body.
+ 
+ @param method The HTTP method for the request, such as `GET`, `POST`, `PUT`, or `DELETE`. This parameter must not be `nil`.
+ @param URLString The URL string used to create the request URL.
+ @param parameters The parameters to be either set as a query string for `GET` requests, or the request HTTP body.
+ @param error The error that occurred while attempting to create the request.
+ 
+ @return An `NSMutableURLRequest` object.
+ */
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method
+                                 URLString:(NSString *)URLString
+                                parameters:(NSDictionary *)parameters
+                                     error:(NSError *__autoreleasing *)error;
+
+/**
  Creates an `NSMutableURLRequest` object with the specified HTTP method and URLString, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block. See http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
 
  Multipart form requests are automatically streamed, reading files directly from disk along with in-memory data in a single HTTP body. The resulting `NSMutableURLRequest` object has an `HTTPBodyStream` property, so refrain from setting `HTTPBodyStream` or `HTTPBody` on this request object, as it will clear out the multipart form body stream.
