@@ -178,12 +178,18 @@ didCompleteWithError:(NSError *)error
         } else {
             dispatch_async(url_session_manager_processing_queue(), ^{
                 NSError *serializationError = nil;
-                if (self.downloadFileURL) {
-                    responseObject = self.downloadFileURL;
-                } else {
-                    responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
-                }
+                NSData *data = nil;
 
+                if (!self.downloadFileURL) {
+                  data = [NSData dataWithData:self.mutableData];
+                } 
+
+                responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:data error:&serializationError];
+
+                if (self.downloadFileURL) {
+                  responseObject = [NSData dataWithData:self.mutableData];
+                } 
+                
                 if (responseObject) {
                     userInfo[AFNetworkingTaskDidFinishSerializedResponseKey] = responseObject;
                 }
