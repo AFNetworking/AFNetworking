@@ -36,6 +36,7 @@
 static char kAFSharedImageCacheKey;
 static char kAFImageRequestOperationKey;
 static char kAFResponseSerializerKey;
+static char kAFDefaultResponseSerializerKey;
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFHTTPRequestOperation *af_imageRequestOperation;
@@ -90,11 +91,22 @@ static char kAFResponseSerializerKey;
     objc_setAssociatedObject(self, &kAFSharedImageCacheKey, imageCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
++ (void)setDefaultImageResponseSerializer:(id <AFURLResponseSerialization>)serializer {
+    objc_setAssociatedObject(self, &kAFDefaultResponseSerializerKey, serializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
++ (id <AFURLResponseSerialization>)defaultImageResponseSerializer {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+    return objc_getAssociatedObject(self, &kAFDefaultResponseSerializerKey) ?: [AFImageResponseSerializer serializer];
+#pragma clang diagnostic pop
+}
+
 - (id <AFURLResponseSerialization>)imageResponseSerializer {
     static id <AFURLResponseSerialization> _af_defaultImageResponseSerializer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _af_defaultImageResponseSerializer = [AFImageResponseSerializer serializer];
+        _af_defaultImageResponseSerializer = [UIImageView defaultImageResponseSerializer];
     });
 
 #pragma clang diagnostic push
