@@ -34,10 +34,11 @@
 
 @interface AFHTTPRequestOperationManager ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
-@property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 @end
 
 @implementation AFHTTPRequestOperationManager
+
+@synthesize reachabilityManager=_reachabilityManager;
 
 + (instancetype)manager {
     return [[[self class] alloc] initWithBaseURL:nil];
@@ -61,14 +62,6 @@
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
-    if (self.baseURL.host) {
-        self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
-    } else {
-        self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
-    }
-
-    [self.reachabilityManager startMonitoring];
-
     self.operationQueue = [[NSOperationQueue alloc] init];
 
     return self;
@@ -76,6 +69,20 @@
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.operationQueue];
+}
+
+- (AFNetworkReachabilityManager *)reachabilityManager
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (self.baseURL.host) {
+            _reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
+        } else {
+            _reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+        }
+    });
+    
+    return _reachabilityManager;
 }
 
 #pragma mark -
