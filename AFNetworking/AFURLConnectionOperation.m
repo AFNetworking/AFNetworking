@@ -509,6 +509,24 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 }
 
 - (void)operationDidStart {
+    if (self.request.cachePolicy == NSURLRequestReturnCacheDataElseLoad ||
+        self.request.cachePolicy == NSURLRequestReturnCacheDataDontLoad) {
+
+        NSCachedURLResponse * cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:self.request];
+        if (cachedResponse.data.length > 0) {
+            self.responseData = cachedResponse.data;
+            self.response = cachedResponse.response;
+            self.error = nil;
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
+            });
+
+            [self finish];
+            return;
+        }
+    }
+
     [self.lock lock];
     if (![self isCancelled]) {
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
@@ -770,6 +788,21 @@ didReceiveResponse:(NSURLResponse *)response
     self.error = error;
     
     [self.outputStream close];
+
+    //Ugly hack for making the request succeed if we can find a valid non-empty cached request
+    //This is because IOS6 is not handling cache responses right when we are in a no-connection sittuation
+    //Only use this code for cache policies that are supposed to listen to cache regarding it's expiration date
+    if (self.request.cachePolicy == NSURLRequestUseProtocolCachePolicy ||
+            self.request.cachePolicy == NSURLRequestReturnCacheDataElseLoad ||
+            self.request.cachePolicy == NSURLRequestReturnCacheDataDontLoad) {
+
+        NSCachedURLResponse * cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:self.request];
+        if (cachedResponse.data.length > 0) {
+            self.responseData = cachedResponse.data;
+            self.response = cachedResponse.response;
+            self.error = nil;
+        }
+    }
     
     [self finish];
     
