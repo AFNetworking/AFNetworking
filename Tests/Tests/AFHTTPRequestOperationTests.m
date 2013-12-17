@@ -37,12 +37,15 @@
     [Expecta setAsynchronousTestTimeout:5.0];
     
     __block id blockResponseObject = nil;
+    __block id blockError = nil;
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         blockResponseObject = responseObject;
-    } failure:nil];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
     
     // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
@@ -61,6 +64,7 @@
     [operation resume];
     expect([operation isExecuting]).will.beTruthy();
     expect([operation isFinished]).will.beTruthy();
+    expect(blockError).will.beNil();
     expect(blockResponseObject).willNot.beNil();
     
     // The first operation completed, but the network thread is now in an infinite loop.
@@ -69,18 +73,22 @@
     AFHTTPRequestOperation *operation2 = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation2 setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         blockResponseObject = responseObject;
-    } failure:nil];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
     
     // AFHTTPOperation currently does not have a default response serializer
     [operation2 setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     // The network thread is stalled, so this operation could not succeed.
     [operation2 start];
+    expect(blockError).will.beNil();
     expect(blockResponseObject).willNot.beNil();
 }
 
 - (void)testThatOperationInvokesSuccessCompletionBlockWithResponseObjectOnSuccess {
     __block id blockResponseObject = nil;
+    __block id blockError = nil;
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
@@ -90,11 +98,14 @@
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         blockResponseObject = responseObject;
-    } failure:nil];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
     
     [operation start];
 
     expect([operation isFinished]).will.beTruthy();
+    expect(blockError).will.beNil();
     expect(blockResponseObject).willNot.beNil();
 }
 
@@ -219,6 +230,7 @@
 
 - (void)testThatRedirectBlockIsCalledWhen302IsEncountered {
     __block BOOL success;
+    __block NSError *blockError = nil;
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
@@ -226,7 +238,9 @@
     // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
-    [operation setCompletionBlockWithSuccess:nil failure:nil];
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
     [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
         if(redirectResponse){
             success = YES;
@@ -237,12 +251,14 @@
     
     [operation start];
     expect([operation isFinished]).will.beTruthy();
+    expect(blockError).will.beNil();
     expect(success).will.beTruthy();
 }
 
 - (void)testThatRedirectBlockIsCalledMultipleTimesWhenMultiple302sAreEncountered {
     [Expecta setAsynchronousTestTimeout:5.0];
     __block NSInteger numberOfRedirects = 0;
+    __block NSError *blockError = nil;
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
@@ -250,7 +266,9 @@
     // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
-    [operation setCompletionBlockWithSuccess:nil failure:nil];
+    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
     [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
         if(redirectResponse){
             numberOfRedirects++;
@@ -261,6 +279,7 @@
     
     [operation start];
     expect([operation isFinished]).will.beTruthy();
+    expect(blockError).will.beNil();
     expect(numberOfRedirects).will.equal(5);
 }
 
@@ -306,12 +325,15 @@
     [Expecta setAsynchronousTestTimeout:3.0];
     
     __block id blockResponseObject = nil;
+    __block id blockError = nil;
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         blockResponseObject = responseObject;
-    } failure:nil];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
     
     // AFHTTPOperation currently does not have a default response serializer
     [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
@@ -325,6 +347,7 @@
     [operation resume];
     expect([operation isExecuting]).will.beTruthy();
     expect([operation isFinished]).will.beTruthy();
+    expect(blockError).will.beNil();
     expect(blockResponseObject).willNot.beNil();
 }
 
@@ -373,19 +396,25 @@
 -(void)testThatCompletionBlockForBatchRequestsIsFiredAfterAllOperationCompletionBlocks {
     __block BOOL firstBlock = NO;
     __block BOOL secondBlock = NO;
+    __block id firstBlockError = nil;
+    __block id secondBlockError = nil;
 
     NSURLRequest *request1 = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation1 = [[AFHTTPRequestOperation alloc] initWithRequest:request1];
     [operation1 setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         firstBlock = YES;
-    } failure:nil];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        firstBlockError = error;
+    }];
     [operation1 setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     NSURLRequest *request2 = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation2 = [[AFHTTPRequestOperation alloc] initWithRequest:request2];
     [operation2 setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         secondBlock = YES;
-    } failure:nil];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        secondBlockError = error;
+    }];
     [operation2 setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     __block BOOL completionBlockFiredAfterOtherBlocks = NO;
@@ -398,6 +427,8 @@
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     [queue addOperations:batchRequests waitUntilFinished:NO];
 
+    expect(firstBlockError).will.beNil();
+    expect(secondBlockError).will.beNil();
     expect(completionBlockFiredAfterOtherBlocks).will.beTruthy();
 }
 
