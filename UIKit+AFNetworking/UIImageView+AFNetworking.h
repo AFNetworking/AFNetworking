@@ -58,6 +58,21 @@
 ///------------------------------------
 
 /**
+ Set the default image response serializer used. Will use `AFImageResponseSerializer` if none is set
+ 
+ @param serializer The image response serializer
+ */
++ (void)setDefaultImageResponseSerializer:(id <AFURLResponseSerialization>)serializer;
+
+
+/**
+ The default response serializer used to create an image representation from the server response and response data.
+ 
+ @discussion Subclasses of `AFImageResponseSerializer` could be used to perform post-processing, such as color correction, face detection, or other effects. See https://github.com/AFNetworking/AFCoreImageSerializer
+ */
++ (id <AFURLResponseSerialization>)defaultImageResponseSerializer;
+
+/**
  The response serializer used to create an image representation from the server response and response data. By default, this is an instance of `AFImageResponseSerializer`.
  
  @discussion Subclasses of `AFImageResponseSerializer` could be used to perform post-processing, such as color correction, face detection, or other effects. See https://github.com/AFNetworking/AFCoreImageSerializer
