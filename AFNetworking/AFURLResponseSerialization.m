@@ -153,6 +153,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
     }
 
     self.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", nil];
+    self.shouldParseOnError = YES;
 
     return self;
 }
@@ -166,6 +167,13 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
     if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
         if ([(NSError *)(*error) code] == NSURLErrorCannotDecodeContentData) {
             return nil;
+        }
+
+        // If there was an error, its likely that the content is not valid JSON,
+        // resulting in an JSON parse error instead of an invalid HTTP response
+        // error. The HTTP response error is more useful.
+        if (!self.shouldParseOnError && error) {
+          return nil;
         }
     }
 

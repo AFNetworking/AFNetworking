@@ -117,6 +117,11 @@
 @property (nonatomic, assign) NSJSONReadingOptions readingOptions;
 
 /**
+ If validateReponse returns an error and this set to NO then don't attempt to parse the response body as JSON. YES by default.
+*/
+@property (nonatomic, assign) BOOL shouldParseOnError;
+
+/**
  Creates and returns a JSON serializer with specified reading and writing options.
 
  @param readingOptions The specified JSON reading options.
