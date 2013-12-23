@@ -455,7 +455,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         return nil;
     }
 
-    CGImageRef imageRef = nil;
+    CGImageRef imageRef = NULL;
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
 
     if ([response.MIMEType isEqualToString:@"image/png"]) {
@@ -477,12 +477,12 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
     CGDataProviderRelease(dataProvider);
 
-    UIImage *image = nil;
+    UIImage *image;
 
     if (!imageRef) {
         image = AFImageWithDataAtScale(data, scale);
 
-        if (image.images || image == nil) {
+        if (image.images || !image) {
             return image;
         }
 
@@ -509,7 +509,6 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         return image;
     }
 
-    size_t            bytesPerRow     = 0; // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate()
     CGColorSpaceRef   colorSpace      = CGColorSpaceCreateDeviceRGB();
     CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(colorSpace);
     CGBitmapInfo      bitmapInfo      = CGImageGetBitmapInfo(imageRef);
@@ -525,15 +524,14 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         }
     }
 
-    CGContextRef context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
+    CGContextRef context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, 0, colorSpace, bitmapInfo);
 
     CGColorSpaceRelease(colorSpace);
 
     if (!context) {
-        CGImageRelease(imageRef);
-
         if (!image)
             image = [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:image.imageOrientation];
+
         CGImageRelease(imageRef);
 
         return image;
