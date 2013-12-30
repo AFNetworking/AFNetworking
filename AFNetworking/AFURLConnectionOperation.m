@@ -431,12 +431,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         }
         
         [self.connection start];
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
+        });
     }
     [self.lock unlock];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
-    });
+  
 }
 
 - (void)finish {
