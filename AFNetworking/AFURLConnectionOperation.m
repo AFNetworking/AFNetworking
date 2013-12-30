@@ -436,7 +436,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         });
     }
     [self.lock unlock];
-  
 }
 
 - (void)finish {
