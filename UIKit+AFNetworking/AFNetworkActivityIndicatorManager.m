@@ -26,25 +26,11 @@
 
 #import "AFHTTPRequestOperation.h"
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 #import "AFURLSessionManager.h"
 #endif
 
 static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
-
-static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notification) {
-    if ([[notification object] isKindOfClass:[AFURLConnectionOperation class]]) {
-        return [(AFURLConnectionOperation *)[notification object] request];
-    }
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-    if ([[notification object] respondsToSelector:@selector(originalRequest)]) {
-        return [(NSURLSessionTask *)[notification object] originalRequest];
-    }
-#endif
-
-    return nil;
-}
 
 @interface AFNetworkActivityIndicatorManager ()
 @property (readwrite, nonatomic, assign) NSInteger activityCount;
@@ -81,7 +67,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingOperationDidStartNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingOperationDidFinishNotification object:nil];
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingTaskDidStartNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidSuspendNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidFinishNotification object:nil];
@@ -154,14 +140,26 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     });
 }
 
++(NSURLRequest*)requestFromNotification:(NSNotification*) notification{
+    if ([[notification object] isKindOfClass:[AFURLConnectionOperation class]]) {
+        return [(AFURLConnectionOperation *)[notification object] request];
+    }
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
+    if ([[notification object] respondsToSelector:@selector(originalRequest)]) {
+        return [(NSURLSessionTask *)[notification object] originalRequest];
+    }
+#endif
+    return nil;
+}
+
 - (void)networkRequestDidStart:(NSNotification *)notification {
-    if ([AFNetworkRequestFromNotification(notification) URL]) {
+    if ([[AFNetworkActivityIndicatorManager requestFromNotification:notification] URL]) {
         [self incrementActivityCount];
     }
 }
 
 - (void)networkRequestDidFinish:(NSNotification *)notification {
-    if ([AFNetworkRequestFromNotification(notification) URL]) {
+    if ([[AFNetworkActivityIndicatorManager requestFromNotification:notification] URL]) {
         [self decrementActivityCount];
     }
 }
