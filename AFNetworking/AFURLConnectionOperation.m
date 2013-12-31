@@ -188,6 +188,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)dealloc {
+    dispatch_group_leave(self.activityIndicatorNotificationGroup);
     if (_outputStream) {
         [_outputStream close];
         _outputStream = nil;
