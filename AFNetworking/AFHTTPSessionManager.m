@@ -43,10 +43,11 @@
 
 @interface AFHTTPSessionManager ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
-@property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 @end
 
 @implementation AFHTTPSessionManager
+
+@synthesize reachabilityManager=_reachabilityManager;
 
 + (instancetype)manager {
     return [[[self class] alloc] initWithBaseURL:nil];
@@ -82,18 +83,28 @@
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 
-    if (self.baseURL.host) {
-        self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
-    } else {
-        self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
-    }
-
     return self;
 }
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.session, self.operationQueue];
 }
+
+
+- (AFNetworkReachabilityManager *)reachabilityManager
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (self.baseURL.host) {
+            _reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
+        } else {
+            _reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+        }
+    });
+    
+    return _reachabilityManager;
+}
+
 
 #pragma mark -
 
