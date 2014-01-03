@@ -59,25 +59,24 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 {
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
         if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:(NSUInteger)response.statusCode]) {
-            NSDictionary *userInfo = @{
-                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%d)", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], response.statusCode],
-                                       NSURLErrorFailingURLErrorKey:[response URL],
-                                       AFNetworkingOperationFailingURLResponseErrorKey: response
-                                       };
             if (error) {
-                *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo];
+                *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:@{
+                    NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%d)", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], response.statusCode],
+                    NSURLErrorFailingURLErrorKey:[response URL],
+                    AFNetworkingOperationFailingURLResponseErrorKey: response
+                }];
             }
 
             return NO;
         } else if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:[response MIMEType]]) {
             // Don't invalidate content type if there is no content
             if ([data length] > 0) {
-                NSDictionary *userInfo = @{
-                                           NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: unacceptable content-type: %@", @"AFNetworking", nil), [response MIMEType]],
-                                           NSURLErrorFailingURLErrorKey:[response URL],
-                                           AFNetworkingOperationFailingURLResponseErrorKey: response
-                                           };
                 if (error) {
+                    NSDictionary *userInfo = @{
+                                               NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: unacceptable content-type: %@", @"AFNetworking", nil), [response MIMEType]],
+                                               NSURLErrorFailingURLErrorKey:[response URL],
+                                               AFNetworkingOperationFailingURLResponseErrorKey: response
+                                               };
                     *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
                 }
 
@@ -192,10 +191,10 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
                 return nil;
             }
         } else {
-            NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            [userInfo setValue:NSLocalizedStringFromTable(@"Data failed decoding as a UTF-8 string", nil, @"AFNetworking") forKey:NSLocalizedDescriptionKey];
-            [userInfo setValue:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Could not decode string: %@", nil, @"AFNetworking"), responseString] forKey:NSLocalizedFailureReasonErrorKey];
             if (error) {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+                [userInfo setValue:NSLocalizedStringFromTable(@"Data failed decoding as a UTF-8 string", nil, @"AFNetworking") forKey:NSLocalizedDescriptionKey];
+                [userInfo setValue:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Could not decode string: %@", nil, @"AFNetworking"), responseString] forKey:NSLocalizedFailureReasonErrorKey];
                 *error = [[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
             }
         }
