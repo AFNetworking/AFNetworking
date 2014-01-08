@@ -292,6 +292,10 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 }
 
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
+    return [self initWithSessionConfiguration:configuration reachabilityManager:nil];
+}
+
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration reachabilityManager:(AFNetworkReachabilityManager *)reachabilityManager {
     self = [super init];
     if (!self) {
         return nil;
@@ -311,7 +315,11 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
     self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
 
-    self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+    if (!reachabilityManager) {
+        reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+    }
+
+    self.reachabilityManager = reachabilityManager;
     [self.reachabilityManager startMonitoring];
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
