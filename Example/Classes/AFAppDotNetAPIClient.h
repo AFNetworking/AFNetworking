@@ -21,9 +21,9 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPSessionManager.h"
+#import "PMHTTPSessionManager.h"
 
-@interface AFAppDotNetAPIClient : AFHTTPSessionManager
+@interface AFAppDotNetAPIClient : PMHTTPSessionManager
 
 + (instancetype)sharedClient;
 

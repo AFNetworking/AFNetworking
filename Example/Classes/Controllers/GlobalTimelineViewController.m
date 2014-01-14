@@ -22,7 +22,7 @@
 
 #import "GlobalTimelineViewController.h"
 
-#import "Post.h"
+#import "AFPost.h"
 
 #import "PostTableViewCell.h"
 
@@ -40,7 +40,7 @@
 - (void)reload:(__unused id)sender {
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
-    NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
+    NSURLSessionTask *task = [AFPost globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
         if (!error) {
             self.posts = posts;
             [self.tableView reloadData];

@@ -22,12 +22,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class Post;
+@class AFPost;
 
 @interface PostTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) Post *post;
+@property (nonatomic, strong) AFPost *post;
 
-+ (CGFloat)heightForCellWithPost:(Post *)post;
++ (CGFloat)heightForCellWithPost:(AFPost *)post;
 
 @end
