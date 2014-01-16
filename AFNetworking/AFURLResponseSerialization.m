@@ -505,47 +505,65 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         return nil;
     }
 
-    CGImageRef imageRef = nil;
+    CGImageRef imageRef = NULL;
     CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
 
     if ([response.MIMEType isEqualToString:@"image/png"]) {
         imageRef = CGImageCreateWithPNGDataProvider(dataProvider,  NULL, true, kCGRenderingIntentDefault);
     } else if ([response.MIMEType isEqualToString:@"image/jpeg"]) {
         imageRef = CGImageCreateWithJPEGDataProvider(dataProvider, NULL, true, kCGRenderingIntentDefault);
-    }
 
-    UIImage *image = AFImageWithDataAtScale(data, scale);
-    if (!imageRef) {
-        if (image.images) {
-            CGDataProviderRelease(dataProvider);
+        // CGImageCreateWithJPEGDataProvider does not properly handle CMKY, so if so, fall back to `AFImageWithDataAtScale`
 
-            return image;
+        if (imageRef) {
+            CGColorSpaceRef   imageColorSpace      = CGImageGetColorSpace(imageRef);
+            CGColorSpaceModel imageColorSpaceModel = CGColorSpaceGetModel(imageColorSpace);
+            if (imageColorSpaceModel == kCGColorSpaceModelCMYK) {
+                CGImageRelease(imageRef);
+                imageRef = NULL;
+            }
         }
-
-        imageRef = CGImageCreateCopy([image CGImage]);
     }
 
     CGDataProviderRelease(dataProvider);
 
+    UIImage *image;
+
     if (!imageRef) {
-        return nil;
+        image = AFImageWithDataAtScale(data, scale);
+
+        if (image.images || !image) {
+            return image;
+        }
+
+        imageRef = CGImageCreateCopy([image CGImage]);
+
+        if (!imageRef) {
+            return nil;
+        }
     }
 
-    size_t width = CGImageGetWidth(imageRef);
-    size_t height = CGImageGetHeight(imageRef);
+    size_t width            = CGImageGetWidth(imageRef);
+    size_t height           = CGImageGetHeight(imageRef);
+    size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
 
-    if (width * height > 1024 * 1024) {
+    // if image is larger than 1mb or if using more than 8 bpc, then don't inflate
+
+    if (width * height > 1024 * 1024 || bitsPerComponent > 8)
+    {
+        if (!image)
+            image = [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:image.imageOrientation];
+
         CGImageRelease(imageRef);
 
-        return AFImageWithDataAtScale(data, scale);
+        return image;
     }
 
-    size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
-    size_t bytesPerRow = 0; // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate()
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
+    CGColorSpaceRef   colorSpace      = CGColorSpaceCreateDeviceRGB();
+    CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(colorSpace);
+    CGBitmapInfo      bitmapInfo      = CGImageGetBitmapInfo(imageRef);
 
-    if (CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
+    if (colorSpaceModel == kCGColorSpaceModelRGB) {
         uint32_t alpha = (bitmapInfo & kCGBitmapAlphaInfoMask);
         if (alpha == kCGImageAlphaNone) {
             bitmapInfo &= ~kCGBitmapAlphaInfoMask;
@@ -556,14 +574,17 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         }
     }
 
-    CGContextRef context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
+    CGContextRef context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, 0, colorSpace, bitmapInfo);
 
     CGColorSpaceRelease(colorSpace);
 
     if (!context) {
+        if (!image)
+            image = [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:image.imageOrientation];
+
         CGImageRelease(imageRef);
 
-        return AFImageWithDataAtScale(data, scale);
+        return image;
     }
 
     CGRect rect = CGRectMake(0.0f, 0.0f, width, height);
@@ -574,7 +595,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     UIImage *inflatedImage = [[UIImage alloc] initWithCGImage:inflatedImageRef scale:scale orientation:image.imageOrientation];
     CGImageRelease(inflatedImageRef);
     CGImageRelease(imageRef);
-
+    
     return inflatedImage;
 }
 #endif
