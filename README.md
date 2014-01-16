@@ -171,6 +171,34 @@ NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithRequest:request from
 [uploadTask resume];
 ```
 
+#### Creating an Upload Task for a Multi-Part Request, with Progress
+
+```objective-c
+    NSURL *filePath = [NSURL fileURLWithPath:@"file://path/to/image.jpg"];
+    NSURL *URL = [NSURL URLWithString:@"http://example.com/upload"];
+    
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:HttpMethodPost URLString:[URL absoluteString] parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+
+        [formData appendPartWithFileURL:filePath name:@"file" fileName:@"filename.jpg" mimeType:@"image/jpeg" error:nil];
+    } error:nil];
+
+    
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    NSProgress *progress;
+    
+    
+    NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithStreamedRequest:request progress:&progress completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            NSLog(@"%@ %@", response, responseObject);
+        }
+    }];
+    
+    [uploadTask resume];
+```
+
 #### Creating a Data Task
 
 ```objective-c
