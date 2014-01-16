@@ -31,7 +31,6 @@ static NSString * const AFAppDotNetAPIBaseURLString = @"https://alpha-api.app.ne
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[AFAppDotNetAPIClient alloc] initWithBaseURL:[NSURL URLWithString:AFAppDotNetAPIBaseURLString]];
-        [_sharedClient setSecurityPolicy:[AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey]];
     });
     
     return _sharedClient;
