@@ -24,7 +24,7 @@
 
 @class User;
 
-@interface Post : NSObject
+@interface AFPost : NSObject
 
 @property (nonatomic, assign) NSUInteger postID;
 @property (nonatomic, strong) NSString *text;

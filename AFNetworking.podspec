@@ -25,6 +25,11 @@ Pod::Spec.new do |s|
     ss.frameworks = 'Security'
   end
 
+  s.subspec ‘HTTP Request do |ss|
+    ss.dependency 'AFNetworking/NSURLSession’
+    ss.source_files = 'AFNetworking/AFHTTPRequest.{h,m}’
+  end
+
   s.subspec 'Reachability' do |ss|
     ss.source_files = 'AFNetworking/AFNetworkReachabilityManager.{h,m}'
     ss.frameworks = 'SystemConfiguration'

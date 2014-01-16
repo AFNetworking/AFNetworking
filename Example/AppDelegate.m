@@ -21,11 +21,14 @@
 // THE SOFTWARE.
 
 #import "AppDelegate.h"
+#import "AFHTTPSessionManager.h"
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     #import "GlobalTimelineViewController.h"
 
     #import "AFNetworkActivityIndicatorManager.h"
+
+    static NSString * const AFAppDotNetAPIBaseURLString = @"https://alpha-api.app.net/";
 
     @implementation AppDelegate
 
@@ -34,7 +37,10 @@
     {
         NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:20 * 1024 * 1024 diskPath:nil];
         [NSURLCache setSharedURLCache:URLCache];
-            
+        
+        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:AFAppDotNetAPIBaseURLString]];
+        [manager setSecurityPolicy:[AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey]];
+        
         [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
         
         UITableViewController *viewController = [[GlobalTimelineViewController alloc] initWithStyle:UITableViewStylePlain];

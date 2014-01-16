@@ -22,7 +22,7 @@
 
 #import "PostTableViewCell.h"
 
-#import "Post.h"
+#import "AFPost.h"
 #import "User.h"
 
 #import "UIImageView+AFNetworking.h"
@@ -46,7 +46,7 @@
     return self;
 }
 
-- (void)setPost:(Post *)post {
+- (void)setPost:(AFPost *)post {
     _post = post;
 
     self.textLabel.text = _post.user.username;
@@ -56,7 +56,7 @@
     [self setNeedsLayout];
 }
 
-+ (CGFloat)heightForCellWithPost:(Post *)post {
++ (CGFloat)heightForCellWithPost:(AFPost *)post {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     CGSize sizeToFit = [post.text sizeWithFont:[UIFont systemFontOfSize:12.0f] constrainedToSize:CGSizeMake(220.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
