@@ -123,6 +123,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 @interface AFURLConnectionOperation ()
+@property (readwrite, nonatomic, strong) dispatch_group_t activityIndicatorNotificationGroup;
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @property (readwrite, nonatomic, strong) NSURLConnection *connection;
@@ -176,6 +177,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (!self) {
 		return nil;
     }
+    self.activityIndicatorNotificationGroup = dispatch_group_create();
+    dispatch_group_enter(self.activityIndicatorNotificationGroup);
     
     self.lock = [[NSRecursiveLock alloc] init];
     self.lock.name = kAFNetworkingLockName;
@@ -194,6 +197,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 - (void)dealloc {
+    dispatch_group_leave(self.activityIndicatorNotificationGroup);
     if (_outputStream) {
         [_outputStream close];
         _outputStream = nil;
@@ -367,15 +371,26 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if ([self isExecuting]) {
         [self performSelector:@selector(operationDidPause) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-            [notificationCenter postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
-        });
+        [self notifyNetworkActivityIndicatorManager:NO];
     }
     
     self.state = AFOperationPausedState;
     
     [self.lock unlock];
+}
+
+- (void)notifyNetworkActivityIndicatorManager:(BOOL)started {
+    if (started) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
+            dispatch_group_leave(self.activityIndicatorNotificationGroup);
+        });
+    } else {
+        dispatch_group_notify(self.activityIndicatorNotificationGroup, dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+            dispatch_group_enter(self.activityIndicatorNotificationGroup);
+        });
+    }
 }
 
 - (void)operationDidPause {
@@ -445,17 +460,13 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
     [self.lock unlock];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
-    });
+    [self notifyNetworkActivityIndicatorManager:YES];
 }
 
 - (void)finish {
     self.state = AFOperationFinishedState;
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
-    });
+    [self notifyNetworkActivityIndicatorManager:NO];
 }
 
 - (void)cancel {
