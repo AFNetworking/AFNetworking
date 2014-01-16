@@ -282,9 +282,7 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
                 }
             }
 
-            return trustedCertificateCount > 0 &&
-                   ((self.validatesCertificateChain && trustedCertificateCount == [serverCertificates count]) ||
-                    (!self.validatesCertificateChain && trustedCertificateCount >= 1));
+            return trustedCertificateCount > 0 && ((self.validatesCertificateChain && trustedCertificateCount == [serverCertificates count]) || (!self.validatesCertificateChain && trustedCertificateCount >= 1));
         }
             break;
         case AFSSLPinningModePublicKey: {
@@ -302,9 +300,7 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
                 }
             }
 
-            return trustedPublicKeyCount > 0 &&
-                   ((self.validatesCertificateChain && trustedPublicKeyCount == [serverCertificates count]) ||
-                    (!self.validatesCertificateChain && trustedPublicKeyCount >= 1));
+            return trustedPublicKeyCount > 0 && ((self.validatesCertificateChain && trustedPublicKeyCount == [serverCertificates count]) || (!self.validatesCertificateChain && trustedPublicKeyCount >= 1));
         }
             break;
         default:
