@@ -617,7 +617,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 }
 
 + (NSSet *)acceptablePathExtensions {
-    static NSSet * _acceptablePathExtension = nil;
+    static NSSet *_acceptablePathExtension = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _acceptablePathExtension = [[NSSet alloc] initWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"ico", @"bmp", @"cur", nil];

@@ -24,7 +24,7 @@
 
 typedef void (^AFTestURLProtocolInitializationCallback)(AFMockURLProtocol *protocol);
 
-static volatile NSURL * _matchingURL = nil;
+static volatile NSURL *_matchingURL = nil;
 static volatile AFTestURLProtocolInitializationCallback _initializationCallback = nil;
 
 @implementation AFMockURLProtocol

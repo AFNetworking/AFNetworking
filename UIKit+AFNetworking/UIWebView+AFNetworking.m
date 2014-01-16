@@ -53,7 +53,7 @@ static char kAFHTTPRequestOperationKey;
 @implementation UIWebView (AFNetworking)
 
 - (AFHTTPRequestSerializer <AFURLRequestSerialization> *)requestSerializer {
-    static AFHTTPRequestSerializer <AFURLRequestSerialization> * _af_defaultRequestSerializer = nil;
+    static AFHTTPRequestSerializer <AFURLRequestSerialization> *_af_defaultRequestSerializer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _af_defaultRequestSerializer = [AFHTTPRequestSerializer serializer];
@@ -70,7 +70,7 @@ static char kAFHTTPRequestOperationKey;
 }
 
 - (AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
-    static AFHTTPResponseSerializer <AFURLResponseSerialization> * _af_defaultResponseSerializer = nil;
+    static AFHTTPResponseSerializer <AFURLResponseSerialization> *_af_defaultResponseSerializer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _af_defaultResponseSerializer = [AFHTTPResponseSerializer serializer];
