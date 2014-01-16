@@ -311,10 +311,9 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
     self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
 
-    self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
-    [self.reachabilityManager startMonitoring];
-
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
+
+    self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
 
     self.lock = [[NSLock alloc] init];
     self.lock.name = AFURLSessionManagerLockName;
