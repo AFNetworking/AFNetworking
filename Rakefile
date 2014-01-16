@@ -5,7 +5,7 @@ namespace :test do
 
   desc "Run the AFNetworking Tests for iOS"
   task :ios => :prepare do
-    $ios_success = system("xctool -workspace AFNetworking.xcworkspace -scheme 'iOS Tests' -sdk iphonesimulator -configuration Release test -test-sdk iphonesimulator")
+    $ios_success = system("xctool -workspace AFNetworking.xcworkspace -scheme 'iOS Tests' -sdk iphonesimulator -configuration Release test -test-sdk iphonesimulator -freshSimulator -freshInstall")
   end
 
   desc "Run the AFNetworking Tests for Mac OS X"
