@@ -43,7 +43,7 @@ static NSError * AFErrorWithUnderlyingError(NSError *error, NSError *underlyingE
     NSMutableDictionary *mutableUserInfo = [error.userInfo mutableCopy];
     mutableUserInfo[NSUnderlyingErrorKey] = underlyingError;
 
-    return [NSError errorWithDomain:error.domain code:error.code userInfo:mutableUserInfo];
+    return [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:mutableUserInfo];
 }
 
 static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
