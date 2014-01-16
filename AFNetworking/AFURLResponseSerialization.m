@@ -513,7 +513,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     } else if ([response.MIMEType isEqualToString:@"image/jpeg"]) {
         imageRef = CGImageCreateWithJPEGDataProvider(dataProvider, NULL, true, kCGRenderingIntentDefault);
 
-        // CGImageCreateWithJPEGDataProvider does not properly handle CMKY, so if so, fall back to `AFImageWithDataAtScale`
+        // CGImageCreateWithJPEGDataProvider does not properly handle CMKY, so if so, fall back to AFImageWithDataAtScale
         if (imageRef) {
             CGColorSpaceRef imageColorSpace = CGImageGetColorSpace(imageRef);
             CGColorSpaceModel imageColorSpaceModel = CGColorSpaceGetModel(imageColorSpace);
@@ -553,7 +553,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         return image;
     }
 
-    size_t bytesPerRow = 0; // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate()
+    size_t bytesPerRow = 0; // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(colorSpace);
     CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
