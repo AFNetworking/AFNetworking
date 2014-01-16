@@ -347,7 +347,7 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
     }
 
     NSError *serializationError = nil;
-    NSXMLDocument *document = [[NSXMLDocument alloc] initWithData:data options:self.options error:&serializationError]
+    NSXMLDocument *document = [[NSXMLDocument alloc] initWithData:data options:self.options error:&serializationError];
 
     if (error) {
         *error = AFErrorWithUnderlyingError(serializationError, *error);
