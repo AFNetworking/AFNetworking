@@ -209,7 +209,8 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
             stringEncoding = CFStringConvertEncodingToNSStringEncoding(encoding);
         }
     }
-    
+
+    id responseObject = nil;
     NSString *responseString = [[NSString alloc] initWithData:data encoding:stringEncoding];
     if (responseString && ![responseString isEqualToString:@" "]) {
         // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
@@ -219,7 +220,7 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
         NSError *serializationError = nil;
         if (data) {
             if ([data length] > 0) {
-                return [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
+                responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
             } else {
                 return nil;
             }
@@ -237,7 +238,7 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
         }
     }
 
-    return nil;
+    return responseObject;
 }
 
 #pragma mark - NSCoding
