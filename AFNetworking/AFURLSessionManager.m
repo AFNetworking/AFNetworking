@@ -740,13 +740,17 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 didCompleteWithError:(NSError *)error
 {
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:task];
-    [delegate URLSession:session task:task didCompleteWithError:error];
 
-    if (self.taskDidComplete) {
-        self.taskDidComplete(session, task, error);
+    // delegate may be nil when completing a task in the background
+    if (delegate) {
+        [delegate URLSession:session task:task didCompleteWithError:error];
+
+        if (self.taskDidComplete) {
+            self.taskDidComplete(session, task, error);
+        }
+
+        [self removeDelegateForTask:task];
     }
-
-    [self removeDelegateForTask:task];
 
     [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
 }
