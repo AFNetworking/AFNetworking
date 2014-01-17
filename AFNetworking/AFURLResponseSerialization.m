@@ -420,16 +420,6 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
     return self;
 }
 
-+ (NSSet *)acceptablePathExtensions {
-    static NSSet * _acceptablePathExtension = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _acceptablePathExtension = [[NSSet alloc] initWithObjects:@"plist", nil];
-    });
-
-    return _acceptablePathExtension;
-}
-
 #pragma mark - AFURLResponseSerialization
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
@@ -614,16 +604,6 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #endif
 
     return self;
-}
-
-+ (NSSet *)acceptablePathExtensions {
-    static NSSet *_acceptablePathExtension = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _acceptablePathExtension = [[NSSet alloc] initWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"ico", @"bmp", @"cur", nil];
-    });
-
-    return _acceptablePathExtension;
 }
 
 #pragma mark - AFURLResponseSerializer
