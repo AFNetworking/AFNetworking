@@ -1075,6 +1075,34 @@ typedef enum {
     return mutableRequest;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
+    if (!self) {
+        return nil;
+    }
+
+    self.writingOptions = (NSPropertyListFormat)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(writingOptions))];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+
+    [coder encodeInteger:self.writingOptions forKey:NSStringFromSelector(@selector(writingOptions))];
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    AFJSONRequestSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    serializer.writingOptions = self.writingOptions;
+
+    return serializer;
+}
+
 @end
 
 #pragma mark -
