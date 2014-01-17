@@ -78,8 +78,6 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  @param domain The domain used to evaluate network reachability.
  
  @return An initialized network reachability manager, actively monitoring the specified domain.
-
- @warning This method uses `SCNetworkReachabilityCreateWithName` in its underlying behavior, which may cause the initial reachability callback to execute twice in quick succession. Unless there is a strong reason to monitor reachability specifically on a particular domain, using the `sharedManager`, or a manager created with `managerForAddress` is recommended.
  */
 + (instancetype)managerForDomain:(NSString *)domain;
 
