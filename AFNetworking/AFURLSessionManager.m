@@ -740,15 +740,20 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 didCompleteWithError:(NSError *)error
 {
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:task];
-    [delegate URLSession:session task:task didCompleteWithError:error];
-
-    if (self.taskDidComplete) {
+    // If we don't have a delegate for this task, this is probably a task that
+    // finished in the background after the application was terminated. Don't do
+    // anything. 
+    if (delegate) {
+      [delegate URLSession:session task:task didCompleteWithError:error];
+      
+      if (self.taskDidComplete) {
         self.taskDidComplete(session, task, error);
+      }
+      
+      [self removeDelegateForTask:task];
+      
+      [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
     }
-
-    [self removeDelegateForTask:task];
-
-    [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
 }
 
 #pragma mark - NSURLSessionDataDelegate
