@@ -149,60 +149,58 @@ didCompleteWithError:(NSError *)error
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-    if (self.completionHandler) {
-        __strong AFURLSessionManager *manager = self.manager;
+    __strong AFURLSessionManager *manager = self.manager;
 
-        __block id responseObject = nil;
+    __block id responseObject = nil;
 
-        __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-        userInfo[AFNetworkingTaskDidFinishResponseSerializerKey] = manager.responseSerializer;
+    __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+    userInfo[AFNetworkingTaskDidFinishResponseSerializerKey] = manager.responseSerializer;
 
-        if (self.downloadFileURL) {
-            userInfo[AFNetworkingTaskDidFinishAssetPathKey] = self.downloadFileURL;
-        } else if (self.mutableData) {
-            userInfo[AFNetworkingTaskDidFinishResponseDataKey] = [NSData dataWithData:self.mutableData];
-        }
+    if (self.downloadFileURL) {
+        userInfo[AFNetworkingTaskDidFinishAssetPathKey] = self.downloadFileURL;
+    } else if (self.mutableData) {
+        userInfo[AFNetworkingTaskDidFinishResponseDataKey] = [NSData dataWithData:self.mutableData];
+    }
 
-        if (error) {
-            userInfo[AFNetworkingTaskDidFinishErrorKey] = error;
+    if (error) {
+        userInfo[AFNetworkingTaskDidFinishErrorKey] = error;
+
+        dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
+            if (self.completionHandler) {
+                self.completionHandler(task.response, responseObject, error);
+            }
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
+            });
+        });
+    } else {
+        dispatch_async(url_session_manager_processing_queue(), ^{
+            NSError *serializationError = nil;
+            responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
+
+            if (self.downloadFileURL) {
+                responseObject = self.downloadFileURL;
+            }
+
+            if (responseObject) {
+                userInfo[AFNetworkingTaskDidFinishSerializedResponseKey] = responseObject;
+            }
+
+            if (serializationError) {
+                userInfo[AFNetworkingTaskDidFinishErrorKey] = serializationError;
+            }
 
             dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
                 if (self.completionHandler) {
-                    self.completionHandler(task.response, responseObject, error);
+                    self.completionHandler(task.response, responseObject, serializationError);
                 }
-
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
                 });
             });
-        } else {
-            dispatch_async(url_session_manager_processing_queue(), ^{
-                NSError *serializationError = nil;
-                responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
-
-                if (self.downloadFileURL) {
-                    responseObject = self.downloadFileURL;
-                }
-
-                if (responseObject) {
-                    userInfo[AFNetworkingTaskDidFinishSerializedResponseKey] = responseObject;
-                }
-
-                if (serializationError) {
-                    userInfo[AFNetworkingTaskDidFinishErrorKey] = serializationError;
-                }
-
-                dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
-                    if (self.completionHandler) {
-                        self.completionHandler(task.response, responseObject, serializationError);
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
-                    });
-                });
-            });
-        }
+        });
     }
 #pragma clang diagnostic pop
 }
