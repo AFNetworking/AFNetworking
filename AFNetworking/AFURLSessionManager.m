@@ -44,17 +44,26 @@ static dispatch_group_t url_session_manager_completion_group() {
     return af_url_session_manager_completion_group;
 }
 
-NSString * const AFNetworkingTaskDidStartNotification = @"com.alamofire.networking.task.start";
-NSString * const AFNetworkingTaskDidFinishNotification = @"com.alamofire.networking.task.finish";
-NSString * const AFNetworkingTaskDidFinishResponseDataKey = @"com.alamofire.networking.task.finish.responsedata";
+NSString * const AFNetworkingTaskDidResumeNotification = @"com.alamofire.networking.task.resume";
+NSString * const AFNetworkingTaskDidCompleteNotification = @"com.alamofire.networking.task.complete";
 NSString * const AFNetworkingTaskDidSuspendNotification = @"com.alamofire.networking.task.suspend";
 NSString * const AFURLSessionDidInvalidateNotification = @"com.alamofire.networking.session.invalidate";
 NSString * const AFURLSessionDownloadTaskDidFailToMoveFileNotification = @"com.alamofire.networking.session.download.file-manager-error";
 
-NSString * const AFNetworkingTaskDidFinishSerializedResponseKey = @"com.alamofire.networking.task.finish.serializedresponse";
-NSString * const AFNetworkingTaskDidFinishResponseSerializerKey = @"com.alamofire.networking.task.finish.responseserializer";
-NSString * const AFNetworkingTaskDidFinishErrorKey = @"com.alamofire.networking.task.finish.error";
-NSString * const AFNetworkingTaskDidFinishAssetPathKey = @"com.alamofire.networking.task.finish.assetpath";
+NSString * const AFNetworkingTaskDidStartNotification = @"com.alamofire.networking.task.resume"; // Deprecated
+NSString * const AFNetworkingTaskDidFinishNotification = @"com.alamofire.networking.task.complete"; // Deprecated
+
+NSString * const AFNetworkingTaskDidCompleteSerializedResponseKey = @"com.alamofire.networking.task.complete.serializedresponse";
+NSString * const AFNetworkingTaskDidCompleteResponseSerializerKey = @"com.alamofire.networking.task.complete.responseserializer";
+NSString * const AFNetworkingTaskDidCompleteResponseDataKey = @"com.alamofire.networking.complete.finish.responsedata";
+NSString * const AFNetworkingTaskDidCompleteErrorKey = @"com.alamofire.networking.task.complete.error";
+NSString * const AFNetworkingTaskDidCompleteAssetPathKey = @"com.alamofire.networking.task.complete.assetpath";
+
+NSString * const AFNetworkingTaskDidFinishSerializedResponseKey = @"com.alamofire.networking.task.complete.serializedresponse"; // Deprecated
+NSString * const AFNetworkingTaskDidFinishResponseSerializerKey = @"com.alamofire.networking.task.complete.responseserializer"; // Deprecated
+NSString * const AFNetworkingTaskDidFinishResponseDataKey = @"com.alamofire.networking.complete.finish.responsedata"; // Deprecated
+NSString * const AFNetworkingTaskDidFinishErrorKey = @"com.alamofire.networking.task.complete.error"; // Deprecated
+NSString * const AFNetworkingTaskDidFinishAssetPathKey = @"com.alamofire.networking.task.complete.assetpath"; // Deprecated
 
 static NSString * const AFURLSessionManagerLockName = @"com.alamofire.networking.session.manager.lock";
 
@@ -154,16 +163,16 @@ didCompleteWithError:(NSError *)error
     __block id responseObject = nil;
 
     __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-    userInfo[AFNetworkingTaskDidFinishResponseSerializerKey] = manager.responseSerializer;
+    userInfo[AFNetworkingTaskDidCompleteResponseSerializerKey] = manager.responseSerializer;
 
     if (self.downloadFileURL) {
-        userInfo[AFNetworkingTaskDidFinishAssetPathKey] = self.downloadFileURL;
+        userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
     } else if (self.mutableData) {
-        userInfo[AFNetworkingTaskDidFinishResponseDataKey] = [NSData dataWithData:self.mutableData];
+        userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = [NSData dataWithData:self.mutableData];
     }
 
     if (error) {
-        userInfo[AFNetworkingTaskDidFinishErrorKey] = error;
+        userInfo[AFNetworkingTaskDidCompleteErrorKey] = error;
 
         dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
             if (self.completionHandler) {
@@ -171,7 +180,7 @@ didCompleteWithError:(NSError *)error
             }
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidCompleteNotification object:task userInfo:userInfo];
             });
         });
     } else {
@@ -184,11 +193,11 @@ didCompleteWithError:(NSError *)error
             }
 
             if (responseObject) {
-                userInfo[AFNetworkingTaskDidFinishSerializedResponseKey] = responseObject;
+                userInfo[AFNetworkingTaskDidCompleteSerializedResponseKey] = responseObject;
             }
 
             if (serializationError) {
-                userInfo[AFNetworkingTaskDidFinishErrorKey] = serializationError;
+                userInfo[AFNetworkingTaskDidCompleteErrorKey] = serializationError;
             }
 
             dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
@@ -197,7 +206,7 @@ didCompleteWithError:(NSError *)error
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidFinishNotification object:task userInfo:userInfo];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidCompleteNotification object:task userInfo:userInfo];
                 });
             });
         });
@@ -879,7 +888,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
         NSString *notificationName = nil;
         switch ([(NSURLSessionTask *)object state]) {
             case NSURLSessionTaskStateRunning:
-                notificationName = AFNetworkingTaskDidStartNotification;
+                notificationName = AFNetworkingTaskDidResumeNotification;
                 break;
             case NSURLSessionTaskStateSuspended:
                 notificationName = AFNetworkingTaskDidSuspendNotification;

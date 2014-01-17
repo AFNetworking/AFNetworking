@@ -62,9 +62,9 @@ static void AFGetAlertViewTitleAndMessageFromError(NSError *error, NSString * __
                                 cancelButtonTitle:(NSString *)cancelButtonTitle
                                 otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION
 {
-    __block id observer = [[NSNotificationCenter defaultCenter] addObserverForName:AFNetworkingTaskDidFinishNotification object:task queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+    __block id observer = [[NSNotificationCenter defaultCenter] addObserverForName:AFNetworkingTaskDidCompleteNotification object:task queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
 
-        NSError *error = notification.userInfo[AFNetworkingTaskDidFinishErrorKey];
+        NSError *error = notification.userInfo[AFNetworkingTaskDidCompleteErrorKey];
         if (error) {
             NSString *title, *message;
             AFGetAlertViewTitleAndMessageFromError(error, &title, &message);
@@ -72,7 +72,7 @@ static void AFGetAlertViewTitleAndMessageFromError(NSError *error, NSString * __
             [[[UIAlertView alloc] initWithTitle:title message:message delegate:delegate cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitles, nil] show];
         }
 
-        [[NSNotificationCenter defaultCenter] removeObserver:observer name:AFNetworkingTaskDidFinishNotification object:notification.object];
+        [[NSNotificationCenter defaultCenter] removeObserver:observer name:AFNetworkingTaskDidCompleteNotification object:notification.object];
     }];
 }
 #endif
