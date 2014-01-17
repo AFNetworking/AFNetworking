@@ -321,11 +321,6 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 @interface AFJSONRequestSerializer : AFHTTPRequestSerializer
 
 /**
- The property list format. Possible values are described in "NSPropertyListFormat".
- */
-@property (nonatomic, assign) NSPropertyListFormat format;
-
-/**
  Options for writing the request JSON data from Foundation objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONWritingOptions". `0` by default.
  */
 @property (nonatomic, assign) NSJSONWritingOptions writingOptions;
