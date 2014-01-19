@@ -1,16 +1,20 @@
 namespace :test do
+  def run_tests(scheme, sdk)
+    system("xcodebuild -workspace AFNetworking.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' -configuration Release test | xcpretty -c ; exit ${PIPESTATUS[0]}")
+  end
+
   task :prepare do
     system(%Q{mkdir -p "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes" && cp Tests/Schemes/*.xcscheme "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes/"})
   end
 
   desc "Run the AFNetworking Tests for iOS"
   task :ios => :prepare do
-    $ios_success = system("xctool -workspace AFNetworking.xcworkspace -scheme 'iOS Tests' -sdk iphonesimulator -configuration Release test -test-sdk iphonesimulator")
+    $ios_success = run_tests('iOS Tests', 'iphonesimulator')
   end
 
   desc "Run the AFNetworking Tests for Mac OS X"
   task :osx => :prepare do
-    $osx_success = system("xctool -workspace AFNetworking.xcworkspace -scheme 'OS X Tests' -sdk macosx -configuration Release test -test-sdk macosx")
+    $osx_success = run_tests('OS X Tests', 'macosx')
   end
 end
 
