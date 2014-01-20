@@ -255,9 +255,8 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
                   forDomain:(NSString *)domain
 {
-    __block NSData *matchingCertificateData = nil;
-    __block BOOL shouldTrustServer = NO;
-    
+    BOOL shouldTrustServer = NO;
+
     if (self.SSLPinningMode == AFSSLPinningModeNone && self.allowInvalidCertificates) {
         return YES;
     }
@@ -272,7 +271,8 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
             return YES;
         case AFSSLPinningModeCertificate: {
             if (!self.validatesCertificateChain) {
-                return [self.pinnedCertificates containsObject:[serverCertificates firstObject]];
+                shouldTrustServer = [self.pinnedCertificates containsObject:[serverCertificates firstObject]];
+                break;
             }
 
             NSUInteger trustedCertificateCount = 0;
@@ -282,7 +282,7 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
                 }
             }
 
-            return trustedCertificateCount > 0 && ((self.validatesCertificateChain && trustedCertificateCount == [serverCertificates count]) || (!self.validatesCertificateChain && trustedCertificateCount >= 1));
+            shouldTrustServer = trustedCertificateCount > 0 && ((self.validatesCertificateChain && trustedCertificateCount == [serverCertificates count]) || (!self.validatesCertificateChain && trustedCertificateCount >= 1));
         }
             break;
         case AFSSLPinningModePublicKey: {
@@ -300,7 +300,7 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
                 }
             }
 
-            return trustedPublicKeyCount > 0 && ((self.validatesCertificateChain && trustedPublicKeyCount == [serverCertificates count]) || (!self.validatesCertificateChain && trustedPublicKeyCount >= 1));
+            shouldTrustServer = trustedPublicKeyCount > 0 && ((self.validatesCertificateChain && trustedPublicKeyCount == [serverCertificates count]) || (!self.validatesCertificateChain && trustedPublicKeyCount >= 1));
         }
             break;
         default:
@@ -308,7 +308,8 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
     }
     
     if (shouldTrustServer && domain && self.validatesDomainName) {
-        SecCertificateRef matchingCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)matchingCertificateData);
+        NSData *serverCertificate = [serverCertificates firstObject];
+        SecCertificateRef matchingCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)serverCertificate);
         NSParameterAssert(matchingCertificate);
 
         shouldTrustServer = AFCertificateHostMatchesDomain((__bridge_transfer NSString *)SecCertificateCopySubjectSummary(matchingCertificate), domain);
