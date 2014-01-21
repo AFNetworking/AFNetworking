@@ -41,7 +41,7 @@
 #import <UIKit/UIKit.h>
 #endif
 
-@interface AFHTTPSessionManager ()
+@interface AFURLSessionManager ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
 @property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 @end
@@ -247,7 +247,7 @@
             }
         }
     }];
-    
+
     [task resume];
 
     return task;
