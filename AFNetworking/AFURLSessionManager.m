@@ -761,7 +761,10 @@ didCompleteWithError:(NSError *)error
         [self removeDelegateForTask:task];
     }
 
-    [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
+    @try {
+        [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
+    }
+    @catch (NSException *exception) {}
 }
 
 #pragma mark - NSURLSessionDataDelegate
