@@ -44,7 +44,7 @@ static void AFGetAlertViewTitleAndMessageFromError(NSError *error, NSString * __
         *message = error.localizedDescription;
     } else {
         *title = NSLocalizedStringFromTable(@"Error", @"AFNetworking", @"Fallback Error Description");
-        *message = [NSString stringWithFormat:NSLocalizedStringFromTable(@"%@ Error: %d", @"AFNetworking", @"Fallback Error Failure Reason Format"), error.domain, error.code];
+        *message = [NSString stringWithFormat:NSLocalizedStringFromTable(@"%@ Error: %u", @"AFNetworking", @"Fallback Error Failure Reason Format"), error.domain, (unsigned int) error.code];
     }
 }
 

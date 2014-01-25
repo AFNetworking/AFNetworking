@@ -222,7 +222,7 @@ didCompleteWithError:(NSError *)error
 {
     [self.mutableData appendData:data];
 
-    self.downloadProgress.totalUnitCount += [data length];
+    self.downloadProgress.totalUnitCount += (unsigned int) [data length];
 }
 
 #pragma mark - NSURLSessionDownloadTaskDelegate
