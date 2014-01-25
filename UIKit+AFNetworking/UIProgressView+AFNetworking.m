@@ -39,10 +39,10 @@ static char kAFUploadProgressAnimated;
 static char kAFDownloadProgressAnimated;
 
 @interface AFURLConnectionOperation (_UIProgressView)
-@property (readwrite, nonatomic, copy) void (^uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+@property (readwrite, nonatomic, copy) void (^uploadProgress)(NSUInteger bytes, NSInteger totalBytes, NSInteger totalBytesExpected);
 @property (readwrite, nonatomic, assign, setter = af_setUploadProgressAnimated:) BOOL af_uploadProgressAnimated;
 
-@property (readwrite, nonatomic, copy) void (^downloadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+@property (readwrite, nonatomic, copy) void (^downloadProgress)(NSUInteger bytes, NSInteger totalBytes, NSInteger totalBytesExpected);
 @property (readwrite, nonatomic, assign, setter = af_setDownloadProgressAnimated:) BOOL af_downloadProgressAnimated;
 @end
 
@@ -104,8 +104,8 @@ static char kAFDownloadProgressAnimated;
                                         animated:(BOOL)animated
 {
     __weak __typeof(self)weakSelf = self;
-    void (^original)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) = [operation.uploadProgress copy];
-    [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+    void (^original)(NSUInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) = [operation.uploadProgress copy];
+    [operation setUploadProgressBlock:^(NSUInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
         if (original) {
             original(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
         }
@@ -123,8 +123,8 @@ static char kAFDownloadProgressAnimated;
                                           animated:(BOOL)animated
 {
     __weak __typeof(self)weakSelf = self;
-    void (^original)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) = [operation.downloadProgress copy];
-    [operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+    void (^original)(NSUInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead) = [operation.downloadProgress copy];
+    [operation setDownloadProgressBlock:^(NSUInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead) {
         if (original) {
             original(bytesRead, totalBytesRead, totalBytesExpectedToRead);
         }
