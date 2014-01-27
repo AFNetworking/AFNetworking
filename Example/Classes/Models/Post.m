@@ -33,7 +33,7 @@
         return nil;
     }
     
-    self.postID = [[attributes valueForKeyPath:@"id"] integerValue];
+    self.postID = (NSUInteger)[[attributes valueForKeyPath:@"id"] integerValue];
     self.text = [attributes valueForKeyPath:@"text"];
     
     self.user = [[User alloc] initWithAttributes:[attributes valueForKeyPath:@"user"]];
