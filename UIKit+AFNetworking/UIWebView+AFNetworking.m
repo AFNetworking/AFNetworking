@@ -129,14 +129,14 @@ static char kAFHTTPRequestOperationKey;
     self.af_HTTPRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     self.af_HTTPRequestOperation.responseSerializer = self.responseSerializer;
 
-    __weak __typeof(self)weakSelf = self;
+    __weak typeof(self)weakSelf = self;
     [self.af_HTTPRequestOperation setDownloadProgressBlock:progress];
     [self.af_HTTPRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id __unused responseObject) {
         NSData *data = success ? success(operation.response, operation.responseData) : operation.responseData;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-        __strong __typeof(weakSelf) strongSelf = weakSelf;
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         [strongSelf loadData:data MIMEType:(MIMEType ?: [operation.response MIMEType]) textEncodingName:(textEncodingName ?: [operation.response textEncodingName]) baseURL:[operation.response URL]];
 #pragma clang diagnostic pop
     } failure:^(AFHTTPRequestOperation * __unused operation, NSError *error) {

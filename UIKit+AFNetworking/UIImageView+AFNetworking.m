@@ -141,11 +141,11 @@ static char kAFResponseSerializerKey;
     } else {
         self.image = placeholderImage;
 
-        __weak __typeof(self)weakSelf = self;
+        __weak typeof(self)weakSelf = self;
         self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
         self.af_imageRequestOperation.responseSerializer = self.imageResponseSerializer;
         [self.af_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            __strong typeof(weakSelf)strongSelf = weakSelf;
             if ([[urlRequest URL] isEqual:[operation.request URL]]) {
                 if (success) {
                     success(urlRequest, operation.response, responseObject);

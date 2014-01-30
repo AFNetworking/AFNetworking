@@ -97,11 +97,11 @@ static char kAFBackgroundImageRequestOperationKey;
 
     [self setImage:placeholderImage forState:state];
 
-    __weak __typeof(self)weakSelf = self;
+    __weak typeof(self)weakSelf = self;
     self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
     self.af_imageRequestOperation.responseSerializer = [AFImageResponseSerializer serializer];
     [self.af_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        __strong __typeof(weakSelf)strongSelf = weakSelf;
+        __strong typeof(weakSelf)strongSelf = weakSelf;
         if ([[urlRequest URL] isEqual:[operation.request URL]]) {
             if (success) {
                 success(operation.response, responseObject);
@@ -148,11 +148,11 @@ static char kAFBackgroundImageRequestOperationKey;
 
     [self setBackgroundImage:placeholderImage forState:state];
 
-    __weak __typeof(self)weakSelf = self;
+    __weak typeof(self)weakSelf = self;
     self.af_backgroundImageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
     self.af_backgroundImageRequestOperation.responseSerializer = [AFImageResponseSerializer serializer];
     [self.af_backgroundImageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        __strong __typeof(weakSelf)strongSelf = weakSelf;
+        __strong typeof(weakSelf)strongSelf = weakSelf;
         if ([[urlRequest URL] isEqual:[operation.request URL]]) {
             if (success) {
                 success(operation.response, responseObject);

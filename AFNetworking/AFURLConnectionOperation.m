@@ -216,9 +216,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (!block) {
         [super setCompletionBlock:nil];
     } else {
-        __weak __typeof(self)weakSelf = self;
+        __weak typeof(self)weakSelf = self;
         [super setCompletionBlock:^ {
-            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            __strong typeof(weakSelf)strongSelf = weakSelf;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
@@ -272,9 +272,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [self.lock lock];
     if (!self.backgroundTaskIdentifier) {
         UIApplication *application = [UIApplication sharedApplication];
-        __weak __typeof(self)weakSelf = self;
+        __weak typeof(self)weakSelf = self;
         self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:^{
-            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            __strong typeof(weakSelf)strongSelf = weakSelf;
             
             if (handler) {
                 handler();
@@ -517,9 +517,9 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     for (AFURLConnectionOperation *operation in operations) {
         operation.completionGroup = group;
         void (^originalCompletionBlock)(void) = [operation.completionBlock copy];
-        __weak __typeof(operation)weakOperation = operation;
+        __weak typeof(operation)weakOperation = operation;
         operation.completionBlock = ^{
-            __strong __typeof(weakOperation)strongOperation = weakOperation;
+            __strong typeof(weakOperation)strongOperation = weakOperation;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
             dispatch_queue_t queue = strongOperation.completionQueue ?: dispatch_get_main_queue();
