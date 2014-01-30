@@ -103,7 +103,7 @@ static char kAFDownloadProgressAnimated;
 - (void)setProgressWithUploadProgressOfOperation:(AFURLConnectionOperation *)operation
                                         animated:(BOOL)animated
 {
-    __weak __typeof(self)weakSelf = self;
+    __weak typeof(self)weakSelf = self;
     void (^original)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) = [operation.uploadProgress copy];
     [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
         if (original) {
@@ -112,7 +112,7 @@ static char kAFDownloadProgressAnimated;
 
         dispatch_async(dispatch_get_main_queue(), ^{
             if (totalBytesExpectedToWrite > 0) {
-                __strong __typeof(weakSelf)strongSelf = weakSelf;
+                __strong typeof(weakSelf)strongSelf = weakSelf;
                 [strongSelf setProgress:(totalBytesWritten / (totalBytesExpectedToWrite * 1.0f)) animated:animated];
             }
         });
@@ -122,7 +122,7 @@ static char kAFDownloadProgressAnimated;
 - (void)setProgressWithDownloadProgressOfOperation:(AFURLConnectionOperation *)operation
                                           animated:(BOOL)animated
 {
-    __weak __typeof(self)weakSelf = self;
+    __weak typeof(self)weakSelf = self;
     void (^original)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) = [operation.downloadProgress copy];
     [operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
         if (original) {
@@ -131,7 +131,7 @@ static char kAFDownloadProgressAnimated;
 
         dispatch_async(dispatch_get_main_queue(), ^{
             if (totalBytesExpectedToRead > 0) {
-                __strong __typeof(weakSelf)strongSelf = weakSelf;
+                __strong typeof(weakSelf)strongSelf = weakSelf;
                 [strongSelf setProgress:(totalBytesRead / (totalBytesExpectedToRead  * 1.0f)) animated:animated];
             }
         });
