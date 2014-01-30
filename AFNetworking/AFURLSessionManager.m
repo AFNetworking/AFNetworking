@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFURLSessionManager.h"
+#import <objc/message.h>
 
 #if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
 
@@ -272,9 +273,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 @property (readwrite, nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @property (readwrite, nonatomic, strong) NSURLSession *session;
-@property (readwrite, nonatomic, strong) NSMutableDictionary *mutableTaskDelegatesKeyedByTaskIdentifier;
 @property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
-@property (readwrite, nonatomic, strong) NSLock *lock;
 @property (readwrite, nonatomic, copy) AFURLSessionDidBecomeInvalidBlock sessionDidBecomeInvalid;
 @property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskWillPerformHTTPRedirectionBlock taskWillPerformHTTPRedirection;
@@ -316,14 +315,9 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     self.sessionConfiguration = configuration;
     self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
 
-    self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
-
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
     self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
-
-    self.lock = [[NSLock alloc] init];
-    self.lock.name = AFURLSessionManagerLockName;
 
     return self;
 }
@@ -334,39 +328,24 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
 #pragma mark -
 
+static char kAFURLSessionManagerTaskDelegateKey;
+
 - (AFURLSessionManagerTaskDelegate *)delegateForTask:(NSURLSessionTask *)task {
     NSParameterAssert(task);
-
-    AFURLSessionManagerTaskDelegate *delegate = nil;
-    [self.lock lock];
-    delegate = self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)];
-    [self.lock unlock];
-
-    return delegate;
+	
+	return (AFURLSessionManagerTaskDelegate *)objc_getAssociatedObject(task, &kAFURLSessionManagerTaskDelegateKey);
 }
 
 - (void)setDelegate:(AFURLSessionManagerTaskDelegate *)delegate
             forTask:(NSURLSessionTask *)task
 {
     NSParameterAssert(task);
-
-    [self.lock lock];
-    self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
-    [self.lock unlock];
+	objc_setAssociatedObject(task, &kAFURLSessionManagerTaskDelegateKey, delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)removeDelegateForTask:(NSURLSessionTask *)task {
     NSParameterAssert(task);
-
-    [self.lock lock];
-    [self.mutableTaskDelegatesKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
-    [self.lock unlock];
-}
-
-- (void)removeAllDelegates {
-    [self.lock lock];
-    [self.mutableTaskDelegatesKeyedByTaskIdentifier removeAllObjects];
-    [self.lock unlock];
+	objc_setAssociatedObject(task, &kAFURLSessionManagerTaskDelegateKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark -
@@ -629,8 +608,6 @@ didBecomeInvalidWithError:(NSError *)error
     if (self.sessionDidBecomeInvalid) {
         self.sessionDidBecomeInvalid(session, error);
     }
-
-    [self removeAllDelegates];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDidInvalidateNotification object:session];
 }
