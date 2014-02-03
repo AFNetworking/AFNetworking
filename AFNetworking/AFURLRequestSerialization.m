@@ -408,8 +408,6 @@ static NSString * const kAFMultipartFormBoundary = @"Boundary+0xAbCdEfGbOuNdArY"
 
 static NSString * const kAFMultipartFormCRLF = @"\r\n";
 
-static NSInteger const kAFStreamToStreamBufferSize = 1024 * 1024; //1 meg default
-
 static inline NSString * AFMultipartFormInitialBoundary() {
     return [NSString stringWithFormat:@"--%@%@", kAFMultipartFormBoundary, kAFMultipartFormCRLF];
 }
@@ -575,7 +573,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     bodyPart.headers = mutableHeaders;
     bodyPart.body = inputStream;
 
-    bodyPart.bodyContentLength = length;
+    bodyPart.bodyContentLength = (unsigned long long)length;
 
     [self.bodyStream appendHTTPBodyPart:bodyPart];
 }
@@ -1083,7 +1081,7 @@ typedef enum {
         return nil;
     }
 
-    self.writingOptions = (NSPropertyListFormat)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(writingOptions))];
+    self.writingOptions = (NSJSONWritingOptions)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(writingOptions))];
 
     return self;
 }
@@ -1160,7 +1158,7 @@ typedef enum {
     }
 
     self.format = (NSPropertyListFormat)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(format))];
-    self.writeOptions = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(writeOptions))];
+    self.writeOptions = (NSPropertyListWriteOptions)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(writeOptions))];
 
     return self;
 }
