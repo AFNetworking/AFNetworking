@@ -65,6 +65,8 @@
 
     self.operationQueue = [[NSOperationQueue alloc] init];
 
+    self.shouldUseCredentialStorage = YES;
+
     return self;
 }
 
