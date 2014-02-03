@@ -1,3 +1,43 @@
+= 2.0.2 (2013-10-29)
+
+  * Add `UIWebView
+ -loadRequest:MIMEType:textEncodingName:progress:success:failure:` (Mattt
+ Thompson)
+
+  * Fix iOS 6 compatibility in `AFHTTPSessionManager` &
+ `UIProgressView+AFNetworking` (Olivier Halligon, Mattt Thompson)
+
+  * Fix issue writing partial data to output stream (Kyle Fuller)
+
+  * Fix behavior for `nil` response in request operations (Marcelo Fabri)
+
+  * Fix implementation of
+ batchOfRequestOperations:progressBlock:completionBlock: for nil when passed
+ empty operations parameter (Mattt Thompson)
+
+  * Update `AFHTTPSessionManager` to allow `-init` and `initWithConfig:` to
+ work (Ben Scheirman)
+
+  * Update `AFRequestOperation` to default to `AFHTTPResponseSerializer` (Jiri
+ Techet)
+
+  * Update `AFHTTPResponseSerializer` to remove check for nonzero responseData
+ length (Mattt Thompson)
+
+  * Update `NSCoding` methods to use NSStringFromSelector(@selector()) pattern
+ instead of `NSString` literals (Mattt Thompson)
+
+  * Update multipart form stream to set Content-Length after setting request
+ stream (Mattt Thompson)
+
+  * Update documentation with outdated references to `AFHTTPSerializer` (Bruno
+ Koga)
+
+  * Update documentation and README with various fixes (Jon Chambers, Mattt
+ Thompson)
+
+  * Update files to remove executable privilege (Kyle Fuller)
+
 = 2.0.1 (2013-10-10)
 
  * Fix iOS 6 compatibility (Matt Baker, Mattt Thompson)
