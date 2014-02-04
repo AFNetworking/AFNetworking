@@ -43,6 +43,10 @@
     return [[[self class] alloc] initWithBaseURL:nil];
 }
 
+- (instancetype)init {
+    return [self initWithBaseURL:nil];    
+}
+
 - (instancetype)initWithBaseURL:(NSURL *)url {
     self = [super init];
     if (!self) {
