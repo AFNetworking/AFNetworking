@@ -1,3 +1,52 @@
+= 2.0.3 (2013-11-18)
+
+  * Fix a bug where `AFURLConnectionOperation -pause` did not correctly reset
+the state of `AFURLConnectionOperation`, causing the Network Thread to enter
+an infinite loop (Erik Chen)
+
+  * Fix a bug where `AFURLConnectionOperation -cancel` does not set the
+appropriate error on the `NSOperation` (Erik Chen)
+
+  * Fix to post `AFNetworkingTaskDidFinishNotification` only on main queue
+(Jakub Hladik)
+
+  * Fix issue where the query string serialization block was not used (Kevin
+Harwood)
+
+  * Fix project file and repository directory items (Andrew Newdigate)
+
+  * Fix `NSURLSession` subspec (Mattt Thompson)
+
+  * Fix to session task delegate KVO by moving observer removal to
+`-didCompleteWithError:` (Mattt Thompson)
+
+  * Add AFNetworking 1.x behavior for image construction in inflation to
+ensure correct orientation (Mattt Thompson)
+
+  * Add `NSParameterAssert` for internal task constructors in order to catch
+invalid constructions early (Mattt Thompson)
+
+  * Update replacing `NSParameterAssert` with early `nil` return if session
+was unable to create a task (Mattt Thompson)
+
+  * Update `AFHTTPRequestOperationManager` and `AFHTTPSessionManager` to use
+relative `self class` to create class constructor instances (Bogdan
+Poplauschi)
+
+  * Update to break out of loop if output stream does not have space to write
+bytes (Mattt Thompson)
+
+  * Update documentation and README with various fixes (Max Goedjen, Mattt
+Thompson)
+
+  * Remove unnecessary willChangeValueForKey and didChangeValueForKey method
+calls (Mindaugas Vaičiūnas)
+
+  * Remove deletion of all task delegates in
+`URLSessionDidFinishEventsForBackgroundURLSession:` (Jeremy Mailen)
+
+  * Remove empty, unused `else` branch (Luka Bratos)
+
 = 2.0.2 (2013-10-29)
 
   * Add `UIWebView
