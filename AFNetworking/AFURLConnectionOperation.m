@@ -598,11 +598,11 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
  totalBytesWritten:(NSInteger)totalBytesWritten
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
-    if (self.uploadProgress) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.uploadProgress) {
             self.uploadProgress((NSUInteger)bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
-        });
-    }
+        }
+    });
 }
 
 - (void)connection:(NSURLConnection __unused *)connection
