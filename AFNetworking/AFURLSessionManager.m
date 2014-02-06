@@ -348,6 +348,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 - (void)setDelegate:(AFURLSessionManagerTaskDelegate *)delegate
             forTask:(NSURLSessionTask *)task
 {
+    NSParameterAssert(delegate);
     NSParameterAssert(task);
 
     [self.lock lock];
