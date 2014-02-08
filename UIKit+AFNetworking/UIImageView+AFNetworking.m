@@ -139,8 +139,10 @@ static char kAFResponseSerializerKey;
 
         self.af_imageRequestOperation = nil;
     } else {
-        self.image = placeholderImage;
-
+        if (placeholderImage) {
+            self.image = placeholderImage;
+        }
+        
         __weak __typeof(self)weakSelf = self;
         self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
         self.af_imageRequestOperation.responseSerializer = self.imageResponseSerializer;
