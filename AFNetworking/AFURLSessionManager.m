@@ -347,8 +347,8 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 - (void)setDelegate:(AFURLSessionManagerTaskDelegate *)delegate
             forTask:(NSURLSessionTask *)task
 {
-    NSParameterAssert(delegate);
     NSParameterAssert(task);
+    NSParameterAssert(delegate);
 
     [self.lock lock];
     self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
@@ -789,10 +789,11 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:dataTask];
     if (delegate) {
         [self removeDelegateForTask:dataTask];
+        [self setDelegate:delegate forTask:downloadTask];
+
         [dataTask removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
     }
 
-    [self setDelegate:delegate forTask:downloadTask];
     [downloadTask addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
 
     if (self.dataTaskDidBecomeDownloadTask) {
