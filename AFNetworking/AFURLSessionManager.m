@@ -351,6 +351,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     NSParameterAssert(delegate);
 
     [self.lock lock];
+    [task addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
     self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
     [self.lock unlock];
 }
@@ -359,6 +360,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     NSParameterAssert(task);
 
     [self.lock lock];
+    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
     [self.mutableTaskDelegatesKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
     [self.lock unlock];
 }
@@ -437,8 +439,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     AFURLSessionManagerTaskDelegate *delegate = [AFURLSessionManagerTaskDelegate delegateForManager:self completionHandler:completionHandler];
     [self setDelegate:delegate forTask:dataTask];
 
-    [dataTask addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
-
     return dataTask;
 }
 
@@ -502,8 +502,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     }
 
     [self setDelegate:delegate forTask:uploadTask];
-
-    [uploadTask addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
     
     return uploadTask;
 }
@@ -551,8 +549,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     }
 
     [self setDelegate:delegate forTask:downloadTask];
-
-    [downloadTask addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
 
     return downloadTask;
 }
@@ -759,8 +755,6 @@ didCompleteWithError:(NSError *)error
         }
 
         [self removeDelegateForTask:task];
-
-        [task removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
     }
 }
 
@@ -790,11 +784,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
     if (delegate) {
         [self removeDelegateForTask:dataTask];
         [self setDelegate:delegate forTask:downloadTask];
-
-        [dataTask removeObserver:self forKeyPath:@"state" context:AFTaskStateChangedContext];
     }
-
-    [downloadTask addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
 
     if (self.dataTaskDidBecomeDownloadTask) {
         self.dataTaskDidBecomeDownloadTask(session, dataTask, downloadTask);
