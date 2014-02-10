@@ -33,7 +33,7 @@
 #import "AFURLSessionManager.h"
 
 /**
- `AFHTTPSessionManager` is a subclass of `AFURLSessionManager` with convenience methods for making HTTP requests. When a `baseURL` is provided, requests made with the `GET` / `POST` / et al. convenience methods can be made with relative paths; network reachability is also scoped to the host of the base URL as well.
+ `AFHTTPSessionManager` is a subclass of `AFURLSessionManager` with convenience methods for making HTTP requests. When a `baseURL` is provided, requests made with the `GET` / `POST` / et al. convenience methods can be made with relative paths.
  
  ## Subclassing Notes
  
