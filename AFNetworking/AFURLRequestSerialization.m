@@ -326,6 +326,64 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return [formData requestByFinalizingMultipartFormData];
 }
 
+- (NSMutableURLRequest *)requestWithMultipartFormRequest:(NSURLRequest *)request
+                             writingStreamContentsToFile:(NSURL *)fileURL
+                                       completionHandler:(void (^)(NSError *error))handler;
+
+{
+    if (!request.HTTPBodyStream) {
+        return [request mutableCopy];
+    }
+
+    NSParameterAssert([fileURL isFileURL]);
+
+    NSInputStream *inputStream = request.HTTPBodyStream;
+    NSOutputStream *outputStream = [[NSOutputStream alloc] initWithURL:fileURL append:NO];
+    __block NSError *error = nil;
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+
+        [inputStream open];
+        [outputStream open];
+
+        while ([inputStream hasBytesAvailable] && [outputStream hasSpaceAvailable]) {
+            uint8_t buffer[1024];
+
+            NSInteger bytesRead = [inputStream read:buffer maxLength:1024];
+            if (inputStream.streamError || bytesRead < 0) {
+                error = inputStream.streamError;
+                break;
+            }
+
+            NSInteger bytesWritten = [outputStream write:buffer maxLength:(NSUInteger)bytesRead];
+            if (outputStream.streamError || bytesWritten < 0) {
+                error = outputStream.streamError;
+                break;
+            }
+
+            if (bytesRead == 0 && bytesWritten == 0) {
+                break;
+            }
+        }
+
+        [outputStream close];
+        [inputStream close];
+
+        if (handler) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                handler(error);
+            });
+        }
+    });
+
+    NSMutableURLRequest *mutableRequest = [request mutableCopy];
+    mutableRequest.HTTPBodyStream = nil;
+
+    return mutableRequest;
+}
+
 #pragma mark - AFURLRequestSerialization
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
