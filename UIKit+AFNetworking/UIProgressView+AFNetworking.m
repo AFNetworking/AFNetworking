@@ -74,7 +74,6 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
 #pragma mark -
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
-
 - (void)setProgressWithUploadProgressOfTask:(NSURLSessionUploadTask *)task
                                    animated:(BOOL)animated
 {
@@ -92,7 +91,6 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
 
     [self af_setDownloadProgressAnimated:animated];
 }
-
 #endif
 
 #pragma mark -
@@ -142,7 +140,7 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
                         change:(__unused NSDictionary *)change
                        context:(void *)context
 {
-#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
     if (context == AFTaskCountOfBytesSentContext || context == AFTaskCountOfBytesReceivedContext) {
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesSent))]) {
             if ([object countOfBytesExpectedToSend] > 0) {

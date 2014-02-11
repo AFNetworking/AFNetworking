@@ -28,7 +28,6 @@
 
 #import <UIKit/UIKit.h>
 
-
 @class AFURLConnectionOperation;
 
 /**
@@ -45,7 +44,7 @@
 
  @param task The task. If `nil`, automatic updating from any previously specified operation will be disabled.
  */
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1090)
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 - (void)setAnimatingWithStateOfTask:(NSURLSessionTask *)task;
 #endif
 
