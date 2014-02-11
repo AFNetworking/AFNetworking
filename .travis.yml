@@ -2,6 +2,6 @@ language: objective-c
 before_install:
     - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
     - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
-    - brew update
     - cd Tests && pod install && cd $TRAVIS_BUILD_DIR
-script: rake test:ios
+script: rake test
+
