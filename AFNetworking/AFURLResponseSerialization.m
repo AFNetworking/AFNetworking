@@ -516,9 +516,8 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
     CGDataProviderRelease(dataProvider);
 
-    UIImage *image = nil;
+    UIImage *image = AFImageWithDataAtScale(data, scale);
     if (!imageRef) {
-        image = AFImageWithDataAtScale(data, scale);
         if (image.images || !image) {
             return image;
         }
@@ -534,10 +533,6 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
 
     if (width * height > 1024 * 1024 || bitsPerComponent > 8) {
-        if (!image) {
-            image = [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:image.imageOrientation];
-        }
-
         CGImageRelease(imageRef);
 
         return image;
@@ -564,10 +559,6 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     CGColorSpaceRelease(colorSpace);
 
     if (!context) {
-        if (!image) {
-            image = [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:image.imageOrientation];
-        }
-
         CGImageRelease(imageRef);
 
         return image;
