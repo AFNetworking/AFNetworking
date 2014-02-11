@@ -569,6 +569,11 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
 #pragma mark -
 
+- (void)setTaskNeedNewBodyStreamBlock:(NSInputStream * (^)(NSURLSession *session, NSURLSessionTask *task))taskNeedNewBodyStream
+{
+   self.taskNeedNewBodyStream = taskNeedNewBodyStream;
+}
+
 - (void)setTaskWillPerformHTTPRedirectionBlock:(NSURLRequest * (^)(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request))block {
     self.taskWillPerformHTTPRedirection = block;
 }
