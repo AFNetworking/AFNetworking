@@ -33,10 +33,6 @@
 
 #pragma mark -
 
-static char kAFSharedImageCacheKey;
-static char kAFImageRequestOperationKey;
-static char kAFResponseSerializerKey;
-
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFHTTPRequestOperation *af_imageRequestOperation;
 @end
@@ -55,11 +51,11 @@ static char kAFResponseSerializerKey;
 }
 
 - (AFHTTPRequestOperation *)af_imageRequestOperation {
-    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFImageRequestOperationKey);
+    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, @selector(af_imageRequestOperation));
 }
 
 - (void)af_setImageRequestOperation:(AFHTTPRequestOperation *)imageRequestOperation {
-    objc_setAssociatedObject(self, &kAFImageRequestOperationKey, imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(af_imageRequestOperation), imageRequestOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end
@@ -82,12 +78,12 @@ static char kAFResponseSerializerKey;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-    return objc_getAssociatedObject(self, &kAFSharedImageCacheKey) ?: _af_defaultImageCache;
+    return objc_getAssociatedObject(self, @selector(sharedImageCache)) ?: _af_defaultImageCache;
 #pragma clang diagnostic pop
 }
 
 + (void)setSharedImageCache:(id<AFImageCache>)imageCache {
-    objc_setAssociatedObject(self, &kAFSharedImageCacheKey, imageCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(sharedImageCache), imageCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (id <AFURLResponseSerialization>)imageResponseSerializer {
@@ -99,12 +95,12 @@ static char kAFResponseSerializerKey;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-    return objc_getAssociatedObject(self, &kAFResponseSerializerKey) ?: _af_defaultImageResponseSerializer;
+    return objc_getAssociatedObject(self, @selector(imageResponseSerializer)) ?: _af_defaultImageResponseSerializer;
 #pragma clang diagnostic pop
 }
 
 - (void)setImageResponseSerializer:(id <AFURLResponseSerialization>)serializer {
-    objc_setAssociatedObject(self, &kAFResponseSerializerKey, serializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(imageResponseSerializer), serializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark -

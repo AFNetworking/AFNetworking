@@ -35,9 +35,6 @@
 static void * AFTaskCountOfBytesSentContext = &AFTaskCountOfBytesSentContext;
 static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedContext;
 
-static char kAFUploadProgressAnimated;
-static char kAFDownloadProgressAnimated;
-
 @interface AFURLConnectionOperation (_UIProgressView)
 @property (readwrite, nonatomic, copy) void (^uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
 @property (readwrite, nonatomic, assign, setter = af_setUploadProgressAnimated:) BOOL af_uploadProgressAnimated;
@@ -59,19 +56,19 @@ static char kAFDownloadProgressAnimated;
 @implementation UIProgressView (AFNetworking)
 
 - (BOOL)af_uploadProgressAnimated {
-    return [(NSNumber *)objc_getAssociatedObject(self, &kAFUploadProgressAnimated) boolValue];
+    return [(NSNumber *)objc_getAssociatedObject(self, @selector(af_uploadProgressAnimated)) boolValue];
 }
 
 - (void)af_setUploadProgressAnimated:(BOOL)animated {
-    objc_setAssociatedObject(self, &kAFUploadProgressAnimated, @(animated), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(af_uploadProgressAnimated), @(animated), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (BOOL)af_downloadProgressAnimated {
-    return [(NSNumber *)objc_getAssociatedObject(self, &kAFDownloadProgressAnimated) boolValue];
+    return [(NSNumber *)objc_getAssociatedObject(self, @selector(af_downloadProgressAnimated)) boolValue];
 }
 
 - (void)af_setDownloadProgressAnimated:(BOOL)animated {
-    objc_setAssociatedObject(self, &kAFDownloadProgressAnimated, @(animated), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(af_downloadProgressAnimated), @(animated), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark -
