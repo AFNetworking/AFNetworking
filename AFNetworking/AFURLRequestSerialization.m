@@ -422,8 +422,6 @@ static inline NSString * AFMultipartFormFinalBoundary(NSString *boundary) {
     return [NSString stringWithFormat:@"%@--%@--%@", kAFMultipartFormCRLF, boundary, kAFMultipartFormCRLF];
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-parameter"
 static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 #ifdef __UTTYPE__
     NSString *UTI = (__bridge_transfer NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL);
@@ -434,10 +432,10 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
         return contentType;
     }
 #else
+#pragma unused (extension)
     return @"application/octet-stream";
 #endif
 }
-#pragma clang diagnostic pop
 
 NSUInteger const kAFUploadStream3GSuggestedPacketSize = 1024 * 16;
 NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
