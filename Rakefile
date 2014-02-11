@@ -1,10 +1,13 @@
+include FileUtils::Verbose
+
 namespace :test do
   def run_tests(scheme, sdk)
     sh("xcodebuild -workspace AFNetworking.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' -configuration Release test | xcpretty -c ; exit ${PIPESTATUS[0]}") rescue nil
   end
 
   task :prepare do
-    system(%Q{mkdir -p "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes" && cp Tests/Schemes/*.xcscheme "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes/"})
+    mkdir_p "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes"
+    cp Dir.glob('Tests/Schemes/*.xcscheme'), "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes/"
   end
 
   desc "Run the AFNetworking Tests for iOS"
@@ -32,3 +35,4 @@ task :test => ['test:ios', 'test:osx'] do
 end
 
 task :default => 'test'
+
