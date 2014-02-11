@@ -106,6 +106,15 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+
+{
+    [self setCompletionBlockWithSuccess:success failure:failure finish:nil];
+}
+
+- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+                               finish:(void (^)(AFHTTPRequestOperation *operation))finish
+
 {
     // completionBlock is manually nilled out in AFURLConnectionOperation to break the retain cycle.
 #pragma clang diagnostic push
@@ -115,7 +124,7 @@ static dispatch_group_t http_request_operation_completion_group() {
         if (self.completionGroup) {
             dispatch_group_enter(self.completionGroup);
         }
-
+        
         dispatch_async(http_request_operation_processing_queue(), ^{
             if (self.error) {
                 if (failure) {
@@ -139,7 +148,14 @@ static dispatch_group_t http_request_operation_completion_group() {
                     }
                 }
             }
-
+            
+            // finish block
+            if (finish) {
+                dispatch_group_notify(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
+                    finish(self);
+                });
+            }
+            
             if (self.completionGroup) {
                 dispatch_group_leave(self.completionGroup);
             }
