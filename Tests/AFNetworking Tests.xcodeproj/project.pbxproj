@@ -32,6 +32,10 @@
 		36DE26511805445B0062F4E3 /* AFSecurityPolicyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC5917DF61B30021AB75 /* AFSecurityPolicyTests.m */; };
 		36DE2652180544600062F4E3 /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */; };
 		3D56634E3A564CEE86172413 /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
+		64491A4718AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 64491A4618AAEFFF00F35444 /* Geotrust_Root_CA.cer */; };
+		64491A4818AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 64491A4618AAEFFF00F35444 /* Geotrust_Root_CA.cer */; };
+		64491A4A18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 64491A4918AAF01600F35444 /* Rapid_SSL_CA.cer */; };
+		64491A4B18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 64491A4918AAF01600F35444 /* Rapid_SSL_CA.cer */; };
 		649154E918AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */ = {isa = PBXBuildFile; fileRef = 649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */; };
 		649154EA18AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */ = {isa = PBXBuildFile; fileRef = 649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */; };
 		6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
@@ -87,6 +91,8 @@
 		36DE264C18053E930062F4E3 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = Resources/ADN.net/ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
 		36DE264D18053E930062F4E3 /* adn_2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_2.cer; path = Resources/ADN.net/ADNNetServerTrustChain/adn_2.cer; sourceTree = "<group>"; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		64491A4618AAEFFF00F35444 /* Geotrust_Root_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Geotrust_Root_CA.cer; sourceTree = "<group>"; };
+		64491A4918AAF01600F35444 /* Rapid_SSL_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Rapid_SSL_CA.cer; sourceTree = "<group>"; };
 		649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_11212014.cer; sourceTree = "<group>"; };
 		77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListResponseSerializerTests.m; sourceTree = "<group>"; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -256,6 +262,8 @@
 		29CBFC4E17DF61920021AB75 /* HTTPBin.org */ = {
 			isa = PBXGroup;
 			children = (
+				64491A4918AAF01600F35444 /* Rapid_SSL_CA.cer */,
+				64491A4618AAEFFF00F35444 /* Geotrust_Root_CA.cer */,
 				649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */,
 				29CBFC7517DF697C0021AB75 /* HTTPBinOrgServerTrustChain */,
 			);
@@ -361,6 +369,8 @@
 				36DE264F18053E930062F4E3 /* adn_1.cer in Resources */,
 				36DE265018053E930062F4E3 /* adn_2.cer in Resources */,
 				29CBFC7617DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
+				64491A4A18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */,
+				64491A4718AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,9 +378,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64491A4818AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */,
 				649154EA18AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */,
 				29CBFC8817DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
 				2902D29517DF4E2A00C81C5A /* InfoPlist.strings in Resources */,
+				64491A4B18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */,
 				29CBFC7717DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
