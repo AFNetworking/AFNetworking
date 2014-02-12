@@ -41,6 +41,9 @@
 		6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
 		77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
 		77D65EBD1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
+		B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264B18053E930062F4E3 /* adn_0.cer */; };
+		B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264C18053E930062F4E3 /* adn_1.cer */; };
+		B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264D18053E930062F4E3 /* adn_2.cer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -378,12 +381,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				64491A4818AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */,
-				649154EA18AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */,
 				29CBFC8817DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
 				2902D29517DF4E2A00C81C5A /* InfoPlist.strings in Resources */,
-				64491A4B18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */,
+				649154EA18AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */,
+				B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */,
+				B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */,
+				B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */,
 				29CBFC7717DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
+				64491A4B18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */,
+				64491A4818AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
