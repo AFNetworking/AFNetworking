@@ -31,7 +31,7 @@ task :default => 'test'
 private
 
 def run_tests(scheme, sdk)
-  sh("xcodebuild -workspace AFNetworking.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' -configuration Release test | xcpretty -c ; exit ${PIPESTATUS[0]}") rescue nil
+  sh("xcodebuild -workspace AFNetworking.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' -configuration Release clean test | xcpretty -c ; exit ${PIPESTATUS[0]}") rescue nil
 end
 
 def is_mavericks_or_above
