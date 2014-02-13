@@ -351,21 +351,20 @@ NSArray *operations = [AFURLConnectionOperation batchOfRequestOperations:@[...] 
 
 ## Unit Tests
 
-AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via CocoaPods:
+AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via [CocoaPods](http://cocoapods.org/):
 
     $ cd Tests
     $ pod install
 
 Once testing dependencies are installed, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
 
-### Using xctool
+### Running Tests from the Command Line
 
-Tests can also be run from the command line or within a continuous integration environment with [`xctool`](https://github.com/facebook/xctool), which can be installed with [Homebrew](http://brew.sh):
+Tests can also be run from the command line or within a continuous integration environment. The [`xcpretty`](https://github.com/mneorr/xcpretty) utility needs to be installed before running the tests from the command line:
 
-    $ brew update
-    $ brew install xctool --HEAD
+    $ gem install xcpretty
 
-Once `xctool` is installed, you can execute the suite via `rake test`.
+Once `xcpretty` is installed, you can execute the suite via `rake test`.
 
 ## Credits
 
