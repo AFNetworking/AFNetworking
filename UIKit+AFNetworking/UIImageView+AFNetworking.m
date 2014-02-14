@@ -112,10 +112,17 @@
 - (void)setImageWithURL:(NSURL *)url
        placeholderImage:(UIImage *)placeholderImage
 {
+    [self setImageWithURL:url placeholderImage:placeholderImage successWithRawData:nil failure:nil];
+}
+
+- (void)setImageWithURL:(NSURL *)url
+       placeholderImage:(UIImage *)placeholderImage
+     successWithRawData:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image, NSData *data))success
+                failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage successWithRawData:success failure:failure];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
@@ -123,12 +130,28 @@
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
+    if (success) {
+        void (^success2)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image, NSData *data) = ^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image, __unused NSData *data) {
+                success(request, response, image);
+        };
+        [self setImageWithURLRequest:urlRequest placeholderImage:placeholderImage successWithRawData:success2 failure:failure];
+    } else {
+        [self setImageWithURLRequest:urlRequest placeholderImage:placeholderImage successWithRawData:nil failure:failure];
+    }
+}
+
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
+              placeholderImage:(UIImage *)placeholderImage
+            successWithRawData:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image, NSData *data))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
     [self cancelImageRequestOperation];
 
     UIImage *cachedImage = [[[self class] sharedImageCache] cachedImageForRequest:urlRequest];
+    NSData *data = [[[self class] sharedImageCache] cachedImageDataForRequest:urlRequest];
     if (cachedImage) {
         if (success) {
-            success(nil, nil, cachedImage);
+            success(nil, nil, cachedImage, data);
         } else {
             self.image = cachedImage;
         }
@@ -146,13 +169,15 @@
             __strong __typeof(weakSelf)strongSelf = weakSelf;
             if ([[urlRequest URL] isEqual:[operation.request URL]]) {
                 if (success) {
-                    success(urlRequest, operation.response, responseObject);
+                    success(urlRequest, operation.response, responseObject, operation.responseData);
                 } else if (responseObject) {
                     strongSelf.image = responseObject;
                 }
             }
 
             [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
+            [[[strongSelf class] sharedImageCache] cacheImageData:operation.responseData forRequest:urlRequest];
+
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if ([[urlRequest URL] isEqual:[operation.request URL]]) {
                 if (failure) {
@@ -197,6 +222,26 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
 {
     if (image && request) {
         [self setObject:image forKey:AFImageCacheKeyFromURLRequest(request)];
+    }
+}
+
+- (NSData *)cachedImageDataForRequest:(NSURLRequest *)request
+{
+    switch ([request cachePolicy]) {
+        case NSURLRequestReloadIgnoringCacheData:
+        case NSURLRequestReloadIgnoringLocalAndRemoteCacheData:
+            return nil;
+        default:
+            break;
+    }
+
+	return [self objectForKey:[AFImageCacheKeyFromURLRequest(request) stringByAppendingString:@"ImageData"]];
+}
+
+- (void)cacheImageData:(NSData *)imageData forRequest:(NSURLRequest *)request
+{
+    if (imageData && request) {
+        [self setObject:imageData forKey:[AFImageCacheKeyFromURLRequest(request) stringByAppendingString:@"ImageData"]];
     }
 }
 

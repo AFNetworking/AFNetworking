@@ -92,6 +92,10 @@
 - (void)setImageWithURL:(NSURL *)url
        placeholderImage:(UIImage *)placeholderImage;
 
+- (void)setImageWithURL:(NSURL *)url
+       placeholderImage:(UIImage *)placeholderImage
+     successWithRawData:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image, NSData *data))success
+                failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 /**
  Asynchronously downloads an image from the specified URL request, and sets it once the request is finished. Any previous image request for the receiver will be cancelled. 
  
@@ -109,6 +113,11 @@
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
+
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
+              placeholderImage:(UIImage *)placeholderImage
+            successWithRawData:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image, NSData *data))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 /**
  Cancels any executing image operation for the receiver, if one exists.
  */
@@ -140,6 +149,11 @@
  */
 - (void)cacheImage:(UIImage *)image
         forRequest:(NSURLRequest *)request;
+
+@optional
+- (NSData *)cachedImageDataForRequest:(NSURLRequest *)request;
+- (void)cacheImageData:(NSData *)imageData forRequest:(NSURLRequest *)request;
+
 @end
 
 #endif
