@@ -123,7 +123,7 @@
 
 - (AFHTTPRequestOperation *)GET:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
-                     timeoutInterval:(NSTimeInterval)timeoutInterval
+                timeoutInterval:(NSTimeInterval)timeoutInterval
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
@@ -144,8 +144,8 @@
 }
 
 - (AFHTTPRequestOperation *)HEAD:(NSString *)URLString
-                        parameters:(NSDictionary *)parameters
-                        timeoutInterval:(NSTimeInterval)timeoutInterval
+                      parameters:(NSDictionary *)parameters
+                 timeoutInterval:(NSTimeInterval)timeoutInterval
                          success:(void (^)(AFHTTPRequestOperation *operation))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
@@ -171,7 +171,7 @@
 
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
-                      timeoutInterval:(NSTimeInterval)timeoutInterval
+                 timeoutInterval:(NSTimeInterval)timeoutInterval
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
