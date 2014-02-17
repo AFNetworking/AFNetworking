@@ -1,6 +1,6 @@
 // AFHTTPRequestOperationTests.m
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -164,6 +164,33 @@
 	expect(blockError).willNot.beNil();
 }
 
+- (void)testFailureOccursIfMultipartPOSTRequestTakesLongerThanTimeoutInterval {
+	[Expecta setAsynchronousTestTimeout:2.0];
+
+	__block id blockResponseObject = nil;
+	__block id blockError = nil;
+
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+	
+	AFHTTPRequestOperation *operation = [manager
+		POST: [NSString stringWithFormat:@"%@/delay/10", [self.baseURL absoluteString]]
+		parameters:nil
+		timeoutInterval:0.1f
+		constructingBodyWithBlock: nil
+		success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			blockResponseObject = responseObject;
+		}
+		failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			blockError = error;
+		}
+	];
+
+	[operation start];
+
+	expect(blockResponseObject).will.beNil();
+	expect(blockError).willNot.beNil();
+}
+
 - (void)testPOSTRequestSucceedsIfWithinTimeoutInterval {
 	[Expecta setAsynchronousTestTimeout:2.0];
 
@@ -174,6 +201,191 @@
 	
 	AFHTTPRequestOperation *operation = [manager
 		POST: [NSString stringWithFormat:@"%@/post", [self.baseURL absoluteString]]
+		parameters:nil
+		success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			blockResponseObject = responseObject;
+		}
+		failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			blockError = error;
+		}
+	];
+
+	[operation start];
+
+	expect(blockError).will.beNil();
+	expect(blockResponseObject).willNot.beNil();
+}
+
+- (void)testMultipartPOSTRequestSucceedsIfWithinTimeoutInterval {
+	[Expecta setAsynchronousTestTimeout:2.0];
+
+	__block id blockResponseObject = nil;
+	__block id blockError = nil;
+
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+	
+	AFHTTPRequestOperation *operation = [manager
+		POST: [NSString stringWithFormat:@"%@/post", [self.baseURL absoluteString]]
+		parameters:nil
+		constructingBodyWithBlock: nil
+		success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			blockResponseObject = responseObject;
+		}
+		failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			blockError = error;
+		}
+	];
+
+	[operation start];
+
+	expect(blockError).will.beNil();
+	expect(blockResponseObject).willNot.beNil();
+}
+
+#pragma mark - PUT requests
+
+- (void)testFailureOccursIfPUTRequestTakesLongerThanTimeoutInterval {
+	[Expecta setAsynchronousTestTimeout:2.0];
+
+	__block id blockResponseObject = nil;
+	__block id blockError = nil;
+
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+	
+	AFHTTPRequestOperation *operation = [manager
+		PUT: [NSString stringWithFormat:@"%@/delay/10", [self.baseURL absoluteString]]
+		parameters:nil
+		timeoutInterval:0.1f
+		success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			blockResponseObject = responseObject;
+		}
+		failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			blockError = error;
+		}
+	];
+
+	[operation start];
+
+	expect(blockResponseObject).will.beNil();
+	expect(blockError).willNot.beNil();
+}
+
+- (void)testPUTRequestSucceedsIfWithinTimeoutInterval {
+	[Expecta setAsynchronousTestTimeout:2.0];
+
+	__block id blockResponseObject = nil;
+	__block id blockError = nil;
+
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+	
+	AFHTTPRequestOperation *operation = [manager
+		PUT: [NSString stringWithFormat:@"%@/put", [self.baseURL absoluteString]]
+		parameters:nil
+		success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			blockResponseObject = responseObject;
+		}
+		failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			blockError = error;
+		}
+	];
+
+	[operation start];
+
+	expect(blockError).will.beNil();
+	expect(blockResponseObject).willNot.beNil();
+}
+
+#pragma mark - PATCH requests
+
+- (void)testFailureOccursIfPATCHRequestTakesLongerThanTimeoutInterval {
+	[Expecta setAsynchronousTestTimeout:2.0];
+
+	__block id blockResponseObject = nil;
+	__block id blockError = nil;
+
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+	
+	AFHTTPRequestOperation *operation = [manager
+		PATCH: [NSString stringWithFormat:@"%@/delay/10", [self.baseURL absoluteString]]
+		parameters:nil
+		timeoutInterval:0.1f
+		success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			blockResponseObject = responseObject;
+		}
+		failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			blockError = error;
+		}
+	];
+
+	[operation start];
+
+	expect(blockResponseObject).will.beNil();
+	expect(blockError).willNot.beNil();
+}
+
+- (void)testPATCHRequestSucceedsIfWithinTimeoutInterval {
+	[Expecta setAsynchronousTestTimeout:2.0];
+
+	__block id blockResponseObject = nil;
+	__block id blockError = nil;
+
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+	
+	AFHTTPRequestOperation *operation = [manager
+		PATCH: [NSString stringWithFormat:@"%@/patch", [self.baseURL absoluteString]]
+		parameters:nil
+		success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			blockResponseObject = responseObject;
+		}
+		failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			blockError = error;
+		}
+	];
+
+	[operation start];
+
+	expect(blockError).will.beNil();
+	expect(blockResponseObject).willNot.beNil();
+}
+
+#pragma mark - DELETE requests
+
+- (void)testFailureOccursIfDELETERequestTakesLongerThanTimeoutInterval {
+	[Expecta setAsynchronousTestTimeout:2.0];
+
+	__block id blockResponseObject = nil;
+	__block id blockError = nil;
+
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+	
+	AFHTTPRequestOperation *operation = [manager
+		DELETE: [NSString stringWithFormat:@"%@/delay/10", [self.baseURL absoluteString]]
+		parameters:nil
+		timeoutInterval:0.1f
+		success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			blockResponseObject = responseObject;
+		}
+		failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			blockError = error;
+		}
+	];
+
+	[operation start];
+
+	expect(blockResponseObject).will.beNil();
+	expect(blockError).willNot.beNil();
+}
+
+- (void)testDELETERequestSucceedsIfWithinTimeoutInterval {
+	[Expecta setAsynchronousTestTimeout:2.0];
+
+	__block id blockResponseObject = nil;
+	__block id blockError = nil;
+
+	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+	
+	AFHTTPRequestOperation *operation = [manager
+		DELETE: [NSString stringWithFormat:@"%@/delete", [self.baseURL absoluteString]]
 		parameters:nil
 		success:^(AFHTTPRequestOperation *operation, id responseObject) {
 			blockResponseObject = responseObject;
