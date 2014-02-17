@@ -199,6 +199,23 @@
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
+ Creates and runs an `AFHTTPRequestOperation` with a `GET` request.
+
+ @param URLString The URL string used to create the request URL.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param timeoutInterval value for request setTimeoutInterval
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the request operation, and the response object created by the client response serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a two arguments: the request operation and the error describing the network or parsing error that occurred.
+
+ @see -HTTPRequestOperationWithRequest:success:failure:
+ */
+- (AFHTTPRequestOperation *)GET:(NSString *)URLString
+                     parameters:(NSDictionary *)parameters
+                     timeoutInterval:(NSTimeInterval)timeoutInterval
+                        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+/**
  Creates and runs an `AFHTTPRequestOperation` with a `HEAD` request.
 
  @param URLString The URL string used to create the request URL.
@@ -214,6 +231,23 @@
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 /**
+ Creates and runs an `AFHTTPRequestOperation` with a `HEAD` request.
+
+ @param URLString The URL string used to create the request URL.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param timeoutInterval value for request setTimeoutInterval
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes a single arguments: the request operation.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a two arguments: the request operation and the error describing the network or parsing error that occurred.
+
+ @see -HTTPRequestOperationWithRequest:success:failure:
+ */
+- (AFHTTPRequestOperation *)HEAD:(NSString *)URLString
+                      parameters:(NSDictionary *)parameters
+                         timeoutInterval:(NSTimeInterval)timeoutInterval
+                         success:(void (^)(AFHTTPRequestOperation *operation))success
+                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+/**
  Creates and runs an `AFHTTPRequestOperation` with a `POST` request.
 
  @param URLString The URL string used to create the request URL.
@@ -225,6 +259,23 @@
  */
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
+                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+/**
+ Creates and runs an `AFHTTPRequestOperation` with a `POST` request.
+
+ @param URLString The URL string used to create the request URL.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param timeoutInterval value for request setTimeoutInterval
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the request operation, and the response object created by the client response serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a two arguments: the request operation and the error describing the network or parsing error that occurred.
+
+ @see -HTTPRequestOperationWithRequest:success:failure:
+ */
+- (AFHTTPRequestOperation *)POST:(NSString *)URLString
+                      parameters:(NSDictionary *)parameters
+                         timeoutInterval:(NSTimeInterval)timeoutInterval
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
