@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0464788018B2AE5900D0B474 /* AFHTTPRequestOperationManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0464787F18B2AE5900D0B474 /* AFHTTPRequestOperationManagerTests.m */; };
+		0464788118B2AE5900D0B474 /* AFHTTPRequestOperationManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0464787F18B2AE5900D0B474 /* AFHTTPRequestOperationManagerTests.m */; };
 		2902D27917DF4E1100C81C5A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B9ED5C17DF4D350021E4D5 /* XCTest.framework */; };
 		2902D27A17DF4E1200C81C5A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC35173BE382004117E8 /* Foundation.framework */; };
 		2902D27B17DF4E1200C81C5A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29133DD617DE77ED006E0493 /* UIKit.framework */; };
@@ -47,6 +49,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0464787F18B2AE5900D0B474 /* AFHTTPRequestOperationManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationManagerTests.m; sourceTree = "<group>"; };
 		2544EC35173BE382004117E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2544EC44173BE382004117E8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		2544EC80173BFAA8004117E8 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
@@ -234,6 +237,7 @@
 		29B9ED6017DF4D350021E4D5 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				0464787F18B2AE5900D0B474 /* AFHTTPRequestOperationManagerTests.m */,
 				29B9ED6C17DF4D670021E4D5 /* 1.0 Tests */,
 				29B9ED7817DF4D830021E4D5 /* AFTestCase.h */,
 				29B9ED7617DF4D790021E4D5 /* AFTestCase.m */,
@@ -467,6 +471,7 @@
 				29CBFC5A17DF61B30021AB75 /* AFSecurityPolicyTests.m in Sources */,
 				29CBFC3F17DF58000021AB75 /* AFHTTPSerializationTests.m in Sources */,
 				29CBFC3C17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
+				0464788018B2AE5900D0B474 /* AFHTTPRequestOperationManagerTests.m in Sources */,
 				77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */,
 				2902D29C17DF4E3700C81C5A /* AFTestCase.m in Sources */,
 			);
@@ -480,6 +485,7 @@
 				36DE26511805445B0062F4E3 /* AFSecurityPolicyTests.m in Sources */,
 				29CBFC4017DF58000021AB75 /* AFHTTPSerializationTests.m in Sources */,
 				29CBFC3D17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
+				0464788118B2AE5900D0B474 /* AFHTTPRequestOperationManagerTests.m in Sources */,
 				77D65EBD1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */,
 				2902D29D17DF4E3800C81C5A /* AFTestCase.m in Sources */,
 			);

@@ -118,7 +118,17 @@
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    return [self GET:URLString parameters:parameters timeoutInterval:60.0f success:success failure:failure];
+}
+
+- (AFHTTPRequestOperation *)GET:(NSString *)URLString
+                     parameters:(NSDictionary *)parameters
+                timeoutInterval:(NSTimeInterval)timeoutInterval
+                        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
+    [request setTimeoutInterval:timeoutInterval];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self.operationQueue addOperation:operation];
 
@@ -130,7 +140,17 @@
                          success:(void (^)(AFHTTPRequestOperation *operation))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    return [self HEAD:URLString parameters:parameters timeoutInterval:60.0f success:success failure:failure];
+}
+
+- (AFHTTPRequestOperation *)HEAD:(NSString *)URLString
+                      parameters:(NSDictionary *)parameters
+                 timeoutInterval:(NSTimeInterval)timeoutInterval
+                         success:(void (^)(AFHTTPRequestOperation *operation))success
+                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"HEAD" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
+    [request setTimeoutInterval:timeoutInterval];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *requestOperation, __unused id responseObject) {
         if (success) {
             success(requestOperation);
@@ -146,7 +166,17 @@
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    return [self POST:URLString parameters:parameters timeoutInterval:60.0f success:success failure:failure];
+}
+
+- (AFHTTPRequestOperation *)POST:(NSString *)URLString
+                      parameters:(NSDictionary *)parameters
+                 timeoutInterval:(NSTimeInterval)timeoutInterval
+                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
+    [request setTimeoutInterval:timeoutInterval];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self.operationQueue addOperation:operation];
 
@@ -159,7 +189,18 @@
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    return [self POST:URLString parameters:parameters timeoutInterval:60.0f constructingBodyWithBlock:block success:success failure:failure];
+}
+
+- (AFHTTPRequestOperation *)POST:(NSString *)URLString
+                      parameters:(NSDictionary *)parameters
+                 timeoutInterval:(NSTimeInterval)timeoutInterval
+       constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
     NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters constructingBodyWithBlock:block error:nil];
+    [request setTimeoutInterval:timeoutInterval];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self.operationQueue addOperation:operation];
 
@@ -171,7 +212,17 @@
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    return [self PUT:URLString parameters:parameters timeoutInterval:60.0f success:success failure:failure];
+}
+
+- (AFHTTPRequestOperation *)PUT:(NSString *)URLString
+                     parameters:(NSDictionary *)parameters
+                timeoutInterval:(NSTimeInterval)timeoutInterval
+                        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
+    [request setTimeoutInterval:timeoutInterval];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self.operationQueue addOperation:operation];
 
@@ -183,7 +234,17 @@
                           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    return [self PATCH:URLString parameters:parameters timeoutInterval:60.0f success:success failure:failure];
+}
+
+- (AFHTTPRequestOperation *)PATCH:(NSString *)URLString
+                       parameters:(NSDictionary *)parameters
+                  timeoutInterval:(NSTimeInterval)timeoutInterval
+                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PATCH" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
+    [request setTimeoutInterval:timeoutInterval];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self.operationQueue addOperation:operation];
 
@@ -195,7 +256,17 @@
                            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    return [self DELETE:URLString parameters:parameters timeoutInterval:60.0f success:success failure:failure];
+}
+
+- (AFHTTPRequestOperation *)DELETE:(NSString *)URLString
+                        parameters:(NSDictionary *)parameters
+                   timeoutInterval:(NSTimeInterval)timeoutInterval
+                           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"DELETE" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
+    [request setTimeoutInterval:timeoutInterval];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     [self.operationQueue addOperation:operation];
 
