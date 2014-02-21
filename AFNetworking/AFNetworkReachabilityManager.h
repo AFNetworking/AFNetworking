@@ -40,6 +40,8 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
  `AFNetworkReachabilityManager` monitors the reachability of domains, and addresses for both WWAN and WiFi network interfaces.
  
  See Apple's Reachability Sample Code (https://developer.apple.com/library/ios/samplecode/reachability/)
+ 
+ @warning Instances of `AFNetworkReachabilityManager` must be started with `-startMonitoring` before reachability status can be determined.
  */
 @interface AFNetworkReachabilityManager : NSObject
 
