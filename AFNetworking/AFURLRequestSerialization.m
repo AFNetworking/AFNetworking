@@ -181,6 +181,12 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     }
 
     self.stringEncoding = NSUTF8StringEncoding;
+    self.allowsCellularAccess = YES;
+    self.cachePolicy = NSURLRequestUseProtocolCachePolicy;
+    self.HTTPShouldHandleCookies = YES;
+    self.HTTPShouldUsePipelining = NO;
+    self.networkServiceType = NSURLNetworkServiceTypeDefault;
+    self.timeoutInterval = 60;
 
     self.mutableHTTPRequestHeaders = [NSMutableDictionary dictionary];
 
@@ -273,12 +279,18 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
     NSParameterAssert(url);
 
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    [request setHTTPMethod:method];
+    NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:url];
+    mutableRequest.HTTPMethod = method;
+    mutableRequest.allowsCellularAccess = self.allowsCellularAccess;
+    mutableRequest.cachePolicy = self.cachePolicy;
+    mutableRequest.HTTPShouldHandleCookies = self.HTTPShouldHandleCookies;
+    mutableRequest.HTTPShouldUsePipelining = self.HTTPShouldUsePipelining;
+    mutableRequest.networkServiceType = self.networkServiceType;
+    mutableRequest.timeoutInterval = self.timeoutInterval;
 
-    request = [[self requestBySerializingRequest:request withParameters:parameters error:error] mutableCopy];
+    mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
 
-	return request;
+	return mutableRequest;
 }
 
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
@@ -298,9 +310,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSParameterAssert(method);
     NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
 
-    NSMutableURLRequest *request = [self requestWithMethod:method URLString:URLString parameters:nil error:error];
+    NSMutableURLRequest *mutableRequest = [self requestWithMethod:method URLString:URLString parameters:nil error:error];
 
-    __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:NSUTF8StringEncoding];
+    __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:mutableRequest stringEncoding:NSUTF8StringEncoding];
 
     if (parameters) {
         for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
