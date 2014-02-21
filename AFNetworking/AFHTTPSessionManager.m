@@ -297,7 +297,9 @@
     [super encodeWithCoder:coder];
 
     [coder encodeObject:self.baseURL forKey:NSStringFromSelector(@selector(baseURL))];
-    [coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
+    if ([self.session.configuration conformsToProtocol:@protocol(NSCoding)]) {
+        [coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
+    }
     [coder encodeObject:self.requestSerializer forKey:NSStringFromSelector(@selector(requestSerializer))];
     [coder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
 }
