@@ -88,6 +88,8 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
             return @"isFinished";
         case AFOperationPausedState:
             return @"isPaused";
+        default:
+            return @"state";
     }
 }
 
