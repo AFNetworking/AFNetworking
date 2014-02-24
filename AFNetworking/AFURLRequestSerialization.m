@@ -424,8 +424,6 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
             case AFHTTPRequestQueryStringDefaultStyle:
                 query = AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding);
                 break;
-            default:
-                break;
         }
     }
 
