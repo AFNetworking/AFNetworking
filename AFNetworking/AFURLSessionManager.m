@@ -95,6 +95,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 @interface AFURLSessionManagerTaskDelegate : NSObject <NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate>
 @property (nonatomic, weak) AFURLSessionManager *manager;
+@property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
 @property (nonatomic, strong) NSMutableData *mutableData;
 @property (nonatomic, strong) NSProgress *uploadProgress;
 @property (nonatomic, strong) NSProgress *downloadProgress;
@@ -114,6 +115,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 {
     AFURLSessionManagerTaskDelegate *delegate = [[self alloc] init];
     delegate.manager = manager;
+    delegate.responseSerializer = manager.responseSerializer;
     delegate.completionHandler = completionHandler;
 
     return delegate;
@@ -163,7 +165,7 @@ didCompleteWithError:(NSError *)error
     __block id responseObject = nil;
 
     __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-    userInfo[AFNetworkingTaskDidCompleteResponseSerializerKey] = manager.responseSerializer;
+    userInfo[AFNetworkingTaskDidCompleteResponseSerializerKey] = self.responseSerializer;
 
     if (self.downloadFileURL) {
         userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
@@ -186,7 +188,7 @@ didCompleteWithError:(NSError *)error
     } else {
         dispatch_async(url_session_manager_processing_queue(), ^{
             NSError *serializationError = nil;
-            responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
+            responseObject = [self.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
 
             if (self.downloadFileURL) {
                 responseObject = self.downloadFileURL;
