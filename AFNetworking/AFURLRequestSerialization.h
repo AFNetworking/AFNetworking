@@ -308,7 +308,7 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 - (void)appendPartWithInputStream:(NSInputStream *)inputStream
                              name:(NSString *)name
                          fileName:(NSString *)fileName
-                           length:(int64_t)length
+                           length:(NSUInteger)length
                          mimeType:(NSString *)mimeType;
 
 /**

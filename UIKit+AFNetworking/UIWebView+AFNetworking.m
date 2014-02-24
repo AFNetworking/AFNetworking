@@ -85,7 +85,7 @@
 #pragma mark -
 
 - (void)loadRequest:(NSURLRequest *)request
-           progress:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
+           progress:(void (^)(NSUInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))progress
             success:(NSString * (^)(NSHTTPURLResponse *response, NSString *HTML))success
             failure:(void (^)(NSError *error))failure
 {
@@ -110,7 +110,7 @@
 - (void)loadRequest:(NSURLRequest *)request
            MIMEType:(NSString *)MIMEType
    textEncodingName:(NSString *)textEncodingName
-           progress:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
+           progress:(void (^)(NSUInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))progress
             success:(NSData * (^)(NSHTTPURLResponse *response, NSData *data))success
             failure:(void (^)(NSError *error))failure
 {

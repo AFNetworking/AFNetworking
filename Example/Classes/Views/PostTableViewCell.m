@@ -61,7 +61,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     CGSize sizeToFit = [post.text sizeWithFont:[UIFont systemFontOfSize:12.0f] constrainedToSize:CGSizeMake(220.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
 #pragma clang diagnostic pop
-    
     return fmaxf(70.0f, (float)sizeToFit.height + 45.0f);
 }
 
