@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		297F56CA17A9B1AB0014D95C /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 297F56C917A9B1AB0014D95C /* AFSecurityPolicy.m */; };
 		2982AD3217107C0000FFF048 /* adn.cer in Resources */ = {isa = PBXBuildFile; fileRef = 2982AD3117107C0000FFF048 /* adn.cer */; };
+		E8C2E7A618970EE40097DCC8 /* root_ca.cer in Resources */ = {isa = PBXBuildFile; fileRef = E8C2E7A418970EE00097DCC8 /* root_ca.cer */; };
+		E8C2E7A718970EE40097DCC8 /* digicert_ca_3.cer in Resources */ = {isa = PBXBuildFile; fileRef = E8C2E7A518970EE00097DCC8 /* digicert_ca_3.cer */; };
 		F8129C7415910C37009BFE23 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C7215910C37009BFE23 /* AppDelegate.m */; };
 		F818101615E6A0C600EF93C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */; };
 		F8664A2018AA99F5007D8554 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8664A1F18AA99F5007D8554 /* UIRefreshControl+AFNetworking.m */; };
@@ -54,6 +56,8 @@
 		2982AD3117107C0000FFF048 /* adn.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = adn.cer; sourceTree = SOURCE_ROOT; };
 		50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		55BDA27E17F5A434005DB933 /* UIKit+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIKit+AFNetworking.h"; sourceTree = "<group>"; };
+		E8C2E7A418970EE00097DCC8 /* root_ca.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = root_ca.cer; sourceTree = SOURCE_ROOT; };
+		E8C2E7A518970EE00097DCC8 /* digicert_ca_3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = digicert_ca_3.cer; sourceTree = SOURCE_ROOT; };
 		F8129C3815910830009BFE23 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
 		F8129C7215910C37009BFE23 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
 		F8129C7315910C37009BFE23 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
@@ -303,6 +307,8 @@
 		F8E4696B1395739D00DB05C8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E8C2E7A418970EE00097DCC8 /* root_ca.cer */,
+				E8C2E7A518970EE00097DCC8 /* digicert_ca_3.cer */,
 				2982AD3117107C0000FFF048 /* adn.cer */,
 				F8DA09E31396AC040057D0CC /* main.m */,
 				F8129C3815910830009BFE23 /* Prefix.pch */,
@@ -417,10 +423,12 @@
 			files = (
 				F8F6E8DC1463424800AD016F /* Icon.png in Resources */,
 				F8F6E8DD1463424800AD016F /* Icon@2x.png in Resources */,
+				E8C2E7A718970EE40097DCC8 /* digicert_ca_3.cer in Resources */,
 				F8FA94D0150F094D00ED4EAD /* profile-image-placeholder.png in Resources */,
 				F8FA94D1150F094D00ED4EAD /* profile-image-placeholder@2x.png in Resources */,
 				F8A847C1161F51A300940F39 /* Default-568h@2x.png in Resources */,
 				F8A847C3161F523E00940F39 /* Default.png in Resources */,
+				E8C2E7A618970EE40097DCC8 /* root_ca.cer in Resources */,
 				F8A847C5161F524200940F39 /* Default@2x.png in Resources */,
 				2982AD3217107C0000FFF048 /* adn.cer in Resources */,
 			);
