@@ -79,6 +79,8 @@ typedef NSCachedURLResponse * (^AFURLConnectionOperationCacheResponseBlock)(NSUR
 typedef NSURLRequest * (^AFURLConnectionOperationRedirectResponseBlock)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse);
 
 static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunreachable-code"
     switch (state) {
         case AFOperationReadyState:
             return @"isReady";
@@ -91,6 +93,7 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
         default:
             return @"state";
     }
+#pragma clang diagnostic pop
 }
 
 static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperationState toState, BOOL isCancelled) {
