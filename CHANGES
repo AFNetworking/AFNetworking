@@ -1,3 +1,101 @@
+= 2.1.0 (2014-01-16)
+
+  * Add CONTRIBUTING (Kyle Fuller)
+
+  * Add domain name verification for SSL certificates (Oliver Letterer)
+
+  * Add leaf certificate checking (Alex Leverington, Carson McDonald, Mattt
+Thompson)
+
+  * Add test case for stream failure handling (Kyle Fuller)
+
+  * Add underlying error properties to response serializers to forward errors
+to subsequent validation steps (Mattt Thompson)
+
+  * Add `AFImageCache` protocol, to allow for custom image caches to be
+specified for `UIImageView` (Mattt Thompson)
+
+  * Add `error` out parameter for request serializer, deprecating existing
+request constructor methods (Adam Becevello)
+
+  * Change request serializer protocol to take id type for parameters (Mattt
+Thompson)
+
+  * Change to add validation of download task responses (Mattt Thompson)
+
+  * Change to force upload progress, by using original request Content-Length
+(Mateusz Malczak)
+
+  * Change to use `NSDictionary` object literals for `NSError` `userInfo`
+construction (Mattt Thompson)
+
+  * Fix #pragma declaration to be NSURLConnectionDataDelegate, rather than
+NSURLConnectionDelegate (David Paschich)
+
+  * Fix a bug when appending a file part to multipart request from a URL
+(Kyle Fuller)
+
+  * Fix analyzer warning about weak receiver being set to nil, capture strong
+reference (Stewart Gleadow)
+
+  * Fix appending file part to multipart request to use suggested file name,
+rather than temporary one (Kyle Fuller)
+
+  * Fix availability macros for network activity indicator (Mattt Thompson)
+
+  * Fix crash in iOS 6.1 caused by KVO on `isCancelled` property of
+`AFURLConnectionOperation` (Sam Page)
+
+  * Fix dead store issues in `AFSecurityPolicy` (Andrew Hershberger)
+
+  * Fix incorrect documentation for `-HTTPRequestOperationWithRequest:...`
+(Kyle Fuller)
+
+  * Fix issue in reachability callbacks, where reachability managers created
+for a particular domain would initially report no reachability (Mattt
+Thompson)
+
+  * Fix logic for handling data task turning into download task (Kyle Fuller)
+
+  * Fix property list response serializer to handle 204 response (Kyle Fuller)
+
+  * Fix README multipart example (Johan Forssell)
+
+  * Fix to add check for non-nil delegate in
+`URLSession:didCompleteWithError:` (Kaom Te)
+
+  * Fix to dramatically improve creation of images in
+`AFInflatedImageFromResponseWithDataAtScale`, including handling of CMYK, 16
+/ 32 bpc images, and colorspace alpha settings (Robert Ryan)
+
+  * Fix Travis CI integration and unit testing (Kyle Fuller, Carson McDonald)
+
+  * Fix typo in comments (@palringo)
+
+  * Fix UIWebView category to use supplied success callback (Mattt Thompson)
+
+  * Fix various static analyzer warnings (Kyle Fuller, Jesse Collis, Mattt
+Thompson)
+
+  * Fix `+batchOfRequestOperations:...` completion block to execute in
+`dispatch_async` (Mattt Thompson)
+
+  * Remove synchronous `SCNetworkReachabilityGetFlags` call when initializing
+managers, which had the potential to block in certain network conditions
+(Yury Korolev, Mattt Thompson)
+
+  * Remove unnecessary check for completionHandler in HTTP manager (Mattt
+Thompson)
+
+  * Remove unused conditional clauses (Luka Bratos)
+
+  * Update documentation for `AFCompoundResponseSerializer` (Mattt Thompson)
+
+  * Update httpbin certificates (Carson McDonald)
+
+  * Update notification constant names to be consistent with `NSURLSession`
+terminology (Mattt Thompson)
+
 = 2.0.3 (2013-11-18)
 
   * Fix a bug where `AFURLConnectionOperation -pause` did not correctly reset
