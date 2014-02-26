@@ -649,7 +649,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.totalBytesRead += length;
+        self.totalBytesRead += (NSInteger)length;
 
         if (self.downloadProgress) {
             self.downloadProgress(length, self.totalBytesRead, (NSInteger)self.response.expectedContentLength);
