@@ -28,8 +28,8 @@
 
 #import <UIKit/UIKit.h>
 
-#import "AFURLRequestSerialization.h"
-#import "AFURLResponseSerialization.h"
+@class AFHTTPRequestSerializer, AFHTTPResponseSerializer;
+@protocol AFURLRequestSerialization, AFURLResponseSerialization;
 
 /**
  This category adds methods to the UIKit framework's `UIWebView` class. The methods in this category provide increased control over the request cycle, including progress monitoring and success / failure handling.

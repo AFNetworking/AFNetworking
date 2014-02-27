@@ -28,9 +28,9 @@
 
 #import <UIKit/UIKit.h>
 
-#import "AFURLResponseSerialization.h"
+@protocol AFURLResponseSerialization, AFImageCache;
 
-@protocol AFImageCache;
+@class AFImageResponseSerializer;
 
 /**
  This category adds methods to the UIKit framework's `UIImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
