@@ -649,7 +649,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.totalBytesRead += length;
+        self.totalBytesRead += (NSInteger)length;
 
         if (self.downloadProgress) {
             self.downloadProgress(length, self.totalBytesRead, (NSInteger)self.response.expectedContentLength);
@@ -707,7 +707,7 @@ didReceiveResponse:(NSURLResponse *)response
     self.response = [decoder decodeObjectForKey:NSStringFromSelector(@selector(response))];
     self.error = [decoder decodeObjectForKey:NSStringFromSelector(@selector(error))];
     self.responseData = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseData))];
-    self.totalBytesRead = [decoder decodeInt64ForKey:NSStringFromSelector(@selector(totalBytesRead))];
+    self.totalBytesRead = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(totalBytesRead))];
 
     return self;
 }
