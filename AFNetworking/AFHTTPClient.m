@@ -272,8 +272,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     if (userAgent) {
         if (![userAgent canBeConvertedToEncoding:NSASCIIStringEncoding]) {
             NSMutableString *mutableUserAgent = [userAgent mutableCopy];
-            CFStringTransform((__bridge CFMutableStringRef)(mutableUserAgent), NULL, kCFStringTransformToLatin, false);
-            userAgent = mutableUserAgent;
+            if (CFStringTransform((__bridge CFMutableStringRef)(mutableUserAgent), NULL, kCFStringTransformToLatin, false)) {
+                userAgent = mutableUserAgent;
+            }
         }
         [self setDefaultHeader:@"User-Agent" value:userAgent];
     }
