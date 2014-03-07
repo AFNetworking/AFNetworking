@@ -88,12 +88,6 @@ static inline NSString * AFKeyPathFromOperationState(AFOperationState state) {
             return @"isFinished";
         case AFOperationPausedState:
             return @"isPaused";
-        default: {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunreachable-code"
-            return @"state";
-#pragma clang diagnostic pop
-        }
     }
 }
 
@@ -190,7 +184,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     self.shouldUseCredentialStorage = YES;
 
-    self.state = AFOperationReadyState;
+    _state = AFOperationReadyState;
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
