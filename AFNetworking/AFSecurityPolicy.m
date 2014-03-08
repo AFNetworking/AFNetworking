@@ -270,11 +270,15 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
         SecCertificateRef matchingCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)serverCertificate);
         NSParameterAssert(matchingCertificate);
 
-        BOOL shouldTrustServer = AFCertificateHostMatchesDomain((__bridge_transfer NSString *)SecCertificateCopySubjectSummary(matchingCertificate), domain);
+        NSString *cname = (__bridge_transfer NSString *)SecCertificateCopySubjectSummary(matchingCertificate);
+        BOOL shouldTrustServer = AFCertificateHostMatchesDomain(cname, domain);
 
         CFRelease(matchingCertificate);
 
         if (!shouldTrustServer) {
+#ifdef DEBUG
+            NSLog(@"Your ceritifactes cname (%@) did not match the servers domain (%@). If you are using self signed certificates with invalid domain names, make sure to disable AFSecurityPolicy.validatesDomainName.", cname, domain);
+#endif
             return NO;
         }
     }
