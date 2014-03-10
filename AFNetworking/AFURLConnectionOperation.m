@@ -116,7 +116,15 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         case AFOperationPausedState:
             return toState == AFOperationReadyState;
         default:
-            return YES;
+            switch (toState) {
+                case AFOperationPausedState:
+                case AFOperationReadyState:
+                case AFOperationExecutingState:
+                case AFOperationFinishedState:
+                    return YES;
+                default:
+                    return NO;
+            }
     }
 }
 
