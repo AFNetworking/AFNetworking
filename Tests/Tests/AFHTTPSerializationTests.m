@@ -25,6 +25,38 @@
 #import "AFURLResponseSerialization.h"
 #import "AFURLRequestSerialization.h"
 
+@interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
+
+@property (readwrite, nonatomic, strong) NSMutableArray *HTTPBodyParts;
+
+@end
+
+@protocol AFMultipartFormDataTest <AFMultipartFormData>
+
+- (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
+                    stringEncoding:(NSStringEncoding)encoding;
+@property (readwrite, nonatomic, strong) AFMultipartBodyStream *bodyStream;
+
+@end
+
+@interface AFHTTPBodyPart : NSObject
+@property (nonatomic, assign) NSStringEncoding stringEncoding;
+@property (nonatomic, strong) NSDictionary *headers;
+@property (nonatomic, copy) NSString *boundary;
+@property (nonatomic, strong) id body;
+@property (nonatomic, assign) NSUInteger bodyContentLength;
+@property (nonatomic, strong) NSInputStream *inputStream;
+
+@property (nonatomic, assign) BOOL hasInitialBoundary;
+@property (nonatomic, assign) BOOL hasFinalBoundary;
+
+@property (readonly, nonatomic, assign, getter = hasBytesAvailable) BOOL bytesAvailable;
+@property (readonly, nonatomic, assign) NSUInteger contentLength;
+
+- (NSInteger)read:(uint8_t *)buffer
+        maxLength:(NSUInteger)length;
+@end
+
 @interface AFHTTPSerializationTests : AFTestCase
 @end
 
@@ -94,6 +126,22 @@
                                                                         error:nil];
     NSString *queryString = serializedRequest.URL.query;
     XCTAssertTrue([queryString isEqualToString:@"key**value"], @"Custom Query parameters have not been serialized correctly (%@) by the query string block.",queryString);
+}
+
+- (void)testThatAFHTTPRequestSerialiationSerializesMIMETypeCorrectly
+{
+    NSMutableURLRequest *originalRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://test.com"]];
+    Class streamClass = NSClassFromString(@"AFStreamingMultipartFormData");
+    id <AFMultipartFormDataTest> formData = [[streamClass alloc] initWithURLRequest:originalRequest stringEncoding:NSUTF8StringEncoding];
+    
+    NSURL *fileURL = [NSURL fileURLWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"adn_0" ofType:@"cer"]];
+    
+    [formData appendPartWithFileURL:fileURL name:@"test" error:NULL];
+    
+    AFHTTPBodyPart *part = [formData.bodyStream.HTTPBodyParts firstObject];
+    
+    XCTAssertTrue([part.headers[@"Content-Type"] isEqualToString:@"application/x-x509-ca-cert"], @"MIME Type has not been obtained correctly (%@)", part.headers[@"Content-Type"]);
+    
 }
 
 @end
