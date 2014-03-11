@@ -108,8 +108,13 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 static NSData *AFSecKeyGetData(SecKeyRef key) {
     CFDataRef data = NULL;
     
+#if defined(NS_BLOCK_ASSERTIONS)
+    SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
+#else
     OSStatus status = SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
     NSCAssert(status == errSecSuccess, @"SecItemExport error: %ld", (long int)status);
+#endif
+
     NSCParameterAssert(data);
     
     return (__bridge_transfer NSData *)data;
