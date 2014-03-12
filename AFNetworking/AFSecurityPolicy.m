@@ -223,8 +223,12 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
                   forDomain:(NSString *)domain
 {
-    if (self.SSLPinningMode == AFSSLPinningModeNone || self.allowInvalidCertificates) {
+    if (self.SSLPinningMode == AFSSLPinningModeNone && self.allowInvalidCertificates) {
         return YES;
+    }
+
+    if (!AFServerTrustIsValid(serverTrust) && !self.allowInvalidCertificates) {
+        return NO;
     }
 
     NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);
