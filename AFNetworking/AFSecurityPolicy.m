@@ -144,14 +144,6 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     return [NSArray arrayWithArray:trustChain];
 }
 
-static NSComparisonResult AFDomainComponentCompare(NSString *component1, NSString *component2) {
-    if ([component1 isEqualToString:@"*"] || [component2 isEqualToString:@"*"]) {
-        return NSOrderedSame;
-    }
-
-    return [component1 compare:component2];
-}
-
 static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *domain) {
     certificateHost = [certificateHost lowercaseString];
     domain = [domain lowercaseString];
@@ -163,16 +155,35 @@ static BOOL AFCertificateHostMatchesDomain(NSString *certificateHost, NSString *
     NSArray *certificateHostComponents = [certificateHost componentsSeparatedByString:@"."];
     NSArray *domainComponents = [domain componentsSeparatedByString:@"."];
     
-    if ([certificateHostComponents count] != [domainComponents count]) {
-        return NO;
+    BOOL certificateHostMatchesDomain = YES;
+    NSInteger certificateComponentsCount = [certificateHostComponents count];
+    NSInteger domainComponentsCount = [domainComponents count];
+    
+    //pairwise compare starting at end
+    //if a wildcard is found and it is the last component then return
+    //if a wildcard is found in the middle skip that component
+    for(NSInteger i = 1; i <= certificateComponentsCount; i++) {
+        NSString *certificateComponent = certificateHostComponents[certificateComponentsCount - i];
+        if([certificateComponent isEqualToString:@"*"]) {
+            if(i == certificateComponentsCount) {
+                break;
+            } else {
+                continue;
+            }
+        } else {
+            if(domainComponentsCount - i >= 0) {
+                NSString *domainComponent = domainComponents[domainComponentsCount - i];
+                if(![domainComponent isEqualToString:certificateComponent]) {
+                    certificateHostMatchesDomain = NO;
+                    break;
+                }
+            } else {
+                certificateHostMatchesDomain = NO;
+                break;
+            }
+        }
     }
-    
-    BOOL certificateHostMatchesDomain = ([certificateHostComponents indexOfObjectPassingTest:^BOOL(NSString *certificateHostComponent, NSUInteger idx, __unused BOOL *stop) {
-        NSString *domainComponent = [domainComponents objectAtIndex:idx];
-
-        return AFDomainComponentCompare(certificateHostComponent, domainComponent) != NSOrderedSame;
-    }] == NSNotFound);
-    
+   
     return certificateHostMatchesDomain;
 }
 
