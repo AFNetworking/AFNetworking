@@ -67,7 +67,7 @@
 - (void)incrementActivityCount;
 
 /**
- Decrements the number of active network requests. If this number becomes zero before decrementing, this will stop animating the status bar network activity indicator.
+ Decrements the number of active network requests. If this number becomes zero after decrementing, this will stop animating the status bar network activity indicator.
  */
 - (void)decrementActivityCount;
 
