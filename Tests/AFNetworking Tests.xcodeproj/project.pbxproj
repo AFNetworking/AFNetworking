@@ -41,6 +41,12 @@
 		6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
 		77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
 		77D65EBD1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
+		A74DA00918D2FB9400F3B969 /* AltName.cer in Resources */ = {isa = PBXBuildFile; fileRef = A74DA00618D2FB9400F3B969 /* AltName.cer */; };
+		A74DA00A18D2FB9400F3B969 /* AltName.cer in Resources */ = {isa = PBXBuildFile; fileRef = A74DA00618D2FB9400F3B969 /* AltName.cer */; };
+		A74DA00B18D2FB9400F3B969 /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = A74DA00718D2FB9400F3B969 /* foobar.com.cer */; };
+		A74DA00C18D2FB9400F3B969 /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = A74DA00718D2FB9400F3B969 /* foobar.com.cer */; };
+		A74DA00D18D2FB9400F3B969 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = A74DA00818D2FB9400F3B969 /* NoDomains.cer */; };
+		A74DA00E18D2FB9400F3B969 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = A74DA00818D2FB9400F3B969 /* NoDomains.cer */; };
 		B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264B18053E930062F4E3 /* adn_0.cer */; };
 		B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264C18053E930062F4E3 /* adn_1.cer */; };
 		B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264D18053E930062F4E3 /* adn_2.cer */; };
@@ -99,6 +105,9 @@
 		649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_11212014.cer; sourceTree = "<group>"; };
 		77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListResponseSerializerTests.m; sourceTree = "<group>"; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A74DA00618D2FB9400F3B969 /* AltName.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AltName.cer; sourceTree = "<group>"; };
+		A74DA00718D2FB9400F3B969 /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
+		A74DA00818D2FB9400F3B969 /* NoDomains.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = NoDomains.cer; sourceTree = "<group>"; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -283,11 +292,23 @@
 			path = Resources/ADN.net;
 			sourceTree = "<group>";
 		};
+		A74DA00518D2FB9400F3B969 /* SelfSigned */ = {
+			isa = PBXGroup;
+			children = (
+				A74DA00618D2FB9400F3B969 /* AltName.cer */,
+				A74DA00718D2FB9400F3B969 /* foobar.com.cer */,
+				A74DA00818D2FB9400F3B969 /* NoDomains.cer */,
+			);
+			name = SelfSigned;
+			path = Resources/SelfSigned;
+			sourceTree = "<group>";
+		};
 		F8E801E9175AC34D008D3886 /* Certificates */ = {
 			isa = PBXGroup;
 			children = (
 				29CBFC7B17DF74A80021AB75 /* ADN.net */,
 				29CBFC4E17DF61920021AB75 /* HTTPBin.org */,
+				A74DA00518D2FB9400F3B969 /* SelfSigned */,
 			);
 			name = Certificates;
 			sourceTree = "<group>";
@@ -366,14 +387,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				29CBFC8717DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
+				A74DA00D18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D28117DF4E1200C81C5A /* InfoPlist.strings in Resources */,
 				649154E918AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */,
 				36DE264E18053E930062F4E3 /* adn_0.cer in Resources */,
 				36DE264F18053E930062F4E3 /* adn_1.cer in Resources */,
+				A74DA00B18D2FB9400F3B969 /* foobar.com.cer in Resources */,
 				36DE265018053E930062F4E3 /* adn_2.cer in Resources */,
 				29CBFC7617DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
 				64491A4A18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */,
 				64491A4718AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */,
+				A74DA00918D2FB9400F3B969 /* AltName.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,14 +406,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				29CBFC8817DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
+				A74DA00E18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D29517DF4E2A00C81C5A /* InfoPlist.strings in Resources */,
 				649154EA18AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */,
 				B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */,
 				B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */,
+				A74DA00C18D2FB9400F3B969 /* foobar.com.cer in Resources */,
 				B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */,
 				29CBFC7717DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
 				64491A4B18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */,
 				64491A4818AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */,
+				A74DA00A18D2FB9400F3B969 /* AltName.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

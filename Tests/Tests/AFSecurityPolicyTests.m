@@ -82,6 +82,30 @@ static SecCertificateRef AFUTRapidSSLCertificate() {
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
+static SecCertificateRef AFUTSelfSignedCertificateWithoutDomain() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"NoDomains" ofType:@"cer"];
+    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+    NSData *certData = [NSData dataWithContentsOfFile:certPath];
+
+    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+}
+
+static SecCertificateRef AFUTSelfSignedCertificateWithCommonNameDomain() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"foobar.com" ofType:@"cer"];
+    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+    NSData *certData = [NSData dataWithContentsOfFile:certPath];
+
+    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+}
+
+static SecCertificateRef AFUTSelfSignedCertificateWithDNSNameDomain() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"AltName" ofType:@"cer"];
+    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+    NSData *certData = [NSData dataWithContentsOfFile:certPath];
+
+    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+}
+
 static NSArray * AFCertificateTrustChainForServerTrust(SecTrustRef serverTrust) {
     CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
     NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:(NSUInteger)certificateCount];
@@ -92,6 +116,17 @@ static NSArray * AFCertificateTrustChainForServerTrust(SecTrustRef serverTrust) 
     }
     
     return [NSArray arrayWithArray:trustChain];
+}
+
+static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
+    NSArray *certs  = [NSArray arrayWithObject:(__bridge id)(certificate)];
+
+    SecPolicyRef policy = SecPolicyCreateBasicX509();
+    SecTrustRef trust = NULL;
+    SecTrustCreateWithCertificates((__bridge CFTypeRef)(certs), policy, &trust);
+    CFRelease(policy);
+
+    return trust;
 }
 
 #pragma mark -
@@ -329,6 +364,85 @@ static NSArray * AFCertificateTrustChainForServerTrust(SecTrustRef serverTrust) 
     }];
 
     XCTAssert(index!=NSNotFound, @"HTTPBin.org certificate not found in the default certificates");
+}
+
+- (void)testCertificatePinningIsEnforcedWhenPinningSelfSignedCertificateWithoutDomain {
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithoutDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate) ];
+    policy.allowInvalidCertificates = YES;
+    policy.validatesDomainName = NO;
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"foo.bar"], @"Certificate should be trusted");
+
+    CFRelease(trust);
+    CFRelease(certificate);
+}
+
+- (void)testCertificatePinningWhenPinningSelfSignedCertificateWithoutDomain {
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithoutDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate) ];
+    policy.allowInvalidCertificates = YES;
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"foo.bar"] == NO, @"Certificate should not be trusted");
+
+    CFRelease(trust);
+    CFRelease(certificate);
+}
+
+- (void)testCertificatePinningIsEnforcedWhenPinningSelfSignedCertificateWithCommonNameDomain {
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithCommonNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate) ];
+    policy.allowInvalidCertificates = YES;
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Certificate should be trusted");
+
+    CFRelease(trust);
+    CFRelease(certificate);
+}
+
+- (void)testCertificatePinningWhenPinningSelfSignedCertificateWithCommonNameDomain {
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithCommonNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate) ];
+    policy.allowInvalidCertificates = YES;
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"foo.bar"] == NO, @"Certificate should not be trusted");
+
+    CFRelease(trust);
+    CFRelease(certificate);
+}
+
+- (void)testCertificatePinningIsEnforcedWhenPinningSelfSignedCertificateWithDNSNameDomain {
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate) ];
+    policy.allowInvalidCertificates = YES;
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Certificate should be trusted");
+
+    CFRelease(trust);
+    CFRelease(certificate);
+}
+
+- (void)testCertificatePinningWhenPinningSelfSignedCertificateWithDNSNameDomain {
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate) ];
+    policy.allowInvalidCertificates = YES;
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"foo.bar"] == NO, @"Certificate should not be trusted");
+
+    CFRelease(trust);
+    CFRelease(certificate);
 }
 
 - (void)testDefaultPolicySetToCertificateChain {
