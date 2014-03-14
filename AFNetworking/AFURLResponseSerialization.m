@@ -194,9 +194,7 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
-    NSError *localError = nil;
-
-    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:&localError]) {
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
         if (AFErrorOrUnderlyingErrorHasCode(*error, NSURLErrorCannotDecodeContentData)) {
             return nil;
         }
@@ -213,7 +211,7 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
     }
 
     id responseObject = nil;
-
+    NSError *serializationError = nil;
     @autoreleasepool {
         NSString *responseString = [[NSString alloc] initWithData:data encoding:stringEncoding];
         if (responseString && ![responseString isEqualToString:@" "]) {
@@ -221,7 +219,6 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
             // See http://stackoverflow.com/a/12843465/157142
             data = [responseString dataUsingEncoding:NSUTF8StringEncoding];
 
-            NSError *serializationError = nil;
             if (data) {
                 if ([data length] > 0) {
                     responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
@@ -236,13 +233,11 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
 
                 serializationError = [NSError errorWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
             }
-            
-            localError = AFErrorWithUnderlyingError(serializationError, localError);
         }
     }
     
     if (error) {
-        *error = localError;
+        *error = AFErrorWithUnderlyingError(serializationError, *error);;
     }
     
     return responseObject;
