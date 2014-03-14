@@ -194,7 +194,9 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
                            data:(NSData *)data
                           error:(NSError *__autoreleasing *)error
 {
-    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+    NSError *localError = nil;
+
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:&localError]) {
         if (AFErrorOrUnderlyingErrorHasCode(*error, NSURLErrorCannotDecodeContentData)) {
             return nil;
         }
@@ -234,13 +236,15 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
 
                 serializationError = [NSError errorWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
             }
-
-            if (error) {
-                *error = AFErrorWithUnderlyingError(serializationError, *error);
-            }
+            
+            localError = AFErrorWithUnderlyingError(serializationError, localError);
         }
     }
-
+    
+    if (error) {
+        *error = localError;
+    }
+    
     return responseObject;
 }
 
