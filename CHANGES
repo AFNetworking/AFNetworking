@@ -1,3 +1,23 @@
+= 2.2.1 (2014-03-14)
+
+  * Fix `-Wsign-conversion` warning in AFURLConnectionOperation (Jesse Collis)
+  * Fix `-Wshorten-64-to-32` warning (Jesse Collis)
+  * Remove unnecessary #imports in `UIImageView` & `UIWebView` categories
+(Jesse Collis)
+  * Fix call to `CFStringTransform()` by checking return value before setting
+as `User-Agent` (Kevin Cassidy Jr)
+  * Update `AFJSONResponseSerializer` adding `@autorelease` to relieve memory
+pressure (Mattt Thompson, Michal Pietras)
+  * Update `AFJSONRequestSerializer` to accept `id` (Daren Desjardins)
+  * Fix small documentation bug (@jkoepcke)
+  * Fix behavior of SSL pinning. In case of `validatesDomainName == YES`, it
+now explicitly uses `SecPolicyCreateSSL`, which also validates the domain
+name. Otherwise, `SecPolicyCreateBasicX509` is used.
+`AFSSLPinningModeCertificate` now uses `SecTrustSetAnchorCertificates`, which
+allows explicit specification of all trusted certificates. For
+`AFSSLPinningModePublicKey`, the number of trusted public keys determines if
+the server should be trusted. (Oliver Letterer, Eric Allam)
+
 = 2.2.0 (2014-02-25)
 
   * Add default initializer to make `AFHTTPRequestOperationManager`
