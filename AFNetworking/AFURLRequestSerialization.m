@@ -341,8 +341,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 - (NSMutableURLRequest *)requestWithMultipartFormRequest:(NSURLRequest *)request
                              writingStreamContentsToFile:(NSURL *)fileURL
-                                       completionHandler:(void (^)(NSError *error))handler;
-
+                                       completionHandler:(void (^)(NSError *error))handler
 {
     if (!request.HTTPBodyStream) {
         return [request mutableCopy];
