@@ -1093,6 +1093,7 @@ typedef enum {
     bodyPart.headers = self.headers;
     bodyPart.bodyContentLength = self.bodyContentLength;
     bodyPart.body = self.body;
+    bodyPart.boundary = self.boundary;
     
     return bodyPart;
 }
