@@ -66,6 +66,12 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @interface AFHTTPRequestSerializer : NSObject <AFURLRequestSerialization>
 
 /**
+ If true, enforces that AFNetorking never assumes the main thread is free to perform tasks.
+ Can be used for systems that lock the main thread themselves. Defaults to NO.
+ */
+@property (nonatomic, assign) BOOL avoidsMainThread;
+
+/**
  The string encoding used to serialize parameters. `NSUTF8StringEncoding` by default.
  */
 @property (nonatomic, assign) NSStringEncoding stringEncoding;

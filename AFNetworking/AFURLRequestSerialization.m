@@ -160,6 +160,13 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData;
 @end
 
+@interface AFHTTPBodyPart : NSObject
+
++ (BOOL)avoidsMainThread;
++ (void)setAvoidsMainThread:(BOOL)avoidsMainThread;
+
+@end
+
 #pragma mark -
 
 @interface AFHTTPRequestSerializer ()
@@ -223,6 +230,11 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     self.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", @"DELETE", nil];
 
     return self;
+}
+
+- (void)setAvoidsMainThread:(BOOL)avoidsMainThread
+{
+    [AFHTTPBodyPart setAvoidsMainThread:avoidsMainThread];
 }
 
 #pragma mark -
@@ -508,7 +520,7 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 NSUInteger const kAFUploadStream3GSuggestedPacketSize = 1024 * 16;
 NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
-@interface AFHTTPBodyPart : NSObject
+@interface AFHTTPBodyPart ()
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 @property (nonatomic, strong) NSDictionary *headers;
 @property (nonatomic, copy) NSString *boundary;
@@ -929,6 +941,15 @@ typedef enum {
     }
 }
 
+static int avoidsMainThread = 0;
++ (BOOL)avoidsMainThread {
+    return avoidsMainThread;
+}
+
++ (void)setAvoidsMainThread:(BOOL)value {
+    avoidsMainThread = value;
+}
+
 - (NSInputStream *)inputStream {
     if (!_inputStream) {
         if ([self.body isKindOfClass:[NSData class]]) {
@@ -1052,7 +1073,7 @@ typedef enum {
 }
 
 - (BOOL)transitionToNextPhase {
-    if (![[NSThread currentThread] isMainThread]) {
+    if (![[self class] avoidsMainThread] && ![[NSThread currentThread] isMainThread]) {
         [self performSelectorOnMainThread:@selector(transitionToNextPhase) withObject:nil waitUntilDone:YES];
         return YES;
     }
