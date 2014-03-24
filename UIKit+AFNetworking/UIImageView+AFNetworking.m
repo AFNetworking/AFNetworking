@@ -150,6 +150,12 @@
                 } else if (responseObject) {
                     strongSelf.image = responseObject;
                 }
+
+                if (responseObject && [NSURLCache sharedURLCache]) {
+                    CGDataProviderRef dataProvider = CGImageGetDataProvider([(UIImage *)responseObject CGImage]);
+                    CFDataRef data = CGDataProviderCopyData(dataProvider);
+                    [[NSURLCache sharedURLCache] storeCachedResponse:[[NSCachedURLResponse alloc] initWithResponse:operation.response data:(__bridge NSData *)data] forRequest:operation.request];
+                }
             }
 
             [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
