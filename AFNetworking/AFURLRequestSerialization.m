@@ -341,8 +341,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 - (NSMutableURLRequest *)requestWithMultipartFormRequest:(NSURLRequest *)request
                              writingStreamContentsToFile:(NSURL *)fileURL
-                                       completionHandler:(void (^)(NSError *error))handler;
-
+                                       completionHandler:(void (^)(NSError *error))handler
 {
     if (!request.HTTPBodyStream) {
         return [request mutableCopy];
@@ -1093,6 +1092,7 @@ typedef enum {
     bodyPart.headers = self.headers;
     bodyPart.bodyContentLength = self.bodyContentLength;
     bodyPart.body = self.body;
+    bodyPart.boundary = self.boundary;
     
     return bodyPart;
 }
