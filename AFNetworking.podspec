@@ -15,6 +15,10 @@ Pod::Spec.new do |s|
   s.public_header_files = 'AFNetworking/*.h'
   s.source_files = 'AFNetworking/AFNetworking.h'
 
+  s.subspec 'Headers' do |ss|
+    ss.source_files = 'AFNetworking/AFNetworking.h'
+  end
+
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
     ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
@@ -35,6 +39,7 @@ Pod::Spec.new do |s|
     ss.dependency 'AFNetworking/Serialization'
     ss.dependency 'AFNetworking/Reachability'
     ss.dependency 'AFNetworking/Security'
+    ss.dependency 'AFNetworking/Headers'
 
     ss.source_files = 'AFNetworking/AFURLConnectionOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperationManager.{h,m}'
   end
