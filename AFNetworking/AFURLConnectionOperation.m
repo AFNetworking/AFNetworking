@@ -368,18 +368,18 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     [self.lock lock];
 
-	if ([self isExecuting]) {
-		[self performSelector:@selector(operationDidPause) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
+    if ([self isExecuting]) {
+        [self performSelector:@selector(operationDidPause) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
 
-		if (!self.disableNotificationsForNetworkActivity) {
-			dispatch_async(dispatch_get_main_queue(), ^{
-				NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-				[notificationCenter postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
-			});
-		}
-	}
+        if (!self.disableNotificationsForNetworkActivity) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+                [notificationCenter postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+            });
+        }
+    }
 
-	self.state = AFOperationPausedState;
+    self.state = AFOperationPausedState;
     
     [self.lock unlock];
 }
@@ -451,11 +451,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
     [self.lock unlock];
 
-	if (!self.disableNotificationsForNetworkActivity) {
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
-		});
-	}
+    if (!self.disableNotificationsForNetworkActivity) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidStartNotification object:self];
+        });
+    }
 }
 
 - (void)finish {
@@ -463,11 +463,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     self.state = AFOperationFinishedState;
     [self.lock unlock];
 
-	if (!self.disableNotificationsForNetworkActivity) {
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
-		});
-	}
+    if (!self.disableNotificationsForNetworkActivity) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingOperationDidFinishNotification object:self];
+        });
+    }
 }
 
 - (void)cancel {
