@@ -108,6 +108,11 @@
  */
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
+/**
+ Whether notifications are used for monitoring network activity.
+*/
+@property (nonatomic, assign) BOOL disableNotificationsForNetworkActivity;
+
 ///-------------------------------
 /// @name Managing URL Credentials
 ///-------------------------------
