@@ -199,6 +199,11 @@
  */
 @property (nonatomic, strong) NSDictionary *userInfo;
 
+/**
+ Whether notifications are used for monitoring network activity.
+*/
+@property (nonatomic, assign) BOOL disableNotificationsForNetworkActivity;
+
 ///------------------------------------------------------
 /// @name Initializing an AFURLConnectionOperation Object
 ///------------------------------------------------------

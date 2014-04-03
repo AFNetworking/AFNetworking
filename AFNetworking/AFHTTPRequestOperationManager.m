@@ -105,7 +105,7 @@
     operation.shouldUseCredentialStorage = self.shouldUseCredentialStorage;
     operation.credential = self.credential;
     operation.securityPolicy = self.securityPolicy;
-
+	operation.disableNotificationsForNetworkActivity = self.disableNotificationsForNetworkActivity;
     [operation setCompletionBlockWithSuccess:success failure:failure];
 
     return operation;
