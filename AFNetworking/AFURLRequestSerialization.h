@@ -145,11 +145,9 @@ forHTTPHeaderField:(NSString *)field;
                                        password:(NSString *)password;
 
 /**
- Sets the "Authorization" HTTP header set in request objects made by the HTTP client to a token-based authentication value, such as an OAuth access token. This overwrites any existing value for this header.
-
- @param token The authentication token
+ @deprecated This method has been deprecated. Use -setValue:forHTTPHeaderField: instead.
  */
-- (void)setAuthorizationHeaderFieldWithToken:(NSString *)token;
+- (void)setAuthorizationHeaderFieldWithToken:(NSString *)token DEPRECATED_ATTRIBUTE;
 
 
 /**
