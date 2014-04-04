@@ -225,7 +225,7 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 #### Query String Parameter Encoding
 
 ```objective-c
-[[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:URLString parameters:parameters];
+[[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:URLString parameters:parameters error:nil];
 ```
 
     GET http://example.com?foo=bar&baz[]=1&baz[]=2&baz[]=3
