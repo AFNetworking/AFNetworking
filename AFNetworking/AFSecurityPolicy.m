@@ -22,6 +22,8 @@
 
 #import "AFSecurityPolicy.h"
 
+#import <AssertMacros.h>
+
 #if !defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 static NSData * AFSecKeyGetData(SecKeyRef key) {
     CFDataRef data = NULL;
@@ -50,6 +52,8 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 }
 
 static id AFPublicKeyForCertificate(NSData *certificate) {
+    id allowedPublicKey = nil;
+
     SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificate);
     NSCParameterAssert(allowedCertificate);
 
@@ -57,51 +61,44 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
     CFArrayRef tempCertificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
 
     SecPolicyRef policy = SecPolicyCreateBasicX509();
-    SecTrustRef allowedTrust = NULL;
-    OSStatus status = SecTrustCreateWithCertificates(tempCertificates, policy, &allowedTrust);
-    NSCAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
-    if (status != errSecSuccess) {
-        if (allowedTrust) {
-            CFRelease(allowedTrust);
-        }
-        CFRelease(policy);
-        CFRelease(tempCertificates);
-        CFRelease(allowedCertificate);
-        return nil;
-    }
+    SecTrustRef allowedTrust;
+    __Require_noErr(SecTrustCreateWithCertificates(tempCertificates, policy, &allowedTrust), _out);
 
-    SecTrustResultType result = 0;
+    SecTrustResultType result;
+    __Require_noErr(SecTrustEvaluate(allowedTrust, &result), _out);
 
-    status = SecTrustEvaluate(allowedTrust, &result);
-    NSCAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
-    if (status != errSecSuccess) {
-        CFRelease(allowedTrust);
-        CFRelease(policy);
-        CFRelease(tempCertificates);
-        CFRelease(allowedCertificate);
-        return nil;
-    }
-
-    SecKeyRef allowedPublicKey = SecTrustCopyPublicKey(allowedTrust);
+    allowedPublicKey = (__bridge_transfer id)SecTrustCopyPublicKey(allowedTrust);
     NSCParameterAssert(allowedPublicKey);
 
-    CFRelease(allowedTrust);
-    CFRelease(policy);
-    CFRelease(tempCertificates);
-    CFRelease(allowedCertificate);
+_out:
+    if (allowedTrust) {
+        CFRelease(allowedTrust);
+    }
 
-    return (__bridge_transfer id)allowedPublicKey;
+    if (policy) {
+        CFRelease(policy);
+    }
+
+    if (tempCertificates) {
+        CFRelease(tempCertificates);
+    }
+
+    if (allowedCertificate) {
+        CFRelease(allowedCertificate);
+    }
+
+    return allowedPublicKey;
 }
 
 static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
-    SecTrustResultType result = 0;
+    BOOL isValid = NO;
+    SecTrustResultType result;
+    __Require_noErr(SecTrustEvaluate(serverTrust, &result), _out);
 
-    OSStatus status = SecTrustEvaluate(serverTrust, &result);
-    NSCAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
-    if (status != errSecSuccess) {
-        return NO;
-    }
-    return (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
+    isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
+
+_out:
+    return isValid;
 }
 
 static NSArray * AFCertificateTrustChainForServerTrust(SecTrustRef serverTrust) {
@@ -126,34 +123,24 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         SecCertificateRef someCertificates[] = {certificate};
         CFArrayRef certificates = CFArrayCreate(NULL, (const void **)someCertificates, 1, NULL);
 
-        SecTrustRef trust = NULL;
-
-        OSStatus status = SecTrustCreateWithCertificates(certificates, policy, &trust);
-        NSCAssert(status == errSecSuccess, @"SecTrustCreateWithCertificates error: %ld", (long int)status);
-        if (status != errSecSuccess) {
-            if (trust) {
-                CFRelease(trust);
-            }
-            CFRelease(certificates);
-            continue;
-        }
-
+        SecTrustRef trust;
+        __Require_noErr(SecTrustCreateWithCertificates(certificates, policy, &trust), _out);
         
         SecTrustResultType result;
-        status = SecTrustEvaluate(trust, &result);
-        NSCAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
-        if (status != errSecSuccess) {
-            if (trust) {
-                CFRelease(trust);
-            }
-            CFRelease(certificates);
-            continue;
-        }
+        __Require_noErr(SecTrustEvaluate(trust, &result), _out);
 
         [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
 
-        CFRelease(trust);
-        CFRelease(certificates);
+    _out:
+        if (trust) {
+            CFRelease(trust);
+        }
+
+        if (certificates) {
+            CFRelease(certificates);
+        }
+
+        continue;
     }
     CFRelease(policy);
 
