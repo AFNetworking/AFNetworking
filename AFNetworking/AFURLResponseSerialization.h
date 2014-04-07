@@ -117,6 +117,11 @@
 @property (nonatomic, assign) NSJSONReadingOptions readingOptions;
 
 /**
+ Whether to remove keys with `NSNull` values from response JSON. Defaults to `NO`.
+ */
+@property (nonatomic, assign) BOOL removesKeysWithNullValues;
+
+/**
  Creates and returns a JSON serializer with specified reading and writing options.
 
  @param readingOptions The specified JSON reading options.

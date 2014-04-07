@@ -871,9 +871,28 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
  didResumeAtOffset:(int64_t)fileOffset
 expectedTotalBytes:(int64_t)expectedTotalBytes
 {
+    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
+    [delegate URLSession:session downloadTask:downloadTask didResumeAtOffset:fileOffset expectedTotalBytes:expectedTotalBytes];
+
     if (self.downloadTaskDidResume) {
         self.downloadTaskDidResume(session, downloadTask, fileOffset, expectedTotalBytes);
     }
+}
+
+#pragma mark - NSObject
+
+- (BOOL)respondsToSelector:(SEL)selector {
+    if (selector == @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:)) {
+        return self.taskWillPerformHTTPRedirection != nil;
+    } else if (selector == @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)) {
+        return self.dataTaskDidReceiveResponse != nil;
+    } else if (selector == @selector(URLSession:dataTask:willCacheResponse:completionHandler:)) {
+        return self.dataTaskWillCacheResponse != nil;
+    } else if (selector == @selector(URLSessionDidFinishEventsForBackgroundURLSession:)) {
+        return self.didFinishEventsForBackgroundURLSession != nil;
+    }
+
+    return [[self class] instancesRespondToSelector:selector];
 }
 
 #pragma mark - NSKeyValueObserving

@@ -56,6 +56,22 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
     return NO;
 }
 
+static NSDictionary * AFDictionaryByRemovingKeysWithNullValues(NSDictionary *dictionary) {
+    NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:dictionary];
+    for (id <NSCopying> key in [dictionary allKeys]) {
+        id value = [dictionary objectForKey:key];
+        if (!value || [value isEqual:[NSNull null]]) {
+            [mutableDictionary removeObjectForKey:key];
+        } else {
+            if ([value isKindOfClass:[NSDictionary class]]) {
+                [mutableDictionary setObject:AFDictionaryByRemovingKeysWithNullValues(value) forKey:key];
+            }
+        }
+    }
+
+    return mutableDictionary;
+}
+
 @implementation AFHTTPResponseSerializer
 
 + (instancetype)serializer {
@@ -234,6 +250,10 @@ static BOOL AFErrorOrUnderlyingErrorHasCode(NSError *error, NSInteger code) {
                 serializationError = [NSError errorWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
             }
         }
+    }
+
+    if (self.removesKeysWithNullValues && responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+        responseObject = AFDictionaryByRemovingKeysWithNullValues(responseObject);
     }
     
     if (error) {
