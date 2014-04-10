@@ -756,12 +756,13 @@ didCompleteWithError:(NSError *)error
     if (delegate) {
         [delegate URLSession:session task:task didCompleteWithError:error];
 
-        if (self.taskDidComplete) {
-            self.taskDidComplete(session, task, error);
-        }
-
         [self removeDelegateForTask:task];
     }
+
+    if (self.taskDidComplete) {
+        self.taskDidComplete(session, task, error);
+    }
+
 }
 
 #pragma mark - NSURLSessionDataDelegate
