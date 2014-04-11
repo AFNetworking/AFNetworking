@@ -31,6 +31,10 @@ Pod::Spec.new do |s|
     ss.frameworks = 'SystemConfiguration'
   end
 
+  s.subspec 'AFHTTPImageLoader' do |ss|
+    ss.source_files = 'AFNetworking/AFHTTPImageLoader.{h,m}'
+  end
+
   s.subspec 'NSURLConnection' do |ss|
     ss.dependency 'AFNetworking/Serialization'
     ss.dependency 'AFNetworking/Reachability'
