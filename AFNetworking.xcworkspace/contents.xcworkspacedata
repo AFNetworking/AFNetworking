@@ -9,6 +9,16 @@
       </FileRef>
       <Group
          location = "container:"
+         name = "HTTPImageLoader">
+         <FileRef
+            location = "group:AFNetworking/AFHTTPImageLoader.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFHTTPImageLoader.m">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
          name = "NSURLConnection">
          <FileRef
             location = "group:AFNetworking/AFURLConnectionOperation.h">
