@@ -443,7 +443,8 @@
     [operation setOutputStream:({
         id mockStream = [OCMockObject mockForClass:[NSOutputStream class]];
         [[[mockStream stub] andReturn:streamError] streamError];
-        [[[mockStream stub] andReturnValue:@(NO)] hasSpaceAvailable];
+        BOOL no = NO;
+        [[[mockStream stub] andReturnValue:OCMOCK_VALUE(no)] hasSpaceAvailable];
 
         // "Note that currently partial mocks cannot be created for instances of toll-free bridged classes". Thus, we have to fully mock it
         [[mockStream stub] scheduleInRunLoop:OCMOCK_ANY forMode:OCMOCK_ANY];
