@@ -44,6 +44,12 @@
          <FileRef
             location = "group:AFNetworking/AFHTTPSessionManager.m">
          </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFProtocolBuffersSessionManager.h">
+         </FileRef>
+         <FileRef
+            location = "group:AFNetworking/AFProtocolBuffersSessionManager.m">
+         </FileRef>
       </Group>
       <Group
          location = "container:"
