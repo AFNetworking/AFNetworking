@@ -592,6 +592,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
         SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
         
         SecPolicyRef policy = SecPolicyCreateBasicX509();
+        SecTrustEvaluate(serverTrust, NULL);
         CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
         NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:certificateCount];
         
