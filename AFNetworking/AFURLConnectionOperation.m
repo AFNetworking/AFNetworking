@@ -656,6 +656,7 @@ didReceiveResponse:(NSURLResponse *)response
         if (self.outputStream.streamError) {
             [self.connection cancel];
             [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
+            self.outputStream=nil;
             return;
         }
     }
@@ -672,10 +673,9 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)connectionDidFinishLoading:(NSURLConnection __unused *)connection {
     self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
     
-    [self.outputStream close];
-    
     [self finish];
     
+    self.outputStream=nil;
     self.connection = nil;
 }
 
@@ -684,10 +684,9 @@ didReceiveResponse:(NSURLResponse *)response
 {
     self.error = error;
     
-    [self.outputStream close];
-    
     [self finish];
-    
+
+    self.outputStream=nil;
     self.connection = nil;
 }
 
