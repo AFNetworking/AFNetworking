@@ -46,10 +46,58 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     return nil;
 }
 
+@interface AFNetworkActivityMonitor : NSObject<AFNetworkActivityMonitor>
+
+@property (nonatomic, weak) AFNetworkActivityIndicatorManager *manager;
+
+@end
+
+@implementation AFNetworkActivityMonitor
+@synthesize manager;
+
+- (id)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingOperationDidStartNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingOperationDidFinishNotification object:nil];
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingTaskDidResumeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidSuspendNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidCompleteNotification object:nil];
+#endif
+    
+    return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)networkRequestDidStart:(NSNotification *)notification {
+    if ([AFNetworkRequestFromNotification(notification) URL]) {
+        [self.manager incrementActivityCount];
+    }
+}
+
+- (void)networkRequestDidFinish:(NSNotification *)notification {
+    if ([AFNetworkRequestFromNotification(notification) URL]) {
+        [self.manager decrementActivityCount];
+    }
+}
+
+@end
+
 @interface AFNetworkActivityIndicatorManager ()
 @property (readwrite, nonatomic, assign) NSInteger activityCount;
 @property (readwrite, nonatomic, strong) NSTimer *activityIndicatorVisibilityTimer;
 @property (readonly, nonatomic, getter = isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
+@property (readwrite, nonatomic, strong) AFNetworkActivityMonitor *monitor;
 
 - (void)updateNetworkActivityIndicatorVisibility;
 - (void)updateNetworkActivityIndicatorVisibilityDelayed;
@@ -68,31 +116,27 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     return _sharedManager;
 }
 
+- (id)initWithMonitor:(id<AFNetworkActivityMonitor>)monitor
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    _monitor = monitor;
+    _monitor.manager = self;
+    return self;
+}
+
 + (NSSet *)keyPathsForValuesAffectingIsNetworkActivityIndicatorVisible {
     return [NSSet setWithObject:@"activityCount"];
 }
 
 - (id)init {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingOperationDidStartNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingOperationDidFinishNotification object:nil];
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingTaskDidResumeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidSuspendNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidCompleteNotification object:nil];
-#endif
-
-    return self;
+    return [self initWithMonitor:[[AFNetworkActivityMonitor alloc] init]];
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-
     [_activityIndicatorVisibilityTimer invalidate];
 }
 
@@ -157,18 +201,6 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateNetworkActivityIndicatorVisibilityDelayed];
     });
-}
-
-- (void)networkRequestDidStart:(NSNotification *)notification {
-    if ([AFNetworkRequestFromNotification(notification) URL]) {
-        [self incrementActivityCount];
-    }
-}
-
-- (void)networkRequestDidFinish:(NSNotification *)notification {
-    if ([AFNetworkRequestFromNotification(notification) URL]) {
-        [self decrementActivityCount];
-    }
 }
 
 @end
