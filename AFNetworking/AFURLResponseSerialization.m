@@ -31,10 +31,7 @@
 extern NSString * const AFNetworkingErrorDomain;
 extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
-NSError * AFErrorWithUnderlyingError(NSError *error, NSError *underlyingError);
-BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger code, NSString *domain);
-
-NSError * AFErrorWithUnderlyingError(NSError *error, NSError *underlyingError) {
+static NSError * AFErrorWithUnderlyingError(NSError *error, NSError *underlyingError) {
     if (!error) {
         return underlyingError;
     }
@@ -49,7 +46,7 @@ NSError * AFErrorWithUnderlyingError(NSError *error, NSError *underlyingError) {
     return [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:mutableUserInfo];
 }
 
-BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger code, NSString *domain) {
+static BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger code, NSString *domain) {
     if ([error.domain isEqualToString:domain] && error.code == code) {
         return YES;
     } else if (error.userInfo[NSUnderlyingErrorKey]) {
