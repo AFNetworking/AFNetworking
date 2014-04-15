@@ -127,14 +127,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
-    int64_t totalUnitCount = totalBytesExpectedToSend;
-    if(totalUnitCount == NSURLSessionTransferSizeUnknown) {
-        NSString *contentLength = [task.originalRequest valueForHTTPHeaderField:@"Content-Length"];
-        if(contentLength) {
-            totalUnitCount = (int64_t) [contentLength longLongValue];
-        }
-    }
-    self.uploadProgress.totalUnitCount = totalUnitCount;
+    self.uploadProgress.totalUnitCount = totalBytesExpectedToSend;
     self.uploadProgress.completedUnitCount = totalBytesSent;
 }
 
@@ -762,11 +755,20 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
+    
+    int64_t totalUnitCount = totalBytesExpectedToSend;
+    if(totalUnitCount == NSURLSessionTransferSizeUnknown) {
+        NSString *contentLength = [task.originalRequest valueForHTTPHeaderField:@"Content-Length"];
+        if(contentLength) {
+            totalUnitCount = (int64_t) [contentLength longLongValue];
+        }
+    }
+    
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:task];
-    [delegate URLSession:session task:task didSendBodyData:bytesSent totalBytesSent:totalBytesSent totalBytesExpectedToSend:totalBytesExpectedToSend];
+    [delegate URLSession:session task:task didSendBodyData:bytesSent totalBytesSent:totalBytesSent totalBytesExpectedToSend:totalUnitCount];
 
     if (self.taskDidSendBodyData) {
-        self.taskDidSendBodyData(session, task, bytesSent, totalBytesSent, totalBytesExpectedToSend);
+        self.taskDidSendBodyData(session, task, bytesSent, totalBytesSent, totalUnitCount);
     }
 }
 
