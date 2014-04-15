@@ -1,45 +1,73 @@
+= 1.3.4 (2014-04-15)
+
+ * Fix `AFHTTPMultipartBodyStream` to randomly generate form boundary, to
+prevent attack based on a known value (Mathias Bynens, Tom Van Goethem, Mattt
+Thompson)
+
+ * Fix potential non-terminating loop in `connection:didReceiveData:` (Mattt
+Thompson)
+
+ * Fix SSL certificate validation to provide a human readable Warning when
+SSL Pinning fails (Maximillian Dornseif)
+
+ * Fix SSL certificate validation  to assert that no impossible pinning
+configuration exists (Maximillian Dornseif)
+
+ * Fix to check `CFStringTransform()` call for success before using result
+(Kevin Cassidy Jr)
+
+ * Fix to prevent unused assertion results with macros (Indragie Karunaratne)
+
+ * Fix to call call `SecTrustEvaluate` before calling
+`SecTrustGetCertificateCount` in SSL certificate validation (Josh Chung)
+
+ * Fix to add explicit cast to `NSUInteger` in format string (Alexander
+Kempgen)
+
+ * Remove unused variable `kAFStreamToStreamBufferSize` (Alexander Kempgen)
+
 = 1.3.3 (2013-09-25)
 
- * Add stream error handling to `AFMultipartBodyStream` (Nicolas Bachschmidt, 
+ * Add stream error handling to `AFMultipartBodyStream` (Nicolas Bachschmidt,
 Mattt Thompson)
 
- * Add stream error handling to `AFURLConnectionOperation 
+ * Add stream error handling to `AFURLConnectionOperation
 -connection:didReceiveData:` (Ian Duggan, Mattt Thompson)
 
- * Fix parameter query string encoding of square brackets according to RFC 
+ * Fix parameter query string encoding of square brackets according to RFC
 3986 (Kra Larivain)
 
- * Fix AFHTTPBodyPart determination of end of input stream data (Brian Croom) 
+ * Fix AFHTTPBodyPart determination of end of input stream data (Brian Croom)
 
  * Fix unit test timeouts (Carson McDonald)
 
- * Fix truncated `User-Agent` header field when app contained non-ASCII 
+ * Fix truncated `User-Agent` header field when app contained non-ASCII
 characters (Diego Torres)
 
  * Fix outdated link in documentation (Jonas Schmid)
 
- * Fix `AFHTTPRequestOperation` `HTTPError` property to be thread-safe 
-(Oliver Letterer, Mattt Thompson) 
+ * Fix `AFHTTPRequestOperation` `HTTPError` property to be thread-safe
+(Oliver Letterer, Mattt Thompson)
 
  * Fix API compatibility with iOS 5 (Blake Watters, Mattt Thompson)
 
- * Fix potential race condition in `AFURLConnectionOperation 
+ * Fix potential race condition in `AFURLConnectionOperation
 -cancelConnection` (@mm-jkolb, Mattt Thompson)
 
- * Remove implementation of `connection:needNewBodyStream:` delegate method 
-in `AFURLConnectionOperation`, which fixes stream errors on authentication 
+ * Remove implementation of `connection:needNewBodyStream:` delegate method
+in `AFURLConnectionOperation`, which fixes stream errors on authentication
 challenges (Mattt Thompson)
 
- * Fix calculation of network reachability from flags (Tracy Pesin, Mattt 
+ * Fix calculation of network reachability from flags (Tracy Pesin, Mattt
 Thompson)
 
- * Update AFHTTPClient documentation to clarify scope of `parameterEncoding` 
+ * Update AFHTTPClient documentation to clarify scope of `parameterEncoding`
 property (Thomas Catterall)
 
- * Update `UIImageView` category to allow for nested calls to 
+ * Update `UIImageView` category to allow for nested calls to
 `setImageWithURLRequest:` (Philippe Converset)
 
-  * Change `UIImageView` category to accept invalid SSL certificates when 
+  * Change `UIImageView` category to accept invalid SSL certificates when
 `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` is defined (Flávio Caetano)
 
  * Change to replace #pragma clang with cast (Cédric Luthi)
