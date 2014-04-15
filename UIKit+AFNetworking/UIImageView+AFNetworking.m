@@ -152,13 +152,18 @@
                 }
             }
 
+            strongSelf.af_imageRequestOperation = nil;
+
             [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
             if ([[urlRequest URL] isEqual:[operation.request URL]]) {
                 if (failure) {
                     failure(urlRequest, operation.response, error);
                 }
             }
+
+            strongSelf.af_imageRequestOperation = nil;
         }];
 
         [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
