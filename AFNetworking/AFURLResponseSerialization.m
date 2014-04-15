@@ -65,10 +65,25 @@ static NSDictionary * AFDictionaryByRemovingKeysWithNullValues(NSDictionary *dic
         } else {
             if ([value isKindOfClass:[NSDictionary class]]) {
                 [mutableDictionary setObject:AFDictionaryByRemovingKeysWithNullValues(value) forKey:key];
+            } else if([value isKindOfClass:[NSArray class]]) {
+                NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:value];
+                NSUInteger count = [mutableArray count];
+                for (NSUInteger index = 0; index < count ; index++) {
+                    id value = [mutableArray objectAtIndex:index];
+                    if (!value || [value isEqual:[NSNull null]]) {
+                        [mutableArray removeObjectAtIndex:index];
+                    } else {
+                        if ([value isKindOfClass:[NSDictionary class]]) {
+                            [mutableArray replaceObjectAtIndex:index withObject:AFDictionaryByRemovingKeysWithNullValues(value)];
+                        }
+                    }
+                }
+                
+                [mutableDictionary setObject:mutableArray forKey:key];
             }
         }
     }
-
+    
     return mutableDictionary;
 }
 
