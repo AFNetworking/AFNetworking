@@ -1,15 +1,80 @@
+= 2.2.2 (2014-04-15)
+
+  * Add `removesKeysWithNullValues` property to `AFJSONResponsSerializer` to
+automatically remove `NSNull` values in dictionaries serialized from JSON
+(Mattt Thompson)
+
+  * Add unit test for checking content type (Diego Torres)
+
+  * Add `boundary` property to `AFHTTPBodyPart -copyWithZone:`
+
+  * Change to accept `id` parameter type in HTTP manager convenience methods
+(Mattt Thompson)
+
+  * Change to deprecate `setAuthorizationHeaderFieldWithToken:`, in favor of
+users specifying an `Authorization` header field value themselves (Mattt
+Thompson)
+
+  * Change to use `long long` type to prevent a difference in stream size
+caps on 32-bit and 64-bit architectures (Yung-Luen Lan, Cédric Luthi)
+
+  * Fix calculation of Content-Length in `taskDidSendBodyData` (Christos
+Vasilakis)
+
+  * Fix for comparison of image view request operations (Mattt Thompson)
+
+  * Fix for SSL certificate validation to check status codes at runtime (Dave
+Anderson)
+
+  * Fix to add missing call to delegate in
+`URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:`
+
+  * Fix to call `taskDidComplete` if delegate is missing (Jeff Ward)
+
+  * Fix to implement `respondsToSelector:` for `NSURLSession` delegate
+methods to conditionally respond to conditionally respond to optional
+selectors if and only if a custom block has been set (Mattt Thompson)
+
+  * Fix to prevent illegal state values from being assigned for
+`AFURLConnectionOperation` (Kyle Fuller)
+
+  * Fix to re-establish `AFNetworkingURLSessionTaskDelegate` objects after
+restoring from a background configuration (Jeff Ward)
+
+  * Fix to reduce memory footprint by `nil`-ing out request operation
+`outputStream` after closing, as well as image view request operation after
+setting image (Teun van Run, Mattt Thompson)
+
+  * Remove unnecessary call in class constructor (Bernhard Loibl)
+
+  * Remove unnecessary check for `respondsToSelector:` for `UIScreen scale`
+in User-Agent string (Samuel Goodwin)
+
+  * Update App.net certificate and API base URL (Cédric Luthi)
+
+  * Update examples in README (@petard, @orta, Mattt Thompson)
+
+  * Update Travis CI icon to use SVG format (Maximilian Tagher)
+
 = 2.2.1 (2014-03-14)
 
   * Fix `-Wsign-conversion` warning in AFURLConnectionOperation (Jesse Collis)
+
   * Fix `-Wshorten-64-to-32` warning (Jesse Collis)
+
   * Remove unnecessary #imports in `UIImageView` & `UIWebView` categories
 (Jesse Collis)
+
   * Fix call to `CFStringTransform()` by checking return value before setting
 as `User-Agent` (Kevin Cassidy Jr)
+
   * Update `AFJSONResponseSerializer` adding `@autorelease` to relieve memory
 pressure (Mattt Thompson, Michal Pietras)
+
   * Update `AFJSONRequestSerializer` to accept `id` (Daren Desjardins)
+
   * Fix small documentation bug (@jkoepcke)
+
   * Fix behavior of SSL pinning. In case of `validatesDomainName == YES`, it
 now explicitly uses `SecPolicyCreateSSL`, which also validates the domain
 name. Otherwise, `SecPolicyCreateBasicX509` is used.
