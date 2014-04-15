@@ -325,6 +325,26 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
     self.lock = [[NSLock alloc] init];
     self.lock.name = AFURLSessionManagerLockName;
+    
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        for(NSURLSessionDataTask* dataTask in dataTasks) {
+            AFURLSessionManagerTaskDelegate *delegate = [AFURLSessionManagerTaskDelegate delegateForManager:self completionHandler:nil];
+            [self setDelegate:delegate forTask:dataTask];
+        }
+        
+        for(NSURLSessionUploadTask* uploadTask in uploadTasks) {
+            [self uploadTaskWithTask:uploadTask progress:nil completionHandler:nil];
+        }
+        
+        for(NSURLSessionDownloadTask* downloadTask in downloadTasks) {
+            [self downloadTaskWithTask:downloadTask progress:nil destination:nil completionHandler:nil];
+        }
+        
+        dispatch_semaphore_signal(semaphore);
+    }];
+    
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 
     return self;
 }
@@ -555,6 +575,22 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     return downloadTask;
 }
 
+- (NSProgress*)downloadProgressForTask:(NSURLSessionTask *)task
+{
+    NSParameterAssert(task);
+    
+    AFURLSessionManagerTaskDelegate* delegate = [self delegateForTask:task];
+    return delegate.downloadProgress;
+}
+
+- (NSProgress*)uploadProgressForTask:(NSURLSessionTask *)task
+{
+    NSParameterAssert(task);
+    
+    AFURLSessionManagerTaskDelegate* delegate = [self delegateForTask:task];
+    return delegate.uploadProgress;
+}
+
 #pragma mark -
 
 - (void)setSessionDidBecomeInvalidBlock:(void (^)(NSURLSession *session, NSError *error))block {
@@ -756,12 +792,13 @@ didCompleteWithError:(NSError *)error
     if (delegate) {
         [delegate URLSession:session task:task didCompleteWithError:error];
 
-        if (self.taskDidComplete) {
-            self.taskDidComplete(session, task, error);
-        }
-
         [self removeDelegateForTask:task];
     }
+
+    if (self.taskDidComplete) {
+        self.taskDidComplete(session, task, error);
+    }
+
 }
 
 #pragma mark - NSURLSessionDataDelegate
