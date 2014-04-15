@@ -34,10 +34,9 @@ static NSData * AFSecKeyGetData(SecKeyRef key) {
         if (data) {
             CFRelease(data);
         }
+
         return nil;
     }
-
-    NSCParameterAssert(data);
 
     return (__bridge_transfer NSData *)data;
 }
@@ -55,8 +54,6 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
     id allowedPublicKey = nil;
 
     SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificate);
-    NSCParameterAssert(allowedCertificate);
-
     SecCertificateRef allowedCertificates[] = {allowedCertificate};
     CFArrayRef tempCertificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
 
@@ -68,7 +65,6 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
     __Require_noErr(SecTrustEvaluate(allowedTrust, &result), _out);
 
     allowedPublicKey = (__bridge_transfer id)SecTrustCopyPublicKey(allowedTrust);
-    NSCParameterAssert(allowedPublicKey);
 
 _out:
     if (allowedTrust) {
