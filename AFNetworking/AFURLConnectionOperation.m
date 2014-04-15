@@ -108,13 +108,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 static NSData *AFSecKeyGetData(SecKeyRef key) {
     CFDataRef data = NULL;
     
-#if defined(NS_BLOCK_ASSERTIONS)
-    SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
-#else
     OSStatus status = SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
     NSCAssert(status == errSecSuccess, @"SecItemExport error: %ld", (long int)status);
-#endif
-
     NSCParameterAssert(data);
     
     return (__bridge_transfer NSData *)data;
@@ -129,7 +124,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 #endif
 }
 
-@interface AFURLConnectionOperation ()
+@interface AFURLConnectionOperation () <NSStreamDelegate>
 @property (readwrite, nonatomic, assign) AFOperationState state;
 @property (readwrite, nonatomic, assign, getter = isCancelled) BOOL cancelled;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
@@ -147,6 +142,10 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationAuthenticationChallengeBlock authenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationCacheResponseBlock cacheResponse;
 @property (readwrite, nonatomic, copy) AFURLConnectionOperationRedirectResponseBlock redirectResponse;
+
+@property (strong) NSMutableData *buffer;
+@property BOOL streamFinished;
+@property BOOL callToSaveData;
 
 - (void)operationDidStart;
 - (void)finish;
@@ -183,7 +182,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 + (void)networkRequestThreadEntryPoint:(id __unused)object {
     @autoreleasepool {
         [[NSThread currentThread] setName:@"AFNetworking"];
-
+        
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         [runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
         [runLoop run];
@@ -251,7 +250,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
                 }
                 
                 CFRelease(allowedTrust);
-            }          
+            }
             
             CFRelease(policy);
             CFRelease(certificates);
@@ -266,7 +265,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
     NSParameterAssert(urlRequest);
-
+    
     self = [super init];
     if (!self) {
 		return nil;
@@ -275,19 +274,21 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
     self.lock = [[NSRecursiveLock alloc] init];
     self.lock.name = kAFNetworkingLockName;
     
+    _buffer = [NSMutableData data];
+    
     self.runLoopModes = [NSSet setWithObject:NSRunLoopCommonModes];
     
     self.request = urlRequest;
     
     self.shouldUseCredentialStorage = YES;
-
-    // #ifdef included for backwards-compatibility 
+    
+    // #ifdef included for backwards-compatibility
 #ifdef _AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_
     self.allowsInvalidSSLCertificate = YES;
 #endif
-
+    
     self.state = AFOperationReadyState;
-
+    
     return self;
 }
 
@@ -341,7 +342,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
     if (!_outputStream) {
         self.outputStream = [NSOutputStream outputStreamToMemory];
     }
-
+    
     return _outputStream;
 }
 
@@ -353,6 +354,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
             [_outputStream close];
         }
         _outputStream = outputStream;
+        _outputStream.delegate = self;
         [self didChangeValueForKey:@"outputStream"];
     }
     [self.lock unlock];
@@ -538,7 +540,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
             userInfo = [NSDictionary dictionaryWithObject:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
         }
         self.error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
-
+        
         [self finish];
     }
 }
@@ -615,10 +617,10 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     if (status == errSecSuccess) {
                         [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
                     }
-
+                    
                     CFRelease(trust);
                 }
-              
+                
                 CFRelease(certificates);
             }
         }
@@ -628,8 +630,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
         switch (self.SSLPinningMode) {
             case AFSSLPinningModePublicKey: {
                 NSArray *pinnedPublicKeys = [self.class pinnedPublicKeys];
-                NSAssert([pinnedPublicKeys count] > 0, @"AFSSLPinningModePublicKey needs at least one key file in the application bundle");
-
+                
                 for (id publicKey in trustChain) {
                     for (id pinnedPublicKey in pinnedPublicKeys) {
                         if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)publicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
@@ -640,12 +641,10 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     }
                 }
                 
-                NSLog(@"Error: Unknown Public Key during Pinning operation");
                 [[challenge sender] cancelAuthenticationChallenge:challenge];
                 break;
             }
             case AFSSLPinningModeCertificate: {
-                NSAssert([[self.class pinnedCertificates] count] > 0, @"AFSSLPinningModeCertificate needs at least one certificate file in the application bundle");
                 for (id serverCertificateData in trustChain) {
                     if ([[self.class pinnedCertificates] containsObject:serverCertificateData]) {
                         NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
@@ -654,7 +653,6 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     }
                 }
                 
-                NSLog(@"Error: Unknown Certificate during Pinning operation");
                 [[challenge sender] cancelAuthenticationChallenge:challenge];
                 break;
             }
@@ -728,45 +726,17 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)connection:(NSURLConnection __unused *)connection
     didReceiveData:(NSData *)data
 {
+    [_buffer appendData:data];
     NSUInteger length = [data length];
-    while (YES) {
-        NSUInteger totalNumberOfBytesWritten = 0;
-        if ([self.outputStream hasSpaceAvailable]) {
-            const uint8_t *dataBuffer = (uint8_t *)[data bytes];
-
-            NSInteger numberOfBytesWritten = 0;
-            while (totalNumberOfBytesWritten < length) {
-                numberOfBytesWritten = [self.outputStream write:&dataBuffer[0] maxLength:length];
-                if (numberOfBytesWritten == -1) {
-                    [self.connection cancel];
-                    [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
-                    return;
-                } else {
-                    totalNumberOfBytesWritten += numberOfBytesWritten;
-                }
-            }
-
-            break;
-        }
+    if (_callToSaveData) {
+        _callToSaveData = NO;
+        [self stream:self.outputStream handleEvent:NSStreamEventHasSpaceAvailable];
     }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.totalBytesRead += length;
-        
-        if (self.downloadProgress) {
-            self.downloadProgress(length, self.totalBytesRead, self.response.expectedContentLength);
-        }
-    });
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection __unused *)connection {
-    self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
     
-    [self.outputStream close];
-    
-    [self finish];
-    
-    self.connection = nil;
+    self.streamFinished = YES;
 }
 
 - (void)connection:(NSURLConnection __unused *)connection
@@ -795,6 +765,63 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
+#pragma mark - NSStreamDelegate
+
+- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode
+{
+    switch(eventCode) {
+        case NSStreamEventHasSpaceAvailable:
+        {
+            uint8_t *readBytes = (uint8_t *)[_buffer mutableBytes];
+            int data_len = [_buffer length];
+            if (data_len > 0) {
+                long len = ((data_len >= 1024) ?
+                            1024 : data_len);
+                uint8_t buf[len];
+                (void)memcpy(buf, readBytes, len);
+                len = [_outputStream write:(const uint8_t *)buf maxLength:len];
+                if (len == -1) {
+                    self.error = [self.outputStream streamError];
+                }
+                else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.totalBytesRead += len;
+                        
+                        if (self.downloadProgress) {
+                            self.downloadProgress(len, self.totalBytesRead, self.response.expectedContentLength);
+                        }
+                    });
+                    [_buffer replaceBytesInRange:NSMakeRange(0, len) withBytes:NULL length:0];
+                }
+            }
+            else {
+                if (_streamFinished) {
+                    self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+                    [self finishOperation];
+                }
+                else {
+                    _callToSaveData = YES;
+                }
+            }
+            break;
+        }
+        case NSStreamEventErrorOccurred:
+        {
+            self.error = [self.outputStream streamError];
+            [self.connection cancel];
+            [self finishOperation];
+        }
+            break;
+    }
+}
+
+- (void)finishOperation {
+    [self.outputStream close];
+    [self finish];
+    self.connection = nil;
+}
+
+
 #pragma mark - NSCoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -812,7 +839,7 @@ didReceiveResponse:(NSURLResponse *)response
     self.responseData = [aDecoder decodeObjectForKey:@"responseData"];
     self.totalBytesRead = [[aDecoder decodeObjectForKey:@"totalBytesRead"] longLongValue];
     self.allowsInvalidSSLCertificate = [[aDecoder decodeObjectForKey:@"allowsInvalidSSLCertificate"] boolValue];
-
+    
     return self;
 }
 
