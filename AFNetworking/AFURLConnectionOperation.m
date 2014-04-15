@@ -671,24 +671,26 @@ didReceiveResponse:(NSURLResponse *)response
 
 - (void)connectionDidFinishLoading:(NSURLConnection __unused *)connection {
     self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-    
+
     [self.outputStream close];
-    
-    [self finish];
-    
+    self.outputStream = nil;
+
     self.connection = nil;
+
+    [self finish];
 }
 
 - (void)connection:(NSURLConnection __unused *)connection
   didFailWithError:(NSError *)error
 {
     self.error = error;
-    
+
     [self.outputStream close];
-    
-    [self finish];
-    
+    self.outputStream = nil;
+
     self.connection = nil;
+
+    [self finish];
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection
