@@ -310,7 +310,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     self.lock = [[NSLock alloc] init];
     self.lock.name = AFURLSessionManagerLockName;
     
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         for (NSURLSessionDataTask *task in dataTasks) {
             [self addDelegateForDataTask:task completionHandler:nil];
@@ -323,11 +322,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
         for (NSURLSessionDownloadTask *downloadTask in downloadTasks) {
             [self addDelegateForDownloadTask:downloadTask progress:nil destination:nil completionHandler:nil];
         }
-        
-        dispatch_semaphore_signal(semaphore);
     }];
-
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 
     return self;
 }
