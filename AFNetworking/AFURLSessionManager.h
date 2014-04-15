@@ -261,24 +261,27 @@
                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
-///-----------------------------
-/// @name Progress for Tasks
-///-----------------------------
+///---------------------------------
+/// @name Getting Progress for Tasks
+///---------------------------------
 
 /**
- Retrieves the download `NSProgress` instance for the specified task
- 
- @param task The task to retrieve download progress for
+ Returns the upload progress of the specified task.
+
+ @param uploadTask The session upload task. Must not be `nil`.
+
+ @return An `NSProgress` object reporting the upload progress of a task, or `nil` if the progress is unavailable.
  */
-- (NSProgress*)downloadProgressForTask:(NSURLSessionTask*)task;
+- (NSProgress *)uploadProgressForTask:(NSURLSessionUploadTask *)uploadTask;
 
 /**
- Retrieves the upload `NSProgress` instance for the specified task
+ Returns the download progress of the specified task.
  
- @param task The task to retrieve download progress for
+ @param downloadTask The session download task. Must not be `nil`.
+ 
+ @return An `NSProgress` object reporting the download progress of a task, or `nil` if the progress is unavailable.
  */
-- (NSProgress*)uploadProgressForTask:(NSURLSessionTask*)task;
-
+- (NSProgress *)downloadProgressForTask:(NSURLSessionDownloadTask *)downloadTask;
 
 ///-----------------------------------------
 /// @name Setting Session Delegate Callbacks
