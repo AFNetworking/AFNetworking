@@ -108,8 +108,13 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 static NSData *AFSecKeyGetData(SecKeyRef key) {
     CFDataRef data = NULL;
     
+#if defined(NS_BLOCK_ASSERTIONS)
+    SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
+#else
     OSStatus status = SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
     NSCAssert(status == errSecSuccess, @"SecItemExport error: %ld", (long int)status);
+#endif
+
     NSCParameterAssert(data);
     
     return (__bridge_transfer NSData *)data;
@@ -182,7 +187,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 + (void)networkRequestThreadEntryPoint:(id __unused)object {
     @autoreleasepool {
         [[NSThread currentThread] setName:@"AFNetworking"];
-        
+
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         [runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
         [runLoop run];
@@ -250,7 +255,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
                 }
                 
                 CFRelease(allowedTrust);
-            }
+            }          
             
             CFRelease(policy);
             CFRelease(certificates);
@@ -265,7 +270,7 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 
 - (id)initWithRequest:(NSURLRequest *)urlRequest {
     NSParameterAssert(urlRequest);
-    
+
     self = [super init];
     if (!self) {
 		return nil;
@@ -630,7 +635,8 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
         switch (self.SSLPinningMode) {
             case AFSSLPinningModePublicKey: {
                 NSArray *pinnedPublicKeys = [self.class pinnedPublicKeys];
-                
+                NSAssert([pinnedPublicKeys count] > 0, @"AFSSLPinningModePublicKey needs at least one key file in the application bundle");
+
                 for (id publicKey in trustChain) {
                     for (id pinnedPublicKey in pinnedPublicKeys) {
                         if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)publicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
@@ -641,10 +647,12 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     }
                 }
                 
+                NSLog(@"Error: Unknown Public Key during Pinning operation");
                 [[challenge sender] cancelAuthenticationChallenge:challenge];
                 break;
             }
             case AFSSLPinningModeCertificate: {
+                NSAssert([[self.class pinnedCertificates] count] > 0, @"AFSSLPinningModeCertificate needs at least one certificate file in the application bundle");
                 for (id serverCertificateData in trustChain) {
                     if ([[self.class pinnedCertificates] containsObject:serverCertificateData]) {
                         NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
@@ -653,6 +661,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                     }
                 }
                 
+                NSLog(@"Error: Unknown Certificate during Pinning operation");
                 [[challenge sender] cancelAuthenticationChallenge:challenge];
                 break;
             }
