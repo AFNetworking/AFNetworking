@@ -261,6 +261,25 @@
                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
+///-----------------------------
+/// @name Progress for Tasks
+///-----------------------------
+
+/**
+ Retrieves the download `NSProgress` instance for the specified task
+ 
+ @param task The task to retrieve download progress for
+ */
+- (NSProgress*)downloadProgressForTask:(NSURLSessionTask*)task;
+
+/**
+ Retrieves the upload `NSProgress` instance for the specified task
+ 
+ @param task The task to retrieve download progress for
+ */
+- (NSProgress*)uploadProgressForTask:(NSURLSessionTask*)task;
+
+
 ///-----------------------------------------
 /// @name Setting Session Delegate Callbacks
 ///-----------------------------------------
