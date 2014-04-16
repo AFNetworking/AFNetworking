@@ -320,10 +320,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     return self;
 }
 
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, self.session, self.operationQueue];
-}
-
 #pragma mark -
 
 - (AFURLSessionManagerTaskDelegate *)delegateForTask:(NSURLSessionTask *)task {
@@ -640,6 +636,58 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     self.downloadTaskDidResume = block;
 }
 
+#pragma mark - NSObject
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, self.session, self.operationQueue];
+}
+
+- (BOOL)respondsToSelector:(SEL)selector {
+    if (selector == @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:)) {
+        return self.taskWillPerformHTTPRedirection != nil;
+    } else if (selector == @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)) {
+        return self.dataTaskDidReceiveResponse != nil;
+    } else if (selector == @selector(URLSession:dataTask:willCacheResponse:completionHandler:)) {
+        return self.dataTaskWillCacheResponse != nil;
+    } else if (selector == @selector(URLSessionDidFinishEventsForBackgroundURLSession:)) {
+        return self.didFinishEventsForBackgroundURLSession != nil;
+    }
+
+    return [[self class] instancesRespondToSelector:selector];
+}
+
+#pragma mark - NSKeyValueObserving
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if (context == AFTaskStateChangedContext && [keyPath isEqualToString:@"state"]) {
+        NSString *notificationName = nil;
+        switch ([(NSURLSessionTask *)object state]) {
+            case NSURLSessionTaskStateRunning:
+                notificationName = AFNetworkingTaskDidResumeNotification;
+                break;
+            case NSURLSessionTaskStateSuspended:
+                notificationName = AFNetworkingTaskDidSuspendNotification;
+                break;
+            case NSURLSessionTaskStateCompleted:
+                // AFNetworkingTaskDidFinishNotification posted by task completion handlers
+            default:
+                break;
+        }
+
+        if (notificationName) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:object];
+            });
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 #pragma mark - NSURLSessionDelegate
 
 - (void)URLSession:(NSURLSession *)session
@@ -903,54 +951,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 
     if (self.downloadTaskDidResume) {
         self.downloadTaskDidResume(session, downloadTask, fileOffset, expectedTotalBytes);
-    }
-}
-
-#pragma mark - NSObject
-
-- (BOOL)respondsToSelector:(SEL)selector {
-    if (selector == @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:)) {
-        return self.taskWillPerformHTTPRedirection != nil;
-    } else if (selector == @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)) {
-        return self.dataTaskDidReceiveResponse != nil;
-    } else if (selector == @selector(URLSession:dataTask:willCacheResponse:completionHandler:)) {
-        return self.dataTaskWillCacheResponse != nil;
-    } else if (selector == @selector(URLSessionDidFinishEventsForBackgroundURLSession:)) {
-        return self.didFinishEventsForBackgroundURLSession != nil;
-    }
-
-    return [[self class] instancesRespondToSelector:selector];
-}
-
-#pragma mark - NSKeyValueObserving
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
-{
-    if (context == AFTaskStateChangedContext && [keyPath isEqualToString:@"state"]) {
-        NSString *notificationName = nil;
-        switch ([(NSURLSessionTask *)object state]) {
-            case NSURLSessionTaskStateRunning:
-                notificationName = AFNetworkingTaskDidResumeNotification;
-                break;
-            case NSURLSessionTaskStateSuspended:
-                notificationName = AFNetworkingTaskDidSuspendNotification;
-                break;
-            case NSURLSessionTaskStateCompleted:
-                // AFNetworkingTaskDidFinishNotification posted by task completion handlers
-            default:
-                break;
-        }
-
-        if (notificationName) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:object];
-            });
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 

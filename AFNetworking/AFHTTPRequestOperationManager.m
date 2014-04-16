@@ -73,10 +73,6 @@
     return self;
 }
 
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.operationQueue];
-}
-
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
@@ -200,6 +196,12 @@
     [self.operationQueue addOperation:operation];
 
     return operation;
+}
+
+#pragma mark - NSObject
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.operationQueue];
 }
 
 #pragma mark - NSCoding
