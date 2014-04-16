@@ -223,36 +223,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 #endif
 }
 
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, state: %@, cancelled: %@ request: %@, response: %@>", NSStringFromClass([self class]), self, AFKeyPathFromOperationState(self.state), ([self isCancelled] ? @"YES" : @"NO"), self.request, self.response];
-}
-
-- (void)setCompletionBlock:(void (^)(void))block {
-    [self.lock lock];
-    if (!block) {
-        [super setCompletionBlock:nil];
-    } else {
-        __weak __typeof(self)weakSelf = self;
-        [super setCompletionBlock:^ {
-            __strong __typeof(weakSelf)strongSelf = weakSelf;
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
-            dispatch_group_t group = strongSelf.completionGroup ?: url_request_operation_completion_group();
-            dispatch_queue_t queue = strongSelf.completionQueue ?: dispatch_get_main_queue();
-#pragma clang diagnostic pop
-
-            dispatch_group_async(group, queue, ^{
-                block();
-            });
-
-            dispatch_group_notify(group, url_request_operation_completion_queue(), ^{
-                [strongSelf setCompletionBlock:nil];
-            });
-        }];
-    }
-    [self.lock unlock];
-}
+#pragma mark -
 
 - (NSInputStream *)inputStream {
     return self.request.HTTPBodyStream;
@@ -278,6 +249,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
         if (_outputStream) {
             [_outputStream close];
         }
+
         _outputStream = outputStream;
     }
     [self.lock unlock];
@@ -417,6 +389,33 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 
 #pragma mark - NSOperation
+
+- (void)setCompletionBlock:(void (^)(void))block {
+    [self.lock lock];
+    if (!block) {
+        [super setCompletionBlock:nil];
+    } else {
+        __weak __typeof(self)weakSelf = self;
+        [super setCompletionBlock:^ {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+            dispatch_group_t group = strongSelf.completionGroup ?: url_request_operation_completion_group();
+            dispatch_queue_t queue = strongSelf.completionQueue ?: dispatch_get_main_queue();
+#pragma clang diagnostic pop
+
+            dispatch_group_async(group, queue, ^{
+                block();
+            });
+
+            dispatch_group_notify(group, url_request_operation_completion_queue(), ^{
+                [strongSelf setCompletionBlock:nil];
+            });
+        }];
+    }
+    [self.lock unlock];
+}
 
 - (BOOL)isReady {
     return self.state == AFOperationReadyState && [super isReady];
@@ -564,6 +563,12 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     }
 
     return [operations arrayByAddingObject:batchedOperation];
+}
+
+#pragma mark - NSObject
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, state: %@, cancelled: %@ request: %@, response: %@>", NSStringFromClass([self class]), self, AFKeyPathFromOperationState(self.state), ([self isCancelled] ? @"YES" : @"NO"), self.request, self.response];
 }
 
 #pragma mark - NSURLConnectionDelegate
