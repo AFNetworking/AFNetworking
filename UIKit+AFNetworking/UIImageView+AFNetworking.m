@@ -150,9 +150,9 @@
                 } else if (responseObject) {
                     strongSelf.image = responseObject;
                 }
-            }
 
-            strongSelf.af_imageRequestOperation = nil;
+                strongSelf.af_imageRequestOperation = nil;
+            }
 
             [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -161,9 +161,9 @@
                 if (failure) {
                     failure(urlRequest, operation.response, error);
                 }
-            }
 
-            strongSelf.af_imageRequestOperation = nil;
+                strongSelf.af_imageRequestOperation = nil;
+            }
         }];
 
         [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
