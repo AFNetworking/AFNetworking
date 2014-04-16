@@ -225,6 +225,34 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 #pragma mark -
 
+- (NSString *)responseString {
+    [self.lock lock];
+    if (!_responseString && self.response && self.responseData) {
+        self.responseString = [[NSString alloc] initWithData:self.responseData encoding:self.responseStringEncoding];
+    }
+    [self.lock unlock];
+
+    return _responseString;
+}
+
+- (NSStringEncoding)responseStringEncoding {
+    [self.lock lock];
+    if (!_responseStringEncoding && self.response) {
+        NSStringEncoding stringEncoding = NSUTF8StringEncoding;
+        if (self.response.textEncodingName) {
+            CFStringEncoding IANAEncoding = CFStringConvertIANACharSetNameToEncoding((__bridge CFStringRef)self.response.textEncodingName);
+            if (IANAEncoding != kCFStringEncodingInvalidId) {
+                stringEncoding = CFStringConvertEncodingToNSStringEncoding(IANAEncoding);
+            }
+        }
+
+        self.responseStringEncoding = stringEncoding;
+    }
+    [self.lock unlock];
+
+    return _responseStringEncoding;
+}
+
 - (NSInputStream *)inputStream {
     return self.request.HTTPBodyStream;
 }
@@ -280,25 +308,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 }
 #endif
 
-- (void)setUploadProgressBlock:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block {
-    self.uploadProgress = block;
-}
-
-- (void)setDownloadProgressBlock:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block {
-    self.downloadProgress = block;
-}
-
-- (void)setWillSendRequestForAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block {
-    self.authenticationChallenge = block;
-}
-
-- (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block {
-    self.cacheResponse = block;
-}
-
-- (void)setRedirectResponseBlock:(NSURLRequest * (^)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse))block {
-    self.redirectResponse = block;
-}
+#pragma mark -
 
 - (void)setState:(AFOperationState)state {
     if (!AFStateTransitionIsValid(self.state, state, [self isCancelled])) {
@@ -315,34 +325,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     [self didChangeValueForKey:oldStateKey];
     [self didChangeValueForKey:newStateKey];
     [self.lock unlock];
-}
-
-- (NSString *)responseString {
-    [self.lock lock];
-    if (!_responseString && self.response && self.responseData) {
-        self.responseString = [[NSString alloc] initWithData:self.responseData encoding:self.responseStringEncoding];
-    }
-    [self.lock unlock];
-    
-    return _responseString;
-}
-
-- (NSStringEncoding)responseStringEncoding {
-    [self.lock lock];
-    if (!_responseStringEncoding && self.response) {
-        NSStringEncoding stringEncoding = NSUTF8StringEncoding;
-        if (self.response.textEncodingName) {
-            CFStringEncoding IANAEncoding = CFStringConvertIANACharSetNameToEncoding((__bridge CFStringRef)self.response.textEncodingName);
-            if (IANAEncoding != kCFStringEncodingInvalidId) {
-                stringEncoding = CFStringConvertEncodingToNSStringEncoding(IANAEncoding);
-            }
-        }
-        
-        self.responseStringEncoding = stringEncoding;
-    }
-    [self.lock unlock];
-    
-    return _responseStringEncoding;
 }
 
 - (void)pause {
@@ -386,6 +368,28 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     
     [self start];
     [self.lock unlock];
+}
+
+#pragma mark -
+
+- (void)setUploadProgressBlock:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block {
+    self.uploadProgress = block;
+}
+
+- (void)setDownloadProgressBlock:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block {
+    self.downloadProgress = block;
+}
+
+- (void)setWillSendRequestForAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block {
+    self.authenticationChallenge = block;
+}
+
+- (void)setCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse))block {
+    self.cacheResponse = block;
+}
+
+- (void)setRedirectResponseBlock:(NSURLRequest * (^)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse))block {
+    self.redirectResponse = block;
 }
 
 #pragma mark - NSOperation
