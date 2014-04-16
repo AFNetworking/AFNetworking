@@ -366,7 +366,7 @@ static NSDictionary * AFDictionaryByRemovingKeysWithNullValues(NSDictionary *dic
                           error:(NSError *__autoreleasing *)error
 {
     if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
-        if (AFErrorOrUnderlyingErrorHasCode(*error, NSURLErrorCannotDecodeContentData)) {
+        if (AFErrorOrUnderlyingErrorHasCodeInDomain(*error, NSURLErrorCannotDecodeContentData, NSURLErrorDomain)) {
             return nil;
         }
     }
