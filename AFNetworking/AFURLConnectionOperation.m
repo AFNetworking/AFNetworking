@@ -225,6 +225,16 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 #pragma mark -
 
+- (void)setResponseData:(NSData *)responseData {
+    [self.lock lock];
+    if (!responseData) {
+        _responseData = nil;
+    } else {
+        _responseData = [NSData dataWithBytes:responseData.bytes length:responseData.length];
+    }
+    [self.lock unlock];
+}
+
 - (NSString *)responseString {
     [self.lock lock];
     if (!_responseString && self.response && self.responseData) {
