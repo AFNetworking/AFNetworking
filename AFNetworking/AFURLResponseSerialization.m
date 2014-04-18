@@ -56,20 +56,27 @@ static BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger co
     return NO;
 }
 
-static NSDictionary * AFDictionaryByRemovingKeysWithNullValues(NSDictionary *dictionary) {
-    NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:dictionary];
-    for (id <NSCopying> key in [dictionary allKeys]) {
-        id value = [dictionary objectForKey:key];
-        if (!value || [value isEqual:[NSNull null]]) {
-            [mutableDictionary removeObjectForKey:key];
-        } else {
-            if ([value isKindOfClass:[NSDictionary class]]) {
-                [mutableDictionary setObject:AFDictionaryByRemovingKeysWithNullValues(value) forKey:key];
+static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject) {
+    if ([JSONObject isKindOfClass:[NSArray class]]) {
+        NSMutableArray *mutableArray = [NSMutableArray array];
+        for (id childObject in JSONObject) {
+            [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(childObject)];
+        }
+        return [NSArray arrayWithArray:mutableArray];
+    } else if ([JSONObject isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *JSONDict = (NSDictionary *)JSONObject;
+        NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:JSONDict];
+        for (id <NSCopying> key in [JSONDict allKeys]) {
+            id value = [JSONDict objectForKey:key];
+            if (!value || [value isEqual:[NSNull null]]) {
+                [mutableDictionary removeObjectForKey:key];
+            } else if ([value isKindOfClass:[NSArray class]] || [value isKindOfClass:[NSDictionary class]]) {
+                [mutableDictionary setObject:AFJSONObjectByRemovingKeysWithNullValues(value) forKey:key];
             }
         }
+        return [NSDictionary dictionaryWithDictionary:mutableDictionary];
     }
-
-    return mutableDictionary;
+    return JSONObject;
 }
 
 @implementation AFHTTPResponseSerializer
@@ -252,8 +259,8 @@ static NSDictionary * AFDictionaryByRemovingKeysWithNullValues(NSDictionary *dic
         }
     }
 
-    if (self.removesKeysWithNullValues && responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
-        responseObject = AFDictionaryByRemovingKeysWithNullValues(responseObject);
+    if (self.removesKeysWithNullValues && responseObject) {
+        responseObject = AFJSONObjectByRemovingKeysWithNullValues(responseObject);
     }
     
     if (error) {
