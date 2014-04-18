@@ -58,24 +58,26 @@ static BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger co
 
 static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject) {
     if ([JSONObject isKindOfClass:[NSArray class]]) {
-        NSMutableArray *mutableArray = [NSMutableArray array];
-        for (id childObject in JSONObject) {
+        NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:[(NSArray *)JSONObject count]];
+        for (id childObject in (NSArray *)JSONObject) {
             [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(childObject)];
         }
+
         return [NSArray arrayWithArray:mutableArray];
     } else if ([JSONObject isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *JSONDict = (NSDictionary *)JSONObject;
-        NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:JSONDict];
-        for (id <NSCopying> key in [JSONDict allKeys]) {
-            id value = [JSONDict objectForKey:key];
+        NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:JSONObject];
+        for (id <NSCopying> key in [(NSDictionary *)JSONObject allKeys]) {
+            id value = [(NSDictionary *)JSONObject objectForKey:key];
             if (!value || [value isEqual:[NSNull null]]) {
                 [mutableDictionary removeObjectForKey:key];
             } else if ([value isKindOfClass:[NSArray class]] || [value isKindOfClass:[NSDictionary class]]) {
                 [mutableDictionary setObject:AFJSONObjectByRemovingKeysWithNullValues(value) forKey:key];
             }
         }
+
         return [NSDictionary dictionaryWithDictionary:mutableDictionary];
     }
+
     return JSONObject;
 }
 
