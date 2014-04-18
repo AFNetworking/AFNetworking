@@ -418,27 +418,27 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
         }
     }];
 
-    if (!parameters) {
-        return mutableRequest;
-    }
-
-    NSString *query = nil;
-    if (self.queryStringSerialization) {
-        query = self.queryStringSerialization(request, parameters, error);
-    } else {
-        switch (self.queryStringSerializationStyle) {
-            case AFHTTPRequestQueryStringDefaultStyle:
-                query = AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding);
-                break;
+    if (parameters) {
+        NSString *query = nil;
+        if (self.queryStringSerialization) {
+            query = self.queryStringSerialization(request, parameters, error);
+        } else {
+            switch (self.queryStringSerializationStyle) {
+                case AFHTTPRequestQueryStringDefaultStyle:
+                    query = AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding);
+                    break;
+            }
         }
-    }
 
-    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
-        mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];
-    } else {
-        NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-        [mutableRequest setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-        [mutableRequest setHTTPBody:[query dataUsingEncoding:self.stringEncoding]];
+        if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+            mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];
+        } else {
+            if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
+                NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+                [mutableRequest setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+            }
+            [mutableRequest setHTTPBody:[query dataUsingEncoding:self.stringEncoding]];
+        }
     }
 
     return mutableRequest;
@@ -1142,14 +1142,14 @@ typedef enum {
         }
     }];
     
-    if (!parameters) {
-        return mutableRequest;
+    if (parameters) {
+        if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
+            NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
+            [mutableRequest setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+        }
+
+        [mutableRequest setHTTPBody:[NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error]];
     }
-
-    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
-
-    [mutableRequest setValue:[NSString stringWithFormat:@"application/json; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-    [mutableRequest setHTTPBody:[NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error]];
 
     return mutableRequest;
 }
@@ -1222,10 +1222,14 @@ typedef enum {
         }
     }];
 
-    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
+    if (parameters) {
+        if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
+            NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
+            [mutableRequest setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+        }
 
-    [mutableRequest setValue:[NSString stringWithFormat:@"application/x-plist; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
-    [mutableRequest setHTTPBody:[NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error]];
+        [mutableRequest setHTTPBody:[NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error]];
+    }
 
     return mutableRequest;
 }
