@@ -1,3 +1,23 @@
+= 2.2.3 (2014-04-18)
+
+  * Fix `AFErrorOrUnderlyingErrorHasCodeInDomain` function declaration for
+AFXMLDocumentResponseSerializer (Mattt Thompson)
+
+  * Fix error domain check in `AFErrorOrUnderlyingErrorHasCodeInDomain`
+(Mattt Thompson)
+
+  * Fix `UIImageView` category to only `nil` out request operation properties
+belonging to completed request (Mattt Thompson)
+
+  * Fix `removesKeysWithNullValues` to respect
+`NSJSONReadingMutableContainers` option (Mattt Thompson)
+
+  * Change `removesKeysWithNullValues` property to recursively remove null
+values from dictionaries nested in arrays (@jldagon)
+
+  * Change to not override `Content-Type` header field values set by
+`HTTPRequestHeaders` property (Aaron Brager, Mattt Thompson)
+
 = 2.2.2 (2014-04-15)
 
   * Add `removesKeysWithNullValues` property to `AFJSONResponsSerializer` to
