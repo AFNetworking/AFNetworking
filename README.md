@@ -15,7 +15,14 @@ Choose AFNetworking for your next project, or migrate over your existing project
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/archive/master.zip) and try out the included Mac and iPhone example apps
 - Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles on the Wiki](https://github.com/AFNetworking/AFNetworking/wiki)
 - Check out the [documentation](http://cocoadocs.org/docsets/AFNetworking/2.0.0/) for a comprehensive look at all of the APIs available in AFNetworking
-- Questions? [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking) is the best place to find answers
+
+## Communication
+
+- If you **need help**, use [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking). (Tag 'afnetworking')
+- If you'd like to **ask a general question**, use [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking).
+- If you **found a bug**, open an issue.
+- If you **have an feature request**, open an issue.
+- If you **want to contribute**, submit a pull request.
 
 ### Installation with CocoaPods
 
@@ -40,7 +47,6 @@ AFNetworking 2.0 is a major update to the framework. Building on 2 years of deve
 - Support for NSURLSession
 - Serialization Modules
 - Expanded UIKit Extensions
-- Real-time functionality with [Rocket](http://rocket.github.io)
 
 ## Requirements
 
@@ -381,10 +387,6 @@ Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking
 ### Maintainers
 
 - [Mattt Thompson](http://github.com/mattt) ([@mattt](https://twitter.com/mattt))
-
-## One More Thing...
-
-**AFNetworking: the Definitive Guide** written by Mattt Thompson and published by [O'Reilly](http://oreilly.com), will be available late 2013 / early 2014. [Sign up here to be notified about updates](http://eepurl.com/Flnvn).
 
 ## License
 
