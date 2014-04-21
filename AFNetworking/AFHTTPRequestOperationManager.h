@@ -1,6 +1,6 @@
 // AFHTTPRequestOperationManager.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -142,7 +142,7 @@
 /**
  The network reachability manager. `AFHTTPRequestOperationManager` uses the `sharedManager` by default.
  */
-@property (readonly, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
+@property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
@@ -169,7 +169,7 @@
 ///---------------------------------------
 
 /**
- Creates an `AFHTTPRequestOperation`, setting the operation's request serializer and response serializers to those of the HTTP client.
+ Creates an `AFHTTPRequestOperation`, and sets the response serializers to that of the HTTP client.
 
  @param request The request object to be loaded asynchronously during execution of the operation.
  @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the created request operation and the object created from the response data of request.
@@ -194,7 +194,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)GET:(NSString *)URLString
-                     parameters:(NSDictionary *)parameters
+                     parameters:(id)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -209,7 +209,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)HEAD:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
+                      parameters:(id)parameters
                          success:(void (^)(AFHTTPRequestOperation *operation))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -224,7 +224,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
+                      parameters:(id)parameters
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -240,7 +240,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
+                      parameters:(id)parameters
        constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
@@ -256,7 +256,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)PUT:(NSString *)URLString
-                     parameters:(NSDictionary *)parameters
+                     parameters:(id)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -271,7 +271,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)PATCH:(NSString *)URLString
-                       parameters:(NSDictionary *)parameters
+                       parameters:(id)parameters
                           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -286,7 +286,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)DELETE:(NSString *)URLString
-                        parameters:(NSDictionary *)parameters
+                        parameters:(id)parameters
                            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 

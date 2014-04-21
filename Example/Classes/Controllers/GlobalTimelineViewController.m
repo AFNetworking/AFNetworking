@@ -26,13 +26,12 @@
 
 #import "PostTableViewCell.h"
 
-#import "UIActivityIndicatorView+AFNetworking.h"
+#import "UIRefreshControl+AFNetworking.h"
 #import "UIAlertView+AFNetworking.h"
 
 @interface GlobalTimelineViewController ()
 @property (readwrite, nonatomic, strong) NSArray *posts;
-
-- (void)reload:(id)sender;
+@property (readwrite, nonatomic, strong) UIRefreshControl *refreshControl;
 @end
 
 @implementation GlobalTimelineViewController
@@ -45,14 +44,10 @@
             self.posts = posts;
             [self.tableView reloadData];
         }
-        
-        self.navigationItem.rightBarButtonItem.enabled = YES;
     }];
 
     [UIAlertView showAlertViewForTaskWithErrorOnCompletion:task delegate:nil];
-
-    UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView *)self.navigationItem.leftBarButtonItem.customView;
-    [activityIndicatorView setAnimatingWithStateOfTask:task];
+    [self.refreshControl setRefreshingWithStateOfTask:task];
 }
 
 #pragma mark - UIViewController
@@ -61,11 +56,11 @@
     [super viewDidLoad];
     
     self.title = NSLocalizedString(@"AFNetworking", nil);
-    
-    UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicatorView];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload:)];
-    
+
+    self.refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.tableView.frame.size.width, 100.0f)];
+    [self.refreshControl addTarget:self action:@selector(reload:) forControlEvents:UIControlEventValueChanged];
+    [self.tableView.tableHeaderView addSubview:self.refreshControl];
+
     self.tableView.rowHeight = 70.0f;
     
     [self reload:nil];

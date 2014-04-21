@@ -1,6 +1,6 @@
 // AFHTTPRequestOperation.m
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,8 +44,12 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 #pragma mark -
 
-@interface AFHTTPRequestOperation ()
+@interface AFURLConnectionOperation ()
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
+@property (readwrite, nonatomic, strong) NSURLResponse *response;
+@end
+
+@interface AFHTTPRequestOperation ()
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, strong) id responseObject;
 @property (readwrite, nonatomic, strong) NSError *responseSerializationError;
@@ -61,7 +65,7 @@ static dispatch_group_t http_request_operation_completion_group() {
         return nil;
     }
 
-    self.responseSerializer = [AFJSONResponseSerializer serializer];
+    self.responseSerializer = [AFHTTPResponseSerializer serializer];
 
     return self;
 }
@@ -78,7 +82,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 - (id)responseObject {
     [self.lock lock];
-    if (!_responseObject && [self.responseData length] > 0 && [self isFinished] && !self.error) {
+    if (!_responseObject && [self isFinished] && !self.error) {
         NSError *error = nil;
         self.responseObject = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
         if (error) {
@@ -147,9 +151,9 @@ static dispatch_group_t http_request_operation_completion_group() {
 #pragma mark - AFURLRequestOperation
 
 - (void)pause {
-    int64_t offset = 0;
+    u_int64_t offset = 0;
     if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
-        offset = [(NSNumber *)[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] longLongValue];
+        offset = [(NSNumber *)[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
     } else {
         offset = [(NSData *)[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
     }
@@ -166,21 +170,21 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.responseSerializer = [aDecoder decodeObjectForKey:@"responseSerializer"];
+    self.responseSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeObject:self.responseSerializer forKey:@"responseSerializer"];
+    [coder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
 }
 
 #pragma mark - NSCopying
@@ -191,7 +195,7 @@ static dispatch_group_t http_request_operation_completion_group() {
     operation.responseSerializer = [self.responseSerializer copyWithZone:zone];
     operation.completionQueue = self.completionQueue;
     operation.completionGroup = self.completionGroup;
-
+    
     return operation;
 }
 

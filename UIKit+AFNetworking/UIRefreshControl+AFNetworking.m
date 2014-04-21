@@ -1,6 +1,6 @@
-// UIActivityIndicatorView+AFNetworking.m
+// UIRefreshControl+AFNetworking.m
 //
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "UIActivityIndicatorView+AFNetworking.h"
+#import "UIRefreshControl+AFNetworking.h"
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 
@@ -30,10 +30,10 @@
 #import "AFURLSessionManager.h"
 #endif
 
-@implementation UIActivityIndicatorView (AFNetworking)
+@implementation UIRefreshControl (AFNetworking)
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
-- (void)setAnimatingWithStateOfTask:(NSURLSessionTask *)task {
+- (void)setRefreshingWithStateOfTask:(NSURLSessionTask *)task {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
     [notificationCenter removeObserver:self name:AFNetworkingTaskDidResumeNotification object:nil];
@@ -43,22 +43,20 @@
     if (task) {
         if (task.state != NSURLSessionTaskStateCompleted) {
             if (task.state == NSURLSessionTaskStateRunning) {
-                [self startAnimating];
+                [self beginRefreshing];
             } else {
-                [self stopAnimating];
+                [self endRefreshing];
             }
 
-            [notificationCenter addObserver:self selector:@selector(af_startAnimating) name:AFNetworkingTaskDidResumeNotification object:task];
-            [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingTaskDidCompleteNotification object:task];
-            [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingTaskDidSuspendNotification object:task];
+            [notificationCenter addObserver:self selector:@selector(af_beginRefreshing) name:AFNetworkingTaskDidResumeNotification object:task];
+            [notificationCenter addObserver:self selector:@selector(af_endRefreshing) name:AFNetworkingTaskDidCompleteNotification object:task];
+            [notificationCenter addObserver:self selector:@selector(af_endRefreshing) name:AFNetworkingTaskDidSuspendNotification object:task];
         }
     }
 }
 #endif
 
-#pragma mark -
-
-- (void)setAnimatingWithStateOfOperation:(AFURLConnectionOperation *)operation {
+- (void)setRefreshingWithStateOfOperation:(AFURLConnectionOperation *)operation {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
     [notificationCenter removeObserver:self name:AFNetworkingOperationDidStartNotification object:nil];
@@ -67,28 +65,28 @@
     if (operation) {
         if (![operation isFinished]) {
             if ([operation isExecuting]) {
-                [self startAnimating];
+                [self beginRefreshing];
             } else {
-                [self stopAnimating];
+                [self endRefreshing];
             }
 
-            [notificationCenter addObserver:self selector:@selector(af_startAnimating) name:AFNetworkingOperationDidStartNotification object:operation];
-            [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingOperationDidFinishNotification object:operation];
+            [notificationCenter addObserver:self selector:@selector(af_beginRefreshing) name:AFNetworkingOperationDidStartNotification object:operation];
+            [notificationCenter addObserver:self selector:@selector(af_endRefreshing) name:AFNetworkingOperationDidFinishNotification object:operation];
         }
     }
 }
 
 #pragma mark -
 
-- (void)af_startAnimating {
+- (void)af_beginRefreshing {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self startAnimating];
+        [self beginRefreshing];
     });
 }
 
-- (void)af_stopAnimating {
+- (void)af_endRefreshing {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self stopAnimating];
+        [self endRefreshing];
     });
 }
 

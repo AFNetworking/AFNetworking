@@ -1,6 +1,6 @@
 // AFMockURLProtocol.m
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 
 typedef void (^AFTestURLProtocolInitializationCallback)(AFMockURLProtocol *protocol);
 
-static volatile NSURL * _matchingURL = nil;
+static volatile NSURL *_matchingURL = nil;
 static volatile AFTestURLProtocolInitializationCallback _initializationCallback = nil;
 
 @implementation AFMockURLProtocol

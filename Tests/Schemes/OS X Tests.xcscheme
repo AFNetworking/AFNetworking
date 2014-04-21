@@ -14,10 +14,24 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7F80D170FBDE4B6CAFA74110"
+               BlueprintIdentifier = "FF3A4367F4A94D26A35ADC66"
                BuildableName = "libPods-osx.a"
                BlueprintName = "Pods-osx"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2902D28B17DF4E2900C81C5A"
+               BuildableName = "OS X Tests.xctest"
+               BlueprintName = "OS X Tests"
+               ReferencedContainer = "container:AFNetworking Tests.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,8 +46,8 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2544EC94173BFAA8004117E8"
-               BuildableName = "OS X Tests.octest"
+               BlueprintIdentifier = "2902D28B17DF4E2900C81C5A"
+               BuildableName = "OS X Tests.xctest"
                BlueprintName = "OS X Tests"
                ReferencedContainer = "container:AFNetworking Tests.xcodeproj">
             </BuildableReference>

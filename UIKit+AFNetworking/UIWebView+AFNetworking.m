@@ -1,6 +1,6 @@
 // UIWebView+AFNetworking.m
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,10 +27,8 @@
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 
 #import "AFHTTPRequestOperation.h"
-
-static char kAFRequestSerializerKey;
-static char kAFResponseSerializerKey;
-static char kAFHTTPRequestOperationKey;
+#import "AFURLResponseSerialization.h"
+#import "AFURLRequestSerialization.h"
 
 @interface UIWebView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setHTTPRequestOperation:) AFHTTPRequestOperation *af_HTTPRequestOperation;
@@ -39,11 +37,11 @@ static char kAFHTTPRequestOperationKey;
 @implementation UIWebView (_AFNetworking)
 
 - (AFHTTPRequestOperation *)af_HTTPRequestOperation {
-    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFHTTPRequestOperationKey);
+    return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, @selector(af_HTTPRequestOperation));
 }
 
 - (void)af_setHTTPRequestOperation:(AFHTTPRequestOperation *)operation {
-    objc_setAssociatedObject(self, &kAFHTTPRequestOperationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(af_HTTPRequestOperation), operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end
@@ -53,7 +51,7 @@ static char kAFHTTPRequestOperationKey;
 @implementation UIWebView (AFNetworking)
 
 - (AFHTTPRequestSerializer <AFURLRequestSerialization> *)requestSerializer {
-    static AFHTTPRequestSerializer <AFURLRequestSerialization> * _af_defaultRequestSerializer = nil;
+    static AFHTTPRequestSerializer <AFURLRequestSerialization> *_af_defaultRequestSerializer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _af_defaultRequestSerializer = [AFHTTPRequestSerializer serializer];
@@ -61,16 +59,16 @@ static char kAFHTTPRequestOperationKey;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-    return objc_getAssociatedObject(self, &kAFRequestSerializerKey) ?: _af_defaultRequestSerializer;
+    return objc_getAssociatedObject(self, @selector(requestSerializer)) ?: _af_defaultRequestSerializer;
 #pragma clang diagnostic pop
 }
 
 - (void)setRequestSerializer:(AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerializer {
-    objc_setAssociatedObject(self, &kAFRequestSerializerKey, requestSerializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(requestSerializer), requestSerializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
-    static AFHTTPResponseSerializer <AFURLResponseSerialization> * _af_defaultResponseSerializer = nil;
+    static AFHTTPResponseSerializer <AFURLResponseSerialization> *_af_defaultResponseSerializer = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _af_defaultResponseSerializer = [AFHTTPResponseSerializer serializer];
@@ -78,12 +76,12 @@ static char kAFHTTPRequestOperationKey;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-    return objc_getAssociatedObject(self, &kAFRequestSerializerKey) ?: _af_defaultResponseSerializer;
+    return objc_getAssociatedObject(self, @selector(responseSerializer)) ?: _af_defaultResponseSerializer;
 #pragma clang diagnostic pop
 }
 
 - (void)setResponseSerializer:(AFHTTPResponseSerializer<AFURLResponseSerialization> *)responseSerializer {
-    objc_setAssociatedObject(self, &kAFResponseSerializerKey, responseSerializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(responseSerializer), responseSerializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark -
@@ -93,6 +91,33 @@ static char kAFHTTPRequestOperationKey;
             success:(NSString * (^)(NSHTTPURLResponse *response, NSString *HTML))success
             failure:(void (^)(NSError *error))failure
 {
+    [self loadRequest:request MIMEType:nil textEncodingName:nil progress:progress success:^NSData *(NSHTTPURLResponse *response, NSData *data) {
+        NSStringEncoding stringEncoding = NSUTF8StringEncoding;
+        if (response.textEncodingName) {
+            CFStringEncoding encoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName);
+            if (encoding != kCFStringEncodingInvalidId) {
+                stringEncoding = CFStringConvertEncodingToNSStringEncoding(encoding);
+            }
+        }
+
+        NSString *string = [[NSString alloc] initWithData:data encoding:stringEncoding];
+        if (success) {
+            string = success(response, string);
+        }
+
+        return [string dataUsingEncoding:stringEncoding];
+    } failure:failure];
+}
+
+- (void)loadRequest:(NSURLRequest *)request
+           MIMEType:(NSString *)MIMEType
+   textEncodingName:(NSString *)textEncodingName
+           progress:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
+            success:(NSData * (^)(NSHTTPURLResponse *response, NSData *data))success
+            failure:(void (^)(NSError *error))failure
+{
+    NSParameterAssert(request);
+
     if (self.af_HTTPRequestOperation) {
         [self.af_HTTPRequestOperation cancel];
     }
@@ -101,12 +126,17 @@ static char kAFHTTPRequestOperationKey;
 
     self.af_HTTPRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     self.af_HTTPRequestOperation.responseSerializer = self.responseSerializer;
-    
+
     __weak __typeof(self)weakSelf = self;
     [self.af_HTTPRequestOperation setDownloadProgressBlock:progress];
     [self.af_HTTPRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id __unused responseObject) {
-        NSString *HTML = success ? success(operation.response, operation.responseString) : operation.responseString;
-        [weakSelf loadHTMLString:HTML baseURL:[operation.response URL]];
+        NSData *data = success ? success(operation.response, operation.responseData) : operation.responseData;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+        __strong __typeof(weakSelf) strongSelf = weakSelf;
+        [strongSelf loadData:data MIMEType:(MIMEType ?: [operation.response MIMEType]) textEncodingName:(textEncodingName ?: [operation.response textEncodingName]) baseURL:[operation.response URL]];
+#pragma clang diagnostic pop
     } failure:^(AFHTTPRequestOperation * __unused operation, NSError *error) {
         if (failure) {
             failure(error);
