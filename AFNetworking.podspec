@@ -16,7 +16,9 @@ Pod::Spec.new do |s|
   s.source_files = 'AFNetworking/AFNetworking.h'
 
   s.subspec 'Serialization' do |ss|
-    ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
+    ss.dependency 'AFNetworking/Security'
+    
+    ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}','AFNetworking/AFURLConnectionOperation.{h,m}'
     ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
     ss.osx.frameworks = 'CoreServices'
   end
