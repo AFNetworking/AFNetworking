@@ -21,7 +21,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 - If you **need help**, use [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking). (Tag 'afnetworking')
 - If you'd like to **ask a general question**, use [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking).
 - If you **found a bug**, open an issue.
-- If you **have an feature request**, open an issue.
+- If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.
 
 ### Installation with CocoaPods
