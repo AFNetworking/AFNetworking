@@ -108,8 +108,13 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 static NSData *AFSecKeyGetData(SecKeyRef key) {
     CFDataRef data = NULL;
     
+#if defined(NS_BLOCK_ASSERTIONS)
+    SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
+#else
     OSStatus status = SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
     NSCAssert(status == errSecSuccess, @"SecItemExport error: %ld", (long int)status);
+#endif
+
     NSCParameterAssert(data);
     
     return (__bridge_transfer NSData *)data;
@@ -587,6 +592,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
         SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
         
         SecPolicyRef policy = SecPolicyCreateBasicX509();
+        SecTrustEvaluate(serverTrust, NULL);
         CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
         NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:certificateCount];
         
@@ -733,15 +739,19 @@ didReceiveResponse:(NSURLResponse *)response
             while (totalNumberOfBytesWritten < length) {
                 numberOfBytesWritten = [self.outputStream write:&dataBuffer[0] maxLength:length];
                 if (numberOfBytesWritten == -1) {
-                    [self.connection cancel];
-                    [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
-                    return;
-                } else {
-                    totalNumberOfBytesWritten += numberOfBytesWritten;
+                    break;
                 }
+
+                totalNumberOfBytesWritten += numberOfBytesWritten;
             }
 
             break;
+        }
+
+        if (self.outputStream.streamError) {
+            [self.connection cancel];
+            [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
+            return;
         }
     }
     
