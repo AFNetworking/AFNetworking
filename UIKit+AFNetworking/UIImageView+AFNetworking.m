@@ -151,7 +151,9 @@
                     strongSelf.image = responseObject;
                 }
 
-                strongSelf.af_imageRequestOperation = nil;
+                if (operation == strongSelf.af_imageRequestOperation){
+                        strongSelf.af_imageRequestOperation = nil;
+                }
             }
 
             [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
@@ -162,7 +164,9 @@
                     failure(urlRequest, operation.response, error);
                 }
 
-                strongSelf.af_imageRequestOperation = nil;
+                if (operation == strongSelf.af_imageRequestOperation){
+                        strongSelf.af_imageRequestOperation = nil;
+                }
             }
         }];
 
