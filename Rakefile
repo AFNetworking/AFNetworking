@@ -1,30 +1,50 @@
+include FileUtils::Verbose
+
 namespace :test do
   task :prepare do
-    system(%Q{mkdir -p "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes" && cp Tests/Schemes/*.xcscheme "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes/"})
+    mkdir_p "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes"
+    cp Dir.glob('Tests/Schemes/*.xcscheme'), "Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes/"
   end
 
   desc "Run the AFNetworking Tests for iOS"
   task :ios => :prepare do
-    $ios_success_5_0 = system("xctool -workspace AFNetworking.xcworkspace -scheme 'iOS Tests' -sdk iphonesimulator5.0 -configuration Release test -test-sdk iphonesimulator5.0")
-    $ios_success = system("xctool -workspace AFNetworking.xcworkspace -scheme 'iOS Tests' -sdk iphonesimulator -configuration Release test -test-sdk iphonesimulator")
+    run_tests('iOS Tests', 'iphonesimulator')
+    tests_failed('iOS') unless $?.success?
   end
 
   desc "Run the AFNetworking Tests for Mac OS X"
   task :osx => :prepare do
-    $osx_success = system("xctool -workspace AFNetworking.xcworkspace -scheme 'OS X Tests' -sdk macosx -configuration Release test -test-sdk macosx")
+    run_tests('OS X Tests', 'macosx')
+    tests_failed('OSX') unless $?.success?
   end
 end
 
 desc "Run the AFNetworking Tests for iOS & Mac OS X"
-task :test => ['test:ios', 'test:osx'] do
-  puts "\033[0;31m! iOS unit tests failed under iPhone Simulator 5.0 SDK" unless $ios_success_5_0
-  puts "\033[0;31m! iOS unit tests failed" unless $ios_success
-  puts "\033[0;31m! OS X unit tests failed" unless $osx_success
-  if $ios_success && $osx_success
-    puts "\033[0;32m** All tests executed successfully"
-  else
-    exit(-1)
-  end
+task :test do
+  Rake::Task['test:ios'].invoke
+  Rake::Task['test:osx'].invoke if is_mavericks_or_above
 end
 
 task :default => 'test'
+
+
+private
+
+def run_tests(scheme, sdk)
+  sh("xcodebuild -workspace AFNetworking.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' -configuration Release clean test | xcpretty -c ; exit ${PIPESTATUS[0]}") rescue nil
+end
+
+def is_mavericks_or_above
+  osx_version = `sw_vers -productVersion`.chomp
+  Gem::Version.new(osx_version) >= Gem::Version.new('10.9')
+end
+
+def tests_failed(platform)
+  puts red("#{platform} unit tests failed")
+  exit $?.exitstatus
+end
+
+def red(string)
+ "\033[0;31m! #{string}"
+end
+

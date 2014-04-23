@@ -1,6 +1,6 @@
 // AFURLConnectionOperation.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -282,7 +282,7 @@
 - (void)setWillSendRequestForAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block;
 
 /**
- Sets a block to be executed when the server redirects the request from one URL to another URL, or when the request URL changed by the `NSURLProtocol` subclass handling the request in order to standardize its format, as handled by the `NSURLConnectionDelegate` method `connection:willSendRequest:redirectResponse:`.
+ Sets a block to be executed when the server redirects the request from one URL to another URL, or when the request URL changed by the `NSURLProtocol` subclass handling the request in order to standardize its format, as handled by the `NSURLConnectionDataDelegate` method `connection:willSendRequest:redirectResponse:`.
 
  @param block A block object to be executed when the request URL was changed. The block returns an `NSURLRequest` object, the URL request to redirect, and takes three arguments: the URL connection object, the the proposed redirected request, and the URL response that caused the redirect.
  */
@@ -312,25 +312,6 @@
 ///----------------
 
 /**
- ## SSL Pinning Options
-
- The following constants are provided by `AFURLConnectionOperation` as possible SSL Pinning options.
-
- enum {
- AFSSLPinningModeNone,
- AFSSLPinningModePublicKey,
- AFSSLPinningModeCertificate,
- }
- 
- `AFSSLPinningModeNone`
- Do not pin SSL connections
-
- `AFSSLPinningModePublicKey`
- Pin SSL connections to certificate public key (SPKI).
-
- `AFSSLPinningModeCertificate`
- Pin SSL connections to exact certificate. This may cause problems when your certificate expires and needs re-issuance.
-
  ## User info dictionary keys
 
  These keys may exist in the user info dictionary, in addition to those defined for NSError.

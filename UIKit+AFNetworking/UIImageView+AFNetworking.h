@@ -1,6 +1,6 @@
 // UIImageView+AFNetworking.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,12 +28,30 @@
 
 #import <UIKit/UIKit.h>
 
-#import "AFURLResponseSerialization.h"
+@protocol AFURLResponseSerialization, AFImageCache;
+
+@class AFImageResponseSerializer;
 
 /**
  This category adds methods to the UIKit framework's `UIImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
  */
 @interface UIImageView (AFNetworking)
+
+///----------------------------
+/// @name Accessing Image Cache
+///----------------------------
+
+/**
+ The image cache used to improve image loadiing performance on scroll views. By default, this is an `NSCache` subclass conforming to the `AFImageCache` protocol, which listens for notification warnings and evicts objects accordingly.
+*/
++ (id <AFImageCache>)sharedImageCache;
+
+/**
+ Set the cache used for image loading.
+ 
+ @param imageCache The image cache.
+ */
++ (void)setSharedImageCache:(id <AFImageCache>)imageCache;
 
 ///------------------------------------
 /// @name Accessing Response Serializer
@@ -55,7 +73,7 @@
  
  If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
 
- By default, URL requests have a cache policy of `NSURLCacheStorageAllowed` and a timeout interval of 30 seconds, and are set not handle cookies. To configure URL requests differently, use `setImageWithURLRequest:placeholderImage:success:failure:`
+ By default, URL requests have a `Accept` header field value of "image / *", a cache policy of `NSURLCacheStorageAllowed` and a timeout interval of 30 seconds, and are set not handle cookies. To configure URL requests differently, use `setImageWithURLRequest:placeholderImage:success:failure:`
 
  @param url The URL used for the image request.
  */
@@ -66,8 +84,8 @@
  
  If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
 
- By default, URL requests have a cache policy of `NSURLCacheStorageAllowed` and a timeout interval of 30 seconds, and are set not handle cookies. To configure URL requests differently, use `setImageWithURLRequest:placeholderImage:success:failure:`
- 
+ By default, URL requests have a `Accept` header field value of "image / *", a cache policy of `NSURLCacheStorageAllowed` and a timeout interval of 30 seconds, and are set not handle cookies. To configure URL requests differently, use `setImageWithURLRequest:placeholderImage:success:failure:`
+
  @param url The URL used for the image request.
  @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
  */
@@ -96,6 +114,32 @@
  */
 - (void)cancelImageRequestOperation;
 
+@end
+
+#pragma mark -
+
+/**
+ The `AFImageCache` protocol is adopted by an object used to cache images loaded by the AFNetworking category on `UIImageView`.
+ */
+@protocol AFImageCache
+
+/**
+ Returns a cached image for the specififed request, if available.
+ 
+ @param request The image request.
+ 
+ @return The cached image.
+ */
+- (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
+
+/**
+ Caches a particular image for the specified request.
+ 
+ @param image The image to cache.
+ @param request The request to be used as a cache key.
+ */
+- (void)cacheImage:(UIImage *)image
+        forRequest:(NSURLRequest *)request;
 @end
 
 #endif

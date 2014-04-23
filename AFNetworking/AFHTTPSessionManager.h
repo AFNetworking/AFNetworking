@@ -1,6 +1,6 @@
 // AFHTTPSessionManager.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 #import "AFURLSessionManager.h"
 
 /**
- `AFHTTPSessionManager` is a subclass of `AFURLSessionManager` with convenience methods for making HTTP requests. When a `baseURL` is provided, requests made with the `GET` / `POST` / et al. convenience methods can be made with relative paths; network reachability is also scoped to the host of the base URL as well.
+ `AFHTTPSessionManager` is a subclass of `AFURLSessionManager` with convenience methods for making HTTP requests. When a `baseURL` is provided, requests made with the `GET` / `POST` / et al. convenience methods can be made with relative paths.
  
  ## Subclassing Notes
  
@@ -68,7 +68,7 @@
  Also important to note is that a trailing slash will be added to any `baseURL` without one. This would otherwise cause unexpected behavior when constructing URLs using paths without a leading slash.
  */
 
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1090)
+#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
 
 @interface AFHTTPSessionManager : AFURLSessionManager <NSCoding, NSCopying>
 
@@ -78,7 +78,7 @@
 @property (readonly, nonatomic, strong) NSURL *baseURL;
 
 /**
- Requests created with `requestWithMethod:URLString:parameters:` & `multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:` are constructed with a set of default headers using a parameter serialization specified by this property. By default, this is set to an instance of `AFHTTPSerializer`, which serializes query string parameters for `GET`, `HEAD`, and `DELETE` requests, or otherwise URL-form-encodes HTTP message bodies.
+ Requests created with `requestWithMethod:URLString:parameters:` & `multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:` are constructed with a set of default headers using a parameter serialization specified by this property. By default, this is set to an instance of `AFHTTPRequestSerializer`, which serializes query string parameters for `GET`, `HEAD`, and `DELETE` requests, or otherwise URL-form-encodes HTTP message bodies.
  
  @warning `requestSerializer` must not be `nil`.
  */
@@ -137,7 +137,7 @@
  @see -dataTaskWithRequest:completionHandler:
  */
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
-                   parameters:(NSDictionary *)parameters
+                   parameters:(id)parameters
                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
@@ -152,7 +152,7 @@
  @see -dataTaskWithRequest:completionHandler:
  */
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
-                    parameters:(NSDictionary *)parameters
+                    parameters:(id)parameters
                        success:(void (^)(NSURLSessionDataTask *task))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
@@ -167,7 +167,7 @@
  @see -dataTaskWithRequest:completionHandler:
  */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
-                    parameters:(NSDictionary *)parameters
+                    parameters:(id)parameters
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
@@ -183,7 +183,7 @@
  @see -dataTaskWithRequest:completionHandler:
  */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
-                    parameters:(NSDictionary *)parameters
+                    parameters:(id)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
@@ -199,7 +199,7 @@
  @see -dataTaskWithRequest:completionHandler:
  */
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
-                   parameters:(NSDictionary *)parameters
+                   parameters:(id)parameters
                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
@@ -214,7 +214,7 @@
  @see -dataTaskWithRequest:completionHandler:
  */
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
-                     parameters:(NSDictionary *)parameters
+                     parameters:(id)parameters
                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
@@ -229,7 +229,7 @@
  @see -dataTaskWithRequest:completionHandler:
  */
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
+                      parameters:(id)parameters
                          success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                          failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
