@@ -705,7 +705,9 @@ didReceiveResponse:(NSURLResponse *)response
     self.error = error;
 
     [self.outputStream close];
-    self.outputStream = nil;
+    if (self.responseData) {
+        self.outputStream = nil;
+    }
 
     self.connection = nil;
 
