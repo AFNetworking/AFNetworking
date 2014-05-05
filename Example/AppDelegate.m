@@ -28,11 +28,9 @@
     #import "AFNetworkActivityIndicatorManager.h"
 
     @implementation AppDelegate
-    @synthesize window = _window;
-    @synthesize navigationController = _navigationController;
 
-    - (BOOL)application:(UIApplication *)application 
-    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+    - (BOOL)application:(__unused UIApplication *)application
+    didFinishLaunchingWithOptions:(__unused NSDictionary *)launchOptions
     {
         NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:20 * 1024 * 1024 diskPath:nil];
         [NSURLCache setSharedURLCache:URLCache];
@@ -57,10 +55,6 @@
     #import "User.h"
 
     @implementation AppDelegate
-
-    @synthesize window = _window;
-    @synthesize tableView = _tableView;
-    @synthesize postsArrayController = _postsArrayController;
 
     - (void)applicationDidFinishLaunching:(NSNotification *)notification {
         NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:20 * 1024 * 1024 diskPath:nil];
