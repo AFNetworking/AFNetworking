@@ -65,6 +65,8 @@ NSString * const AFNetworkingTaskDidFinishResponseDataKey = @"com.alamofire.netw
 NSString * const AFNetworkingTaskDidFinishErrorKey = @"com.alamofire.networking.task.complete.error"; // Deprecated
 NSString * const AFNetworkingTaskDidFinishAssetPathKey = @"com.alamofire.networking.task.complete.assetpath"; // Deprecated
 
+NSString * const AFNetworkingDownloadTaskTemporaryFileExtension = @"af_";
+
 static NSString * const AFURLSessionManagerLockName = @"com.alamofire.networking.session.manager.lock";
 
 static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
@@ -188,7 +190,7 @@ didCompleteWithError:(NSError *)error
                     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidCompleteNotification object:task userInfo:userInfo];
                     
                     // Clean up our temporary file
-                    if (self.downloadFileURL) {
+                    if ([self.downloadFileURL.pathExtension isEqualToString:AFNetworkingDownloadTaskTemporaryFileExtension]) {
                         NSError *fileManagerError = nil;
                         [[NSFileManager defaultManager] removeItemAtURL:self.downloadFileURL error:&fileManagerError];
                         if (fileManagerError) {
@@ -409,7 +411,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
             return destination(location, task.response);
         }
         
-        return [location URLByAppendingPathExtension:@"af"];
+        return [location URLByAppendingPathExtension:AFNetworkingDownloadTaskTemporaryFileExtension];
     };
 
     if (progress) {
