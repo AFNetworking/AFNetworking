@@ -186,6 +186,15 @@ didCompleteWithError:(NSError *)error
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidCompleteNotification object:task userInfo:userInfo];
+                    
+                    // Clean up our temporary file
+                    if (self.downloadFileURL) {
+                        NSError *fileManagerError = nil;
+                        [[NSFileManager defaultManager] removeItemAtURL:self.downloadFileURL error:&fileManagerError];
+                        if (fileManagerError) {
+                            [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:task userInfo:fileManagerError.userInfo];
+                        }
+                    }
                 });
             });
         });
@@ -399,8 +408,8 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
         if (destination) {
             return destination(location, task.response);
         }
-
-        return location;
+        
+        return [location URLByAppendingPathExtension:@"af"];
     };
 
     if (progress) {
