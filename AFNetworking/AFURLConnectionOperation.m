@@ -692,7 +692,9 @@ didReceiveResponse:(NSURLResponse *)response
     self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
 
     [self.outputStream close];
-    self.outputStream = nil;
+    if (self.responseData) {
+       self.outputStream = nil;
+    }
 
     self.connection = nil;
 
