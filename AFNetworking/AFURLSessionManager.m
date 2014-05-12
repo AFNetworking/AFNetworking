@@ -912,10 +912,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
-    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
-    if (delegate) {
-        [delegate URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];
-    } else if (self.downloadTaskDidFinishDownloading) {
+    if (self.downloadTaskDidFinishDownloading) {
         NSURL *fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
         if (fileURL) {
             NSError *error = nil;
@@ -923,7 +920,13 @@ didFinishDownloadingToURL:(NSURL *)location
             if (error) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
             }
+            return;
         }
+    }
+	
+    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
+    if (delegate) {
+        [delegate URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];
     }
 }
 
