@@ -28,9 +28,9 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
 @interface User ()
 @property (readwrite, nonatomic, assign) NSUInteger userID;
 @property (readwrite, nonatomic, copy) NSString *username;
+@property (readwrite, nonatomic, copy) NSString *avatarImageURLString;
 
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
-@property (readwrite, nonatomic, copy) NSString *avatarImageURLString;
 @property (readwrite, nonatomic, strong) AFHTTPRequestOperation *avatarImageRequestOperation;
 #endif
 @end
