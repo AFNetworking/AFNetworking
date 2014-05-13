@@ -730,10 +730,14 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    NSURLRequest *request = [decoder decodeObjectForKey:NSStringFromSelector(@selector(request))];
+    NSURLRequest *request = [decoder decodeObjectOfClass:[NSURLRequest class] forKey:NSStringFromSelector(@selector(request))];
     
     self = [self initWithRequest:request];
     if (!self) {

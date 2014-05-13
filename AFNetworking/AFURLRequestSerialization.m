@@ -444,7 +444,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     return mutableRequest;
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 + (BOOL)supportsSecureCoding {
     return YES;
@@ -1158,7 +1158,7 @@ typedef enum {
     return mutableRequest;
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
@@ -1238,7 +1238,7 @@ typedef enum {
     return mutableRequest;
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];

@@ -168,7 +168,7 @@ static dispatch_group_t http_request_operation_completion_group() {
     [super pause];
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 + (BOOL)supportsSecureCoding {
     return YES;

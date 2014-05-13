@@ -955,7 +955,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
     }
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 + (BOOL)supportsSecureCoding {
     return YES;
