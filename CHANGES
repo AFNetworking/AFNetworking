@@ -1,3 +1,32 @@
+= 2.2.4 (2014-05-13)
+
+ * Add NSSecureCoding support to all AFNetworking classes (Kyle Fuller, Mattt
+Thompson)
+
+ * Change behavior of request operation `NSOutputStream` property to only nil
+out if `responseData` is non-nil, meaning that no custom object was set
+(Mattt Thompson)
+
+ * Fix data tasks to not attempt to track progress, and rare related crash
+(Padraig Kennedy)
+
+ * Fix issue with `-downloadTaskDidFinishDownloading:` not being called
+(Andrej Mihajlov)
+
+ * Fix KVO leak on invalidated session tasks (Mattt Thompson)
+
+ * Fix missing import of `UIRefreshControl+AFNetworking" (@BB9z)
+
+ * Fix potential compilation errors on Mac OS X, caused by import order of
+`<AssertionMacros.h>`, which signaled an incorrect deprecation warning (Mattt
+Thompson)
+
+ * Fix race condition in UIImageView+AFNetworking when making several image
+requests in quick succession (Alexander Crettenand)
+
+ * Update documentation for `-downloadTaskWithRequest:` to warn about blocks
+being disassociated on app termination and backgrounding (Robert Ryan)
+
 = 2.2.3 (2014-04-18)
 
   * Fix `AFErrorOrUnderlyingErrorHasCodeInDomain` function declaration for
