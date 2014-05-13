@@ -28,7 +28,7 @@
 
  For example, a JSON response serializer may check for an acceptable status code (`2XX` range) and content type (`application/json`), decoding a valid JSON response into an object.
  */
-@protocol AFURLResponseSerialization <NSObject, NSCoding, NSCopying>
+@protocol AFURLResponseSerialization <NSObject, NSSecureCoding, NSCopying>
 
 /**
  The response object decoded from the data associated with a specified response.
@@ -73,12 +73,12 @@
 
  See http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
  */
-@property (nonatomic, strong) NSIndexSet *acceptableStatusCodes;
+@property (nonatomic, copy) NSIndexSet *acceptableStatusCodes;
 
 /**
  The acceptable MIME types for responses. When non-`nil`, responses with a `Content-Type` with MIME types that do not intersect with the set will result in an error during validation.
  */
-@property (nonatomic, strong) NSSet *acceptableContentTypes;
+@property (nonatomic, copy) NSSet *acceptableContentTypes;
 
 /**
  Validates the specified response and data.
@@ -250,7 +250,7 @@
 /**
  The component response serializers.
  */
-@property (readonly, nonatomic, strong) NSArray *responseSerializers;
+@property (readonly, nonatomic, copy) NSArray *responseSerializers;
 
 /**
  Creates and returns a compound serializer comprised of the specified response serializers.
