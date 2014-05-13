@@ -695,6 +695,10 @@ didBecomeInvalidWithError:(NSError *)error
         self.sessionDidBecomeInvalid(session, error);
     }
 
+    for (NSURLSessionTask *task in self.tasks) {
+        [self removeDelegateForTask:task];
+    }
+
     [self removeAllDelegates];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDidInvalidateNotification object:session];
