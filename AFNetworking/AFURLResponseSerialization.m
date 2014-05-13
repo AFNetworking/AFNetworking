@@ -711,7 +711,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #pragma mark -
 
 @interface AFCompoundResponseSerializer ()
-@property (readwrite, nonatomic, strong) NSArray *responseSerializers;
+@property (readwrite, nonatomic, copy) NSArray *responseSerializers;
 @end
 
 @implementation AFCompoundResponseSerializer
