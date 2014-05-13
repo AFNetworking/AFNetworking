@@ -65,6 +65,8 @@ NSString * const AFNetworkingTaskDidFinishResponseDataKey = @"com.alamofire.netw
 NSString * const AFNetworkingTaskDidFinishErrorKey = @"com.alamofire.networking.task.complete.error"; // Deprecated
 NSString * const AFNetworkingTaskDidFinishAssetPathKey = @"com.alamofire.networking.task.complete.assetpath"; // Deprecated
 
+NSString * const AFNetworkingDownloadTaskTemporaryFileExtension = @"af_";
+
 static NSString * const AFURLSessionManagerLockName = @"com.alamofire.networking.session.manager.lock";
 
 static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
@@ -186,6 +188,15 @@ didCompleteWithError:(NSError *)error
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidCompleteNotification object:task userInfo:userInfo];
+                    
+                    // Clean up our temporary file
+                    if ([self.downloadFileURL.pathExtension isEqualToString:AFNetworkingDownloadTaskTemporaryFileExtension]) {
+                        NSError *fileManagerError = nil;
+                        [[NSFileManager defaultManager] removeItemAtURL:self.downloadFileURL error:&fileManagerError];
+                        if (fileManagerError) {
+                            [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:task userInfo:fileManagerError.userInfo];
+                        }
+                    }
                 });
             });
         });
@@ -399,8 +410,8 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
         if (destination) {
             return destination(location, task.response);
         }
-
-        return location;
+        
+        return [location URLByAppendingPathExtension:AFNetworkingDownloadTaskTemporaryFileExtension];
     };
 
     if (progress) {
