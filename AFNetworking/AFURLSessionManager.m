@@ -910,10 +910,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
-    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
-    if (delegate) {
-        [delegate URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];
-    } else if (self.downloadTaskDidFinishDownloading) {
+    if (self.downloadTaskDidFinishDownloading) {
         NSURL *fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
         if (fileURL) {
             NSError *error = nil;
@@ -921,7 +918,13 @@ didFinishDownloadingToURL:(NSURL *)location
             if (error) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
             }
+            return;
         }
+    }
+	
+    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
+    if (delegate) {
+        [delegate URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];
     }
 }
 
@@ -954,8 +957,12 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 
 #pragma mark - NSCoding
 
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
 - (id)initWithCoder:(NSCoder *)decoder {
-    NSURLSessionConfiguration *configuration = [decoder decodeObjectForKey:@"sessionConfiguration"];
+    NSURLSessionConfiguration *configuration = [decoder decodeObjectOfClass:[NSURLSessionConfiguration class] forKey:@"sessionConfiguration"];
 
     self = [self initWithSessionConfiguration:configuration];
     if (!self) {

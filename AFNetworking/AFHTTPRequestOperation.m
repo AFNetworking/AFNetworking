@@ -170,13 +170,17 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 #pragma mark - NSCoding
 
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.responseSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
+    self.responseSerializer = [decoder decodeObjectOfClass:[AFHTTPResponseSerializer class] forKey:NSStringFromSelector(@selector(responseSerializer))];
 
     return self;
 }
