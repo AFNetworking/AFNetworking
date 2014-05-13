@@ -272,9 +272,7 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 }];
 ```
 
-#### HTTP Manager with Base URL
-
-When a `baseURL` is provided, network reachability is scoped to the host of that base URL.
+#### HTTP Manager Reachability
 
 ```objective-c
 NSURL *baseURL = [NSURL URLWithString:@"http://example.com/"];
