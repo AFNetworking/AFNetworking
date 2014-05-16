@@ -28,6 +28,8 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol AFNetworkActivityMonitor;
+
 /**
  `AFNetworkActivityIndicatorManager` manages the state of the network activity indicator in the status bar. When enabled, it will listen for notifications indicating that a network request operation has started or finished, and start or stop animating the indicator accordingly. The number of active requests is incremented and decremented much like a stack or a semaphore, and the activity indicator will animate so long as that number is greater than zero.
 
@@ -61,6 +63,8 @@
  */
 + (instancetype)sharedManager;
 
+- (id)initWithMonitor:(id<AFNetworkActivityMonitor>)monitor;
+
 /**
  Increments the number of active network requests. If this number was zero before incrementing, this will start animating the status bar network activity indicator.
  */
@@ -70,6 +74,12 @@
  Decrements the number of active network requests. If this number becomes zero after decrementing, this will stop animating the status bar network activity indicator.
  */
 - (void)decrementActivityCount;
+
+@end
+
+@protocol AFNetworkActivityMonitor <NSObject>
+
+@property (nonatomic, weak) AFNetworkActivityIndicatorManager *manager;
 
 @end
 
