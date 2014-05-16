@@ -50,16 +50,13 @@ AFNetworking 2.0 is a major update to the framework. Building on 2 years of deve
 
 ## Requirements
 
-AFNetworking's requirements for each available version are:
-
-| AFNetworking Version | Oldest Supported iOS Target | Oldest Supported OS X Target |                                   Notes                                   |
+| AFNetworking Version | Minimum iOS Target Required | Minimum OS X Target Required |                                   Notes                                   |
 |:--------------------:|:---------------------------:|:----------------------------:|:-------------------------------------------------------------------------:|
 |          2.x         |            iOS 6            |           OS X 10.8          | Xcode 5 is required. `AFHTTPSessionManager` requires iOS 7 or OS X 10.9. |
 |          [1.x](https://github.com/AFNetworking/AFNetworking/tree/1.x)         |            iOS 5            |         Mac OS X 10.7        |                                                                           |
 |        [0.10.x](https://github.com/AFNetworking/AFNetworking/tree/0.10.x)        |            iOS 4            |         Mac OS X 10.6        |                                                                           |
 
 (OS X projects must support [64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)).
-
 
 ## Architecture
 
