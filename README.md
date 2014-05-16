@@ -37,16 +37,7 @@ pod "AFNetworking", "~> 2.0"
 
 ## 2.0
 
-AFNetworking 2.0 is a major update to the framework. Building on 2 years of development, this new version introduces powerful new features, while providing an easy upgrade path for existing users.
-
 **Read the [AFNetworking 2.0 Migration Guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-2.0-Migration-Guide) for an overview of the architectural and API changes.**
-
-### What's New
-
-- Refactored Architecture
-- Support for NSURLSession
-- Serialization Modules
-- Expanded UIKit Extensions
 
 ## Requirements
 
