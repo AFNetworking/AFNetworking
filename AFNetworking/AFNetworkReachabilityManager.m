@@ -188,6 +188,10 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         if (strongSelf.networkReachabilityStatusBlock) {
             strongSelf.networkReachabilityStatusBlock(status);
         }
+
+        NSDictionary *userInfo = @{ AFNetworkingReachabilityNotificationStatusItem: @(status) };
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:strongSelf userInfo:userInfo];
     };
 
     SCNetworkReachabilityContext context = {0, (__bridge void *)callback, AFNetworkReachabilityRetainCallback, AFNetworkReachabilityReleaseCallback, NULL};
