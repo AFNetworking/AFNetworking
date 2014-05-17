@@ -67,6 +67,8 @@ NSString * const AFNetworkingTaskDidFinishAssetPathKey = @"com.alamofire.network
 
 static NSString * const AFURLSessionManagerLockName = @"com.alamofire.networking.session.manager.lock";
 
+static NSUInteger const AFMaximumNumberOfToRecreateBackgroundSessionUploadTask = 3;
+
 static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
 
 typedef void (^AFURLSessionDidBecomeInvalidBlock)(NSURLSession *session, NSError *error);
@@ -501,6 +503,11 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
                                 completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
 {
     NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request fromFile:fileURL];
+    if (!uploadTask && self.attemptsToRecreateUploadTasksForBackgroundSessions && self.session.configuration.identifier) {
+        for (NSUInteger attempts = 0; !uploadTask && attempts < AFMaximumNumberOfToRecreateBackgroundSessionUploadTask; attempts++) {
+            uploadTask = [self.session uploadTaskWithRequest:request fromFile:fileURL];
+        }
+    }
 
     [self addDelegateForUploadTask:uploadTask progress:progress completionHandler:completionHandler];
 
