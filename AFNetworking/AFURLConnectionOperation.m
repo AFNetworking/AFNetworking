@@ -692,7 +692,9 @@ didReceiveResponse:(NSURLResponse *)response
     self.responseData = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
 
     [self.outputStream close];
-    self.outputStream = nil;
+    if (self.responseData) {
+       self.outputStream = nil;
+    }
 
     self.connection = nil;
 
@@ -705,7 +707,9 @@ didReceiveResponse:(NSURLResponse *)response
     self.error = error;
 
     [self.outputStream close];
-    self.outputStream = nil;
+    if (self.responseData) {
+        self.outputStream = nil;
+    }
 
     self.connection = nil;
 
@@ -726,21 +730,25 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    NSURLRequest *request = [decoder decodeObjectForKey:NSStringFromSelector(@selector(request))];
+    NSURLRequest *request = [decoder decodeObjectOfClass:[NSURLRequest class] forKey:NSStringFromSelector(@selector(request))];
     
     self = [self initWithRequest:request];
     if (!self) {
         return nil;
     }
-    
-    self.state = (AFOperationState)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(state))];
-    self.response = [decoder decodeObjectForKey:NSStringFromSelector(@selector(response))];
-    self.error = [decoder decodeObjectForKey:NSStringFromSelector(@selector(error))];
-    self.responseData = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseData))];
-    self.totalBytesRead = [decoder decodeInt64ForKey:NSStringFromSelector(@selector(totalBytesRead))];
+
+    self.state = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(state))] integerValue];
+    self.response = [decoder decodeObjectOfClass:[NSHTTPURLResponse class] forKey:NSStringFromSelector(@selector(response))];
+    self.error = [decoder decodeObjectOfClass:[NSError class] forKey:NSStringFromSelector(@selector(error))];
+    self.responseData = [decoder decodeObjectOfClass:[NSData class] forKey:NSStringFromSelector(@selector(responseData))];
+    self.totalBytesRead = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(totalBytesRead))] longLongValue];
 
     return self;
 }

@@ -47,6 +47,7 @@
 		A74DA00C18D2FB9400F3B969 /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = A74DA00718D2FB9400F3B969 /* foobar.com.cer */; };
 		A74DA00D18D2FB9400F3B969 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = A74DA00818D2FB9400F3B969 /* NoDomains.cer */; };
 		A74DA00E18D2FB9400F3B969 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = A74DA00818D2FB9400F3B969 /* NoDomains.cer */; };
+		B6774DC918FBB49E0044DB17 /* AFNetworkActivityManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B6774DC818FBB49E0044DB17 /* AFNetworkActivityManagerTests.m */; };
 		B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264B18053E930062F4E3 /* adn_0.cer */; };
 		B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264C18053E930062F4E3 /* adn_1.cer */; };
 		B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264D18053E930062F4E3 /* adn_2.cer */; };
@@ -108,6 +109,7 @@
 		A74DA00618D2FB9400F3B969 /* AltName.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AltName.cer; sourceTree = "<group>"; };
 		A74DA00718D2FB9400F3B969 /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
 		A74DA00818D2FB9400F3B969 /* NoDomains.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = NoDomains.cer; sourceTree = "<group>"; };
+		B6774DC818FBB49E0044DB17 /* AFNetworkActivityManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityManagerTests.m; sourceTree = "<group>"; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -251,6 +253,7 @@
 				29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */,
 				77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */,
 				29CBFC5917DF61B30021AB75 /* AFSecurityPolicyTests.m */,
+				B6774DC818FBB49E0044DB17 /* AFNetworkActivityManagerTests.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -493,6 +496,7 @@
 				29CBFC3917DF4F120021AB75 /* AFHTTPRequestOperationTests.m in Sources */,
 				29CBFC5A17DF61B30021AB75 /* AFSecurityPolicyTests.m in Sources */,
 				29CBFC3F17DF58000021AB75 /* AFHTTPSerializationTests.m in Sources */,
+				B6774DC918FBB49E0044DB17 /* AFNetworkActivityManagerTests.m in Sources */,
 				29CBFC3C17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
 				77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */,
 				2902D29C17DF4E3700C81C5A /* AFTestCase.m in Sources */,

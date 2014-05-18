@@ -156,7 +156,11 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     return data;
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
 
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [self init];
@@ -164,8 +168,8 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         return nil;
     }
 
-    self.acceptableStatusCodes = [decoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
-    self.acceptableContentTypes = [decoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableContentTypes))];
+    self.acceptableStatusCodes = [decoder decodeObjectOfClass:[NSIndexSet class] forKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
+    self.acceptableContentTypes = [decoder decodeObjectOfClass:[NSIndexSet class] forKey:NSStringFromSelector(@selector(acceptableContentTypes))];
 
     return self;
 }
@@ -272,7 +276,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     return responseObject;
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
@@ -280,7 +284,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         return nil;
     }
 
-    self.readingOptions = (NSJSONReadingOptions)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(readingOptions))];
+    self.readingOptions = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(readingOptions))] unsignedIntegerValue];
 
     return self;
 }
@@ -288,7 +292,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
 
-    [coder encodeInteger:self.readingOptions forKey:NSStringFromSelector(@selector(readingOptions))];
+    [coder encodeObject:@(self.readingOptions) forKey:NSStringFromSelector(@selector(readingOptions))];
 }
 
 #pragma mark - NSCopying
@@ -390,7 +394,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     return document;
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
@@ -398,7 +402,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         return nil;
     }
 
-    self.options = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(options))];
+    self.options = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(options))] unsignedIntegerValue];
 
     return self;
 }
@@ -406,7 +410,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
 
-    [coder encodeInteger:self.options forKey:NSStringFromSelector(@selector(options))];
+    [coder encodeObject:@(self.options) forKey:NSStringFromSelector(@selector(options))];
 }
 
 #pragma mark - NSCopying
@@ -477,7 +481,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     return responseObject;
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
@@ -485,8 +489,8 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         return nil;
     }
 
-    self.format = (NSPropertyListFormat)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(format))];
-    self.readOptions = (NSPropertyListReadOptions)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(readOptions))];
+    self.format = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(format))] unsignedIntegerValue];
+    self.readOptions = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(readOptions))] unsignedIntegerValue];
 
     return self;
 }
@@ -494,8 +498,8 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
 
-    [coder encodeInteger:self.format forKey:NSStringFromSelector(@selector(format))];
-    [coder encodeInteger:(NSInteger)self.readOptions forKey:NSStringFromSelector(@selector(readOptions))];
+    [coder encodeObject:@(self.format) forKey:NSStringFromSelector(@selector(format))];
+    [coder encodeObject:@(self.readOptions) forKey:NSStringFromSelector(@selector(readOptions))];
 }
 
 #pragma mark - NSCopying
@@ -658,7 +662,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     return nil;
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
@@ -667,7 +671,13 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     }
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    self.imageScale = [[decoder decodeObjectForKey:NSStringFromSelector(@selector(imageScale))] floatValue];
+    NSNumber *imageScale = [decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(imageScale))];
+#if CGFLOAT_IS_DOUBLE
+    self.imageScale = [imageScale doubleValue];
+#else
+    self.imageScale = [imageScale floatValue];
+#endif
+
     self.automaticallyInflatesResponseImage = [decoder decodeBoolForKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
 
@@ -701,7 +711,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #pragma mark -
 
 @interface AFCompoundResponseSerializer ()
-@property (readwrite, nonatomic, strong) NSArray *responseSerializers;
+@property (readwrite, nonatomic, copy) NSArray *responseSerializers;
 @end
 
 @implementation AFCompoundResponseSerializer
@@ -738,7 +748,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     return [super responseObjectForResponse:response data:data error:error];
 }
 
-#pragma mark - NSCoding
+#pragma mark - NSecureCoding
 
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
@@ -746,7 +756,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         return nil;
     }
 
-    self.responseSerializers = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializers))];
+    self.responseSerializers = [decoder decodeObjectOfClass:[NSArray class] forKey:NSStringFromSelector(@selector(responseSerializers))];
 
     return self;
 }
