@@ -144,7 +144,6 @@
         self.af_imageRequestOperation.responseSerializer = self.imageResponseSerializer;
         [self.af_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             __strong __typeof(weakSelf)strongSelf = weakSelf;
-            [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
             if ([[urlRequest URL] isEqual:[strongSelf.af_imageRequestOperation.request URL]]) {
                 if (success) {
                     success(urlRequest, operation.response, responseObject);
@@ -155,6 +154,9 @@
                 if (operation == strongSelf.af_imageRequestOperation){
                         strongSelf.af_imageRequestOperation = nil;
                 }
+            }
+            if ([[[strongSelf class] sharedImageCache] cachedImageForRequest:urlRequest] == nil) {
+                [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
             }
 
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
