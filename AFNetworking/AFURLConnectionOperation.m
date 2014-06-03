@@ -163,6 +163,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 @implementation AFURLConnectionOperation
 @synthesize outputStream = _outputStream;
+@synthesize cancelled = _cancelled;
 
 + (void)networkRequestThreadEntryPoint:(id)__unused object {
     @autoreleasepool {
