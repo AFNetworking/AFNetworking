@@ -99,7 +99,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 - (void)updateNetworkActivityIndicatorVisibilityDelayed {
     if (self.enabled) {
         // Delay hiding of activity indicator for a short interval, to avoid flickering
-        if (![self isNetworkActivityIndicatorVisible]) {
+        if (![[UIApplication sharedApplication] isNetworkActivityIndicatorVisible]) {
             [self.activityIndicatorVisibilityTimer invalidate];
             self.activityIndicatorVisibilityTimer = [NSTimer timerWithTimeInterval:kAFNetworkActivityIndicatorInvisibilityDelay target:self selector:@selector(updateNetworkActivityIndicatorVisibility) userInfo:nil repeats:NO];
             [[NSRunLoop mainRunLoop] addTimer:self.activityIndicatorVisibilityTimer forMode:NSRunLoopCommonModes];
