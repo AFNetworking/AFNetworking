@@ -62,6 +62,12 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
     id allowedPublicKey = nil;
 
     SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificate);
+    if (!allowedCertificate) {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                       reason:@"Certificate is not valid!"
+                                     userInfo:nil];
+    }
+    
     SecCertificateRef allowedCertificates[] = {allowedCertificate};
     CFArrayRef tempCertificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
 
