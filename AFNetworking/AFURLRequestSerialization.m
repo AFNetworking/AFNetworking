@@ -28,7 +28,9 @@
 #import <CoreServices/CoreServices.h>
 #endif
 
-extern NSString * const AFNetworkingErrorDomain;
+NSString * const AFNetworkingErrorDomain = @"AFNetworkingErrorDomain";
+NSString * const AFNetworkingOperationFailingURLRequestErrorKey = @"AFNetworkingOperationFailingURLRequestErrorKey";
+NSString * const AFNetworkingOperationFailingURLResponseErrorKey = @"AFNetworkingOperationFailingURLResponseErrorKey";
 
 typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, NSDictionary *parameters, NSError *__autoreleasing *error);
 
