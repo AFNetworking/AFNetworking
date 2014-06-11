@@ -909,7 +909,9 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
     if (self.didFinishEventsForBackgroundURLSession) {
-        self.didFinishEventsForBackgroundURLSession(session);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.didFinishEventsForBackgroundURLSession(session);
+        });
     }
 }
 
