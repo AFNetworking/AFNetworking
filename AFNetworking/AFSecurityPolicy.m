@@ -22,8 +22,6 @@
 
 #import "AFSecurityPolicy.h"
 
-#import <AssertMacros.h>
-
 // Equivalent of macro in <AssertMacros.h>, without causing compiler warning:
 // "'DebugAssert' is deprecated: first deprecated in OS X 10.8"
 #ifndef AF_Require
