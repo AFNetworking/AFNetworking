@@ -1,3 +1,73 @@
+= 2.3.0 (2014-06-11)
+
+ * Add check for `AF_APP_EXTENSIONS` macro to conditionally compile
+background  method that makes API call unavailable to App Extensions in iOS 8
+/ OS X 10.10
+
+ * Add further explanation for network reachability in documentation (Steven
+Fisher)
+
+ * Add notification for initial change from
+`AFNetworkReachabilityStatusUnknown` to any other state (Jason Pepas,
+Sebastian S.A., Mattt Thompson)
+
+ * Add tests for AFNetworkActivityIndicatorManager (Dave Weston, Mattt
+Thompson)
+
+ * Add tests for AFURLSessionManager task progress (Ullrich Schäfer)
+
+ * Add `attemptsToRecreateUploadTasksForBackgroundSessions` property, which
+attempts Apple's recommendation of retrying a failed upload task if initial
+creation did not succeed (Mattt Thompson)
+
+ * Add `completionQueue` and `completionGroup` properties to
+`AFHTTPRequestOperationManager` (Robert Ryan)
+
+ * Change serialization tests to be split over two different files (Mattt
+Thompson)
+
+ * Change to make NSURLSession subspec not depend on NSURLConnection subspec
+(Mattt Thompson)
+
+ * Change to make Serialization subspec not depend on NSURLConnection subspec
+(Nolan Waite, Mattt Thompson)
+
+ * Change `completionHandler` of
+`application:handleEventsForBackgroundURLSession:completion:` to be run on
+main thread (Padraig Kennedy)
+
+ * Change `UIImageView` category to accept any object conforming to
+`AFURLResponseSerialization`, rather than just `AFImageResponseSerializer`
+(Romans Karpelcevs)
+
+ * Fix calculation and behavior of `NSProgress` (Padraig Kennedy, Ullrich
+Schäfer)
+
+ * Fix deprecation warning for `backgroundSessionConfiguration:` in iOS 8 /
+OS X 10.10 (Mattt Thompson)
+
+ * Fix implementation of `copyWithZone:` in serializer subclasses (Chris
+Streeter)
+
+ * Fix issue in Xcode 6 caused by implicit synthesis of overridden `NSStream`
+properties (Clay Bridges, Johan Attali)
+
+ * Fix KVO handling for `NSURLSessionTask` on iOS 8 / OS X 10.10 (Mattt
+Thompson)
+
+ * Fix KVO leak for `NSURLSessionTask` (@Zyphrax)
+
+ * Fix potential crash caused by attempting to use non-existent error of
+failing requests due to URLs exceeding a certain length (Boris Bügling)
+
+ * Fix to check existence of `uploadProgress` block inside a referencing
+`dispatch_async` to avoid potential race condition (Kyungkoo Kang)
+
+ * Fix `UIImageView` category race conditions (Sunny)
+
+ * Remove unnecessary default operation response serializer setters (Mattt
+Thompson)
+
 = 2.2.4 (2014-05-13)
 
  * Add NSSecureCoding support to all AFNetworking classes (Kyle Fuller, Mattt
