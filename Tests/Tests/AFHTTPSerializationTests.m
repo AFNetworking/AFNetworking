@@ -61,6 +61,7 @@
 @implementation AFHTTPRequestSerializationTests
 
 - (void)setUp {
+    [super setUp];
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
 }
 
@@ -114,6 +115,7 @@
 @implementation AFHTTPResponseSerializationTests
 
 - (void)setUp {
+    [super setUp];
     self.responseSerializer = [AFHTTPResponseSerializer serializer];
 }
 
