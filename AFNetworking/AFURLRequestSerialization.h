@@ -254,9 +254,6 @@ forHTTPHeaderField:(NSString *)field;
 
 #pragma mark -
 
-extern NSUInteger const kAFUploadStream3GSuggestedPacketSize;
-extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
-
 /**
  The `AFMultipartFormData` protocol defines the methods supported by the parameter in the block argument of `AFHTTPRequestSerializer -multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:`.
  */
@@ -355,22 +352,6 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 
 @end
 
-///----------------
-/// @name Constants
-///----------------
-
-/**
- ## Throttling Bandwidth for HTTP Request Input Streams
-
- @see -throttleBandwidthWithPacketSize:delay:
-
- `kAFUploadStream3GSuggestedPacketSize`
- Maximum packet size, in number of bytes. Equal to 16kb.
-
- `kAFUploadStream3GSuggestedDelay`
- Duration of delay each time a packet is read. Equal to 0.2 seconds.
- */
-
 #pragma mark -
 
 @interface AFJSONRequestSerializer : AFHTTPRequestSerializer
@@ -413,3 +394,51 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
                         writeOptions:(NSPropertyListWriteOptions)writeOptions;
 
 @end
+
+///----------------
+/// @name Constants
+///----------------
+
+/**
+ ## Error Domains
+
+ The following error domain is predefined.
+
+ - `NSString * const AFURLRequestSerializationErrorDomain`
+
+ ### Constants
+
+ `AFURLRequestSerializationErrorDomain`
+ AFURLRequestSerializer errors. Error codes for `AFURLRequestSerializationErrorDomain` correspond to codes in `NSURLErrorDomain`.
+ */
+extern NSString * const AFURLRequestSerializationErrorDomain;
+
+/**
+ ## User info dictionary keys
+
+ These keys may exist in the user info dictionary, in addition to those defined for NSError.
+
+ - `NSString * const AFNetworkingOperationFailingURLResponseErrorKey`
+
+ ### Constants
+
+ `AFNetworkingOperationFailingURLRequestErrorKey`
+ The corresponding value is an `NSURLRequest` containing the request of the operation associated with an error. This key is only present in the `AFURLRequestSerializationErrorDomain`.
+ */
+extern NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
+
+/**
+ ## Throttling Bandwidth for HTTP Request Input Streams
+
+ @see -throttleBandwidthWithPacketSize:delay:
+
+ ### Constants
+
+ `kAFUploadStream3GSuggestedPacketSize`
+ Maximum packet size, in number of bytes. Equal to 16kb.
+
+ `kAFUploadStream3GSuggestedDelay`
+ Duration of delay each time a packet is read. Equal to 0.2 seconds.
+ */
+extern NSUInteger const kAFUploadStream3GSuggestedPacketSize;
+extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;

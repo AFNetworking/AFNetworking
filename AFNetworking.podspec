@@ -40,7 +40,9 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'NSURLSession' do |ss|
-    ss.dependency 'AFNetworking/NSURLConnection'
+    ss.dependency 'AFNetworking/Serialization'
+    ss.dependency 'AFNetworking/Reachability'
+    ss.dependency 'AFNetworking/Security'
 
     ss.source_files = 'AFNetworking/AFURLSessionManager.{h,m}', 'AFNetworking/AFHTTPSessionManager.{h,m}'
   end

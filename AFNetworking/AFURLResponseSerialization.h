@@ -260,3 +260,35 @@
 + (instancetype)compoundSerializerWithResponseSerializers:(NSArray *)responseSerializers;
 
 @end
+
+///----------------
+/// @name Constants
+///----------------
+
+/**
+ ## Error Domains
+
+ The following error domain is predefined.
+
+ - `NSString * const AFURLResponseSerializationErrorDomain`
+
+ ### Constants
+
+ `AFURLResponseSerializationErrorDomain`
+ AFURLResponseSerializer errors. Error codes for `AFURLResponseSerializationErrorDomain` correspond to codes in `NSURLErrorDomain`.
+ */
+extern NSString * const AFURLResponseSerializationErrorDomain;
+
+/**
+ ## User info dictionary keys
+
+ These keys may exist in the user info dictionary, in addition to those defined for NSError.
+
+ - `NSString * const AFNetworkingOperationFailingURLResponseErrorKey`
+
+ ### Constants
+
+ `AFNetworkingOperationFailingURLResponseErrorKey`
+ The corresponding value is an `NSURLResponse` containing the response of the operation associated with an error. This key is only present in the `AFURLResponseSerializationErrorDomain`.
+ */
+extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;

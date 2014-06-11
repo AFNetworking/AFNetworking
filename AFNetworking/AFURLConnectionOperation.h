@@ -23,6 +23,8 @@
 #import <Foundation/Foundation.h>
 
 #import <Availability.h>
+#import "AFURLRequestSerialization.h"
+#import "AFURLResponseSerialization.h"
 #import "AFSecurityPolicy.h"
 
 /**
@@ -310,41 +312,6 @@
                       completionBlock:(void (^)(NSArray *operations))completionBlock;
 
 @end
-
-///----------------
-/// @name Constants
-///----------------
-
-/**
- ## User info dictionary keys
-
- These keys may exist in the user info dictionary, in addition to those defined for NSError.
-
- - `NSString * const AFNetworkingOperationFailingURLRequestErrorKey`
- - `NSString * const AFNetworkingOperationFailingURLResponseErrorKey`
-
- ### Constants
-
- `AFNetworkingOperationFailingURLRequestErrorKey`
- The corresponding value is an `NSURLRequest` containing the request of the operation associated with an error. This key is only present in the `AFNetworkingErrorDomain`.
-
- `AFNetworkingOperationFailingURLResponseErrorKey`
- The corresponding value is an `NSURLResponse` containing the response of the operation associated with an error. This key is only present in the `AFNetworkingErrorDomain`.
-
- ## Error Domains
-
- The following error domain is predefined.
-
- - `NSString * const AFNetworkingErrorDomain`
-
- ### Constants
-
- `AFNetworkingErrorDomain`
- AFNetworking errors. Error codes for `AFNetworkingErrorDomain` correspond to codes in `NSURLErrorDomain`.
- */
-extern NSString * const AFNetworkingErrorDomain;
-extern NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
-extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 ///--------------------
 /// @name Notifications
