@@ -78,6 +78,7 @@ static NSData * AFJSONTestData() {
 @implementation AFJSONResponseSerializationTests
 
 - (void)setUp {
+    [super setUp];
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 }
 

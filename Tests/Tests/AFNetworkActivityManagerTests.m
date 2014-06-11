@@ -36,6 +36,8 @@
 @implementation AFNetworkActivityManagerTests
 
 - (void)setUp {
+    [super setUp];
+
     self.networkActivityIndicatorManager = [[AFNetworkActivityIndicatorManager alloc] init];
     self.networkActivityIndicatorManager.enabled = YES;
 

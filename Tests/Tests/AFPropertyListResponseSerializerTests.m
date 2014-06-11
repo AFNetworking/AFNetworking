@@ -31,6 +31,7 @@
 @implementation AFPropertyListResponseSerializerTests
 
 - (void)setUp {
+    [super setUp];
     self.responseSerializer = [AFPropertyListResponseSerializer serializer];
 }
 
