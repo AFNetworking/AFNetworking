@@ -594,7 +594,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
         SecPolicyRef policy = SecPolicyCreateBasicX509();
         SecTrustEvaluate(serverTrust, NULL);
         CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
-        NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:certificateCount];
+        NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:(NSUInteger)certificateCount];
         
         for (CFIndex i = 0; i < certificateCount; i++) {
             SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
@@ -742,7 +742,7 @@ didReceiveResponse:(NSURLResponse *)response
                     break;
                 }
 
-                totalNumberOfBytesWritten += numberOfBytesWritten;
+                totalNumberOfBytesWritten += (NSUInteger)numberOfBytesWritten;
             }
 
             break;
@@ -756,7 +756,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.totalBytesRead += length;
+        self.totalBytesRead += (long long)length;
         
         if (self.downloadProgress) {
             self.downloadProgress(length, self.totalBytesRead, self.response.expectedContentLength);

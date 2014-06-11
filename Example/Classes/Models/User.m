@@ -46,7 +46,7 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
         return nil;
     }
     
-    _userID = [[attributes valueForKeyPath:@"id"] integerValue];
+    _userID = (NSUInteger)[[attributes valueForKeyPath:@"id"] integerValue];
     _username = [attributes valueForKeyPath:@"username"];
     _avatarImageURLString = [attributes valueForKeyPath:@"avatar_image.url"];
     

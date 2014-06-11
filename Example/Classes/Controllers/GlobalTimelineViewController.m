@@ -37,7 +37,7 @@
     __strong UIActivityIndicatorView *_activityIndicatorView;
 }
 
-- (void)reload:(id)sender {
+- (void)reload:(__unused id)sender {
     [_activityIndicatorView startAnimating];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
@@ -84,11 +84,15 @@
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_posts count];
+- (NSInteger)tableView:(__unused UITableView *)tableView
+ numberOfRowsInSection:(__unused NSInteger)section
+{
+    return (NSInteger)[_posts count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *CellIdentifier = @"Cell";
     
     PostTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -96,18 +100,22 @@
         cell = [[PostTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    cell.post = [_posts objectAtIndex:indexPath.row];
+    cell.post = [_posts objectAtIndex:(NSUInteger)indexPath.row];
     
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [PostTableViewCell heightForCellWithPost:[_posts objectAtIndex:indexPath.row]];
+- (CGFloat)tableView:(__unused UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [PostTableViewCell heightForCellWithPost:[_posts objectAtIndex:(NSUInteger)indexPath.row]];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 

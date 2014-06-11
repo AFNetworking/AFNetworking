@@ -153,7 +153,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     if ([value isKindOfClass:[NSDictionary class]]) {
         NSDictionary *dictionary = value;
         // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wselector"
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+#pragma clang diagnostic pop
         for (id nestedKey in [dictionary.allKeys sortedArrayUsingDescriptors:@[ sortDescriptor ]]) {
             id nestedValue = [dictionary objectForKey:nestedKey];
             if (nestedValue) {
@@ -724,7 +727,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         return nil;
     }
 
-    self.stringEncoding = [aDecoder decodeIntegerForKey:@"stringEncoding"];
+    self.stringEncoding = (NSStringEncoding)[aDecoder decodeIntegerForKey:@"stringEncoding"];
     self.parameterEncoding = (AFHTTPClientParameterEncoding) [aDecoder decodeIntegerForKey:@"parameterEncoding"];
     self.registeredHTTPOperationClassNames = [aDecoder decodeObjectForKey:@"registeredHTTPOperationClassNames"];
     self.defaultHeaders = [aDecoder decodeObjectForKey:@"defaultHeaders"];
@@ -1074,7 +1077,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     }
 
     NSInteger totalNumberOfBytesRead = 0;
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
     while ((NSUInteger)totalNumberOfBytesRead < MIN(length, self.numberOfBytesInPacket)) {
         if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
             if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
@@ -1095,7 +1099,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
             }
         }
     }
-    
+#pragma clang diagnostic pop
+
     return totalNumberOfBytesRead;
 }
 
@@ -1301,7 +1306,7 @@ typedef enum {
 - (NSInteger)read:(uint8_t *)buffer
         maxLength:(NSUInteger)length
 {
-    NSUInteger totalNumberOfBytesRead = 0;
+    NSInteger totalNumberOfBytesRead = 0;
 
     if (_phase == AFEncapsulationBoundaryPhase) {
         NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary(self.boundary) : AFMultipartFormEncapsulationBoundary(self.boundary)) dataUsingEncoding:self.stringEncoding];

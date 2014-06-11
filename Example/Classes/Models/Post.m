@@ -36,7 +36,7 @@
         return nil;
     }
     
-    _postID = [[attributes valueForKeyPath:@"id"] integerValue];
+    _postID = (NSUInteger)[[attributes valueForKeyPath:@"id"] integerValue];
     _text = [attributes valueForKeyPath:@"text"];
     
     _user = [[User alloc] initWithAttributes:[attributes valueForKeyPath:@"user"]];
@@ -47,7 +47,7 @@
 #pragma mark -
 
 + (void)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block {
-    [[AFAppDotNetAPIClient sharedClient] getPath:@"stream/0/posts/stream/global" parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
+    [[AFAppDotNetAPIClient sharedClient] getPath:@"stream/0/posts/stream/global" parameters:nil success:^(__unused AFHTTPRequestOperation *operation, id JSON) {
         NSArray *postsFromResponse = [JSON valueForKeyPath:@"data"];
         NSMutableArray *mutablePosts = [NSMutableArray arrayWithCapacity:[postsFromResponse count]];
         for (NSDictionary *attributes in postsFromResponse) {
@@ -58,7 +58,7 @@
         if (block) {
             block([NSArray arrayWithArray:mutablePosts], nil);
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
         if (block) {
             block([NSArray array], error);
         }

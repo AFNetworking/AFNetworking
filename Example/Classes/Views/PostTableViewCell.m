@@ -60,9 +60,17 @@
 }
 
 + (CGFloat)heightForCellWithPost:(Post *)post {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wenum-conversion"
     CGSize sizeToFit = [post.text sizeWithFont:[UIFont systemFontOfSize:12.0f] constrainedToSize:CGSizeMake(220.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap];
-    
-    return fmaxf(70.0f, sizeToFit.height + 45.0f);
+#pragma clang diagnostic pop
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+    CGFloat height = MAX(70.0f, sizeToFit.height + 45.0f);
+#pragma clang diagnostic pop
+
+    return height;
 }
 
 #pragma mark - UIView
