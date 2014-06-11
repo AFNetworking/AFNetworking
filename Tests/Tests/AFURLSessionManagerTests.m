@@ -25,20 +25,19 @@
 #import "AFURLSessionManager.h"
 
 @interface AFURLSessionManagerTests : AFTestCase
-@property (nonatomic) AFURLSessionManager *manager;
+@property (readwrite, nonatomic, strong) AFURLSessionManager *manager;
 @end
 
 @implementation AFURLSessionManagerTests
 
-- (void)setUp
-{
+- (void)setUp {
     [super setUp];
     self.manager = [[AFURLSessionManager alloc] init];
 }
 
+#pragma mark -
 
-- (void)testUploadTasksProgressBecomesPartOfCurrentProgress
-{
+- (void)testUploadTasksProgressBecomesPartOfCurrentProgress {
     NSProgress *overallProgress = [NSProgress progressWithTotalUnitCount:100];
     
     [overallProgress becomeCurrentWithPendingUnitCount:80];
@@ -59,8 +58,7 @@
     expect(overallProgress.fractionCompleted).to.equal(0.8);
 }
 
-- (void)testDownloadTasksProgressBecomesPartOfCurrentProgress
-{
+- (void)testDownloadTasksProgressBecomesPartOfCurrentProgress {
     NSProgress *overallProgress = [NSProgress progressWithTotalUnitCount:100];
     
     [overallProgress becomeCurrentWithPendingUnitCount:80];
