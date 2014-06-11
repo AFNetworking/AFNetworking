@@ -96,8 +96,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @interface AFURLSessionManagerTaskDelegate : NSObject <NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate>
 @property (nonatomic, weak) AFURLSessionManager *manager;
 @property (nonatomic, strong) NSMutableData *mutableData;
-@property (nonatomic, strong) NSProgress *uploadProgress;
-@property (nonatomic, strong) NSProgress *downloadProgress;
+@property (nonatomic, strong) NSProgress *progress;
 @property (nonatomic, copy) NSURL *downloadFileURL;
 @property (nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
 @property (nonatomic, copy) AFURLSessionTaskCompletionHandler completionHandler;
@@ -113,8 +112,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
     self.mutableData = [NSMutableData data];
 
-    self.uploadProgress = [[NSProgress alloc] initWithParent:nil userInfo:nil];
-    self.downloadProgress = [[NSProgress alloc] initWithParent:nil userInfo:nil];
+    self.progress = [NSProgress progressWithTotalUnitCount:0];
 
     return self;
 }
@@ -127,8 +125,8 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
-    self.uploadProgress.totalUnitCount = totalBytesExpectedToSend;
-    self.uploadProgress.completedUnitCount = totalBytesSent;
+    self.progress.totalUnitCount = totalBytesExpectedToSend;
+    self.progress.completedUnitCount = totalBytesSent;
 }
 
 - (void)URLSession:(__unused NSURLSession *)session
@@ -229,16 +227,16 @@ didFinishDownloadingToURL:(NSURL *)location
  totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
-    self.downloadProgress.totalUnitCount = totalBytesExpectedToWrite;
-    self.downloadProgress.completedUnitCount = totalBytesWritten;
+    self.progress.totalUnitCount = totalBytesExpectedToWrite;
+    self.progress.completedUnitCount = totalBytesWritten;
 }
 
 - (void)URLSession:(__unused NSURLSession *)session
       downloadTask:(__unused NSURLSessionDownloadTask *)downloadTask
  didResumeAtOffset:(int64_t)fileOffset
 expectedTotalBytes:(int64_t)expectedTotalBytes {
-    self.downloadProgress.totalUnitCount = expectedTotalBytes;
-    self.downloadProgress.completedUnitCount = fileOffset;
+    self.progress.totalUnitCount = expectedTotalBytes;
+    self.progress.completedUnitCount = fileOffset;
 }
 
 @end
@@ -369,16 +367,16 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
         }
     }
 
-    delegate.uploadProgress = [NSProgress progressWithTotalUnitCount:totalUnitCount];
-    delegate.uploadProgress.pausingHandler = ^{
+    delegate.progress = [NSProgress progressWithTotalUnitCount:totalUnitCount];
+    delegate.progress.pausingHandler = ^{
         [uploadTask suspend];
     };
-    delegate.uploadProgress.cancellationHandler = ^{
+    delegate.progress.cancellationHandler = ^{
         [uploadTask cancel];
     };
 
     if (progress) {
-        *progress = delegate.uploadProgress;
+        *progress = delegate.progress;
     }
 
     [self setDelegate:delegate forTask:uploadTask];
@@ -402,7 +400,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     };
 
     if (progress) {
-        *progress = delegate.downloadProgress;
+        *progress = delegate.progress;
     }
 
     [self setDelegate:delegate forTask:downloadTask];
@@ -559,11 +557,11 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 #pragma mark -
 
 - (NSProgress *)uploadProgressForTask:(NSURLSessionUploadTask *)uploadTask {
-    return [[self delegateForTask:uploadTask] uploadProgress];
+    return [[self delegateForTask:uploadTask] progress];
 }
 
 - (NSProgress *)downloadProgressForTask:(NSURLSessionDownloadTask *)downloadTask {
-    return [[self delegateForTask:downloadTask] downloadProgress];
+    return [[self delegateForTask:downloadTask] progress];
 }
 
 #pragma mark -
@@ -579,7 +577,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 #pragma mark -
 
 - (void)setTaskNeedNewBodyStreamBlock:(NSInputStream * (^)(NSURLSession *session, NSURLSessionTask *task))block {
-   self.taskNeedNewBodyStream = block;
+    self.taskNeedNewBodyStream = block;
 }
 
 - (void)setTaskWillPerformHTTPRedirectionBlock:(NSURLRequest * (^)(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request))block {
@@ -901,7 +899,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
     NSCachedURLResponse *cachedResponse = proposedResponse;
 
     if (self.dataTaskWillCacheResponse) {
-       cachedResponse = self.dataTaskWillCacheResponse(session, dataTask, proposedResponse);
+        cachedResponse = self.dataTaskWillCacheResponse(session, dataTask, proposedResponse);
     }
 
     if (completionHandler) {
