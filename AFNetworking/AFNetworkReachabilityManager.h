@@ -39,9 +39,7 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 /**
  `AFNetworkReachabilityManager` monitors the reachability of domains, and addresses for both WWAN and WiFi network interfaces.
  
- Reachability can be used to determine background information about why a network operation failed, or to trigger a network operation retrying when a connection is established. It should not be used to block a user from initiating a network request. It's possible that the user request may successfully initiate networking.
-
- You can see this behavior modeled in Safari on iOS. You can start a web request at any time. If iOS sees a network connection start, it will automatically retry a failed request. However, the network status does not prevent the user from trying a request.
+ Reachability can be used to determine background information about why a network operation failed, or to trigger a network operation retrying when a connection is established. It should not be used to prevent a user from initiating a network request, as it's possible that an initial request may be required to establish reachability.
 
  See Apple's Reachability Sample Code (https://developer.apple.com/library/ios/samplecode/reachability/)
  
