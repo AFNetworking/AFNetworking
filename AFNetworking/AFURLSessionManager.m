@@ -338,7 +338,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     NSParameterAssert(delegate);
 
     [self.lock lock];
-    [task addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
+    [task addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:NSKeyValueObservingOptionOld |NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
     self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
     [self.lock unlock];
 }
@@ -662,6 +662,10 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
                        context:(void *)context
 {
     if (context == AFTaskStateChangedContext && [keyPath isEqualToString:@"state"]) {
+        if (change[NSKeyValueChangeOldKey] && change[NSKeyValueChangeNewKey] && [change[NSKeyValueChangeNewKey] isEqual:change[NSKeyValueChangeOldKey]]) {
+            return;
+        }
+
         NSString *notificationName = nil;
         switch ([(NSURLSessionTask *)object state]) {
             case NSURLSessionTaskStateRunning:
