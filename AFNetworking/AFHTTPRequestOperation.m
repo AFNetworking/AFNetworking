@@ -152,7 +152,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 - (void)pause {
     [super pause];
-    
+
     u_int64_t offset = 0;
     if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
         offset = [(NSNumber *)[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
