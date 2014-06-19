@@ -735,7 +735,6 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (readwrite, copy) NSError *streamError;
 @end
 
-
 @interface AFMultipartBodyStream () <NSCopying>
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
 @property (readwrite, nonatomic, strong) NSMutableArray *HTTPBodyParts;
@@ -746,6 +745,11 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @end
 
 @implementation AFMultipartBodyStream
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-atomic-properties"
+@synthesize streamStatus;
+@synthesize streamError;
+#pragma clang diagnostic pop
 
 - (id)initWithStringEncoding:(NSStringEncoding)encoding {
     self = [super init];

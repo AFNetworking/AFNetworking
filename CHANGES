@@ -1,3 +1,8 @@
+= 2.3.1 (2014-06-13)
+
+ * Fix issue with unsynthesized `streamStatus` & `streamError` properties
+on `AFMultipartBodyStream` (Mattt Thompson)
+
 = 2.3.0 (2014-06-11)
 
  * Add check for `AF_APP_EXTENSIONS` macro to conditionally compile
@@ -22,6 +27,10 @@ creation did not succeed (Mattt Thompson)
 
  * Add `completionQueue` and `completionGroup` properties to
 `AFHTTPRequestOperationManager` (Robert Ryan)
+
+ * Change deprecating `AFErrorDomain` in favor of
+`AFRequestSerializerErrorDomain` & `AFResponseSerializerErrorDomain` (Mattt
+Thompson)
 
  * Change serialization tests to be split over two different files (Mattt
 Thompson)
