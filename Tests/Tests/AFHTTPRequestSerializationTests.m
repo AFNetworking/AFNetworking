@@ -22,7 +22,6 @@
 
 #import "AFTestCase.h"
 
-#import "AFURLResponseSerialization.h"
 #import "AFURLRequestSerialization.h"
 
 @interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
@@ -102,51 +101,6 @@
     AFHTTPBodyPart *part = [formData.bodyStream.HTTPBodyParts firstObject];
     
     XCTAssertTrue([part.headers[@"Content-Type"] isEqualToString:@"application/x-x509-ca-cert"], @"MIME Type has not been obtained correctly (%@)", part.headers[@"Content-Type"]);
-}
-
-@end
-
-#pragma mark -
-
-@interface AFHTTPResponseSerializationTests : AFTestCase
-@property (nonatomic, strong) AFHTTPResponseSerializer *responseSerializer;
-@end
-
-@implementation AFHTTPResponseSerializationTests
-
-- (void)setUp {
-    [super setUp];
-    self.responseSerializer = [AFHTTPResponseSerializer serializer];
-}
-
-#pragma mark -
-
-- (void)testThatAFHTTPResponseSerializationHandlesAll2XXCodes {
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-    [indexSet enumerateIndexesUsingBlock:^(NSUInteger statusCode, BOOL *stop) {
-        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
-
-        XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should be acceptable", @(statusCode));
-
-        NSError *error = nil;
-        [self.responseSerializer validateResponse:response data:[@"text" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
-
-        XCTAssertNil(error, @"Error handling status code %@", @(statusCode));
-    }];
-}
-
-- (void)testThatAFHTTPResponseSerializationFailsAll4XX5XXStatusCodes {
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(400, 200)];
-    [indexSet enumerateIndexesUsingBlock:^(NSUInteger statusCode, BOOL *stop) {
-        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
-
-        XCTAssert(![self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should not be acceptable", @(statusCode));
-
-        NSError *error = nil;
-        [self.responseSerializer validateResponse:response data:[@"text" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
-
-        XCTAssertNotNil(error, @"Did not fail handling status code %@",@(statusCode));
-    }];
 }
 
 @end
