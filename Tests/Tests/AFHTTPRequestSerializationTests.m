@@ -66,11 +66,25 @@
 
 #pragma mark -
 
-- (void)testThatAFHTTPRequestSerialiationSerializesDefaultQueryParametersCorrectly{
+- (void)testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectly {
     NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://test.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"value"} error:nil];
 
-    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=value"], @"Default Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=value"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+}
+
+- (void)testThatAFHTTPRequestSerialiationSerializesURLEncodableQueryParametersCorrectly {
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://test.com"]];
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@" !\"#$%&'()*+,/"} error:nil];
+
+    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=%20%21%22%23%24%25%26%27%28%29%2A%2B%2C%2F"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+}
+
+- (void)testThatAFHTTPRequestSerialiationSerializesURLEncodedQueryParametersCorrectly {
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://test.com"]];
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"%20%21%22%23%24%25%26%27%28%29%2A%2B%2C%2F"} error:nil];
+
+    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=%2520%2521%2522%2523%2524%2525%2526%2527%2528%2529%252A%252B%252C%252F"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectlyFromQuerySerializationBlock {
