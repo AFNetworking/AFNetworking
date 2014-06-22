@@ -77,7 +77,7 @@ NSString * const AFNetworkingTaskDidFinishAssetPathKey = @"com.alamofire.network
 
 static NSString * const AFURLSessionManagerLockName = @"com.alamofire.networking.session.manager.lock";
 
-static NSUInteger const AFMaximumNumberOfToRecreateBackgroundSessionUploadTask = 3;
+static NSUInteger const AFMaximumNumberOfAttemptsToRecreateBackgroundSessionUploadTask = 3;
 
 static void * AFTaskStateChangedContext = &AFTaskStateChangedContext;
 
@@ -519,7 +519,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     });
 
     if (!uploadTask && self.attemptsToRecreateUploadTasksForBackgroundSessions && self.session.configuration.identifier) {
-        for (NSUInteger attempts = 0; !uploadTask && attempts < AFMaximumNumberOfToRecreateBackgroundSessionUploadTask; attempts++) {
+        for (NSUInteger attempts = 0; !uploadTask && attempts < AFMaximumNumberOfAttemptsToRecreateBackgroundSessionUploadTask; attempts++) {
             uploadTask = [self.session uploadTaskWithRequest:request fromFile:fileURL];
         }
     }
