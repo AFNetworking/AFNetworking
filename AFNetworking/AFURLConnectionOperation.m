@@ -466,6 +466,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             [self.outputStream scheduleInRunLoop:runLoop forMode:runLoopMode];
         }
         
+        [self.outputStream open];
         [self.connection start];
     }
     [self.lock unlock];
@@ -642,8 +643,6 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 didReceiveResponse:(NSURLResponse *)response
 {
     self.response = response;
-    
-    [self.outputStream open];
 }
 
 - (void)connection:(NSURLConnection __unused *)connection
