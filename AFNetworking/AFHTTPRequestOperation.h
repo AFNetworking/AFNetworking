@@ -59,9 +59,9 @@
  This method should be overridden in subclasses in order to specify the response object passed into the success block.
  
  @param success The block to be executed on the completion of a successful request. This block has no return value and takes two arguments: the receiver operation and the object constructed from the response data of the request.
- @param failure The block to be executed on the completion of an unsuccessful request. This block has no return value and takes two arguments: the receiver operation and the error that occurred during the request.
+ @param failure The block to be executed on the completion of an unsuccessful request. This block has no return value and takes three arguments: the receiver operation, the error that occurred during the request and the object constructed from the response data of the request.
  */
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error,id responseObject))failure;
 
 @end
