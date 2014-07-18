@@ -169,7 +169,20 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 #pragma mark -
 
+static NSArray * AFHTTPRequestSerializerObservedKeyPaths() {
+    static NSArray *_AFHTTPRequestSerializerObservedKeyPaths = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _AFHTTPRequestSerializerObservedKeyPaths = @[NSStringFromSelector(@selector(allowsCellularAccess)), NSStringFromSelector(@selector(cachePolicy)), NSStringFromSelector(@selector(HTTPShouldHandleCookies)), NSStringFromSelector(@selector(HTTPShouldUsePipelining)), NSStringFromSelector(@selector(networkServiceType)), NSStringFromSelector(@selector(timeoutInterval))];
+    });
+
+    return _AFHTTPRequestSerializerObservedKeyPaths;
+}
+
+static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerObserverContext;
+
 @interface AFHTTPRequestSerializer ()
+@property (readwrite, nonatomic, strong) NSMutableSet *mutableObservedChangedKeyPaths;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *mutableHTTPRequestHeaders;
 @property (readwrite, nonatomic, assign) AFHTTPRequestQueryStringSerializationStyle queryStringSerializationStyle;
 @property (readwrite, nonatomic, copy) AFQueryStringSerializationBlock queryStringSerialization;
@@ -188,12 +201,6 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     }
 
     self.stringEncoding = NSUTF8StringEncoding;
-    self.allowsCellularAccess = YES;
-    self.cachePolicy = NSURLRequestUseProtocolCachePolicy;
-    self.HTTPShouldHandleCookies = YES;
-    self.HTTPShouldUsePipelining = NO;
-    self.networkServiceType = NSURLNetworkServiceTypeDefault;
-    self.timeoutInterval = 60;
 
     self.mutableHTTPRequestHeaders = [NSMutableDictionary dictionary];
 
@@ -229,7 +236,18 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     // HTTP Method Definitions; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
     self.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", @"DELETE", nil];
 
+    self.mutableObservedChangedKeyPaths = [NSMutableSet set];
+    for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
+        [self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:AFHTTPRequestSerializerObserverContext];
+    }
+
     return self;
+}
+
+- (void)dealloc {
+    for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
+        [self removeObserver:self forKeyPath:keyPath context:AFHTTPRequestSerializerObserverContext];
+    }
 }
 
 #pragma mark -
@@ -289,12 +307,12 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
     NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:url];
     mutableRequest.HTTPMethod = method;
-    mutableRequest.allowsCellularAccess = self.allowsCellularAccess;
-    mutableRequest.cachePolicy = self.cachePolicy;
-    mutableRequest.HTTPShouldHandleCookies = self.HTTPShouldHandleCookies;
-    mutableRequest.HTTPShouldUsePipelining = self.HTTPShouldUsePipelining;
-    mutableRequest.networkServiceType = self.networkServiceType;
-    mutableRequest.timeoutInterval = self.timeoutInterval;
+
+    for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
+        if ([self.mutableObservedChangedKeyPaths containsObject:keyPath]) {
+            [mutableRequest setValue:[self valueForKeyPath:keyPath] forKey:keyPath];
+        }
+    }
 
     mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
 
@@ -435,14 +453,29 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
             mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];
         } else {
             if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
-                NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-                [mutableRequest setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset] forHTTPHeaderField:@"Content-Type"];
+                [mutableRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
             }
             [mutableRequest setHTTPBody:[query dataUsingEncoding:self.stringEncoding]];
         }
     }
 
     return mutableRequest;
+}
+
+#pragma mark - NSKeyValueObserving
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(__unused id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if (context == AFHTTPRequestSerializerObserverContext) {
+        if ([change[NSKeyValueChangeNewKey] isEqual:[NSNull null]]) {
+            [self.mutableObservedChangedKeyPaths removeObject:keyPath];
+        } else {
+            [self.mutableObservedChangedKeyPaths addObject:keyPath];
+        }
+    }
 }
 
 #pragma mark - NSecureCoding

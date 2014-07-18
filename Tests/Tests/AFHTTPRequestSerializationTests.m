@@ -22,7 +22,6 @@
 
 #import "AFTestCase.h"
 
-#import "AFURLResponseSerialization.h"
 #import "AFURLRequestSerialization.h"
 
 @interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
@@ -67,11 +66,25 @@
 
 #pragma mark -
 
-- (void)testThatAFHTTPRequestSerialiationSerializesDefaultQueryParametersCorrectly{
-    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://test.com"]];
+- (void)testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectly {
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"value"} error:nil];
 
-    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=value"], @"Default Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=value"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+}
+
+- (void)testThatAFHTTPRequestSerialiationSerializesURLEncodableQueryParametersCorrectly {
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@" !\"#$%&'()*+,/"} error:nil];
+
+    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=%20%21%22%23%24%25%26%27%28%29%2A%2B%2C%2F"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+}
+
+- (void)testThatAFHTTPRequestSerialiationSerializesURLEncodedQueryParametersCorrectly {
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"%20%21%22%23%24%25%26%27%28%29%2A%2B%2C%2F"} error:nil];
+
+    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=%2520%2521%2522%2523%2524%2525%2526%2527%2528%2529%252A%252B%252C%252F"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectlyFromQuerySerializationBlock {
@@ -84,14 +97,14 @@
          return query;
      }];
     
-    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://test.com"]];
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"value"} error:nil];
 
     XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key**value"], @"Custom Query parameters have not been serialized correctly (%@) by the query string block.", [[serializedRequest URL] query]);
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesMIMETypeCorrectly {
-    NSMutableURLRequest *originalRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://test.com"]];
+    NSMutableURLRequest *originalRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
     Class streamClass = NSClassFromString(@"AFStreamingMultipartFormData");
     id <AFMultipartFormDataTest> formData = [[streamClass alloc] initWithURLRequest:originalRequest stringEncoding:NSUTF8StringEncoding];
     
@@ -102,51 +115,6 @@
     AFHTTPBodyPart *part = [formData.bodyStream.HTTPBodyParts firstObject];
     
     XCTAssertTrue([part.headers[@"Content-Type"] isEqualToString:@"application/x-x509-ca-cert"], @"MIME Type has not been obtained correctly (%@)", part.headers[@"Content-Type"]);
-}
-
-@end
-
-#pragma mark -
-
-@interface AFHTTPResponseSerializationTests : AFTestCase
-@property (nonatomic, strong) AFHTTPResponseSerializer *responseSerializer;
-@end
-
-@implementation AFHTTPResponseSerializationTests
-
-- (void)setUp {
-    [super setUp];
-    self.responseSerializer = [AFHTTPResponseSerializer serializer];
-}
-
-#pragma mark -
-
-- (void)testThatAFHTTPResponseSerializationHandlesAll2XXCodes {
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-    [indexSet enumerateIndexesUsingBlock:^(NSUInteger statusCode, BOOL *stop) {
-        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
-
-        XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should be acceptable", @(statusCode));
-
-        NSError *error = nil;
-        [self.responseSerializer validateResponse:response data:[@"text" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
-
-        XCTAssertNil(error, @"Error handling status code %@", @(statusCode));
-    }];
-}
-
-- (void)testThatAFHTTPResponseSerializationFailsAll4XX5XXStatusCodes {
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(400, 200)];
-    [indexSet enumerateIndexesUsingBlock:^(NSUInteger statusCode, BOOL *stop) {
-        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
-
-        XCTAssert(![self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should not be acceptable", @(statusCode));
-
-        NSError *error = nil;
-        [self.responseSerializer validateResponse:response data:[@"text" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
-
-        XCTAssertNotNil(error, @"Did not fail handling status code %@",@(statusCode));
-    }];
 }
 
 @end
