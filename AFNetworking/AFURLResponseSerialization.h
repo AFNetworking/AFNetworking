@@ -285,10 +285,18 @@ extern NSString * const AFURLResponseSerializationErrorDomain;
  These keys may exist in the user info dictionary, in addition to those defined for NSError.
 
  - `NSString * const AFNetworkingOperationFailingURLResponseErrorKey`
+ - `NSString * const AFNetworkingOperationFailingURLResponseOriginalDataErrorKey`
 
  ### Constants
 
  `AFNetworkingOperationFailingURLResponseErrorKey`
  The corresponding value is an `NSURLResponse` containing the response of the operation associated with an error. This key is only present in the `AFURLResponseSerializationErrorDomain`.
+ 
+ `AFNetworkingOperationFailingURLResponseOriginalDataErrorKey`
+ The corresponding value is an `NSData` containing the original data of the operation associated with an error. This key is only present in the `AFURLResponseSerializationErrorDomain`.
  */
 extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
+
+extern NSString * const AFNetworkingOperationFailingURLResponseOriginalDataErrorKey;
+
+
