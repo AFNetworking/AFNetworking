@@ -22,23 +22,40 @@
 
 #import "AFSecurityPolicy.h"
 
-#import <AssertMacros.h>
+// Equivalent of macro in <AssertMacros.h>, without causing compiler warning:
+// "'DebugAssert' is deprecated: first deprecated in OS X 10.8"
+#ifndef AF_Require
+    #define AF_Require(assertion, exceptionLabel)                \
+        do {                                                     \
+            if (__builtin_expect(!(assertion), 0)) {             \
+                goto exceptionLabel;                             \
+            }                                                    \
+        } while (0)
+#endif
+
+#ifndef AF_Require_noErr
+    #define AF_Require_noErr(errorCode, exceptionLabel)          \
+        do {                                                     \
+            if (__builtin_expect(0 != (errorCode), 0)) {         \
+                goto exceptionLabel;                             \
+            }                                                    \
+        } while (0)
+#endif
 
 #if !defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 static NSData * AFSecKeyGetData(SecKeyRef key) {
     CFDataRef data = NULL;
 
-    OSStatus status = SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data);
-    NSCAssert(status == errSecSuccess, @"SecItemExport error: %ld", (long int)status);
-    if (status != errSecSuccess) {
-        if (data) {
-            CFRelease(data);
-        }
-
-        return nil;
-    }
+    AF_Require_noErr(SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data), _out);
 
     return (__bridge_transfer NSData *)data;
+
+_out:
+    if (data) {
+        CFRelease(data);
+    }
+
+    return nil;
 }
 #endif
 
@@ -52,17 +69,22 @@ static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 
 static id AFPublicKeyForCertificate(NSData *certificate) {
     id allowedPublicKey = nil;
-
-    SecCertificateRef allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificate);
-    SecCertificateRef allowedCertificates[] = {allowedCertificate};
-    CFArrayRef tempCertificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
-
-    SecPolicyRef policy = SecPolicyCreateBasicX509();
-    SecTrustRef allowedTrust;
-    __Require_noErr(SecTrustCreateWithCertificates(tempCertificates, policy, &allowedTrust), _out);
-
+    SecCertificateRef allowedCertificate;
+    SecCertificateRef allowedCertificates[1];
+    CFArrayRef tempCertificates = nil;
+    SecPolicyRef policy = nil;
+    SecTrustRef allowedTrust = nil;
     SecTrustResultType result;
-    __Require_noErr(SecTrustEvaluate(allowedTrust, &result), _out);
+
+    allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificate);
+    AF_Require(allowedCertificate != NULL, _out);
+
+    allowedCertificates[0] = allowedCertificate;
+    tempCertificates = CFArrayCreate(NULL, (const void **)allowedCertificates, 1, NULL);
+
+    policy = SecPolicyCreateBasicX509();
+    AF_Require_noErr(SecTrustCreateWithCertificates(tempCertificates, policy, &allowedTrust), _out);
+    AF_Require_noErr(SecTrustEvaluate(allowedTrust, &result), _out);
 
     allowedPublicKey = (__bridge_transfer id)SecTrustCopyPublicKey(allowedTrust);
 
@@ -89,7 +111,7 @@ _out:
 static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
     BOOL isValid = NO;
     SecTrustResultType result;
-    __Require_noErr(SecTrustEvaluate(serverTrust, &result), _out);
+    AF_Require_noErr(SecTrustEvaluate(serverTrust, &result), _out);
 
     isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
 
@@ -120,10 +142,10 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         CFArrayRef certificates = CFArrayCreate(NULL, (const void **)someCertificates, 1, NULL);
 
         SecTrustRef trust;
-        __Require_noErr(SecTrustCreateWithCertificates(certificates, policy, &trust), _out);
+        AF_Require_noErr(SecTrustCreateWithCertificates(certificates, policy, &trust), _out);
         
         SecTrustResultType result;
-        __Require_noErr(SecTrustEvaluate(trust, &result), _out);
+        AF_Require_noErr(SecTrustEvaluate(trust, &result), _out);
 
         [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
 

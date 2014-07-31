@@ -82,7 +82,7 @@
 
 #if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
 
-@interface AFURLSessionManager : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSCoding, NSCopying>
+@interface AFURLSessionManager : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSSecureCoding, NSCopying>
 
 /**
  The managed session.
@@ -143,9 +143,9 @@
  */
 @property (readonly, nonatomic, strong) NSArray *downloadTasks;
 
-///---------------------------------
+///-------------------------------
 /// @name Managing Callback Queues
-///---------------------------------
+///-------------------------------
 
 /**
  The dispatch queue for `completionBlock`. If `NULL` (default), the main queue is used.
@@ -156,6 +156,19 @@
  The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used.
  */
 @property (nonatomic, strong) dispatch_group_t completionGroup;
+
+///---------------------------------
+/// @name Working Around System Bugs
+///---------------------------------
+
+/**
+ Whether to attempt to retry creation of upload tasks for background sessions when initial call returns `nil`. `NO` by default.
+
+ @bug As of iOS 7.0, there is a bug where upload tasks created for background tasks are sometimes `nil`. As a workaround, if this property is `YES`, AFNetworking will follow Apple's recommendation to try creating the task again.
+
+ @see https://github.com/AFNetworking/AFNetworking/issues/1675
+ */
+@property (nonatomic, assign) BOOL attemptsToRecreateUploadTasksForBackgroundSessions;
 
 ///---------------------
 /// @name Initialization
@@ -201,6 +214,8 @@
  @param fileURL A URL to the local file to be uploaded.
  @param progress A progress object monitoring the current upload progress.
  @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
+ 
+ @see `attemptsToRecreateUploadTasksForBackgroundSessions`
  */
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromFile:(NSURL *)fileURL
@@ -242,6 +257,8 @@
  @param progress A progress object monitoring the current download progress.
  @param destination A block object to be executed in order to determine the destination of the downloaded file. This block takes two arguments, the target path & the server response, and returns the desired file URL of the resulting download. The temporary file used during the download will be automatically deleted after being moved to the returned URL.
  @param completionHandler A block to be executed when a task finishes. This block has no return value and takes three arguments: the server response, the path of the downloaded file, and the error describing the network or parsing error that occurred, if any.
+ 
+ @warning If using a background `NSURLSessionConfiguration` on iOS, these blocks will be lost when the app is terminated. Background sessions may prefer to use `-setDownloadTaskDidFinishDownloadingBlock:` to specify the URL for saving the downloaded file, rather than the destination block of this method.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
                                              progress:(NSProgress * __autoreleasing *)progress
