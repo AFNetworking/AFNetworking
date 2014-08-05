@@ -117,4 +117,18 @@
     XCTAssertTrue([part.headers[@"Content-Type"] isEqualToString:@"application/x-x509-ca-cert"], @"MIME Type has not been obtained correctly (%@)", part.headers[@"Content-Type"]);
 }
 
+#pragma mark - Headers
+
+- (void)testThatValueForHTTPHeaderFieldReturnsSetValue {
+    [self.requestSerializer setValue:@"Actual Value" forHTTPHeaderField:@"Set-Header"];
+    NSString *value = [self.requestSerializer valueForHTTPHeaderField:@"Set-Header"];
+
+    expect(value).to.equal(@"Actual Value");
+}
+
+- (void)testThatValueForHTTPHeaderFieldReturnsNilForUnsetHeader {
+    NSString *value = [self.requestSerializer valueForHTTPHeaderField:@"Unset-Header"];
+    expect(value).to.beNil();
+}
+
 @end

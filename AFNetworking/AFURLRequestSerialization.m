@@ -260,6 +260,10 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 	[self.mutableHTTPRequestHeaders setValue:value forKey:field];
 }
 
+- (NSString *)valueForHTTPHeaderField:(NSString *)field {
+    return [self.mutableHTTPRequestHeaders valueForKey:field];
+}
+
 - (void)setAuthorizationHeaderFieldWithUsername:(NSString *)username password:(NSString *)password {
 	NSString *basicAuthCredentials = [NSString stringWithFormat:@"%@:%@", username, password];
     [self setValue:[NSString stringWithFormat:@"Basic %@", AFBase64EncodedStringFromString(basicAuthCredentials)] forHTTPHeaderField:@"Authorization"];
