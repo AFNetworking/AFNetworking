@@ -726,7 +726,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
-#pragma mark - NSecureCoding
+#pragma mark - NSSecureCoding
 
 + (BOOL)supportsSecureCoding {
     return YES;
