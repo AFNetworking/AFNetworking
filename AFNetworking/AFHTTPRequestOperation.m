@@ -80,22 +80,32 @@ static dispatch_group_t http_request_operation_completion_group() {
     [self.lock unlock];
 }
 
-- (id)responseObject {
+- (void)deserializeIfNeeded {
     [self.lock lock];
-    if (!_responseObject && [self isFinished] && !self.error) {
-        NSError *error = nil;
-        self.responseObject = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
-        if (error) {
-            self.responseSerializationError = error;
-        }
+    if (!_responseObject && !_responseSerializationError && [self isFinished] && ![super error]) {
+        dispatch_sync(http_request_operation_processing_queue(), ^{
+            NSError *error = nil;
+            self.responseObject = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
+            if (error) {
+                self.responseSerializationError = error;
+            }
+        });
     }
     [self.lock unlock];
+}
 
+- (id)responseObject {
+    [self deserializeIfNeeded];
     return _responseObject;
 }
 
+- (NSError *)responseSerializationError {
+    [self deserializeIfNeeded];
+    return _responseSerializationError;
+}
+
 - (NSError *)error {
-    if (_responseSerializationError) {
+    if (self.responseSerializationError) {
         return _responseSerializationError;
     } else {
         return [super error];
