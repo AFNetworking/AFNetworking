@@ -780,6 +780,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @implementation AFMultipartBodyStream
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wimplicit-atomic-properties"
+@synthesize delegate;
 @synthesize streamStatus;
 @synthesize streamError;
 #pragma clang diagnostic pop
