@@ -466,7 +466,7 @@ forHTTPHeaderField:(NSString *)field
             }
         }
 
-        if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+        if (query && [[self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
             mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];
         } else {
             if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
