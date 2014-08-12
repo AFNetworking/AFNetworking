@@ -1,3 +1,8 @@
+= Master
+
+ * Fixes an issue with `AFHTTPRequestSerializer` returning a request and
+  silently handling an error from a `queryStringSerialization` block.
+
 = 2.3.1 (2014-06-13)
 
  * Fix issue with unsynthesized `streamStatus` & `streamError` properties
