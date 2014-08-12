@@ -117,7 +117,7 @@
 
     expect([operation isFinished]).will.beTruthy();
     expect(blockError).will.beNil();
-    expect(blockResponseObject).will.beNil();
+    expect(blockResponseObject).will.equal([NSData data]);
 }
 
 - (void)testThatOperationInvokesFailureCompletionBlockWithErrorOnFailure {
