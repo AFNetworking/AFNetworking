@@ -119,7 +119,7 @@
 /**
  The `AFImageCache` protocol is adopted by an object used to cache images loaded by the AFNetworking category on `UIImageView`.
  */
-@protocol AFImageCache
+@protocol AFImageCache <NSObject>
 
 /**
  Returns a cached image for the specififed request, if available.
