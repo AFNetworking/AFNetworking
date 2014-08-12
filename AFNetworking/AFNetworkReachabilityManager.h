@@ -82,11 +82,11 @@ typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
 /**
  Creates and returns a network reachability manager for the socket address.
 
- @param address The socket address used to evaluate network reachability.
+ @param address The socket address (`sockaddr_in`) used to evaluate network reachability.
 
  @return An initialized network reachability manager, actively monitoring the specified socket address.
  */
-+ (instancetype)managerForAddress:(const struct sockaddr_in *)address;
++ (instancetype)managerForAddress:(const void *)address;
 
 /**
  Initializes an instance of a network reachability manager from the specified reachability object.
