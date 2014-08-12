@@ -404,13 +404,11 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     delegate.manager = self;
     delegate.completionHandler = completionHandler;
 
-    delegate.downloadTaskDidFinishDownloading = ^NSURL * (NSURLSession * __unused session, NSURLSessionDownloadTask *task, NSURL *location) {
-        if (destination) {
+    if (destination) {
+        delegate.downloadTaskDidFinishDownloading = ^NSURL * (NSURLSession * __unused session, NSURLSessionDownloadTask *task, NSURL *location) {
             return destination(location, task.response);
-        }
-
-        return location;
-    };
+        };
+    }
 
     if (progress) {
         *progress = delegate.progress;
@@ -966,6 +964,7 @@ didFinishDownloadingToURL:(NSURL *)location
             if (error) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
             }
+
             return;
         }
     }
