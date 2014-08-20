@@ -28,10 +28,23 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol AFURLResponseSerialization;
+
 /**
  This category adds methods to the UIKit framework's `UIButton` class. The methods in this category provide support for loading remote images and background images asynchronously from a URL.
  */
 @interface UIButton (AFNetworking)
+
+///------------------------------------
+/// @name Accessing Response Serializer
+///------------------------------------
+
+/**
+ The response serializer used to create an image representation from the server response and response data. By default, this is an instance of `AFImageResponseSerializer`.
+ 
+ @discussion Subclasses of `AFImageResponseSerializer` could be used to perform post-processing, such as color correction, face detection, or other effects. See https://github.com/AFNetworking/AFCoreImageSerializer
+ */
+@property (nonatomic, strong) id <AFURLResponseSerialization> imageResponseSerializer;
 
 ///--------------------
 /// @name Setting Image

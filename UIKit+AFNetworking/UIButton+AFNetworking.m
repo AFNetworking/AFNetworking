@@ -27,6 +27,7 @@
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 
 #import "AFHTTPRequestOperation.h"
+#import "AFImageCache.h"
 
 @interface UIButton (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setImageRequestOperation:) AFHTTPRequestOperation *af_imageRequestOperation;
@@ -67,6 +68,24 @@
 #pragma mark -
 
 @implementation UIButton (AFNetworking)
+@dynamic imageResponseSerializer;
+
+- (id <AFURLResponseSerialization>)imageResponseSerializer {
+    static id <AFURLResponseSerialization> _af_defaultImageResponseSerializer = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _af_defaultImageResponseSerializer = [AFImageResponseSerializer serializer];
+    });
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+    return objc_getAssociatedObject(self, @selector(imageResponseSerializer)) ?: _af_defaultImageResponseSerializer;
+#pragma clang diagnostic pop
+}
+
+- (void)setImageResponseSerializer:(id <AFURLResponseSerialization>)serializer {
+    objc_setAssociatedObject(self, @selector(imageResponseSerializer), serializer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
 - (void)setImageForState:(UIControlState)state
                  withURL:(NSURL *)url
@@ -92,29 +111,53 @@
 {
     [self cancelImageRequestOperation];
 
-    [self setImage:placeholderImage forState:state];
-
-    __weak __typeof(self)weakSelf = self;
-    self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
-    self.af_imageRequestOperation.responseSerializer = [AFImageResponseSerializer serializer];
-    [self.af_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        __strong __typeof(weakSelf)strongSelf = weakSelf;
-        if ([[urlRequest URL] isEqual:[operation.request URL]]) {
-            if (success) {
-                success(operation.response, responseObject);
-            } else if (responseObject) {
-                [strongSelf setImage:responseObject forState:state];
-            }
+    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:urlRequest];
+    if (cachedImage) {
+        if (success) {
+            success(nil, cachedImage);
+        } else {
+            [self setImage:cachedImage forState:state];
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if ([[urlRequest URL] isEqual:[operation.response URL]]) {
-            if (failure) {
-                failure(error);
-            }
+        
+        self.af_imageRequestOperation = nil;
+    } else {
+        if (placeholderImage) {
+            [self setImage:placeholderImage forState:state];
         }
-    }];
-
-    [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
+        
+        __weak __typeof(self)weakSelf = self;
+        self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
+        self.af_imageRequestOperation.responseSerializer = [AFImageResponseSerializer serializer];
+        [self.af_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
+                if (success) {
+                    success(operation.response, responseObject);
+                } else if (responseObject) {
+                    [strongSelf setImage:responseObject forState:state];
+                }
+                
+                if (operation == strongSelf.af_imageRequestOperation) {
+                    strongSelf.af_imageRequestOperation = nil;
+                }
+            }
+            
+            [[AFImageCache sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            if ([[urlRequest URL] isEqual:[operation.response URL]]) {
+                if (failure) {
+                    failure(error);
+                }
+                
+                if (operation == strongSelf.af_imageRequestOperation) {
+                    strongSelf.af_imageRequestOperation = nil;
+                }
+            }
+        }];
+        
+        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
+    }
 }
 
 #pragma mark -
@@ -143,29 +186,53 @@
 {
     [self cancelBackgroundImageRequestOperation];
 
-    [self setBackgroundImage:placeholderImage forState:state];
-
-    __weak __typeof(self)weakSelf = self;
-    self.af_backgroundImageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
-    self.af_backgroundImageRequestOperation.responseSerializer = [AFImageResponseSerializer serializer];
-    [self.af_backgroundImageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        __strong __typeof(weakSelf)strongSelf = weakSelf;
-        if ([[urlRequest URL] isEqual:[operation.request URL]]) {
-            if (success) {
-                success(operation.response, responseObject);
-            } else if (responseObject) {
-                [strongSelf setBackgroundImage:responseObject forState:state];
-            }
+    UIImage *cachedImage = [[AFImageCache sharedImageCache] cachedImageForRequest:urlRequest];
+    if (cachedImage) {
+        if (success) {
+            success(nil, cachedImage);
+        } else {
+            [self setBackgroundImage:cachedImage forState:state];
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if ([[urlRequest URL] isEqual:[operation.response URL]]) {
-            if (failure) {
-                failure(error);
-            }
+        
+        self.af_imageRequestOperation = nil;
+    } else {
+        if (placeholderImage) {
+            [self setBackgroundImage:placeholderImage forState:state];
         }
-    }];
-
-    [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_backgroundImageRequestOperation];
+        
+        __weak __typeof(self)weakSelf = self;
+        self.af_backgroundImageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
+        self.af_backgroundImageRequestOperation.responseSerializer = [AFImageResponseSerializer serializer];
+        [self.af_backgroundImageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
+                if (success) {
+                    success(operation.response, responseObject);
+                } else if (responseObject) {
+                    [strongSelf setBackgroundImage:responseObject forState:state];
+                }
+                
+                if (operation == strongSelf.af_backgroundImageRequestOperation) {
+                    strongSelf.af_backgroundImageRequestOperation = nil;
+                }
+            }
+            
+            [[AFImageCache sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            if ([[urlRequest URL] isEqual:[operation.response URL]]) {
+                if (failure) {
+                    failure(error);
+                }
+                
+                if (operation == strongSelf.af_backgroundImageRequestOperation) {
+                    strongSelf.af_backgroundImageRequestOperation = nil;
+                }
+            }
+        }];
+        
+        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_backgroundImageRequestOperation];
+    }
 }
 
 #pragma mark -
