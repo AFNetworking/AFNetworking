@@ -26,13 +26,13 @@
 
 @interface Post : NSObject
 
-@property (readonly) NSUInteger postID;
-@property (readonly) NSString *text;
+@property (nonatomic, assign) NSUInteger postID;
+@property (nonatomic, strong) NSString *text;
 
-@property (readonly) User *user;
+@property (nonatomic, strong) User *user;
 
-- (id)initWithAttributes:(NSDictionary *)attributes;
+- (instancetype)initWithAttributes:(NSDictionary *)attributes;
 
-+ (void)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block;
++ (NSURLSessionDataTask *)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block;
 
 @end
