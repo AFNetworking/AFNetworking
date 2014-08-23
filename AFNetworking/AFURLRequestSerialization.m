@@ -700,7 +700,6 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
 
-
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
@@ -1010,6 +1009,8 @@ typedef enum {
             _inputStream = [NSInputStream inputStreamWithURL:self.body];
         } else if ([self.body isKindOfClass:[NSInputStream class]]) {
             _inputStream = self.body;
+        } else {
+            _inputStream = [NSInputStream inputStreamWithData:[NSData data]];
         }
     }
 
