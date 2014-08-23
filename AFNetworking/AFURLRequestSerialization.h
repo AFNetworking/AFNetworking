@@ -343,7 +343,7 @@ forHTTPHeaderField:(NSString *)field;
  Appends HTTP headers, followed by the encoded data and the multipart form boundary.
 
  @param headers The HTTP headers to be appended to the form data.
- @param body The data to be encoded and appended to the form data.
+ @param body The data to be encoded and appended to the form data. This parameter must not be `nil`.
  */
 - (void)appendPartWithHeaders:(NSDictionary *)headers
                          body:(NSData *)body;
