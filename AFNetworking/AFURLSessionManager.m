@@ -475,11 +475,13 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 #pragma mark -
 
 - (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks {
-    if (cancelPendingTasks) {
-        [self.session invalidateAndCancel];
-    } else {
-        [self.session finishTasksAndInvalidate];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (cancelPendingTasks) {
+            [self.session invalidateAndCancel];
+        } else {
+            [self.session finishTasksAndInvalidate];
+        }
+    });
 }
 
 #pragma mark -
