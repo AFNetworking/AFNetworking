@@ -96,16 +96,21 @@
                                                     success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                                                     failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
+    return [self HTTPRequestOperationWithRequest:request success:success failure:failure finally:nil];
+}
+
+-(AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)request success:(void (^)(AFHTTPRequestOperation *, id))success failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure finally:(void (^)(AFHTTPRequestOperation *))finally
+{
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = self.responseSerializer;
     operation.shouldUseCredentialStorage = self.shouldUseCredentialStorage;
     operation.credential = self.credential;
     operation.securityPolicy = self.securityPolicy;
-
-    [operation setCompletionBlockWithSuccess:success failure:failure];
+    
+    [operation setCompletionBlockWithSuccess:success failure:failure finally:finally];
     operation.completionQueue = self.completionQueue;
     operation.completionGroup = self.completionGroup;
-
+    
     return operation;
 }
 
@@ -141,13 +146,18 @@
     return operation;
 }
 
+-(AFHTTPRequestOperation *)POST:(NSString *)URLString parameters:(id)parameters success:(void (^)(AFHTTPRequestOperation *, id))success failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
+{
+    return [self POST:URLString parameters:parameters success:success failure:failure finally:nil];
+}
+
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
                       parameters:(id)parameters
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure finally:(void (^)(AFHTTPRequestOperation *))finally
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
-    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure finally:finally];
 
     [self.operationQueue addOperation:operation];
 
