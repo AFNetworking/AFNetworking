@@ -104,8 +104,13 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 #pragma mark - AFHTTPRequestOperation
 
+-(void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *, id))success failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
+{
+    [self setCompletionBlockWithSuccess:success failure:failure finally:nil];
+}
+
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure finally:(void (^)(AFHTTPRequestOperation *))finally
 {
     // completionBlock is manually nilled out in AFURLConnectionOperation to break the retain cycle.
 #pragma clang diagnostic push
@@ -121,6 +126,9 @@ static dispatch_group_t http_request_operation_completion_group() {
                 if (failure) {
                     dispatch_group_async(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                         failure(self, self.error);
+                        if (finally) {
+                            finally(self);
+                        }
                     });
                 }
             } else {
@@ -129,12 +137,18 @@ static dispatch_group_t http_request_operation_completion_group() {
                     if (failure) {
                         dispatch_group_async(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                             failure(self, self.error);
+                            if (finally) {
+                                finally(self);
+                            }
                         });
                     }
                 } else {
                     if (success) {
                         dispatch_group_async(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
                             success(self, responseObject);
+                            if (finally) {
+                                finally(self);
+                            }
                         });
                     }
                 }
