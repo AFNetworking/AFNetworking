@@ -845,18 +845,19 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         return 0;
     }
 
-    NSInteger totalNumberOfBytesRead = 0;
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-    while ((NSUInteger)totalNumberOfBytesRead < MIN(length, self.numberOfBytesInPacket)) {
+    NSInteger totalNumberOfBytesRead = 0;
+    NSUInteger maxLength = MIN(length, self.numberOfBytesInPacket);
+    
+    while ((NSUInteger)totalNumberOfBytesRead < maxLength) {
         if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
             if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
                 break;
             }
         } else {
-            NSUInteger maxLength = length - (NSUInteger)totalNumberOfBytesRead;
-            NSInteger numberOfBytesRead = [self.currentHTTPBodyPart read:&buffer[totalNumberOfBytesRead] maxLength:maxLength];
+            NSUInteger bodyPartMaxLength = maxLength - (NSUInteger)totalNumberOfBytesRead;
+            NSInteger numberOfBytesRead = [self.currentHTTPBodyPart read:&buffer[totalNumberOfBytesRead] maxLength:bodyPartMaxLength];
             if (numberOfBytesRead == -1) {
                 self.streamError = self.currentHTTPBodyPart.inputStream.streamError;
                 break;
