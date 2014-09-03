@@ -1178,7 +1178,7 @@ typedef enum {
 @implementation AFJSONRequestSerializer
 
 + (instancetype)serializer {
-    return [self serializerWithWritingOptions:0];
+    return [self serializerWithWritingOptions:(NSJSONWritingOptions)0];
 }
 
 + (instancetype)serializerWithWritingOptions:(NSJSONWritingOptions)writingOptions
