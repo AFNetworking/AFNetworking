@@ -111,13 +111,11 @@
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
 
-    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request
-                                                           success:success
-                                                           failure:failure];
+    __block NSURLSessionDataTask *dataTask = [self dataTaskWithRequest:request success:success failure:failure];
 
-    [task resume];
+    [dataTask resume];
 
-    return task;
+    return dataTask;
 }
 
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
@@ -127,21 +125,15 @@
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"HEAD" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
 
-    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse * __unused response, id __unused responseObject, NSError *error) {
-        if (error) {
-            if (failure) {
-                failure(task, error);
-            }
-        } else {
-            if (success) {
-                success(task);
-            }
+    __block NSURLSessionDataTask *dataTask = [self dataTaskWithRequest:request success:^(NSURLSessionDataTask *task, __unused id responseObject) {
+        if (success) {
+            success(task);
         }
-    }];
+    } failure:failure];
 
-    [task resume];
+    [dataTask resume];
 
-    return task;
+    return dataTask;
 }
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
@@ -151,13 +143,11 @@
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
 
-    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request
-                                                           success:success
-                                                           failure:failure];
+    __block NSURLSessionDataTask *dataTask = [self dataTaskWithRequest:request success:success failure:failure];
 
-    [task resume];
+    [dataTask resume];
 
-    return task;
+    return dataTask;
 }
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
@@ -192,12 +182,11 @@
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PUT" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
 
-    NSURLSessionDataTask *task = [self dataTaskWithRequest:request
-                                                   success:success
-                                                   failure:failure];
-    [task resume];
+    NSURLSessionDataTask *dataTask = [self dataTaskWithRequest:request success:success failure:failure];
 
-    return task;
+    [dataTask resume];
+
+    return dataTask;
 }
 
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
@@ -207,13 +196,11 @@
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"PATCH" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
 
-    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request
-                                                           success:success
-                                                           failure:failure];
+    __block NSURLSessionDataTask *dataTask = [self dataTaskWithRequest:request success:success failure:failure];
 
-    [task resume];
+    [dataTask resume];
 
-    return task;
+    return dataTask;
 }
 
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
@@ -223,32 +210,31 @@
 {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"DELETE" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
 
-    __block NSURLSessionDataTask *task = [self dataTaskWithRequest:request
-                                                           success:success
-                                                           failure:failure];
+    __block NSURLSessionDataTask *dataTask = [self dataTaskWithRequest:request success:success failure:failure];
 
-    [task resume];
+    [dataTask resume];
 
-    return task;
+    return dataTask;
 }
 
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSMutableURLRequest *)request
                                       success:(void (^)(NSURLSessionDataTask *, id))success
                                       failure:(void (^)(NSURLSessionDataTask *, NSError *))failure
 {
-    __block NSURLSessionDataTask *task;
-    task = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
+    __block NSURLSessionDataTask *dataTask = nil;
+    dataTask = [self dataTaskWithRequest:request completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
-                failure(task, error);
+                failure(dataTask, error);
             }
         } else {
             if (success) {
-                success(task, responseObject);
+                success(dataTask, responseObject);
             }
         }
     }];
-    return task;
+
+    return dataTask;
 }
 
 #pragma mark - NSObject
