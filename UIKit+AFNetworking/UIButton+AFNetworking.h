@@ -134,11 +134,13 @@
 /**
  Cancels any executing image operation for the receiver, if one exists.
  */
+- (void)cancelImageRequestOperation:(UIControlState)state;
 - (void)cancelImageRequestOperation;
 
 /**
  Cancels any executing background image operation for the receiver, if one exists.
  */
+- (void)cancelBackgroundImageRequestOperation:(UIControlState)state;
 - (void)cancelBackgroundImageRequestOperation;
 
 @end
