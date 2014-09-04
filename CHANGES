@@ -1,3 +1,13 @@
+= 2.4.1 (2014-09-04)
+
+ * Fix compiler warning generated on 32-bit architectures (John C. Daub)
+
+ * Fix potential crash caused by failed validation with nil responseData
+ (Mattt Thompson)
+
+ * Fix to suppress compiler warnings for out-of-range enumerated type
+ value assignment (Mattt Thompson)
+
 = 2.4.0 (2014-09-03)
 
  * Add CocoaDocs color scheme (Orta)
