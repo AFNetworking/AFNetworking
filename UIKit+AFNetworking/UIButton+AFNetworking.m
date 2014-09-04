@@ -50,7 +50,7 @@
 #pragma mark -
 
 static const char * af_imageRequestOperationKeyForState(UIControlState state) {
-    return [[NSString stringWithFormat:@"af_imageRequestOperationKeyForState_%lu", (NSUInteger)state] cStringUsingEncoding:NSASCIIStringEncoding];
+    return [[NSString stringWithFormat:@"af_imageRequestOperationKeyForState_%lu", (unsigned long)state] cStringUsingEncoding:NSASCIIStringEncoding];
 }
 
 - (AFHTTPRequestOperation *)af_imageRequestOperationForState:(UIControlState)state {
@@ -66,7 +66,7 @@ static const char * af_imageRequestOperationKeyForState(UIControlState state) {
 #pragma mark -
 
 static const char * af_backgroundImageRequestOperationKeyForState(UIControlState state) {
-    return [[NSString stringWithFormat:@"af_backgroundImageRequestOperationKeyForState_%lu", (NSUInteger)state] cStringUsingEncoding:NSASCIIStringEncoding];
+    return [[NSString stringWithFormat:@"af_backgroundImageRequestOperationKeyForState_%lu", (unsigned long)state] cStringUsingEncoding:NSASCIIStringEncoding];
 }
 
 - (AFHTTPRequestOperation *)af_backgroundImageRequestOperationForState:(UIControlState)state {
