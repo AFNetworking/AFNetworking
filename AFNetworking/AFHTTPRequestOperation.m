@@ -168,7 +168,7 @@ static dispatch_group_t http_request_operation_completion_group() {
     self.request = mutableURLRequest;
 }
 
-#pragma mark - NSecureCoding
+#pragma mark - NSSecureCoding
 
 + (BOOL)supportsSecureCoding {
     return YES;
