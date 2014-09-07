@@ -348,7 +348,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     NSParameterAssert(task);
     NSParameterAssert(delegate);
 
-    [task addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:NSKeyValueObservingOptionOld |NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
+    [task addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:(NSKeyValueObservingOptions)(NSKeyValueObservingOptionOld |NSKeyValueObservingOptionNew) context:AFTaskStateChangedContext];
     [self.lock lock];
     self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
     [self.lock unlock];
@@ -475,11 +475,13 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 #pragma mark -
 
 - (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks {
-    if (cancelPendingTasks) {
-        [self.session invalidateAndCancel];
-    } else {
-        [self.session finishTasksAndInvalidate];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (cancelPendingTasks) {
+            [self.session invalidateAndCancel];
+        } else {
+            [self.session finishTasksAndInvalidate];
+        }
+    });
 }
 
 #pragma mark -

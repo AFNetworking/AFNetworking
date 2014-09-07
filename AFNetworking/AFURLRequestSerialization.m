@@ -700,7 +700,6 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
     [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
 
-
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = mutableHeaders;
@@ -797,7 +796,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @implementation AFMultipartBodyStream
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wimplicit-atomic-properties"
+#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1100)
 @synthesize delegate;
+#endif
 @synthesize streamStatus;
 @synthesize streamError;
 #pragma clang diagnostic pop
@@ -1008,6 +1009,8 @@ typedef enum {
             _inputStream = [NSInputStream inputStreamWithURL:self.body];
         } else if ([self.body isKindOfClass:[NSInputStream class]]) {
             _inputStream = self.body;
+        } else {
+            _inputStream = [NSInputStream inputStreamWithData:[NSData data]];
         }
     }
 
@@ -1175,7 +1178,7 @@ typedef enum {
 @implementation AFJSONRequestSerializer
 
 + (instancetype)serializer {
-    return [self serializerWithWritingOptions:0];
+    return [self serializerWithWritingOptions:(NSJSONWritingOptions)0];
 }
 
 + (instancetype)serializerWithWritingOptions:(NSJSONWritingOptions)writingOptions

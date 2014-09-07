@@ -1,7 +1,100 @@
-= Master
+= 2.4.1 (2014-09-04)
 
- * Fixes an issue with `AFHTTPRequestSerializer` returning a request and
-  silently handling an error from a `queryStringSerialization` block.
+ * Fix compiler warning generated on 32-bit architectures (John C. Daub)
+
+ * Fix potential crash caused by failed validation with nil responseData
+ (Mattt Thompson)
+
+ * Fix to suppress compiler warnings for out-of-range enumerated type
+ value assignment (Mattt Thompson)
+
+= 2.4.0 (2014-09-03)
+
+ * Add CocoaDocs color scheme (Orta)
+
+ * Add image cache to `UIButton` category (Kristian Bauer, Mattt Thompson)
+
+ * Add test for success block on 204 response (Mattt Thompson)
+
+ * Add tests for encodable and re-encodable query string parameters (Mattt
+Thompson)
+
+ * Add `AFHTTPRequestSerializer -valueForHTTPHeaderField:` (Kyle Fuller)
+
+ * Add `AFNetworkingOperationFailingURLResponseDataErrorKey` key to user info
+of serialization error (Yannick Heinrich)
+
+ * Add `imageResponseSerializer` property to `UIButton` category (Kristian
+Bauer, Mattt Thompson)
+
+ * Add `removesKeysWithNullValues` setting to serialization and copying (Jon
+Shier)
+
+ * Change request and response serialization tests to be factored out into
+separate files (Mattt Thompson)
+
+ * Change signature of success parameters in `UIButton` category methods to
+match those in `UIImageView` (Mattt Thompson)
+
+ * Change to remove charset parameter from
+`application/x-www-form-urlencoded` content type (Mattt Thompson)
+
+ * Change `AFImageCache` to conform to `NSObject` protocol ( Marcelo Fabri)
+
+ * Change `AFMaximumNumberOfToRecreateBackgroundSessionUploadTask` to
+`AFMaximumNumberOfAttemptsToRecreateBackgroundSessionUploadTask` (Mattt
+Thompson)
+
+ * Fix documentation error for NSSecureCoding (Robert Ryan)
+
+ * Fix documentation for `URLSessionDidFinishEventsForBackgroundURLSession`
+delegate method (Mattt Thompson)
+
+ * Fix expired ADN certificate in example project (Carson McDonald)
+
+ * Fix for interoperability within Swift project (Stephan Krusche)
+
+ * Fix for potential deadlock due to KVO subscriptions within a lock
+(Alexander Skvortsov)
+
+ * Fix iOS 7 bug where session tasks can have duplicate identifiers if
+created from different threads (Mattt Thompson)
+
+ * Fix iOS 8 bug by adding explicit synthesis for `delegate` of
+`AFMultipartBodyStream` (Mattt Thompson)
+
+ * Fix issue caused by passing `nil` as body of multipart form part (Mattt
+Thompson)
+
+ * Fix issue caused by passing `nil` as destination in download task method
+(Mattt Thompson)
+
+ * Fix issue with `AFHTTPRequestSerializer` returning a request and silently
+handling an error from a `queryStringSerialization` block (Kyle Fuller, Mattt
+Thompson)
+
+ * Fix potential issues by ensuring `invalidateSessionCancelingTasks` only
+executes on main thread (Mattt Thompson)
+
+ * Fix potential memory leak caused by deferred opening of output stream
+(James Tomson)
+
+ * Fix properties on session managers such that default values will not trump
+values set in the session configuration (Mattt Thompson)
+
+ * Fix README to include explicit call to start reachability manager (Mattt
+Thompson)
+
+ * Fix request serialization error handling in `AFHTTPSessionManager`
+convenience methods (Kyle Fuller, Lars Anderson, Mattt Thompson)
+
+ * Fix stray localization macro (Devin McKaskle)
+
+ * Fix to ensure connection operation `-copyWithZone:` calls super
+implementation (Chris Streeter)
+
+ * Fix `UIButton` category to only cancel request for specified state
+(@xuzhe, Mattt Thompson)
 
 = 2.3.1 (2014-06-13)
 
