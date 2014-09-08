@@ -35,7 +35,7 @@
     self.responseSerializer = [AFHTTPResponseSerializer serializer];
 }
 
-#pragma mark -
+#pragma mark - validateResponse tests
 
 - (void)testThatAFHTTPResponseSerializationHandlesAll2XXCodes {
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
@@ -62,6 +62,36 @@
         [self.responseSerializer validateResponse:response data:[@"text" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
 
         XCTAssertNotNil(error, @"Did not fail handling status code %@",@(statusCode));
+    }];
+}
+
+- (void)testThatValidationHandleResponseContentTypeIncludedIntoAcceptableContentTypes {
+    self.responseSerializer.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"text/html", @"application/json", @"text/json", @"image/jpeg", [NSNull null], nil];
+    [self.responseSerializer.acceptableContentTypes enumerateObjectsUsingBlock:^(id contentType, BOOL *stop) {
+        NSDictionary *headerFields = [contentType isKindOfClass:[NSNull class]] ? @{} : @{@"Content-Type": contentType};
+        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:headerFields];
+        
+        XCTAssert([self.responseSerializer.acceptableContentTypes containsObject:contentType], @"Content-Type: %@ should be included in the acceptable content types", contentType);
+        
+        NSError *error = nil;
+        [self.responseSerializer validateResponse:response data:[@"text" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
+        
+        XCTAssertNil(error, @"Unexpected failure in validation of Content-Type: %@", contentType);
+    }];
+}
+
+- (void)testThatValidationFailsWhenResponseContentTypeIsNotIncludedIntoAcceptableContentTypes {
+    self.responseSerializer.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"text/html", nil];
+    NSSet *testableContentTypes = [[NSSet alloc] initWithObjects:@"image/tiff", [NSNull null], nil];
+    [testableContentTypes enumerateObjectsUsingBlock:^(id contentType, BOOL *stop) {
+        NSDictionary *headerFields = [contentType isKindOfClass:[NSNull class]] ? @{} : @{@"Content-Type": contentType};
+        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:headerFields];
+        XCTAssert(![self.responseSerializer.acceptableContentTypes containsObject:contentType], @"Content-Type: %@ shouldn't be included in the acceptable content types", contentType);
+        
+        NSError *error = nil;
+        [self.responseSerializer validateResponse:response data:[@"text" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
+        
+        XCTAssertNotNil(error, @"Did not fail when Content-Type: %@ is not included into the acceptable ones", contentType);
     }];
 }
 
