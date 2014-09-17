@@ -42,7 +42,7 @@
 
  @warning `responseSerializer` must not be `nil`. Setting a response serializer will clear out any cached value 
  */
-@property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
+@property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
 
 /**
  An object constructed by the `responseSerializer` from the response and response data. Returns `nil` unless the operation `isFinished`, has a `response`, and has `responseData` with non-zero content length. If an error occurs during serialization, `nil` will be returned, and the `error` property will be populated with the serialization error.
