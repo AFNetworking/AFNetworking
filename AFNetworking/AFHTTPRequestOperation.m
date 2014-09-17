@@ -70,7 +70,7 @@ static dispatch_group_t http_request_operation_completion_group() {
     return self;
 }
 
-- (void)setResponseSerializer:(AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
+- (void)setResponseSerializer:(id <AFURLResponseSerialization> )responseSerializer {
     NSParameterAssert(responseSerializer);
 
     [self.lock lock];
@@ -180,7 +180,7 @@ static dispatch_group_t http_request_operation_completion_group() {
         return nil;
     }
 
-    self.responseSerializer = [decoder decodeObjectOfClass:[AFHTTPResponseSerializer class] forKey:NSStringFromSelector(@selector(responseSerializer))];
+    self.responseSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
 
     return self;
 }
