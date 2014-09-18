@@ -136,6 +136,15 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 forHTTPHeaderField:(NSString *)field;
 
 /**
+ Returns the value for the HTTP headers set in the request serializer.
+
+ @param field The HTTP header to retrieve the default value for
+ 
+ @return The value set as default for the specified header, or `nil`
+ */
+- (NSString *)valueForHTTPHeaderField:(NSString *)field;
+
+/**
  Sets the "Authorization" HTTP header set in request objects made by the HTTP client to a basic authentication value with Base64-encoded username and password. This overwrites any existing value for this header.
 
  @param username The HTTP basic auth username
@@ -334,7 +343,7 @@ forHTTPHeaderField:(NSString *)field;
  Appends HTTP headers, followed by the encoded data and the multipart form boundary.
 
  @param headers The HTTP headers to be appended to the form data.
- @param body The data to be encoded and appended to the form data.
+ @param body The data to be encoded and appended to the form data. This parameter must not be `nil`.
  */
 - (void)appendPartWithHeaders:(NSDictionary *)headers
                          body:(NSData *)body;
