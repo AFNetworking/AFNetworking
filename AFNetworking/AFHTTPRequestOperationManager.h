@@ -178,6 +178,17 @@
  */
 - (instancetype)initWithBaseURL:(NSURL *)url;
 
+///---------------------------------------------
+/// @name Setters
+///---------------------------------------------
+
+/**
+ Checks and replaces the current base URL with the specified base URL.
+ 
+ @param url The new base URL for the HTTP client.
+ */
+- (void)setNewBaseURL:(NSURL *)url;
+
 ///---------------------------------------
 /// @name Managing HTTP Request Operations
 ///---------------------------------------
