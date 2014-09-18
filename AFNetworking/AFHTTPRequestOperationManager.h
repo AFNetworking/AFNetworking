@@ -178,6 +178,17 @@
  */
 - (instancetype)initWithBaseURL:(NSURL *)url;
 
+///---------------------------------------------
+/// @name Setters
+///---------------------------------------------
+
+/**
+ Checks and replaces the current base URL with the specified base URL.
+ 
+ @param url The new base URL for the HTTP client.
+ */
+- (void)setNewBaseURL:(NSURL *)url;
+
 ///---------------------------------------
 /// @name Managing HTTP Request Operations
 ///---------------------------------------
@@ -198,7 +209,7 @@
 ///---------------------------
 
 /**
- Creates and runs an `AFHTTPRequestOperation` with a `GET` request.
+ Creates and runs an `AFHTTPRequestOperation` with a `GET` request using the base URL specified at initialization.
 
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded according to the client request serializer.
@@ -209,6 +220,23 @@
  */
 - (AFHTTPRequestOperation *)GET:(NSString *)URLString
                      parameters:(id)parameters
+                        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
+/**
+ Creates and runs an `AFHTTPRequestOperation` with a `GET` request using the supplied base URL.
+ 
+ @param URLString The URL string used to create the request URL.
+ @param baseURL The base URL to be used (for this request only) instead of the base URL specified at initialization.
+ @param parameters The parameters to be encoded according to the client request serializer.
+ @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes two arguments: the request operation, and the response object created by the client response serializer.
+ @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a two arguments: the request operation and the error describing the network or parsing error that occurred.
+ 
+ @see -HTTPRequestOperationWithRequest:success:failure:
+ */
+- (AFHTTPRequestOperation *)GET:(NSString *)URLString
+					withBaseURL:(NSURL *)baseURL
+                     parameters:(NSDictionary *)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
