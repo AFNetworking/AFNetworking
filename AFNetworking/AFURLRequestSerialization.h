@@ -1,6 +1,6 @@
 // AFSerialization.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@
 
  For example, a JSON request serializer may set the HTTP body of the request to a JSON representation, and set the `Content-Type` HTTP header field value to `application/json`.
  */
-@protocol AFURLRequestSerialization <NSObject, NSCoding, NSCopying>
+@protocol AFURLRequestSerialization <NSObject, NSSecureCoding, NSCopying>
 
 /**
  Returns a request with the specified parameters encoded into a copy of the original request.
@@ -136,6 +136,15 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 forHTTPHeaderField:(NSString *)field;
 
 /**
+ Returns the value for the HTTP headers set in the request serializer.
+
+ @param field The HTTP header to retrieve the default value for
+ 
+ @return The value set as default for the specified header, or `nil`
+ */
+- (NSString *)valueForHTTPHeaderField:(NSString *)field;
+
+/**
  Sets the "Authorization" HTTP header set in request objects made by the HTTP client to a basic authentication value with Base64-encoded username and password. This overwrites any existing value for this header.
 
  @param username The HTTP basic auth username
@@ -145,11 +154,9 @@ forHTTPHeaderField:(NSString *)field;
                                        password:(NSString *)password;
 
 /**
- Sets the "Authorization" HTTP header set in request objects made by the HTTP client to a token-based authentication value, such as an OAuth access token. This overwrites any existing value for this header.
-
- @param token The authentication token
+ @deprecated This method has been deprecated. Use -setValue:forHTTPHeaderField: instead.
  */
-- (void)setAuthorizationHeaderFieldWithToken:(NSString *)token;
+- (void)setAuthorizationHeaderFieldWithToken:(NSString *)token DEPRECATED_ATTRIBUTE;
 
 
 /**
@@ -256,9 +263,6 @@ forHTTPHeaderField:(NSString *)field;
 
 #pragma mark -
 
-extern NSUInteger const kAFUploadStream3GSuggestedPacketSize;
-extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
-
 /**
  The `AFMultipartFormData` protocol defines the methods supported by the parameter in the block argument of `AFHTTPRequestSerializer -multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:`.
  */
@@ -308,7 +312,7 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 - (void)appendPartWithInputStream:(NSInputStream *)inputStream
                              name:(NSString *)name
                          fileName:(NSString *)fileName
-                           length:(NSUInteger)length
+                           length:(int64_t)length
                          mimeType:(NSString *)mimeType;
 
 /**
@@ -339,7 +343,7 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
  Appends HTTP headers, followed by the encoded data and the multipart form boundary.
 
  @param headers The HTTP headers to be appended to the form data.
- @param body The data to be encoded and appended to the form data.
+ @param body The data to be encoded and appended to the form data. This parameter must not be `nil`.
  */
 - (void)appendPartWithHeaders:(NSDictionary *)headers
                          body:(NSData *)body;
@@ -356,22 +360,6 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
                                   delay:(NSTimeInterval)delay;
 
 @end
-
-///----------------
-/// @name Constants
-///----------------
-
-/**
- ## Throttling Bandwidth for HTTP Request Input Streams
-
- @see -throttleBandwidthWithPacketSize:delay:
-
- `kAFUploadStream3GSuggestedPacketSize`
- Maximum packet size, in number of bytes. Equal to 16kb.
-
- `kAFUploadStream3GSuggestedDelay`
- Duration of delay each time a packet is read. Equal to 0.2 seconds.
- */
 
 #pragma mark -
 
@@ -415,3 +403,51 @@ extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
                         writeOptions:(NSPropertyListWriteOptions)writeOptions;
 
 @end
+
+///----------------
+/// @name Constants
+///----------------
+
+/**
+ ## Error Domains
+
+ The following error domain is predefined.
+
+ - `NSString * const AFURLRequestSerializationErrorDomain`
+
+ ### Constants
+
+ `AFURLRequestSerializationErrorDomain`
+ AFURLRequestSerializer errors. Error codes for `AFURLRequestSerializationErrorDomain` correspond to codes in `NSURLErrorDomain`.
+ */
+extern NSString * const AFURLRequestSerializationErrorDomain;
+
+/**
+ ## User info dictionary keys
+
+ These keys may exist in the user info dictionary, in addition to those defined for NSError.
+
+ - `NSString * const AFNetworkingOperationFailingURLResponseErrorKey`
+
+ ### Constants
+
+ `AFNetworkingOperationFailingURLRequestErrorKey`
+ The corresponding value is an `NSURLRequest` containing the request of the operation associated with an error. This key is only present in the `AFURLRequestSerializationErrorDomain`.
+ */
+extern NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
+
+/**
+ ## Throttling Bandwidth for HTTP Request Input Streams
+
+ @see -throttleBandwidthWithPacketSize:delay:
+
+ ### Constants
+
+ `kAFUploadStream3GSuggestedPacketSize`
+ Maximum packet size, in number of bytes. Equal to 16kb.
+
+ `kAFUploadStream3GSuggestedDelay`
+ Duration of delay each time a packet is read. Equal to 0.2 seconds.
+ */
+extern NSUInteger const kAFUploadStream3GSuggestedPacketSize;
+extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;

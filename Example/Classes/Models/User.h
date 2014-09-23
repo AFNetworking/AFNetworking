@@ -30,10 +30,10 @@ extern NSString * const kUserProfileImageDidLoadNotification;
 @property (readonly, nonatomic, copy) NSString *username;
 @property (readonly, nonatomic, unsafe_unretained) NSURL *avatarImageURL;
 
-- (instancetype)initWithAttributes:(NSDictionary *)attributes;
-
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (nonatomic, strong) NSImage *profileImage;
 #endif
+
+- (instancetype)initWithAttributes:(NSDictionary *)attributes;
 
 @end

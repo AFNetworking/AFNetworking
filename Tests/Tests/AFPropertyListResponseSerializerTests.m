@@ -1,6 +1,6 @@
 // AFPropertyListResponseSerializerTests.m
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,22 @@
 #import "AFURLResponseSerialization.h"
 
 @interface AFPropertyListResponseSerializerTests : AFTestCase
+@property (nonatomic, strong) AFPropertyListResponseSerializer *responseSerializer;
 @end
 
 @implementation AFPropertyListResponseSerializerTests
 
+- (void)setUp {
+    [super setUp];
+    self.responseSerializer = [AFPropertyListResponseSerializer serializer];
+}
+
+#pragma mark -
+
 - (void)testThatPropertyListResponseSerializerHandles204 {
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:204 HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"application/x-plist"}];
-
-    id<AFURLResponseSerialization> serializer = [AFPropertyListResponseSerializer serializer];
     NSError *error;
-    id responseObject = [serializer responseObjectForResponse:response data:nil error:&error];
+    id responseObject = [self.responseSerializer responseObjectForResponse:response data:nil error:&error];
 
     XCTAssertNil(responseObject, @"Response should be nil when handling 204 with application/x-plist");
     XCTAssertNil(error, @"Error handling application/x-plist");

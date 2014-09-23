@@ -1,6 +1,6 @@
 // UIImageView+AFNetworking.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,6 @@
 #import <UIKit/UIKit.h>
 
 @protocol AFURLResponseSerialization, AFImageCache;
-
-@class AFImageResponseSerializer;
 
 /**
  This category adds methods to the UIKit framework's `UIImageView` class. The methods in this category provide support for loading remote images asynchronously from a URL.
@@ -62,7 +60,7 @@
  
  @discussion Subclasses of `AFImageResponseSerializer` could be used to perform post-processing, such as color correction, face detection, or other effects. See https://github.com/AFNetworking/AFCoreImageSerializer
  */
-@property (nonatomic, strong) AFImageResponseSerializer <AFURLResponseSerialization> * imageResponseSerializer;
+@property (nonatomic, strong) id <AFURLResponseSerialization> imageResponseSerializer;
 
 ///--------------------
 /// @name Setting Image
@@ -121,7 +119,7 @@
 /**
  The `AFImageCache` protocol is adopted by an object used to cache images loaded by the AFNetworking category on `UIImageView`.
  */
-@protocol AFImageCache
+@protocol AFImageCache <NSObject>
 
 /**
  Returns a cached image for the specififed request, if available.

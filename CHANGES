@@ -1,15 +1,306 @@
+= 2.4.1 (2014-09-04)
+
+ * Fix compiler warning generated on 32-bit architectures (John C. Daub)
+
+ * Fix potential crash caused by failed validation with nil responseData
+ (Mattt Thompson)
+
+ * Fix to suppress compiler warnings for out-of-range enumerated type
+ value assignment (Mattt Thompson)
+
+= 2.4.0 (2014-09-03)
+
+ * Add CocoaDocs color scheme (Orta)
+
+ * Add image cache to `UIButton` category (Kristian Bauer, Mattt Thompson)
+
+ * Add test for success block on 204 response (Mattt Thompson)
+
+ * Add tests for encodable and re-encodable query string parameters (Mattt
+Thompson)
+
+ * Add `AFHTTPRequestSerializer -valueForHTTPHeaderField:` (Kyle Fuller)
+
+ * Add `AFNetworkingOperationFailingURLResponseDataErrorKey` key to user info
+of serialization error (Yannick Heinrich)
+
+ * Add `imageResponseSerializer` property to `UIButton` category (Kristian
+Bauer, Mattt Thompson)
+
+ * Add `removesKeysWithNullValues` setting to serialization and copying (Jon
+Shier)
+
+ * Change request and response serialization tests to be factored out into
+separate files (Mattt Thompson)
+
+ * Change signature of success parameters in `UIButton` category methods to
+match those in `UIImageView` (Mattt Thompson)
+
+ * Change to remove charset parameter from
+`application/x-www-form-urlencoded` content type (Mattt Thompson)
+
+ * Change `AFImageCache` to conform to `NSObject` protocol ( Marcelo Fabri)
+
+ * Change `AFMaximumNumberOfToRecreateBackgroundSessionUploadTask` to
+`AFMaximumNumberOfAttemptsToRecreateBackgroundSessionUploadTask` (Mattt
+Thompson)
+
+ * Fix documentation error for NSSecureCoding (Robert Ryan)
+
+ * Fix documentation for `URLSessionDidFinishEventsForBackgroundURLSession`
+delegate method (Mattt Thompson)
+
+ * Fix expired ADN certificate in example project (Carson McDonald)
+
+ * Fix for interoperability within Swift project (Stephan Krusche)
+
+ * Fix for potential deadlock due to KVO subscriptions within a lock
+(Alexander Skvortsov)
+
+ * Fix iOS 7 bug where session tasks can have duplicate identifiers if
+created from different threads (Mattt Thompson)
+
+ * Fix iOS 8 bug by adding explicit synthesis for `delegate` of
+`AFMultipartBodyStream` (Mattt Thompson)
+
+ * Fix issue caused by passing `nil` as body of multipart form part (Mattt
+Thompson)
+
+ * Fix issue caused by passing `nil` as destination in download task method
+(Mattt Thompson)
+
+ * Fix issue with `AFHTTPRequestSerializer` returning a request and silently
+handling an error from a `queryStringSerialization` block (Kyle Fuller, Mattt
+Thompson)
+
+ * Fix potential issues by ensuring `invalidateSessionCancelingTasks` only
+executes on main thread (Mattt Thompson)
+
+ * Fix potential memory leak caused by deferred opening of output stream
+(James Tomson)
+
+ * Fix properties on session managers such that default values will not trump
+values set in the session configuration (Mattt Thompson)
+
+ * Fix README to include explicit call to start reachability manager (Mattt
+Thompson)
+
+ * Fix request serialization error handling in `AFHTTPSessionManager`
+convenience methods (Kyle Fuller, Lars Anderson, Mattt Thompson)
+
+ * Fix stray localization macro (Devin McKaskle)
+
+ * Fix to ensure connection operation `-copyWithZone:` calls super
+implementation (Chris Streeter)
+
+ * Fix `UIButton` category to only cancel request for specified state
+(@xuzhe, Mattt Thompson)
+
+= 2.3.1 (2014-06-13)
+
+ * Fix issue with unsynthesized `streamStatus` & `streamError` properties
+on `AFMultipartBodyStream` (Mattt Thompson)
+
+= 2.3.0 (2014-06-11)
+
+ * Add check for `AF_APP_EXTENSIONS` macro to conditionally compile
+background  method that makes API call unavailable to App Extensions in iOS 8
+/ OS X 10.10
+
+ * Add further explanation for network reachability in documentation (Steven
+Fisher)
+
+ * Add notification for initial change from
+`AFNetworkReachabilityStatusUnknown` to any other state (Jason Pepas,
+Sebastian S.A., Mattt Thompson)
+
+ * Add tests for AFNetworkActivityIndicatorManager (Dave Weston, Mattt
+Thompson)
+
+ * Add tests for AFURLSessionManager task progress (Ullrich Schäfer)
+
+ * Add `attemptsToRecreateUploadTasksForBackgroundSessions` property, which
+attempts Apple's recommendation of retrying a failed upload task if initial
+creation did not succeed (Mattt Thompson)
+
+ * Add `completionQueue` and `completionGroup` properties to
+`AFHTTPRequestOperationManager` (Robert Ryan)
+
+ * Change deprecating `AFErrorDomain` in favor of
+`AFRequestSerializerErrorDomain` & `AFResponseSerializerErrorDomain` (Mattt
+Thompson)
+
+ * Change serialization tests to be split over two different files (Mattt
+Thompson)
+
+ * Change to make NSURLSession subspec not depend on NSURLConnection subspec
+(Mattt Thompson)
+
+ * Change to make Serialization subspec not depend on NSURLConnection subspec
+(Nolan Waite, Mattt Thompson)
+
+ * Change `completionHandler` of
+`application:handleEventsForBackgroundURLSession:completion:` to be run on
+main thread (Padraig Kennedy)
+
+ * Change `UIImageView` category to accept any object conforming to
+`AFURLResponseSerialization`, rather than just `AFImageResponseSerializer`
+(Romans Karpelcevs)
+
+ * Fix calculation and behavior of `NSProgress` (Padraig Kennedy, Ullrich
+Schäfer)
+
+ * Fix deprecation warning for `backgroundSessionConfiguration:` in iOS 8 /
+OS X 10.10 (Mattt Thompson)
+
+ * Fix implementation of `copyWithZone:` in serializer subclasses (Chris
+Streeter)
+
+ * Fix issue in Xcode 6 caused by implicit synthesis of overridden `NSStream`
+properties (Clay Bridges, Johan Attali)
+
+ * Fix KVO handling for `NSURLSessionTask` on iOS 8 / OS X 10.10 (Mattt
+Thompson)
+
+ * Fix KVO leak for `NSURLSessionTask` (@Zyphrax)
+
+ * Fix potential crash caused by attempting to use non-existent error of
+failing requests due to URLs exceeding a certain length (Boris Bügling)
+
+ * Fix to check existence of `uploadProgress` block inside a referencing
+`dispatch_async` to avoid potential race condition (Kyungkoo Kang)
+
+ * Fix `UIImageView` category race conditions (Sunny)
+
+ * Remove unnecessary default operation response serializer setters (Mattt
+Thompson)
+
+= 2.2.4 (2014-05-13)
+
+ * Add NSSecureCoding support to all AFNetworking classes (Kyle Fuller, Mattt
+Thompson)
+
+ * Change behavior of request operation `NSOutputStream` property to only nil
+out if `responseData` is non-nil, meaning that no custom object was set
+(Mattt Thompson)
+
+ * Fix data tasks to not attempt to track progress, and rare related crash
+(Padraig Kennedy)
+
+ * Fix issue with `-downloadTaskDidFinishDownloading:` not being called
+(Andrej Mihajlov)
+
+ * Fix KVO leak on invalidated session tasks (Mattt Thompson)
+
+ * Fix missing import of `UIRefreshControl+AFNetworking" (@BB9z)
+
+ * Fix potential compilation errors on Mac OS X, caused by import order of
+`<AssertionMacros.h>`, which signaled an incorrect deprecation warning (Mattt
+Thompson)
+
+ * Fix race condition in UIImageView+AFNetworking when making several image
+requests in quick succession (Alexander Crettenand)
+
+ * Update documentation for `-downloadTaskWithRequest:` to warn about blocks
+being disassociated on app termination and backgrounding (Robert Ryan)
+
+= 2.2.3 (2014-04-18)
+
+  * Fix `AFErrorOrUnderlyingErrorHasCodeInDomain` function declaration for
+AFXMLDocumentResponseSerializer (Mattt Thompson)
+
+  * Fix error domain check in `AFErrorOrUnderlyingErrorHasCodeInDomain`
+(Mattt Thompson)
+
+  * Fix `UIImageView` category to only `nil` out request operation properties
+belonging to completed request (Mattt Thompson)
+
+  * Fix `removesKeysWithNullValues` to respect
+`NSJSONReadingMutableContainers` option (Mattt Thompson)
+
+  * Change `removesKeysWithNullValues` property to recursively remove null
+values from dictionaries nested in arrays (@jldagon)
+
+  * Change to not override `Content-Type` header field values set by
+`HTTPRequestHeaders` property (Aaron Brager, Mattt Thompson)
+
+= 2.2.2 (2014-04-15)
+
+  * Add `removesKeysWithNullValues` property to `AFJSONResponsSerializer` to
+automatically remove `NSNull` values in dictionaries serialized from JSON
+(Mattt Thompson)
+
+  * Add unit test for checking content type (Diego Torres)
+
+  * Add `boundary` property to `AFHTTPBodyPart -copyWithZone:`
+
+  * Change to accept `id` parameter type in HTTP manager convenience methods
+(Mattt Thompson)
+
+  * Change to deprecate `setAuthorizationHeaderFieldWithToken:`, in favor of
+users specifying an `Authorization` header field value themselves (Mattt
+Thompson)
+
+  * Change to use `long long` type to prevent a difference in stream size
+caps on 32-bit and 64-bit architectures (Yung-Luen Lan, Cédric Luthi)
+
+  * Fix calculation of Content-Length in `taskDidSendBodyData` (Christos
+Vasilakis)
+
+  * Fix for comparison of image view request operations (Mattt Thompson)
+
+  * Fix for SSL certificate validation to check status codes at runtime (Dave
+Anderson)
+
+  * Fix to add missing call to delegate in
+`URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:`
+
+  * Fix to call `taskDidComplete` if delegate is missing (Jeff Ward)
+
+  * Fix to implement `respondsToSelector:` for `NSURLSession` delegate
+methods to conditionally respond to conditionally respond to optional
+selectors if and only if a custom block has been set (Mattt Thompson)
+
+  * Fix to prevent illegal state values from being assigned for
+`AFURLConnectionOperation` (Kyle Fuller)
+
+  * Fix to re-establish `AFNetworkingURLSessionTaskDelegate` objects after
+restoring from a background configuration (Jeff Ward)
+
+  * Fix to reduce memory footprint by `nil`-ing out request operation
+`outputStream` after closing, as well as image view request operation after
+setting image (Teun van Run, Mattt Thompson)
+
+  * Remove unnecessary call in class constructor (Bernhard Loibl)
+
+  * Remove unnecessary check for `respondsToSelector:` for `UIScreen scale`
+in User-Agent string (Samuel Goodwin)
+
+  * Update App.net certificate and API base URL (Cédric Luthi)
+
+  * Update examples in README (@petard, @orta, Mattt Thompson)
+
+  * Update Travis CI icon to use SVG format (Maximilian Tagher)
+
 = 2.2.1 (2014-03-14)
 
   * Fix `-Wsign-conversion` warning in AFURLConnectionOperation (Jesse Collis)
+
   * Fix `-Wshorten-64-to-32` warning (Jesse Collis)
+
   * Remove unnecessary #imports in `UIImageView` & `UIWebView` categories
 (Jesse Collis)
+
   * Fix call to `CFStringTransform()` by checking return value before setting
 as `User-Agent` (Kevin Cassidy Jr)
+
   * Update `AFJSONResponseSerializer` adding `@autorelease` to relieve memory
 pressure (Mattt Thompson, Michal Pietras)
+
   * Update `AFJSONRequestSerializer` to accept `id` (Daren Desjardins)
+
   * Fix small documentation bug (@jkoepcke)
+
   * Fix behavior of SSL pinning. In case of `validatesDomainName == YES`, it
 now explicitly uses `SecPolicyCreateSSL`, which also validates the domain
 name. Otherwise, `SecPolicyCreateBasicX509` is used.
@@ -383,6 +674,36 @@ credential exists for the server trust (Mattt Thompson)
  * Remove unnecessary Podfile.lock (Kyle Fuller)
 
 = 2.0.0 (2013-09-27)
+
+====================
+
+= 1.3.4 (2014-04-15)
+
+ * Fix `AFHTTPMultipartBodyStream` to randomly generate form boundary, to
+prevent attack based on a known value (Mathias Bynens, Tom Van Goethem, Mattt
+Thompson)
+
+ * Fix potential non-terminating loop in `connection:didReceiveData:` (Mattt
+Thompson)
+
+ * Fix SSL certificate validation to provide a human readable Warning when
+SSL Pinning fails (Maximillian Dornseif)
+
+ * Fix SSL certificate validation  to assert that no impossible pinning
+configuration exists (Maximillian Dornseif)
+
+ * Fix to check `CFStringTransform()` call for success before using result
+(Kevin Cassidy Jr)
+
+ * Fix to prevent unused assertion results with macros (Indragie Karunaratne)
+
+ * Fix to call call `SecTrustEvaluate` before calling
+`SecTrustGetCertificateCount` in SSL certificate validation (Josh Chung)
+
+ * Fix to add explicit cast to `NSUInteger` in format string (Alexander
+Kempgen)
+
+ * Remove unused variable `kAFStreamToStreamBufferSize` (Alexander Kempgen)
 
 = 1.3.3 (2013-09-25)
 

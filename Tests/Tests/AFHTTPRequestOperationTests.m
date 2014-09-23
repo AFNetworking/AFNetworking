@@ -1,6 +1,6 @@
 // AFHTTPRequestOperationTests.m
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -47,9 +47,6 @@
         blockError = error;
     }];
     
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
     // FLAKY: For this test to correctly fail, 'pause' must happen on the main thread before the network thread has run the logic of 'start'.
     // The non-intrusive fix to this is to create fine grained control over the starting/stopping of the network thread, rather than having the network thread continually process events in the background.
 
@@ -77,9 +74,6 @@
         blockError = error;
     }];
     
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation2 setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
     // The network thread is stalled, so this operation could not succeed.
     [operation2 start];
     expect(blockError).will.beNil();
@@ -92,9 +86,6 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         blockResponseObject = responseObject;
@@ -109,14 +100,31 @@
     expect(blockResponseObject).willNot.beNil();
 }
 
+- (void)testThatOperationInvokesSuccessCompletionBlockOn204 {
+    __block id blockResponseObject = nil;
+    __block NSError *blockError = nil;
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/204" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        blockResponseObject = responseObject;
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
+
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(blockError).will.beNil();
+    expect(blockResponseObject).will.equal([NSData data]);
+}
+
 - (void)testThatOperationInvokesFailureCompletionBlockWithErrorOnFailure {
     __block NSError *blockError = nil;
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;
@@ -131,9 +139,6 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
     [operation start];
     expect([operation isExecuting]).will.beTruthy();
     
@@ -147,9 +152,6 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;
@@ -169,9 +171,6 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;
@@ -194,10 +193,7 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
+
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;
     }];
@@ -215,10 +211,7 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/500" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
+
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;
     }];
@@ -234,10 +227,7 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
+
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;
     }];
@@ -262,10 +252,7 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
+
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;
     }];
@@ -290,9 +277,6 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
     [operation start];
     expect([operation isExecuting]).will.beTruthy();
     
@@ -305,10 +289,7 @@
     [Expecta setAsynchronousTestTimeout:3.0];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
+
     [operation start];
     expect([operation isExecuting]).will.beTruthy();
     
@@ -335,9 +316,6 @@
         blockError = error;
     }];
     
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
     [operation start];
     expect([operation isExecuting]).will.beTruthy();
     
@@ -363,9 +341,6 @@
         }
     }];
     
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    
     [operation start];
     expect(notificationFound).will.beTruthy();
     
@@ -383,9 +358,6 @@
             notificationFound = YES;
         }
     }];
-    
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     
     [operation start];
     expect(notificationFound).will.beTruthy();
@@ -443,7 +415,8 @@
     [operation setOutputStream:({
         id mockStream = [OCMockObject mockForClass:[NSOutputStream class]];
         [[[mockStream stub] andReturn:streamError] streamError];
-        [[[mockStream stub] andReturnValue:@NO] hasSpaceAvailable];
+        BOOL no = NO;
+        [[[mockStream stub] andReturnValue:OCMOCK_VALUE(no)] hasSpaceAvailable];
 
         // "Note that currently partial mocks cannot be created for instances of toll-free bridged classes". Thus, we have to fully mock it
         [[mockStream stub] scheduleInRunLoop:OCMOCK_ANY forMode:OCMOCK_ANY];
@@ -452,9 +425,6 @@
 
         mockStream;
     })];
-
-    // AFHTTPOperation currently does not have a default response serializer
-    [operation setResponseSerializer:[AFHTTPResponseSerializer serializer]];
 
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;

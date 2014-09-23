@@ -15,6 +15,7 @@
   #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
     #import <SystemConfiguration/SystemConfiguration.h>
+    #import <AssertMacros.h>
     #import <CoreServices/CoreServices.h>
   #endif
 #endif

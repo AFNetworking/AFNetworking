@@ -1,6 +1,6 @@
 // AFHTTPRequestOperationManager.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -75,14 +75,14 @@
 
  Network reachability status and change monitoring is available through the `reachabilityManager` property. Applications may choose to monitor network reachability conditions in order to prevent or suspend any outbound requests. See `AFNetworkReachabilityManager` for more details.
 
- ## NSCoding & NSCopying Caveats
+ ## NSSecureCoding & NSCopying Caveats
 
- `AFHTTPRequestOperationManager`  conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. There are a few minor caveats to keep in mind, however:
+ `AFHTTPRequestOperationManager` conforms to the `NSSecureCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. There are a few minor caveats to keep in mind, however:
 
  - Archives and copies of HTTP clients will be initialized with an empty operation queue.
- - NSCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
+ - NSSecureCoding cannot serialize / deserialize block properties, so an archive of an HTTP client will not include any reachability callback block that may be set.
  */
-@interface AFHTTPRequestOperationManager : NSObject <NSCoding, NSCopying>
+@interface AFHTTPRequestOperationManager : NSObject <NSSecureCoding, NSCopying>
 
 /**
  The URL used to monitor reachability, and construct requests from relative paths in methods like `requestWithMethod:URLString:parameters:`, and the `GET` / `POST` / et al. convenience methods.
@@ -144,6 +144,20 @@
  */
 @property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 
+///-------------------------------
+/// @name Managing Callback Queues
+///-------------------------------
+
+/**
+ The dispatch queue for the `completionBlock` of request operations. If `NULL` (default), the main queue is used.
+ */
+@property (nonatomic, strong) dispatch_queue_t completionQueue;
+
+/**
+ The dispatch group for the `completionBlock` of request operations. If `NULL` (default), a private dispatch group is used.
+ */
+@property (nonatomic, strong) dispatch_group_t completionGroup;
+
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
 ///---------------------------------------------
@@ -194,7 +208,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)GET:(NSString *)URLString
-                     parameters:(NSDictionary *)parameters
+                     parameters:(id)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -209,7 +223,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)HEAD:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
+                      parameters:(id)parameters
                          success:(void (^)(AFHTTPRequestOperation *operation))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -224,7 +238,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
+                      parameters:(id)parameters
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -240,7 +254,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
+                      parameters:(id)parameters
        constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
@@ -256,7 +270,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)PUT:(NSString *)URLString
-                     parameters:(NSDictionary *)parameters
+                     parameters:(id)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -271,7 +285,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)PATCH:(NSString *)URLString
-                       parameters:(NSDictionary *)parameters
+                       parameters:(id)parameters
                           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -286,7 +300,7 @@
  @see -HTTPRequestOperationWithRequest:success:failure:
  */
 - (AFHTTPRequestOperation *)DELETE:(NSString *)URLString
-                        parameters:(NSDictionary *)parameters
+                        parameters:(id)parameters
                            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
