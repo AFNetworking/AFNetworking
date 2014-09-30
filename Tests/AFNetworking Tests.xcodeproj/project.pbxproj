@@ -64,8 +64,6 @@
 		2544EC83173BFAA8004117E8 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		2544EC84173BFAA8004117E8 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2544EC85173BFAA8004117E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		25801549173EB4B40026AA6E /* Pods-ios.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Pods-ios.xcconfig"; path = "Pods/Pods-ios.xcconfig"; sourceTree = "<group>"; };
-		2580154A173EB4B40026AA6E /* Pods-osx.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Pods-osx.xcconfig"; path = "Pods/Pods-osx.xcconfig"; sourceTree = "<group>"; };
 		25C4EC2A173D7DB30083E116 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		25C4EC2C173D7DBA0083E116 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		25C4EC2E173D7DC40083E116 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -104,17 +102,21 @@
 		36DE264B18053E930062F4E3 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = Resources/ADN.net/ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
 		36DE264C18053E930062F4E3 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = Resources/ADN.net/ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
 		36DE264D18053E930062F4E3 /* adn_2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_2.cer; path = Resources/ADN.net/ADNNetServerTrustChain/adn_2.cer; sourceTree = "<group>"; };
+		520A0FB27D040CF3258787D2 /* Pods-osx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.debug.xcconfig"; path = "Pods/Target Support Files/Pods-osx/Pods-osx.debug.xcconfig"; sourceTree = "<group>"; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		64491A4618AAEFFF00F35444 /* Geotrust_Root_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Geotrust_Root_CA.cer; sourceTree = "<group>"; };
 		64491A4918AAF01600F35444 /* Rapid_SSL_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Rapid_SSL_CA.cer; sourceTree = "<group>"; };
 		649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_11212014.cer; sourceTree = "<group>"; };
 		77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListResponseSerializerTests.m; sourceTree = "<group>"; };
 		943B1F40192E406C00304316 /* AFURLSessionManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManagerTests.m; sourceTree = "<group>"; };
+		95D45FB81CA3594FA8CF7430 /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A74DA00618D2FB9400F3B969 /* AltName.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AltName.cer; sourceTree = "<group>"; };
 		A74DA00718D2FB9400F3B969 /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
 		A74DA00818D2FB9400F3B969 /* NoDomains.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = NoDomains.cer; sourceTree = "<group>"; };
 		B6774DC818FBB49E0044DB17 /* AFNetworkActivityManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityManagerTests.m; sourceTree = "<group>"; };
+		BC9AB30A551203E10B6C890E /* Pods-osx.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.release.xcconfig"; path = "Pods/Target Support Files/Pods-osx/Pods-osx.release.xcconfig"; sourceTree = "<group>"; };
+		C280748C740FAD506581E3CE /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
 		F837FFAE195744A0009078A0 /* AFHTTPResponseSerializationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPResponseSerializationTests.m; sourceTree = "<group>"; };
 		F87382941948AC15000B7AFA /* AFHTTPSessionManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManagerTests.m; sourceTree = "<group>"; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
@@ -151,14 +153,13 @@
 				36DE264B18053E930062F4E3 /* adn_0.cer */,
 				36DE264C18053E930062F4E3 /* adn_1.cer */,
 				36DE264D18053E930062F4E3 /* adn_2.cer */,
-				25801549173EB4B40026AA6E /* Pods-ios.xcconfig */,
-				2580154A173EB4B40026AA6E /* Pods-osx.xcconfig */,
 				25A753091747FC7E00F04F2F /* Resources */,
 				29B9ED6017DF4D350021E4D5 /* Tests */,
 				2902D27C17DF4E1200C81C5A /* iOS Tests */,
 				2902D29017DF4E2A00C81C5A /* OS X Tests */,
 				2544EC34173BE382004117E8 /* Frameworks */,
 				2544EC33173BE382004117E8 /* Products */,
+				792D9983BBDACA0DD7F01333 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -303,6 +304,17 @@
 			);
 			name = ADN.net;
 			path = Resources/ADN.net;
+			sourceTree = "<group>";
+		};
+		792D9983BBDACA0DD7F01333 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				95D45FB81CA3594FA8CF7430 /* Pods-ios.debug.xcconfig */,
+				C280748C740FAD506581E3CE /* Pods-ios.release.xcconfig */,
+				520A0FB27D040CF3258787D2 /* Pods-osx.debug.xcconfig */,
+				BC9AB30A551203E10B6C890E /* Pods-osx.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		A74DA00518D2FB9400F3B969 /* SelfSigned */ = {
@@ -478,7 +490,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-osx-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-osx/Pods-osx-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DFF6BB8B6C8D4F8ABC235667 /* Copy Pods Resources */ = {
@@ -493,7 +505,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-ios-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ios/Pods-ios-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -607,7 +619,7 @@
 		};
 		2902D28517DF4E1200C81C5A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25801549173EB4B40026AA6E /* Pods-ios.xcconfig */;
+			baseConfigurationReference = 95D45FB81CA3594FA8CF7430 /* Pods-ios.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -636,7 +648,7 @@
 		};
 		2902D28617DF4E1200C81C5A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25801549173EB4B40026AA6E /* Pods-ios.xcconfig */;
+			baseConfigurationReference = C280748C740FAD506581E3CE /* Pods-ios.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -662,7 +674,7 @@
 		};
 		2902D29A17DF4E2A00C81C5A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2580154A173EB4B40026AA6E /* Pods-osx.xcconfig */;
+			baseConfigurationReference = 520A0FB27D040CF3258787D2 /* Pods-osx.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -693,7 +705,7 @@
 		};
 		2902D29B17DF4E2A00C81C5A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2580154A173EB4B40026AA6E /* Pods-osx.xcconfig */;
+			baseConfigurationReference = BC9AB30A551203E10B6C890E /* Pods-osx.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
