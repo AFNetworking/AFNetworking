@@ -664,11 +664,9 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 break;
             }
         }
+    } else if ([challenge previousFailureCount] == 0 && self.credential != nil) {
+        [[challenge sender] useCredential:self.credential forAuthenticationChallenge:challenge];
     } else {
-        if ([challenge previousFailureCount] == 0 && self.credential != nil) {
-            [[challenge sender] useCredential:self.credential forAuthenticationChallenge:challenge];
-        }
-
         [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
     }
 }
