@@ -648,7 +648,6 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
             case AFSSLPinningModeNone: {
                 SecTrustResultType result = 0;
                 OSStatus status = SecTrustEvaluate(serverTrust, &result);
-                NSAssert(status == errSecSuccess, @"SecTrustEvaluate error: %ld", (long int)status);
 
                 if (self.allowsInvalidSSLCertificate || (status == errSecSuccess && (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed))) {
                     NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
