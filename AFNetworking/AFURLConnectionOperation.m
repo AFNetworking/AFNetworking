@@ -660,6 +660,8 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
                 } else {
                     [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
                 }
+
+                break;
             }
         }
     } else {
