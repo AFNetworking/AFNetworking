@@ -27,10 +27,6 @@
 #import "AFURLResponseSerialization.h"
 #import "AFSecurityPolicy.h"
 
-#if defined(__has_feature) && __has_feature(attribute_availability_app_extension)
-#define AF_APP_EXTENSIONS 1
-#endif
-
 /**
  `AFURLConnectionOperation` is a subclass of `NSOperation` that implements `NSURLConnection` delegate methods.
 
@@ -252,7 +248,7 @@
 
  @param handler A handler to be called shortly before the application’s remaining background time reaches 0. The handler is wrapped in a block that cancels the operation, and cleans up and marks the end of execution, unlike the `handler` parameter in `UIApplication -beginBackgroundTaskWithExpirationHandler:`, which expects this to be done in the handler itself. The handler is called synchronously on the main thread, thus blocking the application’s suspension momentarily while the application is notified.
   */
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && !defined(AF_APP_EXTENSIONS)
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && (defined(__has_feature) && !__has_feature(attribute_availability_app_extension))
 - (void)setShouldExecuteAsBackgroundTaskWithExpirationHandler:(void (^)(void))handler;
 #endif
 
