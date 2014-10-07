@@ -27,6 +27,10 @@
 #import "AFURLResponseSerialization.h"
 #import "AFSecurityPolicy.h"
 
+#if defined(__has_feature) && __has_feature(attribute_availability_app_extension)
+#define AF_APP_EXTENSIONS 1
+#endif
+
 /**
  `AFURLConnectionOperation` is a subclass of `NSOperation` that implements `NSURLConnection` delegate methods.
 
@@ -65,10 +69,6 @@
  SSL with certificate pinning is strongly recommended for any application that transmits sensitive information to an external webservice.
 
  Connections will be validated on all matching certificates with a `.cer` extension in the bundle root.
- 
- ## App Extensions
- 
- When using AFNetworking in an App Extension, `#define AF_APP_EXTENSIONS` to avoid using unavailable APIs.
 
  ## NSCoding & NSCopying Conformance
 
