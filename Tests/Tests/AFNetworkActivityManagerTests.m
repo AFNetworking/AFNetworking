@@ -25,6 +25,7 @@
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AFHTTPRequestOperation.h"
 
+#if !(defined(__has_feature) && __has_feature(attribute_availability_app_extension))
 @interface AFNetworkActivityManagerTests : AFTestCase
 @property (nonatomic, strong) AFNetworkActivityIndicatorManager *networkActivityIndicatorManager;
 @property (nonatomic, assign) BOOL isNetworkActivityIndicatorVisible;
@@ -98,3 +99,4 @@
 }
 
 @end
+#endif
