@@ -54,6 +54,8 @@
  */
 @interface AFHTTPResponseSerializer : NSObject <AFURLResponseSerialization>
 
+- (instancetype) init;
+
 /**
  The string encoding used to serialize parameters.
  */
@@ -111,6 +113,8 @@
  */
 @interface AFJSONResponseSerializer : AFHTTPResponseSerializer
 
+- (instancetype) init;
+
 /**
  Options for reading the response JSON data and creating the Foundation objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONReadingOptions". `0` by default.
  */
@@ -158,6 +162,8 @@
  */
 @interface AFXMLDocumentResponseSerializer : AFHTTPResponseSerializer
 
+- (instancetype) init;
+
 /**
  Input and output options specifically intended for `NSXMLDocument` objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONReadingOptions". `0` by default.
  */
@@ -184,6 +190,8 @@
  - `application/x-plist`
  */
 @interface AFPropertyListResponseSerializer : AFHTTPResponseSerializer
+
+- (instancetype) init;
 
 /**
  The property list format. Possible values are described in "NSPropertyListFormat".
