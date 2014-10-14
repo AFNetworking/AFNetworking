@@ -205,6 +205,15 @@
  */
 @property (nonatomic, strong) NSDictionary *userInfo;
 
+///--------------------------
+/// @name Passing information
+///--------------------------
+
+/**
+ A tag that can be used to track different requests.
+ */
+@property (nonatomic) NSInteger tag;
+
 ///------------------------------------------------------
 /// @name Initializing an AFURLConnectionOperation Object
 ///------------------------------------------------------
