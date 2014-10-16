@@ -301,8 +301,17 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
     self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
 
-    self.responseSerializer = [AFJSONResponseSerializer serializer];
-
+    //requestSerializer, Overide default HTTPAdditionalHeaders / User-Agent if necessary
+    if ([[self.session.configuration HTTPAdditionalHeaders] objectForKey:@"Accept-Language"] ||
+        [[self.session.configuration HTTPAdditionalHeaders] objectForKey:@"User-Agent"]) {
+        self.requestSerializer = [AFHTTPRequestSerializer
+                                  serializerWithAcceptLanguage:[[self.session.configuration HTTPAdditionalHeaders] objectForKey:@"Accept-Language"]
+                                  andUserAgent:[[self.session.configuration HTTPAdditionalHeaders] objectForKey:@"User-Agent"]];
+        
+    } else {
+        self.requestSerializer = [AFHTTPRequestSerializer serializer];
+    }
+    
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
     self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
