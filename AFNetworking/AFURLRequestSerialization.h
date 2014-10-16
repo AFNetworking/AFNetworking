@@ -127,6 +127,11 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 + (instancetype)serializer;
 
 /**
+ Creates and returns a serializer with default configuration forcing acceptLanguage and userAgent
+ */
++ (instancetype)serializerWithAcceptLanguage:(NSString *)acceptLanguage andUserAgent:(NSString *)userAgent;
+
+/**
  Sets the value for the HTTP headers set in request objects made by the HTTP client. If `nil`, removes the existing value for that header.
 
  @param field The HTTP header to set a default value for
