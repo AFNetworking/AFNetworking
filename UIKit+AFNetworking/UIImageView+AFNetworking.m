@@ -137,9 +137,7 @@
 
         self.af_imageRequestOperation = nil;
     } else {
-        if (placeholderImage) {
-            self.image = placeholderImage;
-        }
+        self.image = (placeholderImage ? placeholderImage : nil);
         
         __weak __typeof(self)weakSelf = self;
         self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
