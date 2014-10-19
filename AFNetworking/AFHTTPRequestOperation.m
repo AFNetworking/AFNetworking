@@ -151,6 +151,8 @@ static dispatch_group_t http_request_operation_completion_group() {
 #pragma mark - AFURLRequestOperation
 
 - (void)pause {
+    [super pause];
+
     u_int64_t offset = 0;
     if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
         offset = [(NSNumber *)[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
@@ -164,11 +166,9 @@ static dispatch_group_t http_request_operation_completion_group() {
     }
     [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", offset] forHTTPHeaderField:@"Range"];
     self.request = mutableURLRequest;
-
-    [super pause];
 }
 
-#pragma mark - NSecureCoding
+#pragma mark - NSSecureCoding
 
 + (BOOL)supportsSecureCoding {
     return YES;
@@ -194,12 +194,12 @@ static dispatch_group_t http_request_operation_completion_group() {
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
-    AFHTTPRequestOperation *operation = [[[self class] allocWithZone:zone] initWithRequest:self.request];
+    AFHTTPRequestOperation *operation = [super copyWithZone:zone];
 
     operation.responseSerializer = [self.responseSerializer copyWithZone:zone];
     operation.completionQueue = self.completionQueue;
     operation.completionGroup = self.completionGroup;
-    
+
     return operation;
 }
 

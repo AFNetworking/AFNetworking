@@ -14,7 +14,8 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/archive/master.zip) and try out the included Mac and iPhone example apps
 - Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles on the Wiki](https://github.com/AFNetworking/AFNetworking/wiki)
-- Check out the [documentation](http://cocoadocs.org/docsets/AFNetworking/2.0.0/) for a comprehensive look at all of the APIs available in AFNetworking
+- Check out the [documentation](http://cocoadocs.org/docsets/AFNetworking/) for a comprehensive look at all of the APIs available in AFNetworking
+- Read the [AFNetworking 2.0 Migration Guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-2.0-Migration-Guide) for an overview of the architectural changes from 1.0.
 
 ## Communication
 
@@ -35,26 +36,15 @@ platform :ios, '7.0'
 pod "AFNetworking", "~> 2.0"
 ```
 
-## 2.0
-
-AFNetworking 2.0 is a major update to the framework. Building on 2 years of development, this new version introduces powerful new features, while providing an easy upgrade path for existing users.
-
-**Read the [AFNetworking 2.0 Migration Guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-2.0-Migration-Guide) for an overview of the architectural and API changes.**
-
-### What's New
-
-- Refactored Architecture
-- Support for NSURLSession
-- Serialization Modules
-- Expanded UIKit Extensions
-
 ## Requirements
 
-AFNetworking 2.0 and higher requires Xcode 5, targeting either iOS 6.0 and above, or Mac OS 10.8 Mountain Lion ([64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)) and above.
+| AFNetworking Version | Minimum iOS Target  | Minimum OS X Target  |                                   Notes                                   |
+|:--------------------:|:---------------------------:|:----------------------------:|:-------------------------------------------------------------------------:|
+|          2.x         |            iOS 6            |           OS X 10.8          | Xcode 5 is required. `AFHTTPSessionManager` requires iOS 7 or OS X 10.9. |
+|          [1.x](https://github.com/AFNetworking/AFNetworking/tree/1.x)         |            iOS 5            |         Mac OS X 10.7        |                                                                           |
+|        [0.10.x](https://github.com/AFNetworking/AFNetworking/tree/0.10.x)        |            iOS 4            |         Mac OS X 10.6        |                                                                           |
 
-For compatibility with iOS 5 or Mac OS X 10.7, use the [latest 1.x release](https://github.com/AFNetworking/AFNetworking/tree/1.x).
-
-For compatibility with iOS 4.3 or Mac OS X 10.6, use the [latest 0.10.x release](https://github.com/AFNetworking/AFNetworking/tree/0.10.x).
+(OS X projects must support [64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)).
 
 ## Architecture
 
@@ -291,6 +281,8 @@ NSOperationQueue *operationQueue = manager.operationQueue;
             break;
     }
 }];
+
+[manager.reachabilityManager startMonitoring];
 ```
 
 ---
