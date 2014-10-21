@@ -100,6 +100,26 @@
     expect(blockResponseObject).willNot.beNil();
 }
 
+- (void)testThatOperationInvokesSuccessCompletionBlockOn204 {
+    __block id blockResponseObject = nil;
+    __block NSError *blockError = nil;
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/204" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        blockResponseObject = responseObject;
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
+
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(blockError).will.beNil();
+    expect(blockResponseObject).will.equal([NSData data]);
+}
+
 - (void)testThatOperationInvokesFailureCompletionBlockWithErrorOnFailure {
     __block NSError *blockError = nil;
     
@@ -413,6 +433,27 @@
     [operation start];
     expect([operation isFinished]).will.beTruthy();
     expect(blockError).will.equal(streamError);
+}
+
+- (void)testThatOperationInvokesSuccessCompletionBlockForHTTPSRequest {
+    __block id blockResponseObject = nil;
+    __block id blockError = nil;
+
+    NSURL *secureBaseURL = [NSURL URLWithString:[self.baseURL.absoluteString stringByReplacingOccurrencesOfString:@"http://" withString:@"https://"]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:secureBaseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        blockResponseObject = responseObject;
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        blockError = error;
+    }];
+
+    [operation start];
+
+    expect([operation isFinished]).will.beTruthy();
+    expect(blockError).will.beNil();
+    expect(blockResponseObject).willNot.beNil();
 }
 
 @end
