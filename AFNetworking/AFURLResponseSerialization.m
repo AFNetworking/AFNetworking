@@ -112,7 +112,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     NSError *validationError = nil;
 
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
-        if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:[response MIMEType]]) {
+        if (self.acceptableContentTypes && ![self acceptableContentTypesContainsCaseSensitiveMimeType:[response MIMEType]]) {
             if ([data length] > 0) {
                 NSMutableDictionary *mutableUserInfo = [@{
                                                           NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: unacceptable content-type: %@", @"AFNetworking", nil), [response MIMEType]],
@@ -195,6 +195,22 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     serializer.acceptableContentTypes = [self.acceptableContentTypes copyWithZone:zone];
 
     return serializer;
+}
+
+#pragma mark - Helpers
+
+-(BOOL)acceptableContentTypesContainsCaseSensitiveMimeType:(NSString *)mimeType
+{
+    BOOL containsObject = NO;
+    for(id item in self.acceptableContentTypes)
+    {
+        if( [[(NSString *) item lowercaseString] isEqualToString:mimeType] )
+        {
+            containsObject = YES;
+            break;
+        }
+    }
+    return containsObject;
 }
 
 @end
