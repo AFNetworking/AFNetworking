@@ -205,6 +205,17 @@
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
                             completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 
+/**
+ Creates an `NSURLSessionDataTask` with the specified request.
+ 
+ @param request The HTTP request for the request.
+ @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
+ @param dataHandler A block object to be executed when data is received. This block has no return value and takes three arguments: the url session, the task itself, and the data object.
+ */
+- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+                            completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
+                            dataHandler:(void (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data))dataHandler;
+
 ///---------------------------
 /// @name Running Upload Tasks
 ///---------------------------
