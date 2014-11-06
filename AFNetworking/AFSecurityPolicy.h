@@ -39,7 +39,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 /**
  The criteria by which server trust should be evaluated against the pinned SSL certificates. Defaults to `AFSSLPinningModeNone`.
  */
-@property (nonatomic, assign) AFSSLPinningMode SSLPinningMode;
+@property (readonly, nonatomic, assign) AFSSLPinningMode SSLPinningMode;
 
 /**
  Whether to evaluate an entire SSL certificate chain, or just the leaf certificate. Defaults to `YES`.
@@ -57,7 +57,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 @property (nonatomic, assign) BOOL allowInvalidCertificates;
 
 /**
- Whether or not to validate the domain name in the certificates CN field. Defaults to `YES` for `AFSSLPinningModePublicKey` or `AFSSLPinningModeCertificate`, otherwise `NO`.
+ Whether or not to validate the domain name in the certificate's CN field. Defaults to `YES` for `AFSSLPinningModePublicKey` or `AFSSLPinningModeCertificate`, otherwise `NO`.
  */
 @property (nonatomic, assign) BOOL validatesDomainName;
 
@@ -66,7 +66,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 ///-----------------------------------------
 
 /**
- Returns the shared default security policy, which does not accept invalid certificates, and does not validate against pinned certificates or public keys.
+ Returns the shared default security policy, which does not allow invalid certificates, does not validate domain name, and does not validate against pinned certificates or public keys.
  
  @return The default security policy.
  */
@@ -78,7 +78,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 
 /**
  Creates and returns a security policy with the specified pinning mode.
- 
+
  @param pinningMode The SSL pinning mode.
  
  @return A new security policy.

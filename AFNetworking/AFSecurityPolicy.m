@@ -168,6 +168,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 #pragma mark -
 
 @interface AFSecurityPolicy()
+@property (readwrite, nonatomic, assign) AFSSLPinningMode SSLPinningMode;
 @property (readwrite, nonatomic, strong) NSArray *pinnedPublicKeys;
 @end
 
@@ -202,7 +203,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 + (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode {
     AFSecurityPolicy *securityPolicy = [[self alloc] init];
     securityPolicy.SSLPinningMode = pinningMode;
-    securityPolicy.validatesDomainName = YES;
+
     [securityPolicy setPinnedCertificates:[self defaultPinnedCertificates]];
 
     return securityPolicy;
@@ -220,6 +221,20 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 }
 
 #pragma mark -
+
+- (void)setSSLPinningMode:(AFSSLPinningMode)SSLPinningMode {
+    _SSLPinningMode = SSLPinningMode;
+
+    switch (self.SSLPinningMode) {
+        case AFSSLPinningModePublicKey:
+        case AFSSLPinningModeCertificate:
+            self.validatesDomainName = YES;
+            break;
+        default:
+            self.validatesDomainName = NO;
+            break;
+    }
+}
 
 - (void)setPinnedCertificates:(NSArray *)pinnedCertificates {
     _pinnedCertificates = pinnedCertificates;
