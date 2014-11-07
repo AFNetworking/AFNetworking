@@ -1130,33 +1130,39 @@ typedef enum {
 }
 
 - (BOOL)transitionToNextPhase {
-    if (![[NSThread currentThread] isMainThread]) {
-        [self performSelectorOnMainThread:@selector(transitionToNextPhase) withObject:nil waitUntilDone:YES];
-        return YES;
-    }
-
+    void(^transitionToPhase)() = ^() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wcovered-switch-default"
-    switch (_phase) {
-        case AFEncapsulationBoundaryPhase:
-            _phase = AFHeaderPhase;
-            break;
-        case AFHeaderPhase:
-            [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-            [self.inputStream open];
-            _phase = AFBodyPhase;
-            break;
-        case AFBodyPhase:
-            [self.inputStream close];
-            _phase = AFFinalBoundaryPhase;
-            break;
-        case AFFinalBoundaryPhase:
-        default:
-            _phase = AFEncapsulationBoundaryPhase;
-            break;
-    }
-    _phaseReadOffset = 0;
+        switch (_phase) {
+            case AFEncapsulationBoundaryPhase:
+                _phase = AFHeaderPhase;
+                break;
+            case AFHeaderPhase:
+                [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+                [self.inputStream open];
+                _phase = AFBodyPhase;
+                break;
+            case AFBodyPhase:
+                [self.inputStream close];
+                _phase = AFFinalBoundaryPhase;
+                break;
+            case AFFinalBoundaryPhase:
+            default:
+                _phase = AFEncapsulationBoundaryPhase;
+                break;
+        }
+        _phaseReadOffset = 0;
 #pragma clang diagnostic pop
+};
+    
+    NSOperationQueue *currentQueue = [NSOperationQueue currentQueue];
+    NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
+    
+    if (currentQueue == mainQueue) {
+        transitionToPhase();
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), transitionToPhase);
+    }
 
     return YES;
 }
