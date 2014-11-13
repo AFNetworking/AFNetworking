@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFURLSessionManager.h"
+#import <objc/runtime.h>
 
 #if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
 
@@ -255,6 +256,65 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
 #pragma mark -
 
+static NSString * const AFNetworkingUnknownTaskDidResumeNotification  = @"AFNetworkingUnknownTaskDidResumeNotification";
+static NSString * const AFNetworkingUnknownTaskDidSuspendNotification = @"AFNetworkingUnknownTaskDidSuspendNotification";
+
+/**
+ A workaround for crashes while key-value observing the state of an \c NSURLSessionTask.
+ 
+ The right thing to do is to watch that state with KVO and post the suspend and resume
+ notifications from there. Unfortunately, there's a crashing bug in KVO in at least
+ iOS 7.0.4, 7.1.1, 7.1.2, 8.0, and 8.0.2. For more, see http://openradar.appspot.com/18419882
+ */
+@implementation NSURLSessionTask (AFStateObserving)
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [self class];
+        
+        void (^swizzle)(SEL, SEL) = ^(SEL originalSelector, SEL swizzledSelector) {
+            Method originalMethod = class_getInstanceMethod(class, originalSelector);
+            Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+            
+            BOOL didAddMethod = class_addMethod(class,
+                                                originalSelector,
+                                                method_getImplementation(swizzledMethod),
+                                                method_getTypeEncoding(swizzledMethod));
+            
+            if (didAddMethod) {
+                class_replaceMethod(class,
+                                    swizzledSelector,
+                                    method_getImplementation(originalMethod),
+                                    method_getTypeEncoding(originalMethod));
+            } else {
+                method_exchangeImplementations(originalMethod, swizzledMethod);
+            }
+        };
+        
+        swizzle(@selector(resume),  @selector(af_resume));
+        swizzle(@selector(suspend), @selector(af_suspend));
+    });
+}
+
+- (void)af_resume {
+    NSURLSessionTaskState state = self.state;
+    [self af_resume];
+    if (state != NSURLSessionTaskStateRunning) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingUnknownTaskDidResumeNotification object:self];
+    }
+}
+
+- (void)af_suspend {
+    NSURLSessionTaskState state = self.state;
+    [self af_suspend];
+    if (state != NSURLSessionTaskStateSuspended) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingUnknownTaskDidSuspendNotification object:self];
+    }
+}
+@end
+
+#pragma mark -
+
 @interface AFURLSessionManager ()
 @property (readwrite, nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
@@ -325,8 +385,38 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
             [self addDelegateForDownloadTask:downloadTask progress:nil destination:nil completionHandler:nil];
         }
     }];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidResume:) name:AFNetworkingUnknownTaskDidResumeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidSuspend:) name:AFNetworkingUnknownTaskDidSuspendNotification object:nil];
 
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)taskDidResume:(NSNotification *)notification {
+    NSURLSessionTask *task = notification.object;
+    if ([task isKindOfClass:[NSURLSessionTask class]]) {
+        AFURLSessionManager *manager = [self delegateForTask:task].manager;
+        if ([manager isEqual:self]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidResumeNotification object:task];
+            });
+        }
+    }
+}
+
+- (void)taskDidSuspend:(NSNotification *)notification {
+    NSURLSessionTask *task = notification.object;
+    if ([task isKindOfClass:[NSURLSessionTask class]]) {
+        AFURLSessionManager *manager = [self delegateForTask:task].manager;
+        if ([manager isEqual:self]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidSuspendNotification object:task];
+            });
+        }
+    }
 }
 
 #pragma mark -
@@ -348,7 +438,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     NSParameterAssert(task);
     NSParameterAssert(delegate);
 
-    [task addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:(NSKeyValueObservingOptions)(NSKeyValueObservingOptionOld |NSKeyValueObservingOptionNew) context:AFTaskStateChangedContext];
     [self.lock lock];
     self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
     [self.lock unlock];
@@ -420,7 +509,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 - (void)removeDelegateForTask:(NSURLSessionTask *)task {
     NSParameterAssert(task);
 
-    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
     [self.lock lock];
     [self.mutableTaskDelegatesKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
     [self.lock unlock];
@@ -689,42 +777,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     return [[self class] instancesRespondToSelector:selector];
 }
 
-#pragma mark - NSKeyValueObserving
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
-{
-    if (context == AFTaskStateChangedContext && [keyPath isEqualToString:@"state"]) {
-        if (change[NSKeyValueChangeOldKey] && change[NSKeyValueChangeNewKey] && [change[NSKeyValueChangeNewKey] isEqual:change[NSKeyValueChangeOldKey]]) {
-            return;
-        }
-
-        NSString *notificationName = nil;
-        switch ([(NSURLSessionTask *)object state]) {
-            case NSURLSessionTaskStateRunning:
-                notificationName = AFNetworkingTaskDidResumeNotification;
-                break;
-            case NSURLSessionTaskStateSuspended:
-                notificationName = AFNetworkingTaskDidSuspendNotification;
-                break;
-            case NSURLSessionTaskStateCompleted:
-                // AFNetworkingTaskDidFinishNotification posted by task completion handlers
-            default:
-                break;
-        }
-
-        if (notificationName) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:object];
-            });
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
 #pragma mark - NSURLSessionDelegate
 
 - (void)URLSession:(NSURLSession *)session
@@ -734,15 +786,7 @@ didBecomeInvalidWithError:(NSError *)error
         self.sessionDidBecomeInvalid(session, error);
     }
 
-    [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        NSArray *tasks = [@[dataTasks, uploadTasks, downloadTasks] valueForKeyPath:@"@unionOfArrays.self"];
-        for (NSURLSessionTask *task in tasks) {
-            [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
-        }
-
-        [self removeAllDelegates];
-    }];
-
+    [self removeAllDelegates];
     [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDidInvalidateNotification object:session];
 }
 
