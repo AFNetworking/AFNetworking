@@ -229,7 +229,7 @@
 			attributes = {
 				LastUpgradeCheck = 0610;
 			};
-			buildConfigurationList = F8129BF51591061B009BFE23 /* Build configuration list for PBXProject "AFNetworking Mac Example" */;
+			buildConfigurationList = F8129BF51591061B009BFE23 /* Build configuration list for PBXProject "AFNetworking OS X Example" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -379,7 +379,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F8129BF51591061B009BFE23 /* Build configuration list for PBXProject "AFNetworking Mac Example" */ = {
+		F8129BF51591061B009BFE23 /* Build configuration list for PBXProject "AFNetworking OS X Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8129C171591061B009BFE23 /* Debug */,
