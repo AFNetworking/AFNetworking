@@ -256,61 +256,58 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
 #pragma mark -
 
-static NSString * const AFNetworkingUnknownTaskDidResumeNotification  = @"AFNetworkingUnknownTaskDidResumeNotification";
-static NSString * const AFNetworkingUnknownTaskDidSuspendNotification = @"AFNetworkingUnknownTaskDidSuspendNotification";
+/*
+ A workaround for issues related to key-value observing the `state` of an `NSURLSessionTask`.
 
-/**
- A workaround for crashes while key-value observing the state of an \c NSURLSessionTask.
- 
- The right thing to do is to watch that state with KVO and post the suspend and resume
- notifications from there. Unfortunately, there's a crashing bug in KVO in at least
- iOS 7.0.4, 7.1.1, 7.1.2, 8.0, and 8.0.2. For more, see http://openradar.appspot.com/18419882
+ See https://github.com/AFNetworking/AFNetworking/issues/1477
  */
-@implementation NSURLSessionTask (AFStateObserving)
+
+static inline void af_swizzleSelector(Class class, SEL originalSelector, SEL swizzledSelector) {
+    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+    if (class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))) {
+        class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
+    } else {
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+    }
+}
+
+static NSString * const AFNSURLSessionTaskDidResumeNotification  = @"com.alamofire.networking.nsurlsessiontask.resume";
+static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofire.networking.nsurlsessiontask.suspend";
+
+@interface NSURLSessionTask (_AFStateObserving)
+@end
+
+@implementation NSURLSessionTask (_AFStateObserving)
+
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        Class class = [self class];
-        
-        void (^swizzle)(SEL, SEL) = ^(SEL originalSelector, SEL swizzledSelector) {
-            Method originalMethod = class_getInstanceMethod(class, originalSelector);
-            Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-            
-            BOOL didAddMethod = class_addMethod(class,
-                                                originalSelector,
-                                                method_getImplementation(swizzledMethod),
-                                                method_getTypeEncoding(swizzledMethod));
-            
-            if (didAddMethod) {
-                class_replaceMethod(class,
-                                    swizzledSelector,
-                                    method_getImplementation(originalMethod),
-                                    method_getTypeEncoding(originalMethod));
-            } else {
-                method_exchangeImplementations(originalMethod, swizzledMethod);
-            }
-        };
-        
-        swizzle(@selector(resume),  @selector(af_resume));
-        swizzle(@selector(suspend), @selector(af_suspend));
+        af_swizzleSelector([self class], @selector(resume), @selector(af_resume));
+        af_swizzleSelector([self class], @selector(suspend), @selector(af_suspend));
     });
 }
+
+#pragma mark -
 
 - (void)af_resume {
     NSURLSessionTaskState state = self.state;
     [self af_resume];
+
     if (state != NSURLSessionTaskStateRunning) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingUnknownTaskDidResumeNotification object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFNSURLSessionTaskDidResumeNotification object:self];
     }
 }
 
 - (void)af_suspend {
     NSURLSessionTaskState state = self.state;
     [self af_suspend];
+
     if (state != NSURLSessionTaskStateSuspended) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingUnknownTaskDidSuspendNotification object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFNSURLSessionTaskDidSuspendNotification object:self];
     }
 }
+
 @end
 
 #pragma mark -
@@ -385,8 +382,9 @@ static NSString * const AFNetworkingUnknownTaskDidSuspendNotification = @"AFNetw
             [self addDelegateForDownloadTask:downloadTask progress:nil destination:nil completionHandler:nil];
         }
     }];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidResume:) name:AFNetworkingUnknownTaskDidResumeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidSuspend:) name:AFNetworkingUnknownTaskDidSuspendNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidResume:) name:AFNSURLSessionTaskDidResumeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidSuspend:) name:AFNSURLSessionTaskDidSuspendNotification object:nil];
 
     return self;
 }
