@@ -102,6 +102,7 @@ typedef void (^AFURLSessionDownloadTaskDidWriteDataBlock)(NSURLSession *session,
 typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes);
 
 typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id responseObject, NSError *error);
+typedef void (^AFURLSessionTaskDataHandler)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data);
 
 #pragma mark -
 
@@ -112,6 +113,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @property (nonatomic, copy) NSURL *downloadFileURL;
 @property (nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
 @property (nonatomic, copy) AFURLSessionTaskCompletionHandler completionHandler;
+@property (nonatomic, copy) AFURLSessionTaskDataHandler dataHandler;
 @end
 
 @implementation AFURLSessionManagerTaskDelegate
@@ -210,6 +212,9 @@ didCompleteWithError:(NSError *)error
     didReceiveData:(NSData *)data
 {
     [self.mutableData appendData:data];
+    if (self.dataHandler) {
+        self.dataHandler(session, dataTask, data);
+    }
 }
 
 #pragma mark - NSURLSessionDownloadTaskDelegate
@@ -314,7 +319,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         for (NSURLSessionDataTask *task in dataTasks) {
-            [self addDelegateForDataTask:task completionHandler:nil];
+            [self addDelegateForDataTask:task completionHandler:nil dataHandler:nil];
         }
         
         for (NSURLSessionUploadTask *uploadTask in uploadTasks) {
@@ -356,10 +361,12 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
 - (void)addDelegateForDataTask:(NSURLSessionDataTask *)dataTask
              completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
+                   dataHandler:(void (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data))dataHandler
 {
     AFURLSessionManagerTaskDelegate *delegate = [[AFURLSessionManagerTaskDelegate alloc] init];
     delegate.manager = self;
     delegate.completionHandler = completionHandler;
+    delegate.dataHandler = dataHandler;
 
     [self setDelegate:delegate forTask:dataTask];
 }
@@ -497,13 +504,20 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
                             completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
 {
+    return [self dataTaskWithRequest:request completionHandler:completionHandler dataHandler:nil];
+}
+
+- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+                            completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
+                                  dataHandler:(void (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data))dataHandler
+{
     __block NSURLSessionDataTask *dataTask = nil;
     dispatch_sync(url_session_manager_creation_queue(), ^{
         dataTask = [self.session dataTaskWithRequest:request];
     });
-
-    [self addDelegateForDataTask:dataTask completionHandler:completionHandler];
-
+    
+    [self addDelegateForDataTask:dataTask completionHandler:completionHandler dataHandler:dataHandler];
+    
     return dataTask;
 }
 
