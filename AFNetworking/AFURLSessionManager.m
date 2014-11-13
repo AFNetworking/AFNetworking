@@ -420,7 +420,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 - (void)removeDelegateForTask:(NSURLSessionTask *)task {
     NSParameterAssert(task);
 
-    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
     [self.lock lock];
     [self.mutableTaskDelegatesKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
     [self.lock unlock];
@@ -710,6 +709,30 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
                 notificationName = AFNetworkingTaskDidSuspendNotification;
                 break;
             case NSURLSessionTaskStateCompleted:
+                // This is a fix for https://github.com/AFNetworking/AFNetworking/issues/1477
+                // The crash appears to be caused by a network thread changing the NSURLSessionTask
+                // state property at the same time that the AFNetworking code is attempting to call
+                // removeObserver:context: on the same task from a different thread. To help prevent
+                // different threads from racing, the observer removal has been moved here to the
+                // same thread that is changing the state. Doing this fixes the original problem but
+                // uncovers another, NSURLSession sometimes sets the task to completed more than
+                // once (seemingly randomly) from different threads. To address this each thread must
+                // synchronize on the task so that only one at a time can perform the removal of the
+                // observer. This leads to the last issue, calling removeObserver:context: more than
+                // once on the same object triggers an exception. To prevent this, the removal is
+                // surrounded with a @try/@catch block that ignores the exception. Other ways of
+                // making sure the removal of the observer is done only once may be possible, but the
+                // added complexity and risk of breaking already complex muti-threaded code made the
+                // @try/@catch block seem the safest implementation.
+                @synchronized(object) {
+                    @try {
+                        [(NSURLSessionTask *)object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
+                    }
+                    @catch (NSException *exception) {
+                        // Ignore as another thread has already called removeObserver:context:
+                    }
+                }
+                
                 // AFNetworkingTaskDidFinishNotification posted by task completion handlers
             default:
                 break;
@@ -737,7 +760,20 @@ didBecomeInvalidWithError:(NSError *)error
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         NSArray *tasks = [@[dataTasks, uploadTasks, downloadTasks] valueForKeyPath:@"@unionOfArrays.self"];
         for (NSURLSessionTask *task in tasks) {
-            [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
+            // This is related to the above fix for https://github.com/AFNetworking/AFNetworking/issues/1477
+            // Don't think this is entirely safe as NSURLSession can be setting the state while this
+            // code is executing. This addition is to just make sure both threads aren't trying to
+            // remove at the same time and to prevent the exception when the second thread gets a
+            // chance to perform the removal. Any crashes similar to the original crash can still
+            // occur, but only during session invalidation which may be much more rare in practice.
+            @synchronized(task) {
+                @try {
+                    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
+                }
+                @catch (NSException *exception) {
+                    // Ignore as another thread has already called removeObserver:context:
+                }
+            }
         }
 
         [self removeAllDelegates];
