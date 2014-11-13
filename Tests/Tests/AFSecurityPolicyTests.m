@@ -24,6 +24,14 @@
 
 #import "AFSecurityPolicy.h"
 
+#pragma mark - private method
+
+@interface AFSecurityPolicy (AFTestCase)
+
+- (void)setSSLPinningMode:(AFSSLPinningMode)SSLPinningMode;
+
+@end
+
 @interface AFSecurityPolicyTests : AFTestCase
 @end
 
