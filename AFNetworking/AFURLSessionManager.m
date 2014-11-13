@@ -958,9 +958,11 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
+    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
     if (self.downloadTaskDidFinishDownloading) {
         NSURL *fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
         if (fileURL) {
+            delegate.downloadFileURL = fileURL;
             NSError *error = nil;
             [[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&error];
             if (error) {
@@ -970,8 +972,7 @@ didFinishDownloadingToURL:(NSURL *)location
             return;
         }
     }
-	
-    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
+    
     if (delegate) {
         [delegate URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];
     }

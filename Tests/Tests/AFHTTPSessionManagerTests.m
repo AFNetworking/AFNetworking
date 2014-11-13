@@ -95,4 +95,51 @@
     expect(success).will.beTruthy();
 }
 
+- (void)testDownloadFileCompletionSpecifiesURLInCompletionWithManagerDidFinishBlock {
+    __block BOOL managerDownloadFinishedBlockExecuted = NO;
+    __block BOOL completionBlockExecuted = NO;
+    __block NSURL *downloadFilePath = nil;
+    [self.manager setDownloadTaskDidFinishDownloadingBlock:^NSURL *(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, NSURL *location) {
+        managerDownloadFinishedBlockExecuted = YES;
+        NSURL *dirURL  = [[[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask] lastObject];
+        return [dirURL URLByAppendingPathComponent:@"t1.file"];
+    }];
+    
+    NSURLSessionDownloadTask *downloadTask = [self.manager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                                                                          progress:nil
+                                                                       destination:nil
+                                                                 completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+                                                                     downloadFilePath = filePath;
+                                                                     completionBlockExecuted = YES;
+                                                                 }];
+    [downloadTask resume];
+    expect(completionBlockExecuted).will.equal(YES);
+    expect(managerDownloadFinishedBlockExecuted).will.equal(YES);
+    expect(downloadFilePath).willNot.beNil();
+}
+
+- (void)testDownloadFileCompletionSpecifiesURLInCompletionBlock {
+    __block BOOL destinationBlockExecuted = NO;
+    __block BOOL completionBlockExecuted = NO;
+    __block NSURL *downloadFilePath = nil;
+    
+    NSURLSessionDownloadTask *downloadTask = [self.manager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                                                                          progress:nil
+                                                                       destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+                                                                           destinationBlockExecuted = YES;
+                                                                           NSURL *dirURL  = [[[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask] lastObject];
+                                                                           return [dirURL URLByAppendingPathComponent:@"t1.file"];
+                                                                       }
+                                                                 completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+                                                                     downloadFilePath = filePath;
+                                                                     completionBlockExecuted = YES;
+                                                                 }];
+    [downloadTask resume];
+    expect(completionBlockExecuted).will.equal(YES);
+    expect(destinationBlockExecuted).will.equal(YES);
+    expect(downloadFilePath).willNot.beNil();
+}
+
+
+
 @end
