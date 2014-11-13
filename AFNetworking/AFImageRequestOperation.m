@@ -37,6 +37,9 @@ static dispatch_queue_t image_request_operation_processing_queue() {
 
 static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
     UIImage *image = [[UIImage alloc] initWithData:data];
+    if (image.images) {
+        return image;
+    }
     
     return [[UIImage alloc] initWithCGImage:[image CGImage] scale:scale orientation:image.imageOrientation];
 }
