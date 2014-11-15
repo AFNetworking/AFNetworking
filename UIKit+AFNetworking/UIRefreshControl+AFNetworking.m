@@ -41,7 +41,9 @@
     [notificationCenter removeObserver:self name:AFNetworkingTaskDidCompleteNotification object:nil];
 
     if (task) {
-        if (task.state != NSURLSessionTaskStateCompleted) {
+        if (task.state == NSURLSessionTaskStateCompleted) {
+            [self endRefreshing];
+        } else {
             if (task.state == NSURLSessionTaskStateRunning) {
                 [self beginRefreshing];
             } else {
