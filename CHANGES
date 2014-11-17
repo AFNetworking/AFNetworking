@@ -1,3 +1,58 @@
+= 2.5.0 (2014-11-17)
+
+ * Add documentation for expected background session manager usage (Aaron
+Brager)
+
+ * Add missing documentation for `AFJSONRequestSerializer` and
+`AFPropertyListSerializer` (Mattt Thompson)
+
+ * Add tests for requesting HTTPS endpoints (Mattt Thompson)
+
+ * Add `init` method declarations of `AFURLResponseSerialization` classes for
+Swift compatibility (Allen Rohner)
+
+ * Change default User-Agent to use the version number instead of the build
+number (Tim Watson)
+
+ * Change `validatesDomainName` to readonly property (Mattt Thompson, Brian
+King)
+
+ * Fix checks when observing `AFHTTPRequestSerializerObservedKeyPaths` (Jacek
+Suliga)
+
+ * Fix crash caused by attempting to set nil `NSURLResponse -URL` as key for
+`userInfo` dictionary (Elvis Nuñez)
+
+ * Fix crash for multipart streaming requests in XPC services (Mattt Thompson)
+
+ * Fix minor aspects of response serializer documentation (Mattt Thompson)
+
+ * Fix potential race condition for `AFURLConnectionOperation -description`
+
+ * Fix widespread crash related to key-value observing of `NSURLSessionTask
+-state` (Phil Tang)
+
+ * Fix `UIButton` category associated object keys (Kristian Bauer, Mattt
+Thompson)
+
+ * Remove `charset` parameter from Content-Type HTTP header field values for
+`AFJSONRequestSerializer` and `AFPropertyListSerializer` (Mattt Thompson)
+
+ * Update CocoaDocs color scheme (@Orta)
+
+ * Update Podfile to explicitly define sources (Kyle Fuller)
+
+ * Update to relay `downloadFileURL` to the delegate if the manager picks a
+`fileURL` (Brian King)
+
+ * Update `AFSSLPinningModeNone` to not validate domain name (Brian King)
+
+ * Update `UIButton` category to cache images in `sharedImageCache` (John
+Bushnell)
+
+ * Update `UIRefreshControl` category to set control state to current state
+of request (Elvis Nuñez)
+
 = 2.4.1 (2014-09-04)
 
  * Fix compiler warning generated on 32-bit architectures (John C. Daub)
