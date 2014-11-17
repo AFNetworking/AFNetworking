@@ -437,7 +437,7 @@ extern NSString * const AFURLRequestSerializationErrorDomain;
 
  These keys may exist in the user info dictionary, in addition to those defined for NSError.
 
- - `NSString * const AFNetworkingOperationFailingURLResponseErrorKey`
+ - `NSString * const AFNetworkingOperationFailingURLRequestErrorKey`
 
  ### Constants
 
