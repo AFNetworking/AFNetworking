@@ -247,7 +247,7 @@ forHTTPHeaderField:(NSString *)field;
 /**
  Creates an `NSMutableURLRequest` by removing the `HTTPBodyStream` from a request, and asynchronously writing its contents into the specified file, invoking the completion handler when finished.
  
- @param request The multipart form request.
+ @param request The multipart form request. The `HTTPBody` property of `request` must not be `nil`.
  @param fileURL The file URL to write multipart form contents to.
  @param handler A handler block to execute.
  
