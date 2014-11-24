@@ -467,7 +467,12 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         }
     }
 
-    delegate.progress = [NSProgress progressWithTotalUnitCount:totalUnitCount];
+    if (delegate.progress) {
+        delegate.progress.totalUnitCount = totalUnitCount;
+    } else {
+        delegate.progress = [NSProgress progressWithTotalUnitCount:totalUnitCount];
+    }
+
     delegate.progress.pausingHandler = ^{
         [uploadTask suspend];
     };
