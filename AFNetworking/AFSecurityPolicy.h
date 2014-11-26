@@ -1,4 +1,4 @@
-// AFSecurity.h
+// AFSecurityPolicy.h
 //
 // Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
