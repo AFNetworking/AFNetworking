@@ -57,9 +57,7 @@
 }
 
 + (CGFloat)heightForCellWithPost:(Post *)post {
-    CGFloat desiredHeight = fmaxf(70.0f, (float)[self detailTextHeight:post.text] + 45.0f);
-
-    return desiredHeight;
+    return (CGFloat)fmaxf(70.0f, (float)[self detailTextHeight:post.text] + 45.0f);
 }
 
 + (CGFloat)detailTextHeight:(NSString *)text {
