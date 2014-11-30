@@ -272,19 +272,27 @@ static inline void af_swizzleSelector(Class class, SEL originalSelector, SEL swi
     }
 }
 
+static inline void af_addMethod(Class class, SEL selector, Method method) {
+    class_addMethod(class, @selector(af_resume),  method_getImplementation(method),  method_getTypeEncoding(method));
+}
+
 static NSString * const AFNSURLSessionTaskDidResumeNotification  = @"com.alamofire.networking.nsurlsessiontask.resume";
 static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofire.networking.nsurlsessiontask.suspend";
 
-@interface NSURLSessionTask (_AFStateObserving)
+@interface NSURLSessionDataTask (_AFStateObserving)
 @end
 
-@implementation NSURLSessionTask (_AFStateObserving)
+@implementation NSURLSessionDataTask (_AFStateObserving)
 
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        af_swizzleSelector([self class], @selector(resume), @selector(af_resume));
-        af_swizzleSelector([self class], @selector(suspend), @selector(af_suspend));
+        NSURLSessionDataTask *dataTask = [[NSURLSession sessionWithConfiguration:nil] dataTaskWithURL:nil];
+        Class taskClass = [dataTask superclass];
+        af_addMethod(taskClass, @selector(af_resume),  class_getInstanceMethod(self, @selector(af_resume)));
+        af_addMethod(taskClass, @selector(af_suspend), class_getInstanceMethod(self, @selector(af_suspend)));
+        af_swizzleSelector(taskClass, @selector(resume), @selector(af_resume));
+        af_swizzleSelector(taskClass, @selector(suspend), @selector(af_suspend));
     });
 }
 
@@ -395,25 +403,21 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 - (void)taskDidResume:(NSNotification *)notification {
     NSURLSessionTask *task = notification.object;
-    if ([task isKindOfClass:[NSURLSessionTask class]]) {
-        AFURLSessionManager *manager = [self delegateForTask:task].manager;
-        if ([manager isEqual:self]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidResumeNotification object:task];
-            });
-        }
+    AFURLSessionManager *manager = [self delegateForTask:task].manager;
+    if ([manager isEqual:self]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidResumeNotification object:task];
+        });
     }
 }
 
 - (void)taskDidSuspend:(NSNotification *)notification {
     NSURLSessionTask *task = notification.object;
-    if ([task isKindOfClass:[NSURLSessionTask class]]) {
-        AFURLSessionManager *manager = [self delegateForTask:task].manager;
-        if ([manager isEqual:self]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidSuspendNotification object:task];
-            });
-        }
+    AFURLSessionManager *manager = [self delegateForTask:task].manager;
+    if ([manager isEqual:self]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidSuspendNotification object:task];
+        });
     }
 }
 
