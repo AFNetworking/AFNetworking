@@ -150,7 +150,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 #pragma mark -
 
 @interface AFSecurityPolicy()
-@property (readwrite, nonatomic, assign) AFSSLPinningMode SSLPinningMode;
+@property (readwrite, nonatomic, assign) BOOL validatesCertificateChain;
 @property (readwrite, nonatomic, strong) NSArray *pinnedPublicKeys;
 @end
 
