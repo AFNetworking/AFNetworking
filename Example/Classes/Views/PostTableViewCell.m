@@ -27,14 +27,11 @@
 
 #import "UIImageView+AFNetworking.h"
 
-@implementation PostTableViewCell {
-@private
-    __strong Post *_post;
-}
+@implementation PostTableViewCell
 
-@synthesize post = _post;
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (id)initWithStyle:(UITableViewCellStyle)style
+              reuseIdentifier:(NSString *)reuseIdentifier
+{
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (!self) {
         return nil;
@@ -60,9 +57,15 @@
 }
 
 + (CGFloat)heightForCellWithPost:(Post *)post {
-    CGSize sizeToFit = [post.text sizeWithFont:[UIFont systemFontOfSize:12.0f] constrainedToSize:CGSizeMake(220.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap];
-    
-    return fmaxf(70.0f, sizeToFit.height + 45.0f);
+    return (CGFloat)fmaxf(70.0f, (float)[self detailTextHeight:post.text] + 45.0f);
+}
+
++ (CGFloat)detailTextHeight:(NSString *)text {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    CGSize sizeToFit = [text sizeWithFont:[UIFont systemFontOfSize:12.0f] constrainedToSize:CGSizeMake(240.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+#pragma clang diagnostic pop
+    return sizeToFit.height;
 }
 
 #pragma mark - UIView
@@ -71,10 +74,11 @@
     [super layoutSubviews];
     
     self.imageView.frame = CGRectMake(10.0f, 10.0f, 50.0f, 50.0f);
-    self.textLabel.frame = CGRectMake(70.0f, 10.0f, 240.0f, 20.0f);
+    self.textLabel.frame = CGRectMake(70.0f, 6.0f, 240.0f, 20.0f);
     
     CGRect detailTextLabelFrame = CGRectOffset(self.textLabel.frame, 0.0f, 25.0f);
-    detailTextLabelFrame.size.height = [[self class] heightForCellWithPost:_post] - 45.0f;
+    CGFloat calculatedHeight = [[self class] detailTextHeight:self.post.text];
+    detailTextLabelFrame.size.height = calculatedHeight;
     self.detailTextLabel.frame = detailTextLabelFrame;
 }
 

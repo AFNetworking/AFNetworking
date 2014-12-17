@@ -28,11 +28,9 @@
     #import "AFNetworkActivityIndicatorManager.h"
 
     @implementation AppDelegate
-    @synthesize window = _window;
-    @synthesize navigationController = _navigationController;
 
-    - (BOOL)application:(UIApplication *)application 
-    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+    - (BOOL)application:(__unused UIApplication *)application
+    didFinishLaunchingWithOptions:(__unused NSDictionary *)launchOptions
     {
         NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:20 * 1024 * 1024 diskPath:nil];
         [NSURLCache setSharedURLCache:URLCache];
@@ -58,10 +56,6 @@
 
     @implementation AppDelegate
 
-    @synthesize window = _window;
-    @synthesize tableView = _tableView;
-    @synthesize postsArrayController = _postsArrayController;
-
     - (void)applicationDidFinishLaunching:(NSNotification *)notification {
         NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:20 * 1024 * 1024 diskPath:nil];
         [NSURLCache setSharedURLCache:URLCache];
@@ -70,7 +64,11 @@
         
         [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
             if (error) {
-                [[NSAlert alertWithMessageText:NSLocalizedString(@"Error", nil) defaultButton:NSLocalizedString(@"OK", nil) alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@",[error localizedDescription]] runModal];
+                NSAlert *alert = [[NSAlert alloc] init];
+                alert.messageText = NSLocalizedString(@"Error", nil);
+                alert.informativeText = error.localizedDescription;
+                [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+                [alert runModal];
             }
             
             self.postsArrayController.content = posts;

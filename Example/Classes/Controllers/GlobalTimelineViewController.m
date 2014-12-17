@@ -26,69 +26,57 @@
 
 #import "PostTableViewCell.h"
 
+#import "UIRefreshControl+AFNetworking.h"
+#import "UIAlertView+AFNetworking.h"
+
 @interface GlobalTimelineViewController ()
-- (void)reload:(id)sender;
+@property (readwrite, nonatomic, strong) NSArray *posts;
+@property (readwrite, nonatomic, strong) UIRefreshControl *refreshControl;
 @end
 
-@implementation GlobalTimelineViewController {
-@private
-    NSArray *_posts;
-    
-    __strong UIActivityIndicatorView *_activityIndicatorView;
-}
+@implementation GlobalTimelineViewController
 
-- (void)reload:(id)sender {
-    [_activityIndicatorView startAnimating];
+- (void)reload:(__unused id)sender {
     self.navigationItem.rightBarButtonItem.enabled = NO;
-    
-    [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
-        if (error) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:[error localizedDescription] delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-        } else {
-            _posts = posts;
+
+    NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
+        if (!error) {
+            self.posts = posts;
             [self.tableView reloadData];
         }
-        
-        [_activityIndicatorView stopAnimating];
-        self.navigationItem.rightBarButtonItem.enabled = YES;
     }];
+
+    [UIAlertView showAlertViewForTaskWithErrorOnCompletion:task delegate:nil];
+    [self.refreshControl setRefreshingWithStateOfTask:task];
 }
 
 #pragma mark - UIViewController
-
-- (void)loadView {
-    [super loadView];
-    
-    _activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    _activityIndicatorView.hidesWhenStopped = YES;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = NSLocalizedString(@"AFNetworking", nil);
-    
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_activityIndicatorView];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload:)];
-    
+
+    self.refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.tableView.frame.size.width, 100.0f)];
+    [self.refreshControl addTarget:self action:@selector(reload:) forControlEvents:UIControlEventValueChanged];
+    [self.tableView.tableHeaderView addSubview:self.refreshControl];
+
     self.tableView.rowHeight = 70.0f;
     
     [self reload:nil];
 }
 
-- (void)viewDidUnload {
-    _activityIndicatorView = nil;
-    
-    [super viewDidUnload];
-}
-
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_posts count];
+- (NSInteger)tableView:(__unused UITableView *)tableView
+ numberOfRowsInSection:(__unused NSInteger)section
+{
+    return (NSInteger)[self.posts count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *CellIdentifier = @"Cell";
     
     PostTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -96,18 +84,22 @@
         cell = [[PostTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    cell.post = [_posts objectAtIndex:indexPath.row];
+    cell.post = [self.posts objectAtIndex:(NSUInteger)indexPath.row];
     
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [PostTableViewCell heightForCellWithPost:[_posts objectAtIndex:indexPath.row]];
+- (CGFloat)tableView:(__unused UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [PostTableViewCell heightForCellWithPost:[self.posts objectAtIndex:(NSUInteger)indexPath.row]];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
