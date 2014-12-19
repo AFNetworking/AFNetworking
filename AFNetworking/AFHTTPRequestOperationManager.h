@@ -176,7 +176,7 @@
 
  @return The newly-initialized HTTP client
  */
-- (instancetype)initWithBaseURL:(NSURL *)url;
+- (instancetype)initWithBaseURL:(NSURL *)url NS_DESIGNATED_INITIALIZER;
 
 ///---------------------------------------
 /// @name Managing HTTP Request Operations
