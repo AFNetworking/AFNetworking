@@ -61,11 +61,8 @@
 }
 
 + (CGFloat)detailTextHeight:(NSString *)text {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    CGSize sizeToFit = [text sizeWithFont:[UIFont systemFontOfSize:12.0f] constrainedToSize:CGSizeMake(240.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
-#pragma clang diagnostic pop
-    return sizeToFit.height;
+    CGRect rectToFit = [text boundingRectWithSize:CGSizeMake(240.0f, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12.0f]} context:nil];
+    return rectToFit.size.height;
 }
 
 #pragma mark - UIView
