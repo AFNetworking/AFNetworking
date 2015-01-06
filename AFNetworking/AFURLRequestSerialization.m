@@ -948,7 +948,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
                 break;
             }
         } else {
-            NSUInteger maxLength = length - (NSUInteger)totalNumberOfBytesRead;
+            NSUInteger maxLength = MIN(length, self.numberOfBytesInPacket) - (NSUInteger)totalNumberOfBytesRead;
             NSInteger numberOfBytesRead = [self.currentHTTPBodyPart read:&buffer[totalNumberOfBytesRead] maxLength:maxLength];
             if (numberOfBytesRead == -1) {
                 self.streamError = self.currentHTTPBodyPart.inputStream.streamError;
