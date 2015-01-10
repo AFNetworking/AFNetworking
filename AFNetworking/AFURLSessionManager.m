@@ -190,7 +190,7 @@ didCompleteWithError:(NSError *)error
                         NSMutableDictionary* d = serializationError.userInfo.mutableCopy;
                         d[AFNetworkingTaskDidCompleteSerializedResponseKey] = responseObject;
                         d;
-                    })
+                    });
                     serializationError = [NSError errorWithDomain: serializationError.domain
                                                              code: serializationError.code
                                                          userInfo: userInfo];
