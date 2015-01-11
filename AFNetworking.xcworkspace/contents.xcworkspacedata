@@ -141,7 +141,7 @@
       location = "container:"
       name = "MapKit+AFNetworking">
       <FileRef
-         location = "group:MapKit+AFNetworking/MapKit.AFNetworking.h">
+         location = "group:MapKit+AFNetworking/MapKit+AFNetworking.h">
       </FileRef>
       <FileRef
          location = "group:MapKit+AFNetworking/MKAnnotationView+AFNetworking.h">
