@@ -57,4 +57,16 @@ Pod::Spec.new do |s|
     ss.ios.source_files = 'UIKit+AFNetworking'
     ss.osx.source_files = ''
   end
+
+  s.subspec 'MapKit' do |ss|
+    ss.ios.deployment_target = '6.0'
+
+    ss.dependency 'AFNetworking/NSURLConnection'
+    ss.dependency 'AFNetworking/NSURLSession'
+    ss.dependency 'AFNetworking/UIKit'
+
+    ss.ios.public_header_files = 'MapKit+AFNetworking/*.h'
+    ss.ios.source_files = 'MapKit+AFNetworking'
+    ss.osx.source_files = ''
+  end
 end
