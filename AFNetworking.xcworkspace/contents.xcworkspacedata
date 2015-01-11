@@ -137,6 +137,19 @@
          location = "group:UIRefreshControl+AFNetworking.m">
       </FileRef>
    </Group>
+   <Group
+      location = "container:"
+      name = "MapKit+AFNetworking">
+      <FileRef
+         location = "group:MapKit+AFNetworking/MapKit.AFNetworking.h">
+      </FileRef>
+      <FileRef
+         location = "group:MapKit+AFNetworking/MKAnnotationView+AFNetworking.h">
+      </FileRef>
+      <FileRef
+         location = "group:MapKit+AFNetworking/MKAnnotationView+AFNetworking.m">
+      </FileRef>
+   </Group>
    <FileRef
       location = "group:Tests/AFNetworking Tests.xcodeproj">
    </FileRef>
