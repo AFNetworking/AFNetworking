@@ -81,7 +81,9 @@ typedef enum {
     AFNetworkReachabilityStatusReachableViaWiFi = 2,
 } AFNetworkReachabilityStatus;
 #else
-#pragma message("SystemConfiguration framework not found in project, or not included in precompiled header. Network reachability functionality will not be available.")
+// PCH is a bad idea in this Brave New World of Swift interop. So this isn't
+// reasonable to expect anymore.
+//#pragma message("SystemConfiguration framework not found in project, or not included in precompiled header. Network reachability functionality will not be available.")
 #endif
 
 #ifndef __UTTYPE__
