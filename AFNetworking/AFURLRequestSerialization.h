@@ -117,7 +117,12 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 ///---------------------------------------
 
 /**
- Default HTTP header field values to be applied to serialized requests.
+ Default HTTP header field values to be applied to serialized requests. By default, these include the following:
+ 
+ - `Accept-Language` with the contents of `NSLocale +preferredLanguages`
+ - `User-Agent` with the contents of various bundle identifiers and OS designations
+ 
+ @discussion To add or remove default request headers, use `setValue:forHTTPHeaderField:`.
  */
 @property (readonly, nonatomic, strong) NSDictionary *HTTPRequestHeaders;
 
