@@ -31,7 +31,6 @@
 
 @interface GlobalTimelineViewController ()
 @property (readwrite, nonatomic, strong) NSArray *posts;
-@property (readwrite, nonatomic, strong) UIRefreshControl *refreshControl;
 @end
 
 @implementation GlobalTimelineViewController
