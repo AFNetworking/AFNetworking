@@ -317,6 +317,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @property (readwrite, nonatomic, strong) NSURLSession *session;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *mutableTaskDelegatesKeyedByTaskIdentifier;
+@property (readonly, nonatomic, copy) NSString *taskDescriptionForSessionTasks;
 @property (readwrite, nonatomic, strong) NSLock *lock;
 @property (readwrite, nonatomic, copy) AFURLSessionDidBecomeInvalidBlock sessionDidBecomeInvalid;
 @property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
@@ -395,14 +396,14 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 #pragma mark -
 
-- (NSString *)descriptionForAllTasks {
+- (NSString *)taskDescriptionForSessionTasks {
     return [NSString stringWithFormat:@"%p", self];
 }
 
 - (void)taskDidResume:(NSNotification *)notification {
     NSURLSessionTask *task = notification.object;
     if ([task isKindOfClass:[NSURLSessionTask class]]) {
-        if ([task.taskDescription isEqualToString:[self descriptionForAllTasks]]) {
+        if ([task.taskDescription isEqualToString:self.taskDescriptionForSessionTasks]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidResumeNotification object:task];
             });
@@ -413,7 +414,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 - (void)taskDidSuspend:(NSNotification *)notification {
     NSURLSessionTask *task = notification.object;
     if ([task isKindOfClass:[NSURLSessionTask class]]) {
-        if ([task.taskDescription isEqualToString:[self descriptionForAllTasks]]) {
+        if ([task.taskDescription isEqualToString:self.taskDescriptionForSessionTasks]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidSuspendNotification object:task];
             });
@@ -452,7 +453,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     delegate.manager = self;
     delegate.completionHandler = completionHandler;
 
-    dataTask.taskDescription = [self descriptionForAllTasks];
+    dataTask.taskDescription = self.taskDescriptionForSessionTasks;
     [self setDelegate:delegate forTask:dataTask];
 }
 
@@ -468,7 +469,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     if(totalUnitCount == NSURLSessionTransferSizeUnknown) {
         NSString *contentLength = [uploadTask.originalRequest valueForHTTPHeaderField:@"Content-Length"];
         if(contentLength) {
-            totalUnitCount = (int64_t) [contentLength longLongValue];
+            totalUnitCount = (int64_t)[contentLength longLongValue];
         }
     }
 
@@ -489,7 +490,8 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         *progress = delegate.progress;
     }
 
-    uploadTask.taskDescription = [self descriptionForAllTasks];
+    uploadTask.taskDescription = self.taskDescriptionForSessionTasks;
+
     [self setDelegate:delegate forTask:uploadTask];
 }
 
@@ -512,7 +514,8 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         *progress = delegate.progress;
     }
 
-    downloadTask.taskDescription = [self descriptionForAllTasks];
+    downloadTask.taskDescription = self.taskDescriptionForSessionTasks;
+
     [self setDelegate:delegate forTask:downloadTask];
 }
 
