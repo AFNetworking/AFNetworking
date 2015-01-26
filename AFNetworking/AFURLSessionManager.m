@@ -281,11 +281,8 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 @implementation NSURLSessionTask (_AFStateObserving)
 
 + (void)load {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
         af_swizzleSelector([self class], @selector(resume), @selector(af_resume));
         af_swizzleSelector([self class], @selector(suspend), @selector(af_suspend));
-    });
 }
 
 #pragma mark -
