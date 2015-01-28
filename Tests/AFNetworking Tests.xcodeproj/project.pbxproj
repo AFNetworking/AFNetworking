@@ -32,12 +32,6 @@
 		36DE26511805445B0062F4E3 /* AFSecurityPolicyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC5917DF61B30021AB75 /* AFSecurityPolicyTests.m */; };
 		36DE2652180544600062F4E3 /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */; };
 		3D56634E3A564CEE86172413 /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
-		64491A4718AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 64491A4618AAEFFF00F35444 /* Geotrust_Root_CA.cer */; };
-		64491A4818AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 64491A4618AAEFFF00F35444 /* Geotrust_Root_CA.cer */; };
-		64491A4A18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 64491A4918AAF01600F35444 /* Rapid_SSL_CA.cer */; };
-		64491A4B18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 64491A4918AAF01600F35444 /* Rapid_SSL_CA.cer */; };
-		649154E918AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */ = {isa = PBXBuildFile; fileRef = 649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */; };
-		649154EA18AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */ = {isa = PBXBuildFile; fileRef = 649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */; };
 		6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
 		77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
 		77D65EBD1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
@@ -52,6 +46,14 @@
 		B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264B18053E930062F4E3 /* adn_0.cer */; };
 		B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264C18053E930062F4E3 /* adn_1.cer */; };
 		B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264D18053E930062F4E3 /* adn_2.cer */; };
+		CBBDB1651A7981FB00D412EE /* httpbinorg_01162016.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */; };
+		CBBDB1661A79820700D412EE /* httpbinorg_01162016.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */; };
+		CBBDB16A1A798AB500D412EE /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */; };
+		CBBDB16B1A798AB500D412EE /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */; };
+		CBBDB16C1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1681A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer */; };
+		CBBDB16D1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1681A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer */; };
+		CBBDB16E1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1691A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
+		CBBDB16F1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1691A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
 		F837FFAF195744A0009078A0 /* AFHTTPResponseSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F837FFAE195744A0009078A0 /* AFHTTPResponseSerializationTests.m */; };
 		F837FFB0195744A0009078A0 /* AFHTTPResponseSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F837FFAE195744A0009078A0 /* AFHTTPResponseSerializationTests.m */; };
 		F87382951948AC15000B7AFA /* AFHTTPSessionManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F87382941948AC15000B7AFA /* AFHTTPSessionManagerTests.m */; };
@@ -104,9 +106,6 @@
 		36DE264D18053E930062F4E3 /* adn_2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_2.cer; path = Resources/ADN.net/ADNNetServerTrustChain/adn_2.cer; sourceTree = "<group>"; };
 		520A0FB27D040CF3258787D2 /* Pods-osx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.debug.xcconfig"; path = "Pods/Target Support Files/Pods-osx/Pods-osx.debug.xcconfig"; sourceTree = "<group>"; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		64491A4618AAEFFF00F35444 /* Geotrust_Root_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Geotrust_Root_CA.cer; sourceTree = "<group>"; };
-		64491A4918AAF01600F35444 /* Rapid_SSL_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Rapid_SSL_CA.cer; sourceTree = "<group>"; };
-		649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_11212014.cer; sourceTree = "<group>"; };
 		77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListResponseSerializerTests.m; sourceTree = "<group>"; };
 		943B1F40192E406C00304316 /* AFURLSessionManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManagerTests.m; sourceTree = "<group>"; };
 		95D45FB81CA3594FA8CF7430 /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -117,6 +116,10 @@
 		B6774DC818FBB49E0044DB17 /* AFNetworkActivityManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityManagerTests.m; sourceTree = "<group>"; };
 		BC9AB30A551203E10B6C890E /* Pods-osx.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.release.xcconfig"; path = "Pods/Target Support Files/Pods-osx/Pods-osx.release.xcconfig"; sourceTree = "<group>"; };
 		C280748C740FAD506581E3CE /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
+		CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_01162016.cer; sourceTree = "<group>"; };
+		CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AddTrust_External_CA_Root.cer; sourceTree = "<group>"; };
+		CBBDB1681A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Certification_Authority.cer; sourceTree = "<group>"; };
+		CBBDB1691A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Domain_Validation_Secure_Server_CA.cer; sourceTree = "<group>"; };
 		F837FFAE195744A0009078A0 /* AFHTTPResponseSerializationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPResponseSerializationTests.m; sourceTree = "<group>"; };
 		F87382941948AC15000B7AFA /* AFHTTPSessionManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManagerTests.m; sourceTree = "<group>"; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
@@ -288,9 +291,10 @@
 		29CBFC4E17DF61920021AB75 /* HTTPBin.org */ = {
 			isa = PBXGroup;
 			children = (
-				64491A4918AAF01600F35444 /* Rapid_SSL_CA.cer */,
-				64491A4618AAEFFF00F35444 /* Geotrust_Root_CA.cer */,
-				649154E818AAD260002E57F9 /* httpbinorg_11212014.cer */,
+				CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */,
+				CBBDB1681A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer */,
+				CBBDB1691A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */,
+				CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */,
 				29CBFC7517DF697C0021AB75 /* HTTPBinOrgServerTrustChain */,
 			);
 			name = HTTPBin.org;
@@ -411,17 +415,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBBDB16A1A798AB500D412EE /* AddTrust_External_CA_Root.cer in Resources */,
 				29CBFC8717DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
 				A74DA00D18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D28117DF4E1200C81C5A /* InfoPlist.strings in Resources */,
-				649154E918AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */,
+				CBBDB1651A7981FB00D412EE /* httpbinorg_01162016.cer in Resources */,
 				36DE264E18053E930062F4E3 /* adn_0.cer in Resources */,
 				36DE264F18053E930062F4E3 /* adn_1.cer in Resources */,
+				CBBDB16C1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */,
+				CBBDB16E1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 				A74DA00B18D2FB9400F3B969 /* foobar.com.cer in Resources */,
 				36DE265018053E930062F4E3 /* adn_2.cer in Resources */,
 				29CBFC7617DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
-				64491A4A18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */,
-				64491A4718AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */,
 				A74DA00918D2FB9400F3B969 /* AltName.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -430,17 +435,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBBDB16B1A798AB500D412EE /* AddTrust_External_CA_Root.cer in Resources */,
 				29CBFC8817DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
 				A74DA00E18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D29517DF4E2A00C81C5A /* InfoPlist.strings in Resources */,
-				649154EA18AAD260002E57F9 /* httpbinorg_11212014.cer in Resources */,
+				CBBDB1661A79820700D412EE /* httpbinorg_01162016.cer in Resources */,
 				B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */,
 				B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */,
+				CBBDB16D1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */,
+				CBBDB16F1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 				A74DA00C18D2FB9400F3B969 /* foobar.com.cer in Resources */,
 				B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */,
 				29CBFC7717DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
-				64491A4B18AAF01600F35444 /* Rapid_SSL_CA.cer in Resources */,
-				64491A4818AAEFFF00F35444 /* Geotrust_Root_CA.cer in Resources */,
 				A74DA00A18D2FB9400F3B969 /* AltName.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
