@@ -40,7 +40,7 @@ pod "AFNetworking", "~> 2.0"
 
 | AFNetworking Version | Minimum iOS Target  | Minimum OS X Target  |                                   Notes                                   |
 |:--------------------:|:---------------------------:|:----------------------------:|:-------------------------------------------------------------------------:|
-|          2.x         |            iOS 6            |           OS X 10.8          | Xcode 5 is required. `AFHTTPSessionManager` requires iOS 7 or OS X 10.9. |
+|          2.x         |            iOS 6            |           OS X 10.8          | Xcode 5 is required. `AFURLSessionManager` & `AFHTTPSessionManager` requires iOS 7 or OS X 10.9. |
 |          [1.x](https://github.com/AFNetworking/AFNetworking/tree/1.x)         |            iOS 5            |         Mac OS X 10.7        |                                                                           |
 |        [0.10.x](https://github.com/AFNetworking/AFNetworking/tree/0.10.x)        |            iOS 4            |         Mac OS X 10.6        |                                                                           |
 
