@@ -59,23 +59,31 @@ static SecTrustRef AFUTADNNetServerTrust() {
 }
 
 static SecCertificateRef AFUTHTTPBinOrgCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"httpbinorg_11212014" ofType:@"cer"];
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"httpbinorg_01162016" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
     NSData *certData = [NSData dataWithContentsOfFile:certPath];
 
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
-static SecCertificateRef AFUTGeotrustRootCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"Geotrust_Root_CA" ofType:@"cer"];
+static SecCertificateRef AFUTCOMODORSADomainValidationSecureServerCertificate() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"COMODO_RSA_Domain_Validation_Secure_Server_CA" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
     NSData *certData = [NSData dataWithContentsOfFile:certPath];
 
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
-static SecCertificateRef AFUTRapidSSLCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"Rapid_SSL_CA" ofType:@"cer"];
+static SecCertificateRef AFUTCOMODORSACertificate() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"COMODO_RSA_Certification_Authority" ofType:@"cer"];
+    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+    NSData *certData = [NSData dataWithContentsOfFile:certPath];
+
+    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+}
+
+static SecCertificateRef AFUTAddTrustExternalRootCertificate() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"AddTrust_External_CA_Root" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
     NSData *certData = [NSData dataWithContentsOfFile:certPath];
 
@@ -136,16 +144,19 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testLeafPublicKeyPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
 
-    SecCertificateRef geotrustRootCertificate = AFUTGeotrustRootCertificate();
-    SecCertificateRef rapidSSLCertificate = AFUTRapidSSLCertificate();
+    SecCertificateRef addtrustRootCertificate = AFUTAddTrustExternalRootCertificate();
+    SecCertificateRef comodoRsaCACertificate = AFUTCOMODORSACertificate();
+    SecCertificateRef comodoRsaDomainValidationCertificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
 
-    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(geotrustRootCertificate),
-                                    (__bridge_transfer NSData *)SecCertificateCopyData(rapidSSLCertificate),
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(addtrustRootCertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaCACertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaDomainValidationCertificate),
                                     (__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate)]];
 
-    CFRelease(geotrustRootCertificate);
-    CFRelease(rapidSSLCertificate);
+    CFRelease(addtrustRootCertificate);
+    CFRelease(comodoRsaCACertificate);
+    CFRelease(comodoRsaDomainValidationCertificate);
     CFRelease(httpBinCertificate);
 
     [policy setValidatesCertificateChain:NO];
@@ -171,16 +182,19 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testLeafCertificatePinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
 
-    SecCertificateRef geotrustRootCertificate = AFUTGeotrustRootCertificate();
-    SecCertificateRef rapidSSLCertificate = AFUTRapidSSLCertificate();
+    SecCertificateRef addtrustRootCertificate = AFUTAddTrustExternalRootCertificate();
+    SecCertificateRef comodoRsaCACertificate = AFUTCOMODORSACertificate();
+    SecCertificateRef comodoRsaDomainValidationCertificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
 
-    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(geotrustRootCertificate),
-                                    (__bridge_transfer NSData *)SecCertificateCopyData(rapidSSLCertificate),
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(addtrustRootCertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaCACertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaDomainValidationCertificate),
                                     (__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate)]];
 
-    CFRelease(geotrustRootCertificate);
-    CFRelease(rapidSSLCertificate);
+    CFRelease(addtrustRootCertificate);
+    CFRelease(comodoRsaCACertificate);
+    CFRelease(comodoRsaDomainValidationCertificate);
     CFRelease(httpBinCertificate);
 
     [policy setValidatesCertificateChain:NO];
@@ -227,16 +241,19 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testCertificatePinningIsEnforcedForHTTPBinOrgPinnedCertificateWithDomainNameValidationAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
 
-    SecCertificateRef geotrustRootCertificate = AFUTGeotrustRootCertificate();
-    SecCertificateRef rapidSSLCertificate = AFUTRapidSSLCertificate();
+    SecCertificateRef addtrustRootCertificate = AFUTAddTrustExternalRootCertificate();
+    SecCertificateRef comodoRsaCACertificate = AFUTCOMODORSACertificate();
+    SecCertificateRef comodoRsaDomainValidationCertificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
 
-    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(geotrustRootCertificate),
-                                    (__bridge_transfer NSData *)SecCertificateCopyData(rapidSSLCertificate),
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(addtrustRootCertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaCACertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaDomainValidationCertificate),
                                     (__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate)]];
 
-    CFRelease(geotrustRootCertificate);
-    CFRelease(rapidSSLCertificate);
+    CFRelease(addtrustRootCertificate);
+    CFRelease(comodoRsaCACertificate);
+    CFRelease(comodoRsaDomainValidationCertificate);
     CFRelease(httpBinCertificate);
 
     policy.validatesDomainName = YES;
@@ -249,38 +266,44 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testCertificatePinningIsEnforcedForHTTPBinOrgPinnedCertificateWithCaseInsensitiveDomainNameValidationAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
 
-    SecCertificateRef geotrustRootCertificate = AFUTGeotrustRootCertificate();
-    SecCertificateRef rapidSSLCertificate = AFUTRapidSSLCertificate();
+    SecCertificateRef addtrustRootCertificate = AFUTAddTrustExternalRootCertificate();
+    SecCertificateRef comodoRsaCACertificate = AFUTCOMODORSACertificate();
+    SecCertificateRef comodoRsaDomainValidationCertificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
 
-    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(geotrustRootCertificate),
-                                    (__bridge_transfer NSData *)SecCertificateCopyData(rapidSSLCertificate),
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(addtrustRootCertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaCACertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaDomainValidationCertificate),
                                     (__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate)]];
 
-    CFRelease(geotrustRootCertificate);
-    CFRelease(rapidSSLCertificate);
+    CFRelease(addtrustRootCertificate);
+    CFRelease(comodoRsaCACertificate);
+    CFRelease(comodoRsaDomainValidationCertificate);
     CFRelease(httpBinCertificate);
 
     policy.validatesDomainName = YES;
 
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
-    XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpbin.org"], @"HTTPBin.org Public Key Pinning Mode Failed");
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpBin.org"], @"HTTPBin.org Public Key Pinning Mode Failed");
     CFRelease(trust);
 }
 
 - (void)testCertificatePinningIsEnforcedForHTTPBinOrgPinnedPublicKeyWithDomainNameValidationAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
 
-    SecCertificateRef geotrustRootCertificate = AFUTGeotrustRootCertificate();
-    SecCertificateRef rapidSSLCertificate = AFUTRapidSSLCertificate();
+    SecCertificateRef addtrustRootCertificate = AFUTAddTrustExternalRootCertificate();
+    SecCertificateRef comodoRsaCACertificate = AFUTCOMODORSACertificate();
+    SecCertificateRef comodoRsaDomainValidationCertificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
 
-    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(geotrustRootCertificate),
-                                    (__bridge_transfer NSData *)SecCertificateCopyData(rapidSSLCertificate),
+    [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(addtrustRootCertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaCACertificate),
+                                    (__bridge_transfer NSData *)SecCertificateCopyData(comodoRsaDomainValidationCertificate),
                                     (__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate)]];
 
-    CFRelease(geotrustRootCertificate);
-    CFRelease(rapidSSLCertificate);
+    CFRelease(addtrustRootCertificate);
+    CFRelease(comodoRsaCACertificate);
+    CFRelease(comodoRsaDomainValidationCertificate);
     CFRelease(httpBinCertificate);
 
     policy.validatesDomainName = YES;
