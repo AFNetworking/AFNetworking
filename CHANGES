@@ -1,3 +1,40 @@
+= 2.5.1 (2015-02-09)
+
+ * Add `NS_DESIGNATED_INITIALIZER` macros. (Samir Guerdah)
+
+ * Fix and clarify documentation for `stringEncoding` property. (Mattt
+Thompson)
+
+ * Fix for NSProgress bug where two child NSProgress instances are added to a
+parent NSProgress. (Edward Povazan)
+
+ * Fix incorrect file names in headers. (Steven Fisher)
+
+ * Fix KVO issue when running testing target caused by lack of
+`automaticallyNotifiesObserversForKey:` implementation. (Mattt Thompson)
+
+ * Fix use of variable arguments for UIAlertView category.  (Kenta Tokumoto)
+
+ * Fix `genstrings` warning for `NSLocalizedString` usage in
+`UIAlertView+AFNetworking`. (Adar Porat)
+
+ * Fix `NSURLSessionManager` task observation for network activity indicator
+manager. (Phil Tang)
+
+ * Fix `UIButton` category method caching of background image (Fernanda G.
+Geraissate)
+
+ * Fix `UIButton` category method failure handling. (Maxim Zabelin)
+
+ * Update multipart upload method requirements to ensure `request.HTTPBody`
+is non-nil. (Mattt Thompson)
+
+ * Update to use builtin `__Require` macros from AssertMacros.h. (Cédric
+Luthi)
+
+ * Update `parameters` parameter to accept `id` for custom serialization
+block. (@mooosu)
+
 = 2.5.0 (2014-11-17)
 
  * Add documentation for expected background session manager usage (Aaron
