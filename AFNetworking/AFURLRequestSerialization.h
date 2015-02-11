@@ -56,6 +56,11 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
     AFHTTPRequestQueryStringDefaultStyle = 0,
 };
 
+typedef NS_ENUM(NSUInteger, AFMultipartFormDataImageSerializationStyle) {
+    AFMultipartFormDataImageJPEGStyle = 0,
+    AFMultipartFormDataImagePNGStyle
+};
+
 @protocol AFMultipartFormData;
 
 /**
@@ -111,6 +116,18 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
  @see NSMutableURLRequest -setTimeoutInterval:
  */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
+
+/**
+ The style of UIImage to NSData, for multipartFormRequestWithMethod. The default style is AFMultipartFormDataImageJPEGStyle.
+ @see AFHTTPRequestSerializer -multipartFormRequestWithMethod:
+ */
+@property (nonatomic, assign) AFMultipartFormDataImageSerializationStyle imageStyle;
+
+/**
+ The compressionQuality of UIImage to NSData, for multipartFormRequestWithMethod, only use on JPEG style. The default CompressionQuality is 0.8f.
+ @see AFHTTPRequestSerializer -multipartFormRequestWithMethod:
+ */
+@property (nonatomic, assign) CGFloat JPEGImageStyleCompressionQuality;
 
 ///---------------------------------------
 /// @name Configuring HTTP Request Headers

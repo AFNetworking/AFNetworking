@@ -242,6 +242,10 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
             [self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:AFHTTPRequestSerializerObserverContext];
         }
     }
+    
+    self.imageStyle = AFMultipartFormDataImageJPEGStyle;
+    
+    self.JPEGImageStyleCompressionQuality = 0.8f;
 
     return self;
 }
@@ -353,18 +357,46 @@ forHTTPHeaderField:(NSString *)field
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:mutableRequest stringEncoding:NSUTF8StringEncoding];
 
     if (parameters) {
+        
+        NSInteger fileNameCount = 0;
+        
         for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
             NSData *data = nil;
+            NSString * fileName = nil;
+            NSString * mimeType = nil;
+            
             if ([pair.value isKindOfClass:[NSData class]]) {
                 data = pair.value;
             } else if ([pair.value isEqual:[NSNull null]]) {
                 data = [NSData data];
+            } else if ([pair.value isKindOfClass:[UIImage class]]) {
+                switch (self.imageStyle) {
+                    case AFMultipartFormDataImagePNGStyle:
+                    {
+                        data = UIImagePNGRepresentation(pair.value);
+                        fileName = [NSString stringWithFormat:@"%@.png",@(fileNameCount++)];
+                        mimeType = @"image/png";
+                    }
+                        break;
+                    case AFMultipartFormDataImageJPEGStyle:
+                    default:
+                    {
+                        data = UIImageJPEGRepresentation(pair.value, self.JPEGImageStyleCompressionQuality);
+                        fileName = [NSString stringWithFormat:@"%@.jpeg",@(fileNameCount++)];
+                        mimeType = @"image/jpeg";
+                    }
+                        break;
+                }
             } else {
                 data = [[pair.value description] dataUsingEncoding:self.stringEncoding];
             }
 
             if (data) {
-                [formData appendPartWithFormData:data name:[pair.field description]];
+                if (fileName && mimeType) {
+                    [formData appendPartWithFileData:data name:[pair.field description] fileName:fileName mimeType:mimeType];
+                } else {
+                    [formData appendPartWithFormData:data name:[pair.field description]];
+                }
             }
         }
     }
