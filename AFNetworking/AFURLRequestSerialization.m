@@ -339,7 +339,7 @@ forHTTPHeaderField:(NSString *)field
                                               URLString:(NSString *)URLString
                                              parameters:(NSDictionary *)parameters
 {
-    return [self multipartFormRequestWithMethod:method URLString:URLString parameters:parameters constructingBodyWithBlock:nil];
+    return [self multipartFormRequestWithMethod:method URLString:URLString parameters:parameters constructingBodyWithBlock:nil error:nil];
 }
 
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
@@ -376,7 +376,11 @@ forHTTPHeaderField:(NSString *)field
                 data = pair.value;
             } else if ([pair.value isEqual:[NSNull null]]) {
                 data = [NSData data];
-            } else if ([pair.value isKindOfClass:[UIImage class]]) {
+            }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+            else if ([pair.value isKindOfClass:[UIImage class]]) {
                 switch (self.imageStyle) {
                     case AFMultipartFormDataImagePNGStyle:
                     {
@@ -394,7 +398,35 @@ forHTTPHeaderField:(NSString *)field
                     }
                         break;
                 }
-            } else {
+            }
+#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+            else if ([pair.value isKindOfClass:[NSImage class]]) {
+                NSImage * image = (NSImage*)pair.value;
+                [image lockFocus];
+                NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect(0, 0, image.size.width, image.size.height)];
+                [image unlockFocus];
+                
+                switch (self.imageStyle) {
+                    case AFMultipartFormDataImagePNGStyle:
+                    {
+                        data = [imageRep representationUsingType:NSPNGFileType properties:@{NSImageCompressionFactor:@1}];
+                        fileName = [NSString stringWithFormat:@"%@.png",@(fileNameCount++)];
+                        mimeType = @"image/png";
+                    }
+                        break;
+                    case AFMultipartFormDataImageJPEGStyle:
+                    default:
+                    {
+                        data = [imageRep representationUsingType:NSJPEGFileType properties:@{NSImageCompressionFactor:@(self.JPEGImageStyleCompressionQuality)}];
+                        fileName = [NSString stringWithFormat:@"%@.jpeg",@(fileNameCount++)];
+                        mimeType = @"image/jpeg";
+                    }
+                        break;
+                }
+            }
+#endif
+#pragma clang diagnostic pop
+            else {
                 data = [[pair.value description] dataUsingEncoding:self.stringEncoding];
             }
 
