@@ -27,6 +27,14 @@
 #import "AFSecurityPolicy.h"
 #import "AFNetworkReachabilityManager.h"
 
+#ifndef NS_DESIGNATED_INITIALIZER
+#if __has_attribute(objc_designated_initializer)
+#define NS_DESIGNATED_INITIALIZER __attribute__((objc_designated_initializer))
+#else
+#define NS_DESIGNATED_INITIALIZER
+#endif
+#endif
+
 /**
  `AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
 
