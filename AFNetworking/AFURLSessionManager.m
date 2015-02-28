@@ -165,13 +165,12 @@ didCompleteWithError:(NSError *)error
         userInfo[AFNetworkingTaskDidCompleteErrorKey] = error;
 
         dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
-            if (self.completionHandler) {
-                self.completionHandler(task.response, responseObject, error);
-            }
-
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidCompleteNotification object:task userInfo:userInfo];
             });
+            if (self.completionHandler) {
+                self.completionHandler(task.response, responseObject, error);
+            }
         });
     } else {
         dispatch_async(url_session_manager_processing_queue(), ^{
@@ -191,13 +190,12 @@ didCompleteWithError:(NSError *)error
             }
 
             dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
-                if (self.completionHandler) {
-                    self.completionHandler(task.response, responseObject, serializationError);
-                }
-
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidCompleteNotification object:task userInfo:userInfo];
                 });
+                if (self.completionHandler) {
+                    self.completionHandler(task.response, responseObject, serializationError);
+                }
             });
         });
     }
