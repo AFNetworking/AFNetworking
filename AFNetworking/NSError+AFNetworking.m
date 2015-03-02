@@ -72,7 +72,7 @@
     }
     else
     {
-        return (self.originalError.userInfo[NSURLErrorFailingURLStringErrorKey]) ? self.originalError.userInfo[NSURLErrorFailingURLStringErrorKey] : nil;
+        return (self.userInfo[NSURLErrorFailingURLStringErrorKey]) ? self.userInfo[NSURLErrorFailingURLStringErrorKey] : nil;
     }
 }
 
