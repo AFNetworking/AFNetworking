@@ -22,6 +22,7 @@
 
 #import "NSError+AFNetworking.h"
 #import "AFURLRequestSerialization.h"
+#import "AFURLResponseSerialization.h"
 
 @implementation NSError (AFNetworking)
 
