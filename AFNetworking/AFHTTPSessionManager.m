@@ -43,12 +43,13 @@
 #endif
 
 @interface AFHTTPSessionManager ()
+// baseUrl 基本的url，在此基础上进行访问
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
 @end
 
 @implementation AFHTTPSessionManager
 @dynamic responseSerializer;
-// 创建manager
+// baseURL根据baseURL 创建manager
 + (instancetype)manager {
     return [[[self class] alloc] initWithBaseURL:nil];
 }

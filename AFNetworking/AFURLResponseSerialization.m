@@ -31,7 +31,14 @@
 NSString * const AFURLResponseSerializationErrorDomain = @"com.alamofire.error.serialization.response";
 NSString * const AFNetworkingOperationFailingURLResponseErrorKey = @"com.alamofire.serialization.response.error.response";
 NSString * const AFNetworkingOperationFailingURLResponseDataErrorKey = @"com.alamofire.serialization.response.error.data";
-
+/**
+ *  返回错误
+ *
+ *  @param error           错误信息
+ *  @param underlyingError 另一个错误
+ *
+ *  @return domain error 和 信息错误
+ */
 static NSError * AFErrorWithUnderlyingError(NSError *error, NSError *underlyingError) {
     if (!error) {
         return underlyingError;
@@ -46,7 +53,15 @@ static NSError * AFErrorWithUnderlyingError(NSError *error, NSError *underlyingE
 
     return [[NSError alloc] initWithDomain:error.domain code:error.code userInfo:mutableUserInfo];
 }
-
+/**
+ *  domain的错误
+ *
+ *  @param error  错误
+ *  @param code   错误代码
+ *  @param domain 主机
+ *
+ *  @return 错误信息
+ */
 static BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger code, NSString *domain) {
     if ([error.domain isEqualToString:domain] && error.code == code) {
         return YES;
@@ -81,13 +96,19 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 
     return JSONObject;
 }
-
+/**
+ *  AFHTTPResponseSerializer   HTTP返回格式
+ */
 @implementation AFHTTPResponseSerializer
 
 + (instancetype)serializer {
     return [[self alloc] init];
 }
-
+/**
+ *  初始化
+ *
+ *  @return 出事话返回格式
+ */
 - (instancetype)init {
     self = [super init];
     if (!self) {

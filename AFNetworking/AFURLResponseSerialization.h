@@ -24,8 +24,12 @@
 #import <CoreGraphics/CoreGraphics.h>
 
 /**
- The `AFURLResponseSerialization` protocol is adopted by an object that decodes data into a more useful object representation, according to details in the server response. Response serializers may additionally perform validation on the incoming response and data.
+ The `AFURLResponseSerialization` protocol is adopted by an object that decodes 编码 data into a more useful object representation 代表, according to details in the server response服务器响应. Response serializers may additionally perform validation on the incoming response and data.
 
+ 这个类主要用于
+ 1. 判断服务器返回的状态码
+ 2. 数据的类型以及 
+ 3.json转换成对象
  For example, a JSON response serializer may check for an acceptable status code (`2XX` range) and content type (`application/json`), decoding a valid JSON response into an object.
  */
 @protocol AFURLResponseSerialization <NSObject, NSSecureCoding, NSCopying>
