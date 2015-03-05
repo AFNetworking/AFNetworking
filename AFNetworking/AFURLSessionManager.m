@@ -273,7 +273,7 @@ static inline void af_swizzleSelector(Class class, SEL originalSelector, SEL swi
 }
 
 static inline void af_addMethod(Class class, SEL selector, Method method) {
-    class_addMethod(class, @selector(af_resume),  method_getImplementation(method),  method_getTypeEncoding(method));
+    class_addMethod(class, selector,  method_getImplementation(method),  method_getTypeEncoding(method));
 }
 
 static NSString * const AFNSURLSessionTaskDidResumeNotification  = @"com.alamofire.networking.nsurlsessiontask.resume";
