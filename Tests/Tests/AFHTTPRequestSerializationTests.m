@@ -149,4 +149,16 @@
     expect(error).to.equal(serializerError);
 }
 
+- (void)testThatAFHTTPRequestSerializationSetsTheTimeoutIntervalForAnyRequestsItCreates {
+	NSTimeInterval expected = 123.0;
+	AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+	serializer.timeoutInterval = expected;
+
+	NSMutableURLRequest *request = [serializer requestWithMethod:@"GET" URLString:@"http://example.com/resource" parameters:nil error:NULL];
+
+	NSTimeInterval actual = request.timeoutInterval;
+
+	XCTAssertEqualWithAccuracy(actual, expected, 0.1);
+}
+
 @end
