@@ -49,7 +49,7 @@
 
 @implementation AFHTTPSessionManager
 @dynamic responseSerializer;
-// baseURL根据baseURL 创建manager
+// 所有初始化的manager都是根据baseURL 创建manager
 + (instancetype)manager {
     return [[[self class] alloc] initWithBaseURL:nil];
 }
@@ -65,7 +65,7 @@
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
     return [self initWithBaseURL:nil sessionConfiguration:configuration];
 }
-// 根据BaseUrl进行初始化
+// 根据BaseUrl和configuration进行初始化
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration
 {
@@ -87,7 +87,7 @@
     return self;
 }
 
-#pragma mark -
+#pragma mark - 设置序列化的类型
 
 #ifdef _SYSTEMCONFIGURATION_H
 #endif
@@ -104,9 +104,9 @@
     [super setResponseSerializer:responseSerializer];
 }
 
-#pragma mark -
+#pragma mark - 网络请求方法
 /**
- *  GET方法
+ *  GET方法         dataTaskWithHTTP
  *
  *  @param URLString  URL链接
  *  @param parameters 属性
@@ -127,7 +127,7 @@
     return dataTask;
 }
 /**
- *  HEAD方法
+ *  HEAD方法     dataTaskWithHTTP
  *
  *  @param URLString  URL链接
  *  @param parameters 属性
@@ -152,7 +152,7 @@
     return dataTask;
 }
 /**
- *  POST方法,单个文件
+ *  POST方法,单个文件       dataTaskWithHTTP
  *
  *  @param URLString  URL链接
  *  @param parameters 属性
@@ -173,7 +173,7 @@
     return dataTask;
 }
 /**
- *  POST方法，多个文件
+ *  POST方法，多个文件       uploadTaskWithStreamed
  *
  *  @param URLString  URL链接
  *  @param parameters 属性
@@ -221,7 +221,7 @@
     return task;
 }
 /**
- *  PUT方法
+ *  PUT方法             dataTaskWithHTTP
  *
  *  @param URLString  URL链接
  *  @param parameters 参数
@@ -242,7 +242,7 @@
     return dataTask;
 }
 /**
- *  PATCH方法
+ *  PATCH方法            dataTaskWithHTTP
  *
  *  @param URLString  URL链接
  *  @param parameters 参数
@@ -263,7 +263,7 @@
     return dataTask;
 }
 /**
- *  DELETE方法
+ *  DELETE方法           dataTaskWithHTTP
  *
  *  @param URLString  URL链接
  *  @param parameters 参数
@@ -284,7 +284,7 @@
     return dataTask;
 }
 /**
- *  根据不同的请求类型创建任务
+ *  根据不同的请求类型创建任务        dataTaskWithRequest
  *
  *  @param method     请求类型
  *  @param URLString  URL链接
@@ -331,7 +331,7 @@
     return dataTask;
 }
 
-#pragma mark - NSObject
+#pragma mark - NSObject              JSON -> 模型
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.session, self.operationQueue];

@@ -437,7 +437,13 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 }
 
 #pragma mark - 代理方法
-
+/**
+ *  取请求对应的代理
+ *
+ *  @param task task任务
+ *
+ *  @return task的代理
+ */
 - (AFURLSessionManagerTaskDelegate *)delegateForTask:(NSURLSessionTask *)task {
     NSParameterAssert(task);
 
@@ -448,7 +454,12 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     return delegate;
 }
-
+/**
+ *  通用 给任务设置代理
+ *
+ *  @param delegate 代理
+ *  @param task     任务
+ */
 - (void)setDelegate:(AFURLSessionManagerTaskDelegate *)delegate
             forTask:(NSURLSessionTask *)task
 {
@@ -459,7 +470,12 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
     [self.lock unlock];
 }
-
+/**
+ *  给DataTask添加代理，是指代理后回调参数
+ *
+ *  @param dataTask          任务
+ *  @param completionHandler 回调
+ */
 - (void)addDelegateForDataTask:(NSURLSessionDataTask *)dataTask
              completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
 {
@@ -470,7 +486,13 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     dataTask.taskDescription = self.taskDescriptionForSessionTasks;
     [self setDelegate:delegate forTask:dataTask];
 }
-
+/**
+ *  给uploadTask添加代理，是指代理后回调参数
+ *
+ *  @param uploadTask        上传任务
+ *  @param progress          上传进度
+ *  @param completionHandler 上传完成回调
+ */
 - (void)addDelegateForUploadTask:(NSURLSessionUploadTask *)uploadTask
                         progress:(NSProgress * __autoreleasing *)progress
                completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
@@ -508,7 +530,14 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     [self setDelegate:delegate forTask:uploadTask];
 }
-
+/**
+ *  给downloadTask添加代理，设置指代理后回调参数
+ *
+ *  @param downloadTask      下载任务
+ *  @param progress          进度
+ *  @param destination       下载的远程位置
+ *  @param completionHandler 回调
+ */
 - (void)addDelegateForDownloadTask:(NSURLSessionDownloadTask *)downloadTask
                           progress:(NSProgress * __autoreleasing *)progress
                        destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
@@ -532,7 +561,11 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     [self setDelegate:delegate forTask:downloadTask];
 }
-
+/**
+ *  删除任务的代理
+ *
+ *  @param task 任务
+ */
 - (void)removeDelegateForTask:(NSURLSessionTask *)task {
     NSParameterAssert(task);
 
@@ -540,7 +573,9 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [self.mutableTaskDelegatesKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
     [self.lock unlock];
 }
-
+/**
+ *  删除所有的代理
+ */
 - (void)removeAllDelegates {
     [self.lock lock];
     [self.mutableTaskDelegatesKeyedByTaskIdentifier removeAllObjects];
@@ -854,15 +889,27 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 }
 
 #pragma mark -
-
+/**
+ *  设置任务下载完成回调
+ *
+ *  @param block 任务完成回调
+ */
 - (void)setDownloadTaskDidFinishDownloadingBlock:(NSURL * (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, NSURL *location))block {
     self.downloadTaskDidFinishDownloading = block;
 }
-
+/**
+ *  设置写数据任务完成回调
+ *
+ *  @param block 写数据完成回调
+ */
 - (void)setDownloadTaskDidWriteDataBlock:(void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite))block {
     self.downloadTaskDidWriteData = block;
 }
-
+/**
+ *  设置任务开始的回调
+ *
+ *  @param block 任务开始回调
+ */
 - (void)setDownloadTaskDidResumeBlock:(void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes))block {
     self.downloadTaskDidResume = block;
 }
@@ -1158,7 +1205,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
     }
 }
 /**
- *  响应的缓存，在进行请求的时候，需要先使用协议头的内容进行对比，如果
+ *  响应的缓存，在进行请求的时候，需要先使用协议头的内容进行对比，如果有需要继续下载
  *
  *  @param session           会话
  *  @param dataTask          数据任务
@@ -1183,7 +1230,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 /**
  *  程序进入后台时，所有Task全都完成后调用
  *
- *  @param session会话
+ *  @param session 会话
  */
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
     if (self.didFinishEventsForBackgroundURLSession) {
@@ -1195,7 +1242,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 
 #pragma mark - NSURLSessionDownloadDelegate
 /**
- *  下载代理
+ *  下载代理             URLSession: downloadTask
  *
  *  @param session      会话
  *  @param downloadTask 下载任务
@@ -1225,7 +1272,7 @@ didFinishDownloadingToURL:(NSURL *)location
     }
 }
 /**
- *  下载数据回调
+ *  下载数据回调          URLSession: downloadTask
  *
  *  @param session                   任务
  *  @param downloadTask              下载任务
@@ -1247,7 +1294,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
     }
 }
 /**
- *  断点下载
+ *  断点下载          URLSession: downloadTask
  *
  *  @param session            任务
  *  @param downloadTask       下载任务
