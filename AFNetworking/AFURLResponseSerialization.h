@@ -132,6 +132,16 @@
  */
 + (instancetype)serializerWithReadingOptions:(NSJSONReadingOptions)readingOptions;
 
+/**
+ Virtual method that provides the opportunity to replace the default JSON Parser
+ 
+ @param data The binary data to parse as JSON.
+ @param error An error object
+ */
+
+-(id)generateJSONResponseObject:(NSData *)data error:(NSError *__autoreleasing *)serializationError;
+
+
 @end
 
 #pragma mark -
@@ -146,6 +156,13 @@
  */
 @interface AFXMLParserResponseSerializer : AFHTTPResponseSerializer
 
+/**
+ Virtual method that provides the opportunity to replace the default JSON Parser
+ 
+ @param data The binary data parse as XML.
+ */
+
+-(id)generateXMLResponseObject:(NSData *)data;
 @end
 
 #pragma mark -

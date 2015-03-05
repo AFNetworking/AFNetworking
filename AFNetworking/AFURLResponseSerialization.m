@@ -258,7 +258,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 
             if (data) {
                 if ([data length] > 0) {
-                    responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
+                    responseObject = [self generateJSONResponseObject:data error:&serializationError];
                 } else {
                     return nil;
                 }
@@ -282,6 +282,12 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     }
 
     return responseObject;
+}
+
+-(id)generateJSONResponseObject:(NSData *)data
+                          error:(NSError *__autoreleasing *)serializationError
+{
+     return [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:serializationError];
 }
 
 #pragma mark - NSSecureCoding
@@ -350,8 +356,15 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         }
     }
 
+    return [self generateXMLResponseObject:data];
+}
+
+
+-(id)generateXMLResponseObject:(NSData *)data
+{
     return [[NSXMLParser alloc] initWithData:data];
 }
+
 
 @end
 
