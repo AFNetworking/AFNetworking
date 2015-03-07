@@ -43,12 +43,10 @@
     [overallProgress becomeCurrentWithPendingUnitCount:80];
     NSProgress *uploadProgress = nil;
 
-//    [self.manager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
-//                                 progress:&uploadProgress
-//                              destination:nil
-//                        completionHandler:nil];
-//    [self.manager up]
-    [self.manager ]
+    [self.manager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                                 progress:&uploadProgress
+                              destination:nil
+                        completionHandler:nil];
     [overallProgress resignCurrent];
 
     expect(overallProgress.fractionCompleted).to.equal(0);
