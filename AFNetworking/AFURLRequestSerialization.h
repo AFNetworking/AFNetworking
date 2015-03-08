@@ -27,18 +27,24 @@
 
 /**
  The `AFURLRequestSerialization` protocol is adopted by an object that encodes parameters for a specified HTTP requests. Request serializers may encode parameters as query strings, HTTP bodies, setting the appropriate HTTP header fields as necessary.
-
- For example, a JSON request serializer may set the HTTP body of the request to a JSON representation, and set the `Content-Type` HTTP header field value to `application/json`.
+ 代理
+ 设置HTTP头部Content-Type 值为 `application/json`
+ For example, a JSON request serializer77777777777777777 may set the HTTP body of the request to a JSON representation, and set the `Content-Type` HTTP header field value to `application/json`.
  */
+
 @protocol AFURLRequestSerialization <NSObject, NSSecureCoding, NSCopying>
 
 /**
+ 返回一个带有特殊编码的请求
  Returns a request with the specified parameters encoded into a copy of the original request.
-
+ 原始的请求
  @param request The original request.
+ 编码的属性
  @param parameters The parameters to be encoded.
+ 出现的错误
  @param error The error that occurred while attempting to encode the request parameters.
 
+ 返回序列化后的请求
  @return A serialized request.
  */
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
@@ -55,7 +61,7 @@
 typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
     AFHTTPRequestQueryStringDefaultStyle = 0,
 };
-
+// 复杂的组合二进制数据
 @protocol AFMultipartFormData;
 
 /**
@@ -63,14 +69,17 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 
  Any request or response serializer dealing with HTTP is encouraged to subclass `AFHTTPRequestSerializer` in order to ensure consistent default behavior.
  */
+// AFHTTPRequestSerializer类
 @interface AFHTTPRequestSerializer : NSObject <AFURLRequestSerialization>
 
 /**
+ 默认是 `NSUTF8StringEncoding`
  The string encoding used to serialize parameters. `NSUTF8StringEncoding` by default.
  */
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 
 /**
+ 是否可以设置request
  Whether created requests can use the device’s cellular radio (if present). `YES` by default.
 
  @see NSMutableURLRequest -setAllowsCellularAccess:
@@ -78,6 +87,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @property (nonatomic, assign) BOOL allowsCellularAccess;
 
 /**
+ 设置缓存
  The cache policy of created requests. `NSURLRequestUseProtocolCachePolicy` by default.
 
  @see NSMutableURLRequest -setCachePolicy:
@@ -85,6 +95,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @property (nonatomic, assign) NSURLRequestCachePolicy cachePolicy;
 
 /**
+ 设置是否处理Cookies
  Whether created requests should use the default cookie handling. `YES` by default.
 
  @see NSMutableURLRequest -setHTTPShouldHandleCookies:
@@ -92,6 +103,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @property (nonatomic, assign) BOOL HTTPShouldHandleCookies;
 
 /**
+ 是否使用管道
  Whether created requests can continue transmitting data before receiving a response from an earlier transmission. `NO` by default
 
  @see NSMutableURLRequest -setHTTPShouldUsePipelining:
@@ -99,6 +111,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @property (nonatomic, assign) BOOL HTTPShouldUsePipelining;
 
 /**
+ 设置网络服务类型
  The network service type for created requests. `NSURLNetworkServiceTypeDefault` by default.
 
  @see NSMutableURLRequest -setNetworkServiceType:
@@ -106,6 +119,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @property (nonatomic, assign) NSURLRequestNetworkServiceType networkServiceType;
 
 /**
+ 设置超时时间
  The timeout interval, in seconds, for created requests. The default timeout interval is 60 seconds.
 
  @see NSMutableURLRequest -setTimeoutInterval:
@@ -117,9 +131,11 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 ///---------------------------------------
 
 /**
+ 设置HTTP请求首部
  Default HTTP header field values to be applied to serialized requests. By default, these include the following:
- 
+ 客户端可以处理的语言
  - `Accept-Language` with the contents of `NSLocale +preferredLanguages`
+ 浏览器类型
  - `User-Agent` with the contents of various bundle identifiers and OS designations
  
  @discussion To add or remove default request headers, use `setValue:forHTTPHeaderField:`.
@@ -127,11 +143,13 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @property (readonly, nonatomic, strong) NSDictionary *HTTPRequestHeaders;
 
 /**
+ 创建并返回一个默认配置的序列
  Creates and returns a serializer with default configuration.
  */
 + (instancetype)serializer;
 
 /**
+ 设置HTTP头部
  Sets the value for the HTTP headers set in request objects made by the HTTP client. If `nil`, removes the existing value for that header.
 
  @param field The HTTP header to set a default value for
@@ -150,6 +168,7 @@ forHTTPHeaderField:(NSString *)field;
 - (NSString *)valueForHTTPHeaderField:(NSString *)field;
 
 /**
+ 设置Authorization 用户名和密码
  Sets the "Authorization" HTTP header set in request objects made by the HTTP client to a basic authentication value with Base64-encoded username and password. This overwrites any existing value for this header.
 
  @param username The HTTP basic auth username
@@ -159,12 +178,14 @@ forHTTPHeaderField:(NSString *)field;
                                        password:(NSString *)password;
 
 /**
+ 根据Token设置头部文件
  @deprecated This method has been deprecated. Use -setValue:forHTTPHeaderField: instead.
  */
 - (void)setAuthorizationHeaderFieldWithToken:(NSString *)token DEPRECATED_ATTRIBUTE;
 
 
 /**
+ 清理HTTP首部的用户验证
  Clears any existing value for the "Authorization" HTTP header.
  */
 - (void)clearAuthorizationHeader;
@@ -174,11 +195,13 @@ forHTTPHeaderField:(NSString *)field;
 ///-------------------------------------------------------
 
 /**
+ 设置序列化的请求类型
  HTTP methods for which serialized requests will encode parameters as a query string. `GET`, `HEAD`, and `DELETE` by default.
  */
 @property (nonatomic, strong) NSSet *HTTPMethodsEncodingParametersInURI;
 
 /**
+ 设置
  Set the method of query string serialization according to one of the pre-defined styles.
 
  @param style The serialization style.
