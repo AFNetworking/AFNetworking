@@ -43,9 +43,9 @@
     [overallProgress becomeCurrentWithPendingUnitCount:80];
     NSProgress *uploadProgress = nil;
 
-    [self.manager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+    [self.manager uploadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                               fromData:[NSData data]
                                  progress:&uploadProgress
-                              destination:nil
                         completionHandler:nil];
     [overallProgress resignCurrent];
 
