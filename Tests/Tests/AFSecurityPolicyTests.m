@@ -508,10 +508,17 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     CFRelease(trust);
 }
 
-- (void)testDefaultPolicyIsSetToAFSSLPinningModePublicKey {
+- (void)testDefaultPolicyIsSetToAFSSLPinningModeNone {
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
 
-    XCTAssert(policy.SSLPinningMode==AFSSLPinningModeNone, @"Default policy is not set to AFSSLPinningModePublicKey.");
+    XCTAssert(policy.SSLPinningMode==AFSSLPinningModeNone, @"Default policy is not set to AFSSLPinningModeNone.");
+}
+
+- (void)testDefaultPolicyFailsToEvaluateServerTrustFromSelfSignedCertificate {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    SecTrustRef trust = AFUTTrustWithCertificate(AFUTSelfSignedCertificateWithoutDomain());
+    XCTAssert([policy evaluateServerTrust:trust forDomain:nil] == NO, @"Unmatched certificate and pinning mode None should fail");
+    CFRelease(trust);
 }
 
 - (void)testDefaultPolicyIsSetToNotAllowInvalidSSLCertificates {
