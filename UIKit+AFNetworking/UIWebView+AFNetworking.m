@@ -137,7 +137,10 @@
         __strong __typeof(weakSelf) strongSelf = weakSelf;
         [strongSelf loadData:data MIMEType:(MIMEType ?: [operation.response MIMEType]) textEncodingName:(textEncodingName ?: [operation.response textEncodingName]) baseURL:[operation.response URL]];
 
-        [strongSelf.delegate webViewDidFinishLoad:strongSelf];
+        if ([strongSelf.delegate respondsToSelector:@selector(webViewDidFinishLoad:)]) {
+            [strongSelf.delegate webViewDidFinishLoad:strongSelf];
+        }
+        
 #pragma clang diagnostic pop
     } failure:^(AFHTTPRequestOperation * __unused operation, NSError *error) {
         if (failure) {
@@ -147,7 +150,9 @@
 
     [self.af_HTTPRequestOperation start];
 
-    [self.delegate webViewDidStartLoad:self];
+    if ([self.delegate respondsToSelector:@selector(webViewDidStartLoad:)]) {
+        [self.delegate webViewDidStartLoad:self];
+    }
 }
 
 @end
