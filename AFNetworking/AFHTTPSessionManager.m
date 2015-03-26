@@ -43,28 +43,29 @@
 #endif
 
 @interface AFHTTPSessionManager ()
+// baseUrl 基本的url，在此基础上进行访问
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
 @end
 
 @implementation AFHTTPSessionManager
 @dynamic responseSerializer;
-
+// 所有初始化的manager都是根据baseURL 创建manager
 + (instancetype)manager {
     return [[[self class] alloc] initWithBaseURL:nil];
 }
-
+// 初始化
 - (instancetype)init {
     return [self initWithBaseURL:nil];
 }
-
+// 根据baseUrl进行url初始化
 - (instancetype)initWithBaseURL:(NSURL *)url {
     return [self initWithBaseURL:url sessionConfiguration:nil];
 }
-
+// 根据Config初始化session
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
     return [self initWithBaseURL:nil sessionConfiguration:configuration];
 }
-
+// 根据BaseUrl和configuration进行初始化
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration
 {
@@ -86,25 +87,34 @@
     return self;
 }
 
-#pragma mark -
+#pragma mark - 设置序列化的类型
 
 #ifdef _SYSTEMCONFIGURATION_H
 #endif
-
+// 设置发送的序列化类型
 - (void)setRequestSerializer:(AFHTTPRequestSerializer <AFURLRequestSerialization> *)requestSerializer {
     NSParameterAssert(requestSerializer);
 
     _requestSerializer = requestSerializer;
 }
-
+// 设置接收的序列化类型
 - (void)setResponseSerializer:(AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
     NSParameterAssert(responseSerializer);
 
     [super setResponseSerializer:responseSerializer];
 }
 
-#pragma mark -
-
+#pragma mark - 网络请求方法
+/**
+ *  GET方法         dataTaskWithHTTP
+ *
+ *  @param URLString  URL链接
+ *  @param parameters 属性
+ *  @param success    成功回调
+ *  @param failure    错误回调
+ *
+ *  @return 数据任务
+ */
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(id)parameters
                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
@@ -116,7 +126,16 @@
 
     return dataTask;
 }
-
+/**
+ *  HEAD方法     dataTaskWithHTTP
+ *
+ *  @param URLString  URL链接
+ *  @param parameters 属性
+ *  @param success    成功回调
+ *  @param failure    错误回调
+ *
+ *  @return 数据任务
+ */
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
                     parameters:(id)parameters
                        success:(void (^)(NSURLSessionDataTask *task))success
@@ -132,7 +151,16 @@
 
     return dataTask;
 }
-
+/**
+ *  POST方法,单个文件       dataTaskWithHTTP
+ *
+ *  @param URLString  URL链接
+ *  @param parameters 属性
+ *  @param success    成功回调
+ *  @param failure    失败回调
+ *
+ *  @return  数据任务
+ */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(id)parameters
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
@@ -144,7 +172,17 @@
 
     return dataTask;
 }
-
+/**
+ *  POST方法，多个文件       uploadTaskWithStreamed
+ *
+ *  @param URLString  URL链接
+ *  @param parameters 属性
+ *  @param block      构造数据的block块
+ *  @param success    成功的回调
+ *  @param failure    失败的回调
+ *
+ *  @return 任务回调
+ */
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(id)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
@@ -182,7 +220,16 @@
 
     return task;
 }
-
+/**
+ *  PUT方法             dataTaskWithHTTP
+ *
+ *  @param URLString  URL链接
+ *  @param parameters 参数
+ *  @param success    成功回调
+ *  @param failure    错误回调
+ *
+ *  @return 任务
+ */
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(id)parameters
                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
@@ -194,7 +241,16 @@
 
     return dataTask;
 }
-
+/**
+ *  PATCH方法            dataTaskWithHTTP
+ *
+ *  @param URLString  URL链接
+ *  @param parameters 参数
+ *  @param success    成功回调
+ *  @param failure    失败回调
+ *
+ *  @return 任务
+ */
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(id)parameters
                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
@@ -206,7 +262,16 @@
 
     return dataTask;
 }
-
+/**
+ *  DELETE方法           dataTaskWithHTTP
+ *
+ *  @param URLString  URL链接
+ *  @param parameters 参数
+ *  @param success    成功回调
+ *  @param failure    失败回调
+ *
+ *  @return 数据任务
+ */
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(id)parameters
                          success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
@@ -218,7 +283,17 @@
 
     return dataTask;
 }
-
+/**
+ *  根据不同的请求类型创建任务        dataTaskWithRequest
+ *
+ *  @param method     请求类型
+ *  @param URLString  URL链接
+ *  @param parameters 属性
+ *  @param success    成功回调
+ *  @param failure    错误回调
+ *
+ *  @return 返回任务
+ */
 - (NSURLSessionDataTask *)dataTaskWithHTTPMethod:(NSString *)method
                                        URLString:(NSString *)URLString
                                       parameters:(id)parameters
@@ -256,7 +331,7 @@
     return dataTask;
 }
 
-#pragma mark - NSObject
+#pragma mark - NSObject              JSON -> 模型
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.session, self.operationQueue];

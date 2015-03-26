@@ -34,38 +34,107 @@
 #define NS_DESIGNATED_INITIALIZER
 #endif
 #endif
+/**
+ 关于NSURLSession
+ 
+ 1. 提供的功能：
+ 通过URL将数据下载到内存
+ 通过URL将数据下载到文件系统
+ 将数据上传到指定URL
+ 在后台完成上述功能
+ 
+ 2. 创建NSSession时设置工作模式和网络设置
+ 工作模式分为：
+ 一般模式（default）：工作模式类似于原来的NSURLConnection，可以使用缓存的Cache，Cookie，鉴权。
+ 及时模式（ephemeral）：不使用缓存的Cache，Cookie，鉴权。
+ 后台模式（background）：在后台完成上传下载，创建Configuration对象的时候需要给一个NSString的ID用于追踪完成工作的Session是哪一个（后面会讲到）。
+ 
+ 3.创建一个NSURLSession，系统提供了两个创建方法：
+ sessionWithConfiguration:
+ 
 
+ 3.1 sessionWithConfiguration:
+    第一个粒度较低就是根据刚才创建的Configuration创建一个Session，系统默认创建一个新的OperationQueue处理Session的消息。
+ 回调: 如果是细粒度的Session调用，Session与Delegate会在指定的OperationQueue中进行交互，以咱们下载例子，交互过程的顺序图如下（假如不需要鉴权，即非HTTPS请求）：
+ 
+ 3.2 sessionWithConfiguration:delegate:delegateQueue:
+    第二个粒度比较高，可以设定回调的delegate（注意这个回调delegate会被强引用），并且可以设定delegate在哪个OperationQueue回调，如果我们将其设置为[NSOperationQueue mainQueue]就能在主线程进行回调非常的方便。
+ 
+ 4. 创建一个NSURLRequest调用刚才的NSURLSession对象提供的Task函数，创建一个NSURLSessionTask。
+ 
+ 　　根据职能不同Task有三种子类：
+    NSURLSessionUploadTask：上传用的Task，传完以后不会再下载返回结果；
+    NSURLSessionDownloadTask：下载用的Task；
+    NSURLSessionDataTask：可以上传内容，上传完成后再进行下载。
+ 
+ 　　得到的Task，调用resume开始工作。
+ 
+ 5. 停止session的进行
+    当不再需要连接调用Session的invalidateAndCancel直接关闭，或者调用finishTasksAndInvalidate等待当前Task结束后关闭。这时Delegate会收到URLSession:didBecomeInvalidWithError:这个事件。Delegate收到这个事件之后会被解引用。
+
+ 6. session 在后台
+    如果是一个BackgroundSession，在Task执行的时候，用户切到后台，Session会和ApplicationDelegate交互。当程序切到后台后，在BackgroundSession中的Task还会继续下载，这部分文档叙述比较少，现在分三个场景分析下Session和Application的关系：
+    6.1 
+    当加入了多个Task，程序没有切换到后台。
+    这种情况Task会按照NSURLSessionConfiguration的设置正常下载，不会和ApplicationDelegate有交互。
+ 
+    6.2
+    当加入了多个Task，程序切到后台，所有Task都完成下载。
+ 　　在切到后台之后，Session的Delegate不会再收到，Task相关的消息，直到所有Task全都完成后，系统会调用ApplicationDelegate的application:handleEventsForBackgroundURLSession:completionHandler:回调，之后“汇报”下载工作，对于每一个后台下载的Task调用Session的Delegate中的URLSession:downloadTask:didFinishDownloadingToURL:（成功的话）和URLSession:task:didCompleteWithError:（成功或者失败都会调用）。
+ 
+ 　　之后调用Session的Delegate回调URLSessionDidFinishEventsForBackgroundURLSession:。
+ 
+ 
+ warning
+    注意：在ApplicationDelegate被唤醒后，会有个参数ComplietionHandler，这个参数是个Block，这个参数要在后面Session的Delegate中didFinish的时候调用一下，如下：
+ 
+    6.3 当加入了多个Task，程序切到后台，下载完成了几个Task，然后用户又切换到前台。（程序没有退出）
+ 
+ 　　切到后台之后，Session的Delegate仍然收不到消息。在下载完成几个Task之后再切换到前台，系统会先汇报已经下载完成的Task的情况，然后继续下载没有下载完成的Task，后面的过程同第一种情况。
+ 
+    当加入了多个Task，程序切到后台，几个Task已经完成，但还有Task还没有下载完的时候关掉强制退出程序，然后再进入程序的时候。（程序退出了）
+ 
+ 　　最后这个情况比较有意思，由于程序已经退出了，后面没有下完Session就不在了后面的Task肯定是失败了。但是已经下载成功的那些Task，新启动的程序也没有听“汇报”的机会了。经过实验发现，这个时候之前在NSURLSessionConfiguration设置的NSString类型的ID起作用了，当ID相同的时候，一旦生成Session对象并设置Delegate，马上可以收到上一次关闭程序之前没有汇报工作的Task的结束情况（成功或者失败）。但是当ID不相同，这些情况就收不到了，因此为了不让自己的消息被别的应用程序收到，或者收到别的应用程序的消息，起见ID还是和程序的Bundle名称绑定上比较好，至少保证唯一性。
+ 
+ */
 /**
  `AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
 
  ## Subclassing Notes
-
+ 如果是做HTTP请求的话就可以使用AFHTTPSessionManager 这个类去搞定
  This is the base class for `AFHTTPSessionManager`, which adds functionality specific to making HTTP requests. If you are looking to extend `AFURLSessionManager` specifically for HTTP, consider subclassing `AFHTTPSessionManager` instead.
 
  ## NSURLSession & NSURLSessionTask Delegate Methods
-
+ 总共实现了一下的方法
  `AFURLSessionManager` implements the following delegate methods:
 
+ 1. session的代理
  ### `NSURLSessionDelegate`
-
+ session无效（被取消）
  - `URLSession:didBecomeInvalidWithError:`
+ session需要鉴权
  - `URLSession:didReceiveChallenge:completionHandler:`
+ session进入后台
  - `URLSessionDidFinishEventsForBackgroundURLSession:`
 
+ 2. sessionTask代理
  ### `NSURLSessionTaskDelegate`
-
+ 
  - `URLSession:willPerformHTTPRedirection:newRequest:completionHandler:`
  - `URLSession:task:didReceiveChallenge:completionHandler:`
  - `URLSession:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:`
  - `URLSession:task:didCompleteWithError:`
-
+ 3. 下载用的task的代理方法
  ### `NSURLSessionDataDelegate`
-
+ 接受到响应
  - `URLSession:dataTask:didReceiveResponse:completionHandler:`
+ 成为
  - `URLSession:dataTask:didBecomeDownloadTask:`
+ 收到数据
  - `URLSession:dataTask:didReceiveData:`
+ 缓存响应
  - `URLSession:dataTask:willCacheResponse:completionHandler:`
-
+4. 下载
  ### `NSURLSessionDownloadDelegate`
 
  - `URLSession:downloadTask:didFinishDownloadingToURL:`

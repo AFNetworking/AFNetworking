@@ -39,26 +39,67 @@
 #define NS_DESIGNATED_INITIALIZER
 #endif
 #endif
-
+/**
+ *  NSURLSessionConfiguration 相关内容
+ NSURLRequestUseProtocolCachePolicy = 0,
+ 
+ NSURLRequestReloadIgnoringLocalCacheData = 1,
+ NSURLRequestReloadIgnoringLocalAndRemoteCacheData = 4, // Unimplemented
+ NSURLRequestReloadIgnoringCacheData = NSURLRequestReloadIgnoringLocalCacheData,
+ 
+ NSURLRequestReturnCacheDataElseLoad = 2,
+ NSURLRequestReturnCacheDataDontLoad = 3,
+ 
+ NSURLRequestReloadRevalidatingCacheData = 5, // Unimplemented
+ 
+    1. requestCachePolicy
+       在iOS应用程序开发中，为了减少与服务端的交互次数，加快用户的响应速度，一般都会在iOS设备中加一个缓存的机制。
+       内存缓存我们可以使用sdk中的NSURLCache类。NSURLRequest需要一个缓存参数来说明它请求的url何如缓存
+        数据的
+        看下它的CachePolicy类型。
+        0.NSURLRequestUseProtocolCachePolicy
+          NSURLRequest默认的cache policy，使用Protocol协议定义。
+            返回 0
+        1.NSURLRequestReloadIgnoringLocalCacheData
+          忽略缓存直接从原始地址下载
+            返回 1
+        2.NSURLRequestReturnCacheDataElseLoad
+          只有在cache中不存在data时才从原始地址下载。
+            返回 2
+        3.NSURLRequestReturnCacheDataDontLoad
+            只使用cache数据，如果不存在cache，请求失败;用于没有建立网络连接离线模式
+            返回 3
+        4.NSURLRequestReloadIgnoringLocalAndRemoteCacheData：
+            忽略本地和远程的缓存数据，直接从原始地址下载
+            返回 4
+        5.NSURLRequestReloadRevalidatingCacheData
+            验证本地数据与远程数据是否相同，如果不同则下载远程数据，否则使用本地数据。
+            返回 5
+ */
 /**
  `AFHTTPSessionManager` is a subclass of `AFURLSessionManager` with convenience methods for making HTTP requests. When a `baseURL` is provided, requests made with the `GET` / `POST` / et al. convenience methods can be made with relative paths.
 
  ## Subclassing Notes
 
+  根据不同的系统进行设置数据传输的方法
+ 
  Developers targeting iOS 7 or Mac OS X 10.9 or later that deal extensively with a web service are encouraged to subclass `AFHTTPSessionManager`, providing a class method that returns a shared singleton object on which authentication and other configuration can be shared across the application.
 
  For developers targeting iOS 6 or Mac OS X 10.8 or earlier, `AFHTTPRequestOperationManager` may be used to similar effect.
 
  ## Methods to Override
 
+ 根据request进行数据任务开始
  To change the behavior of all data task operation construction, which is also used in the `GET` / `POST` / et al. convenience methods, override `dataTaskWithRequest:completionHandler:`.
 
+ 设置 Serialization
  ## Serialization
-
+ 
  Requests created by an HTTP client will contain default headers and encode parameters according to the `requestSerializer` property, which is an object conforming to `<AFURLRequestSerialization>`.
 
  Responses received from the server are automatically validated and serialized by the `responseSerializers` property, which is an object conforming to `<AFURLResponseSerialization>`
-
+ 
+ 使用相对的路径进行URL的构造
  ## URL Construction Using Relative Paths
 
  For HTTP convenience methods, the request serializer constructs URLs from the path relative to the `-baseURL`, using `NSURL +URLWithString:relativeToURL:`, when provided. If `baseURL` is `nil`, `path` needs to resolve to a valid `NSURL` object using `NSURL +URLWithString:`.
