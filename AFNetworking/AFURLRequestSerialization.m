@@ -256,6 +256,47 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 
 #pragma mark -
 
+// Workarounds for crashing behavior using Key-Value Observing with XCTest
+// See https://github.com/AFNetworking/AFNetworking/issues/2523
+
+- (void)setAllowsCellularAccess:(BOOL)allowsCellularAccess {
+    [self willChangeValueForKey:NSStringFromSelector(@selector(allowsCellularAccess))];
+    _allowsCellularAccess = allowsCellularAccess;
+    [self didChangeValueForKey:NSStringFromSelector(@selector(allowsCellularAccess))];
+}
+
+- (void)setCachePolicy:(NSURLRequestCachePolicy)cachePolicy {
+    [self willChangeValueForKey:NSStringFromSelector(@selector(cachePolicy))];
+    _cachePolicy = cachePolicy;
+    [self didChangeValueForKey:NSStringFromSelector(@selector(cachePolicy))];
+}
+
+- (void)setHTTPShouldHandleCookies:(BOOL)HTTPShouldHandleCookies {
+    [self willChangeValueForKey:NSStringFromSelector(@selector(HTTPShouldHandleCookies))];
+    _HTTPShouldHandleCookies = HTTPShouldHandleCookies;
+    [self didChangeValueForKey:NSStringFromSelector(@selector(HTTPShouldHandleCookies))];
+}
+
+- (void)setHTTPShouldUsePipelining:(BOOL)HTTPShouldUsePipelining {
+    [self willChangeValueForKey:NSStringFromSelector(@selector(HTTPShouldUsePipelining))];
+    _HTTPShouldUsePipelining = HTTPShouldUsePipelining;
+    [self didChangeValueForKey:NSStringFromSelector(@selector(HTTPShouldUsePipelining))];
+}
+
+- (void)setNetworkServiceType:(NSURLRequestNetworkServiceType)networkServiceType {
+    [self willChangeValueForKey:NSStringFromSelector(@selector(networkServiceType))];
+    _networkServiceType = networkServiceType;
+    [self didChangeValueForKey:NSStringFromSelector(@selector(networkServiceType))];
+}
+
+- (void)setTimeoutInterval:(NSTimeInterval)timeoutInterval {
+    [self willChangeValueForKey:NSStringFromSelector(@selector(timeoutInterval))];
+    _timeoutInterval = timeoutInterval;
+    [self didChangeValueForKey:NSStringFromSelector(@selector(timeoutInterval))];
+}
+
+#pragma mark -
+
 - (NSDictionary *)HTTPRequestHeaders {
     return [NSDictionary dictionaryWithDictionary:self.mutableHTTPRequestHeaders];
 }
@@ -481,6 +522,14 @@ forHTTPHeaderField:(NSString *)field
 }
 
 #pragma mark - NSKeyValueObserving
+
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
+    if ([AFHTTPRequestSerializerObservedKeyPaths() containsObject:key]) {
+        return NO;
+    }
+
+    return [super automaticallyNotifiesObserversForKey:key];
+}
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(__unused id)object
