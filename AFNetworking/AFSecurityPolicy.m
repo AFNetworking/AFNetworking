@@ -254,14 +254,21 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
     SecTrustSetPolicies(serverTrust, (__bridge CFArrayRef)policies);
 
-    if (self.SSLPinningMode != AFSSLPinningModeNone && !AFServerTrustIsValid(serverTrust) && !self.allowInvalidCertificates) {
+    if(self.SSLPinningMode == AFSSLPinningModeNone) {
+        if(self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust)){
+            return YES;
+        } else {
+            return NO;
+        }
+    } else if(!AFServerTrustIsValid(serverTrust) && !self.allowInvalidCertificates) {
         return NO;
     }
-
+    
     NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);
     switch (self.SSLPinningMode) {
         case AFSSLPinningModeNone:
-            return YES;
+        default:
+            return NO;
         case AFSSLPinningModeCertificate: {
             NSMutableArray *pinnedCertificates = [NSMutableArray array];
             for (NSData *certificateData in self.pinnedCertificates) {
