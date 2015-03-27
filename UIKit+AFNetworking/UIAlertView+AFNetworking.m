@@ -81,7 +81,7 @@ static void AFGetAlertViewTitleAndMessageFromError(NSError *error, NSString * __
             [alertView show];
         }
 
-        [[NSNotificationCenter defaultCenter] removeObserver:observer name:AFNetworkingTaskDidCompleteNotification object:notification.object];
+        [[NSNotificationCenter defaultCenter] removeObserver:observer];
     }];
 }
 #endif
@@ -120,7 +120,7 @@ static void AFGetAlertViewTitleAndMessageFromError(NSError *error, NSString * __
             }
         }
 
-        [[NSNotificationCenter defaultCenter] removeObserver:observer name:AFNetworkingOperationDidFinishNotification object:notification.object];
+        [[NSNotificationCenter defaultCenter] removeObserver:observer];
     }];
 }
 
