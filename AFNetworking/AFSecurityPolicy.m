@@ -198,24 +198,9 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     }
 
     self.validatesCertificateChain = YES;
+    self.validatesDomainName = YES;
 
     return self;
-}
-
-#pragma mark -
-
-- (void)setSSLPinningMode:(AFSSLPinningMode)SSLPinningMode {
-    _SSLPinningMode = SSLPinningMode;
-
-    switch (self.SSLPinningMode) {
-        case AFSSLPinningModePublicKey:
-        case AFSSLPinningModeCertificate:
-            self.validatesDomainName = YES;
-            break;
-        default:
-            self.validatesDomainName = NO;
-            break;
-    }
 }
 
 - (void)setPinnedCertificates:(NSArray *)pinnedCertificates {
