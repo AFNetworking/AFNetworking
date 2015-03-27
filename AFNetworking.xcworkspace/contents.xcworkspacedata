@@ -7,6 +7,12 @@
       <FileRef
          location = "group:AFNetworking.h">
       </FileRef>
+      <FileRef
+         location = "group:NSError+AFNetworking.h">
+      </FileRef>
+      <FileRef
+         location = "group:NSError+AFNetworking.m">
+      </FileRef>
       <Group
          location = "container:"
          name = "NSURLConnection">
