@@ -1,6 +1,6 @@
 // AFURLConnectionOperation.h
 //
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2015 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,14 @@
 #import "AFURLResponseSerialization.h"
 #import "AFSecurityPolicy.h"
 
+#ifndef NS_DESIGNATED_INITIALIZER
+#if __has_attribute(objc_designated_initializer)
+#define NS_DESIGNATED_INITIALIZER __attribute__((objc_designated_initializer))
+#else
+#define NS_DESIGNATED_INITIALIZER
+#endif
+#endif
+
 /**
  `AFURLConnectionOperation` is a subclass of `NSOperation` that implements `NSURLConnection` delegate methods.
 
@@ -47,7 +55,7 @@
  - `connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:`
  - `connection:willCacheResponse:`
  - `connectionShouldUseCredentialStorage:`
- - `connection:needNewBodyStream:` 
+ - `connection:needNewBodyStream:`
  - `connection:willSendRequestForAuthenticationChallenge:`
 
  If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
@@ -57,17 +65,17 @@
  The built-in `completionBlock` provided by `NSOperation` allows for custom behavior to be executed after the request finishes. It is a common pattern for class constructors in subclasses to take callback block parameters, and execute them conditionally in the body of its `completionBlock`. Make sure to handle cancelled operations appropriately when setting a `completionBlock` (i.e. returning early before parsing response data). See the implementation of any of the `AFHTTPRequestOperation` subclasses for an example of this.
 
  Subclasses are strongly discouraged from overriding `setCompletionBlock:`, as `AFURLConnectionOperation`'s implementation includes a workaround to mitigate retain cycles, and what Apple rather ominously refers to as ["The Deallocation Problem"](http://developer.apple.com/library/ios/#technotes/tn2109/).
- 
+
  ## SSL Pinning
- 
+
  Relying on the CA trust model to validate SSL certificates exposes your app to security vulnerabilities, such as man-in-the-middle attacks. For applications that connect to known servers, SSL certificate pinning provides an increased level of security, by checking server certificate validity against those specified in the app bundle.
- 
+
  SSL with certificate pinning is strongly recommended for any application that transmits sensitive information to an external webservice.
 
  Connections will be validated on all matching certificates with a `.cer` extension in the bundle root.
- 
+
  ## App Extensions
- 
+
  When using AFNetworking in an App Extension, `#define AF_APP_EXTENSIONS` to avoid using unavailable APIs.
 
  ## NSCoding & NSCopying Conformance
@@ -189,12 +197,20 @@
 /**
  The dispatch queue for `completionBlock`. If `NULL` (default), the main queue is used.
  */
+#if OS_OBJECT_HAVE_OBJC_SUPPORT
 @property (nonatomic, strong) dispatch_queue_t completionQueue;
+#else
+@property (nonatomic, assign) dispatch_queue_t completionQueue;
+#endif
 
 /**
  The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used.
  */
+#if OS_OBJECT_HAVE_OBJC_SUPPORT
 @property (nonatomic, strong) dispatch_group_t completionGroup;
+#else
+@property (nonatomic, assign) dispatch_group_t completionGroup;
+#endif
 
 ///---------------------------------------------
 /// @name Managing Request Operation Information
@@ -211,12 +227,12 @@
 
 /**
  Initializes and returns a newly allocated operation object with a url connection configured with the specified url request.
- 
+
  This is the designated initializer.
- 
+
  @param urlRequest The request object to be used by the operation connection.
  */
-- (instancetype)initWithRequest:(NSURLRequest *)urlRequest;
+- (instancetype)initWithRequest:(NSURLRequest *)urlRequest NS_DESIGNATED_INITIALIZER;
 
 ///----------------------------------
 /// @name Pausing / Resuming Requests
@@ -280,9 +296,9 @@
 
 /**
  Sets a block to be executed when the connection will authenticate a challenge in order to download its request, as handled by the `NSURLConnectionDelegate` method `connection:willSendRequestForAuthenticationChallenge:`.
- 
+
  @param block A block object to be executed when the connection will authenticate a challenge in order to download its request. The block has no return type and takes two arguments: the URL connection object, and the challenge that must be authenticated. This block must invoke one of the challenge-responder methods (NSURLAuthenticationChallengeSender protocol).
- 
+
  If `allowsInvalidSSLCertificate` is set to YES, `connection:willSendRequestForAuthenticationChallenge:` will attempt to have the challenge sender use credentials with invalid SSL certificates.
  */
 - (void)setWillSendRequestForAuthenticationChallengeBlock:(void (^)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge))block;

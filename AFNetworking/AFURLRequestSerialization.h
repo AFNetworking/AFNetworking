@@ -1,6 +1,6 @@
-// AFSerialization.h
+// AFURLRequestSerialization.h
 //
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2015 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -72,42 +72,42 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 
 /**
  Whether created requests can use the device’s cellular radio (if present). `YES` by default.
- 
+
  @see NSMutableURLRequest -setAllowsCellularAccess:
  */
 @property (nonatomic, assign) BOOL allowsCellularAccess;
 
 /**
  The cache policy of created requests. `NSURLRequestUseProtocolCachePolicy` by default.
- 
+
  @see NSMutableURLRequest -setCachePolicy:
  */
 @property (nonatomic, assign) NSURLRequestCachePolicy cachePolicy;
 
 /**
  Whether created requests should use the default cookie handling. `YES` by default.
- 
+
  @see NSMutableURLRequest -setHTTPShouldHandleCookies:
  */
 @property (nonatomic, assign) BOOL HTTPShouldHandleCookies;
 
 /**
  Whether created requests can continue transmitting data before receiving a response from an earlier transmission. `NO` by default
- 
+
  @see NSMutableURLRequest -setHTTPShouldUsePipelining:
  */
 @property (nonatomic, assign) BOOL HTTPShouldUsePipelining;
 
 /**
  The network service type for created requests. `NSURLNetworkServiceTypeDefault` by default.
- 
+
  @see NSMutableURLRequest -setNetworkServiceType:
  */
 @property (nonatomic, assign) NSURLRequestNetworkServiceType networkServiceType;
 
 /**
  The timeout interval, in seconds, for created requests. The default timeout interval is 60 seconds.
- 
+
  @see NSMutableURLRequest -setTimeoutInterval:
  */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
@@ -117,7 +117,12 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 ///---------------------------------------
 
 /**
- Default HTTP header field values to be applied to serialized requests.
+ Default HTTP header field values to be applied to serialized requests. By default, these include the following:
+ 
+ - `Accept-Language` with the contents of `NSLocale +preferredLanguages`
+ - `User-Agent` with the contents of various bundle identifiers and OS designations
+ 
+ @discussion To add or remove default request headers, use `setValue:forHTTPHeaderField:`.
  */
 @property (readonly, nonatomic, strong) NSDictionary *HTTPRequestHeaders;
 
@@ -139,7 +144,7 @@ forHTTPHeaderField:(NSString *)field;
  Returns the value for the HTTP headers set in the request serializer.
 
  @param field The HTTP header to retrieve the default value for
- 
+
  @return The value set as default for the specified header, or `nil`
  */
 - (NSString *)valueForHTTPHeaderField:(NSString *)field;
@@ -187,7 +192,7 @@ forHTTPHeaderField:(NSString *)field;
 
  @param block A block that defines a process of encoding parameters into a query string. This block returns the query string and takes three arguments: the request, the parameters to encode, and the error that occurred when attempting to encode parameters for the given request.
  */
-- (void)setQueryStringSerializationWithBlock:(NSString * (^)(NSURLRequest *request, NSDictionary *parameters, NSError * __autoreleasing *error))block;
+- (void)setQueryStringSerializationWithBlock:(NSString * (^)(NSURLRequest *request, id parameters, NSError * __autoreleasing *error))block;
 
 ///-------------------------------
 /// @name Creating Request Objects
@@ -246,11 +251,11 @@ forHTTPHeaderField:(NSString *)field;
 
 /**
  Creates an `NSMutableURLRequest` by removing the `HTTPBodyStream` from a request, and asynchronously writing its contents into the specified file, invoking the completion handler when finished.
- 
- @param request The multipart form request.
+
+ @param request The multipart form request. The `HTTPBodyStream` property of `request` must not be `nil`.
  @param fileURL The file URL to write multipart form contents to.
  @param handler A handler block to execute.
- 
+
  @discussion There is a bug in `NSURLSessionTask` that causes requests to not send a `Content-Length` header when streaming contents from an HTTP body, which is notably problematic when interacting with the Amazon S3 webservice. As a workaround, this method takes a request constructed with `multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:error:`, or any other request with an `HTTPBodyStream`, writes the contents to the specified file and returns a copy of the original request with the `HTTPBodyStream` property set to `nil`. From here, the file can either be passed to `AFURLSessionManager -uploadTaskWithRequest:fromFile:progress:completionHandler:`, or have its contents read into an `NSData` that's assigned to the `HTTPBody` property of the request.
 
  @see https://github.com/AFNetworking/AFNetworking/issues/1398
@@ -404,7 +409,7 @@ forHTTPHeaderField:(NSString *)field;
 
  @param format The property list format.
  @param writeOptions The property list write options.
- 
+
  @warning The `writeOptions` property is currently unused.
  */
 + (instancetype)serializerWithFormat:(NSPropertyListFormat)format
@@ -437,7 +442,7 @@ extern NSString * const AFURLRequestSerializationErrorDomain;
 
  These keys may exist in the user info dictionary, in addition to those defined for NSError.
 
- - `NSString * const AFNetworkingOperationFailingURLResponseErrorKey`
+ - `NSString * const AFNetworkingOperationFailingURLRequestErrorKey`
 
  ### Constants
 

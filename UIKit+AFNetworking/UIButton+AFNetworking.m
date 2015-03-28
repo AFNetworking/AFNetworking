@@ -1,6 +1,6 @@
 // UIButton+AFNetworking.m
 //
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2015 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -49,8 +49,23 @@
 
 #pragma mark -
 
+static char AFImageRequestOperationNormal;
+static char AFImageRequestOperationHighlighted;
+static char AFImageRequestOperationSelected;
+static char AFImageRequestOperationDisabled;
+
 static const char * af_imageRequestOperationKeyForState(UIControlState state) {
-    return [[NSString stringWithFormat:@"af_imageRequestOperationKeyForState_%lu", (unsigned long)state] cStringUsingEncoding:NSASCIIStringEncoding];
+    switch (state) {
+        case UIControlStateHighlighted:
+            return &AFImageRequestOperationHighlighted;
+        case UIControlStateSelected:
+            return &AFImageRequestOperationSelected;
+        case UIControlStateDisabled:
+            return &AFImageRequestOperationDisabled;
+        case UIControlStateNormal:
+        default:
+            return &AFImageRequestOperationNormal;
+    }
 }
 
 - (AFHTTPRequestOperation *)af_imageRequestOperationForState:(UIControlState)state {
@@ -65,8 +80,23 @@ static const char * af_imageRequestOperationKeyForState(UIControlState state) {
 
 #pragma mark -
 
+static char AFBackgroundImageRequestOperationNormal;
+static char AFBackgroundImageRequestOperationHighlighted;
+static char AFBackgroundImageRequestOperationSelected;
+static char AFBackgroundImageRequestOperationDisabled;
+
 static const char * af_backgroundImageRequestOperationKeyForState(UIControlState state) {
-    return [[NSString stringWithFormat:@"af_backgroundImageRequestOperationKeyForState_%lu", (unsigned long)state] cStringUsingEncoding:NSASCIIStringEncoding];
+    switch (state) {
+        case UIControlStateHighlighted:
+            return &AFBackgroundImageRequestOperationHighlighted;
+        case UIControlStateSelected:
+            return &AFBackgroundImageRequestOperationSelected;
+        case UIControlStateDisabled:
+            return &AFBackgroundImageRequestOperationDisabled;
+        case UIControlStateNormal:
+        default:
+            return &AFBackgroundImageRequestOperationNormal;
+    }
 }
 
 - (AFHTTPRequestOperation *)af_backgroundImageRequestOperationForState:(UIControlState)state {
@@ -169,7 +199,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
             }
             [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if ([[urlRequest URL] isEqual:[operation.response URL]]) {
+            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
                 if (failure) {
                     failure(error);
                 }
@@ -233,8 +263,9 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
                     [strongSelf setBackgroundImage:responseObject forState:state];
                 }
             }
+            [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if ([[urlRequest URL] isEqual:[operation.response URL]]) {
+            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
                 if (failure) {
                     failure(error);
                 }

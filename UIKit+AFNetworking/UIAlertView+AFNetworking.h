@@ -1,6 +1,6 @@
 // UIAlertView+AFNetworking.h
 //
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2015 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 
 #import <Availability.h>
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && !defined(AF_APP_EXTENSIONS)
 
 #import <UIKit/UIKit.h>
 
@@ -41,7 +41,7 @@
 
 /**
  Shows an alert view with the error of the specified session task, if any.
- 
+
  @param task The session task.
  @param delegate The alert view delegate.
  */
@@ -52,7 +52,7 @@
 
 /**
  Shows an alert view with the error of the specified session task, if any, with a custom cancel button title and other button titles.
- 
+
  @param task The session task.
  @param delegate The alert view delegate.
  @param cancelButtonTitle The title of the cancel button or nil if there is no cancel button. Using this argument is equivalent to setting the cancel button index to the value returned by invoking addButtonWithTitle: specifying this title.

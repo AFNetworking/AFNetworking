@@ -64,7 +64,11 @@
         
         [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
             if (error) {
-                [[NSAlert alertWithMessageText:NSLocalizedString(@"Error", nil) defaultButton:NSLocalizedString(@"OK", nil) alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@",[error localizedDescription]] runModal];
+                NSAlert *alert = [[NSAlert alloc] init];
+                alert.messageText = NSLocalizedString(@"Error", nil);
+                alert.informativeText = error.localizedDescription;
+                [alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+                [alert runModal];
             }
             
             self.postsArrayController.content = posts;

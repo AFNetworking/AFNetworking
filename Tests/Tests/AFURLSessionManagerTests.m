@@ -1,6 +1,6 @@
 // AFNetworkActivityManagerTests.m
 //
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2015 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -39,43 +39,43 @@
 
 - (void)testUploadTasksProgressBecomesPartOfCurrentProgress {
     NSProgress *overallProgress = [NSProgress progressWithTotalUnitCount:100];
-    
+
     [overallProgress becomeCurrentWithPendingUnitCount:80];
     NSProgress *uploadProgress = nil;
-    
-    [self.manager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+
+    [self.manager uploadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                               fromData:[NSData data]
                                  progress:&uploadProgress
-                              destination:nil
                         completionHandler:nil];
     [overallProgress resignCurrent];
-    
+
     expect(overallProgress.fractionCompleted).to.equal(0);
-    
+
     uploadProgress.totalUnitCount = 1;
     uploadProgress.completedUnitCount = 1;
-    
-    
+
+
     expect(overallProgress.fractionCompleted).to.equal(0.8);
 }
 
 - (void)testDownloadTasksProgressBecomesPartOfCurrentProgress {
     NSProgress *overallProgress = [NSProgress progressWithTotalUnitCount:100];
-    
+
     [overallProgress becomeCurrentWithPendingUnitCount:80];
     NSProgress *downloadProgress = nil;
-    
+
     [self.manager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
                                  progress:&downloadProgress
                               destination:nil
                         completionHandler:nil];
     [overallProgress resignCurrent];
-    
+
     expect(overallProgress.fractionCompleted).to.equal(0);
-    
+
     downloadProgress.totalUnitCount = 1;
     downloadProgress.completedUnitCount = 1;
-    
-    
+
+
     expect(overallProgress.fractionCompleted).to.equal(0.8);
 }
 

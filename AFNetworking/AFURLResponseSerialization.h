@@ -1,6 +1,6 @@
-// AFSerialization.h
+// AFURLResponseSerialization.h
 //
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2015 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,8 +54,10 @@
  */
 @interface AFHTTPResponseSerializer : NSObject <AFURLResponseSerialization>
 
+- (instancetype) init;
+
 /**
- The string encoding used to serialize parameters.
+ The string encoding used to serialize data received from the server, when no string encoding is specified by the response. `NSUTF8StringEncoding` by default.
  */
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 
@@ -111,6 +113,8 @@
  */
 @interface AFJSONResponseSerializer : AFHTTPResponseSerializer
 
+- (instancetype) init;
+
 /**
  Options for reading the response JSON data and creating the Foundation objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONReadingOptions". `0` by default.
  */
@@ -158,6 +162,8 @@
  */
 @interface AFXMLDocumentResponseSerializer : AFHTTPResponseSerializer
 
+- (instancetype) init;
+
 /**
  Input and output options specifically intended for `NSXMLDocument` objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONReadingOptions". `0` by default.
  */
@@ -184,6 +190,8 @@
  - `application/x-plist`
  */
 @interface AFPropertyListResponseSerializer : AFHTTPResponseSerializer
+
+- (instancetype) init;
 
 /**
  The property list format. Possible values are described in "NSPropertyListFormat".
@@ -291,7 +299,7 @@ extern NSString * const AFURLResponseSerializationErrorDomain;
 
  `AFNetworkingOperationFailingURLResponseErrorKey`
  The corresponding value is an `NSURLResponse` containing the response of the operation associated with an error. This key is only present in the `AFURLResponseSerializationErrorDomain`.
- 
+
  `AFNetworkingOperationFailingURLResponseDataErrorKey`
  The corresponding value is an `NSData` containing the original data of the operation associated with an error. This key is only present in the `AFURLResponseSerializationErrorDomain`.
  */
