@@ -280,6 +280,13 @@ static inline void af_addMethod(Class class, SEL selector, Method method) {
 static NSString * const AFNSURLSessionTaskDidResumeNotification  = @"com.alamofire.networking.nsurlsessiontask.resume";
 static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofire.networking.nsurlsessiontask.suspend";
 
+/**
+ * Category which swizzles the @c resume and @c suspend methods so that they
+ * post a notification.
+ * @warning This must be a category on @c NSURLSessionTask, since using any of its
+ *          subclasses will cause a dyld crash on iOS 6 devices. This is most likely
+ *          due to the absence of any availability macros on the concrete subclasses.
+ */
 @interface NSURLSessionTask (_AFStateObserving)
 
 - (void)af_resume;
@@ -295,7 +302,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 + (void)load {
     NSURLSessionDataTask *dataTask = [NSURLSessionDataTask new];
     NSParameterAssert(dataTask);
-    // like other Foundation classes, instances' classes don't match the public declarations 
+    // like other Foundation classes, instances' classes don't match the public declarations
     Class taskClass = [dataTask superclass];
     Class dataTaskClass = [dataTask class];
     af_addMethod(taskClass, @selector(af_resume),  class_getInstanceMethod(dataTaskClass, @selector(af_resume)));
