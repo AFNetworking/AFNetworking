@@ -36,7 +36,7 @@
     [self expectationForNotification:AFNetworkingTaskDidSuspendNotification object:task handler:nil];
     [task resume];
     [task suspend];
-    [self waitForExpectationsWithTimeout:0.1 handler:nil];
+    [self waitForExpectationsWithTimeout:AFNetworkingDefaultTestTimeout handler:nil];
 }
 
 @end

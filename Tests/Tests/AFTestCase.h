@@ -28,6 +28,8 @@
 
 extern NSString * const AFNetworkingTestsBaseURLString;
 
+extern float const AFNetworkingDefaultTestTimeout;
+
 @interface AFTestCase : XCTestCase
 
 @property (nonatomic, strong, readonly) NSURL *baseURL;

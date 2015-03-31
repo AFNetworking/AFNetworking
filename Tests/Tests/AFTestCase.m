@@ -24,12 +24,13 @@
 #import <AFNetworking/AFURLSessionManager.h>
 
 NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
+float const AFNetworkingDefaultTestTimeout = 5.0;
 
 @implementation AFTestCase
 
 - (void)setUp {
     [super setUp];
-    [Expecta setAsynchronousTestTimeout:5.0];
+    [Expecta setAsynchronousTestTimeout:AFNetworkingDefaultTestTimeout];
     if ([[self class] requiresSessionAPIAvailability] && [AFURLSessionManager isAvailable]) {
         [self setUpSessionTest];
     }
