@@ -30,9 +30,12 @@
 
 @implementation AFURLSessionManagerTests
 
-- (void)setUp {
-    [super setUp];
+- (void)setUpSessionTest {
     self.manager = [[AFURLSessionManager alloc] init];
+}
+
++ (BOOL)requiresSessionAPIAvailability {
+    return YES;
 }
 
 #pragma mark -

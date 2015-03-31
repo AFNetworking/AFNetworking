@@ -22,8 +22,9 @@
 
 #import "AFURLSessionManager.h"
 #import <objc/runtime.h>
+#import <Availability.h>
 
-#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
+#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
 
 static dispatch_queue_t url_session_manager_creation_queue() {
     static dispatch_queue_t af_url_session_manager_creation_queue;
@@ -279,27 +280,29 @@ static inline void af_addMethod(Class class, SEL selector, Method method) {
 static NSString * const AFNSURLSessionTaskDidResumeNotification  = @"com.alamofire.networking.nsurlsessiontask.resume";
 static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofire.networking.nsurlsessiontask.suspend";
 
-@interface NSURLSessionDataTask (_AFStateObserving)
+@interface NSURLSessionTask (_AFStateObserving)
+
+- (void)af_resume;
+
+- (void)af_suspend;
+
 @end
 
-@implementation NSURLSessionDataTask (_AFStateObserving)
-
-+ (void)load {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSURLSessionDataTask *dataTask = [[NSURLSession sessionWithConfiguration:nil] dataTaskWithURL:nil];
-        Class taskClass = [dataTask superclass];
-
-        af_addMethod(taskClass, @selector(af_resume),  class_getInstanceMethod(self, @selector(af_resume)));
-        af_addMethod(taskClass, @selector(af_suspend), class_getInstanceMethod(self, @selector(af_suspend)));
-        af_swizzleSelector(taskClass, @selector(resume), @selector(af_resume));
-        af_swizzleSelector(taskClass, @selector(suspend), @selector(af_suspend));
-
-        [dataTask cancel];
-    });
-}
+@implementation NSURLSessionTask (_AFStateObserving)
 
 #pragma mark -
+
++ (void)load {
+    NSURLSessionDataTask *dataTask = [NSURLSessionDataTask new];
+    NSParameterAssert(dataTask);
+    // like other Foundation classes, instances' classes don't match the public declarations 
+    Class taskClass = [dataTask superclass];
+    Class dataTaskClass = [dataTask class];
+    af_addMethod(taskClass, @selector(af_resume),  class_getInstanceMethod(dataTaskClass, @selector(af_resume)));
+    af_addMethod(taskClass, @selector(af_suspend), class_getInstanceMethod(dataTaskClass, @selector(af_suspend)));
+    af_swizzleSelector(taskClass, @selector(resume), @selector(af_resume));
+    af_swizzleSelector(taskClass, @selector(suspend), @selector(af_suspend));
+}
 
 - (void)af_resume {
     NSURLSessionTaskState state = self.state;
@@ -348,6 +351,15 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 @end
 
 @implementation AFURLSessionManager
+
++ (BOOL)isAvailable {
+    static BOOL isAvailable;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        isAvailable = !!NSClassFromString(@"NSURLSession");
+    });
+    return isAvailable;
+}
 
 - (instancetype)init {
     return [self initWithSessionConfiguration:nil];

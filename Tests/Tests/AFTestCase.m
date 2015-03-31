@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "AFTestCase.h"
+#import <AFNetworking/AFURLSessionManager.h>
 
 NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
 
@@ -28,18 +29,39 @@ NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
 
 - (void)setUp {
     [super setUp];
-
     [Expecta setAsynchronousTestTimeout:5.0];
+    if ([[self class] requiresSessionAPIAvailability] && [AFURLSessionManager isAvailable]) {
+        [self setUpSessionTest];
+    }
 }
 
 - (void)tearDown {
     [super tearDown];
+    if ([[self class] requiresSessionAPIAvailability] && [AFURLSessionManager isAvailable]) {
+        [self tearDownSessionTest];
+    }
+}
+
++ (NSArray*)testInvocations {
+    return ([self requiresSessionAPIAvailability] && ![AFURLSessionManager isAvailable]) ? @[] : [super testInvocations];
 }
 
 #pragma mark -
 
 - (NSURL *)baseURL {
     return [NSURL URLWithString:AFNetworkingTestsBaseURLString];
+}
+
+#pragma mark - NSURLSession-dependent tests
+
++ (BOOL)requiresSessionAPIAvailability {
+    return NO;
+}
+
+- (void)setUpSessionTest {
+}
+
+- (void)tearDownSessionTest {
 }
 
 @end
