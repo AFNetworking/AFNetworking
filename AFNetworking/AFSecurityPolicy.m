@@ -199,6 +199,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
     self.validatesCertificateChain = YES;
     self.validatesDomainName = YES;
+    self.skipLeafCertificates = 0;
 
     return self;
 }
@@ -269,8 +270,9 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
                 return YES;
             }
 
-            NSUInteger trustedCertificateCount = 0;
-            for (NSData *trustChainCertificate in serverCertificates) {
+            NSUInteger trustedCertificateCount = self.skipLeafCertificates;
+            for (NSUInteger idx = self.skipLeafCertificates; idx < serverCertificates.count; idx++) {
+                NSData *trustChainCertificate * serverCertificates[idx];
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
                     trustedCertificateCount++;
                 }

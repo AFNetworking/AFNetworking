@@ -47,6 +47,11 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 @property (nonatomic, assign) BOOL validatesCertificateChain;
 
 /**
+ Number of certificates that will not be verified in the certificate chain, starting from the leaf certificate. Defaults to `0`.
+ */
+@property (nonatomic, assign) NSUInteger skipLeafCertificates;
+
+/**
  The certificates used to evaluate server trust according to the SSL pinning mode. By default, this property is set to any (`.cer`) certificates included in the app bundle.
  */
 @property (nonatomic, strong) NSArray *pinnedCertificates;
