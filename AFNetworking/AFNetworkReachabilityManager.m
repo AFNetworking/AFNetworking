@@ -77,13 +77,9 @@ static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused targ
         block(status);
     }
 
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        NSDictionary *userInfo = @{ AFNetworkingReachabilityNotificationStatusItem: @(status) };
-        [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:userInfo];
-    });
-
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    NSDictionary *userInfo = @{ AFNetworkingReachabilityNotificationStatusItem: @(status) };
+    [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:userInfo];
 }
 
 static const void * AFNetworkReachabilityRetainCallback(const void *info) {
@@ -194,17 +190,18 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     SCNetworkReachabilitySetCallback(self.networkReachability, AFNetworkReachabilityCallback, &context);
     SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
-        SCNetworkReachabilityFlags flags;
-        SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
-        AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
-        dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.networkReachabilityStatus == AFNetworkReachabilityStatusUnknown) {
+            SCNetworkReachabilityFlags flags;
+            SCNetworkReachabilityGetFlags(self.networkReachability, &flags);
+            AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
+
             callback(status);
 
             NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
             NSDictionary *userInfo = @{ AFNetworkingReachabilityNotificationStatusItem: @(status) };
             [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:userInfo];
-        });
+        }
     });
 }
 
