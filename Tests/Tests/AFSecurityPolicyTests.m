@@ -536,7 +536,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testPolicyWithPinningModeIsSetToValidatesDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
 
-    XCTAssert(policy.validatesDomainName == NO, @"policyWithPinningMode: should not allow invalid ssl certificates by default.");
+    XCTAssert(policy.validatesDomainName == YES, @"policyWithPinningMode: should validate domain names by default.");
 }
 
 - (void)testThatSSLPinningPolicyClassMethodContainsDefaultCertificates{

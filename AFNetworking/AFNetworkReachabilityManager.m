@@ -192,7 +192,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
     SCNetworkReachabilityContext context = {0, (__bridge void *)callback, AFNetworkReachabilityRetainCallback, AFNetworkReachabilityReleaseCallback, NULL};
     SCNetworkReachabilitySetCallback(self.networkReachability, AFNetworkReachabilityCallback, &context);
-    SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
         SCNetworkReachabilityFlags flags;
@@ -204,6 +203,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
             NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
             NSDictionary *userInfo = @{ AFNetworkingReachabilityNotificationStatusItem: @(status) };
             [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:userInfo];
+            
+            SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
         });
     });
 }
