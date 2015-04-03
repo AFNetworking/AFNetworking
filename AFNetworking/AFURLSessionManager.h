@@ -188,6 +188,13 @@
  */
 @property (nonatomic, assign) BOOL attemptsToRecreateUploadTasksForBackgroundSessions;
 
+///-----------------------
+/// @name API Availability
+///-----------------------
+
+/// @return @c NO if the API is unavailable due to required classes not being present (i.e. on iOS 6).
++ (BOOL)isAvailable;
+
 ///---------------------
 /// @name Initialization
 ///---------------------

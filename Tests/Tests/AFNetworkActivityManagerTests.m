@@ -35,9 +35,7 @@
 
 @implementation AFNetworkActivityManagerTests
 
-- (void)setUp {
-    [super setUp];
-
+- (void)setUpSessionTest {
     self.networkActivityIndicatorManager = [[AFNetworkActivityIndicatorManager alloc] init];
     self.networkActivityIndicatorManager.enabled = YES;
 
@@ -51,6 +49,15 @@
     [[[self.mockApplication stub] andDo:^(NSInvocation *invocation) {
         [invocation getArgument:&_isNetworkActivityIndicatorVisible atIndex:2];
     }] setNetworkActivityIndicatorVisible:YES];
+}
+
+- (void)tearDownSessionTest {
+    // need to explicitly stop mocking to ensure other tests to break
+    [self.mockApplication stopMocking];
+}
+
++ (BOOL)requiresSessionAPIAvailability {
+    return YES;
 }
 
 #pragma mark -

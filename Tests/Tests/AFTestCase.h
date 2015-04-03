@@ -28,8 +28,24 @@
 
 extern NSString * const AFNetworkingTestsBaseURLString;
 
+extern float const AFNetworkingDefaultTestTimeout;
+
 @interface AFTestCase : XCTestCase
 
 @property (nonatomic, strong, readonly) NSURL *baseURL;
+
+/**
+ * Special setup method for tests that depend on @c NSURLSession.  Only invoked if the test requires the API and
+ * it is available.
+ * @see requiresSessionAPIAvailability
+ * @see +[AFURLSessionManager isAvailable]
+ */
+- (void)setUpSessionTest;
+
+/// Similar to @c setupSessionTest, except for @c tearDown.
+- (void)tearDownSessionTest;
+
+/// Override in your tests to return @c YES if this is the case.
++ (BOOL)requiresSessionAPIAvailability;
 
 @end
