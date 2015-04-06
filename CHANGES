@@ -1,3 +1,29 @@
+= 2.5.2 (2015-03-26)
+
+* Add guards for unsupported features in iOS 8 App Extensions
+
+* Add missing delegate callbacks to `UIWebView` category
+
+* Add test and implementation of strict default certificate validation
+
+* Add `#define` for `NS_DESIGNATED_INITIALIZER` for unsupported versions of
+Xcode
+
+* Fix `AFNetworkActivityIndicatorManager` for iOS 7
+
+* Fix `AFURLRequestSerialization` property observation
+
+* Fix `testUploadTasksProgressBecomesPartOfCurrentProgress`
+
+* Fix warnings from Xcode 6.3 Beta
+
+* Fix `AFImageWithDataAtScale` handling of animated images
+
+* Remove `AFNetworkReachabilityAssociation` enumeration
+
+* Update to conditional use assign semantics for GCD properties based on
+`OS_OBJECT_HAVE_OBJC_SUPPORT` for better Swift support
+
 = 2.5.1 (2015-02-09)
 
  * Add `NS_DESIGNATED_INITIALIZER` macros. (Samir Guerdah)
