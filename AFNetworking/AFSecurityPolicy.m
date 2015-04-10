@@ -265,6 +265,10 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
                 return NO;
             }
 
+            if(self.certificateChainValidation != nil) {
+                return self.certificateChainValidation(serverCertificates);
+            }
+            
             if (!self.validatesCertificateChain) {
                 return YES;
             }
