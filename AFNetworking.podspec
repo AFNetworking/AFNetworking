@@ -12,17 +12,8 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '6.0'
   s.osx.deployment_target = '10.8'
 
-  s.default_subspec = 'Core'
-
-  s.subspec 'Core' do |ss|
-    ss.public_header_files = 'AFNetworking/*.h'
-    ss.source_files = 'AFNetworking/AFNetworking.h'
-  end
-
-  s.subspec 'AppExtension' do |ss|
-    ss.dependency 'Core'
-    ss.prefix_header_contents = '#define AF_APP_EXTENSIONS 1'
-  end
+  s.public_header_files = 'AFNetworking/*.h'
+  s.source_files = 'AFNetworking/AFNetworking.h'
 
   s.subspec 'AppExtension' do |ss|
     ss.prefix_header_contents = '#define AF_APP_EXTENSIONS 1'
