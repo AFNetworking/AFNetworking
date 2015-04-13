@@ -15,6 +15,10 @@ Pod::Spec.new do |s|
   s.public_header_files = 'AFNetworking/*.h'
   s.source_files = 'AFNetworking/AFNetworking.h'
 
+  s.subspec 'AppExtension' do |ss|
+    ss.prefix_header_contents = '#define AF_APP_EXTENSIONS 1'
+  end
+
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
     ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
