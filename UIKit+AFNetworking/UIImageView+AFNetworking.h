@@ -40,7 +40,7 @@
 ///----------------------------
 
 /**
- The image cache used to improve image loadiing performance on scroll views. By default, this is an `NSCache` subclass conforming to the `AFImageCache` protocol, which listens for notification warnings and evicts objects accordingly.
+ The image cache used to improve image loading performance on scroll views. By default, this is an `NSCache` subclass conforming to the `AFImageCache` protocol, which listens for notification warnings and evicts objects accordingly.
 */
 + (id <AFImageCache>)sharedImageCache;
 
