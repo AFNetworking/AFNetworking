@@ -179,6 +179,22 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     CFRelease(trust);
 }
 
+- (void)testPublicKeyPartialChainPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+
+    SecTrustRef clientTrust = AFUTHTTPBinOrgServerTrust();
+    NSArray * allCertificates = AFCertificateTrustChainForServerTrust(clientTrust);
+    NSArray * certificates = @[ allCertificates.lastObject ];
+    CFRelease(clientTrust);
+    [policy setPinnedCertificates:certificates];
+    [policy setValidatesCertificateChain:NO];
+    [policy setValidatesPartialCertificateChain:YES];
+
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpbin.org"], @"HTTPBin.org Public Key Partial Chain Pinning Mode Failed");
+    CFRelease(trust);
+}
+
 - (void)testLeafCertificatePinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
 

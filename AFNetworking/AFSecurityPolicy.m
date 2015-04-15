@@ -281,7 +281,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         case AFSSLPinningModePublicKey: {
             NSUInteger trustedPublicKeyCount = 0;
             NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust);
-            if (!self.validatesCertificateChain && [publicKeys count] > 0) {
+            if (!self.validatesCertificateChain && [publicKeys count] > 0 && !self.validatesPartialCertificateChain) {
                 publicKeys = @[[publicKeys firstObject]];
             }
 

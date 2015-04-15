@@ -47,6 +47,11 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 @property (nonatomic, assign) BOOL validatesCertificateChain;
 
 /**
+ Whether or not to trust servers when one or more certificates in the chain can be validated.  Defaults to `NO`.
+ */
+@property (nonatomic, assign) BOOL validatesPartialCertificateChain;
+
+/**
  The certificates used to evaluate server trust according to the SSL pinning mode. By default, this property is set to any (`.cer`) certificates included in the app bundle.
  */
 @property (nonatomic, strong) NSArray *pinnedCertificates;
