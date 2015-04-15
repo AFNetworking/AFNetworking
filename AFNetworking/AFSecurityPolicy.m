@@ -225,12 +225,12 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 - (void)setValidatesCertificateChain:(BOOL)validatesCertificateChain {
     _validatesCertificateChain = validatesCertificateChain;
-    _validatesPartialCertificateChain = !validatesCertificateChain;
+    _validatesPartialCertificateChain = validatesCertificateChain ? NO : _validatesPartialCertificateChain;
 }
 
 - (void)setValidatesPartialCertificateChain:(BOOL)validatesPartialCertificateChain {
     _validatesPartialCertificateChain = validatesPartialCertificateChain;
-    _validatesCertificateChain = !validatesPartialCertificateChain;
+    _validatesCertificateChain = validatesPartialCertificateChain ? NO : _validatesCertificateChain;
 }
 
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust {
