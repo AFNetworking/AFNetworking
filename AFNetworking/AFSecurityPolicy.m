@@ -223,6 +223,16 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 #pragma mark -
 
+- (void)setValidatesCertificateChain:(BOOL)validatesCertificateChain {
+    _validatesCertificateChain = validatesCertificateChain;
+    _validatesPartialCertificateChain = !validatesCertificateChain;
+}
+
+- (void)setValidatesPartialCertificateChain:(BOOL)validatesPartialCertificateChain {
+    _validatesPartialCertificateChain = validatesPartialCertificateChain;
+    _validatesCertificateChain = !validatesPartialCertificateChain;
+}
+
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust {
     return [self evaluateServerTrust:serverTrust forDomain:nil];
 }
@@ -289,6 +299,12 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
                     if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
                         trustedPublicKeyCount += 1;
+                        if (self.validatesPartialCertificateChain && trustedPublicKeyCount > 0) {
+                            break;
+                        }
+                    }
+                    if (self.validatesPartialCertificateChain && trustedPublicKeyCount > 0) {
+                        break;
                     }
                 }
             }
