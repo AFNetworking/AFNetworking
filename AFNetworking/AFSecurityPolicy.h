@@ -42,9 +42,14 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 @property (readonly, nonatomic, assign) AFSSLPinningMode SSLPinningMode;
 
 /**
- Whether to evaluate an entire SSL certificate chain, or just the leaf certificate. Defaults to `YES`.
+ Whether to evaluate an entire SSL certificate chain, or just the leaf certificate. Clears the property `validatesPartialCertificateChain` when set to `YES`. Defaults to `YES`.
  */
 @property (nonatomic, assign) BOOL validatesCertificateChain;
+
+/**
+ Whether or not to trust servers when one or more certificates in the chain can be validated. Clears the property `validatesCertificateChain` when set to `YES`. Defaults to `NO`.
+ */
+@property (nonatomic, assign) BOOL validatesPartialCertificateChain;
 
 /**
  The certificates used to evaluate server trust according to the SSL pinning mode. By default, this property is set to any (`.cer`) certificates included in the app bundle.

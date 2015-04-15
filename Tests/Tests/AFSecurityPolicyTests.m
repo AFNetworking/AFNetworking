@@ -179,6 +179,36 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     CFRelease(trust);
 }
 
+- (void)testPublicKeyPartialChainPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+
+    SecTrustRef clientTrust = AFUTHTTPBinOrgServerTrust();
+    NSArray * allCertificates = AFCertificateTrustChainForServerTrust(clientTrust);
+    NSArray * certificates = @[ allCertificates.lastObject ];
+    CFRelease(clientTrust);
+    [policy setPinnedCertificates:certificates];
+    [policy setValidatesCertificateChain:NO];
+    [policy setValidatesPartialCertificateChain:YES];
+
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssert([policy evaluateServerTrust:trust forDomain:@"httpbin.org"], @"HTTPBin.org Public Key Partial Chain Pinning Mode Failed");
+    CFRelease(trust);
+}
+
+- (void)testSettingValidatesPartialCertificateChainFlagClearsTheValidatesCertificateChainFlag {
+    AFSecurityPolicy * policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    [policy setValidatesCertificateChain:YES];
+    [policy setValidatesPartialCertificateChain:YES];
+    XCTAssertFalse([policy validatesCertificateChain], @"validatesCertificateChain should be set to NO");
+}
+
+- (void)testSettingValidatesCertificateChainFlagClearsTheValidatesPartialCertificateChainFlag {
+    AFSecurityPolicy * policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    [policy setValidatesPartialCertificateChain:YES];
+    [policy setValidatesCertificateChain:YES];
+    XCTAssertFalse([policy validatesPartialCertificateChain], @"validatesPartialCertificateChain should be set to NO");
+}
+
 - (void)testLeafCertificatePinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
 

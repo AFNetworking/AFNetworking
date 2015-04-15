@@ -223,6 +223,16 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 #pragma mark -
 
+- (void)setValidatesCertificateChain:(BOOL)validatesCertificateChain {
+    _validatesCertificateChain = validatesCertificateChain;
+    _validatesPartialCertificateChain = validatesCertificateChain ? NO : _validatesPartialCertificateChain;
+}
+
+- (void)setValidatesPartialCertificateChain:(BOOL)validatesPartialCertificateChain {
+    _validatesPartialCertificateChain = validatesPartialCertificateChain;
+    _validatesCertificateChain = validatesPartialCertificateChain ? NO : _validatesCertificateChain;
+}
+
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust {
     return [self evaluateServerTrust:serverTrust forDomain:nil];
 }
@@ -281,7 +291,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         case AFSSLPinningModePublicKey: {
             NSUInteger trustedPublicKeyCount = 0;
             NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust);
-            if (!self.validatesCertificateChain && [publicKeys count] > 0) {
+            if (!self.validatesCertificateChain && [publicKeys count] > 0 && !self.validatesPartialCertificateChain) {
                 publicKeys = @[[publicKeys firstObject]];
             }
 
@@ -289,6 +299,12 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
                     if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
                         trustedPublicKeyCount += 1;
+                        if (self.validatesPartialCertificateChain && trustedPublicKeyCount > 0) {
+                            break;
+                        }
+                    }
+                    if (self.validatesPartialCertificateChain && trustedPublicKeyCount > 0) {
+                        break;
                     }
                 }
             }
