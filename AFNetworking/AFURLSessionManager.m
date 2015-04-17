@@ -279,10 +279,10 @@ static inline void af_addMethod(Class class, SEL selector, Method method) {
 static NSString * const AFNSURLSessionTaskDidResumeNotification  = @"com.alamofire.networking.nsurlsessiontask.resume";
 static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofire.networking.nsurlsessiontask.suspend";
 
-@interface NSURLSessionDataTask (_AFStateObserving)
+@interface NSURLSessionTask (_AFStateObserving)
 @end
 
-@implementation NSURLSessionDataTask (_AFStateObserving)
+@implementation NSURLSessionTask (_AFStateObserving)
 
 + (void)load {
     static dispatch_once_t onceToken;
