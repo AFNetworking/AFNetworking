@@ -284,10 +284,10 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 @implementation NSURLSessionTask (_AFStateObserving)
 
-+ (void)load {
++ (void)initialize {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if ([NSURLSessionDataTask class]) {
+        if ([NSURLSessionTask class]) {
             NSURLSessionDataTask *dataTask = [[NSURLSession sessionWithConfiguration:nil] dataTaskWithURL:nil];
             Class taskClass = [dataTask superclass];
 
