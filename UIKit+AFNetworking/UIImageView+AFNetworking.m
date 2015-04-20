@@ -134,8 +134,6 @@
         } else {
             self.image = cachedImage;
         }
-
-        self.af_imageRequestOperation = nil;
     } else {
         if (placeholderImage) {
             self.image = placeholderImage;
