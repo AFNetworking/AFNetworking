@@ -486,6 +486,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
 - (void)cancel {
     [self.lock lock];
+    self.state = AFOperationFinishedState;
     if (![self isFinished] && ![self isCancelled]) {
         [super cancel];
 
