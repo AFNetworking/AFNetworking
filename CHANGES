@@ -1,3 +1,11 @@
+= 2.5.3
+
+(See https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.3)
+
+= 2.5.2 (2015-03-26)
+
+(See https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.2)
+
 = 2.5.1 (2015-02-09)
 
  * Add `NS_DESIGNATED_INITIALIZER` macros. (Samir Guerdah)
