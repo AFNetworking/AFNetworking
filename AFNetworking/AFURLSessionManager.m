@@ -161,6 +161,7 @@ didCompleteWithError:(NSError *)error
         userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
     } else if (self.mutableData) {
         data = [NSData dataWithData:self.mutableData];
+        self.mutableData = nil;
         userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
     }
 
