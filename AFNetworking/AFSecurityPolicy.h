@@ -66,7 +66,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 ///-----------------------------------------
 
 /**
- Returns the shared default security policy, which does not allow invalid certificates, does not validate domain name, and does not validate against pinned certificates or public keys.
+ Returns the shared default security policy, which does not allow invalid certificates, validates domain name, and does not validate against pinned certificates or public keys.
 
  @return The default security policy.
  */
