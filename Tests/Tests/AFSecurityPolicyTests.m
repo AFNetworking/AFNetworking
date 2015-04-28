@@ -127,7 +127,7 @@ static NSArray * AFCertificateTrustChainForServerTrust(SecTrustRef serverTrust) 
 }
 
 static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
-    NSArray *certs  = [NSArray arrayWithObject:(__bridge id)(certificate)];
+    NSArray *certs  = @[(__bridge id)(certificate)];
 
     SecPolicyRef policy = SecPolicyCreateBasicX509();
     SecTrustRef trust = NULL;
