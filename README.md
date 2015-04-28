@@ -376,11 +376,12 @@ And most of all, thanks to AFNetworking's [growing list of contributors](https:/
 
 ## Contact
 
-Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking))
+- Email: info@alamofire.org
+- Twitter: [@AFNetworking](https://twitter.com/AFNetworking)
 
-### Maintainers
+### Security Disclosure
 
-- [Mattt Thompson](http://github.com/mattt) ([@mattt](https://twitter.com/mattt))
+If you believe you have identified a security vulnerability with AFNetworking, you should report it as soon as possible via email to security@alamofire.org. Please do not post it to a public issue tracker.
 
 ## License
 
