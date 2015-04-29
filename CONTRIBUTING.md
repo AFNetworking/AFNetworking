@@ -3,3 +3,8 @@ GitHub Issues is for reporting bugs in AFNetworking and discussing features.  Be
 If you are posting about a crash in your application, a stack trace is helpful, but additional context, in the form of code and explanation, is necessary to be of any use.
 
 Please do not post any general usage questions to GitHub Issues, but instead take them to an appropriate forum such as [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking).
+
+#### Security Disclosure
+
+If you believe you have identified a security vulnerability with AFNetworking, you should report it as soon as possible via email to security@alamofire.org. Please do not post it to a public issue tracker.
+
