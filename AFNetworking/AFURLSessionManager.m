@@ -159,11 +159,13 @@ didCompleteWithError:(NSError *)error
 
     if (self.downloadFileURL) {
         userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
+        if (!error) {
+            data = [self.mutableData copy];
+        }
     } else if (self.mutableData) {
-        data = [NSData dataWithData:self.mutableData];
-        self.mutableData = nil;
-        userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
+        userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data = [self.mutableData copy];
     }
+    self.mutableData = nil;
 
     if (error) {
         userInfo[AFNetworkingTaskDidCompleteErrorKey] = error;
