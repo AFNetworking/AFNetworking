@@ -368,16 +368,13 @@ Once `xcpretty` is installed, you can execute the suite via `rake test`.
 
 ## Credits
 
+AFNetworking is owned and maintained by the [Alamofire Software Foundation](http://alamofire.org).
+
 AFNetworking was originally created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
 
 AFNetworking's logo was designed by [Alan Defibaugh](http://www.alandefibaugh.com/).
 
 And most of all, thanks to AFNetworking's [growing list of contributors](https://github.com/AFNetworking/AFNetworking/contributors).
-
-## Contact
-
-- Email: info@alamofire.org
-- Twitter: [@AFNetworking](https://twitter.com/AFNetworking)
 
 ### Security Disclosure
 
@@ -385,4 +382,4 @@ If you believe you have identified a security vulnerability with AFNetworking, y
 
 ## License
 
-AFNetworking is available under the MIT license. See the LICENSE file for more info.
+AFNetworking is released under the MIT license. See LICENSE for details.
