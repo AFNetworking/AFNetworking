@@ -48,6 +48,8 @@
 @implementation AFHTTPSessionManager
 @dynamic responseSerializer;
 
+@dynamic responseSerializer;
+
 + (instancetype)manager {
     return [[[self class] alloc] initWithBaseURL:nil];
 }
