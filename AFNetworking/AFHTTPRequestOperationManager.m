@@ -98,6 +98,7 @@
                                                        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     NSError *serializationError = nil;
+    
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
     if (serializationError) {
         if (failure) {
