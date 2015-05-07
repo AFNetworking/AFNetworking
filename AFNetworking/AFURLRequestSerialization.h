@@ -24,6 +24,8 @@
 #import <UIKit/UIKit.h>
 #endif
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  The `AFURLRequestSerialization` protocol is adopted by an object that encodes parameters for a specified HTTP requests. Request serializers may encode parameters as query strings, HTTP bodies, setting the appropriate HTTP header fields as necessary.
 
@@ -40,9 +42,9 @@
 
  @return A serialized request.
  */
-- (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
-                               withParameters:(id)parameters
-                                        error:(NSError * __autoreleasing *)error;
+- (nullable NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
+                               withParameters:(nullable id)parameters
+                                        error:(NSError * __nullable __autoreleasing *)error;
 
 @end
 
@@ -136,7 +138,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
  @param field The HTTP header to set a default value for
  @param value The value set as default for the specified header, or `nil`
  */
-- (void)setValue:(NSString *)value
+- (void)setValue:(nullable NSString *)value
 forHTTPHeaderField:(NSString *)field;
 
 /**
@@ -146,7 +148,7 @@ forHTTPHeaderField:(NSString *)field;
 
  @return The value set as default for the specified header, or `nil`
  */
-- (NSString *)valueForHTTPHeaderField:(NSString *)field;
+- (nullable NSString *)valueForHTTPHeaderField:(NSString *)field;
 
 /**
  Sets the "Authorization" HTTP header set in request objects made by the HTTP client to a basic authentication value with Base64-encoded username and password. This overwrites any existing value for this header.
@@ -191,7 +193,7 @@ forHTTPHeaderField:(NSString *)field;
 
  @param block A block that defines a process of encoding parameters into a query string. This block returns the query string and takes three arguments: the request, the parameters to encode, and the error that occurred when attempting to encode parameters for the given request.
  */
-- (void)setQueryStringSerializationWithBlock:(NSString * (^)(NSURLRequest *request, id parameters, NSError * __autoreleasing *error))block;
+- (void)setQueryStringSerializationWithBlock:(nullable NSString * (^)(NSURLRequest *request, id parameters, NSError * __autoreleasing *error))block;
 
 ///-------------------------------
 /// @name Creating Request Objects
@@ -218,8 +220,8 @@ forHTTPHeaderField:(NSString *)field;
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method
                                  URLString:(NSString *)URLString
-                                parameters:(id)parameters
-                                     error:(NSError * __autoreleasing *)error;
+                                parameters:(nullable id)parameters
+                                     error:(NSError * __nullable __autoreleasing *)error;
 
 /**
  @deprecated This method has been deprecated. Use -multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:error: instead.
@@ -244,9 +246,9 @@ forHTTPHeaderField:(NSString *)field;
  */
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                               URLString:(NSString *)URLString
-                                             parameters:(NSDictionary *)parameters
-                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                                                  error:(NSError * __autoreleasing *)error;
+                                             parameters:(nullable NSDictionary *)parameters
+                              constructingBodyWithBlock:(nullable void (^)(id <AFMultipartFormData> formData))block
+                                                  error:(NSError * __nullable __autoreleasing *)error;
 
 /**
  Creates an `NSMutableURLRequest` by removing the `HTTPBodyStream` from a request, and asynchronously writing its contents into the specified file, invoking the completion handler when finished.
@@ -261,7 +263,7 @@ forHTTPHeaderField:(NSString *)field;
  */
 - (NSMutableURLRequest *)requestWithMultipartFormRequest:(NSURLRequest *)request
                              writingStreamContentsToFile:(NSURL *)fileURL
-                                       completionHandler:(void (^)(NSError *error))handler;
+                                       completionHandler:(nullable void (^)(NSError *error))handler;
 
 @end
 
@@ -285,7 +287,7 @@ forHTTPHeaderField:(NSString *)field;
  */
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL
                          name:(NSString *)name
-                        error:(NSError * __autoreleasing *)error;
+                        error:(NSError * __nullable __autoreleasing *)error;
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
@@ -302,7 +304,7 @@ forHTTPHeaderField:(NSString *)field;
                          name:(NSString *)name
                      fileName:(NSString *)fileName
                      mimeType:(NSString *)mimeType
-                        error:(NSError * __autoreleasing *)error;
+                        error:(NSError * __nullable __autoreleasing *)error;
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the data from the input stream and the multipart form boundary.
@@ -313,7 +315,7 @@ forHTTPHeaderField:(NSString *)field;
  @param length The length of the specified input stream in bytes.
  @param mimeType The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
  */
-- (void)appendPartWithInputStream:(NSInputStream *)inputStream
+- (void)appendPartWithInputStream:(nullable NSInputStream *)inputStream
                              name:(NSString *)name
                          fileName:(NSString *)fileName
                            length:(int64_t)length
@@ -331,6 +333,7 @@ forHTTPHeaderField:(NSString *)field;
                           name:(NSString *)name
                       fileName:(NSString *)fileName
                       mimeType:(NSString *)mimeType;
+// FIXME: data is nonnull because [NSInputStream inputStreamWithData:] does not allow nil. Specify in the documentation?
 
 /**
  Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
@@ -349,7 +352,7 @@ forHTTPHeaderField:(NSString *)field;
  @param headers The HTTP headers to be appended to the form data.
  @param body The data to be encoded and appended to the form data. This parameter must not be `nil`.
  */
-- (void)appendPartWithHeaders:(NSDictionary *)headers
+- (void)appendPartWithHeaders:(nullable NSDictionary *)headers
                          body:(NSData *)body;
 
 /**
@@ -415,6 +418,8 @@ forHTTPHeaderField:(NSString *)field;
                         writeOptions:(NSPropertyListWriteOptions)writeOptions;
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 #pragma mark -
 
