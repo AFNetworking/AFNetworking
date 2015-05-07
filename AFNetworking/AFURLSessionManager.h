@@ -345,7 +345,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///--------------------------------------
 /// @name Setting Task Delegate Callbacks
 ///--------------------------------------
-// FIXME: Annotate nullability for block parameters
 
 /**
  Sets a block to be executed when a task requires a new request body stream to send to the remote server, as handled by the `NSURLSessionTaskDelegate` method `URLSession:task:needNewBodyStream:`.
