@@ -419,8 +419,6 @@ forHTTPHeaderField:(NSString *)field;
 
 @end
 
-NS_ASSUME_NONNULL_END
-
 #pragma mark -
 
 ///----------------
@@ -470,3 +468,5 @@ extern NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
  */
 extern NSUInteger const kAFUploadStream3GSuggestedPacketSize;
 extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
+
+NS_ASSUME_NONNULL_END

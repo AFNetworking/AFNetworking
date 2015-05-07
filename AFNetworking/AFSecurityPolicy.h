@@ -33,6 +33,9 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 
  Adding pinned SSL certificates to your app helps prevent man-in-the-middle attacks and other vulnerabilities. Applications dealing with sensitive customer data or financial information are strongly encouraged to route all communication over an HTTPS connection with SSL pinning configured and enabled.
  */
+
+NS_ASSUME_NONNULL_BEGIN
+
 @interface AFSecurityPolicy : NSObject
 
 /**
@@ -48,7 +51,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 /**
  The certificates used to evaluate server trust according to the SSL pinning mode. By default, this property is set to any (`.cer`) certificates included in the app bundle.
  */
-@property (nonatomic, strong) NSArray *pinnedCertificates;
+@property (nonatomic, strong, nullable) NSArray *pinnedCertificates;
 
 /**
  Whether or not to trust servers with an invalid or expired SSL certificates. Defaults to `NO`.
@@ -112,9 +115,11 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
  @return Whether or not to trust the server.
  */
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
-                  forDomain:(NSString *)domain;
+                  forDomain:(nullable NSString *)domain;
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 ///----------------
 /// @name Constants

@@ -89,9 +89,9 @@
  @warning Managers for background sessions must be owned for the duration of their use. This can be accomplished by creating an application-wide or shared singleton instance.
  */
 
-#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
-
 NS_ASSUME_NONNULL_BEGIN
+
+#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
 
 @interface AFURLSessionManager : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSSecureCoding, NSCopying>
 
@@ -239,7 +239,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromFile:(NSURL *)fileURL
-                                         progress:(NSProgress * __nullable __autoreleasing *)progress
+                                         progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
                                 completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 // FIXME: correct syntax? NSProgress * __nullable __autoreleasing *
 // TODO: depending on AFURLSessionManagerTaskDelegate, completionHandler could be nil
@@ -254,7 +254,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromData:(nullable NSData *)bodyData
-                                         progress:(NSProgress * __nullable __autoreleasing *)progress
+                                         progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
                                 completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 // TODO: depending on AFURLSessionManagerTaskDelegate, completionHandler could be nil
 
@@ -266,7 +266,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
  */
 - (NSURLSessionUploadTask *)uploadTaskWithStreamedRequest:(NSURLRequest *)request
-                                                 progress:(NSProgress * __nullable __autoreleasing *)progress
+                                                 progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
                                         completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 // TODO: depending on AFURLSessionManagerTaskDelegate, completionHandler could be nil
 
@@ -285,7 +285,7 @@ NS_ASSUME_NONNULL_BEGIN
  @warning If using a background `NSURLSessionConfiguration` on iOS, these blocks will be lost when the app is terminated. Background sessions may prefer to use `-setDownloadTaskDidFinishDownloadingBlock:` to specify the URL for saving the downloaded file, rather than the destination block of this method.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
-                                             progress:(NSProgress * __nullable __autoreleasing *)progress
+                                             progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
                                           destination:(nullable NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
                                     completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
@@ -298,7 +298,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completionHandler A block to be executed when a task finishes. This block has no return value and takes three arguments: the server response, the path of the downloaded file, and the error describing the network or parsing error that occurred, if any.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
-                                                progress:(NSProgress * __nullable __autoreleasing *)progress
+                                                progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
                                              destination:(nullable NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
@@ -340,7 +340,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param block A block object to be executed when a connection level authentication challenge has occurred. The block returns the disposition of the authentication challenge, and takes three arguments: the session, the authentication challenge, and a pointer to the credential that should be used to resolve the challenge.
  */
-- (void)setSessionDidReceiveAuthenticationChallengeBlock:(nullable NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block;
+- (void)setSessionDidReceiveAuthenticationChallengeBlock:(nullable NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __nullable __autoreleasing * __nullable credential))block;
 
 ///--------------------------------------
 /// @name Setting Task Delegate Callbacks
@@ -365,7 +365,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param block A block object to be executed when a session task has received a request specific authentication challenge. The block returns the disposition of the authentication challenge, and takes four arguments: the session, the task, the authentication challenge, and a pointer to the credential that should be used to resolve the challenge.
  */
-- (void)setTaskDidReceiveAuthenticationChallengeBlock:(nullable NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block;
+- (void)setTaskDidReceiveAuthenticationChallengeBlock:(nullable NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __nullable __autoreleasing * __nullable credential))block;
 
 /**
  Sets a block to be executed periodically to track upload progress, as handled by the `NSURLSessionTaskDelegate` method `URLSession:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:`.
@@ -446,8 +446,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setDownloadTaskDidResumeBlock:(nullable void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes))block;
 
 @end
-
-NS_ASSUME_NONNULL_END
 
 #endif
 
@@ -553,3 +551,5 @@ extern NSString * const AFNetworkingTaskDidFinishErrorKey DEPRECATED_ATTRIBUTE;
  Any error associated with the task, or the serialization of the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an error exists.
  */
 extern NSString * const AFNetworkingTaskDidCompleteErrorKey;
+
+NS_ASSUME_NONNULL_END
