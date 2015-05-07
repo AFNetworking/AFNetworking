@@ -27,6 +27,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class AFURLConnectionOperation;
 
 /**
@@ -46,7 +48,7 @@
  */
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 + (void)showAlertViewForTaskWithErrorOnCompletion:(NSURLSessionTask *)task
-                                         delegate:(id)delegate;
+                                         delegate:(nullable id)delegate;
 #endif
 
 /**
@@ -59,9 +61,9 @@
  */
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 + (void)showAlertViewForTaskWithErrorOnCompletion:(NSURLSessionTask *)task
-                                         delegate:(id)delegate
-                                cancelButtonTitle:(NSString *)cancelButtonTitle
-                                otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
+                                         delegate:(nullable id)delegate
+                                cancelButtonTitle:(nullable NSString *)cancelButtonTitle
+                                otherButtonTitles:(nullable NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
 #endif
 
 ///------------------------------------------
@@ -75,7 +77,7 @@
  @param delegate The alert view delegate.
  */
 + (void)showAlertViewForRequestOperationWithErrorOnCompletion:(AFURLConnectionOperation *)operation
-                                                     delegate:(id)delegate;
+                                                     delegate:(nullable id)delegate;
 
 /**
  Shows an alert view with the error of the specified request operation, if any, with a custom cancel button title and other button titles.
@@ -86,10 +88,12 @@
  @param otherButtonTitles The title of another button. Using this argument is equivalent to invoking addButtonWithTitle: with this title to add more buttons. Too many buttons can cause the alert view to scroll. For guidelines on the best ways to use an alert in an app, see "Temporary Views". Titles of additional buttons to add to the receiver, terminated with `nil`.
  */
 + (void)showAlertViewForRequestOperationWithErrorOnCompletion:(AFURLConnectionOperation *)operation
-                                                     delegate:(id)delegate
-                                            cancelButtonTitle:(NSString *)cancelButtonTitle
-                                            otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
+                                                     delegate:(nullable id)delegate
+                                            cancelButtonTitle:(nullable NSString *)cancelButtonTitle
+                                            otherButtonTitles:(nullable NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 #endif
