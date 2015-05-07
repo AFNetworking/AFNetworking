@@ -118,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return The newly-initialized HTTP client
  */
-- (instancetype)initWithBaseURL:(NSURL *)url;
+- (instancetype)initWithBaseURL:(nullable NSURL *)url;
 
 /**
  Initializes an `AFHTTPSessionManager` object with the specified base URL.
@@ -130,8 +130,8 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return The newly-initialized HTTP client
  */
-- (instancetype)initWithBaseURL:(NSURL *)url
-           sessionConfiguration:(NSURLSessionConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithBaseURL:(nullable NSURL *)url
+           sessionConfiguration:(nullable NSURLSessionConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
 
 ///---------------------------
 /// @name Making HTTP Requests
