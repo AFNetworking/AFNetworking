@@ -240,9 +240,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromFile:(NSURL *)fileURL
                                          progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
-                                completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
-// FIXME: correct syntax? NSProgress * __nullable __autoreleasing *
-// TODO: depending on AFURLSessionManagerTaskDelegate, completionHandler could be nil
+                                completionHandler:(nullable void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 
 /**
  Creates an `NSURLSessionUploadTask` with the specified request for an HTTP body.
@@ -255,7 +253,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromData:(nullable NSData *)bodyData
                                          progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
-                                completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
+                                completionHandler:(nullable void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 // TODO: depending on AFURLSessionManagerTaskDelegate, completionHandler could be nil
 
 /**
@@ -267,7 +265,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSURLSessionUploadTask *)uploadTaskWithStreamedRequest:(NSURLRequest *)request
                                                  progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
-                                        completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
+                                        completionHandler:(nullable void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 // TODO: depending on AFURLSessionManagerTaskDelegate, completionHandler could be nil
 
 ///-----------------------------
@@ -287,7 +285,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
                                              progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
                                           destination:(nullable NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
-                                    completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+                                    completionHandler:(nullable void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
 /**
  Creates an `NSURLSessionDownloadTask` with the specified resume data.
@@ -300,7 +298,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
                                                 progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
                                              destination:(nullable NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
-                                       completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+                                       completionHandler:(nullable void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
 ///---------------------------------
 /// @name Getting Progress for Tasks
