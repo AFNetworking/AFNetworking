@@ -1,12 +1,69 @@
-= 2.5.3 (2015-04-20)
+#Change Log
+All notable changes to this project will be documented in this file.
+`AFNetworking` adheres to [Semantic Versioning](http://semver.org/).
 
-(See https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.3)
+---
 
-= 2.5.2 (2015-03-26)
+## [2.5.4](https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.4) (2015-05-14)
+Released on 2015-05-14. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.5.4+is%3Aclosed).
 
-(See https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.2)
+####Updated
+* Updated the CI test script to run iOS tests on all versions of iOS that are installed on the build machine.
+	* Updated by [Kevin Harwood](https://github.com/kcharwood) in [#2716](https://github.com/AFNetworking/AFNetworking/pull/2716).
+	
+####Fixed
 
-= 2.5.1 (2015-02-09)
+* Fixed an issue where `AFNSURLSessionTaskDidResumeNotification` and `AFNSURLSessionTaskDidSuspendNotification` were not being properly called due to implementation differences in `NSURLSessionTask` in iOS 7 and iOS 8, which also affects the `AFNetworkActivityIndicatorManager`. 
+	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2702](https://github.com/AFNetworking/AFNetworking/pull/2702).
+* Fixed an issue where the OS X test linker would throw a warning during tests.
+	* Fixed by [Christian Noon](https://github.com/cnoon) in [#2719](https://github.com/AFNetworking/AFNetworking/pull/2719).
+* Fixed an issue where tests would randomly fail due to mocked objects not being cleaned up.
+	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2717](https://github.com/AFNetworking/AFNetworking/pull/2717).
+
+
+## [2.5.3](https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.3) (2015-04-20)
+
+* Add security policy tests for default policy
+
+* Add network reachability tests
+
+* Change `validatesDomainName` property to default to `YES` under all * security policies
+
+* Fix `NSURLSession` subspec compatibility with iOS 6 / OS X 10.8
+
+* Fix leak of data task used in `NSURLSession` swizzling
+
+* Fix leak for observers from `addObserver:...:withBlock:`
+
+* Fix issue with network reachability observation on domain name
+
+## [2.5.2](https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.2) (2015-03-26)
+**NOTE** This release contains a security vulnerabilty. **All users should upgrade to a 2.5.3 or greater**. Please reference this [statement](https://gist.github.com/AlamofireSoftwareFoundation/f784f18f949b95ab733a) if you have any further questions about this release.
+
+* Add guards for unsupported features in iOS 8 App Extensions
+
+* Add missing delegate callbacks to 	`UIWebView` category
+ 
+* Add test and implementation of strict default certificate validation
+
+* Add #define for `NS_DESIGNATED_INITIALIZER` for unsupported versions of Xcode
+
+* Fix `AFNetworkActivityIndicatorManager` for iOS 7
+
+* Fix `AFURLRequestSerialization` property observation
+
+* Fix `testUploadTasksProgressBecomesPartOfCurrentProgress`
+
+* Fix warnings from Xcode 6.3 Beta
+
+* Fix `AFImageWithDataAtScale` handling of animated images
+
+* Remove `AFNetworkReachabilityAssociation` enumeration
+
+* Update to conditional use assign semantics for GCD properties based on `OS_OBJECT_HAVE_OBJC_SUPPORT` for better Swift support
+
+## [2.5.1](https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.1) (2015-02-09)
+**NOTE** This release contains a security vulnerabilty. **All users should upgrade to a 2.5.3 or greater**. Please reference this [statement](https://gist.github.com/AlamofireSoftwareFoundation/f784f18f949b95ab733a) if you have any further questions about this release.
 
  * Add `NS_DESIGNATED_INITIALIZER` macros. (Samir Guerdah)
 
@@ -43,7 +100,7 @@ Luthi)
  * Update `parameters` parameter to accept `id` for custom serialization
 block. (@mooosu)
 
-= 2.5.0 (2014-11-17)
+## [2.5.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.0) (2014-11-17)
 
  * Add documentation for expected background session manager usage (Aaron
 Brager)
@@ -98,7 +155,7 @@ Bushnell)
  * Update `UIRefreshControl` category to set control state to current state
 of request (Elvis Nuñez)
 
-= 2.4.1 (2014-09-04)
+## [2.4.1](https://github.com/AFNetworking/AFNetworking/releases/tag/2.4.1) (2014-09-04)
 
  * Fix compiler warning generated on 32-bit architectures (John C. Daub)
 
@@ -108,7 +165,7 @@ of request (Elvis Nuñez)
  * Fix to suppress compiler warnings for out-of-range enumerated type
  value assignment (Mattt Thompson)
 
-= 2.4.0 (2014-09-03)
+## [2.4.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.4.0) (2014-09-03)
 
  * Add CocoaDocs color scheme (Orta)
 
@@ -196,12 +253,12 @@ implementation (Chris Streeter)
  * Fix `UIButton` category to only cancel request for specified state
 (@xuzhe, Mattt Thompson)
 
-= 2.3.1 (2014-06-13)
+## [2.3.1](https://github.com/AFNetworking/AFNetworking/releases/tag/2.3.1) (2014-06-13)
 
  * Fix issue with unsynthesized `streamStatus` & `streamError` properties
 on `AFMultipartBodyStream` (Mattt Thompson)
 
-= 2.3.0 (2014-06-11)
+## [2.3.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.3.0) (2014-06-11)
 
  * Add check for `AF_APP_EXTENSIONS` macro to conditionally compile
 background  method that makes API call unavailable to App Extensions in iOS 8
@@ -275,7 +332,7 @@ failing requests due to URLs exceeding a certain length (Boris Bügling)
  * Remove unnecessary default operation response serializer setters (Mattt
 Thompson)
 
-= 2.2.4 (2014-05-13)
+## [2.2.4](https://github.com/AFNetworking/AFNetworking/releases/tag/2.2.4) (2014-05-13)
 
  * Add NSSecureCoding support to all AFNetworking classes (Kyle Fuller, Mattt
 Thompson)
@@ -304,7 +361,7 @@ requests in quick succession (Alexander Crettenand)
  * Update documentation for `-downloadTaskWithRequest:` to warn about blocks
 being disassociated on app termination and backgrounding (Robert Ryan)
 
-= 2.2.3 (2014-04-18)
+## [2.2.3](https://github.com/AFNetworking/AFNetworking/releases/tag/2.2.3) (2014-04-18)
 
   * Fix `AFErrorOrUnderlyingErrorHasCodeInDomain` function declaration for
 AFXMLDocumentResponseSerializer (Mattt Thompson)
@@ -324,7 +381,7 @@ values from dictionaries nested in arrays (@jldagon)
   * Change to not override `Content-Type` header field values set by
 `HTTPRequestHeaders` property (Aaron Brager, Mattt Thompson)
 
-= 2.2.2 (2014-04-15)
+## [2.2.2](https://github.com/AFNetworking/AFNetworking/releases/tag/2.2.2) (2014-04-15)
 
   * Add `removesKeysWithNullValues` property to `AFJSONResponsSerializer` to
 automatically remove `NSNull` values in dictionaries serialized from JSON
@@ -382,7 +439,7 @@ in User-Agent string (Samuel Goodwin)
 
   * Update Travis CI icon to use SVG format (Maximilian Tagher)
 
-= 2.2.1 (2014-03-14)
+## [2.2.1](https://github.com/AFNetworking/AFNetworking/releases/tag/2.2.1) (2014-03-14)
 
   * Fix `-Wsign-conversion` warning in AFURLConnectionOperation (Jesse Collis)
 
@@ -409,7 +466,7 @@ allows explicit specification of all trusted certificates. For
 `AFSSLPinningModePublicKey`, the number of trusted public keys determines if
 the server should be trusted. (Oliver Letterer, Eric Allam)
 
-= 2.2.0 (2014-02-25)
+## [2.2.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.2.0) (2014-02-25)
 
   * Add default initializer to make `AFHTTPRequestOperationManager`
 consistent with `AFHTTPSessionManager` (Marcelo Fabri)
@@ -509,7 +566,7 @@ Thompson)
   * Update types for 64 bit architecture (Bruno Tortato Furtado, Mattt
 Thompson)
 
-= 2.1.0 (2014-01-16)
+## [2.1.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.1.0) (2014-01-16)
 
   * Add CONTRIBUTING (Kyle Fuller)
 
@@ -607,7 +664,7 @@ Thompson)
   * Update notification constant names to be consistent with `NSURLSession`
 terminology (Mattt Thompson)
 
-= 2.0.3 (2013-11-18)
+## [2.0.3](https://github.com/AFNetworking/AFNetworking/releases/tag/2.0.3) (2013-11-18)
 
   * Fix a bug where `AFURLConnectionOperation -pause` did not correctly reset
 the state of `AFURLConnectionOperation`, causing the Network Thread to enter
@@ -656,7 +713,7 @@ calls (Mindaugas Vaičiūnas)
 
   * Remove empty, unused `else` branch (Luka Bratos)
 
-= 2.0.2 (2013-10-29)
+## [2.0.2](https://github.com/AFNetworking/AFNetworking/releases/tag/2.0.2) (2013-10-29)
 
   * Add `UIWebView
  -loadRequest:MIMEType:textEncodingName:progress:success:failure:` (Mattt
@@ -696,7 +753,7 @@ calls (Mindaugas Vaičiūnas)
 
   * Update files to remove executable privilege (Kyle Fuller)
 
-= 2.0.1 (2013-10-10)
+## 2.0.1 (2013-10-10)
 
  * Fix iOS 6 compatibility (Matt Baker, Mattt Thompson)
 
@@ -773,11 +830,15 @@ credential exists for the server trust (Mattt Thompson)
 
  * Remove unnecessary Podfile.lock (Kyle Fuller)
 
-= 2.0.0 (2013-09-27)
+## [2.0.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.0.0) (2013-09-27)
+
+* Initial 2.0.0 Release
 
 ====================
+#AFNetworking 1.0 Change Log
+--
 
-= 1.3.4 (2014-04-15)
+## [1.3.4](https://github.com/AFNetworking/AFNetworking/releases/tag/1.3.4) (2014-04-15)
 
  * Fix `AFHTTPMultipartBodyStream` to randomly generate form boundary, to
 prevent attack based on a known value (Mathias Bynens, Tom Van Goethem, Mattt
@@ -805,7 +866,7 @@ Kempgen)
 
  * Remove unused variable `kAFStreamToStreamBufferSize` (Alexander Kempgen)
 
-= 1.3.3 (2013-09-25)
+## [1.3.3](https://github.com/AFNetworking/AFNetworking/releases/tag/1.3.3) (2013-09-25)
 
  * Add stream error handling to `AFMultipartBodyStream` (Nicolas Bachschmidt,
 Mattt Thompson)
@@ -851,7 +912,7 @@ property (Thomas Catterall)
 
  * Change to replace #pragma clang with cast (Cédric Luthi)
 
-= 1.3.2 (2013-08-08)
+## [1.3.2](https://github.com/AFNetworking/AFNetworking/releases/tag/1.3.2) (2013-08-08)
 
  * Add return status checks when building list of pinned public keys (Sylvain
 Guillope)
@@ -895,7 +956,7 @@ Thompson)
 
  * Change to opimize network thread creation (Mattt Thompson)
 
-= 1.3.1 (2013-06-18)
+## [1.3.1](https://github.com/AFNetworking/AFNetworking/releases/tag/1.3.1) (2013-06-18)
 
  * Add `automaticallyInflatesResponseImage` property to
 `AFImageRequestOperation`, which when enabled, offers significant performance
@@ -911,7 +972,7 @@ be automatically established (Joshua Vickery)
 
  * Fix to Test target Podfile (Kyle Fuller)
 
-= 1.3.0 (2013-06-01)
+## [1.3.0](https://github.com/AFNetworking/AFNetworking/releases/tag/1.3.0)  (2013-06-01)
 
  * Change in `AFURLConnectionOperation` `NSURLConnection` authentication
 delegate methods and associated block setters. If
@@ -990,7 +1051,7 @@ X < 10.8 (Paul Melnikow)
  * Various fixes to reverted multipart stream provider implementation (Yaron
 Inger, Alex Burgel)
 
-= 1.2.1 (2013-04-18)
+## [1.2.1](https://github.com/AFNetworking/AFNetworking/releases/tag/1.2.1) (2013-04-18)
 
  * Add `allowsInvalidSSLCertificate` property to `AFURLConnectionOperation` and
 `AFHTTPClient`, replacing `_AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES_` macro
@@ -1029,7 +1090,7 @@ class, which allows for subclassing (James Clarke)
  * Fix to encode JSON only with UTF-8, following recommendation of
 `NSJSONSerialiation` (Sebastian Utz)
 
-= 1.2.0 (2013-03-24)
+## [1.2.0](https://github.com/AFNetworking/AFNetworking/releases/tag/1.2.0) (2013-03-24)
 
  * Add `SSLPinningMode` property to `AFHTTPClient` (Oliver Letterer, Kevin
 Harwood, Adam Becevello, Dustin Barker, Mattt Thompson)
@@ -1125,7 +1186,7 @@ Parsons)
 
  * Fix missing #pragma clang diagnostic pop (Steven Fisher)
 
-= 1.1.0 (2012-12-27)
+## [1.1.0](https://github.com/AFNetworking/AFNetworking/releases/tag/1.1.0) (2012-12-27)
 
  * Add optional SSL certificate pinning with `#define
 _AFNETWORKING_PIN_SSL_CERTIFICATES_` (Dustin Barker)
@@ -1222,7 +1283,7 @@ getter (property should be marked 'atomic' if this is intended) [-Werror,
  * Fix warning: enumeration value 'AFFinalBoundaryPhase' not explicitly handled
 in switch [-Werror,-Wswitch-enum] (Oliver Jones)
 
-= 1.0.1 / 2012-11-01
+## [1.0.1](https://github.com/AFNetworking/AFNetworking/releases/tag/1.0.1) / 2012-11-01
 
  * Fix error in multipart upload streaming, where byte range at boundaries
 was not correctly calculated (Stan Chang Khin Boon)
@@ -1252,7 +1313,7 @@ block to set the image of the image view (Mattt Thompson)
 
  * Updates to README (@ckmcc)
 
-= 1.0 / 2012-10-15
+## [1.0](https://github.com/AFNetworking/AFNetworking/releases/tag/1.0) / 2012-10-15
 
  * AFNetworking now requires iOS 5 / Mac OSX 10.7 or higher (Mattt Thompson)
 
@@ -1396,7 +1457,7 @@ Steven Fisher)
 renamed to `numberOfFinishedOperations` (Mattt Thompson)
 
 
-= 0.10.0 / 2012-06-26
+## 0.10.0 / 2012-06-26
 
  * Add Twitter Mac Example application (Mattt Thompson)
 
@@ -1461,7 +1522,7 @@ renamed to `numberOfFinishedOperations` (Mattt Thompson)
  * Fix AFHTTPClient to not add unnecessary data when constructing multipart form
  request with nil parameters (Taeho Kim)
 
-= 1.0RC1 / 2012-04-25
+## 1.0RC1 / 2012-04-25
 
  * Add `AFHTTPRequestOperation +addAcceptableStatusCodes /
 +addAcceptableContentTypes` to dynamically add acceptable status codes and
@@ -1481,7 +1542,7 @@ Mattt Thompson)
 distinction between WWan and WiFi reachability (Kevin Harwood, Mattt Thompson)
 
 
-= 0.9.2 / 2012-04-25
+## 0.9.2 / 2012-04-25
 
  * Add thread safety to `AFNetworkActivityIndicator` (Peter Steinberger, Mattt
 Thompson)
@@ -1526,7 +1587,7 @@ Mattt Thompson)
  * Remove @try-@catch block wrapping network thread entry point (Charles T. Ahn)
 
 
-= 0.9.1 / 2012-03-19
+## 0.9.1 / 2012-03-19
 
  * Create Twitter example application (Mattt Thompson)
 
@@ -1584,7 +1645,7 @@ where % is used as a literal rather than as part of a percent escape code
 `AFImageRequestOperation` (Michael Schneider)
 
 
-= 0.9.0 / 2012-01-23
+## 0.9.0 / 2012-01-23
 
  * Add thread-safe behavior to `AFURLConnectionOperation` (Mattt Thompson)
 
