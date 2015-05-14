@@ -26,6 +26,7 @@
 		29CBFC7717DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 29CBFC7517DF697C0021AB75 /* HTTPBinOrgServerTrustChain */; };
 		29CBFC8717DF74C60021AB75 /* ADNNetServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 29CBFC8617DF74C60021AB75 /* ADNNetServerTrustChain */; };
 		29CBFC8817DF74C60021AB75 /* ADNNetServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 29CBFC8617DF74C60021AB75 /* ADNNetServerTrustChain */; };
+		29EAB0D71AFC148200C2C460 /* AFURLSessionManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 943B1F40192E406C00304316 /* AFURLSessionManagerTests.m */; };
 		36DE264E18053E930062F4E3 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264B18053E930062F4E3 /* adn_0.cer */; };
 		36DE264F18053E930062F4E3 /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264C18053E930062F4E3 /* adn_1.cer */; };
 		36DE265018053E930062F4E3 /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264D18053E930062F4E3 /* adn_2.cer */; };
@@ -545,6 +546,7 @@
 			files = (
 				F837FFB0195744A0009078A0 /* AFHTTPResponseSerializationTests.m in Sources */,
 				36DE2652180544600062F4E3 /* AFHTTPRequestOperationTests.m in Sources */,
+				29EAB0D71AFC148200C2C460 /* AFURLSessionManagerTests.m in Sources */,
 				36DE26511805445B0062F4E3 /* AFSecurityPolicyTests.m in Sources */,
 				29CBFC4017DF58000021AB75 /* AFHTTPRequestSerializationTests.m in Sources */,
 				29CBFC3D17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
