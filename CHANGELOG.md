@@ -9,16 +9,16 @@ Released on 2015-05-14. All issues associated with this milestone can be found u
 
 ####Updated
 * Updated the CI test script to run iOS tests on all versions of iOS that are installed on the build machine.
-	* Updated by [Kevin Harwood](https://github.com/kcharwood) in #2717.
+	* Updated by [Kevin Harwood](https://github.com/kcharwood) in [#2716](https://github.com/AFNetworking/AFNetworking/pull/2716).
 	
 ####Fixed
 
 * Fixed an issue where `AFNSURLSessionTaskDidResumeNotification` and `AFNSURLSessionTaskDidSuspendNotification` were not being properly called due to implementation differences in `NSURLSessionTask` in iOS 7 and iOS 8, which also affects the `AFNetworkActivityIndicatorManager`. 
-	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in #2702.
+	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2702](https://github.com/AFNetworking/AFNetworking/pull/2702).
 * Fixed an issue where the OS X test linker would throw a warning during tests.
-	* Fixed by [Christian Noon](https://github.com/cnoon) in #2719.
+	* Fixed by [Christian Noon](https://github.com/cnoon) in [#2719](https://github.com/AFNetworking/AFNetworking/pull/2719).
 * Fixed an issue where tests would randomly fail due to mocked objects not being cleaned up.
-	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in #2717.
+	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2717](https://github.com/AFNetworking/AFNetworking/pull/2717).
 
 
 ## [2.5.3](https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.3) (2015-04-20)
