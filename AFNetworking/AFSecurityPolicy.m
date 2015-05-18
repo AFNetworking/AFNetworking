@@ -416,11 +416,15 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             return trustedPublicKeyCount > 0 && ((self.validatesCertificateChain && trustedPublicKeyCount == [serverCertificates count]) || (!self.validatesCertificateChain && trustedPublicKeyCount >= 1));
         }
         case AFSSLPinningModePublicKeyHash: {
-            NSUInteger trustedPublicKeyHashCount = 0;
-            NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust); // Get Remote Public Keys
-            
             if (self.pinnedPublicKeyHashes == nil) return NO; // No Public Key Accepted
             
+            NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust); // Get Remote Public Keys
+            
+            if (!self.validatesCertificateChain && [publicKeys count] > 0) {
+                publicKeys = @[[publicKeys firstObject]];
+            }
+            
+            NSUInteger trustedPublicKeyHashCount = 0;
             for (id trustChainPublicKey in publicKeys) {
                 SecKeyRef pubKey = (__bridge SecKeyRef)trustChainPublicKey;
                 NSData *keyData = AFSecKeyGetData(pubKey);
@@ -433,7 +437,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
                 // Create Hash
                 unsigned int outputLength = CC_SHA1_DIGEST_LENGTH;
                 unsigned char output[outputLength];
-                CC_SHA1(x509.bytes, x509.length, output);
+                CC_SHA1(x509.bytes, (unsigned int) x509.length, output);
                 NSData *hash = [NSMutableData dataWithBytes:output length:outputLength];
                 
                 // Encode the hash in Base64

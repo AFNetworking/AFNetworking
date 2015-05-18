@@ -620,6 +620,49 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     CFRelease(trust);
 }
 
+- (void)testLeafPublicKeyHashPinningFailsForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrustChainWhenPinnedPublicKeyHashesHasOneWrongKeyHash {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
+    
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
+                                      @"SXxoaOSEzPC6BgGmxAt/EAcsajw=",
+                                      @"CAEUNlja29wg0tQeD45uzUPUsiA=",
+                                      @"wrongkeyhash",
+                                      nil]];
+    [policy setValidatesCertificateChain:YES];
+    
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"HTTPBin.org Public Key Hash Pinning Mode Should Have Failed");
+    CFRelease(trust);
+}
+
+- (void)testLeafPublicKeyHashPinningFailsForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrustChainWhenPinnedPublicKeyHashesHasTooManyKeyHashes {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
+    
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
+                                      @"SXxoaOSEzPC6BgGmxAt/EAcsajw=",
+                                      @"CAEUNlja29wg0tQeD45uzUPUsiA=",
+                                      @"T5x9IXmcrQ7YuQxXnxoCmeeQ84c=",
+                                      @"ExtraKeyHash",
+                                      nil]];
+    [policy setValidatesCertificateChain:YES];
+    
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"HTTPBin.org Public Key Hash Pinning Mode Should Have Failed");
+    CFRelease(trust);
+}
+
+- (void)testLeafPublicKeyHashPinningFailsForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrustChainWhenOnlyOneIntermediateKeyIsPresentAndNoValidatingCertificateChain {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
+    
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"SXxoaOSEzPC6BgGmxAt/EAcsajw=",
+                                      nil]];
+    [policy setValidatesCertificateChain:NO];
+    
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"HTTPBin.org Public Key Hash Pinning Mode Should Have Failed");
+    CFRelease(trust);
+}
+
 - (void)testDefaultPolicySetToCertificateChainFailsWithMissingChain {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
 
