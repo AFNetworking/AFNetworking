@@ -212,7 +212,7 @@ forHTTPHeaderField:(NSString *)field;
  @param method The HTTP method for the request, such as `GET`, `POST`, `PUT`, or `DELETE`. This parameter must not be `nil`.
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be either set as a query string for `GET` requests, or the request HTTP body.
- @param error The error that occured while constructing the request.
+ @param error The error that occurred while constructing the request.
 
  @return An `NSMutableURLRequest` object.
  */
@@ -238,7 +238,7 @@ forHTTPHeaderField:(NSString *)field;
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded and set in the request HTTP body.
  @param block A block that takes a single argument and appends data to the HTTP body. The block argument is an object adopting the `AFMultipartFormData` protocol.
- @param error The error that occured while constructing the request.
+ @param error The error that occurred while constructing the request.
 
  @return An `NSMutableURLRequest` object
  */
