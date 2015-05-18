@@ -22,12 +22,37 @@
 #import "AFSecurityPolicy.h"
 
 #import <AssertMacros.h>
+#import <CommonCrypto/CommonDigest.h>
 
-#if !defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 static NSData * AFSecKeyGetData(SecKeyRef key) {
+#if !defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+    SecItemImportExportKeyParameters params;
+    CFMutableArrayRef keyUsage
+    = (__bridge CFMutableArrayRef) [ NSMutableArray
+                                    arrayWithObjects: (__bridge id)(kSecAttrCanEncrypt), kSecAttrCanDecrypt, nil ];
+    CFMutableArrayRef keyAttributes
+    = (__bridge CFMutableArrayRef) [ NSMutableArray array ];
+    SecExternalFormat format = kSecFormatUnknown;
+    CFDataRef keyData;
+    OSStatus oserr;
+    int flags = 0;
+    
+    memset(&params, 0, sizeof(params));
+    params.version = SEC_KEY_IMPORT_EXPORT_PARAMS_VERSION;
+    params.keyUsage = keyUsage;
+    params.keyAttributes = keyAttributes;
+    
+    oserr = SecItemExport(key, format, flags, &params, &keyData);
+    if (oserr) {
+        fprintf(stderr, "SecItemExport failed\n", oserr);
+        return nil;
+    }
+    
+    return (__bridge NSData *) keyData;
+    
     CFDataRef data = NULL;
 
-    __Require_noErr_Quiet(SecItemExport(key, kSecFormatUnknown, kSecItemPemArmour, NULL, &data), _out);
+    __Require_noErr_Quiet(SecItemExport(key, kSecFormatOpenSSL, kSecItemPemArmour, NULL, &data), _out);
 
     return (__bridge_transfer NSData *)data;
 
@@ -37,8 +62,100 @@ _out:
     }
 
     return nil;
-}
+#else
+    static const uint8_t publicKeyIdentifier[] = "com.afnetworking.publickey";
+    NSData *publicTag = [[NSData alloc] initWithBytes:publicKeyIdentifier length:sizeof(publicKeyIdentifier)];
+    
+    OSStatus sanityCheck = noErr;
+    NSData * publicKeyBits = nil;
+    
+    NSMutableDictionary * queryPublicKey = [[NSMutableDictionary alloc] init];
+    [queryPublicKey setObject:(__bridge id)kSecClassKey forKey:(__bridge id)kSecClass];
+    [queryPublicKey setObject:publicTag forKey:(__bridge id)kSecAttrApplicationTag];
+    [queryPublicKey setObject:(__bridge id)kSecAttrKeyTypeRSA forKey:(__bridge id)kSecAttrKeyType];
+    
+    // Temporarily add key to the Keychain, return as data:
+    NSMutableDictionary * attributes = [queryPublicKey mutableCopy];
+    [attributes setObject:(__bridge id)key forKey:(__bridge id)kSecValueRef];
+    [attributes setObject:@YES forKey:(__bridge id)kSecReturnData];
+    CFTypeRef result;
+    sanityCheck = SecItemAdd((__bridge CFDictionaryRef) attributes, &result);
+    if (sanityCheck == errSecSuccess) {
+        publicKeyBits = CFBridgingRelease(result);
+        
+        // Remove from Keychain again:
+        (void)SecItemDelete((__bridge CFDictionaryRef) queryPublicKey);
+    }
+    
+    return publicKeyBits;
 #endif
+}
+
+// From https://github.com/reference/OpenSSLRSAWrapper/blob/master/OpenSSLRSAWrapper/OpenSSLRSAWrapper.m
+// Helper function for ASN.1 encoding
+static size_t encodeLength(unsigned char * buf, size_t length) {
+    
+    // encode length in ASN.1 DER format
+    if (length < 128) {
+        buf[0] =  (unsigned char) length;
+        return 1;
+    }
+    
+    size_t i = (length / 256) + 1;
+    buf[0] =  (unsigned char) i + 0x80;
+    for (size_t j = 0 ; j < i; ++j) {
+        buf[i - j] = length & 0xFF;
+        length = length >> 8;
+    }
+    
+    return i + 1;
+}
+
+static NSData * AFSecKeyPadX509(NSData * publicKeyBits) {
+    // OK - that gives us the "BITSTRING component of a full DER
+    // encoded RSA public key - we now need to build the rest
+    
+    static const unsigned char _encodedRSAEncryptionOID[15] = {
+        /* Sequence of length 0xd made up of OID followed by NULL */
+        0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86,
+        0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00
+    };
+    
+    unsigned char builder[15];
+    NSMutableData * encKey = [[NSMutableData alloc] init];
+    unsigned long bitstringEncLength;
+    
+    // When we get to the bitstring - how will we encode it?
+    if  ([publicKeyBits length ] + 1  < 128 )
+        bitstringEncLength = 1 ;
+        else
+            bitstringEncLength = (([publicKeyBits length ] +1 ) / 256 ) + 2 ;
+            
+            // Overall we have a sequence of a certain length
+            builder[0] = 0x30;    // ASN.1 encoding representing a SEQUENCE
+            // Build up overall size made up of -
+            // size of OID + size of bitstring encoding + size of actual key
+            size_t i = sizeof(_encodedRSAEncryptionOID) + 2 + bitstringEncLength +
+            [publicKeyBits length];
+            size_t j = encodeLength(&builder[1], i);
+            [encKey appendBytes:builder length:j +1];
+    
+    // First part of the sequence is the OID
+    [encKey appendBytes:_encodedRSAEncryptionOID
+                 length:sizeof(_encodedRSAEncryptionOID)];
+    
+    // Now add the bitstring
+    builder[0] = 0x03;
+    j = encodeLength(&builder[1], [publicKeyBits length] + 1);
+    builder[j+1] = 0x00;
+    [encKey appendBytes:builder length:j + 2];
+    
+    // Now the actual key
+    [encKey appendData:publicKeyBits];
+    
+    return encKey;
+}
+
 
 static BOOL AFSecKeyIsEqualToKey(SecKeyRef key1, SecKeyRef key2) {
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
@@ -220,6 +337,10 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     }
 }
 
+- (void)setPublicKeyHashes:(NSArray *)publicKeyHashes {
+    self.pinnedPublicKeyHashes = publicKeyHashes;
+}
+
 #pragma mark -
 
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust {
@@ -293,6 +414,39 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             }
 
             return trustedPublicKeyCount > 0 && ((self.validatesCertificateChain && trustedPublicKeyCount == [serverCertificates count]) || (!self.validatesCertificateChain && trustedPublicKeyCount >= 1));
+        }
+        case AFSSLPinningModePublicKeyHash: {
+            NSUInteger trustedPublicKeyHashCount = 0;
+            NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust); // Get Remote Public Keys
+            
+            if (self.pinnedPublicKeyHashes == nil) return NO; // No Public Key Accepted
+            
+            for (id trustChainPublicKey in publicKeys) {
+                SecKeyRef pubKey = (__bridge SecKeyRef)trustChainPublicKey;
+                NSData *keyData = AFSecKeyGetData(pubKey);
+                
+                // At this Point we have a Public Key
+                // But it is not fully DER compliant
+                // We need to patch it
+                NSData *x509 = AFSecKeyPadX509(keyData);
+                
+                // Create Hash
+                unsigned int outputLength = CC_SHA1_DIGEST_LENGTH;
+                unsigned char output[outputLength];
+                CC_SHA1(x509.bytes, x509.length, output);
+                NSData *hash = [NSMutableData dataWithBytes:output length:outputLength];
+                
+                // Encode the hash in Base64
+                NSString *base64Hash = [hash base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+                
+                for (NSString *pinnedPublicKeyHash in self.pinnedPublicKeyHashes) {
+                    if ([base64Hash isEqualToString:pinnedPublicKeyHash]) {
+                        trustedPublicKeyHashCount += 1;
+                    }
+                }
+            }
+            
+            return trustedPublicKeyHashCount > 0 && ((self.validatesCertificateChain && trustedPublicKeyHashCount == [self.pinnedPublicKeyHashes count]) || (!self.validatesCertificateChain && trustedPublicKeyHashCount >= 1));
         }
     }
 
