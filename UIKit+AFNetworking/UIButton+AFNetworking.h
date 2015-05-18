@@ -41,7 +41,7 @@
 ///----------------------------
 
 /**
- The image cache used to improve image loadiing performance on scroll views. By default, `UIButton` will use the `sharedImageCache` of `UIImageView`.
+ The image cache used to improve image loading performance on scroll views. By default, `UIButton` will use the `sharedImageCache` of `UIImageView`.
  */
 + (id <AFImageCache>)sharedImageCache;
 

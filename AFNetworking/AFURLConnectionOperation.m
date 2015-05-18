@@ -507,7 +507,7 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
             [self.connection cancel];
             [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:error];
         } else {
-            // Accomodate race condition where `self.connection` has not yet been set before cancellation
+            // Accommodate race condition where `self.connection` has not yet been set before cancellation
             self.error = error;
             [self finish];
         }
