@@ -13,7 +13,8 @@ Please read it before you start participating.
 
 ## Asking Questions
 
-We don't use GitHub as a support forum.
+We use GitHub as a support forum.
+#humin
 For any usage questions that are not specific to the project itself,
 please ask on [Stack Overflow](https://stackoverflow.com) instead.
 By doing so, you'll be more likely to quickly solve your problem,
