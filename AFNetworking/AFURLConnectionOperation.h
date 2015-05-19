@@ -73,10 +73,6 @@
 
  Connections will be validated on all matching certificates with a `.cer` extension in the bundle root.
 
- ## App Extensions
-
- When using AFNetworking in an App Extension, `#define AF_APP_EXTENSIONS` to avoid using unavailable APIs.
-
  ## NSCoding & NSCopying Conformance
 
  `AFURLConnectionOperation` conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. However, because of the intrinsic limitations of capturing the exact state of an operation at a particular moment, there are some important caveats to keep in mind:
@@ -270,8 +266,8 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param handler A handler to be called shortly before the application’s remaining background time reaches 0. The handler is wrapped in a block that cancels the operation, and cleans up and marks the end of execution, unlike the `handler` parameter in `UIApplication -beginBackgroundTaskWithExpirationHandler:`, which expects this to be done in the handler itself. The handler is called synchronously on the main thread, thus blocking the application’s suspension momentarily while the application is notified.
   */
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && !defined(AF_APP_EXTENSIONS)
-- (void)setShouldExecuteAsBackgroundTaskWithExpirationHandler:(nullable void (^)(void))handler;
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+- (void)setShouldExecuteAsBackgroundTaskWithExpirationHandler:(nullable void (^)(void))handler NS_EXTENSION_UNAVAILABLE_IOS("Not available in app extensions.");
 #endif
 
 ///---------------------------------
