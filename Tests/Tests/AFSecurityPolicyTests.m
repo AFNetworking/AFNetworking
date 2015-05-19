@@ -145,10 +145,10 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testPublicKeyHashChainPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
 
-    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
-                                      @"SXxoaOSEzPC6BgGmxAt/EAcsajw=",
-                                      @"CAEUNlja29wg0tQeD45uzUPUsiA=",
-                                      @"T5x9IXmcrQ7YuQxXnxoCmeeQ84c=",
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
+                                      @"sha1/SXxoaOSEzPC6BgGmxAt/EAcsajw=",
+                                      @"sha1/CAEUNlja29wg0tQeD45uzUPUsiA=",
+                                      @"sha1/T5x9IXmcrQ7YuQxXnxoCmeeQ84c=",
                                       nil]];
 
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
@@ -535,7 +535,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testLeafPublicKeyHashPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
     
-    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"G2bwK+Vdcc6RPUi2h2A9mOPezwc=", nil]];
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/G2bwK+Vdcc6RPUi2h2A9mOPezwc=", nil]];
     
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
     XCTAssert([policy evaluateServerTrust:trust forDomain:nil], @"HTTPBin.org Public Key Hash Pinning Mode Failed");
@@ -546,7 +546,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
     [policy setValidatesCertificateChain:NO];
     
-    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"G2bwK+Vdcc6RPUi2h2A9mOPezwc=", @"backupkeyhash", nil]];
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/G2bwK+Vdcc6RPUi2h2A9mOPezwc=", @"backupkeyhash", nil]];
     
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
     XCTAssert([policy evaluateServerTrust:trust forDomain:nil], @"HTTPBin.org Public Key Hash Pinning Mode Failed");
@@ -556,10 +556,10 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testLeafPublicKeyHashPinningIsEnforcedForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrustChain {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
     
-    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
-                                                               @"SXxoaOSEzPC6BgGmxAt/EAcsajw=",
-                                                               @"CAEUNlja29wg0tQeD45uzUPUsiA=",
-                                                               @"T5x9IXmcrQ7YuQxXnxoCmeeQ84c=",
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
+                                                               @"sha1/SXxoaOSEzPC6BgGmxAt/EAcsajw=",
+                                                               @"sha1/CAEUNlja29wg0tQeD45uzUPUsiA=",
+                                                               @"sha1/T5x9IXmcrQ7YuQxXnxoCmeeQ84c=",
                                                                nil]];
     
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
@@ -600,9 +600,9 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testDefaultPolicySetToPublicKeyHashChain {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
     SecTrustRef trust = AFUTADNNetServerTrust();
-    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"BS1MkEf/3FrHSfiE/NgzvOl8j2U=",
-                                      @"lfnXQ0sc5x3vQhHua+PA4CVvrZU=",
-                                      @"gzF+YoVCU9bXeDGQ7JGQVumRueM=",
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/BS1MkEf/3FrHSfiE/NgzvOl8j2U=",
+                                      @"sha1/lfnXQ0sc5x3vQhHua+PA4CVvrZU=",
+                                      @"sha1/gzF+YoVCU9bXeDGQ7JGQVumRueM=",
                                       nil]];
     XCTAssert([policy evaluateServerTrust:trust forDomain:nil], @"Pinning with Default Public Key Hash Chain Failed");
     CFRelease(trust);
@@ -611,22 +611,34 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testDefaultPolicySetToLeafPublicKeyhHash {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
     [policy setValidatesCertificateChain:NO];
-    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"BS1MkEf/3FrHSfiE/NgzvOl8j2U=",
-                                      @"lfnXQ0sc5x3vQhHua+PA4CVvrZU=",
-                                      @"gzF+YoVCU9bXeDGQ7JGQVumRueM=",
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/BS1MkEf/3FrHSfiE/NgzvOl8j2U=",
+                                      @"sha1/lfnXQ0sc5x3vQhHua+PA4CVvrZU=",
+                                      @"sha1/gzF+YoVCU9bXeDGQ7JGQVumRueM=",
                                       nil]];
     SecTrustRef trust = AFUTADNNetServerTrust();
     XCTAssert([policy evaluateServerTrust:trust forDomain:nil], @"Pinning with Default Leaf Public Key Hash Failed");
     CFRelease(trust);
 }
 
+- (void)testDefaultPolicySetToLeafPublicKeyhHashFailsWhenHashAlgorithmNotDeclared {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
+    [policy setValidatesCertificateChain:NO];
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"BS1MkEf/3FrHSfiE/NgzvOl8j2U=",
+                                      @"lfnXQ0sc5x3vQhHua+PA4CVvrZU=",
+                                      @"gzF+YoVCU9bXeDGQ7JGQVumRueM=",
+                                      nil]];
+    SecTrustRef trust = AFUTADNNetServerTrust();
+    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"Pinning with Default Leaf Public Key Hash Failed without Declared Hashing Algorithm Should Fail");
+    CFRelease(trust);
+}
+
 - (void)testLeafPublicKeyHashPinningFailsForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrustChainWhenPinnedPublicKeyHashesHasOneWrongKeyHash {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
     
-    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
-                                      @"SXxoaOSEzPC6BgGmxAt/EAcsajw=",
-                                      @"CAEUNlja29wg0tQeD45uzUPUsiA=",
-                                      @"wrongkeyhash",
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
+                                      @"sha1/SXxoaOSEzPC6BgGmxAt/EAcsajw=",
+                                      @"sha1/CAEUNlja29wg0tQeD45uzUPUsiA=",
+                                      @"sha1/wrongkeyhash",
                                       nil]];
     [policy setValidatesCertificateChain:YES];
     
@@ -638,11 +650,11 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testLeafPublicKeyHashPinningFailsForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrustChainWhenPinnedPublicKeyHashesHasTooManyKeyHashes {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
     
-    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
-                                      @"SXxoaOSEzPC6BgGmxAt/EAcsajw=",
-                                      @"CAEUNlja29wg0tQeD45uzUPUsiA=",
-                                      @"T5x9IXmcrQ7YuQxXnxoCmeeQ84c=",
-                                      @"ExtraKeyHash",
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
+                                      @"sha1/SXxoaOSEzPC6BgGmxAt/EAcsajw=",
+                                      @"sha1/CAEUNlja29wg0tQeD45uzUPUsiA=",
+                                      @"sha1/T5x9IXmcrQ7YuQxXnxoCmeeQ84c=",
+                                      @"sha1/ExtraKeyHash",
                                       nil]];
     [policy setValidatesCertificateChain:YES];
     
@@ -654,7 +666,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testLeafPublicKeyHashPinningFailsForHTTPBinOrgPinnedCertificateAgainstHTTPBinOrgServerTrustChainWhenOnlyOneIntermediateKeyIsPresentAndNoValidatingCertificateChain {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKeyHash];
     
-    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"SXxoaOSEzPC6BgGmxAt/EAcsajw=",
+    [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/SXxoaOSEzPC6BgGmxAt/EAcsajw=",
                                       nil]];
     [policy setValidatesCertificateChain:NO];
     

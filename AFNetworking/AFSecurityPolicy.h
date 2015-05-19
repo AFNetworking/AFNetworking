@@ -52,7 +52,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 @property (nonatomic, strong) NSArray *pinnedCertificates;
 
 /**
- The public key hashes used to evaluate server trust according to the SSL pinning mode. You can retrieve the Subject Public Key Info (SPKI) of a certificate in many ways e.g. 'openssl x509 -inform DER -pubkey -noout -in certificate.cer | openssl pkey -pubin -outform DER | openssl dgst -sha1 -binary | openssl enc -base64'.
+ The public key hashes used to evaluate server trust according to the SSL pinning mode.
  */
 @property (nonatomic, strong) NSArray *pinnedPublicKeyHashes;
 
@@ -142,8 +142,10 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
  
  `AFSSLPinningModePublicKeyHash`
  Validate host certificates against a set of predefined public key hashes.
- This mode allows to provide backup key(s) in case the primary key gets compromised/lost.
- The pinned hashes are SHA1 hashes of the public keys in the DER format.
+ This mode allows to provide backup key(s) in case the primary key gets compromised/lost in case the `ValidatesCertificateChain` property is set to `NO`.
+ The pinned hashes are SHA1 hashes of the public keys in the DER format and should look like this `sha1/T5x9IXmcrQ7YuQxXnxoCmeeQ84c=`.
+ You can retrieve the Subject Public Key Info (SPKI) of a certificate in many ways e.g. `openssl x509 -inform DER -pubkey -noout -in certificate.cer | openssl pkey -pubin -outform DER | openssl dgst -sha1 -binary | openssl enc -base64`
+ 
 
  `AFSSLPinningModePublicKey`
  Validate host certificates against public keys of pinned certificates.
@@ -154,4 +156,5 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
  In this mode you are required to update the app when updating the host certificate.
  This can lock users out in some cases e.g. you update the app for iOS 8 but there are users on iOS 7.
  
+ @warning *Important:* Pinning adds additional maintenance to your project and you risk locking out users. Do not add pinning without the consent of your TLS Administrator.
 */

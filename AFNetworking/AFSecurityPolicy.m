@@ -441,7 +441,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
                 NSData *hash = [NSMutableData dataWithBytes:output length:outputLength];
                 
                 // Encode the hash in Base64
-                NSString *base64Hash = [hash base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+                NSString *base64Hash = [NSString stringWithFormat:@"sha1/%@", [hash base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed]];
                 
                 for (NSString *pinnedPublicKeyHash in self.pinnedPublicKeyHashes) {
                     if ([base64Hash isEqualToString:pinnedPublicKeyHash]) {
