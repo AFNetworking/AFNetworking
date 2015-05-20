@@ -16,8 +16,6 @@
 		2902D29517DF4E2A00C81C5A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2902D29317DF4E2A00C81C5A /* InfoPlist.strings */; };
 		2902D29C17DF4E3700C81C5A /* AFTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B9ED7617DF4D790021E4D5 /* AFTestCase.m */; };
 		2902D29D17DF4E3800C81C5A /* AFTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B9ED7617DF4D790021E4D5 /* AFTestCase.m */; };
-		2940C00A1B063C6700AFDAC7 /* AFUIActivityIndicatorViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2940C0091B063C6700AFDAC7 /* AFUIActivityIndicatorViewTests.m */; };
-		2940C00C1B064C3200AFDAC7 /* AFUIRefreshControlTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2940C00B1B064C3200AFDAC7 /* AFUIRefreshControlTests.m */; };
 		29CBFC3917DF4F120021AB75 /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */; };
 		29CBFC3C17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */; };
 		29CBFC3D17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */; };
@@ -87,8 +85,6 @@
 		29133DD417DE77A5006E0493 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29133DD617DE77ED006E0493 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		29133DD817DE7829006E0493 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		2940C0091B063C6700AFDAC7 /* AFUIActivityIndicatorViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIActivityIndicatorViewTests.m; sourceTree = "<group>"; };
-		2940C00B1B064C3200AFDAC7 /* AFUIRefreshControlTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIRefreshControlTests.m; sourceTree = "<group>"; };
 		29B9ED5C17DF4D350021E4D5 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		29B9ED6D17DF4D670021E4D5 /* AFHTTPClientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClientTests.m; sourceTree = "<group>"; };
 		29B9ED6E17DF4D670021E4D5 /* AFHTTPRequestOperationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationTests.m; sourceTree = "<group>"; };
@@ -277,8 +273,6 @@
 				B6774DC818FBB49E0044DB17 /* AFNetworkActivityManagerTests.m */,
 				943B1F40192E406C00304316 /* AFURLSessionManagerTests.m */,
 				DE533FCD1ACCF34200C62CFB /* AFNetworkReachabilityManagerTests.m */,
-				2940C0091B063C6700AFDAC7 /* AFUIActivityIndicatorViewTests.m */,
-				2940C00B1B064C3200AFDAC7 /* AFUIRefreshControlTests.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -532,11 +526,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2940C00A1B063C6700AFDAC7 /* AFUIActivityIndicatorViewTests.m in Sources */,
 				29CBFC3917DF4F120021AB75 /* AFHTTPRequestOperationTests.m in Sources */,
 				943B1F41192E406C00304316 /* AFURLSessionManagerTests.m in Sources */,
 				F837FFAF195744A0009078A0 /* AFHTTPResponseSerializationTests.m in Sources */,
-				2940C00C1B064C3200AFDAC7 /* AFUIRefreshControlTests.m in Sources */,
 				29CBFC5A17DF61B30021AB75 /* AFSecurityPolicyTests.m in Sources */,
 				29CBFC3F17DF58000021AB75 /* AFHTTPRequestSerializationTests.m in Sources */,
 				B6774DC918FBB49E0044DB17 /* AFNetworkActivityManagerTests.m in Sources */,
