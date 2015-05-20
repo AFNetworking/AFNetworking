@@ -146,4 +146,21 @@
     [operation cancel];
 }
 
+- (void)testBackgroundingDoesNotCauseCrashWithOperation {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"No Crash"];
+    AFHTTPRequestOperation *operation = [self.operationManager
+                                         HTTPRequestOperationWithRequest:self.request
+                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         } failure:nil];
+    [self.activityIndicatorView setAnimatingWithStateOfOperation:operation];
+    self.activityIndicatorView = nil;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidEnterBackgroundNotification object:nil];
+        [expectation fulfill];
+    });
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
 @end
