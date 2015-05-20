@@ -88,21 +88,6 @@
     });
 }
 
-#pragma mark -
-
--(void)dealloc
-{
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
-    [notificationCenter removeObserver:self name:AFNetworkingTaskDidCompleteNotification object:nil];
-    [notificationCenter removeObserver:self name:AFNetworkingTaskDidResumeNotification object:nil];
-    [notificationCenter removeObserver:self name:AFNetworkingTaskDidSuspendNotification object:nil];
-#endif
-    
-    [notificationCenter removeObserver:self name:AFNetworkingOperationDidStartNotification object:nil];
-    [notificationCenter removeObserver:self name:AFNetworkingOperationDidFinishNotification object:nil];
-}
-
 @end
 
 #endif
