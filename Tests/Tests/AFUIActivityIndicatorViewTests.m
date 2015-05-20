@@ -146,6 +146,7 @@
     [operation cancel];
 }
 
+// Tests issue #2739. -[UIActivityIndicatorView dealloc] removes an observer and clobbering it in a category creates a zombie reference.
 - (void)testBackgroundingDoesNotCauseCrashWithOperation {
     XCTestExpectation *expectation = [self expectationWithDescription:@"No Crash"];
     AFHTTPRequestOperation *operation = [self.operationManager
