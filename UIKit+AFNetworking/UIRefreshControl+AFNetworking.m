@@ -31,7 +31,7 @@
 #import "AFURLSessionManager.h"
 #endif
 
-@interface AFRefreshControlAnimator : NSObject
+@interface AFRefreshControlNotificationObserver : NSObject
 @property (readonly, nonatomic, weak) UIRefreshControl *refreshControl;
 - (instancetype)initWithActivityRefreshControl:(UIRefreshControl *)refreshControl;
 
@@ -44,28 +44,28 @@
 
 @implementation UIRefreshControl (AFNetworking)
 
-- (AFRefreshControlAnimator *)af_refreshControlAnimator {
-    AFRefreshControlAnimator *animator = objc_getAssociatedObject(self, @selector(af_refreshControlAnimator));
-    if (animator == nil) {
-        animator = [[AFRefreshControlAnimator alloc] initWithActivityRefreshControl:self];
-        objc_setAssociatedObject(self, @selector(af_refreshControlAnimator), animator, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (AFRefreshControlNotificationObserver *)af_notificationObserver {
+    AFRefreshControlNotificationObserver *notificationObserver = objc_getAssociatedObject(self, @selector(af_notificationObserver));
+    if (notificationObserver == nil) {
+        notificationObserver = [[AFRefreshControlNotificationObserver alloc] initWithActivityRefreshControl:self];
+        objc_setAssociatedObject(self, @selector(af_notificationObserver), notificationObserver, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    return animator;
+    return notificationObserver;
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 - (void)setRefreshingWithStateOfTask:(NSURLSessionTask *)task {
-    [[self af_refreshControlAnimator] setRefreshingWithStateOfTask:task];
+    [[self af_notificationObserver] setRefreshingWithStateOfTask:task];
 }
 #endif
 
 - (void)setRefreshingWithStateOfOperation:(AFURLConnectionOperation *)operation {
-    [[self af_refreshControlAnimator] setRefreshingWithStateOfOperation:operation];
+    [[self af_notificationObserver] setRefreshingWithStateOfOperation:operation];
 }
 
 @end
 
-@implementation AFRefreshControlAnimator
+@implementation AFRefreshControlNotificationObserver
 
 - (instancetype)initWithActivityRefreshControl:(UIRefreshControl *)refreshControl
 {

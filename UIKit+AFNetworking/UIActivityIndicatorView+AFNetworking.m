@@ -30,7 +30,7 @@
 #import "AFURLSessionManager.h"
 #endif
 
-@interface AFActivityIndicatorAnimator : NSObject
+@interface AFActivityIndicatorViewNotificationObserver : NSObject
 @property (readonly, nonatomic, weak) UIActivityIndicatorView *activityIndicatorView;
 - (instancetype)initWithActivityIndicatorView:(UIActivityIndicatorView *)activityIndicatorView;
 
@@ -43,28 +43,28 @@
 
 @implementation UIActivityIndicatorView (AFNetworking)
 
-- (AFActivityIndicatorAnimator *)af_activityIndicatorAnimator {
-    AFActivityIndicatorAnimator *animator = objc_getAssociatedObject(self, @selector(af_activityIndicatorAnimator));
-    if (animator == nil) {
-        animator = [[AFActivityIndicatorAnimator alloc] initWithActivityIndicatorView:self];
-        objc_setAssociatedObject(self, @selector(af_activityIndicatorAnimator), animator, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (AFActivityIndicatorViewNotificationObserver *)af_notificationObserver {
+    AFActivityIndicatorViewNotificationObserver *notificationObserver = objc_getAssociatedObject(self, @selector(af_notificationObserver));
+    if (notificationObserver == nil) {
+        notificationObserver = [[AFActivityIndicatorViewNotificationObserver alloc] initWithActivityIndicatorView:self];
+        objc_setAssociatedObject(self, @selector(af_notificationObserver), notificationObserver, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    return animator;
+    return notificationObserver;
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 - (void)setAnimatingWithStateOfTask:(NSURLSessionTask *)task {
-    [[self af_activityIndicatorAnimator] setAnimatingWithStateOfTask:task];
+    [[self af_notificationObserver] setAnimatingWithStateOfTask:task];
 }
 #endif
 
 - (void)setAnimatingWithStateOfOperation:(AFURLConnectionOperation *)operation {
-    [[self af_activityIndicatorAnimator] setAnimatingWithStateOfOperation:operation];
+    [[self af_notificationObserver] setAnimatingWithStateOfOperation:operation];
 }
 
 @end
 
-@implementation AFActivityIndicatorAnimator
+@implementation AFActivityIndicatorViewNotificationObserver
 
 - (instancetype)initWithActivityIndicatorView:(UIActivityIndicatorView *)activityIndicatorView
 {
