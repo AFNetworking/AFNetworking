@@ -148,9 +148,9 @@
 
 #pragma mark -
 
--(void)dealloc
-{
+- (void)dealloc {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
     [notificationCenter removeObserver:self name:AFNetworkingTaskDidCompleteNotification object:nil];
     [notificationCenter removeObserver:self name:AFNetworkingTaskDidResumeNotification object:nil];
