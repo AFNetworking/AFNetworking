@@ -20,6 +20,7 @@
 // THE SOFTWARE.
 
 #import "UIActivityIndicatorView+AFNetworking.h"
+#import <objc/runtime.h>
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 
@@ -28,6 +29,56 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 #import "AFURLSessionManager.h"
 #endif
+
+
+#pragma mark AFAutoremoveNotificationObserver
+
+
+@interface AFAutoremoveNotificationObserver : NSObject
+	{
+	void* observingObject;	//	Use 'void*' rather than 'id' to avoid some compiler weirdness.
+	}
++ (void) observer:(id)object;
++ (void) cancelAutoremoveForObserver:(id)observer;
+@end
+
+
+@implementation AFAutoremoveNotificationObserver
+
+- (void) dealloc
+	{
+	id object = (__bridge id)(self->observingObject);
+	if (object)
+		[[NSNotificationCenter defaultCenter] removeObserver:object];
+	else
+		NSLog(@"Warning: No observer to remove for %@.", NSStringFromClass(self.class));
+	}
+
++ (void) observer:(id)object
+	{
+	const void* kKey = class_getName(self.class);
+	AFAutoremoveNotificationObserver *denotifier = objc_getAssociatedObject(object, kKey);
+	if (!object || denotifier) return;
+	denotifier = [[AFAutoremoveNotificationObserver alloc] init];
+	if (!denotifier) return;
+	denotifier->observingObject = (__bridge void *) object;
+	objc_setAssociatedObject(object, kKey, denotifier, OBJC_ASSOCIATION_RETAIN);
+	}
+
++ (void) cancelAutoremoveForObserver:(id)object
+	{
+	const void* kKey = class_getName(self.class);
+	AFAutoremoveNotificationObserver *denotifier = objc_getAssociatedObject(object, kKey);
+	if (!denotifier) return;
+	denotifier->observingObject = nil;
+	objc_setAssociatedObject(object, kKey, nil, OBJC_ASSOCIATION_RETAIN);
+	}
+
+@end
+
+
+#pragma mark - UIActivityIndicatorView
+
 
 @implementation UIActivityIndicatorView (AFNetworking)
 
@@ -50,6 +101,7 @@
             [notificationCenter addObserver:self selector:@selector(af_startAnimating) name:AFNetworkingTaskDidResumeNotification object:task];
             [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingTaskDidCompleteNotification object:task];
             [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingTaskDidSuspendNotification object:task];
+			[AFAutoremoveNotificationObserver observer:self];
         }
     }
 }
@@ -73,6 +125,7 @@
 
             [notificationCenter addObserver:self selector:@selector(af_startAnimating) name:AFNetworkingOperationDidStartNotification object:operation];
             [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingOperationDidFinishNotification object:operation];
+			[AFAutoremoveNotificationObserver observer:self];
         }
     }
 }
@@ -89,21 +142,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self stopAnimating];
     });
-}
-
-#pragma mark -
-
--(void)dealloc
-{
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
-    [notificationCenter removeObserver:self name:AFNetworkingTaskDidCompleteNotification object:nil];
-    [notificationCenter removeObserver:self name:AFNetworkingTaskDidResumeNotification object:nil];
-    [notificationCenter removeObserver:self name:AFNetworkingTaskDidSuspendNotification object:nil];
-#endif
-    
-    [notificationCenter removeObserver:self name:AFNetworkingOperationDidStartNotification object:nil];
-    [notificationCenter removeObserver:self name:AFNetworkingOperationDidFinishNotification object:nil];
 }
 
 @end
