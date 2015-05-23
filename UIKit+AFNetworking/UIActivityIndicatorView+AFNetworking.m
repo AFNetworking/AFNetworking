@@ -69,6 +69,7 @@
 	{
 	const void* kKey = class_getName(self.class);
 	AFAutoremoveNotificationObserver *denotifier = objc_getAssociatedObject(object, kKey);
+	if (!denotifier) return;
 	denotifier->observingObject = nil;
 	objc_setAssociatedObject(object, kKey, nil, OBJC_ASSOCIATION_RETAIN);
 	}
