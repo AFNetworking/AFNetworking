@@ -573,4 +573,23 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertNil(policy.pinnedCertificates, @"Default certificate array should be empty for default policy.");
 }
 
+- (void)testCustomCertificateChainValidation{
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.certificateChainValidation = ^BOOL(NSArray* certificates){
+        return YES;
+    };
+    SecTrustRef trust = AFUTTrustWithCertificate(AFUTAddTrustExternalRootCertificate());
+    XCTAssert([policy evaluateServerTrust:trust forDomain:nil] == YES, @"Custom certificate validation should be able to validate");
+}
+
+- (void)testCustomCertificateChainValidationFails{
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.certificateChainValidation = ^BOOL(NSArray* certificates){
+        return NO;
+    };
+    SecTrustRef trust = AFUTTrustWithCertificate(AFUTAddTrustExternalRootCertificate());
+    XCTAssert([policy evaluateServerTrust:trust forDomain:nil] == NO, @"Custom certificate validation should not validate");
+}
+
+
 @end

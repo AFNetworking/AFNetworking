@@ -22,6 +22,8 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
 
+typedef BOOL(^AFCertificateChainValidation)(NSArray *serverCertificates);
+
 typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
     AFSSLPinningModeNone,
     AFSSLPinningModePublicKey,
@@ -44,6 +46,11 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
  Whether to evaluate an entire SSL certificate chain, or just the leaf certificate. Defaults to `YES`.
  */
 @property (nonatomic, assign) BOOL validatesCertificateChain;
+
+/**
+ Block that can be used if custom validation of the certificate chain is needed. If not set, normal certificate chain validation is performed.
+ */
+@property (nonatomic, strong) AFCertificateChainValidation certificateChainValidation;
 
 /**
  The certificates used to evaluate server trust according to the SSL pinning mode. By default, this property is set to any (`.cer`) certificates included in the app bundle.
