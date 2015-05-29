@@ -238,7 +238,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 }
 
 - (void)testSettingDuplicateCertificatesProperlyRemovesTheDuplicate {
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     
@@ -381,7 +381,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     [policy setValidatesCertificateChain:YES];
     
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
-    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"HTTPBin.org Public Key Pinning Mode Failed");
+    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"HTTPBin.org Certificate Pinning Mode Failed");
     CFRelease(trust);
 }
 
