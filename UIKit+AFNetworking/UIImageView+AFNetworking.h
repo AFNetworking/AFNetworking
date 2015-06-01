@@ -27,6 +27,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol AFURLResponseSerialization, AFImageCache;
 
 /**
@@ -74,7 +76,8 @@
 
  @param url The URL used for the image request.
  */
-- (void)setImageWithURL:(NSURL *)url;
+- (void)setImageWithURL:(nullable NSURL *)url;
+// FIXME: is URL nullable?
 
 /**
  Asynchronously downloads an image from the specified URL, and sets it once the request is finished. Any previous image request for the receiver will be cancelled.
@@ -86,8 +89,8 @@
  @param url The URL used for the image request.
  @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
  */
-- (void)setImageWithURL:(NSURL *)url
-       placeholderImage:(UIImage *)placeholderImage;
+- (void)setImageWithURL:(nullable NSURL *)url
+       placeholderImage:(nullable UIImage *)placeholderImage;
 
 /**
  Asynchronously downloads an image from the specified URL request, and sets it once the request is finished. Any previous image request for the receiver will be cancelled.
@@ -102,9 +105,9 @@
  @param failure A block object to be executed when the image request operation finishes unsuccessfully, or that finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error object describing the network or parsing error that occurred.
  */
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
-              placeholderImage:(UIImage *)placeholderImage
-                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+              placeholderImage:(nullable UIImage *)placeholderImage
+                       success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                       failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
 /**
  Cancels any executing image operation for the receiver, if one exists.
@@ -127,7 +130,7 @@
 
  @return The cached image.
  */
-- (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
+- (nullable UIImage *)cachedImageForRequest:(NSURLRequest *)request;
 
 /**
  Caches a particular image for the specified request.
@@ -135,8 +138,10 @@
  @param image The image to cache.
  @param request The request to be used as a cache key.
  */
-- (void)cacheImage:(UIImage *)image
-        forRequest:(NSURLRequest *)request;
+- (void)cacheImage:(nullable UIImage *)image
+        forRequest:(NSURLRequest *)request; // FIXME: nullable?
 @end
+
+NS_ASSUME_NONNULL_END
 
 #endif

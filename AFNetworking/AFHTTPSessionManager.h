@@ -79,12 +79,14 @@
 
 #if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface AFHTTPSessionManager : AFURLSessionManager <NSSecureCoding, NSCopying>
 
 /**
  The URL used to monitor reachability, and construct requests from relative paths in methods like `requestWithMethod:URLString:parameters:`, and the `GET` / `POST` / et al. convenience methods.
  */
-@property (readonly, nonatomic, strong) NSURL *baseURL;
+@property (readonly, nonatomic, strong, nullable) NSURL *baseURL;
 
 /**
  Requests created with `requestWithMethod:URLString:parameters:` & `multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:` are constructed with a set of default headers using a parameter serialization specified by this property. By default, this is set to an instance of `AFHTTPRequestSerializer`, which serializes query string parameters for `GET`, `HEAD`, and `DELETE` requests, or otherwise URL-form-encodes HTTP message bodies.
@@ -116,7 +118,7 @@
 
  @return The newly-initialized HTTP client
  */
-- (instancetype)initWithBaseURL:(NSURL *)url;
+- (instancetype)initWithBaseURL:(nullable NSURL *)url;
 
 /**
  Initializes an `AFHTTPSessionManager` object with the specified base URL.
@@ -128,8 +130,8 @@
 
  @return The newly-initialized HTTP client
  */
-- (instancetype)initWithBaseURL:(NSURL *)url
-           sessionConfiguration:(NSURLSessionConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithBaseURL:(nullable NSURL *)url
+           sessionConfiguration:(nullable NSURLSessionConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
 
 ///---------------------------
 /// @name Making HTTP Requests
@@ -145,10 +147,10 @@
 
  @see -dataTaskWithRequest:completionHandler:
  */
-- (NSURLSessionDataTask *)GET:(NSString *)URLString
-                   parameters:(id)parameters
-                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (nullable NSURLSessionDataTask *)GET:(NSString *)URLString
+                   parameters:(nullable id)parameters
+                      success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      failure:(nullable void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `HEAD` request.
@@ -160,10 +162,10 @@
 
  @see -dataTaskWithRequest:completionHandler:
  */
-- (NSURLSessionDataTask *)HEAD:(NSString *)URLString
-                    parameters:(id)parameters
-                       success:(void (^)(NSURLSessionDataTask *task))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (nullable NSURLSessionDataTask *)HEAD:(NSString *)URLString
+                    parameters:(nullable id)parameters
+                       success:(nullable void (^)(NSURLSessionDataTask *task))success
+                       failure:(nullable void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `POST` request.
@@ -175,10 +177,10 @@
 
  @see -dataTaskWithRequest:completionHandler:
  */
-- (NSURLSessionDataTask *)POST:(NSString *)URLString
-                    parameters:(id)parameters
-                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (nullable NSURLSessionDataTask *)POST:(NSString *)URLString
+                    parameters:(nullable id)parameters
+                       success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(nullable void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a multipart `POST` request.
@@ -191,11 +193,11 @@
 
  @see -dataTaskWithRequest:completionHandler:
  */
-- (NSURLSessionDataTask *)POST:(NSString *)URLString
-                    parameters:(id)parameters
-     constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (nullable NSURLSessionDataTask *)POST:(NSString *)URLString
+                    parameters:(nullable id)parameters
+     constructingBodyWithBlock:(nullable void (^)(id <AFMultipartFormData> formData))block
+                       success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(nullable void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `PUT` request.
@@ -207,10 +209,10 @@
 
  @see -dataTaskWithRequest:completionHandler:
  */
-- (NSURLSessionDataTask *)PUT:(NSString *)URLString
-                   parameters:(id)parameters
-                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (nullable NSURLSessionDataTask *)PUT:(NSString *)URLString
+                   parameters:(nullable id)parameters
+                      success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      failure:(nullable void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `PATCH` request.
@@ -222,10 +224,10 @@
 
  @see -dataTaskWithRequest:completionHandler:
  */
-- (NSURLSessionDataTask *)PATCH:(NSString *)URLString
-                     parameters:(id)parameters
-                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (nullable NSURLSessionDataTask *)PATCH:(NSString *)URLString
+                     parameters:(nullable id)parameters
+                        success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                        failure:(nullable void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 /**
  Creates and runs an `NSURLSessionDataTask` with a `DELETE` request.
@@ -237,11 +239,13 @@
 
  @see -dataTaskWithRequest:completionHandler:
  */
-- (NSURLSessionDataTask *)DELETE:(NSString *)URLString
-                      parameters:(id)parameters
-                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (nullable NSURLSessionDataTask *)DELETE:(NSString *)URLString
+                      parameters:(nullable id)parameters
+                         success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                         failure:(nullable void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 #endif
