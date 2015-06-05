@@ -21,16 +21,12 @@
 
 #import "AFTestCase.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
-#import <AFNetworking/AFURLSessionManager.h>
-#import <AFNetworking/AFHTTPRequestOperationManager.h>
 #import <OCMock/OCMock.h>
 
 @interface AFUIImageViewTests : AFTestCase
 @property (nonatomic, strong) UIImage *cachedImage;
 @property (nonatomic, strong) NSURLRequest *cachedImageRequest;
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) AFURLSessionManager *sessionManager;
-@property (nonatomic, strong) AFHTTPRequestOperationManager *operationManager;
 @end
 
 @implementation AFUIImageViewTests
