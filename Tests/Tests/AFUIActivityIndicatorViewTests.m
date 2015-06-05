@@ -1,4 +1,4 @@
-// AFNetworkReachabilityManagerTests.h
+// AFUIActivityIndicatorViewTests.h
 // Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
