@@ -65,6 +65,7 @@
      placeholderImage:nil
      success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
          XCTAssertEqual(request, weakSelf.cachedImageRequest, @"URL requests do not match");
+         XCTAssertNil(response, @"Response should be nil when image is returned from cache");
          XCTAssertEqual(image, weakSelf.cachedImage, @"Cached images do not match");
          [expectation fulfill];
      }
