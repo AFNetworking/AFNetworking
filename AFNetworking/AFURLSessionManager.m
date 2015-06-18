@@ -317,7 +317,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
             8) Set the current class to the super class, and repeat steps 3-8
          */
         NSURLSession * session = [NSURLSession sessionWithConfiguration:nil];
-        NSURLSessionDataTask *localDataTask = [[NSURLSession sessionWithConfiguration:nil] dataTaskWithURL:nil];
+        NSURLSessionDataTask *localDataTask = [session dataTaskWithURL:nil];
         IMP originalAFResumeIMP = method_getImplementation(class_getInstanceMethod([_AFURLSessionTaskSwizzling class], @selector(af_resume)));
         Class currentClass = [localDataTask class];
         
