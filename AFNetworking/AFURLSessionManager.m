@@ -316,6 +316,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
             7) If the current class implementation of `resume` is not equal to the super class implementation of `resume` AND the current implementation of `resume` is not equal to the original implementation of `af_resume`, THEN swizzle the methods
             8) Set the current class to the super class, and repeat steps 3-8
          */
+        NSURLSession * session = [NSURLSession sessionWithConfiguration:nil];
         NSURLSessionDataTask *localDataTask = [[NSURLSession sessionWithConfiguration:nil] dataTaskWithURL:nil];
         IMP originalAFResumeIMP = method_getImplementation(class_getInstanceMethod([_AFURLSessionTaskSwizzling class], @selector(af_resume)));
         Class currentClass = [localDataTask class];
@@ -332,6 +333,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         }
         
         [localDataTask cancel];
+        [session finishTasksAndInvalidate];
     }
 }
 
