@@ -144,7 +144,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
  Validate host certificates against a set of predefined public key hashes.
  This mode allows to provide backup key(s) in case the primary key gets compromised/lost in case the `ValidatesCertificateChain` property is set to `NO`.
  The pinned hashes are SHA1 hashes of the public keys in the DER format and should look like this `sha1/T5x9IXmcrQ7YuQxXnxoCmeeQ84c=`.
- You can retrieve the Subject Public Key Info (SPKI) of a certificate in many ways e.g. `openssl x509 -inform DER -pubkey -noout -in certificate.cer | openssl pkey -pubin -outform DER | openssl dgst -sha1 -binary | openssl enc -base64`
+ You can retrieve the Subject Public Key Info (SPKI) of a certificate in many ways e.g. run the script at https://gist.github.com/arein/127c2756aa64c4b61c74 (requires Scala) or `openssl x509 -inform DER -pubkey -noout -in certificate.cer | openssl pkey -pubin -outform DER | openssl dgst -sha1 -binary | openssl enc -base64`
  
 
  `AFSSLPinningModePublicKey`

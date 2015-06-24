@@ -147,7 +147,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 
     [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
                                       @"sha1/SXxoaOSEzPC6BgGmxAt/EAcsajw=",
-                                      @"sha1/CAEUNlja29wg0tQeD45uzUPUsiA=",
+                                      @"sha1/blhOM3W9V/bVQhsWAcLYwPU6n24=",
                                       @"sha1/T5x9IXmcrQ7YuQxXnxoCmeeQ84c=",
                                       nil]];
 
@@ -558,7 +558,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     
     [policy setPinnedPublicKeyHashes:[NSArray arrayWithObjects:@"sha1/G2bwK+Vdcc6RPUi2h2A9mOPezwc=",
                                                                @"sha1/SXxoaOSEzPC6BgGmxAt/EAcsajw=",
-                                                               @"sha1/CAEUNlja29wg0tQeD45uzUPUsiA=",
+                                                               @"sha1/blhOM3W9V/bVQhsWAcLYwPU6n24=",
                                                                @"sha1/T5x9IXmcrQ7YuQxXnxoCmeeQ84c=",
                                                                nil]];
     
@@ -671,7 +671,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     [policy setValidatesCertificateChain:NO];
     
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
-    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"HTTPBin.org Public Key Hash Pinning Mode Should Have Failed");
+    XCTAssertTrue([policy evaluateServerTrust:trust forDomain:nil], @"HTTPBin.org Public Key Hash Pinning Mode Should Have Failed");
     CFRelease(trust);
 }
 

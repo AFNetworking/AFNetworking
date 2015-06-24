@@ -23,6 +23,8 @@
 
 #import <AssertMacros.h>
 #import <CommonCrypto/CommonDigest.h>
+#import "AFDERDecoder.h"
+#import "AFDERDecoder.m"
 
 static NSData * AFSecKeyGetData(SecKeyRef key) {
 #if !defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
@@ -418,34 +420,23 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         case AFSSLPinningModePublicKeyHash: {
             if (self.pinnedPublicKeyHashes == nil) return NO; // No Public Key Accepted
             
-            NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust); // Get Remote Public Keys
-            
-            if (!self.validatesCertificateChain && [publicKeys count] > 0) {
-                publicKeys = @[[publicKeys firstObject]];
-            }
-            
             NSUInteger trustedPublicKeyHashCount = 0;
-            for (id trustChainPublicKey in publicKeys) {
-                SecKeyRef pubKey = (__bridge SecKeyRef)trustChainPublicKey;
-                NSData *keyData = AFSecKeyGetData(pubKey);
+            for (NSData *trustChainCertificate in serverCertificates) {
+                NSData *spkiData = [trustChainCertificate dataForX509CertificateSubjectPublicKeyInfo];
                 
-                // At this Point we have a Public Key
-                // But it is not fully DER compliant
-                // We need to patch it
-                NSData *x509 = AFSecKeyPadX509(keyData);
-                
-                // Create Hash
+                // Create Hash and Encode id in Base64
                 unsigned int outputLength = CC_SHA1_DIGEST_LENGTH;
                 unsigned char output[outputLength];
-                CC_SHA1(x509.bytes, (unsigned int) x509.length, output);
+                CC_SHA1(spkiData.bytes, (unsigned int) spkiData.length, output);
                 NSData *hash = [NSMutableData dataWithBytes:output length:outputLength];
-                
-                // Encode the hash in Base64
                 NSString *base64Hash = [NSString stringWithFormat:@"sha1/%@", [hash base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed]];
+                
+                NSLog(@"Pin: %@", base64Hash);
                 
                 for (NSString *pinnedPublicKeyHash in self.pinnedPublicKeyHashes) {
                     if ([base64Hash isEqualToString:pinnedPublicKeyHash]) {
                         trustedPublicKeyHashCount += 1;
+                        break; // Public Key was already matched
                     }
                 }
             }
