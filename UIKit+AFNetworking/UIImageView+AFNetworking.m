@@ -106,6 +106,17 @@
 
 #pragma mark -
 
+
++ (void)setMaxConcurrentOperationCount:(NSInteger)count
+{
+    [[[self class] af_sharedImageRequestOperationQueue] setMaxConcurrentOperationCount:count];
+}
+
++ (NSInteger)maxConcurrentOperationCount
+{
+    return [[self class] af_sharedImageRequestOperationQueue].maxConcurrentOperationCount;
+}
+
 - (void)setImageWithURL:(NSURL *)url {
     [self setImageWithURL:url placeholderImage:nil];
 }
@@ -113,14 +124,34 @@
 - (void)setImageWithURL:(NSURL *)url
        placeholderImage:(UIImage *)placeholderImage
 {
+    [self setImageWithURL:url placeholderImage:placeholderImage priority:NSOperationQueuePriorityNormal];
+}
+
+- (void)setImageWithURL:(NSURL *)url
+       placeholderImage:(UIImage *)placeholderImage
+               priority:(NSOperationQueuePriority)priority
+{
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+    
+    [self setImageWithURLRequest:request placeholderImage:placeholderImage priority:priority success:nil failure:nil];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
               placeholderImage:(UIImage *)placeholderImage
+                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    [self setImageWithURLRequest:urlRequest
+                placeholderImage:placeholderImage
+                        priority:NSOperationQueuePriorityNormal
+                         success:success
+                         failure:failure];
+}
+
+- (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
+              placeholderImage:(UIImage *)placeholderImage
+                      priority:(NSOperationQueuePriority)priority
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
@@ -143,6 +174,7 @@
         __weak __typeof(self)weakSelf = self;
         self.af_imageRequestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:urlRequest];
         self.af_imageRequestOperation.responseSerializer = self.imageResponseSerializer;
+        self.af_imageRequestOperation.queuePriority = priority;
         [self.af_imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             __strong __typeof(weakSelf)strongSelf = weakSelf;
             if ([[urlRequest URL] isEqual:[strongSelf.af_imageRequestOperation.request URL]]) {
