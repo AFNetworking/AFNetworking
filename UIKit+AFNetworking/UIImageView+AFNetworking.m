@@ -180,6 +180,14 @@
     self.af_imageRequestOperation = nil;
 }
 
++ (BOOL)isImageWithURLCached:(NSURL *)url
+{
+    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
+    
+    UIImage *cachedImage = [[[self class] sharedImageCache] cachedImageForRequest:urlRequest];
+    return (cachedImage != nil);
+}
+
 @end
 
 #pragma mark -
