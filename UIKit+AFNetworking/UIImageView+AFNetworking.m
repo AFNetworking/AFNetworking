@@ -159,13 +159,14 @@
 
     UIImage *cachedImage = [[[self class] sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
+        self.af_imageRequestOperation = nil;
+        
         if (success) {
             success(nil, nil, cachedImage);
         } else {
             self.image = cachedImage;
         }
-
-        self.af_imageRequestOperation = nil;
+        
     } else {
         if (placeholderImage) {
             self.image = placeholderImage;
