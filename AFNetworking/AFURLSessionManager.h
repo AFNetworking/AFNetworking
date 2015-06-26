@@ -137,22 +137,22 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The data, upload, and download tasks currently run by the managed session.
  */
-@property (readonly, nonatomic, strong) NSArray *tasks; // FIXME: nullable?
+@property (readonly, nonatomic, strong) NSArray *tasks;
 
 /**
  The data tasks currently run by the managed session.
  */
-@property (readonly, nonatomic, strong) NSArray *dataTasks; // FIXME: nullable?
+@property (readonly, nonatomic, strong) NSArray *dataTasks;
 
 /**
  The upload tasks currently run by the managed session.
  */
-@property (readonly, nonatomic, strong) NSArray *uploadTasks; // FIXME: nullable?
+@property (readonly, nonatomic, strong) NSArray *uploadTasks;
 
 /**
  The download tasks currently run by the managed session.
  */
-@property (readonly, nonatomic, strong) NSArray *downloadTasks; // FIXME: nullable?
+@property (readonly, nonatomic, strong) NSArray *downloadTasks;
 
 ///-------------------------------
 /// @name Managing Callback Queues
@@ -220,8 +220,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
  */
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
-                            completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
-// TODO: depending on AFURLSessionManagerTaskDelegate, completionHandler could be nil
+                            completionHandler:(nullable void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
 
 ///---------------------------
 /// @name Running Upload Tasks
@@ -254,7 +253,6 @@ NS_ASSUME_NONNULL_BEGIN
                                          fromData:(nullable NSData *)bodyData
                                          progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
                                 completionHandler:(nullable void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
-// TODO: depending on AFURLSessionManagerTaskDelegate, completionHandler could be nil
 
 /**
  Creates an `NSURLSessionUploadTask` with the specified streaming request.
@@ -266,7 +264,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSURLSessionUploadTask *)uploadTaskWithStreamedRequest:(NSURLRequest *)request
                                                  progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
                                         completionHandler:(nullable void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler;
-// TODO: depending on AFURLSessionManagerTaskDelegate, completionHandler could be nil
 
 ///-----------------------------
 /// @name Running Download Tasks

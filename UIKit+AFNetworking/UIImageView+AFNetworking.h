@@ -76,8 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param url The URL used for the image request.
  */
-- (void)setImageWithURL:(nullable NSURL *)url;
-// FIXME: is URL nullable?
+- (void)setImageWithURL:(NSURL *)url;
 
 /**
  Asynchronously downloads an image from the specified URL, and sets it once the request is finished. Any previous image request for the receiver will be cancelled.
@@ -89,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param url The URL used for the image request.
  @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
  */
-- (void)setImageWithURL:(nullable NSURL *)url
+- (void)setImageWithURL:(NSURL *)url
        placeholderImage:(nullable UIImage *)placeholderImage;
 
 /**
@@ -138,8 +137,8 @@ NS_ASSUME_NONNULL_BEGIN
  @param image The image to cache.
  @param request The request to be used as a cache key.
  */
-- (void)cacheImage:(nullable UIImage *)image
-        forRequest:(NSURLRequest *)request; // FIXME: nullable?
+- (void)cacheImage:(UIImage *)image
+        forRequest:(NSURLRequest *)request;
 @end
 
 NS_ASSUME_NONNULL_END

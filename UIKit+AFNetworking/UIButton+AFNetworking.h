@@ -78,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param url The URL used for the image request.
  */
 - (void)setImageForState:(UIControlState)state
-                 withURL:(nullable NSURL *)url;
+                 withURL:(NSURL *)url;
 
 /**
  Asynchronously downloads an image from the specified URL, and sets it as the image for the specified state once the request is finished. Any previous image request for the receiver will be cancelled.
@@ -90,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the button will not change its image until the image request finishes.
  */
 - (void)setImageForState:(UIControlState)state
-                 withURL:(nullable NSURL *)url
+                 withURL:(NSURL *)url
         placeholderImage:(nullable UIImage *)placeholderImage;
 
 /**
@@ -126,7 +126,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param url The URL used for the background image request.
  */
 - (void)setBackgroundImageForState:(UIControlState)state
-                           withURL:(nullable NSURL *)url;
+                           withURL:(NSURL *)url;
 
 /**
  Asynchronously downloads an image from the specified URL, and sets it as the background image for the specified state once the request is finished. Any previous image request for the receiver will be cancelled.
@@ -138,7 +138,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param placeholderImage The background image to be set initially, until the background image request finishes. If `nil`, the button will not change its background image until the background image request finishes.
  */
 - (void)setBackgroundImageForState:(UIControlState)state
-                           withURL:(nullable NSURL *)url
+                           withURL:(NSURL *)url
                   placeholderImage:(nullable UIImage *)placeholderImage;
 
 /**

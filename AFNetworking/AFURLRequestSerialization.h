@@ -333,7 +333,6 @@ forHTTPHeaderField:(NSString *)field;
                           name:(NSString *)name
                       fileName:(NSString *)fileName
                       mimeType:(NSString *)mimeType;
-// FIXME: data is nonnull because [NSInputStream inputStreamWithData:] does not allow nil. Specify in the documentation?
 
 /**
  Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
