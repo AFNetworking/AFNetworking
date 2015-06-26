@@ -151,20 +151,26 @@
 
 - (void)testDidResumeNotificationIsReceivedByBackgroundUploadTaskAfterResume {
     if (self.backgroundManager) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
         NSURLSessionUploadTask *task = [self.backgroundManager uploadTaskWithRequest:[self _delayURLRequest]
                                                                             fromFile:nil
                                                                             progress:nil
                                                                    completionHandler:nil];
+#pragma clang diagnostic pop
         [self _testResumeNotificationForTask:task];
     }
 }
 
 - (void)testDidSuspendNotificationIsReceivedByBackgroundUploadTaskAfterSuspend {
     if (self.backgroundManager) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
         NSURLSessionUploadTask *task = [self.backgroundManager uploadTaskWithRequest:[self _delayURLRequest]
                                                                             fromFile:nil
                                                                             progress:nil
                                                                    completionHandler:nil];
+#pragma clang diagnostic pop
         [self _testSuspendNotificationForTask:task];
     }
 }
@@ -274,10 +280,13 @@
 
 - (void)testBackgroundManagerReturnsExpectedClassForUploadTask {
     if (self.backgroundManager) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
         NSURLSessionTask *task = [self.backgroundManager uploadTaskWithRequest:[self _delayURLRequest]
                                                                       fromFile:nil
                                                                       progress:nil
                                                              completionHandler:nil];
+#pragma clang diagnostic pop
         XCTAssert([NSStringFromClass([task class]) isEqualToString:@"__NSCFBackgroundUploadTask"]);
     } else {
         NSLog(@"Unable to run %@ because self.backgroundManager is nil", NSStringFromSelector(_cmd));
