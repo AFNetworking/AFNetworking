@@ -204,6 +204,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     return self;
 }
 
+- (instancetype)init NS_UNAVAILABLE
+{
+    return nil;
+}
+
 - (void)dealloc {
     if (_outputStream) {
         [_outputStream close];

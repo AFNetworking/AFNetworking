@@ -155,6 +155,11 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     return self;
 }
 
+- (instancetype)init NS_UNAVAILABLE
+{
+    return nil;
+}
+
 - (void)dealloc {
     [self stopMonitoring];
 
