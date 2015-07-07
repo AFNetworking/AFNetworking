@@ -528,28 +528,10 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import <CoreGraphics/CoreGraphics.h>
-
-NSLock* _AFImageLock = nil;
-@interface ImageSyncronizer : NSObject
-@end
-@implementation ImageSyncronizer : NSObject
-+ (void)initialize {
-    _AFImageLock = [[NSLock alloc] init];
-}
-
-+ (void) imageLock {
-    [_AFImageLock lock];
-}
-
-+ (void) imageUnlock {
-    [_AFImageLock unlock];
-}
-@end
+#import "UIImage+AFNetworking.h"
 
 static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
-    [ImageSyncronizer imageLock];
-    UIImage *image = [[UIImage alloc] initWithData:data];
-    [ImageSyncronizer imageUnlock];
+    UIImage *image = [UIImage safeImageWithData:data];
     if (image.images) {
         return image;
     }
