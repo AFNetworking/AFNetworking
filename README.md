@@ -264,6 +264,8 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
     NSLog(@"Reachability: %@", AFStringFromNetworkReachabilityStatus(status));
 }];
+
+[[AFNetworkReachabilityManager sharedManager] startMonitoring];
 ```
 
 #### HTTP Manager Reachability
