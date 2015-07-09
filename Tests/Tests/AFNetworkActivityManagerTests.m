@@ -40,7 +40,7 @@
     self.networkActivityIndicatorManager = [[AFNetworkActivityIndicatorManager alloc] init];
     self.networkActivityIndicatorManager.enabled = YES;
 
-    self.mockApplication = [OCMockObject mockForClass:[UIApplication class]];
+    self.mockApplication = [OCMockObject niceMockForClass:[UIApplication class]];
     [[[self.mockApplication stub] andReturn:self.mockApplication] sharedApplication];
 
     [[[self.mockApplication stub] andDo:^(NSInvocation *invocation) {
