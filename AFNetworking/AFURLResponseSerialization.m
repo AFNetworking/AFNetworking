@@ -56,26 +56,38 @@ static BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger co
     return NO;
 }
 
-static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions readingOptions) {
+static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, BOOL mutableContainers) {
     if ([JSONObject isKindOfClass:[NSArray class]]) {
-        NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:[(NSArray *)JSONObject count]];
-        for (id value in (NSArray *)JSONObject) {
-            [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions)];
+        NSMutableArray *mutableArray = JSONObject;
+        NSArray *immutableArray = [JSONObject copy];
+        __block BOOL changedArray = NO;
+        [immutableArray enumerateObjectsUsingBlock:^(id value, NSUInteger idx, BOOL *stop) {
+            id neueValue = AFJSONObjectByRemovingKeysWithNullValues(value, mutableContainers);
+            if (neueValue != value) {
+                [mutableArray replaceObjectAtIndex:idx withObject:neueValue];
+                changedArray = YES;
+            }
+        }];
+        if (mutableContainers) {
+            return mutableArray;
+        } else {
+            return changedArray ? [NSArray arrayWithArray:mutableArray] : immutableArray;
         }
-
-        return (readingOptions & NSJSONReadingMutableContainers) ? mutableArray : [NSArray arrayWithArray:mutableArray];
     } else if ([JSONObject isKindOfClass:[NSDictionary class]]) {
-        NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:JSONObject];
+        NSMutableDictionary *mutableDictionary = JSONObject;
         for (id <NSCopying> key in [(NSDictionary *)JSONObject allKeys]) {
             id value = [(NSDictionary *)JSONObject objectForKey:key];
             if (!value || [value isEqual:[NSNull null]]) {
                 [mutableDictionary removeObjectForKey:key];
             } else if ([value isKindOfClass:[NSArray class]] || [value isKindOfClass:[NSDictionary class]]) {
-                [mutableDictionary setObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions) forKey:key];
+                id neueValue = AFJSONObjectByRemovingKeysWithNullValues(value, mutableContainers);
+                if (value != neueValue) {
+                    [mutableDictionary setObject:neueValue forKey:key];
+                }
             }
         }
 
-        return (readingOptions & NSJSONReadingMutableContainers) ? mutableDictionary : [NSDictionary dictionaryWithDictionary:mutableDictionary];
+        return mutableContainers ? mutableDictionary : [NSDictionary dictionaryWithDictionary:mutableDictionary];
     }
 
     return JSONObject;
@@ -257,7 +269,11 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 
             if (data) {
                 if ([data length] > 0) {
-                    responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
+                    NSJSONReadingOptions readingOptions = self.readingOptions;
+                    if (self.removesKeysWithNullValues) {
+                        readingOptions |= NSJSONReadingMutableContainers;
+                    }
+                    responseObject = [NSJSONSerialization JSONObjectWithData:data options:readingOptions error:&serializationError];
                 } else {
                     return nil;
                 }
@@ -273,7 +289,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     }
 
     if (self.removesKeysWithNullValues && responseObject) {
-        responseObject = AFJSONObjectByRemovingKeysWithNullValues(responseObject, self.readingOptions);
+        responseObject = AFJSONObjectByRemovingKeysWithNullValues(responseObject, (self.readingOptions & NSJSONReadingMutableContainers));
     }
 
     if (error) {

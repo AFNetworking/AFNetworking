@@ -133,4 +133,21 @@ static NSData * AFJSONTestData() {
     XCTAssertNotNil(error, @"Serialization error should not be nil");
 }
 
+- (void)testResponseSerializerPerformance
+{
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/json"}];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:@{
+                                                                 @"aKey" : [NSNull null],
+                                                                 @"bKey": @2,
+                                                                 @"cKey": @[@{@"aKey":[NSNull null], @"bKey": @2}, @{@"aKey":[NSNull null], @"bKey": @2}, @{@"aKey":[NSNull null], @"bKey": @2}]
+                                                                 }options:0 error:NULL];
+    self.responseSerializer.removesKeysWithNullValues = YES;
+    //self.responseSerializer.readingOptions = NSJSONReadingMutableContainers;
+    [self measureBlock:^{
+        for (int i = 0; i < 10000; i++) {
+            [self.responseSerializer responseObjectForResponse:response data:jsonData error:NULL];
+        }
+    }];
+}
+
 @end
