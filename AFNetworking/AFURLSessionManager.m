@@ -156,15 +156,16 @@ didCompleteWithError:(NSError *)error
 
     //Performance Improvement from #2672
     NSData *data = nil;
-    if (self.mutableData && !error) {
+    if (self.mutableData) {
         data = [self.mutableData copy];
-        userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
         //We no longer need the reference, so nil it out to gain back some memory.
         self.mutableData = nil;
     }
 
     if (self.downloadFileURL) {
         userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
+    } else if (data) {
+        userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
     }
 
     if (error) {
