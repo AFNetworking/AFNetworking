@@ -256,7 +256,14 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 
 `AFNetworkReachabilityManager` monitors the reachability of domains, and addresses for both WWAN and WiFi network interfaces.
 
-**Network reachability is a diagnostic tool that can be used to understand why a request might have failed. It should not be used to determine whether or not to make a request.**
+* Do not use Reachability to determine if the original request should be sent.
+	* You should try to send it.
+* You can use Reachability to determine when a request should be automatically retried.
+	* Although it may still fail, a Reachability notification that the connectivity is available is a good time to retry something.
+* Network reachability is a useful tool for determining why a request might have failed.
+	* After a network request has failed, telling the user they're offline is better than giving them a more technical but accurate error, such as "request timed out."
+
+See also [WWDC 2012 session 706, "Networking Best Practices."](https://developer.apple.com/videos/wwdc/2012/#706).
 
 #### Shared Network Reachability
 
