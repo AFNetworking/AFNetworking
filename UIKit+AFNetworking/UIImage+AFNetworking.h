@@ -1,6 +1,8 @@
-// UIKit+AFNetworking.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com/)
+//  UIImage+AFNetworking.h
+//  
+//
+//  Created by Paulo Ferreira on 08/07/15.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,19 +22,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+
 #import <UIKit/UIKit.h>
 
-#ifndef _UIKIT_AFNETWORKING_
-    #define _UIKIT_AFNETWORKING_
+@interface UIImage (AFNetworking)
 
-    #import "AFNetworkActivityIndicatorManager.h"
++ (UIImage*) safeImageWithData:(NSData*)data;
 
-    #import "UIActivityIndicatorView+AFNetworking.h"
-    #import "UIAlertView+AFNetworking.h"
-    #import "UIButton+AFNetworking.h"
-    #import "UIImageView+AFNetworking.h"
-    #import "UIProgressView+AFNetworking.h"
-    #import "UIRefreshControl+AFNetworking.h"
-    #import "UIWebView+AFNetworking.h"
-    #import "UIImage+AFNetworking.h"
-#endif /* _UIKIT_AFNETWORKING_ */
+@end
+
+#endif

@@ -1,6 +1,8 @@
-// UIKit+AFNetworking.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com/)
+//  UIImage+AFNetworking.m
+//  
+//
+//  Created by Paulo Ferreira on 08/07/15.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,19 +22,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 
-#ifndef _UIKIT_AFNETWORKING_
-    #define _UIKIT_AFNETWORKING_
+#import "UIImage+AFNetworking.h"
 
-    #import "AFNetworkActivityIndicatorManager.h"
+static NSLock* imageLock = nil;
 
-    #import "UIActivityIndicatorView+AFNetworking.h"
-    #import "UIAlertView+AFNetworking.h"
-    #import "UIButton+AFNetworking.h"
-    #import "UIImageView+AFNetworking.h"
-    #import "UIProgressView+AFNetworking.h"
-    #import "UIRefreshControl+AFNetworking.h"
-    #import "UIWebView+AFNetworking.h"
-    #import "UIImage+AFNetworking.h"
-#endif /* _UIKIT_AFNETWORKING_ */
+@implementation UIImage (AFNetworking)
+
++ (void) initialize
+{
+    imageLock = [[NSLock alloc] init];
+}
+
++ (UIImage*) safeImageWithData:(NSData*)data {
+    UIImage* image = nil;
+    [imageLock lock];
+    image = [UIImage imageWithData:data];
+    [imageLock unlock];
+    return image;
+}
+@end
+
+#endif
