@@ -280,8 +280,8 @@
     expect(operations).notTo.beNil();
     expect(operations).to.haveCountOf(2);
 
-    expect([[operations objectAtIndex:0] class]).to.equal([AFJSONRequestOperation class]);
-    expect([[operations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
+    expect([operations[0] class]).to.equal([AFJSONRequestOperation class]);
+    expect([operations[1] class]).to.equal([AFImageRequestOperation class]);
 }
 
 - (void)testThatEnqueueBatchOfHTTPRequestOperationsEnqueuesOperationsInTheCorrectOrder {
@@ -312,8 +312,8 @@
 
     expect(operations).to.haveCountOf(2);
 
-    expect([operations objectAtIndex:0]).to.equal(firstOperation);
-    expect([operations objectAtIndex:1]).to.equal(secondOperation);
+    expect(operations[0]).to.equal(firstOperation);
+    expect(operations[1]).to.equal(secondOperation);
 
     expect(batchedOperation).notTo.beNil();
     expect(batchedOperation).to.beKindOf([NSBlockOperation class]);
