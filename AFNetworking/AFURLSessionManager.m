@@ -154,17 +154,18 @@ didCompleteWithError:(NSError *)error
     __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     userInfo[AFNetworkingTaskDidCompleteResponseSerializerKey] = manager.responseSerializer;
 
+    //Performance Improvement from #2672
     NSData *data = nil;
+    if (self.mutableData && !error) {
+        data = [self.mutableData copy];
+        userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
+        //We no longer need the reference, so nil it out to gain back some memory.
+        self.mutableData = nil;
+    }
 
     if (self.downloadFileURL) {
         userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
-        if (!error) {
-            data = [self.mutableData copy];
-        }
-    } else if (self.mutableData) {
-        userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data = [self.mutableData copy];
     }
-    self.mutableData = nil;
 
     if (error) {
         userInfo[AFNetworkingTaskDidCompleteErrorKey] = error;
