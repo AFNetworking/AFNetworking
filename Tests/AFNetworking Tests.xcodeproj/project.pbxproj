@@ -23,16 +23,16 @@
 		29CBFC3D17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */; };
 		29CBFC3F17DF58000021AB75 /* AFHTTPRequestSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3E17DF58000021AB75 /* AFHTTPRequestSerializationTests.m */; };
 		29CBFC4017DF58000021AB75 /* AFHTTPRequestSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3E17DF58000021AB75 /* AFHTTPRequestSerializationTests.m */; };
-		29CBFC5A17DF61B30021AB75 /* AFSecurityPolicyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC5917DF61B30021AB75 /* AFSecurityPolicyTests.m */; };
 		29CBFC7617DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 29CBFC7517DF697C0021AB75 /* HTTPBinOrgServerTrustChain */; };
 		29CBFC7717DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 29CBFC7517DF697C0021AB75 /* HTTPBinOrgServerTrustChain */; };
 		29CBFC8717DF74C60021AB75 /* ADNNetServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 29CBFC8617DF74C60021AB75 /* ADNNetServerTrustChain */; };
 		29CBFC8817DF74C60021AB75 /* ADNNetServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 29CBFC8617DF74C60021AB75 /* ADNNetServerTrustChain */; };
 		29EAB0D71AFC148200C2C460 /* AFURLSessionManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 943B1F40192E406C00304316 /* AFURLSessionManagerTests.m */; };
+		29F570501B62878600B267F7 /* AFSecurityPolicyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29F5704F1B62878600B267F7 /* AFSecurityPolicyTests.m */; };
+		29F570511B62878700B267F7 /* AFSecurityPolicyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29F5704F1B62878600B267F7 /* AFSecurityPolicyTests.m */; };
 		36DE264E18053E930062F4E3 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264B18053E930062F4E3 /* adn_0.cer */; };
 		36DE264F18053E930062F4E3 /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264C18053E930062F4E3 /* adn_1.cer */; };
 		36DE265018053E930062F4E3 /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264D18053E930062F4E3 /* adn_2.cer */; };
-		36DE26511805445B0062F4E3 /* AFSecurityPolicyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC5917DF61B30021AB75 /* AFSecurityPolicyTests.m */; };
 		36DE2652180544600062F4E3 /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */; };
 		3D56634E3A564CEE86172413 /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
 		6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
@@ -107,9 +107,9 @@
 		29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationTests.m; sourceTree = "<group>"; };
 		29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONSerializationTests.m; sourceTree = "<group>"; };
 		29CBFC3E17DF58000021AB75 /* AFHTTPRequestSerializationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestSerializationTests.m; sourceTree = "<group>"; };
-		29CBFC5917DF61B30021AB75 /* AFSecurityPolicyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicyTests.m; sourceTree = "<group>"; };
 		29CBFC7517DF697C0021AB75 /* HTTPBinOrgServerTrustChain */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HTTPBinOrgServerTrustChain; sourceTree = "<group>"; };
 		29CBFC8617DF74C60021AB75 /* ADNNetServerTrustChain */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ADNNetServerTrustChain; sourceTree = "<group>"; };
+		29F5704F1B62878600B267F7 /* AFSecurityPolicyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicyTests.m; sourceTree = "<group>"; };
 		2B6D24F8E1B74E10A269E8B3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		36DE264B18053E930062F4E3 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = Resources/ADN.net/ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
 		36DE264C18053E930062F4E3 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = Resources/ADN.net/ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
@@ -277,7 +277,7 @@
 				F837FFAE195744A0009078A0 /* AFHTTPResponseSerializationTests.m */,
 				29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */,
 				77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */,
-				29CBFC5917DF61B30021AB75 /* AFSecurityPolicyTests.m */,
+				29F5704F1B62878600B267F7 /* AFSecurityPolicyTests.m */,
 				B6774DC818FBB49E0044DB17 /* AFNetworkActivityManagerTests.m */,
 				943B1F40192E406C00304316 /* AFURLSessionManagerTests.m */,
 				DE533FCD1ACCF34200C62CFB /* AFNetworkReachabilityManagerTests.m */,
@@ -545,8 +545,8 @@
 				943B1F41192E406C00304316 /* AFURLSessionManagerTests.m in Sources */,
 				F837FFAF195744A0009078A0 /* AFHTTPResponseSerializationTests.m in Sources */,
 				2940C00C1B064C3200AFDAC7 /* AFUIRefreshControlTests.m in Sources */,
-				29CBFC5A17DF61B30021AB75 /* AFSecurityPolicyTests.m in Sources */,
 				29CBFC3F17DF58000021AB75 /* AFHTTPRequestSerializationTests.m in Sources */,
+				29F570501B62878600B267F7 /* AFSecurityPolicyTests.m in Sources */,
 				B6774DC918FBB49E0044DB17 /* AFNetworkActivityManagerTests.m in Sources */,
 				DE533FCE1ACCF34200C62CFB /* AFNetworkReachabilityManagerTests.m in Sources */,
 				29CBFC3C17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
@@ -563,7 +563,7 @@
 				F837FFB0195744A0009078A0 /* AFHTTPResponseSerializationTests.m in Sources */,
 				36DE2652180544600062F4E3 /* AFHTTPRequestOperationTests.m in Sources */,
 				29EAB0D71AFC148200C2C460 /* AFURLSessionManagerTests.m in Sources */,
-				36DE26511805445B0062F4E3 /* AFSecurityPolicyTests.m in Sources */,
+				29F570511B62878700B267F7 /* AFSecurityPolicyTests.m in Sources */,
 				29CBFC4017DF58000021AB75 /* AFHTTPRequestSerializationTests.m in Sources */,
 				29CBFC3D17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */,
 				77D65EBD1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */,
