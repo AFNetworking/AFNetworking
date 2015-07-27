@@ -196,7 +196,6 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         return nil;
     }
 
-    self.validatesCertificateChain = YES;
     self.validatesDomainName = YES;
 
     return self;
@@ -204,7 +203,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 - (void)setPinnedCertificates:(NSArray *)pinnedCertificates {
     _pinnedCertificates = [[NSOrderedSet orderedSetWithArray:pinnedCertificates] array];
-    
+
     if (self.pinnedCertificates) {
         NSMutableArray *mutablePinnedPublicKeys = [NSMutableArray arrayWithCapacity:[self.pinnedCertificates count]];
         for (NSData *certificate in self.pinnedCertificates) {
@@ -229,6 +228,19 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
                   forDomain:(NSString *)domain
 {
+    if (domain && self.allowInvalidCertificates && self.validatesDomainName && (self.SSLPinningMode == AFSSLPinningModeNone || [self.pinnedCertificates count] == 0)) {
+        // https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/OverridingSSLChainValidationCorrectly.html
+        //  According to the docs, you should only trust your provided certs for evaluation.
+        //  Pinned certificates are added to the trust. Without pinned certificates,
+        //  there is nothing to evaluate against.
+        //
+        //  From Apple Docs:
+        //          "Do not implicitly trust self-signed certificates as anchors (kSecTrustOptionImplicitAnchors).
+        //           Instead, add your own (self-signed) CA certificate to the list of trusted anchors."
+        NSLog(@"In order to validate a domain name for self signed certificates, you MUST use pinning.");
+        return NO;
+    }
+
     NSMutableArray *policies = [NSMutableArray array];
     if (self.validatesDomainName) {
         [policies addObject:(__bridge_transfer id)SecPolicyCreateSSL(true, (__bridge CFStringRef)domain)];
@@ -264,25 +276,17 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
                 return NO;
             }
 
-            if (!self.validatesCertificateChain) {
-                return YES;
-            }
-
             NSUInteger trustedCertificateCount = 0;
             for (NSData *trustChainCertificate in serverCertificates) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
                     trustedCertificateCount++;
                 }
             }
-
-            return trustedCertificateCount == [serverCertificates count];
+            return trustedCertificateCount > 0;
         }
         case AFSSLPinningModePublicKey: {
             NSUInteger trustedPublicKeyCount = 0;
             NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust);
-            if (!self.validatesCertificateChain && [publicKeys count] > 0) {
-                publicKeys = @[[publicKeys firstObject]];
-            }
 
             for (id trustChainPublicKey in publicKeys) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
@@ -291,11 +295,10 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
                     }
                 }
             }
-
-            return trustedPublicKeyCount > 0 && ((self.validatesCertificateChain && trustedPublicKeyCount == [serverCertificates count]) || (!self.validatesCertificateChain && trustedPublicKeyCount >= 1));
+            return trustedPublicKeyCount > 0;
         }
     }
-
+    
     return NO;
 }
 
