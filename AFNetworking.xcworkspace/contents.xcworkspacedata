@@ -136,12 +136,6 @@
       <FileRef
          location = "group:UIRefreshControl+AFNetworking.m">
       </FileRef>
-      <FileRef
-         location = "group:/Users/pferreira/work/GitHub/AFNetworking/UIKit+AFNetworking/UIImage+AFNetworking.h">
-      </FileRef>
-      <FileRef
-         location = "group:UIImage+AFNetworking.m">
-      </FileRef>
    </Group>
    <FileRef
       location = "group:Tests/AFNetworking Tests.xcodeproj">

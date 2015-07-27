@@ -34,5 +34,4 @@
     #import "UIProgressView+AFNetworking.h"
     #import "UIRefreshControl+AFNetworking.h"
     #import "UIWebView+AFNetworking.h"
-    #import "UIImage+AFNetworking.h"
 #endif /* _UIKIT_AFNETWORKING_ */
