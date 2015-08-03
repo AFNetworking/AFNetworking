@@ -133,4 +133,14 @@ static NSData * AFJSONTestData() {
     XCTAssertNotNil(error, @"Serialization error should not be nil");
 }
 
+- (void)testThatJSONResponseSerializerRemovesNullsFromArray {
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/json"}];
+    NSError *error = nil;
+    self.responseSerializer.removesKeysWithNullValues = YES;
+    id responseData = [self.responseSerializer responseObjectForResponse:response data:[@"{\"key\": [4, null, 3]}" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
+    id expected = @{@"key": @[@4, @3]};
+    XCTAssertNil(error, @"Serialization error should be nil");
+    XCTAssert([expected isEqualToDictionary:responseData], @"Expected NSNull to be removed. (Expected %@, got %@)", expected, responseData);
+}
+
 @end

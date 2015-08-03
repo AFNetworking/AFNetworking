@@ -60,7 +60,9 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     if ([JSONObject isKindOfClass:[NSArray class]]) {
         NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:[(NSArray *)JSONObject count]];
         for (id value in (NSArray *)JSONObject) {
-            [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions)];
+            if (![value isKindOfClass:[NSNull class]]) {
+                [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions)];
+            }
         }
 
         return (readingOptions & NSJSONReadingMutableContainers) ? mutableArray : [NSArray arrayWithArray:mutableArray];
