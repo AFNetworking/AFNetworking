@@ -436,7 +436,9 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
+#if !TARGET_OS_WATCH
     self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+#endif
 
     self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
 

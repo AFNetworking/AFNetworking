@@ -20,6 +20,8 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+
+#if !TARGET_OS_WATCH
 #import <SystemConfiguration/SystemConfiguration.h>
 
 #ifndef NS_DESIGNATED_INITIALIZER
@@ -202,3 +204,4 @@ extern NSString * const AFNetworkingReachabilityNotificationStatusItem;
 extern NSString * AFStringFromNetworkReachabilityStatus(AFNetworkReachabilityStatus status);
 
 NS_ASSUME_NONNULL_END
+#endif

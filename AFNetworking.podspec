@@ -11,12 +11,14 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '6.0'
   s.osx.deployment_target = '10.8'
+  s.watchos.deployment_target = '2.0'
 
   s.public_header_files = 'AFNetworking/*.h'
   s.source_files = 'AFNetworking/AFNetworking.h'
 
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
+    ss.watchos.frameworks = 'MobileCoreServices', 'CoreGraphics'
     ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
     ss.osx.frameworks = 'CoreServices'
   end
@@ -28,7 +30,8 @@ Pod::Spec.new do |s|
 
   s.subspec 'Reachability' do |ss|
     ss.source_files = 'AFNetworking/AFNetworkReachabilityManager.{h,m}'
-    ss.frameworks = 'SystemConfiguration'
+    ss.ios.frameworks = 'SystemConfiguration'
+    ss.osx.frameworks = 'SystemConfiguration'
   end
 
   s.subspec 'NSURLConnection' do |ss|
@@ -36,7 +39,9 @@ Pod::Spec.new do |s|
     ss.dependency 'AFNetworking/Reachability'
     ss.dependency 'AFNetworking/Security'
 
-    ss.source_files = 'AFNetworking/AFURLConnectionOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperationManager.{h,m}'
+    ss.ios.source_files = 'AFNetworking/AFURLConnectionOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperationManager.{h,m}'
+    ss.osx.source_files = 'AFNetworking/AFURLConnectionOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperationManager.{h,m}'
+    ss.watchos.source_files = ''
   end
 
   s.subspec 'NSURLSession' do |ss|
@@ -56,5 +61,6 @@ Pod::Spec.new do |s|
     ss.ios.public_header_files = 'UIKit+AFNetworking/*.h'
     ss.ios.source_files = 'UIKit+AFNetworking'
     ss.osx.source_files = ''
+    ss.watchos.source_files = ''
   end
 end
