@@ -15,7 +15,14 @@ Pod::Spec.new do |s|
 
   s.public_header_files = 'AFNetworking/*.h'
   s.source_files = 'AFNetworking/AFNetworking.h'
-
+  
+  pch_AF = <<-EOS
+#ifndef TARGET_OS_IOS
+  #define TARGET_OS_IOS TARGET_OS_IPHONE
+#endif
+EOS
+  s.prefix_header_contents = pch_AF
+  
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
     ss.watchos.frameworks = 'MobileCoreServices', 'CoreGraphics'
