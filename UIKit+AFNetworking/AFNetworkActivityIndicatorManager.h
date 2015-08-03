@@ -41,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
  See the Apple Human Interface Guidelines section about the Network Activity Indicator for more information:
  http://developer.apple.com/library/iOS/#documentation/UserExperience/Conceptual/MobileHIG/UIElementGuidelines/UIElementGuidelines.html#//apple_ref/doc/uid/TP40006556-CH13-SW44
  */
+NS_EXTENSION_UNAVAILABLE_IOS("Use view controller based solutions where appropriate instead.")
 @interface AFNetworkActivityIndicatorManager : NSObject
 
 /**

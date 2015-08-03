@@ -37,3 +37,6 @@ extern NSString * const kUserProfileImageDidLoadNotification;
 - (instancetype)initWithAttributes:(NSDictionary *)attributes;
 
 @end
+
+@interface User (NSCoding) <NSSecureCoding>
+@end
