@@ -527,10 +527,13 @@ forHTTPHeaderField:(NSString *)field
         }
     } else {
         // #2864: an empty string is a valid x-www-form-urlencoded payload
+        if (!query) {
+            query = @"";
+        }
         if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
             [mutableRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
         }
-        [mutableRequest setHTTPBody:[query ?: @"" dataUsingEncoding:self.stringEncoding]];
+        [mutableRequest setHTTPBody:[query dataUsingEncoding:self.stringEncoding]];
     }
 
     return mutableRequest;
