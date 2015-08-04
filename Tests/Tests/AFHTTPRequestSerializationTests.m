@@ -65,6 +65,34 @@
 
 #pragma mark -
 
+- (void)testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperly {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    request.HTTPMethod = @"POST";
+
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:request withParameters:@{@"key":@"value"} error:nil];
+    NSString *contentType = serializedRequest.allHTTPHeaderFields[@"Content-Type"];
+
+    XCTAssertNotNil(contentType);
+    XCTAssertEqualObjects(contentType, @"application/x-www-form-urlencoded");
+
+    XCTAssertNotNil(serializedRequest.HTTPBody);
+    XCTAssertEqualObjects(serializedRequest.HTTPBody, [@"key=value" dataUsingEncoding:NSUTF8StringEncoding]);
+}
+
+- (void)testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperlyWhenNoParameterIsProvided {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    request.HTTPMethod = @"POST";
+
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:request withParameters:nil error:nil];
+    NSString *contentType = serializedRequest.allHTTPHeaderFields[@"Content-Type"];
+
+    XCTAssertNotNil(contentType);
+    XCTAssertEqualObjects(contentType, @"application/x-www-form-urlencoded");
+
+    XCTAssertNotNil(serializedRequest.HTTPBody);
+    XCTAssertEqualObjects(serializedRequest.HTTPBody, [NSData data]);
+}
+
 - (void)testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectly {
     NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"value"} error:nil];
