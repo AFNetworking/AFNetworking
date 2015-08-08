@@ -149,12 +149,12 @@
 }
 
 - (void)testThatAcceptLanguageEncodesCorrectly {
-    //    NSLocale *currentLocale = [NSLocale localeWithLocaleIdentifier:@"en_US"];
-    NSArray *preferredLanguages = @[ @"en", @"fr", @"de", @"zh-Hans", @"zh-Hant", @"ja" ];
+    NSLocale *currentLocale = [NSLocale localeWithLocaleIdentifier:@"en_US"];
+    NSArray *preferredLanguages = @[ currentLocale, @"en", @"fr", @"de", @"zh-Hans", @"zh-Hant", @"ja" ];
     [self.requestSerializer setAcceptLanguageHeader:preferredLanguages];
 
     NSString *value = [self.requestSerializer valueForHTTPHeaderField:@"Accept-Language"];
     
-    XCTAssertEqualObjects(@"en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5", value);
+    XCTAssertEqualObjects(@"en-US;q=1, en;q=0.9, fr;q=0.8, de;q=0.7, zh-Hans;q=0.6, zh-Hant;q=0.5", value);
 }
 @end

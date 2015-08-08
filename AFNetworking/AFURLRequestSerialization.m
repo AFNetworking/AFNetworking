@@ -323,7 +323,17 @@ forHTTPHeaderField:(NSString *)field
     NSMutableArray *acceptLanguagesComponents = [NSMutableArray array];
     [languages enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         float q = 1.0f - (idx * 0.1f);
-        [acceptLanguagesComponents addObject:[NSString stringWithFormat:@"%@;q=%0.1g", obj, q]];
+        NSString *langTag;
+        if ([obj isKindOfClass:[NSLocale class]]) {
+            NSLocale *locale = (NSLocale *)obj;
+            // Language Tags; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.10
+            langTag = [NSString stringWithFormat:@"%@-%@",
+                       [locale objectForKey:NSLocaleLanguageCode],
+                       [locale objectForKey:NSLocaleCountryCode]];
+        } else {
+            langTag = obj;
+        }
+        [acceptLanguagesComponents addObject:[NSString stringWithFormat:@"%@;q=%0.1g", langTag, q]];
         *stop = q <= 0.5f;
     }];
     [self setValue:[acceptLanguagesComponents componentsJoinedByString:@", "] forHTTPHeaderField:@"Accept-Language"];
