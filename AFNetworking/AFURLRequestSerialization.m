@@ -203,7 +203,9 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 
     self.mutableHTTPRequestHeaders = [NSMutableDictionary dictionary];
 
-    [self setAcceptLanguageHeader:[NSLocale preferredLanguages]];
+    NSMutableArray *acceptLanguages = [[NSLocale preferredLanguages] mutableCopy];
+    [acceptLanguages insertObject:[NSLocale currentLocale] atIndex:0];
+    [self setAcceptLanguageHeader:acceptLanguages];
 
     NSString *userAgent = nil;
 #pragma clang diagnostic push
