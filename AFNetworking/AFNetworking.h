@@ -29,7 +29,7 @@
     #import "AFURLRequestSerialization.h"
     #import "AFURLResponseSerialization.h"
     #import "AFSecurityPolicy.h"
-#if !defined(TARGET_OS_WATCH) || !TARGET_OS_WATCH
+#if !TARGET_OS_WATCH
     #import "AFNetworkReachabilityManager.h"
     #import "AFURLConnectionOperation.h"
     #import "AFHTTPRequestOperation.h"
