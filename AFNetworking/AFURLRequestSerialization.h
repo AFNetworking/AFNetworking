@@ -20,8 +20,10 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS
 #import <UIKit/UIKit.h>
+#elif TARGET_OS_WATCH
+#import <WatchKit/WatchKit.h>
 #endif
 
 NS_ASSUME_NONNULL_BEGIN

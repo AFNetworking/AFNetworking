@@ -24,7 +24,9 @@
 #import "AFURLResponseSerialization.h"
 #import "AFURLRequestSerialization.h"
 #import "AFSecurityPolicy.h"
+#if !TARGET_OS_WATCH
 #import "AFNetworkReachabilityManager.h"
+#endif
 
 #ifndef NS_DESIGNATED_INITIALIZER
 #if __has_attribute(objc_designated_initializer)
@@ -91,7 +93,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
+#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090) || TARGET_OS_WATCH
 
 @interface AFURLSessionManager : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSSecureCoding, NSCopying>
 
@@ -121,6 +123,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
+#if !TARGET_OS_WATCH
 ///--------------------------------------
 /// @name Monitoring Network Reachability
 ///--------------------------------------
@@ -129,6 +132,7 @@ NS_ASSUME_NONNULL_BEGIN
  The network reachability manager. `AFURLSessionManager` uses the `sharedManager` by default.
  */
 @property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
+#endif
 
 ///----------------------------
 /// @name Getting Session Tasks
