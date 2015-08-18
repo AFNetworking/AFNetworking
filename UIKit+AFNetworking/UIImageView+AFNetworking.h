@@ -123,7 +123,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol AFImageCache <NSObject>
 
 /**
- Returns a cached image for the specififed request, if available.
+ Returns a cached image for the specified request, if available.
 
  @param request The image request.
 

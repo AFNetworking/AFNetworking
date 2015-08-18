@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class AFURLConnectionOperation;
 
 /**
- This category adds methods to the UIKit framework's `UIRefreshControl` class. The methods in this category provide support for automatically begining and ending refreshing depending on the loading state of a request operation or session task.
+ This category adds methods to the UIKit framework's `UIRefreshControl` class. The methods in this category provide support for automatically beginning and ending refreshing depending on the loading state of a request operation or session task.
  */
 @interface UIRefreshControl (AFNetworking)
 
