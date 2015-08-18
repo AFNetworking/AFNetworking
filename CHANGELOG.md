@@ -4,8 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [2.6.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.0) (08-18-2015)
-Released on Tuesday, August 18th, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.0+is%3Aclosed).
+## [2.6.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.0) (TBD)
+Released on TBD. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.0+is%3Aclosed).
 
 ###Important Upgrade Notes
 Please note the following API/project changes have been made:
