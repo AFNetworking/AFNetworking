@@ -66,6 +66,7 @@ EOS
   s.subspec 'NSURLSession' do |ss|
     ss.ios.deployment_target = '7.0'
     ss.osx.deployment_target = '10.9'
+    ss.watchos.deployment_target = '2.0'
     
     ss.dependency 'AFNetworking/Serialization'
     ss.ios.dependency 'AFNetworking/Reachability'
