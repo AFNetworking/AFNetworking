@@ -265,7 +265,7 @@ forHTTPHeaderField:(NSString *)field;
  */
 - (NSMutableURLRequest *)requestWithMultipartFormRequest:(NSURLRequest *)request
                              writingStreamContentsToFile:(NSURL *)fileURL
-                                       completionHandler:(nullable void (^)(NSError *error))handler;
+                                       completionHandler:(nullable void (^)(NSError * __nullable error))handler;
 
 @end
 
