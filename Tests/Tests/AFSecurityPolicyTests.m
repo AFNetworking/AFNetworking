@@ -496,7 +496,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
 
-    XCTAssertTrue([policy evaluateServerTrust:trust forDomain:nil], @"Policy should allow server trust because invalid certificaftes are allowed");
+    XCTAssertTrue([policy evaluateServerTrust:trust forDomain:nil], @"Policy should allow server trust because invalid certificates are allowed");
 }
 
 - (void)testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesDoesAllowSelfSignedServerTrustForValidDomainName {
@@ -506,7 +506,18 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
     [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
 
-    XCTAssertTrue([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should allow server trust because invalid certificaftes are not allowed");
+    XCTAssertTrue([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should allow server trust because invalid certificates are allowed");
+}
+
+- (void)testThatPolicyWithInvalidCertificatesAllowedAndNoSSLPinningAndDomainNameValidationDisabledDoesAllowSelfSignedServerTrustForValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+
+    XCTAssertTrue([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should allow server trust because invalid certificates are allowed");
 }
 
 #pragma mark Negative Test Cases
@@ -517,7 +528,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
 
-    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"Policy should not allow server trust because invalid certificaftes are not allowed");
+    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"Policy should not allow server trust because invalid certificates are not allowed");
 }
 
 - (void)testThatPolicyWithInvalidCertificatesAllowedAndNoPinnedCertificatesAndPublicKeyPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName {
@@ -527,7 +538,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
 
-    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust because invalid certificaftes are allowed but there are no pinned certificates");
+    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
 }
 
 - (void)testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesAndNoPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName {
@@ -537,7 +548,17 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
     [policy setPinnedCertificates:@[(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
 
-    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust because invalid certificaftes are allowed but there are no pinned certificates");
+    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
 }
 
+- (void)testThatPolicyWithInvalidCertificatesAllowedAndNoValidPinnedCertificatesAndNoPinningModeAndDomainValidationDoesNotAllowSelfSignedServerTrustForValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setPinnedCertificates:@[]];
+
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+
+    XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
+}
 @end
