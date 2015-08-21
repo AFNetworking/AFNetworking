@@ -81,6 +81,14 @@ static SecCertificateRef AFUTCOMODORSACertificate() {
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
+static SecCertificateRef AFUTCOMODORSARootCertificate() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"COMODO_RSA_Certification_Authority_Root" ofType:@"cer"];
+    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+    NSData *certData = [NSData dataWithContentsOfFile:certPath];
+    
+    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+}
+
 static SecCertificateRef AFUTAddTrustExternalRootCertificate() {
     NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"AddTrust_External_CA_Root" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
@@ -395,6 +403,22 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"httpbin.org"], @"Policy should allow server trust");
+}
+
+- (void)testPolicyWithCertificatePinningAllowsMultiplePathBinOrgServerTrustWithSingleRootCertificatePinnedAndValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    // httpbin.org has 2 certificate paths (one ending in AddTrust Root CA and one ending in Comodo RSA Root CA
+    // this can be validated in https://www.ssllabs.com/ssltest/analyze.html?d=httpbin.org
+    // either one of the Root CA's can be pinned and the validation should always work (they're both valid anchors)
+    
+    SecCertificateRef path1Certificate = AFUTAddTrustExternalRootCertificate();
+    policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(path1Certificate)];
+    XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"httpbin.org"], @"Policy should allow server trust");
+    
+    SecCertificateRef path2Certificate = AFUTCOMODORSARootCertificate();
+    policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(path2Certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"httpbin.org"], @"Policy should allow server trust");
 }
 
