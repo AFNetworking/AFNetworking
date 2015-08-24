@@ -35,6 +35,8 @@
 		36DE265018053E930062F4E3 /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264D18053E930062F4E3 /* adn_2.cer */; };
 		36DE2652180544600062F4E3 /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */; };
 		3D56634E3A564CEE86172413 /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
+		5F0502A11B8799E300DDA622 /* COMODO_RSA_Certification_Authority_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F0502A01B8799E300DDA622 /* COMODO_RSA_Certification_Authority_Root.cer */; };
+		5F4CCACD1B8B13AB0021B799 /* COMODO_RSA_Certification_Authority_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F0502A01B8799E300DDA622 /* COMODO_RSA_Certification_Authority_Root.cer */; };
 		6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
 		77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
 		77D65EBD1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
@@ -116,6 +118,7 @@
 		36DE264D18053E930062F4E3 /* adn_2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_2.cer; path = Resources/ADN.net/ADNNetServerTrustChain/adn_2.cer; sourceTree = "<group>"; };
 		520A0FB27D040CF3258787D2 /* Pods-osx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.debug.xcconfig"; path = "Pods/Target Support Files/Pods-osx/Pods-osx.debug.xcconfig"; sourceTree = "<group>"; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F0502A01B8799E300DDA622 /* COMODO_RSA_Certification_Authority_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Certification_Authority_Root.cer; sourceTree = "<group>"; };
 		77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListResponseSerializerTests.m; sourceTree = "<group>"; };
 		943B1F40192E406C00304316 /* AFURLSessionManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManagerTests.m; sourceTree = "<group>"; };
 		95D45FB81CA3594FA8CF7430 /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -308,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */,
+				5F0502A01B8799E300DDA622 /* COMODO_RSA_Certification_Authority_Root.cer */,
 				CBBDB1681A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer */,
 				CBBDB1691A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */,
 				CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */,
@@ -438,6 +442,7 @@
 				CBBDB1651A7981FB00D412EE /* httpbinorg_01162016.cer in Resources */,
 				36DE264E18053E930062F4E3 /* adn_0.cer in Resources */,
 				36DE264F18053E930062F4E3 /* adn_1.cer in Resources */,
+				5F0502A11B8799E300DDA622 /* COMODO_RSA_Certification_Authority_Root.cer in Resources */,
 				CBBDB16C1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */,
 				CBBDB16E1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 				A74DA00B18D2FB9400F3B969 /* foobar.com.cer in Resources */,
@@ -459,6 +464,7 @@
 				CBBDB1661A79820700D412EE /* httpbinorg_01162016.cer in Resources */,
 				B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */,
 				B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */,
+				5F4CCACD1B8B13AB0021B799 /* COMODO_RSA_Certification_Authority_Root.cer in Resources */,
 				CBBDB16D1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */,
 				CBBDB16F1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 				A74DA00C18D2FB9400F3B969 /* foobar.com.cer in Resources */,
