@@ -260,7 +260,6 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         return NO;
     }
 
-    NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);
     switch (self.SSLPinningMode) {
         case AFSSLPinningModeNone:
         default:
@@ -276,13 +275,16 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
                 return NO;
             }
 
-            NSUInteger trustedCertificateCount = 0;
-            for (NSData *trustChainCertificate in serverCertificates) {
+            // obtain the chain after being validated, which *should* contain the pinned certificate in the last position (if it's the Root CA)
+            NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);
+            
+            for (NSData *trustChainCertificate in [serverCertificates reverseObjectEnumerator]) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
-                    trustedCertificateCount++;
+                    return YES;
                 }
             }
-            return trustedCertificateCount > 0;
+            
+            return NO;
         }
         case AFSSLPinningModePublicKey: {
             NSUInteger trustedPublicKeyCount = 0;
