@@ -1,6 +1,5 @@
 // AFNetworkActivityIndicatorManager.h
-//
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +27,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  `AFNetworkActivityIndicatorManager` manages the state of the network activity indicator in the status bar. When enabled, it will listen for notifications indicating that a network request operation has started or finished, and start or stop animating the indicator accordingly. The number of active requests is incremented and decremented much like a stack or a semaphore, and the activity indicator will animate so long as that number is greater than zero.
 
@@ -35,11 +36,12 @@
 
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 
- By setting `isNetworkActivityIndicatorVisible` to `YES` for `sharedManager`, the network activity indicator will show and hide automatically as requests start and finish. You should not ever need to call `incrementActivityCount` or `decrementActivityCount` yourself.
+ By setting `enabled` to `YES` for `sharedManager`, the network activity indicator will show and hide automatically as requests start and finish. You should not ever need to call `incrementActivityCount` or `decrementActivityCount` yourself.
 
  See the Apple Human Interface Guidelines section about the Network Activity Indicator for more information:
  http://developer.apple.com/library/iOS/#documentation/UserExperience/Conceptual/MobileHIG/UIElementGuidelines/UIElementGuidelines.html#//apple_ref/doc/uid/TP40006556-CH13-SW44
  */
+NS_EXTENSION_UNAVAILABLE_IOS("Use view controller based solutions where appropriate instead.")
 @interface AFNetworkActivityIndicatorManager : NSObject
 
 /**
@@ -72,5 +74,7 @@
 - (void)decrementActivityCount;
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 #endif

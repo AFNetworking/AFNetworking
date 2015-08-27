@@ -1,6 +1,5 @@
 // AFHTTPClientTests.m
-//
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -281,8 +280,8 @@
     expect(operations).notTo.beNil();
     expect(operations).to.haveCountOf(2);
 
-    expect([[operations objectAtIndex:0] class]).to.equal([AFJSONRequestOperation class]);
-    expect([[operations objectAtIndex:1] class]).to.equal([AFImageRequestOperation class]);
+    expect([operations[0] class]).to.equal([AFJSONRequestOperation class]);
+    expect([operations[1] class]).to.equal([AFImageRequestOperation class]);
 }
 
 - (void)testThatEnqueueBatchOfHTTPRequestOperationsEnqueuesOperationsInTheCorrectOrder {
@@ -313,8 +312,8 @@
 
     expect(operations).to.haveCountOf(2);
 
-    expect([operations objectAtIndex:0]).to.equal(firstOperation);
-    expect([operations objectAtIndex:1]).to.equal(secondOperation);
+    expect(operations[0]).to.equal(firstOperation);
+    expect(operations[1]).to.equal(secondOperation);
 
     expect(batchedOperation).notTo.beNil();
     expect(batchedOperation).to.beKindOf([NSBlockOperation class]);

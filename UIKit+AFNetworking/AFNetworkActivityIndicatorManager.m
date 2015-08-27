@@ -1,6 +1,5 @@
 // AFNetworkActivityIndicatorManager.m
-//
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -121,7 +120,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 	@synchronized(self) {
 		_activityCount = activityCount;
 	}
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateNetworkActivityIndicatorVisibilityDelayed];
     });
@@ -133,7 +132,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 		_activityCount++;
 	}
     [self didChangeValueForKey:@"activityCount"];
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateNetworkActivityIndicatorVisibilityDelayed];
     });
@@ -148,7 +147,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 #pragma clang diagnostic pop
 	}
     [self didChangeValueForKey:@"activityCount"];
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateNetworkActivityIndicatorVisibilityDelayed];
     });

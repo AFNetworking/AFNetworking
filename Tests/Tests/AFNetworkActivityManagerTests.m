@@ -1,6 +1,5 @@
 // AFNetworkActivityManagerTests.m
-//
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -53,6 +52,14 @@
     }] setNetworkActivityIndicatorVisible:YES];
 }
 
+- (void)tearDown {
+    [super tearDown];
+    [self.mockApplication stopMocking];
+    
+    self.mockApplication = nil;
+    self.networkActivityIndicatorManager = nil;
+}
+
 #pragma mark -
 
 - (void)testThatNetworkActivityIndicatorTurnsOffIndicatorWhenRequestSucceeds {
@@ -61,7 +68,7 @@
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
     } failure:nil];
-    
+
     [operation start];
 
     expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beTruthy();
@@ -73,9 +80,9 @@
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
     }];
-    
+
     [operation start];
-    
+
     expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beTruthy();
 }
 
@@ -93,7 +100,7 @@
     [operation setCompletionBlockWithSuccess:nil failure:nil];
 
     [operation start];
-    
+
     expect(didChangeNetworkActivityIndicatorVisible).will.beFalsy();
 }
 

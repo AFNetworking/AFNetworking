@@ -21,7 +21,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 - If you **need help**, use [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking). (Tag 'afnetworking')
 - If you'd like to **ask a general question**, use [Stack Overflow](http://stackoverflow.com/questions/tagged/afnetworking).
-- If you **found a bug**, open an issue.
+- If you **found a bug**, _and can provide steps to reliably reproduce it_, open an issue.
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.
 
@@ -40,11 +40,13 @@ pod "AFNetworking", "~> 2.0"
 
 | AFNetworking Version | Minimum iOS Target  | Minimum OS X Target  |                                   Notes                                   |
 |:--------------------:|:---------------------------:|:----------------------------:|:-------------------------------------------------------------------------:|
-|          2.x         |            iOS 6            |           OS X 10.8          | Xcode 5 is required. `AFHTTPSessionManager` requires iOS 7 or OS X 10.9. |
+|          2.x         |            iOS 6            |           OS X 10.8          | Xcode 5 is required. `NSURLSession` subspec requires iOS 7 or OS X 10.9. |
 |          [1.x](https://github.com/AFNetworking/AFNetworking/tree/1.x)         |            iOS 5            |         Mac OS X 10.7        |                                                                           |
 |        [0.10.x](https://github.com/AFNetworking/AFNetworking/tree/0.10.x)        |            iOS 4            |         Mac OS X 10.6        |                                                                           |
 
 (OS X projects must support [64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)).
+
+> Programming in Swift? Try [Alamofire](https://github.com/Alamofire/Alamofire) for a more conventional set of APIs.
 
 ## Architecture
 
@@ -254,12 +256,23 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 
 `AFNetworkReachabilityManager` monitors the reachability of domains, and addresses for both WWAN and WiFi network interfaces.
 
+* Do not use Reachability to determine if the original request should be sent.
+	* You should try to send it.
+* You can use Reachability to determine when a request should be automatically retried.
+	* Although it may still fail, a Reachability notification that the connectivity is available is a good time to retry something.
+* Network reachability is a useful tool for determining why a request might have failed.
+	* After a network request has failed, telling the user they're offline is better than giving them a more technical but accurate error, such as "request timed out."
+
+See also [WWDC 2012 session 706, "Networking Best Practices."](https://developer.apple.com/videos/wwdc/2012/#706).
+
 #### Shared Network Reachability
 
 ```objective-c
 [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
     NSLog(@"Reachability: %@", AFStringFromNetworkReachabilityStatus(status));
 }];
+
+[[AFNetworkReachabilityManager sharedManager] startMonitoring];
 ```
 
 #### HTTP Manager Reachability
@@ -364,20 +377,18 @@ Once `xcpretty` is installed, you can execute the suite via `rake test`.
 
 ## Credits
 
+AFNetworking is owned and maintained by the [Alamofire Software Foundation](http://alamofire.org).
+
 AFNetworking was originally created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
 
 AFNetworking's logo was designed by [Alan Defibaugh](http://www.alandefibaugh.com/).
 
 And most of all, thanks to AFNetworking's [growing list of contributors](https://github.com/AFNetworking/AFNetworking/contributors).
 
-## Contact
+### Security Disclosure
 
-Follow AFNetworking on Twitter ([@AFNetworking](https://twitter.com/AFNetworking))
-
-### Maintainers
-
-- [Mattt Thompson](http://github.com/mattt) ([@mattt](https://twitter.com/mattt))
+If you believe you have identified a security vulnerability with AFNetworking, you should report it as soon as possible via email to security@alamofire.org. Please do not post it to a public issue tracker.
 
 ## License
 
-AFNetworking is available under the MIT license. See the LICENSE file for more info.
+AFNetworking is released under the MIT license. See LICENSE for details.

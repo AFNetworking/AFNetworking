@@ -31,7 +31,6 @@
 
 @interface GlobalTimelineViewController ()
 @property (readwrite, nonatomic, strong) NSArray *posts;
-@property (readwrite, nonatomic, strong) UIRefreshControl *refreshControl;
 @end
 
 @implementation GlobalTimelineViewController
@@ -84,7 +83,7 @@
         cell = [[PostTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    cell.post = [self.posts objectAtIndex:(NSUInteger)indexPath.row];
+    cell.post = self.posts[(NSUInteger)indexPath.row];
     
     return cell;
 }
@@ -94,7 +93,7 @@
 - (CGFloat)tableView:(__unused UITableView *)tableView
 heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [PostTableViewCell heightForCellWithPost:[self.posts objectAtIndex:(NSUInteger)indexPath.row]];
+    return [PostTableViewCell heightForCellWithPost:self.posts[(NSUInteger)indexPath.row]];
 }
 
 - (void)tableView:(UITableView *)tableView

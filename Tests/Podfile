@@ -1,3 +1,5 @@
+source 'https://github.com/CocoaPods/Specs'
+
 xcodeproj 'AFNetworking Tests'
 workspace '../AFNetworking'
 inhibit_all_warnings!

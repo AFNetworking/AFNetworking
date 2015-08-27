@@ -1,6 +1,5 @@
 // AFHTTPRequestOperationTests.m
-//
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -76,7 +75,7 @@
 
 - (void)testThatCancellationOfRequestOperationInvokesFailureCompletionBlock {
     __block NSError *blockError = nil;
-    
+
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -100,7 +99,7 @@
     [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         blockError = error;
     }];
-    
+
     [operation start];
     expect([operation isFinished]).will.beTruthy();
     expect(blockError).willNot.beNil();
@@ -108,7 +107,7 @@
 
 - (void)testThatRedirectBlockIsCalledWhen302IsEncountered {
     __block BOOL success;
-    
+
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:nil failure:nil];
@@ -119,7 +118,7 @@
 
         return request;
     }];
-    
+
     [operation start];
     expect([operation isFinished]).will.beTruthy();
     expect(success).will.beTruthy();
@@ -128,7 +127,7 @@
 - (void)testThatRedirectBlockIsCalledMultipleTimesWhenMultiple302sAreEncountered {
     [Expecta setAsynchronousTestTimeout:5.0];
     __block NSInteger numberOfRedirects = 0;
-    
+
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/5" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:nil failure:nil];
@@ -136,7 +135,7 @@
         if(redirectResponse){
             numberOfRedirects++;
         }
-        
+
         return request;
     }];
 
@@ -151,10 +150,10 @@
     [Expecta setAsynchronousTestTimeout:3.0];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
+
     [operation start];
     expect([operation isExecuting]).will.beTruthy();
-    
+
     [operation pause];
     expect([operation isPaused]).will.beTruthy();
     [operation cancel];
@@ -164,10 +163,10 @@
     [Expecta setAsynchronousTestTimeout:3.0];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
+
     [operation start];
     expect([operation isExecuting]).will.beTruthy();
-    
+
     [operation pause];
     expect([operation isPaused]).will.beTruthy();
 
@@ -179,9 +178,9 @@
 
 - (void)testThatPausedOperationCanBeCompleted {
     [Expecta setAsynchronousTestTimeout:3.0];
-    
+
     __block id blockResponseObject = nil;
-    
+
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/delay/1" relativeToURL:self.baseURL]];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -190,10 +189,10 @@
 
     [operation start];
     expect([operation isExecuting]).will.beTruthy();
-    
+
     [operation pause];
     expect([operation isPaused]).will.beTruthy();
-    
+
     [operation resume];
     expect([operation isExecuting]).will.beTruthy();
     expect([operation isFinished]).will.beTruthy();

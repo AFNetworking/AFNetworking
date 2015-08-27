@@ -1,6 +1,5 @@
-// AFHTTPSerializationTests.m
-//
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// AFHTTPRequestSerializationTests.m
+// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -75,9 +74,9 @@
 
 - (void)testThatAFHTTPRequestSerialiationSerializesURLEncodableQueryParametersCorrectly {
     NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
-    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@" !\"#$%&'()*+,/"} error:nil];
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@" :#[]@!$&'()*+,;=/?"} error:nil];
 
-    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=%20%21%22%23%24%25%26%27%28%29%2A%2B%2C%2F"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=%20%3A%23%5B%5D%40%21%24%26%27%28%29%2A%2B%2C%3B%3D/?"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesURLEncodedQueryParametersCorrectly {
@@ -96,7 +95,7 @@
 
          return query;
      }];
-    
+
     NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"value"} error:nil];
 
@@ -107,13 +106,13 @@
     NSMutableURLRequest *originalRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
     Class streamClass = NSClassFromString(@"AFStreamingMultipartFormData");
     id <AFMultipartFormDataTest> formData = [[streamClass alloc] initWithURLRequest:originalRequest stringEncoding:NSUTF8StringEncoding];
-    
+
     NSURL *fileURL = [NSURL fileURLWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"adn_0" ofType:@"cer"]];
-    
+
     [formData appendPartWithFileURL:fileURL name:@"test" error:NULL];
-    
+
     AFHTTPBodyPart *part = [formData.bodyStream.HTTPBodyParts firstObject];
-    
+
     XCTAssertTrue([part.headers[@"Content-Type"] isEqualToString:@"application/x-x509-ca-cert"], @"MIME Type has not been obtained correctly (%@)", part.headers[@"Content-Type"]);
 }
 

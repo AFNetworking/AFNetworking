@@ -1,6 +1,5 @@
 // UIAlertView+AFNetworking.h
-//
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +27,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class AFURLConnectionOperation;
 
 /**
@@ -41,18 +42,18 @@
 
 /**
  Shows an alert view with the error of the specified session task, if any.
- 
+
  @param task The session task.
  @param delegate The alert view delegate.
  */
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 + (void)showAlertViewForTaskWithErrorOnCompletion:(NSURLSessionTask *)task
-                                         delegate:(id)delegate;
+                                         delegate:(nullable id)delegate NS_EXTENSION_UNAVAILABLE_IOS("Not available in app extensions.");
 #endif
 
 /**
  Shows an alert view with the error of the specified session task, if any, with a custom cancel button title and other button titles.
- 
+
  @param task The session task.
  @param delegate The alert view delegate.
  @param cancelButtonTitle The title of the cancel button or nil if there is no cancel button. Using this argument is equivalent to setting the cancel button index to the value returned by invoking addButtonWithTitle: specifying this title.
@@ -60,9 +61,9 @@
  */
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 + (void)showAlertViewForTaskWithErrorOnCompletion:(NSURLSessionTask *)task
-                                         delegate:(id)delegate
-                                cancelButtonTitle:(NSString *)cancelButtonTitle
-                                otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
+                                         delegate:(nullable id)delegate
+                                cancelButtonTitle:(nullable NSString *)cancelButtonTitle
+                                otherButtonTitles:(nullable NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION NS_EXTENSION_UNAVAILABLE_IOS("Not available in app extensions.");
 #endif
 
 ///------------------------------------------
@@ -76,7 +77,7 @@
  @param delegate The alert view delegate.
  */
 + (void)showAlertViewForRequestOperationWithErrorOnCompletion:(AFURLConnectionOperation *)operation
-                                                     delegate:(id)delegate;
+                                                     delegate:(nullable id)delegate NS_EXTENSION_UNAVAILABLE_IOS("Not available in app extensions.");
 
 /**
  Shows an alert view with the error of the specified request operation, if any, with a custom cancel button title and other button titles.
@@ -87,10 +88,12 @@
  @param otherButtonTitles The title of another button. Using this argument is equivalent to invoking addButtonWithTitle: with this title to add more buttons. Too many buttons can cause the alert view to scroll. For guidelines on the best ways to use an alert in an app, see "Temporary Views". Titles of additional buttons to add to the receiver, terminated with `nil`.
  */
 + (void)showAlertViewForRequestOperationWithErrorOnCompletion:(AFURLConnectionOperation *)operation
-                                                     delegate:(id)delegate
-                                            cancelButtonTitle:(NSString *)cancelButtonTitle
-                                            otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
+                                                     delegate:(nullable id)delegate
+                                            cancelButtonTitle:(nullable NSString *)cancelButtonTitle
+                                            otherButtonTitles:(nullable NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION NS_EXTENSION_UNAVAILABLE_IOS("Not available in app extensions.");
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 #endif
