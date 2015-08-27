@@ -172,6 +172,11 @@ forHTTPHeaderField:(NSString *)field;
  */
 - (void)clearAuthorizationHeader;
 
+/**
+ Clears any existing value for the HTTP header named "key".
+ */
+- (void)clearHeaderFieldWithKey:(NSString*)key;
+
 ///-------------------------------------------------------
 /// @name Configuring Query String Parameter Serialization
 ///-------------------------------------------------------

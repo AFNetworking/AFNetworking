@@ -338,6 +338,10 @@ forHTTPHeaderField:(NSString *)field
 	[self.mutableHTTPRequestHeaders removeObjectForKey:@"Authorization"];
 }
 
+-(void)clearHTTPHeaderWithKey:(NSString*)key
+{
+    [self.mutableHTTPRequestHeaders removeObjectForKey:key];
+}
 #pragma mark -
 
 - (void)setQueryStringSerializationWithStyle:(AFHTTPRequestQueryStringSerializationStyle)style {
