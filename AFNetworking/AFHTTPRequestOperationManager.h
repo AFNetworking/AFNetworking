@@ -175,6 +175,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, nullable) dispatch_group_t completionGroup;
 #endif
 
+/**
+ The dispatch queue for the block that is determining which callback block (success or failure) will be called according to response. If `NULL` (default), a private concurrent queue is used.
+ */
+#if OS_OBJECT_HAVE_OBJC_SUPPORT
+@property (nonatomic, strong, nullable) dispatch_queue_t completionProcessingQueue;
+#else
+@property (nonatomic, assign, nullable) dispatch_queue_t completionProcessingQueue;
+#endif
+
 ///---------------------------------------------
 /// @name Creating and Initializing HTTP Clients
 ///---------------------------------------------

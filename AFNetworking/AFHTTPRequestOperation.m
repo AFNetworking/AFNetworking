@@ -116,7 +116,7 @@ static dispatch_group_t http_request_operation_completion_group() {
             dispatch_group_enter(self.completionGroup);
         }
 
-        dispatch_async(http_request_operation_processing_queue(), ^{
+		dispatch_async(self.completionProcessingQueue ?: http_request_operation_processing_queue(), ^{
             if (self.error) {
                 if (failure) {
                     dispatch_group_async(self.completionGroup ?: http_request_operation_completion_group(), self.completionQueue ?: dispatch_get_main_queue(), ^{
@@ -199,6 +199,7 @@ static dispatch_group_t http_request_operation_completion_group() {
     operation.responseSerializer = [self.responseSerializer copyWithZone:zone];
     operation.completionQueue = self.completionQueue;
     operation.completionGroup = self.completionGroup;
+	operation.completionProcessingQueue = self.completionProcessingQueue;
 
     return operation;
 }
