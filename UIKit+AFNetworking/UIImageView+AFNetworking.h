@@ -92,6 +92,13 @@ NS_ASSUME_NONNULL_BEGIN
        placeholderImage:(nullable UIImage *)placeholderImage;
 
 /**
+ Removes the cached request for the url from cache
+ 
+ @param url The url under with the request was initially created
+ */
+- (void)removeImageWithURL: (NSURL *)url;
+
+/**
  Asynchronously downloads an image from the specified URL request, and sets it once the request is finished. Any previous image request for the receiver will be cancelled.
 
  If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
@@ -139,6 +146,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)cacheImage:(UIImage *)image
         forRequest:(NSURLRequest *)request;
+
+/**
+Removes the specified request from cache.
+ 
+ @param request The request to be used as a cache key.
+ */
+- (void)removeCachedRequest: (NSURLRequest *)request;
+
 @end
 
 NS_ASSUME_NONNULL_END
