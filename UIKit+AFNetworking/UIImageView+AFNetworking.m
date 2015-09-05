@@ -106,6 +106,15 @@
 
 #pragma mark -
 
+// This method ensures you will always get the same request for the same URL.
+- (NSMutableURLRequest *)requestForImageWithURL: (NSURL *)url
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    
+    return request;
+}
+
 - (void)setImageWithURL:(NSURL *)url {
     [self setImageWithURL:url placeholderImage:nil];
 }
@@ -113,10 +122,12 @@
 - (void)setImageWithURL:(NSURL *)url
        placeholderImage:(UIImage *)placeholderImage
 {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    [self setImageWithURLRequest:[self requestForImageWithURL:url] placeholderImage:placeholderImage success:nil failure:nil];
+}
 
-    [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
+- (void)removeImageWithURL: (NSURL *)url
+{
+    [[[self class] sharedImageCache] removeCachedRequest:[self requestForImageWithURL:url]];
 }
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
@@ -208,6 +219,17 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
     if (image && request) {
         [self setObject:image forKey:AFImageCacheKeyFromURLRequest(request)];
     }
+}
+
+- (void)removeCachedRequest: (NSURLRequest *)request
+{
+    if (!request) {
+        return;
+    }
+    
+    [self removeObjectForKey:AFImageCacheKeyFromURLRequest(request)];
+    
+    NSAssert(![self cachedImageForRequest:request], @"Request should be removed from cache."); // Should probably be moved to Tests
 }
 
 @end
