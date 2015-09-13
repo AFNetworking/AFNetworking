@@ -36,6 +36,16 @@ platform :ios, '7.0'
 pod "AFNetworking", "~> 2.0"
 ```
 
+### Installation with Carthage
+
+[Carthage](https://github.com/Carthage/Carthage) is intended to be the simplest way to add frameworks to your Cocoa application. See the ["Getting Started" guide for more information](https://github.com/Carthage/Carthage#getting-started).
+
+#### Cartfile
+
+```ruby
+github "AFNetworking/AFNetworking"
+```
+
 ## Requirements
 
 | AFNetworking Version | Minimum iOS Target  | Minimum OS X Target  |                                   Notes                                   |
