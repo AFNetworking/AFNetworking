@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param imageCache The image cache.
  */
-+ (void)setSharedImageCache:(id <AFImageCache>)imageCache;
++ (void)setSharedImageCache:(__nullable id <AFImageCache>)imageCache;
 
 ///------------------------------------
 /// @name Accessing Response Serializer
