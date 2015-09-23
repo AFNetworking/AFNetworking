@@ -59,8 +59,15 @@
     self.baseURL = url;
 
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
-    self.responseSerializer = [AFJSONResponseSerializer serializer];
+    
+    // It used to be able to work with different types of response
+    NSArray* responseSerializers = @[[AFHTTPResponseSerializer serializer],
+                                     [AFXMLParserResponseSerializer serializer],
+                                     [AFJSONResponseSerializer serializer],
+                                     [AFPropertyListResponseSerializer serializer]];
 
+    self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:responseSerializers];
+    
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
     self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
