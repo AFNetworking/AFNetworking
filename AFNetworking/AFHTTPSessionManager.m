@@ -83,6 +83,7 @@
 
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
     
+    // It used to be able to work with different types of response 
     NSArray* responseSerializers = @[[AFHTTPResponseSerializer serializer],
                                      [AFXMLParserResponseSerializer serializer],
                                      [AFJSONResponseSerializer serializer],
