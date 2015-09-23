@@ -89,12 +89,13 @@ _out:
     return allowedPublicKey;
 }
 
-static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
+static BOOL AFServerTrustIsValid(SecTrustRef serverTrust, BOOL allowExpiredCertificates) {
     BOOL isValid = NO;
-    SecTrustResultType result;
+    SecTrustResultType result = kSecTrustResultInvalid;
     __Require_noErr_Quiet(SecTrustEvaluate(serverTrust, &result), _out);
 
-    isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
+    isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed)
+    || (allowExpiredCertificates && result == kSecTrustResultRecoverableTrustFailure);
 
 _out:
     return isValid;
@@ -228,7 +229,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
                   forDomain:(NSString *)domain
 {
-    if (domain && self.allowInvalidCertificates && self.validatesDomainName && (self.SSLPinningMode == AFSSLPinningModeNone || [self.pinnedCertificates count] == 0)) {
+    if (nil != domain && self.allowInvalidCertificates && self.validatesDomainName && (self.SSLPinningMode == AFSSLPinningModeNone || [self.pinnedCertificates count] < 1)) {
         // https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/OverridingSSLChainValidationCorrectly.html
         //  According to the docs, you should only trust your provided certs for evaluation.
         //  Pinned certificates are added to the trust. Without pinned certificates,
@@ -251,20 +252,20 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     SecTrustSetPolicies(serverTrust, (__bridge CFArrayRef)policies);
 
     if (self.SSLPinningMode == AFSSLPinningModeNone) {
-        if (self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust)){
+        if (self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust, self.allowExpiredAuthorizedCertificates)) {
             return YES;
         } else {
             return NO;
         }
-    } else if (!AFServerTrustIsValid(serverTrust) && !self.allowInvalidCertificates) {
+    } else if (!AFServerTrustIsValid(serverTrust, self.allowExpiredAuthorizedCertificates) && !self.allowInvalidCertificates) {
         return NO;
     }
-
-    NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);
+    
     switch (self.SSLPinningMode) {
         case AFSSLPinningModeNone:
         default:
             return NO;
+            
         case AFSSLPinningModeCertificate: {
             NSMutableArray *pinnedCertificates = [NSMutableArray array];
             for (NSData *certificateData in self.pinnedCertificates) {
@@ -272,14 +273,15 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             }
             SecTrustSetAnchorCertificates(serverTrust, (__bridge CFArrayRef)pinnedCertificates);
 
-            if (!AFServerTrustIsValid(serverTrust)) {
+            if (!AFServerTrustIsValid(serverTrust, self.allowExpiredAuthorizedCertificates)) {
                 return NO;
             }
 
             NSUInteger trustedCertificateCount = 0;
+            NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);
             for (NSData *trustChainCertificate in serverCertificates) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
-                    trustedCertificateCount++;
+                    ++trustedCertificateCount;
                 }
             }
             return trustedCertificateCount > 0;
@@ -291,7 +293,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             for (id trustChainPublicKey in publicKeys) {
                 for (id pinnedPublicKey in self.pinnedPublicKeys) {
                     if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
-                        trustedPublicKeyCount += 1;
+                        ++trustedPublicKeyCount;
                     }
                 }
             }
