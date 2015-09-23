@@ -1,6 +1,5 @@
 // UIWebView+AFNetworking.h
-//
-// Copyright (c) 2013-2015 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +26,8 @@
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 
 #import <UIKit/UIKit.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class AFHTTPRequestSerializer, AFHTTPResponseSerializer;
 @protocol AFURLRequestSerialization, AFURLResponseSerialization;
@@ -57,9 +58,9 @@
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single argument: the error that occurred.
  */
 - (void)loadRequest:(NSURLRequest *)request
-           progress:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
-            success:(NSString * (^)(NSHTTPURLResponse *response, NSString *HTML))success
-            failure:(void (^)(NSError *error))failure;
+           progress:(nullable void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
+            success:(nullable NSString * (^)(NSHTTPURLResponse *response, NSString *HTML))success
+            failure:(nullable void (^)(NSError *error))failure;
 
 /**
  Asynchronously loads the data associated with a particular request with a specified MIME type and text encoding.
@@ -72,12 +73,14 @@
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single argument: the error that occurred.
  */
 - (void)loadRequest:(NSURLRequest *)request
-           MIMEType:(NSString *)MIMEType
-   textEncodingName:(NSString *)textEncodingName
-           progress:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
-            success:(NSData * (^)(NSHTTPURLResponse *response, NSData *data))success
-            failure:(void (^)(NSError *error))failure;
+           MIMEType:(nullable NSString *)MIMEType
+   textEncodingName:(nullable NSString *)textEncodingName
+           progress:(nullable void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
+            success:(nullable NSData * (^)(NSHTTPURLResponse *response, NSData *data))success
+            failure:(nullable void (^)(NSError *error))failure;
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 #endif

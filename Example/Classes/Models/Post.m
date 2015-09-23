@@ -63,3 +63,30 @@
 }
 
 @end
+
+@implementation Post (NSCoding)
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeInteger:(NSInteger)self.postID forKey:@"AF.postID"];
+    [aCoder encodeObject:self.text forKey:@"AF.text"];
+    [aCoder encodeObject:self.user forKey:@"AF.user"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    self.postID = (NSUInteger)[aDecoder decodeIntegerForKey:@"AF.postID"];
+    self.text = [aDecoder decodeObjectOfClass:[NSString class] forKey:@"AF.text"];
+    self.user = [aDecoder decodeObjectOfClass:[User class] forKey:@"AF.user"];
+    
+    return self;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+@end

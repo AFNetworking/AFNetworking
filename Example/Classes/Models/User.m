@@ -98,3 +98,30 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
 #endif
 
 @end
+
+@implementation User (NSCoding)
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeInteger:(NSInteger)self.userID forKey:@"AF.userID"];
+    [aCoder encodeObject:self.username forKey:@"AF.username"];
+    [aCoder encodeObject:self.avatarImageURLString forKey:@"AF.avatarImageURLString"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    self.userID = (NSUInteger)[aDecoder decodeIntegerForKey:@"AF.userID"];
+    self.username = [aDecoder decodeObjectOfClass:[NSString class] forKey:@"AF.username"];
+    self.avatarImageURLString = [aDecoder decodeObjectOfClass:[User class] forKey:@"AF.avatarImageURLString"];
+    
+    return self;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+@end

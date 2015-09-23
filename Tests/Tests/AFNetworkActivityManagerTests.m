@@ -1,6 +1,5 @@
 // AFNetworkActivityManagerTests.m
-//
-// Copyright (c) 2013-2015 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +50,14 @@
     [[[self.mockApplication stub] andDo:^(NSInvocation *invocation) {
         [invocation getArgument:&_isNetworkActivityIndicatorVisible atIndex:2];
     }] setNetworkActivityIndicatorVisible:YES];
+}
+
+- (void)tearDown {
+    [super tearDown];
+    [self.mockApplication stopMocking];
+    
+    self.mockApplication = nil;
+    self.networkActivityIndicatorManager = nil;
 }
 
 #pragma mark -

@@ -36,3 +36,6 @@
 + (NSURLSessionDataTask *)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block;
 
 @end
+
+@interface Post (NSCoding) <NSSecureCoding>
+@end
