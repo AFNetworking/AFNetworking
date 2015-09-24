@@ -114,7 +114,7 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
     } else {
         NSString *stringValue;
         if (booleanStringRepresentationEnabled && [self.value isKindOfClass:NSClassFromString(@"__NSCFBoolean")]) {
-            stringValue = (self.value) ? @"true" : @"false";
+            stringValue = ([self.value boolValue]) ? @"true" : @"false";
         } else {
             stringValue = [self.value description];
         }
