@@ -74,6 +74,11 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 
 /**
+ Enables string representation for boolean values: `true`or `false` isntead of 1 or 0. `NO` by default.
+ */
+@property (nonatomic, assign) BOOL booleanStringRepresentationEnabled;
+
+/**
  Whether created requests can use the device’s cellular radio (if present). `YES` by default.
 
  @see NSMutableURLRequest -setAllowsCellularAccess:

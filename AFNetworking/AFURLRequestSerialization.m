@@ -91,7 +91,7 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
 
 - (id)initWithField:(id)field value:(id)value;
 
-- (NSString *)URLEncodedStringValue;
+- (NSString *)URLEncodedStringValueWithBooleanStringRepresentationEnabled:(BOOL)booleanStringRepresentationEnabled;
 @end
 
 @implementation AFQueryStringPair
@@ -108,11 +108,17 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
     return self;
 }
 
-- (NSString *)URLEncodedStringValue {
+- (NSString *)URLEncodedStringValueWithBooleanStringRepresentationEnabled:(BOOL)booleanStringRepresentationEnabled {
     if (!self.value || [self.value isEqual:[NSNull null]]) {
         return AFPercentEscapedStringFromString([self.field description]);
     } else {
-        return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedStringFromString([self.field description]), AFPercentEscapedStringFromString([self.value description])];
+        NSString *stringValue;
+        if (booleanStringRepresentationEnabled && [self.value isKindOfClass:NSClassFromString(@"__NSCFBoolean")]) {
+            stringValue = ([self.value boolValue]) ? @"true" : @"false";
+        } else {
+            stringValue = [self.value description];
+        }
+        return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedStringFromString([self.field description]), AFPercentEscapedStringFromString(stringValue)];
     }
 }
 
@@ -123,10 +129,10 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
 extern NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary);
 extern NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value);
 
-static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
+static NSString * AFQueryStringFromParameters(NSDictionary *parameters, BOOL booleanStringRepresentationEnabled) {
     NSMutableArray *mutablePairs = [NSMutableArray array];
     for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
-        [mutablePairs addObject:[pair URLEncodedStringValue]];
+        [mutablePairs addObject:[pair URLEncodedStringValueWithBooleanStringRepresentationEnabled:booleanStringRepresentationEnabled]];
     }
 
     return [mutablePairs componentsJoinedByString:@"&"];
@@ -208,6 +214,8 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
     if (!self) {
         return nil;
     }
+    
+    self.booleanStringRepresentationEnabled = NO;
 
     self.stringEncoding = NSUTF8StringEncoding;
 
@@ -515,7 +523,7 @@ forHTTPHeaderField:(NSString *)field
         } else {
             switch (self.queryStringSerializationStyle) {
                 case AFHTTPRequestQueryStringDefaultStyle:
-                    query = AFQueryStringFromParameters(parameters);
+                    query = AFQueryStringFromParameters(parameters, self.booleanStringRepresentationEnabled);
                     break;
             }
         }
