@@ -194,7 +194,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The dispatch queue for `completionBlock`. If `NULL` (default), the main queue is used.
  */
-#if OS_OBJECT_HAVE_OBJC_SUPPORT
+#if OS_OBJECT_USE_OBJC
 @property (nonatomic, strong, nullable) dispatch_queue_t completionQueue;
 #else
 @property (nonatomic, assign, nullable) dispatch_queue_t completionQueue;
@@ -203,7 +203,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used.
  */
-#if OS_OBJECT_HAVE_OBJC_SUPPORT
+#if OS_OBJECT_USE_OBJC
 @property (nonatomic, strong, nullable) dispatch_group_t completionGroup;
 #else
 @property (nonatomic, assign, nullable) dispatch_group_t completionGroup;
