@@ -42,10 +42,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Set the shared image downloader used to download images.
+
  @param imageDownloader The shared image downloader used to download images.
  */
 + (void)setSharedImageDownloader:(AFImageDownloader *)imageDownloader;
-
 
 /**
  The shared image downloader used to download images.
@@ -89,8 +89,8 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param urlRequest The URL request used for the image request.
  @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
- @param success A block to be executed when the image request operation finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the image created from the response data of request. If the image was returned from cache, the response parameter will be `nil`.
- @param failure A block object to be executed when the image request operation finishes unsuccessfully, or that finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error object describing the network or parsing error that occurred.
+ @param success A block to be executed when the image data task finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the image created from the response data of request. If the image was returned from cache, the response parameter will be `nil`.
+ @param failure A block object to be executed when the image data task finishes unsuccessfully, or that finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error object describing the network or parsing error that occurred.
  */
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
               placeholderImage:(nullable UIImage *)placeholderImage

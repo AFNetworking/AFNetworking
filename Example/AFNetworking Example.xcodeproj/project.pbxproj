@@ -52,6 +52,8 @@
 		291BFE351BB9ED7F00FFB029 /* Gravatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291BFE341BB9ED7F00FFB029 /* Gravatar.swift */; };
 		291BFE371BB9EDD700FFB029 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 291BFE361BB9EDD700FFB029 /* UIKit.framework */; };
 		291BFE3A1BBAD2FF00FFB029 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 291BFE391BBAD2FF00FFB029 /* UIWebView+AFNetworking.m */; };
+		291BFE611BBB396800FFB029 /* AFAutoPurgingImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F1BE1BB9DE1100A4466C /* AFAutoPurgingImageCache.m */; };
+		291BFE621BBB396B00FFB029 /* AFImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F1C01BB9DE1100A4466C /* AFImageDownloader.m */; };
 		29E6F17A1BB9DCB500A4466C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F1791BB9DCB500A4466C /* main.m */; };
 		29E6F1A41BB9DD7300A4466C /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19A1BB9DD7300A4466C /* Post.m */; };
 		29E6F1A51BB9DD7300A4466C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19C1BB9DD7300A4466C /* User.m */; };
@@ -742,7 +744,9 @@
 				291BFDDF1BB9E86000FFB029 /* AFURLRequestSerialization.m in Sources */,
 				291BFDE11BB9E86000FFB029 /* AFURLSessionManager.m in Sources */,
 				291BFDE01BB9E86000FFB029 /* AFURLResponseSerialization.m in Sources */,
+				291BFE611BBB396800FFB029 /* AFAutoPurgingImageCache.m in Sources */,
 				291BFDE21BB9E86400FFB029 /* AFNetworkReachabilityManager.m in Sources */,
+				291BFE621BBB396B00FFB029 /* AFImageDownloader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

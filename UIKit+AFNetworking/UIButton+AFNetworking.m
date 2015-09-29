@@ -164,11 +164,11 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
         AFImageDownloadReceipt *receipt;
         receipt = [downloader
                    downloadImageForURLRequest:urlRequest
-                   success:^(NSURLSessionDataTask * _Nonnull task, UIImage * _Nonnull responseObject) {
+                   success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                       if ([strongSelf isActiveTaskURLEqualToURLRequest:task.originalRequest forState:state]) {
+                       if ([strongSelf isActiveTaskURLEqualToURLRequest:request forState:state]) {
                            if (success) {
-                               success(task.originalRequest, (NSHTTPURLResponse *)task.response, responseObject);
+                               success(request, response, responseObject);
                            } else if(responseObject) {
                                [strongSelf setImage:responseObject forState:state];
                            }
@@ -176,11 +176,11 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                        }
 
                    }
-                   failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+                   failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                       if ([strongSelf isActiveTaskURLEqualToURLRequest:task.originalRequest forState:state]) {
+                       if ([strongSelf isActiveTaskURLEqualToURLRequest:request forState:state]) {
                            if (failure) {
-                               failure(task.originalRequest, (NSHTTPURLResponse *)task.response, error);
+                               failure(request, response, error);
                            }
                            [strongSelf  af_setImageDownloadReceipt:nil forState:state];
                        }
@@ -241,11 +241,11 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
         AFImageDownloadReceipt *receipt;
         receipt = [downloader
                    downloadImageForURLRequest:urlRequest
-                   success:^(NSURLSessionDataTask * _Nonnull task, UIImage * _Nonnull responseObject) {
+                   success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                       if ([strongSelf isActiveBackgroundTaskURLEqualToURLRequest:task.originalRequest forState:state]) {
+                       if ([strongSelf isActiveBackgroundTaskURLEqualToURLRequest:request forState:state]) {
                            if (success) {
-                               success(task.originalRequest, (NSHTTPURLResponse *)task.response, responseObject);
+                               success(request, response, responseObject);
                            } else if(responseObject) {
                                [strongSelf setImage:responseObject forState:state];
                            }
@@ -253,11 +253,11 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                        }
 
                    }
-                   failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+                   failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                       if ([strongSelf isActiveBackgroundTaskURLEqualToURLRequest:task.originalRequest forState:state]) {
+                       if ([strongSelf isActiveBackgroundTaskURLEqualToURLRequest:request forState:state]) {
                            if (failure) {
-                               failure(task.originalRequest, (NSHTTPURLResponse *)task.response, error);
+                               failure(request, response, error);
                            }
                            [strongSelf  af_setBackgroundImageDownloadReceipt:nil forState:state];
                        }

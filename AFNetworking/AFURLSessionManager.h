@@ -118,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///-------------------------------
 
 /**
- The security policy used by created request operations to evaluate server trust for secure connections. `AFURLSessionManager` uses the `defaultPolicy` unless otherwise specified.
+ The security policy used by created session to evaluate server trust for secure connections. `AFURLSessionManager` uses the `defaultPolicy` unless otherwise specified.
  */
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
@@ -304,6 +304,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// @name Getting Progress for Tasks
 ///---------------------------------
 
+/**
+ Returns the response download progress of the specified task.
+
+ @param dataTask The session data task. Must not be `nil`.
+
+ @return An `NSProgress` object reporting the response download progress of a task, or `nil` if the progress is unavailable.
+ */
 - (nullable NSProgress *)progressForDataTask:(NSURLSessionDataTask *)dataTask;
 
 /**

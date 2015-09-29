@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- This category adds methods to the UIKit framework's `UIAlertView` class. The methods in this category provide support for automatically showing an alert if a session task or request operation finishes with an error. Alert title and message are filled from the corresponding `localizedDescription` & `localizedRecoverySuggestion` or `localizedFailureReason` of the error.
+ This category adds methods to the UIKit framework's `UIAlertView` class. The methods in this category provide support for automatically showing an alert if a session task finishes with an error. Alert title and message are filled from the corresponding `localizedDescription` & `localizedRecoverySuggestion` or `localizedFailureReason` of the error.
  */
 @interface UIAlertView (AFNetworking)
 

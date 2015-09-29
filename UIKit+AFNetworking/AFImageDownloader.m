@@ -21,22 +21,22 @@
 
 #import <TargetConditionals.h>
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV 
 
 #import "AFImageDownloader.h"
 #import "AFHTTPSessionManager.h"
 
 @interface AFImageDownloaderResponseHandler : NSObject
 @property (nonatomic, strong) NSUUID *uuid;
-@property (nonatomic, copy) void (^successBlock)(NSURLSessionDataTask*, UIImage*);
-@property (nonatomic, copy) void (^failureBlock)(NSURLSessionDataTask*, NSError*);
+@property (nonatomic, copy) void (^successBlock)(NSURLRequest*, NSHTTPURLResponse*, UIImage*);
+@property (nonatomic, copy) void (^failureBlock)(NSURLRequest*, NSHTTPURLResponse*, NSError*);
 @end
 
 @implementation AFImageDownloaderResponseHandler
 
 - (instancetype)initWithUUID:(NSUUID *)uuid
-                    success:(nullable void (^)(NSURLSessionDataTask *task, UIImage *responseObject))success
-                    failure:(nullable void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+                    success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *responseObject))success
+                    failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure {
     if (self = [self init]) {
         self.uuid = uuid;
         self.successBlock = success;
@@ -172,8 +172,8 @@
 }
 
 - (nullable AFImageDownloadReceipt *)downloadImageForURLRequest:(NSURLRequest *)request
-                           success:(nullable void (^)(NSURLSessionDataTask *task, UIImage *responseObject))success
-                           failure:(nullable void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+                                                        success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse  * _Nullable response, UIImage *responseObject))success
+                                                        failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure; {
 
     __block AFImageDownloadReceipt *downloadReceipt = nil;
     dispatch_sync(self.synchronizationQueue, ^{
@@ -196,7 +196,7 @@
                 if (cachedImage != nil) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (success) {
-                            success(nil, cachedImage);
+                            success(request, nil, cachedImage);
                         }
                     });
                     return;
@@ -218,7 +218,7 @@
                            AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
                            for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
                                dispatch_async(dispatch_get_main_queue(), ^{
-                                   handler.successBlock(task, responseObject);
+                                   handler.successBlock(task.originalRequest, (NSHTTPURLResponse*)task.response, responseObject);
                                });
                            }
                            [strongSelf safelyDecrementActiveTaskCount];
@@ -229,7 +229,7 @@
                            AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
                            for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
                                dispatch_async(dispatch_get_main_queue(), ^{
-                                   handler.failureBlock(task, error);
+                                   handler.failureBlock(task.originalRequest, (NSHTTPURLResponse*)task.response, error);
                                });
                            }
                            [strongSelf safelyDecrementActiveTaskCount];
@@ -277,7 +277,7 @@
             NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
             if (handler.failureBlock) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    handler.failureBlock(imageDownloadReceipt.task, error);
+                    handler.failureBlock(imageDownloadReceipt.task.originalRequest, nil, error);
                 });
             }
         }

@@ -106,11 +106,11 @@
         AFImageDownloadReceipt *receipt;
         receipt = [downloader
                    downloadImageForURLRequest:urlRequest
-                   success:^(NSURLSessionDataTask * _Nonnull task, UIImage * _Nonnull responseObject) {
+                   success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                       if ([strongSelf isActiveTaskURLEqualToURLRequest:task.originalRequest]) {
+                       if ([strongSelf isActiveTaskURLEqualToURLRequest:request]) {
                            if (success) {
-                               success(task.originalRequest, (NSHTTPURLResponse *)task.response, responseObject);
+                               success(request, response, responseObject);
                            } else if(responseObject) {
                                strongSelf.image = responseObject;
                            }
@@ -118,11 +118,11 @@
                        }
 
                    }
-                   failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+                   failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                        if ([strongSelf isActiveTaskURLEqualToURLRequest:task.originalRequest]) {
+                        if ([strongSelf isActiveTaskURLEqualToURLRequest:request]) {
                             if (failure) {
-                                failure(task.originalRequest, (NSHTTPURLResponse *)task.response, error);
+                                failure(request, response, error);
                             }
                             strongSelf.af_activeImageDownloadReceipt = nil;
                         }

@@ -36,34 +36,28 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface UIImageView (AFNetworking)
 
+///------------------------------------
+/// @name Accessing the Image Downloader
+///------------------------------------
+
+/**
+ Set the shared image downloader used to download images.
+<<<<<<< b4f8a67ba4dabf3e3365512f70fc0a83644ed21c
+=======
+
+>>>>>>> Added documentation
+ @param imageDownloader The shared image downloader used to download images.
+ */
 + (void)setSharedImageDownloader:(AFImageDownloader *)imageDownloader;
 
-<<<<<<< 1bfb8495a47f037560cc2c13302b70c4d58bb50b
-/**
- The image cache used to improve image loading performance on scroll views. By default, this is an `NSCache` subclass conforming to the `AFImageCache` protocol, which listens for notification warnings and evicts objects accordingly.
-*/
-+ (id <AFImageCache>)sharedImageCache;
+<<<<<<< b4f8a67ba4dabf3e3365512f70fc0a83644ed21c
 
-/**
- Set the cache used for image loading.
-
- @param imageCache The image cache.
- */
-+ (void)setSharedImageCache:(__nullable id <AFImageCache>)imageCache;
-
-///------------------------------------
-/// @name Accessing Response Serializer
-///------------------------------------
-
-/**
- The response serializer used to create an image representation from the server response and response data. By default, this is an instance of `AFImageResponseSerializer`.
-
- @discussion Subclasses of `AFImageResponseSerializer` could be used to perform post-processing, such as color correction, face detection, or other effects. See https://github.com/AFNetworking/AFCoreImageSerializer
- */
-@property (nonatomic, strong) id <AFURLResponseSerialization> imageResponseSerializer;
 =======
+>>>>>>> Added documentation
+/**
+ The shared image downloader used to download images.
+ */
 + (AFImageDownloader *)sharedImageDownloader;
->>>>>>> - Removed support for NSURLConnection based API's
 
 ///--------------------
 /// @name Setting Image
@@ -102,18 +96,13 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param urlRequest The URL request used for the image request.
  @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
- @param success A block to be executed when the image request operation finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the image created from the response data of request. If the image was returned from cache, the response parameter will be `nil`.
- @param failure A block object to be executed when the image request operation finishes unsuccessfully, or that finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error object describing the network or parsing error that occurred.
+ @param success A block to be executed when the image data task finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the image created from the response data of request. If the image was returned from cache, the response parameter will be `nil`.
+ @param failure A block object to be executed when the image data task finishes unsuccessfully, or that finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error object describing the network or parsing error that occurred.
  */
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
               placeholderImage:(nullable UIImage *)placeholderImage
-<<<<<<< 1bfb8495a47f037560cc2c13302b70c4d58bb50b
-                       success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * __nullable response, UIImage *image))success
-                       failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * __nullable response, NSError *error))failure;
-=======
                        success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *image))success
                        failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure;
->>>>>>> - Removed support for NSURLConnection based API's
 
 /**
  Cancels any executing image operation for the receiver, if one exists.
