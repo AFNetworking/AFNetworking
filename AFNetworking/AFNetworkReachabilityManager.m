@@ -115,12 +115,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     static AFNetworkReachabilityManager *_sharedManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        struct sockaddr_in address;
-        bzero(&address, sizeof(address));
-        address.sin_len = sizeof(address);
-        address.sin_family = AF_INET;
-
-        _sharedManager = [self managerForAddress:&address];
+        _sharedManager = [self manager];
     });
 
     return _sharedManager;
@@ -142,6 +137,15 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     manager.networkReachabilityAssociation = AFNetworkReachabilityForAddress;
 
     return manager;
+}
+
++ (instancetype)manager
+{
+    struct sockaddr_in address;
+    bzero(&address, sizeof(address));
+    address.sin_len = sizeof(address);
+    address.sin_family = AF_INET;
+    return [self managerForAddress:&address];
 }
 
 - (instancetype)initWithReachability:(SCNetworkReachabilityRef)reachability {
