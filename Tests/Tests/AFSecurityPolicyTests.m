@@ -113,18 +113,6 @@ static SecCertificateRef AFUTSelfSignedCertificateWithDNSNameDomain() {
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
-static NSArray * AFCertificateTrustChainForServerTrust(SecTrustRef serverTrust) {
-    CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);
-    NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:(NSUInteger)certificateCount];
-
-    for (CFIndex i = 0; i < certificateCount; i++) {
-        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
-        [trustChain addObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)];
-    }
-
-    return [NSArray arrayWithArray:trustChain];
-}
-
 static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     NSArray *certs  = @[(__bridge id)(certificate)];
 

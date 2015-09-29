@@ -21,9 +21,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import <Availability.h>
+#import <TargetConditionals.h>
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS
 
 #import <UIKit/UIKit.h>
 

@@ -9,28 +9,6 @@
       </FileRef>
       <Group
          location = "container:"
-         name = "NSURLConnection">
-         <FileRef
-            location = "group:AFNetworking/AFURLConnectionOperation.h">
-         </FileRef>
-         <FileRef
-            location = "group:AFNetworking/AFURLConnectionOperation.m">
-         </FileRef>
-         <FileRef
-            location = "group:AFNetworking/AFHTTPRequestOperation.h">
-         </FileRef>
-         <FileRef
-            location = "group:AFNetworking/AFHTTPRequestOperation.m">
-         </FileRef>
-         <FileRef
-            location = "group:AFNetworking/AFHTTPRequestOperationManager.h">
-         </FileRef>
-         <FileRef
-            location = "group:AFNetworking/AFHTTPRequestOperationManager.m">
-         </FileRef>
-      </Group>
-      <Group
-         location = "container:"
          name = "NSURLSession">
          <FileRef
             location = "group:AFNetworking/AFURLSessionManager.h">
@@ -89,6 +67,18 @@
          location = "group:UIKit+AFNetworking.h">
       </FileRef>
       <FileRef
+         location = "group:AFAutoPurgingImageCache.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFAutoPurgingImageCache.m">
+      </FileRef>
+      <FileRef
+         location = "group:AFImageDownloader.h">
+      </FileRef>
+      <FileRef
+         location = "group:AFImageDownloader.m">
+      </FileRef>
+      <FileRef
          location = "group:AFNetworkActivityIndicatorManager.h">
       </FileRef>
       <FileRef
@@ -125,26 +115,23 @@
          location = "group:UIProgressView+AFNetworking.m">
       </FileRef>
       <FileRef
-         location = "group:UIWebView+AFNetworking.h">
-      </FileRef>
-      <FileRef
-         location = "group:UIWebView+AFNetworking.m">
-      </FileRef>
-      <FileRef
          location = "group:UIRefreshControl+AFNetworking.h">
       </FileRef>
       <FileRef
          location = "group:UIRefreshControl+AFNetworking.m">
       </FileRef>
+      <FileRef
+         location = "group:UIWebView+AFNetworking.h">
+      </FileRef>
+      <FileRef
+         location = "group:UIWebView+AFNetworking.m">
+      </FileRef>
    </Group>
    <FileRef
+      location = "group:Example/AFNetworking Example.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Tests/AFNetworking Tests.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Example/AFNetworking iOS Example.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Example/AFNetworking OS X Example.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Tests/Pods/Pods.xcodeproj">

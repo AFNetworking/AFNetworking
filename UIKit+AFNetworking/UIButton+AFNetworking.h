@@ -21,15 +21,15 @@
 
 #import <Foundation/Foundation.h>
 
-#import <Availability.h>
+#import <TargetConditionals.h>
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS || TARGET_OS_TV
 
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol AFURLResponseSerialization, AFImageCache;
+@class AFImageDownloader;
 
 /**
  This category adds methods to the UIKit framework's `UIButton` class. The methods in this category provide support for loading remote images and background images asynchronously from a URL.
@@ -38,32 +38,21 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface UIButton (AFNetworking)
 
-///----------------------------
-/// @name Accessing Image Cache
-///----------------------------
-
-/**
- The image cache used to improve image loading performance on scroll views. By default, `UIButton` will use the `sharedImageCache` of `UIImageView`.
- */
-+ (id <AFImageCache>)sharedImageCache;
-
-/**
- Set the cache used for image loading.
-
- @param imageCache The image cache.
- */
-+ (void)setSharedImageCache:(__nullable id <AFImageCache>)imageCache;
-
 ///------------------------------------
-/// @name Accessing Response Serializer
+/// @name Accessing the Image Downloader
 ///------------------------------------
 
 /**
- The response serializer used to create an image representation from the server response and response data. By default, this is an instance of `AFImageResponseSerializer`.
-
- @discussion Subclasses of `AFImageResponseSerializer` could be used to perform post-processing, such as color correction, face detection, or other effects. See https://github.com/AFNetworking/AFCoreImageSerializer
+ Set the shared image downloader used to download images.
+ @param imageDownloader The shared image downloader used to download images.
  */
-@property (nonatomic, strong) id <AFURLResponseSerialization> imageResponseSerializer;
++ (void)setSharedImageDownloader:(AFImageDownloader *)imageDownloader;
+
+/**
+ The shared image downloader used to download images.
+ */
++ (AFImageDownloader *)sharedImageDownloader;
+
 
 ///--------------------
 /// @name Setting Image
@@ -109,8 +98,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setImageForState:(UIControlState)state
           withURLRequest:(NSURLRequest *)urlRequest
         placeholderImage:(nullable UIImage *)placeholderImage
-                 success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * __nullable response, UIImage *image))success
-                 failure:(nullable void (^)(NSError *error))failure;
+                 success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *image))success
+                 failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure;
 
 
 ///-------------------------------
@@ -157,8 +146,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setBackgroundImageForState:(UIControlState)state
                     withURLRequest:(NSURLRequest *)urlRequest
                   placeholderImage:(nullable UIImage *)placeholderImage
-                           success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * __nullable response, UIImage *image))success
-                           failure:(nullable void (^)(NSError *error))failure;
+                           success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *image))success
+                           failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure;
 
 
 ///------------------------------
@@ -166,18 +155,18 @@ NS_ASSUME_NONNULL_BEGIN
 ///------------------------------
 
 /**
- Cancels any executing image operation for the specified control state of the receiver, if one exists.
+ Cancels any executing image task for the specified control state of the receiver, if one exists.
 
  @param state The control state.
  */
-- (void)cancelImageRequestOperationForState:(UIControlState)state;
+- (void)cancelImageDownloadTaskForState:(UIControlState)state;
 
 /**
- Cancels any executing background image operation for the specified control state of the receiver, if one exists.
+ Cancels any executing background image task for the specified control state of the receiver, if one exists.
 
  @param state The control state.
  */
-- (void)cancelBackgroundImageRequestOperationForState:(UIControlState)state;
+- (void)cancelBackgroundImageDownloadTaskForState:(UIControlState)state;
 
 @end
 

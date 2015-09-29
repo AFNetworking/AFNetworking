@@ -22,13 +22,11 @@
 #import "AFTestCase.h"
 #import <AFNetworking/UIRefreshControl+AFNetworking.h>
 #import <AFNetworking/AFURLSessionManager.h>
-#import <AFNetworking/AFHTTPRequestOperationManager.h>
 
 @interface AFUIRefreshControlTests : AFTestCase
 @property (nonatomic, strong) NSURLRequest *request;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) AFURLSessionManager *sessionManager;
-@property (nonatomic, strong) AFHTTPRequestOperationManager *operationManager;
 @end
 
 @implementation AFUIRefreshControlTests
@@ -38,7 +36,6 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.request = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"delay/1"]];
     self.sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:nil];
-    self.operationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:self.baseURL];
 }
 
 - (void)tearDown {
@@ -108,42 +105,6 @@
     [task resume];
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
     [task cancel];
-}
-
-- (void)testOperationDidStartNotificationDoesNotCauseCrashForUIRCWithOperation {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"No Crash"];
-    [self expectationForNotification:AFNetworkingOperationDidStartNotification object:nil handler:nil];
-    AFHTTPRequestOperation *operation = [self.operationManager
-                                         HTTPRequestOperationWithRequest:self.request
-                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                             [expectation fulfill];
-                                         } failure:nil];
-    [self.refreshControl setRefreshingWithStateOfOperation:operation];
-    self.refreshControl = nil;
-    [operation start];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
-    [operation cancel];
-}
-
-- (void)testOperationDidFinishNotificationDoesNotCauseCrashForUIRCWithOperation {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"No Crash"];
-    [self expectationForNotification:AFNetworkingOperationDidFinishNotification object:nil handler:nil];
-    AFHTTPRequestOperation *operation = [self.operationManager
-                                         HTTPRequestOperationWithRequest:self.request
-                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                             //Without the dispatch after, this test would PASS errorenously because the test
-                                             //would finish before the notification was posted to all objects that were
-                                             //observing it.
-                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                 [expectation fulfill];
-                                             });
-                                             
-                                         } failure:nil];
-    [self.refreshControl setRefreshingWithStateOfOperation:operation];
-    self.refreshControl = nil;
-    [operation start];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
-    [operation cancel];
 }
 
 @end

@@ -22,12 +22,14 @@
 #import "AFTestCase.h"
 
 #import "AFNetworkActivityIndicatorManager.h"
-#import "AFHTTPRequestOperation.h"
+#import "AFHTTPSessionManager.h"
 
 @interface AFNetworkActivityManagerTests : AFTestCase
 @property (nonatomic, strong) AFNetworkActivityIndicatorManager *networkActivityIndicatorManager;
 @property (nonatomic, assign) BOOL isNetworkActivityIndicatorVisible;
 @property (nonatomic, strong) id mockApplication;
+@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
+
 @end
 
 #pragma mark -
@@ -36,6 +38,8 @@
 
 - (void)setUp {
     [super setUp];
+
+    self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:self.baseURL sessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
 
     self.networkActivityIndicatorManager = [[AFNetworkActivityIndicatorManager alloc] init];
     self.networkActivityIndicatorManager.enabled = YES;
@@ -58,31 +62,31 @@
     
     self.mockApplication = nil;
     self.networkActivityIndicatorManager = nil;
+
+    [self.sessionManager invalidateSessionCancelingTasks:YES];
 }
 
 #pragma mark -
 
 - (void)testThatNetworkActivityIndicatorTurnsOffIndicatorWhenRequestSucceeds {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
-    } failure:nil];
-
-    [operation start];
-
+    [self.sessionManager
+     GET:@"/get"
+     parameters:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+         expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
+     }
+     failure:nil];
     expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beTruthy();
 }
 
 - (void)testThatNetworkActivityIndicatorTurnsOffIndicatorWhenRequestFails {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/500" relativeToURL:self.baseURL]];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
-    }];
-
-    [operation start];
-
+    [self.sessionManager
+     GET:@"/status/500"
+     parameters:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+         expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
+     }
+     failure:nil];
     expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beTruthy();
 }
 
@@ -95,11 +99,11 @@
         didChangeNetworkActivityIndicatorVisible = YES;
     }] setNetworkActivityIndicatorVisible:YES];
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:nil failure:nil];
-
-    [operation start];
+    [self.sessionManager
+     GET:@"/get"
+     parameters:nil
+     success:nil
+     failure:nil];
 
     expect(didChangeNetworkActivityIndicatorVisible).will.beFalsy();
 }

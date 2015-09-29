@@ -19,6 +19,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+
 #import <Foundation/Foundation.h>
 
 #import "AFURLResponseSerialization.h"
@@ -92,8 +93,6 @@
  */
 
 NS_ASSUME_NONNULL_BEGIN
-
-#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090) || TARGET_OS_WATCH
 
 @interface AFURLSessionManager : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSSecureCoding, NSCopying>
 
@@ -305,6 +304,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// @name Getting Progress for Tasks
 ///---------------------------------
 
+- (nullable NSProgress *)progressForDataTask:(NSURLSessionDataTask *)dataTask;
+
 /**
  Returns the upload progress of the specified task.
 
@@ -445,8 +446,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setDownloadTaskDidResumeBlock:(nullable void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes))block;
 
 @end
-
-#endif
 
 ///--------------------
 /// @name Notifications

@@ -22,8 +22,6 @@
 #import "AFURLSessionManager.h"
 #import <objc/runtime.h>
 
-#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
-
 static dispatch_queue_t url_session_manager_creation_queue() {
     static dispatch_queue_t af_url_session_manager_creation_queue;
     static dispatch_once_t onceToken;
@@ -217,6 +215,12 @@ didCompleteWithError:(NSError *)error
           dataTask:(__unused NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
+    NSUInteger length = data.length;
+    long long expectedLength = dataTask.response.expectedContentLength;
+    if(expectedLength != -1) {
+        self.progress.totalUnitCount = expectedLength;
+        self.progress.completedUnitCount += length;
+    }
     [self.mutableData appendData:data];
 }
 
@@ -768,6 +772,9 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 }
 
 #pragma mark -
+- (NSProgress *)progressForDataTask:(NSURLSessionDataTask *)dataTask {
+    return [[self delegateForTask:dataTask] progress];
+}
 
 - (NSProgress *)uploadProgressForTask:(NSURLSessionUploadTask *)uploadTask {
     return [[self delegateForTask:uploadTask] progress];
@@ -1052,6 +1059,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
           dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
+
+
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:dataTask];
     [delegate URLSession:session dataTask:dataTask didReceiveData:data];
 
@@ -1165,5 +1174,3 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 }
 
 @end
-
-#endif

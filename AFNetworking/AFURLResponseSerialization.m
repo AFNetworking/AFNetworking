@@ -21,6 +21,8 @@
 
 #import "AFURLResponseSerialization.h"
 
+#import <TargetConditionals.h>
+
 #if TARGET_OS_IOS
 #import <UIKit/UIKit.h>
 #elif TARGET_OS_WATCH
@@ -528,8 +530,9 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 
 #pragma mark -
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS || TARGET_OS_TV
 #import <CoreGraphics/CoreGraphics.h>
+#import <UIKit/UIKit.h>
 
 @interface UIImage (AFNetworkingSafeImageLoading)
 + (UIImage *)af_safeImageWithData:(NSData *)data;
@@ -690,13 +693,13 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         }
     }
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS || TARGET_OS_TV
     if (self.automaticallyInflatesResponseImage) {
         return AFInflatedImageFromResponseWithDataAtScale((NSHTTPURLResponse *)response, data, self.imageScale);
     } else {
         return AFImageWithDataAtScale(data, self.imageScale);
     }
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+#elif !TARGET_OS_WATCH
     // Ensure that the image is set to it's correct pixel width and height
     NSBitmapImageRep *bitimage = [[NSBitmapImageRep alloc] initWithData:data];
     NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize([bitimage pixelsWide], [bitimage pixelsHigh])];
@@ -716,7 +719,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         return nil;
     }
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS  || TARGET_OS_TV
     NSNumber *imageScale = [decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(imageScale))];
 #if CGFLOAT_IS_DOUBLE
     self.imageScale = [imageScale doubleValue];
@@ -733,7 +736,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS || TARGET_OS_TV
     [coder encodeObject:@(self.imageScale) forKey:NSStringFromSelector(@selector(imageScale))];
     [coder encodeBool:self.automaticallyInflatesResponseImage forKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
@@ -744,7 +747,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 - (id)copyWithZone:(NSZone *)zone {
     AFImageResponseSerializer *serializer = [[[self class] allocWithZone:zone] init];
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS || TARGET_OS_TV
     serializer.imageScale = self.imageScale;
     serializer.automaticallyInflatesResponseImage = self.automaticallyInflatesResponseImage;
 #endif

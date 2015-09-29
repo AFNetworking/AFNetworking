@@ -21,6 +21,7 @@
 
 #import "AFTestCase.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
+#import <AFNetworking/AFImageDownloader.h>
 #import <OCMock/OCMock.h>
 
 @interface AFUIImageViewTests : AFTestCase
@@ -47,14 +48,14 @@
     NSString *imagePath = [resourcePath stringByAppendingPathComponent:@"Icon.png"];
     self.cachedImage = [UIImage imageWithContentsOfFile:imagePath];
     self.cachedImageRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://foo.bar/image"]];
-    
-    id<AFImageCache> mockImageCache = [OCMockObject mockForProtocol:@protocol(AFImageCache)];
-    [[[(OCMockObject *)mockImageCache stub] andReturn:self.cachedImage] cachedImageForRequest:self.cachedImageRequest];
-    [UIImageView setSharedImageCache:mockImageCache];
+
+    id<AFImageRequestCache> mockImageCache = [OCMockObject mockForProtocol:@protocol(AFImageRequestCache)];
+    [[[(OCMockObject *)mockImageCache stub] andReturn:self.cachedImage] imageforRequest:self.cachedImageRequest withAdditionalIdentifier:nil];
+    [[UIImageView sharedImageDownloader] setImageCache:mockImageCache];
 }
 
 - (void)tearDownSharedImageCache {
-    [UIImageView setSharedImageCache:nil];
+    [[UIImageView sharedImageDownloader] setImageCache:nil];
 }
 
 - (void)testSetImageWithURLRequestUsesCachedImage {

@@ -21,12 +21,11 @@
 
 #import "AFHTTPSessionManager.h"
 
-#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090) || TARGET_WATCH_OS
-
 #import "AFURLRequestSerialization.h"
 #import "AFURLResponseSerialization.h"
 
 #import <Availability.h>
+#import <TargetConditionals.h>
 #import <Security/Security.h>
 
 #ifdef _SYSTEMCONFIGURATION_H
@@ -37,7 +36,7 @@
 #import <netdb.h>
 #endif
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_TV
 #import <UIKit/UIKit.h>
 #elif TARGET_OS_WATCH
 #import <WatchKit/WatchKit.h>
@@ -319,5 +318,3 @@
 }
 
 @end
-
-#endif

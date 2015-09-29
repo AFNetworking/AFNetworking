@@ -19,7 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import <TargetConditionals.h>
+#if TARGET_OS_IOS || TARGET_OS_TV
   #import <UIKit/UIKit.h>
 
   int main(int argc, char *argv[]) {
