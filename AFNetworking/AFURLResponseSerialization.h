@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable id)responseObjectForResponse:(nullable NSURLResponse *)response
                            data:(nullable NSData *)data
-                          error:(NSError * __nullable __autoreleasing *)error;
+                          error:(NSError * _Nullable __autoreleasing *)error;
 
 @end
 
@@ -96,7 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BOOL)validateResponse:(nullable NSHTTPURLResponse *)response
                     data:(nullable NSData *)data
-                   error:(NSError * __nullable __autoreleasing *)error;
+                   error:(NSError * _Nullable __autoreleasing *)error;
 
 @end
 

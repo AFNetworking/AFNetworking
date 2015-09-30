@@ -223,7 +223,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
  */
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
-                            completionHandler:(nullable void (^)(NSURLResponse *response, id __nullable responseObject,  NSError * __nullable error))completionHandler;
+                            completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler;
 
 ///---------------------------
 /// @name Running Upload Tasks
@@ -241,8 +241,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromFile:(NSURL *)fileURL
-                                         progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
-                                completionHandler:(nullable void (^)(NSURLResponse *response, id __nullable responseObject, NSError  * __nullable error))completionHandler;
+                                         progress:(NSProgress * _Nullable __autoreleasing * _Nullable)progress
+                                completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject, NSError  * _Nullable error))completionHandler;
 
 /**
  Creates an `NSURLSessionUploadTask` with the specified request for an HTTP body.
@@ -254,8 +254,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromData:(nullable NSData *)bodyData
-                                         progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
-                                completionHandler:(nullable void (^)(NSURLResponse *response, id __nullable responseObject, NSError * __nullable error))completionHandler;
+                                         progress:(NSProgress * _Nullable __autoreleasing * _Nullable)progress
+                                completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject, NSError * _Nullable error))completionHandler;
 
 /**
  Creates an `NSURLSessionUploadTask` with the specified streaming request.
@@ -265,8 +265,8 @@ NS_ASSUME_NONNULL_BEGIN
  @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
  */
 - (NSURLSessionUploadTask *)uploadTaskWithStreamedRequest:(NSURLRequest *)request
-                                                 progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
-                                        completionHandler:(nullable void (^)(NSURLResponse *response, id __nullable responseObject, NSError * __nullable error))completionHandler;
+                                                 progress:(NSProgress * _Nullable __autoreleasing * _Nullable)progress
+                                        completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject, NSError * _Nullable error))completionHandler;
 
 ///-----------------------------
 /// @name Running Download Tasks
@@ -283,9 +283,9 @@ NS_ASSUME_NONNULL_BEGIN
  @warning If using a background `NSURLSessionConfiguration` on iOS, these blocks will be lost when the app is terminated. Background sessions may prefer to use `-setDownloadTaskDidFinishDownloadingBlock:` to specify the URL for saving the downloaded file, rather than the destination block of this method.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request
-                                             progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
+                                             progress:(NSProgress * _Nullable __autoreleasing * _Nullable)progress
                                           destination:(nullable NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
-                                    completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * __nullable filePath, NSError * __nullable error))completionHandler;
+                                    completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
 /**
  Creates an `NSURLSessionDownloadTask` with the specified resume data.
@@ -296,9 +296,9 @@ NS_ASSUME_NONNULL_BEGIN
  @param completionHandler A block to be executed when a task finishes. This block has no return value and takes three arguments: the server response, the path of the downloaded file, and the error describing the network or parsing error that occurred, if any.
  */
 - (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData
-                                                progress:(NSProgress * __nullable __autoreleasing * __nullable)progress
+                                                progress:(NSProgress * _Nullable __autoreleasing * _Nullable)progress
                                              destination:(nullable NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
-                                       completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * __nullable filePath, NSError * __nullable error))completionHandler;
+                                       completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
 ///---------------------------------
 /// @name Getting Progress for Tasks
@@ -347,7 +347,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param block A block object to be executed when a connection level authentication challenge has occurred. The block returns the disposition of the authentication challenge, and takes three arguments: the session, the authentication challenge, and a pointer to the credential that should be used to resolve the challenge.
  */
-- (void)setSessionDidReceiveAuthenticationChallengeBlock:(nullable NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __nullable __autoreleasing * __nullable credential))block;
+- (void)setSessionDidReceiveAuthenticationChallengeBlock:(nullable NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential))block;
 
 ///--------------------------------------
 /// @name Setting Task Delegate Callbacks
@@ -372,7 +372,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param block A block object to be executed when a session task has received a request specific authentication challenge. The block returns the disposition of the authentication challenge, and takes four arguments: the session, the task, the authentication challenge, and a pointer to the credential that should be used to resolve the challenge.
  */
-- (void)setTaskDidReceiveAuthenticationChallengeBlock:(nullable NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __nullable __autoreleasing * __nullable credential))block;
+- (void)setTaskDidReceiveAuthenticationChallengeBlock:(nullable NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential))block;
 
 /**
  Sets a block to be executed periodically to track upload progress, as handled by the `NSURLSessionTaskDelegate` method `URLSession:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:`.
@@ -386,7 +386,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param block A block object to be executed when a session task is completed. The block has no return value, and takes three arguments: the session, the task, and any error that occurred in the process of executing the task.
  */
-- (void)setTaskDidCompleteBlock:(nullable void (^)(NSURLSession *session, NSURLSessionTask *task, NSError * __nullable error))block;
+- (void)setTaskDidCompleteBlock:(nullable void (^)(NSURLSession *session, NSURLSessionTask *task, NSError * _Nullable error))block;
 
 ///-------------------------------------------
 /// @name Setting Data Task Delegate Callbacks

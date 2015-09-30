@@ -211,7 +211,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
 - (void)setBackgroundImageForState:(UIControlState)state
                     withURLRequest:(NSURLRequest *)urlRequest
                   placeholderImage:(nullable UIImage *)placeholderImage
-                           success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                           success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *image))success
                            failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure
 {
     if ([self isActiveBackgroundTaskURLEqualToURLRequest:urlRequest forState:state]) {
