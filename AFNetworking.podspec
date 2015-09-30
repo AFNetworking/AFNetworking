@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'AFNetworking'
-  s.version  = '2.6.0'
+  s.version  = '3.0.0'
   s.license  = 'MIT'
   s.summary  = 'A delightful iOS and OS X networking framework.'
   s.homepage = 'https://github.com/AFNetworking/AFNetworking'
@@ -55,18 +55,6 @@ EOS
     ss.frameworks = 'SystemConfiguration'
   end
 
-  s.subspec 'NSURLConnection' do |ss|
-    ss.ios.deployment_target = '7.0'
-    ss.osx.deployment_target = '10.9'
-
-    ss.dependency 'AFNetworking/Serialization'
-    ss.dependency 'AFNetworking/Reachability'
-    ss.dependency 'AFNetworking/Security'
-
-    ss.source_files = 'AFNetworking/AFURLConnectionOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperationManager.{h,m}'
-    ss.public_header_files = 'AFNetworking/AFURLConnectionOperation.h', 'AFNetworking/AFHTTPRequestOperation.h', 'AFNetworking/AFHTTPRequestOperationManager.h'
-  end
-
   s.subspec 'NSURLSession' do |ss|
     ss.ios.deployment_target = '7.0'
     ss.osx.deployment_target = '10.9'
@@ -83,7 +71,6 @@ EOS
 
   s.subspec 'UIKit' do |ss|
     ss.platform = :ios
-    ss.dependency 'AFNetworking/NSURLConnection'
     ss.dependency 'AFNetworking/NSURLSession'
 
     ss.public_header_files = 'UIKit+AFNetworking/*.h'
