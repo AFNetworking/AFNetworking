@@ -330,7 +330,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Returns the completionHandler  of the specified task.
  */
-- (nullable void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandlerForTask:(NSURLSessionDownloadTask *)downloadTask;
+- (nullable void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandlerForTask:(NSURLSessionTask *)task;
 
 
 ///-----------------------------------------

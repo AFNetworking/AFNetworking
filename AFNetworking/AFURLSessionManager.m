@@ -777,7 +777,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     return [[self delegateForTask:downloadTask] progress];
 }
 
-- (nullable void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandlerForTask:(NSURLSessionDownloadTask *)dataTask{
+- (nullable void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandlerForTask:(NSURLSessionTask *)task{
     return [[self delegateForTask:dataTask] completionHandler];
 }
 #pragma mark -
