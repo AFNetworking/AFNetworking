@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param imageCache The image cache.
  */
-+ (void)setSharedImageCache:(id <AFImageCache>)imageCache;
++ (void)setSharedImageCache:(__nullable id <AFImageCache>)imageCache;
 
 ///------------------------------------
 /// @name Accessing Response Serializer
@@ -105,8 +105,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
               placeholderImage:(nullable UIImage *)placeholderImage
-                       success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
-                       failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                       success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * __nullable response, UIImage *image))success
+                       failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * __nullable response, NSError *error))failure;
 
 /**
  Cancels any executing image operation for the receiver, if one exists.
