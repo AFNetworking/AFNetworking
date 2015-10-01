@@ -364,6 +364,21 @@
     [[NSNotificationCenter defaultCenter] removeObserver:observer];
 }
 
+- (void)testThatErrorIsAccessibleWhenDidFinishNotificationWasReceived {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/500" relativeToURL:self.baseURL]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    __block NSError *errorAvailableOnNotificationReceive;
+    id observer = [[NSNotificationCenter defaultCenter] addObserverForName:AFNetworkingOperationDidFinishNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+        errorAvailableOnNotificationReceive = operation.error;
+    }];
+    
+    [operation start];
+    expect(errorAvailableOnNotificationReceive).willNot.beNil();
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:observer];
+}
+
 -(void)testThatCompletionBlockForBatchRequestsIsFiredAfterAllOperationCompletionBlocks {
     __block BOOL firstBlock = NO;
     __block BOOL secondBlock = NO;
