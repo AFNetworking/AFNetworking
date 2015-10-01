@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The `ImageRequestCache` protocol extends the `ImageCache` protocol by adding methods for adding, removing and fetching images from a cache given an `NSURLRequest` and additional identifier.
  */
-@protocol AFImageRequestCache <NSObject>
+@protocol AFImageRequestCache <AFImageCache>
 
 /**
  Adds the image to the cache using an identifier created from the request and additional identifier.
@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The current total memory usage in bytes of all images stored within the cache.
  */
-@property (nonatomic, assign, readonly) UInt64 currentMemoryUsage;
+@property (nonatomic, assign, readonly) UInt64 memoryUsage;
 
 /**
  Initialies the `AutoPurgingImageCache` instance with default values for memory capacity and preferred memory usage after purge limit. `memoryCapcity` defaults to `100 MB`. `preferredMemoryUsageAfterPurge` defaults to `60 MB`.

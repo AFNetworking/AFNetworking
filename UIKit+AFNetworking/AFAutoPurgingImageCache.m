@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSString *identifier;
 @property (nonatomic, assign) UInt64 totalBytes;
 @property (nonatomic, strong) NSDate *lastAccessDate;
+@property (nonatomic, assign) UInt64 currentMemoryUsage;
 
 @end
 
@@ -45,6 +46,7 @@
         CGFloat bytesPerPixel = 4.0;
         CGFloat bytesPerRow = imageSize.width * bytesPerPixel;
         self.totalBytes = (UInt64)bytesPerPixel * (UInt64)bytesPerRow;
+        self.lastAccessDate = [NSDate date];
     }
     return self;
 }
@@ -52,6 +54,12 @@
 - (UIImage*)accessImage {
     self.lastAccessDate = [NSDate date];
     return self.image;
+}
+
+- (NSString *)description {
+    NSString *descriptionString = [NSString stringWithFormat:@"Idenfitier: %@  lastAccessDate: %@ ", self.identifier, self.lastAccessDate];
+    return descriptionString;
+
 }
 
 @end
@@ -91,6 +99,14 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (UInt64)memoryUsage {
+    __block UInt64 result = 0;
+    dispatch_sync(self.synchronizationQueue, ^{
+        result = self.currentMemoryUsage;
+    });
+    return result;
+}
+
 - (void)addImage:(UIImage *)image withIdentifier:(NSString *)identifier {
     dispatch_barrier_async(self.synchronizationQueue, ^{
         AFCachedImage *cacheImage = [[AFCachedImage alloc] initWithImage:image identifier:identifier];
@@ -128,7 +144,7 @@
 
 - (BOOL)removeImageWithIdentifier:(NSString *)identifier {
     __block BOOL removed = NO;
-    dispatch_barrier_async(self.synchronizationQueue, ^{
+    dispatch_barrier_sync(self.synchronizationQueue, ^{
         AFCachedImage *cachedImage = self.cachedImages[identifier];
         if (cachedImage != nil) {
             [self.cachedImages removeObjectForKey:identifier];
@@ -141,7 +157,7 @@
 
 - (BOOL)removeAllImages {
     __block BOOL removed = NO;
-    dispatch_barrier_async(self.synchronizationQueue, ^{
+    dispatch_barrier_sync(self.synchronizationQueue, ^{
         if (self.cachedImages.count > 0) {
             [self.cachedImages removeAllObjects];
             self.currentMemoryUsage = 0;
@@ -153,7 +169,7 @@
 
 - (nullable UIImage *)imageWithIdentifier:(NSString *)identifier {
     __block UIImage *image = nil;
-    dispatch_barrier_async(self.synchronizationQueue, ^{
+    dispatch_sync(self.synchronizationQueue, ^{
         AFCachedImage *cachedImage = self.cachedImages[identifier];
         image = [cachedImage accessImage];
     });

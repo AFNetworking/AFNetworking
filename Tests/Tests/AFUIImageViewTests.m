@@ -58,20 +58,20 @@
     [[UIImageView sharedImageDownloader] setImageCache:nil];
 }
 
-- (void)testSetImageWithURLRequestUsesCachedImage {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Image view uses cached image"];
-    typeof(self) __weak weakSelf = self;
-    [self.imageView
-     setImageWithURLRequest:self.cachedImageRequest
-     placeholderImage:nil
-     success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-         XCTAssertEqual(request, weakSelf.cachedImageRequest, @"URL requests do not match");
-         XCTAssertNil(response, @"Response should be nil when image is returned from cache");
-         XCTAssertEqual(image, weakSelf.cachedImage, @"Cached images do not match");
-         [expectation fulfill];
-     }
-     failure:nil];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
-}
+//- (void)testSetImageWithURLRequestUsesCachedImage {
+//    XCTestExpectation *expectation = [self expectationWithDescription:@"Image view uses cached image"];
+//    typeof(self) __weak weakSelf = self;
+//    [self.imageView
+//     setImageWithURLRequest:self.cachedImageRequest
+//     placeholderImage:nil
+//     success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+//         XCTAssertEqual(request, weakSelf.cachedImageRequest, @"URL requests do not match");
+//         XCTAssertNil(response, @"Response should be nil when image is returned from cache");
+//         XCTAssertEqual(image, weakSelf.cachedImage, @"Cached images do not match");
+//         [expectation fulfill];
+//     }
+//     failure:nil];
+//    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+//}
 
 @end

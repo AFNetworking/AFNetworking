@@ -18,6 +18,9 @@
 		2902D29D17DF4E3800C81C5A /* AFTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B9ED7617DF4D790021E4D5 /* AFTestCase.m */; };
 		2940C00A1B063C6700AFDAC7 /* AFUIActivityIndicatorViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2940C0091B063C6700AFDAC7 /* AFUIActivityIndicatorViewTests.m */; };
 		2940C00C1B064C3200AFDAC7 /* AFUIRefreshControlTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2940C00B1B064C3200AFDAC7 /* AFUIRefreshControlTests.m */; };
+		295B1DCD1BBD8BB100EE113D /* AFAutoPurgingImageCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 295B1DCC1BBD8BB100EE113D /* AFAutoPurgingImageCacheTests.m */; };
+		295B1DCF1BBD8CB900EE113D /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 295B1DCE1BBD8CB900EE113D /* logo.png */; };
+		295B1DD01BBD8CB900EE113D /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 295B1DCE1BBD8CB900EE113D /* logo.png */; };
 		29CBFC3C17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */; };
 		29CBFC3D17DF541F0021AB75 /* AFJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3B17DF541F0021AB75 /* AFJSONSerializationTests.m */; };
 		29CBFC3F17DF58000021AB75 /* AFHTTPRequestSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3E17DF58000021AB75 /* AFHTTPRequestSerializationTests.m */; };
@@ -48,8 +51,6 @@
 		B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264C18053E930062F4E3 /* adn_1.cer */; };
 		B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264D18053E930062F4E3 /* adn_2.cer */; };
 		C61291641B21E27700B9475A /* AFUIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C61291631B21E27700B9475A /* AFUIImageViewTests.m */; };
-		C61291651B21F9E300B9475A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
-		C61291661B21FA4D00B9475A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
 		CBBDB1651A7981FB00D412EE /* httpbinorg_01162016.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */; };
 		CBBDB1661A79820700D412EE /* httpbinorg_01162016.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */; };
 		CBBDB16A1A798AB500D412EE /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */; };
@@ -90,6 +91,8 @@
 		29133DD817DE7829006E0493 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		2940C0091B063C6700AFDAC7 /* AFUIActivityIndicatorViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIActivityIndicatorViewTests.m; sourceTree = "<group>"; };
 		2940C00B1B064C3200AFDAC7 /* AFUIRefreshControlTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIRefreshControlTests.m; sourceTree = "<group>"; };
+		295B1DCC1BBD8BB100EE113D /* AFAutoPurgingImageCacheTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFAutoPurgingImageCacheTests.m; sourceTree = "<group>"; };
+		295B1DCE1BBD8CB900EE113D /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Resources/logo.png; sourceTree = "<group>"; };
 		29B9ED5C17DF4D350021E4D5 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		29B9ED7617DF4D790021E4D5 /* AFTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTestCase.m; sourceTree = "<group>"; };
 		29B9ED7817DF4D830021E4D5 /* AFTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFTestCase.h; sourceTree = "<group>"; };
@@ -122,7 +125,6 @@
 		DE533FCD1ACCF34200C62CFB /* AFNetworkReachabilityManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkReachabilityManagerTests.m; sourceTree = "<group>"; };
 		F837FFAE195744A0009078A0 /* AFHTTPResponseSerializationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPResponseSerializationTests.m; sourceTree = "<group>"; };
 		F87382941948AC15000B7AFA /* AFHTTPSessionManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManagerTests.m; sourceTree = "<group>"; };
-		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,7 +213,7 @@
 		25A753091747FC7E00F04F2F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				F8C6F281174D2C6200B154D5 /* Icon.png */,
+				295B1DCE1BBD8CB900EE113D /* logo.png */,
 				F8E801E9175AC34D008D3886 /* Certificates */,
 			);
 			name = Resources;
@@ -270,6 +272,7 @@
 				2940C0091B063C6700AFDAC7 /* AFUIActivityIndicatorViewTests.m */,
 				2940C00B1B064C3200AFDAC7 /* AFUIRefreshControlTests.m */,
 				C61291631B21E27700B9475A /* AFUIImageViewTests.m */,
+				295B1DCC1BBD8BB100EE113D /* AFAutoPurgingImageCacheTests.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -405,6 +408,7 @@
 				29CBFC8717DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
 				A74DA00D18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D28117DF4E1200C81C5A /* InfoPlist.strings in Resources */,
+				295B1DCF1BBD8CB900EE113D /* logo.png in Resources */,
 				CBBDB1651A7981FB00D412EE /* httpbinorg_01162016.cer in Resources */,
 				36DE264E18053E930062F4E3 /* adn_0.cer in Resources */,
 				36DE264F18053E930062F4E3 /* adn_1.cer in Resources */,
@@ -413,7 +417,6 @@
 				A74DA00B18D2FB9400F3B969 /* foobar.com.cer in Resources */,
 				36DE265018053E930062F4E3 /* adn_2.cer in Resources */,
 				29CBFC7617DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
-				C61291651B21F9E300B9475A /* Icon.png in Resources */,
 				A74DA00918D2FB9400F3B969 /* AltName.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -426,6 +429,7 @@
 				29CBFC8817DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
 				A74DA00E18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D29517DF4E2A00C81C5A /* InfoPlist.strings in Resources */,
+				295B1DD01BBD8CB900EE113D /* logo.png in Resources */,
 				CBBDB1661A79820700D412EE /* httpbinorg_01162016.cer in Resources */,
 				B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */,
 				B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */,
@@ -434,7 +438,6 @@
 				A74DA00C18D2FB9400F3B969 /* foobar.com.cer in Resources */,
 				B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */,
 				29CBFC7717DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
-				C61291661B21FA4D00B9475A /* Icon.png in Resources */,
 				A74DA00A18D2FB9400F3B969 /* AltName.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -522,6 +525,7 @@
 				77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */,
 				2902D29C17DF4E3700C81C5A /* AFTestCase.m in Sources */,
 				F87382951948AC15000B7AFA /* AFHTTPSessionManagerTests.m in Sources */,
+				295B1DCD1BBD8BB100EE113D /* AFAutoPurgingImageCacheTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
