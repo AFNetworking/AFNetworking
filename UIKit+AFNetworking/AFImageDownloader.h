@@ -75,6 +75,13 @@ typedef NS_ENUM(NSInteger, AFImageDownloadPrioritization) {
 + (instancetype)defaultInstance;
 
 /**
+ Creates a default `NSURLCache` with common usage parameter values.
+
+ @returns The default `NSURLCache` instance.
+ */
++ (NSURLCache *)defaultURLCache;
+
+/**
  Default initializer
 
  @return An instance of `AFImageDownloader` initialized with default values.

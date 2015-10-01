@@ -21,7 +21,7 @@
 
 #import <TargetConditionals.h>
 
-#if TARGET_OS_IOS || TARGET_OS_TV 
+#if TARGET_OS_IOS || TARGET_OS_TV
 
 #import "AFImageDownloader.h"
 #import "AFHTTPSessionManager.h"
@@ -35,8 +35,8 @@
 @implementation AFImageDownloaderResponseHandler
 
 - (instancetype)initWithUUID:(NSUUID *)uuid
-                    success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *responseObject))success
-                    failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure {
+                     success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *responseObject))success
+                     failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure {
     if (self = [self init]) {
         self.uuid = uuid;
         self.successBlock = success;
@@ -45,6 +45,9 @@
     return self;
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat: @"<AFImageDownloaderResponseHandler>UUID: %@", [self.uuid UUIDString]];
+}
 
 @end
 
@@ -52,6 +55,7 @@
 @property (nonatomic, strong) NSString *identifier;
 @property (nonatomic, strong) NSURLSessionDataTask *task;
 @property (nonatomic, strong) NSMutableArray <AFImageDownloaderResponseHandler*> *responseHandlers;
+
 @end
 
 @implementation AFImageDownloaderMergedTask
@@ -137,9 +141,9 @@
 }
 
 - (instancetype)initWithSessionManager:(AFHTTPSessionManager *)sessionManager
-               downloadPrioritization:(AFImageDownloadPrioritization)downloadPrioritization
-               maximumActiveDownloads:(NSInteger)maximumActiveDownloads
-                           imageCache:(id <AFImageRequestCache>)imageCache {
+                downloadPrioritization:(AFImageDownloadPrioritization)downloadPrioritization
+                maximumActiveDownloads:(NSInteger)maximumActiveDownloads
+                            imageCache:(id <AFImageRequestCache>)imageCache {
     if (self = [super init]) {
         self.sessionManager = sessionManager;
 
@@ -174,17 +178,18 @@
 - (nullable AFImageDownloadReceipt *)downloadImageForURLRequest:(NSURLRequest *)request
                                                         success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse  * _Nullable response, UIImage *responseObject))success
                                                         failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure; {
-
-    __block AFImageDownloadReceipt *downloadReceipt = nil;
+    NSUUID *callerUUID = [NSUUID UUID];
+    __block NSURLSessionDataTask *task = nil;
     dispatch_sync(self.synchronizationQueue, ^{
         NSString *identifier = request.URL.absoluteString;
-        NSUUID *callerUUID = [NSUUID UUID];
 
         // 1) Append the success and failure blocks to a pre-existing request if it already exists
         AFImageDownloaderMergedTask *existingMergedTask = self.mergedTasks[identifier];
         if (existingMergedTask != nil) {
             AFImageDownloaderResponseHandler *handler = [[AFImageDownloaderResponseHandler alloc] initWithUUID:callerUUID success:success failure:failure];
             [existingMergedTask addResponseHandler:handler];
+            task = existingMergedTask.task;
+            return;
         }
 
         // 2) Attempt to load the image from the image cache if the cache policy allows it
@@ -214,26 +219,37 @@
                        GET:request.URL.absoluteString
                        parameters:nil
                        success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-                           __strong typeof(weakSelf) strongSelf = weakSelf;
-                           AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
-                           for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
-                               dispatch_async(dispatch_get_main_queue(), ^{
-                                   handler.successBlock(task.originalRequest, (NSHTTPURLResponse*)task.response, responseObject);
-                               });
-                           }
-                           [strongSelf safelyDecrementActiveTaskCount];
-                           [strongSelf safelyStartNextTaskIfNecessary];
+                           dispatch_async(self.responseQueue, ^{
+                               __strong typeof(weakSelf) strongSelf = weakSelf;
+                               AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
+
+                               [strongSelf.imageCache addImage:responseObject forRequest:task.originalRequest withAdditionalIdentifier:nil];
+
+                               for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
+                                   if (handler.successBlock) {
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           handler.successBlock(task.originalRequest, (NSHTTPURLResponse*)task.response, responseObject);
+                                       });
+                                   }
+                               }
+                               [strongSelf safelyDecrementActiveTaskCount];
+                               [strongSelf safelyStartNextTaskIfNecessary];
+                           });
                        }
                        failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-                           __strong typeof(weakSelf) strongSelf = weakSelf;
-                           AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
-                           for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
-                               dispatch_async(dispatch_get_main_queue(), ^{
-                                   handler.failureBlock(task.originalRequest, (NSHTTPURLResponse*)task.response, error);
-                               });
-                           }
-                           [strongSelf safelyDecrementActiveTaskCount];
-                           [strongSelf safelyStartNextTaskIfNecessary];
+                           dispatch_async(self.responseQueue, ^{
+                               __strong typeof(weakSelf) strongSelf = weakSelf;
+                               AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
+                               for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
+                                   if (handler.failureBlock) {
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           handler.failureBlock(task.originalRequest, (NSHTTPURLResponse*)task.response, error);
+                                       });
+                                   }
+                               }
+                               [strongSelf safelyDecrementActiveTaskCount];
+                               [strongSelf safelyStartNextTaskIfNecessary];
+                           });
                        }];
         [createdTask suspend];
 
@@ -254,11 +270,13 @@
             [self enqueueMergedTask:mergedTask];
         }
 
-        // 6) Create the receipt
-        downloadReceipt = [[AFImageDownloadReceipt alloc] initWithReceiptID:callerUUID task:createdTask];
+        task = mergedTask.task;
     });
-
-    return downloadReceipt;
+    if (task) {
+        return [[AFImageDownloadReceipt alloc] initWithReceiptID:callerUUID task:task];
+    } else {
+        return nil;
+    }
 }
 
 - (void)cancelTaskForImageDownloadReceipt:(AFImageDownloadReceipt *)imageDownloadReceipt {
