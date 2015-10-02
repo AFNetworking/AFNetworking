@@ -199,11 +199,11 @@
             case NSURLRequestReturnCacheDataDontLoad: {
                 UIImage *cachedImage = [self.imageCache imageforRequest:request withAdditionalIdentifier:nil];
                 if (cachedImage != nil) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (success) {
+                    if (success) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
                             success(request, nil, cachedImage);
-                        }
-                    });
+                        });
+                    }
                     return;
                 }
                 break;
@@ -222,7 +222,6 @@
                            dispatch_async(self.responseQueue, ^{
                                __strong typeof(weakSelf) strongSelf = weakSelf;
                                AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
-
                                [strongSelf.imageCache addImage:responseObject forRequest:task.originalRequest withAdditionalIdentifier:nil];
 
                                for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
@@ -362,7 +361,6 @@
 - (BOOL)isActiveRequestCountBelowMaximumLimit {
     return self.activeRequestCount < self.maximumActiveDownloads;
 }
-
 
 @end
 
