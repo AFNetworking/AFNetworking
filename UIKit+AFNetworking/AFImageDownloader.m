@@ -160,7 +160,6 @@
 
         name = [NSString stringWithFormat:@"com.alamofire.imagedownloader.responsequeue-%@", [[NSUUID UUID] UUIDString]];
         self.responseQueue = dispatch_queue_create([name cStringUsingEncoding:NSASCIIStringEncoding], DISPATCH_QUEUE_CONCURRENT);
-
     }
 
     return self;
@@ -215,42 +214,36 @@
         // 3) Create the request and set up authentication, validation and response serialization
         NSURLSessionDataTask *createdTask;
         __weak typeof(self) weakSelf = self;
-        createdTask = [self.sessionManager
-                       GET:request.URL.absoluteString
-                       parameters:nil
-                       success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-                           dispatch_async(self.responseQueue, ^{
-                               __strong typeof(weakSelf) strongSelf = weakSelf;
-                               AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
-                               [strongSelf.imageCache addImage:responseObject forRequest:task.originalRequest withAdditionalIdentifier:nil];
 
-                               for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
-                                   if (handler.successBlock) {
-                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                           handler.successBlock(task.originalRequest, (NSHTTPURLResponse*)task.response, responseObject);
-                                       });
-                                   }
-                               }
-                               [strongSelf safelyDecrementActiveTaskCount];
-                               [strongSelf safelyStartNextTaskIfNecessary];
-                           });
-                       }
-                       failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        createdTask = [self.sessionManager
+                       dataTaskWithRequest:request
+                       completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
                                __strong typeof(weakSelf) strongSelf = weakSelf;
                                AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
-                               for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
-                                   if (handler.failureBlock) {
-                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                           handler.failureBlock(task.originalRequest, (NSHTTPURLResponse*)task.response, error);
-                                       });
+                               if (error) {
+                                   for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
+                                       if (handler.failureBlock) {
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                               handler.failureBlock(request, (NSHTTPURLResponse*)response, error);
+                                           });
+                                       }
                                    }
+                               } else {
+                                   [strongSelf.imageCache addImage:responseObject forRequest:request withAdditionalIdentifier:nil];
+
+                                   for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
+                                       if (handler.successBlock) {
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                               handler.successBlock(request, response, responseObject);
+                                           });
+                                       }
+                                   }
+                                   [strongSelf safelyDecrementActiveTaskCount];
+                                   [strongSelf safelyStartNextTaskIfNecessary];
                                }
-                               [strongSelf safelyDecrementActiveTaskCount];
-                               [strongSelf safelyStartNextTaskIfNecessary];
                            });
                        }];
-        [createdTask suspend];
 
         // 4) Store the response handler for use when the request completes
         AFImageDownloaderResponseHandler *handler = [[AFImageDownloaderResponseHandler alloc] initWithUUID:callerUUID
@@ -309,6 +302,8 @@
     __block AFImageDownloaderMergedTask *mergedTask = nil;
     dispatch_sync(self.synchronizationQueue, ^{
         mergedTask = self.mergedTasks[identifier];
+        [self.mergedTasks removeObjectForKey:identifier];
+
     });
     return mergedTask;
 }
@@ -324,7 +319,7 @@
 - (void)safelyStartNextTaskIfNecessary {
     dispatch_sync(self.synchronizationQueue, ^{
         if ([self isActiveRequestCountBelowMaximumLimit]) {
-            while (!self.queuedMergedTasks.count > 0) {
+            while (self.queuedMergedTasks.count > 0) {
                 AFImageDownloaderMergedTask *mergedTask = [self dequeueMergedTask];
                 if (mergedTask.task.state == NSURLSessionTaskStateSuspended) {
                     [self startMergedTask:mergedTask];
