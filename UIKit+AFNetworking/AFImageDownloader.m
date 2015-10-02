@@ -235,7 +235,7 @@
                                    for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
                                        if (handler.successBlock) {
                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                               handler.successBlock(request, response, responseObject);
+                                               handler.successBlock(request, (NSHTTPURLResponse*)response, responseObject);
                                            });
                                        }
                                    }
