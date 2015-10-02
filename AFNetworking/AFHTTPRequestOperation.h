@@ -65,6 +65,19 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setCompletionBlockWithSuccess:(nullable void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(nullable void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
+///---------------------------------
+/// @name Managing Callback Queues
+///---------------------------------
+
+/**
+ The dispatch queue for the block that is determining which callback block (success or failure) will be called according to response. If `NULL` (default), a private concurrent queue is used.
+ */
+#if OS_OBJECT_HAVE_OBJC_SUPPORT
+@property (nonatomic, strong, nullable) dispatch_queue_t completionProcessingQueue;
+#else
+@property (nonatomic, assign, nullable) dispatch_queue_t completionProcessingQueue;
+#endif
+
 @end
 
 NS_ASSUME_NONNULL_END

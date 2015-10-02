@@ -128,7 +128,7 @@
     [operation setCompletionBlockWithSuccess:success failure:failure];
     operation.completionQueue = self.completionQueue;
     operation.completionGroup = self.completionGroup;
-
+	operation.completionProcessingQueue = self.completionProcessingQueue;
     return operation;
 }
 
