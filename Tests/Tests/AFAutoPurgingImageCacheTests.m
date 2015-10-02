@@ -228,8 +228,6 @@
             XCTAssertNil(cachedImage, @"Image for %@ should not be cached", identifier);
         }
     }
-
-
 }
 
 @end
