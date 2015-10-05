@@ -14,6 +14,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "299522641BBF129200859F49"
+               BuildableName = "AFNetworking.framework"
+               BlueprintName = "AFNetworking watchOS"
+               ReferencedContainer = "container:../AFNetworking.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "291BFDB81BB9E85400FFB029"
                BuildableName = "watchOS Example.app"
                BlueprintName = "watchOS Example"

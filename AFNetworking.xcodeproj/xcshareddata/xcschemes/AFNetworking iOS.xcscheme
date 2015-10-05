@@ -14,6 +14,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "298D7C3A1BC2C79500FD3B3E"
+               BuildableName = "AFNetworking iOS Tests.xctest"
+               BlueprintName = "AFNetworking iOS Tests"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "299522381BBF104D00859F49"
                BuildableName = "AFNetworking.framework"
                BlueprintName = "AFNetworking iOS"
@@ -29,6 +43,15 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "299522381BBF104D00859F49"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking iOS"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>

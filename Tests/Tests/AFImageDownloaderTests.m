@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 
 #import <XCTest/XCTest.h>
-#import <AFNetworking/AFImageDownloader.h>
+#import "AFImageDownloader.h"
 
 @interface AFImageDownloaderTests : XCTestCase
 @property (nonatomic, strong) NSURLRequest *pngRequest;

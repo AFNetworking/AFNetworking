@@ -21,8 +21,6 @@
 
 #import <XCTest/XCTest.h>
 
-#import "OCMock.h"
-
 extern NSString * const AFNetworkingTestsBaseURLString;
 
 @interface AFTestCase : XCTestCase

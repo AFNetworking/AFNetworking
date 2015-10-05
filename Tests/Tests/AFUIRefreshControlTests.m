@@ -20,8 +20,8 @@
 // THE SOFTWARE.
 
 #import "AFTestCase.h"
-#import <AFNetworking/UIRefreshControl+AFNetworking.h>
-#import <AFNetworking/AFURLSessionManager.h>
+#import "UIRefreshControl+AFNetworking.h"
+#import "AFURLSessionManager.h"
 
 @interface AFUIRefreshControlTests : AFTestCase
 @property (nonatomic, strong) NSURLRequest *request;

@@ -20,8 +20,8 @@
 // THE SOFTWARE.
 
 #import "AFTestCase.h"
-#import <AFNetworking/UIActivityIndicatorView+AFNetworking.h>
-#import <AFNetworking/AFURLSessionManager.h>
+#import "UIActivityIndicatorView+AFNetworking.h"
+#import "AFURLSessionManager.h"
 
 @interface AFUIActivityIndicatorViewTests : AFTestCase
 @property (nonatomic, strong) NSURLRequest *request;

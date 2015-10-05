@@ -7,6 +7,58 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		297824A31BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; settings = {ASSET_TAGS = (); }; };
+		297824A41BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; settings = {ASSET_TAGS = (); }; };
+		297824A51BC2D69A0041C395 /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A11BC2D69A0041C395 /* adn_1.cer */; settings = {ASSET_TAGS = (); }; };
+		297824A61BC2D69A0041C395 /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A11BC2D69A0041C395 /* adn_1.cer */; settings = {ASSET_TAGS = (); }; };
+		297824A71BC2D69A0041C395 /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A21BC2D69A0041C395 /* adn_2.cer */; settings = {ASSET_TAGS = (); }; };
+		297824A81BC2D69A0041C395 /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A21BC2D69A0041C395 /* adn_2.cer */; settings = {ASSET_TAGS = (); }; };
+		297824AA1BC2DAD80041C395 /* AFAutoPurgingImageCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C801BC2C88F00FD3B3E /* AFAutoPurgingImageCacheTests.m */; settings = {ASSET_TAGS = (); }; };
+		297824AB1BC2DB060041C395 /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 299522391BBF104D00859F49 /* AFNetworking.framework */; };
+		297824AC1BC2DB450041C395 /* AFImageDownloaderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C841BC2C88F00FD3B3E /* AFImageDownloaderTests.m */; settings = {ASSET_TAGS = (); }; };
+		297824AD1BC2DBA40041C395 /* AFNetworkActivityManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C861BC2C88F00FD3B3E /* AFNetworkActivityManagerTests.m */; settings = {ASSET_TAGS = (); }; };
+		297824AE1BC2DBD80041C395 /* AFUIActivityIndicatorViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C8C1BC2C88F00FD3B3E /* AFUIActivityIndicatorViewTests.m */; settings = {ASSET_TAGS = (); }; };
+		297824AF1BC2DBEF0041C395 /* AFUIRefreshControlTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C8E1BC2C88F00FD3B3E /* AFUIRefreshControlTests.m */; settings = {ASSET_TAGS = (); }; };
+		297824B01BC2DC2D0041C395 /* AFUIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C8D1BC2C88F00FD3B3E /* AFUIImageViewTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7C4F1BC2C7B200FD3B3E /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 299522771BBF136400859F49 /* AFNetworking.framework */; settings = {ASSET_TAGS = (); }; };
+		298D7C961BC2C94400FD3B3E /* AFTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C8B1BC2C88F00FD3B3E /* AFTestCase.m */; settings = {ASSET_TAGS = (); }; };
+		298D7C971BC2C94500FD3B3E /* AFTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C8B1BC2C88F00FD3B3E /* AFTestCase.m */; settings = {ASSET_TAGS = (); }; };
+		298D7C981BC2CA2500FD3B3E /* AFURLSessionManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C8F1BC2C88F00FD3B3E /* AFURLSessionManagerTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7C991BC2CA2600FD3B3E /* AFURLSessionManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C8F1BC2C88F00FD3B3E /* AFURLSessionManagerTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CB11BC2CA6E00FD3B3E /* AFHTTPRequestSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C811BC2C88F00FD3B3E /* AFHTTPRequestSerializationTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CB21BC2CA6E00FD3B3E /* AFHTTPRequestSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C811BC2C88F00FD3B3E /* AFHTTPRequestSerializationTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CB91BC2CA9800FD3B3E /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C771BC2C88F00FD3B3E /* logo.png */; settings = {ASSET_TAGS = (); }; };
+		298D7CBA1BC2CA9800FD3B3E /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C771BC2C88F00FD3B3E /* logo.png */; settings = {ASSET_TAGS = (); }; };
+		298D7CBB1BC2CA9C00FD3B3E /* AltName.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C791BC2C88F00FD3B3E /* AltName.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CBC1BC2CA9C00FD3B3E /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C7A1BC2C88F00FD3B3E /* foobar.com.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CBD1BC2CA9C00FD3B3E /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C7B1BC2C88F00FD3B3E /* NoDomains.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CBE1BC2CA9D00FD3B3E /* AltName.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C791BC2C88F00FD3B3E /* AltName.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CBF1BC2CA9D00FD3B3E /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C7A1BC2C88F00FD3B3E /* foobar.com.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CC01BC2CA9D00FD3B3E /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C7B1BC2C88F00FD3B3E /* NoDomains.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CC11BC2CAA100FD3B3E /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CC21BC2CAA100FD3B3E /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CC31BC2CAA100FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CC41BC2CAA100FD3B3E /* httpbinorg_01162016.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C711BC2C88F00FD3B3E /* httpbinorg_01162016.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CC51BC2CAA200FD3B3E /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CC61BC2CAA200FD3B3E /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CC71BC2CAA200FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CC81BC2CAA200FD3B3E /* httpbinorg_01162016.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C711BC2C88F00FD3B3E /* httpbinorg_01162016.cer */; settings = {ASSET_TAGS = (); }; };
+		298D7CD31BC2CAE800FD3B3E /* AFHTTPResponseSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C821BC2C88F00FD3B3E /* AFHTTPResponseSerializationTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CD41BC2CAE900FD3B3E /* AFHTTPResponseSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C821BC2C88F00FD3B3E /* AFHTTPResponseSerializationTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CD51BC2CAEC00FD3B3E /* AFHTTPSessionManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C831BC2C88F00FD3B3E /* AFHTTPSessionManagerTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CD61BC2CAED00FD3B3E /* AFHTTPSessionManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C831BC2C88F00FD3B3E /* AFHTTPSessionManagerTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CD71BC2CAEF00FD3B3E /* AFJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C851BC2C88F00FD3B3E /* AFJSONSerializationTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CD81BC2CAF000FD3B3E /* AFJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C851BC2C88F00FD3B3E /* AFJSONSerializationTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CD91BC2CAF200FD3B3E /* AFNetworkReachabilityManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C871BC2C88F00FD3B3E /* AFNetworkReachabilityManagerTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CDA1BC2CAF300FD3B3E /* AFNetworkReachabilityManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C871BC2C88F00FD3B3E /* AFNetworkReachabilityManagerTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CDB1BC2CAF500FD3B3E /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C881BC2C88F00FD3B3E /* AFPropertyListResponseSerializerTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CDC1BC2CAF500FD3B3E /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C881BC2C88F00FD3B3E /* AFPropertyListResponseSerializerTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CDD1BC2CAF700FD3B3E /* AFSecurityPolicyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C891BC2C88F00FD3B3E /* AFSecurityPolicyTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CDE1BC2CAF800FD3B3E /* AFSecurityPolicyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C891BC2C88F00FD3B3E /* AFSecurityPolicyTests.m */; settings = {ASSET_TAGS = (); }; };
+		298D7CE01BC2CB5A00FD3B3E /* ADNNetServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 298D7CDF1BC2CB5A00FD3B3E /* ADNNetServerTrustChain */; settings = {ASSET_TAGS = (); }; };
+		298D7CE11BC2CB5A00FD3B3E /* ADNNetServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 298D7CDF1BC2CB5A00FD3B3E /* ADNNetServerTrustChain */; settings = {ASSET_TAGS = (); }; };
+		298D7CE31BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */; settings = {ASSET_TAGS = (); }; };
+		298D7CE41BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */; settings = {ASSET_TAGS = (); }; };
 		2995223D1BBF104D00859F49 /* AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 2995223C1BBF104D00859F49 /* AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		299522531BBF125A00859F49 /* AFHTTPSessionManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 299522461BBF125A00859F49 /* AFHTTPSessionManager.h */; settings = {ASSET_TAGS = (); }; };
 		299522541BBF125A00859F49 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 299522471BBF125A00859F49 /* AFHTTPSessionManager.m */; settings = {ASSET_TAGS = (); }; };
@@ -55,7 +107,61 @@
 		299522B11BBF13C700859F49 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 2995229B1BBF13C700859F49 /* UIWebView+AFNetworking.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		298D7C411BC2C79500FD3B3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 299522301BBF104D00859F49 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 299522381BBF104D00859F49;
+			remoteInfo = "AFNetworking iOS";
+		};
+		298D7C501BC2C7B200FD3B3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 299522301BBF104D00859F49 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 299522761BBF136400859F49;
+			remoteInfo = "AFNetworking OS X";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		297824A01BC2D69A0041C395 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
+		297824A11BC2D69A0041C395 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
+		297824A21BC2D69A0041C395 /* adn_2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_2.cer; path = ADNNetServerTrustChain/adn_2.cer; sourceTree = "<group>"; };
+		298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking Mac OS X Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		298D7C5E1BC2C88F00FD3B3E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		298D7C5F1BC2C88F00FD3B3E /* iOS Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS Tests-Info.plist"; sourceTree = "<group>"; };
+		298D7C601BC2C88F00FD3B3E /* iOS Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Tests-Prefix.pch"; sourceTree = "<group>"; };
+		298D7C631BC2C88F00FD3B3E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		298D7C641BC2C88F00FD3B3E /* OS X Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OS X Tests-Info.plist"; sourceTree = "<group>"; };
+		298D7C651BC2C88F00FD3B3E /* OS X Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OS X Tests-Prefix.pch"; sourceTree = "<group>"; };
+		298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AddTrust_External_CA_Root.cer; sourceTree = "<group>"; };
+		298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Certification_Authority.cer; sourceTree = "<group>"; };
+		298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Domain_Validation_Secure_Server_CA.cer; sourceTree = "<group>"; };
+		298D7C711BC2C88F00FD3B3E /* httpbinorg_01162016.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_01162016.cer; sourceTree = "<group>"; };
+		298D7C771BC2C88F00FD3B3E /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		298D7C791BC2C88F00FD3B3E /* AltName.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AltName.cer; sourceTree = "<group>"; };
+		298D7C7A1BC2C88F00FD3B3E /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
+		298D7C7B1BC2C88F00FD3B3E /* NoDomains.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = NoDomains.cer; sourceTree = "<group>"; };
+		298D7C801BC2C88F00FD3B3E /* AFAutoPurgingImageCacheTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFAutoPurgingImageCacheTests.m; sourceTree = "<group>"; };
+		298D7C811BC2C88F00FD3B3E /* AFHTTPRequestSerializationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestSerializationTests.m; sourceTree = "<group>"; };
+		298D7C821BC2C88F00FD3B3E /* AFHTTPResponseSerializationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPResponseSerializationTests.m; sourceTree = "<group>"; };
+		298D7C831BC2C88F00FD3B3E /* AFHTTPSessionManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManagerTests.m; sourceTree = "<group>"; };
+		298D7C841BC2C88F00FD3B3E /* AFImageDownloaderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFImageDownloaderTests.m; sourceTree = "<group>"; };
+		298D7C851BC2C88F00FD3B3E /* AFJSONSerializationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFJSONSerializationTests.m; sourceTree = "<group>"; };
+		298D7C861BC2C88F00FD3B3E /* AFNetworkActivityManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityManagerTests.m; sourceTree = "<group>"; };
+		298D7C871BC2C88F00FD3B3E /* AFNetworkReachabilityManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFNetworkReachabilityManagerTests.m; sourceTree = "<group>"; };
+		298D7C881BC2C88F00FD3B3E /* AFPropertyListResponseSerializerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListResponseSerializerTests.m; sourceTree = "<group>"; };
+		298D7C891BC2C88F00FD3B3E /* AFSecurityPolicyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicyTests.m; sourceTree = "<group>"; };
+		298D7C8A1BC2C88F00FD3B3E /* AFTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFTestCase.h; sourceTree = "<group>"; };
+		298D7C8B1BC2C88F00FD3B3E /* AFTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFTestCase.m; sourceTree = "<group>"; };
+		298D7C8C1BC2C88F00FD3B3E /* AFUIActivityIndicatorViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFUIActivityIndicatorViewTests.m; sourceTree = "<group>"; };
+		298D7C8D1BC2C88F00FD3B3E /* AFUIImageViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFUIImageViewTests.m; sourceTree = "<group>"; };
+		298D7C8E1BC2C88F00FD3B3E /* AFUIRefreshControlTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFUIRefreshControlTests.m; sourceTree = "<group>"; };
+		298D7C8F1BC2C88F00FD3B3E /* AFURLSessionManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManagerTests.m; sourceTree = "<group>"; };
+		298D7CDF1BC2CB5A00FD3B3E /* ADNNetServerTrustChain */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ADNNetServerTrustChain; sourceTree = "<group>"; };
+		298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HTTPBinOrgServerTrustChain; sourceTree = "<group>"; };
 		299522391BBF104D00859F49 /* AFNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AFNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2995223C1BBF104D00859F49 /* AFNetworking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AFNetworking.h; path = ../Framework/AFNetworking.h; sourceTree = "<group>"; };
 		2995223E1BBF104D00859F49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Framework/Info.plist; sourceTree = "<group>"; };
@@ -98,6 +204,22 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		298D7C381BC2C79500FD3B3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				297824AB1BC2DB060041C395 /* AFNetworking.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		298D7C471BC2C7B200FD3B3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				298D7C4F1BC2C7B200FD3B3E /* AFNetworking.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		299522351BBF104D00859F49 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -122,12 +244,127 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		298D7C561BC2C88F00FD3B3E /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				298D7C5C1BC2C88F00FD3B3E /* iOS Tests */,
+				298D7C611BC2C88F00FD3B3E /* OS X Tests */,
+				298D7C671BC2C88F00FD3B3E /* Resources */,
+				298D7C7F1BC2C88F00FD3B3E /* Tests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		298D7C5C1BC2C88F00FD3B3E /* iOS Tests */ = {
+			isa = PBXGroup;
+			children = (
+				298D7C5D1BC2C88F00FD3B3E /* InfoPlist.strings */,
+				298D7C5F1BC2C88F00FD3B3E /* iOS Tests-Info.plist */,
+				298D7C601BC2C88F00FD3B3E /* iOS Tests-Prefix.pch */,
+			);
+			path = "iOS Tests";
+			sourceTree = "<group>";
+		};
+		298D7C611BC2C88F00FD3B3E /* OS X Tests */ = {
+			isa = PBXGroup;
+			children = (
+				298D7C621BC2C88F00FD3B3E /* InfoPlist.strings */,
+				298D7C641BC2C88F00FD3B3E /* OS X Tests-Info.plist */,
+				298D7C651BC2C88F00FD3B3E /* OS X Tests-Prefix.pch */,
+			);
+			path = "OS X Tests";
+			sourceTree = "<group>";
+		};
+		298D7C671BC2C88F00FD3B3E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				298D7C681BC2C88F00FD3B3E /* ADN.net */,
+				298D7C6D1BC2C88F00FD3B3E /* HTTPBin.org */,
+				298D7C771BC2C88F00FD3B3E /* logo.png */,
+				298D7C781BC2C88F00FD3B3E /* SelfSigned */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		298D7C681BC2C88F00FD3B3E /* ADN.net */ = {
+			isa = PBXGroup;
+			children = (
+				297824A01BC2D69A0041C395 /* adn_0.cer */,
+				297824A11BC2D69A0041C395 /* adn_1.cer */,
+				297824A21BC2D69A0041C395 /* adn_2.cer */,
+				298D7CDF1BC2CB5A00FD3B3E /* ADNNetServerTrustChain */,
+			);
+			path = ADN.net;
+			sourceTree = "<group>";
+		};
+		298D7C6D1BC2C88F00FD3B3E /* HTTPBin.org */ = {
+			isa = PBXGroup;
+			children = (
+				298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */,
+				298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */,
+				298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */,
+				298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */,
+				298D7C711BC2C88F00FD3B3E /* httpbinorg_01162016.cer */,
+			);
+			path = HTTPBin.org;
+			sourceTree = "<group>";
+		};
+		298D7C781BC2C88F00FD3B3E /* SelfSigned */ = {
+			isa = PBXGroup;
+			children = (
+				298D7C791BC2C88F00FD3B3E /* AltName.cer */,
+				298D7C7A1BC2C88F00FD3B3E /* foobar.com.cer */,
+				298D7C7B1BC2C88F00FD3B3E /* NoDomains.cer */,
+			);
+			path = SelfSigned;
+			sourceTree = "<group>";
+		};
+		298D7C7F1BC2C88F00FD3B3E /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				298D7CD21BC2CAD500FD3B3E /* AFNetworking UIKit Tests */,
+				298D7CD11BC2CABE00FD3B3E /* AFNetworking Tests */,
+				298D7C8A1BC2C88F00FD3B3E /* AFTestCase.h */,
+				298D7C8B1BC2C88F00FD3B3E /* AFTestCase.m */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		298D7CD11BC2CABE00FD3B3E /* AFNetworking Tests */ = {
+			isa = PBXGroup;
+			children = (
+				298D7C811BC2C88F00FD3B3E /* AFHTTPRequestSerializationTests.m */,
+				298D7C821BC2C88F00FD3B3E /* AFHTTPResponseSerializationTests.m */,
+				298D7C831BC2C88F00FD3B3E /* AFHTTPSessionManagerTests.m */,
+				298D7C851BC2C88F00FD3B3E /* AFJSONSerializationTests.m */,
+				298D7C871BC2C88F00FD3B3E /* AFNetworkReachabilityManagerTests.m */,
+				298D7C881BC2C88F00FD3B3E /* AFPropertyListResponseSerializerTests.m */,
+				298D7C891BC2C88F00FD3B3E /* AFSecurityPolicyTests.m */,
+				298D7C8F1BC2C88F00FD3B3E /* AFURLSessionManagerTests.m */,
+			);
+			name = "AFNetworking Tests";
+			sourceTree = "<group>";
+		};
+		298D7CD21BC2CAD500FD3B3E /* AFNetworking UIKit Tests */ = {
+			isa = PBXGroup;
+			children = (
+				298D7C801BC2C88F00FD3B3E /* AFAutoPurgingImageCacheTests.m */,
+				298D7C841BC2C88F00FD3B3E /* AFImageDownloaderTests.m */,
+				298D7C861BC2C88F00FD3B3E /* AFNetworkActivityManagerTests.m */,
+				298D7C8C1BC2C88F00FD3B3E /* AFUIActivityIndicatorViewTests.m */,
+				298D7C8D1BC2C88F00FD3B3E /* AFUIImageViewTests.m */,
+				298D7C8E1BC2C88F00FD3B3E /* AFUIRefreshControlTests.m */,
+			);
+			name = "AFNetworking UIKit Tests";
+			sourceTree = "<group>";
+		};
 		2995222F1BBF104D00859F49 = {
 			isa = PBXGroup;
 			children = (
 				299522851BBF13C700859F49 /* UIKit+AFNetworking */,
 				299522451BBF125A00859F49 /* AFNetworking */,
 				2995223B1BBF104D00859F49 /* Supporting Files */,
+				298D7C561BC2C88F00FD3B3E /* Tests */,
 				2995223A1BBF104D00859F49 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -138,6 +375,8 @@
 				299522391BBF104D00859F49 /* AFNetworking.framework */,
 				299522651BBF129200859F49 /* AFNetworking.framework */,
 				299522771BBF136400859F49 /* AFNetworking.framework */,
+				298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */,
+				298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -246,6 +485,42 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		298D7C3A1BC2C79500FD3B3E /* AFNetworking iOS Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 298D7C451BC2C79600FD3B3E /* Build configuration list for PBXNativeTarget "AFNetworking iOS Tests" */;
+			buildPhases = (
+				298D7C371BC2C79500FD3B3E /* Sources */,
+				298D7C381BC2C79500FD3B3E /* Frameworks */,
+				298D7C391BC2C79500FD3B3E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				298D7C421BC2C79500FD3B3E /* PBXTargetDependency */,
+			);
+			name = "AFNetworking iOS Tests";
+			productName = "AFNetworking iOS Tests";
+			productReference = 298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		298D7C491BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 298D7C521BC2C7B200FD3B3E /* Build configuration list for PBXNativeTarget "AFNetworking Mac OS X Tests" */;
+			buildPhases = (
+				298D7C461BC2C7B200FD3B3E /* Sources */,
+				298D7C471BC2C7B200FD3B3E /* Frameworks */,
+				298D7C481BC2C7B200FD3B3E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				298D7C511BC2C7B200FD3B3E /* PBXTargetDependency */,
+			);
+			name = "AFNetworking Mac OS X Tests";
+			productName = "AFNetworking Mac OS X Tests";
+			productReference = 298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		299522381BBF104D00859F49 /* AFNetworking iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 299522411BBF104D00859F49 /* Build configuration list for PBXNativeTarget "AFNetworking iOS" */;
@@ -309,6 +584,12 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = AFNetworking;
 				TargetAttributes = {
+					298D7C3A1BC2C79500FD3B3E = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
+					298D7C491BC2C7B200FD3B3E = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
 					299522381BBF104D00859F49 = {
 						CreatedOnToolsVersion = 7.0.1;
 					};
@@ -335,11 +616,53 @@
 				299522381BBF104D00859F49 /* AFNetworking iOS */,
 				299522641BBF129200859F49 /* AFNetworking watchOS */,
 				299522761BBF136400859F49 /* AFNetworking OS X */,
+				298D7C3A1BC2C79500FD3B3E /* AFNetworking iOS Tests */,
+				298D7C491BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		298D7C391BC2C79500FD3B3E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				298D7CC51BC2CAA200FD3B3E /* AddTrust_External_CA_Root.cer in Resources */,
+				298D7CBF1BC2CA9D00FD3B3E /* foobar.com.cer in Resources */,
+				298D7CBA1BC2CA9800FD3B3E /* logo.png in Resources */,
+				298D7CC61BC2CAA200FD3B3E /* COMODO_RSA_Certification_Authority.cer in Resources */,
+				298D7CC81BC2CAA200FD3B3E /* httpbinorg_01162016.cer in Resources */,
+				297824A31BC2D69A0041C395 /* adn_0.cer in Resources */,
+				298D7CC71BC2CAA200FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
+				298D7CE31BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */,
+				297824A71BC2D69A0041C395 /* adn_2.cer in Resources */,
+				297824A51BC2D69A0041C395 /* adn_1.cer in Resources */,
+				298D7CC01BC2CA9D00FD3B3E /* NoDomains.cer in Resources */,
+				298D7CE01BC2CB5A00FD3B3E /* ADNNetServerTrustChain in Resources */,
+				298D7CBE1BC2CA9D00FD3B3E /* AltName.cer in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		298D7C481BC2C7B200FD3B3E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				298D7CC11BC2CAA100FD3B3E /* AddTrust_External_CA_Root.cer in Resources */,
+				298D7CBC1BC2CA9C00FD3B3E /* foobar.com.cer in Resources */,
+				298D7CB91BC2CA9800FD3B3E /* logo.png in Resources */,
+				298D7CC21BC2CAA100FD3B3E /* COMODO_RSA_Certification_Authority.cer in Resources */,
+				298D7CC41BC2CAA100FD3B3E /* httpbinorg_01162016.cer in Resources */,
+				297824A41BC2D69A0041C395 /* adn_0.cer in Resources */,
+				298D7CC31BC2CAA100FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
+				298D7CE41BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */,
+				297824A81BC2D69A0041C395 /* adn_2.cer in Resources */,
+				297824A61BC2D69A0041C395 /* adn_1.cer in Resources */,
+				298D7CBD1BC2CA9C00FD3B3E /* NoDomains.cer in Resources */,
+				298D7CE11BC2CB5A00FD3B3E /* ADNNetServerTrustChain in Resources */,
+				298D7CBB1BC2CA9C00FD3B3E /* AltName.cer in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		299522371BBF104D00859F49 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -364,6 +687,44 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		298D7C371BC2C79500FD3B3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				298D7C961BC2C94400FD3B3E /* AFTestCase.m in Sources */,
+				298D7CB11BC2CA6E00FD3B3E /* AFHTTPRequestSerializationTests.m in Sources */,
+				297824AE1BC2DBD80041C395 /* AFUIActivityIndicatorViewTests.m in Sources */,
+				297824AD1BC2DBA40041C395 /* AFNetworkActivityManagerTests.m in Sources */,
+				298D7CDD1BC2CAF700FD3B3E /* AFSecurityPolicyTests.m in Sources */,
+				298D7CD31BC2CAE800FD3B3E /* AFHTTPResponseSerializationTests.m in Sources */,
+				297824B01BC2DC2D0041C395 /* AFUIImageViewTests.m in Sources */,
+				297824AF1BC2DBEF0041C395 /* AFUIRefreshControlTests.m in Sources */,
+				298D7CD91BC2CAF200FD3B3E /* AFNetworkReachabilityManagerTests.m in Sources */,
+				297824AA1BC2DAD80041C395 /* AFAutoPurgingImageCacheTests.m in Sources */,
+				298D7C981BC2CA2500FD3B3E /* AFURLSessionManagerTests.m in Sources */,
+				297824AC1BC2DB450041C395 /* AFImageDownloaderTests.m in Sources */,
+				298D7CD51BC2CAEC00FD3B3E /* AFHTTPSessionManagerTests.m in Sources */,
+				298D7CD71BC2CAEF00FD3B3E /* AFJSONSerializationTests.m in Sources */,
+				298D7CDB1BC2CAF500FD3B3E /* AFPropertyListResponseSerializerTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		298D7C461BC2C7B200FD3B3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				298D7CD41BC2CAE900FD3B3E /* AFHTTPResponseSerializationTests.m in Sources */,
+				298D7CB21BC2CA6E00FD3B3E /* AFHTTPRequestSerializationTests.m in Sources */,
+				298D7CDE1BC2CAF800FD3B3E /* AFSecurityPolicyTests.m in Sources */,
+				298D7C971BC2C94500FD3B3E /* AFTestCase.m in Sources */,
+				298D7CD81BC2CAF000FD3B3E /* AFJSONSerializationTests.m in Sources */,
+				298D7CDC1BC2CAF500FD3B3E /* AFPropertyListResponseSerializerTests.m in Sources */,
+				298D7CD61BC2CAED00FD3B3E /* AFHTTPSessionManagerTests.m in Sources */,
+				298D7CDA1BC2CAF300FD3B3E /* AFNetworkReachabilityManagerTests.m in Sources */,
+				298D7C991BC2CA2600FD3B3E /* AFURLSessionManagerTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		299522341BBF104D00859F49 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -414,7 +775,91 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		298D7C421BC2C79500FD3B3E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 299522381BBF104D00859F49 /* AFNetworking iOS */;
+			targetProxy = 298D7C411BC2C79500FD3B3E /* PBXContainerItemProxy */;
+		};
+		298D7C511BC2C7B200FD3B3E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 299522761BBF136400859F49 /* AFNetworking OS X */;
+			targetProxy = 298D7C501BC2C7B200FD3B3E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		298D7C5D1BC2C88F00FD3B3E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				298D7C5E1BC2C88F00FD3B3E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		298D7C621BC2C88F00FD3B3E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				298D7C631BC2C88F00FD3B3E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		298D7C431BC2C79500FD3B3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/iOS Tests/iOS Tests-Prefix.pch";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/iOS Tests/iOS Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-iOS-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		298D7C441BC2C79500FD3B3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/iOS Tests/iOS Tests-Prefix.pch";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/iOS Tests/iOS Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-iOS-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		298D7C531BC2C7B200FD3B3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/OS X Tests/OS X Tests-Prefix.pch";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/OS X Tests/OS X Tests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-Mac-OS-X-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		298D7C541BC2C7B200FD3B3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/OS X Tests/OS X Tests-Prefix.pch";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/OS X Tests/OS X Tests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-Mac-OS-X-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		2995223F1BBF104D00859F49 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -616,6 +1061,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		298D7C451BC2C79600FD3B3E /* Build configuration list for PBXNativeTarget "AFNetworking iOS Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				298D7C431BC2C79500FD3B3E /* Debug */,
+				298D7C441BC2C79500FD3B3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		298D7C521BC2C7B200FD3B3E /* Build configuration list for PBXNativeTarget "AFNetworking Mac OS X Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				298D7C531BC2C7B200FD3B3E /* Debug */,
+				298D7C541BC2C7B200FD3B3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		299522331BBF104D00859F49 /* Build configuration list for PBXProject "AFNetworking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -641,6 +1104,7 @@
 				2995226C1BBF129200859F49 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2995227C1BBF136400859F49 /* Build configuration list for PBXNativeTarget "AFNetworking OS X" */ = {
 			isa = XCConfigurationList;
@@ -649,6 +1113,7 @@
 				2995227E1BBF136400859F49 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -14,6 +14,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "298D7C3A1BC2C79500FD3B3E"
+               BuildableName = "AFNetworking iOS Tests.xctest"
+               BlueprintName = "AFNetworking iOS Tests"
+               ReferencedContainer = "container:../AFNetworking.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "29E6F1741BB9DCB500A4466C"
                BuildableName = "iOS Example.app"
                BlueprintName = "iOS Example"

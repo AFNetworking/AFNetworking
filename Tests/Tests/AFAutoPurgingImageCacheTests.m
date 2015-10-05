@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 
 #import <XCTest/XCTest.h>
-#import <AFNetworking/AFAutoPurgingImageCache.h>
+#import "AFAutoPurgingImageCache.h"
 
 @interface AFAutoPurgingImageCacheTests : XCTestCase
 @property (nonatomic, strong) AFAutoPurgingImageCache *cache;
