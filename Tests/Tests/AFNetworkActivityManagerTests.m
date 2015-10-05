@@ -26,10 +26,7 @@
 
 @interface AFNetworkActivityManagerTests : AFTestCase
 @property (nonatomic, strong) AFNetworkActivityIndicatorManager *networkActivityIndicatorManager;
-@property (nonatomic, assign) BOOL isNetworkActivityIndicatorVisible;
-@property (nonatomic, strong) id mockApplication;
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
-
 @end
 
 #pragma mark -
@@ -43,24 +40,10 @@
 
     self.networkActivityIndicatorManager = [[AFNetworkActivityIndicatorManager alloc] init];
     self.networkActivityIndicatorManager.enabled = YES;
-
-    self.mockApplication = [OCMockObject mockForClass:[UIApplication class]];
-    [[[self.mockApplication stub] andReturn:self.mockApplication] sharedApplication];
-
-    [[[self.mockApplication stub] andDo:^(NSInvocation *invocation) {
-        [invocation setReturnValue:(void *)&_isNetworkActivityIndicatorVisible];
-    }] isNetworkActivityIndicatorVisible];
-
-    [[[self.mockApplication stub] andDo:^(NSInvocation *invocation) {
-        [invocation getArgument:&_isNetworkActivityIndicatorVisible atIndex:2];
-    }] setNetworkActivityIndicatorVisible:YES];
 }
 
 - (void)tearDown {
     [super tearDown];
-    [self.mockApplication stopMocking];
-    
-    self.mockApplication = nil;
     self.networkActivityIndicatorManager = nil;
 
     [self.sessionManager invalidateSessionCancelingTasks:YES];
@@ -69,43 +52,47 @@
 #pragma mark -
 
 - (void)testThatNetworkActivityIndicatorTurnsOffIndicatorWhenRequestSucceeds {
+    XCTestExpectation *requestCompleteExpectation = [self expectationWithDescription:@"Request should succeed"];
     [self.sessionManager
-     GET:@"/get"
+     GET:@"/delay/1"
      parameters:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-         expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
+         [requestCompleteExpectation fulfill];
      }
      failure:nil];
-    expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beTruthy();
+    [self expectationForPredicate:[NSPredicate predicateWithFormat:@"isNetworkActivityIndicatorVisible == YES"]
+                                               evaluatedWithObject:self.networkActivityIndicatorManager
+                                                           handler:nil];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+
+    [self expectationForPredicate:[NSPredicate predicateWithFormat:@"isNetworkActivityIndicatorVisible == NO"]
+              evaluatedWithObject:self.networkActivityIndicatorManager
+                          handler:nil];
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
 - (void)testThatNetworkActivityIndicatorTurnsOffIndicatorWhenRequestFails {
+    XCTestExpectation *requestCompleteExpectation = [self expectationWithDescription:@"Request should succeed"];
     [self.sessionManager
      GET:@"/status/500"
      parameters:nil
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-         expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
-     }
-     failure:nil];
-    expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beTruthy();
-}
-
-- (void)testThatNetworkActivityIsUnchangedWhenManagerIsDisabled {
-    self.networkActivityIndicatorManager.enabled = NO;
-
-    __block BOOL didChangeNetworkActivityIndicatorVisible = NO;
-
-    [[[self.mockApplication stub] andDo:^(NSInvocation *invocation) {
-        didChangeNetworkActivityIndicatorVisible = YES;
-    }] setNetworkActivityIndicatorVisible:YES];
-
-    [self.sessionManager
-     GET:@"/get"
-     parameters:nil
      success:nil
-     failure:nil];
+     failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+         [requestCompleteExpectation fulfill];
+     }];
 
-    expect(didChangeNetworkActivityIndicatorVisible).will.beFalsy();
+    [self
+     keyValueObservingExpectationForObject:self.networkActivityIndicatorManager
+     keyPath:@"isNetworkActivityIndicatorVisible"
+     handler:^BOOL(AFNetworkActivityIndicatorManager * observedObject, NSDictionary * _Nonnull change) {
+         return observedObject.isNetworkActivityIndicatorVisible;
+     }];
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+
+    [self expectationForPredicate:[NSPredicate predicateWithFormat:@"isNetworkActivityIndicatorVisible == NO"]
+              evaluatedWithObject:self.networkActivityIndicatorManager
+                          handler:nil];
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
 @end

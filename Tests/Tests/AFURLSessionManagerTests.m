@@ -72,13 +72,12 @@
                         completionHandler:nil];
     [overallProgress resignCurrent];
 
-    expect(overallProgress.fractionCompleted).to.equal(0);
+    XCTAssertTrue(overallProgress.fractionCompleted == 0);
 
     uploadProgress.totalUnitCount = 1;
     uploadProgress.completedUnitCount = 1;
 
-
-    expect(overallProgress.fractionCompleted).to.equal(0.8);
+    XCTAssertTrue(overallProgress.fractionCompleted == 0.8);
 }
 
 - (void)testDownloadTasksProgressBecomesPartOfCurrentProgress {
@@ -93,13 +92,12 @@
                         completionHandler:nil];
     [overallProgress resignCurrent];
 
-    expect(overallProgress.fractionCompleted).to.equal(0);
+    XCTAssertTrue(overallProgress.fractionCompleted == 0.0);
 
     downloadProgress.totalUnitCount = 1;
     downloadProgress.completedUnitCount = 1;
 
-
-    expect(overallProgress.fractionCompleted).to.equal(0.8);
+    XCTAssertTrue(overallProgress.fractionCompleted == 0.8);
 }
 
 #pragma mark - Issue #2702 Tests

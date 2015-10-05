@@ -121,14 +121,12 @@
 - (void)testThatValueForHTTPHeaderFieldReturnsSetValue {
     [self.requestSerializer setValue:@"Actual Value" forHTTPHeaderField:@"Set-Header"];
     NSString *value = [self.requestSerializer valueForHTTPHeaderField:@"Set-Header"];
-
-    expect(value).to.equal(@"Actual Value");
+    XCTAssertTrue([value isEqualToString:@"Actual Value"]);
 }
 
 - (void)testThatValueForHTTPHeaderFieldReturnsNilForUnsetHeader {
     NSString *value = [self.requestSerializer valueForHTTPHeaderField:@"Unset-Header"];
-
-    expect(value).to.beNil();
+    XCTAssertNil(value);
 }
 
 - (void)testQueryStringSerializationCanFailWithError {
@@ -143,9 +141,8 @@
 
     NSError *error;
     NSURLRequest *request = [serializer requestWithMethod:@"GET" URLString:@"url" parameters:@{} error:&error];
-
-    expect(request).to.beNil();
-    expect(error).to.equal(serializerError);
+    XCTAssertNil(request);
+    XCTAssertEqual(error, serializerError);
 }
 
 @end

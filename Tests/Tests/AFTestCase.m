@@ -27,8 +27,6 @@ NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
 
 - (void)setUp {
     [super setUp];
-
-    [Expecta setAsynchronousTestTimeout:5.0];
 }
 
 - (void)tearDown {
