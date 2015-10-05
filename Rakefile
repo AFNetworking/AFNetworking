@@ -15,13 +15,13 @@ namespace :test do
       puts "Will run tests for iOS Simulator on iOS #{available_simulators[:runtime]} using #{available_simulators[:device_names][0]}"
     }
       
-    run_tests('AFNetworking iOS Tests', 'iphonesimulator', destinations)
+    run_tests('AFNetworking iOS', 'iphonesimulator', destinations)
     tests_failed('iOS') unless $?.success?
   end
 
   desc "Run the AFNetworking Tests for Mac OS X"
   task :osx => :prepare do
-    run_tests('AFNetworking Mac OS X Tests', 'macosx', ['platform=OS X,arch=x86_64'])
+    run_tests('AFNetworking OS X', 'macosx', ['platform=OS X,arch=x86_64'])
     tests_failed('OSX') unless $?.success?
   end
 end
@@ -39,7 +39,7 @@ private
 
 def run_tests(scheme, sdk, destinations)
   destinations = destinations.map! { |destination| "-destination \'#{destination}\'" }.join(' ')
-  sh("xcodebuild -workspace AFNetworking.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{destinations} -configuration Release test | xcpretty -c ; exit ${PIPESTATUS[0]}") rescue nil
+  sh("xcodebuild -workspace AFNetworking.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{destinations} -configuration Release clean test | xcpretty -c ; exit ${PIPESTATUS[0]}") rescue nil
 end
 
 def is_mavericks_or_above

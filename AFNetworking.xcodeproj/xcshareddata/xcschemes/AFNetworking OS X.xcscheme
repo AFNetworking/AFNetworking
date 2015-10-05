@@ -26,9 +26,29 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "298D7C491BC2C7B200FD3B3E"
+               BuildableName = "AFNetworking Mac OS X Tests.xctest"
+               BlueprintName = "AFNetworking Mac OS X Tests"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "299522761BBF136400859F49"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking OS X"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
