@@ -24,6 +24,16 @@
 
 #if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
 
+static dispatch_queue_t url_session_manager_notification_queue() {
+    static dispatch_queue_t af_url_session_manager_notification_queue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        af_url_session_manager_notification_queue = dispatch_queue_create("com.alamofire.networking.session.manager.notification", DISPATCH_QUEUE_SERIAL);
+    });
+
+    return af_url_session_manager_notification_queue;
+}
+
 static dispatch_queue_t url_session_manager_creation_queue() {
     static dispatch_queue_t af_url_session_manager_creation_queue;
     static dispatch_once_t onceToken;
@@ -368,7 +378,9 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [self af_resume];
     
     if (state != NSURLSessionTaskStateRunning) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:AFNSURLSessionTaskDidResumeNotification object:self];
+        dispatch_async(url_session_manager_notification_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AFNSURLSessionTaskDidResumeNotification object:self];
+        });
     }
 }
 
@@ -378,7 +390,9 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [self af_suspend];
     
     if (state != NSURLSessionTaskStateSuspended) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:AFNSURLSessionTaskDidSuspendNotification object:self];
+        dispatch_async(url_session_manager_notification_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AFNSURLSessionTaskDidSuspendNotification object:self];
+        });
     }
 }
 @end
@@ -459,14 +473,18 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         }
     }];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidResume:) name:AFNSURLSessionTaskDidResumeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidSuspend:) name:AFNSURLSessionTaskDidSuspendNotification object:nil];
+    dispatch_async(url_session_manager_notification_queue(), ^{
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidResume:) name:AFNSURLSessionTaskDidResumeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidSuspend:) name:AFNSURLSessionTaskDidSuspendNotification object:nil];
+    });
 
     return self;
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    dispatch_sync(url_session_manager_notification_queue(), ^{
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+    });
 }
 
 #pragma mark -
