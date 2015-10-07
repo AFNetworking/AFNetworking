@@ -80,7 +80,25 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
     NSMutableCharacterSet * allowedCharacterSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
     [allowedCharacterSet removeCharactersInString:[kAFCharactersGeneralDelimitersToEncode stringByAppendingString:kAFCharactersSubDelimitersToEncode]];
 
-    return [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
+	// FIXME: WAIT 4 APL 2 FIX DIS SHIT
+	//return [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
+
+	static NSUInteger const batchSize = 50;
+
+	NSInteger index = 0;
+	NSMutableString *escaped = @"".mutableCopy;
+
+	while (index < string.length) {
+		NSUInteger length = MIN(string.length - index, batchSize);
+		NSRange range = NSMakeRange(index, length);
+
+		NSString *substring = [string substringWithRange:range];
+		[escaped appendString:[substring stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet]];
+
+		index += length;
+	}
+
+	return escaped;
 }
 
 #pragma mark -
