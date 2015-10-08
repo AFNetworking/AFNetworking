@@ -145,4 +145,14 @@
     XCTAssertEqual(error, serializerError);
 }
 
+- (void)testThatHTTPHeaderValueCanBeRemoved {
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    NSString *headerField = @"TestHeader";
+    NSString *headerValue = @"test";
+    [serializer setValue:headerValue forHTTPHeaderField:headerField];
+    XCTAssertTrue([serializer.HTTPRequestHeaders[headerField] isEqualToString:headerValue]);
+    [serializer setValue:nil forHTTPHeaderField:headerField];
+    XCTAssertFalse([serializer.HTTPRequestHeaders.allKeys containsObject:headerField]);
+}
+
 @end
