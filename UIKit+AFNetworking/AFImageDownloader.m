@@ -176,7 +176,7 @@
 
 - (nullable AFImageDownloadReceipt *)downloadImageForURLRequest:(NSURLRequest *)request
                                                         success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse  * _Nullable response, UIImage *responseObject))success
-                                                        failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure; {
+                                                        failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure {
     NSUUID *callerUUID = [NSUUID UUID];
     __block NSURLSessionDataTask *task = nil;
     dispatch_sync(self.synchronizationQueue, ^{
@@ -213,13 +213,13 @@
 
         // 3) Create the request and set up authentication, validation and response serialization
         NSURLSessionDataTask *createdTask;
-        __weak typeof(self) weakSelf = self;
+        __weak __typeof__(self) weakSelf = self;
 
         createdTask = [self.sessionManager
                        dataTaskWithRequest:request
                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
-                               __strong typeof(weakSelf) strongSelf = weakSelf;
+                               __strong __typeof__(weakSelf) strongSelf = weakSelf;
                                AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
                                if (error) {
                                    for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
