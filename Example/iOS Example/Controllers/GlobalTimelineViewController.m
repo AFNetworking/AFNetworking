@@ -27,7 +27,6 @@
 #import "PostTableViewCell.h"
 
 #import "UIRefreshControl+AFNetworking.h"
-#import "UIAlertView+AFNetworking.h"
 
 @interface GlobalTimelineViewController ()
 @property (readwrite, nonatomic, strong) NSArray *posts;
@@ -45,7 +44,6 @@
         }
     }];
 
-    [UIAlertView showAlertViewForTaskWithErrorOnCompletion:task delegate:nil];
     [self.refreshControl setRefreshingWithStateOfTask:task];
 }
 

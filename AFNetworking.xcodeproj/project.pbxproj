@@ -130,8 +130,6 @@
 		299522A11BBF13C700859F49 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2995228B1BBF13C700859F49 /* AFNetworkActivityIndicatorManager.m */; };
 		299522A21BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 2995228C1BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.h */; };
 		299522A31BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 2995228D1BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.m */; };
-		299522A41BBF13C700859F49 /* UIAlertView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 2995228E1BBF13C700859F49 /* UIAlertView+AFNetworking.h */; };
-		299522A51BBF13C700859F49 /* UIAlertView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 2995228F1BBF13C700859F49 /* UIAlertView+AFNetworking.m */; };
 		299522A61BBF13C700859F49 /* UIButton+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 299522901BBF13C700859F49 /* UIButton+AFNetworking.h */; };
 		299522A71BBF13C700859F49 /* UIButton+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 299522911BBF13C700859F49 /* UIButton+AFNetworking.m */; };
 		299522A81BBF13C700859F49 /* UIImage+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 299522921BBF13C700859F49 /* UIImage+AFNetworking.h */; };
@@ -236,8 +234,6 @@
 		2995228B1BBF13C700859F49 /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		2995228C1BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActivityIndicatorView+AFNetworking.h"; sourceTree = "<group>"; };
 		2995228D1BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActivityIndicatorView+AFNetworking.m"; sourceTree = "<group>"; };
-		2995228E1BBF13C700859F49 /* UIAlertView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+AFNetworking.h"; sourceTree = "<group>"; };
-		2995228F1BBF13C700859F49 /* UIAlertView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+AFNetworking.m"; sourceTree = "<group>"; };
 		299522901BBF13C700859F49 /* UIButton+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+AFNetworking.h"; sourceTree = "<group>"; };
 		299522911BBF13C700859F49 /* UIButton+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+AFNetworking.m"; sourceTree = "<group>"; };
 		299522921BBF13C700859F49 /* UIImage+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+AFNetworking.h"; sourceTree = "<group>"; };
@@ -496,8 +492,6 @@
 				2995228B1BBF13C700859F49 /* AFNetworkActivityIndicatorManager.m */,
 				2995228C1BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.h */,
 				2995228D1BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.m */,
-				2995228E1BBF13C700859F49 /* UIAlertView+AFNetworking.h */,
-				2995228F1BBF13C700859F49 /* UIAlertView+AFNetworking.m */,
 				299522901BBF13C700859F49 /* UIButton+AFNetworking.h */,
 				299522911BBF13C700859F49 /* UIButton+AFNetworking.m */,
 				299522921BBF13C700859F49 /* UIImage+AFNetworking.h */,
@@ -545,7 +539,6 @@
 				299522AC1BBF13C700859F49 /* UIProgressView+AFNetworking.h in Headers */,
 				299522A61BBF13C700859F49 /* UIButton+AFNetworking.h in Headers */,
 				299522A01BBF13C700859F49 /* AFNetworkActivityIndicatorManager.h in Headers */,
-				299522A41BBF13C700859F49 /* UIAlertView+AFNetworking.h in Headers */,
 				299522AE1BBF13C700859F49 /* UIRefreshControl+AFNetworking.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -930,7 +923,6 @@
 				299522A71BBF13C700859F49 /* UIButton+AFNetworking.m in Sources */,
 				299522541BBF125A00859F49 /* AFHTTPSessionManager.m in Sources */,
 				2995225F1BBF125A00859F49 /* AFURLSessionManager.m in Sources */,
-				299522A51BBF13C700859F49 /* UIAlertView+AFNetworking.m in Sources */,
 				2995225B1BBF125A00859F49 /* AFURLRequestSerialization.m in Sources */,
 				2995229D1BBF13C700859F49 /* AFAutoPurgingImageCache.m in Sources */,
 				299522A31BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.m in Sources */,

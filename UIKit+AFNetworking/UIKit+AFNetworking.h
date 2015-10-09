@@ -30,7 +30,6 @@
     #import "AFAutoPurgingImageCache.h"
     #import "AFImageDownloader.h"
     #import "AFNetworkActivityIndicatorManager.h"
-    #import "UIAlertView+AFNetworking.h"
     #import "UIRefreshControl+AFNetworking.h"
     #import "UIWebView+AFNetworking.h"
 #endif
