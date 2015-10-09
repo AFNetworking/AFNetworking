@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2987B0A41BC408A200179A4C"
-               BuildableName = "AFNetworking tvOS.framework"
+               BuildableName = "AFNetworking.framework"
                BlueprintName = "AFNetworking tvOS"
                ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2987B0A41BC408A200179A4C"
-            BuildableName = "AFNetworking tvOS.framework"
+            BuildableName = "AFNetworking.framework"
             BlueprintName = "AFNetworking tvOS"
             ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2987B0A41BC408A200179A4C"
-            BuildableName = "AFNetworking tvOS.framework"
+            BuildableName = "AFNetworking.framework"
             BlueprintName = "AFNetworking tvOS"
             ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
@@ -83,7 +83,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2987B0A41BC408A200179A4C"
-            BuildableName = "AFNetworking tvOS.framework"
+            BuildableName = "AFNetworking.framework"
             BlueprintName = "AFNetworking tvOS"
             ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
