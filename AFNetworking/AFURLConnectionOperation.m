@@ -669,11 +669,11 @@ didReceiveResponse:(NSURLResponse *)response
             }
 
             break;
-        }
-
-        if (self.outputStream.streamError) {
+        } else {
             [self.connection cancel];
-            [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
+            if (self.outputStream.streamError) {
+                [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
+            }
             return;
         }
     }
