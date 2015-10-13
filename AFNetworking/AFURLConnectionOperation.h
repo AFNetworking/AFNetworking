@@ -334,11 +334,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Posted when an operation begins executing.
  */
-extern NSString * const AFNetworkingOperationDidStartNotification;
+FOUNDATION_EXPORT NSString * const AFNetworkingOperationDidStartNotification;
 
 /**
  Posted when an operation finishes.
  */
-extern NSString * const AFNetworkingOperationDidFinishNotification;
+FOUNDATION_EXPORT NSString * const AFNetworkingOperationDidFinishNotification;
 
 NS_ASSUME_NONNULL_END
