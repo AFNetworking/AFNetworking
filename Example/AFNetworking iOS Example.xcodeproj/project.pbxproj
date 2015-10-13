@@ -1218,6 +1218,7 @@
 				29900D261B6FB14000DE5662 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		29900D291B6FB14000DE5662 /* Build configuration list for PBXNativeTarget "AFNetworking watchOS" */ = {
 			isa = XCConfigurationList;
@@ -1226,6 +1227,7 @@
 				29900D241B6FB14000DE5662 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		EBE11F591B62EDD200753127 /* Build configuration list for PBXNativeTarget "Today Extension" */ = {
 			isa = XCConfigurationList;
