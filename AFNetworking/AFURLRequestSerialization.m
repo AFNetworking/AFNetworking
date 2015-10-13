@@ -80,23 +80,27 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
     NSMutableCharacterSet * allowedCharacterSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
     [allowedCharacterSet removeCharactersInString:[kAFCharactersGeneralDelimitersToEncode stringByAppendingString:kAFCharactersSubDelimitersToEncode]];
 
-	// FIXME: WAIT 4 APL 2 FIX DIS SHIT
-	//return [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
+	// FIXME: https://github.com/AFNetworking/AFNetworking/pull/3028
+    // return [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
 
-	static NSUInteger const batchSize = 50;
+    static NSUInteger const batchSize = 50;
 
-	NSInteger index = 0;
-	NSMutableString *escaped = @"".mutableCopy;
+    NSInteger index = 0;
+    NSMutableString *escaped = @"".mutableCopy;
 
-	while (index < string.length) {
-		NSUInteger length = MIN(string.length - index, batchSize);
-		NSRange range = NSMakeRange(index, length);
+    while (index < string.length) {
+        NSUInteger length = MIN(string.length - index, batchSize);
+        NSRange range = NSMakeRange(index, length);
 
-		NSString *substring = [string substringWithRange:range];
-		[escaped appendString:[substring stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet]];
+        // To avoid breaking up character sequences such as 👴🏻👮🏽
+        range = [string rangeOfComposedCharacterSequencesForRange:range];
 
-		index += length;
-	}
+        NSString *substring = [string substringWithRange:range];
+        NSString *encoded = [substring stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
+        [escaped appendString:encoded];
+
+        index += range.length;
+    }
 
 	return escaped;
 }
