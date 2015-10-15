@@ -161,6 +161,68 @@
     XCTAssertNotNil(downloadFilePath);
 }
 
+#pragma mark -
+
+- (void)testTaskDescriptionIsNilByDefault {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should finish"];
+    NSURLSessionTask *testTask;
+    testTask = [self.manager
+                GET:request.URL.absoluteString
+                parameters:nil
+                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+                    XCTAssertNil(task.taskDescription,  @"taskDescription should be nil when request ends.");
+                    [expectation fulfill];
+                }
+                failure:nil];
+    XCTAssertNil(testTask.taskDescription, @"taskDescription should be nil when request starts.");
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
+- (void)testThatTaskWithCustomTaskDescriptionPostsResumeNotification {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should finish"];
+    NSString *taskDescription = @"this is a test!";
+    NSURLSessionTask *testTask;
+    testTask = [self.manager
+                dataTaskWithRequest:request
+                completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                    [expectation fulfill];
+                }];
+    testTask.taskDescription = taskDescription;
+    [testTask resume];
+    [self expectationForNotification:AFNetworkingTaskDidResumeNotification
+                              object:nil
+                             handler:^BOOL(NSNotification * _Nonnull notification) {
+                                 XCTAssertTrue([[(NSURLSessionTask *)notification.object taskDescription] isEqualToString:taskDescription]);
+                                 return YES;
+                             }];
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+
+- (void)testThatTaskWithCustomTaskDescriptionPostsSuspendNotification {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should finish"];
+    NSString *taskDescription = @"this is a test!";
+    NSURLSessionTask *testTask;
+    testTask = [self.manager
+                dataTaskWithRequest:request
+                completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                    [expectation fulfill];
+                }];
+    testTask.taskDescription = taskDescription;
+    [testTask resume];
+    [testTask suspend];
+    [self expectationForNotification:AFNetworkingTaskDidSuspendNotification
+                              object:nil
+                             handler:^BOOL(NSNotification * _Nonnull notification) {
+                                 XCTAssertTrue([[(NSURLSessionTask *)notification.object taskDescription] isEqualToString:taskDescription]);
+                                 return YES;
+                             }];
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
 
 
 @end

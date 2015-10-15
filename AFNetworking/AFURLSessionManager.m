@@ -479,7 +479,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 - (void)taskDidResume:(NSNotification *)notification {
     NSURLSessionTask *task = notification.object;
-    id manager = objc_getAssociatedObject(task, AFNSURLSessionTaskSessionManagerKey);
+    AFURLSessionManager *manager = [self managerForTask:task];
     if (self == manager) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidResumeNotification object:task];
@@ -489,7 +489,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 - (void)taskDidSuspend:(NSNotification *)notification {
     NSURLSessionTask *task = notification.object;
-    id manager = objc_getAssociatedObject(task, AFNSURLSessionTaskSessionManagerKey);
+     AFURLSessionManager *manager = [self managerForTask:task];
     if (self == manager) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidSuspendNotification object:task];
@@ -528,7 +528,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     delegate.manager = self;
     delegate.completionHandler = completionHandler;
 
-    objc_setAssociatedObject(dataTask, AFNSURLSessionTaskSessionManagerKey, self, OBJC_ASSOCIATION_ASSIGN);
+    [self setManagerForTask:dataTask];
     [self setDelegate:delegate forTask:dataTask];
 }
 
@@ -565,7 +565,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         *progress = delegate.progress;
     }
 
-    objc_setAssociatedObject(uploadTask, AFNSURLSessionTaskSessionManagerKey, self, OBJC_ASSOCIATION_ASSIGN);
+    [self setManagerForTask:uploadTask];
     [self setDelegate:delegate forTask:uploadTask];
 }
 
@@ -588,7 +588,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         *progress = delegate.progress;
     }
 
-    objc_setAssociatedObject(downloadTask, AFNSURLSessionTaskSessionManagerKey, self, OBJC_ASSOCIATION_ASSIGN);
+    [self setManagerForTask:downloadTask];
     [self setDelegate:delegate forTask:downloadTask];
 }
 
@@ -844,6 +844,15 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 - (void)setDownloadTaskDidResumeBlock:(void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes))block {
     self.downloadTaskDidResume = block;
+}
+
+#pragma mark - 
+- (void)setManagerForTask:(NSURLSessionTask *)task {
+    objc_setAssociatedObject(task, AFNSURLSessionTaskSessionManagerKey, self, OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (nullable instancetype)managerForTask:(NSURLSessionTask *)task {
+    return objc_getAssociatedObject(task, AFNSURLSessionTaskSessionManagerKey);
 }
 
 #pragma mark - NSObject
