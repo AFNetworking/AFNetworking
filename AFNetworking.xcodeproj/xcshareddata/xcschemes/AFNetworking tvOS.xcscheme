@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2987B0AD1BC408A200179A4C"
-               BuildableName = "AFNetworking tvOSTests.xctest"
-               BlueprintName = "AFNetworking tvOSTests"
+               BuildableName = "AFNetworking tvOS Tests.xctest"
+               BlueprintName = "AFNetworking tvOS Tests"
                ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
          </TestableReference>

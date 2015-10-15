@@ -199,16 +199,9 @@
 		297824A11BC2D69A0041C395 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
 		297824A21BC2D69A0041C395 /* adn_2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_2.cer; path = ADNNetServerTrustChain/adn_2.cer; sourceTree = "<group>"; };
 		2987B0A51BC408A200179A4C /* AFNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AFNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2987B0AE1BC408A200179A4C /* AFNetworking tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2987B0C91BC40A4F00179A4C /* tvOS Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "tvOS Tests-Info.plist"; sourceTree = "<group>"; };
+		2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking Mac OS X Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		298D7C5E1BC2C88F00FD3B3E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		298D7C5F1BC2C88F00FD3B3E /* iOS Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS Tests-Info.plist"; sourceTree = "<group>"; };
-		298D7C601BC2C88F00FD3B3E /* iOS Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Tests-Prefix.pch"; sourceTree = "<group>"; };
-		298D7C631BC2C88F00FD3B3E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		298D7C641BC2C88F00FD3B3E /* OS X Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OS X Tests-Info.plist"; sourceTree = "<group>"; };
-		298D7C651BC2C88F00FD3B3E /* OS X Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OS X Tests-Prefix.pch"; sourceTree = "<group>"; };
 		298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AddTrust_External_CA_Root.cer; sourceTree = "<group>"; };
 		298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Certification_Authority.cer; sourceTree = "<group>"; };
 		298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Domain_Validation_Secure_Server_CA.cer; sourceTree = "<group>"; };
@@ -330,44 +323,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2987B0C81BC40A4F00179A4C /* tvOS Tests */ = {
-			isa = PBXGroup;
-			children = (
-				2987B0C91BC40A4F00179A4C /* tvOS Tests-Info.plist */,
-			);
-			path = "tvOS Tests";
-			sourceTree = "<group>";
-		};
 		298D7C561BC2C88F00FD3B3E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				2987B0C81BC40A4F00179A4C /* tvOS Tests */,
-				298D7C5C1BC2C88F00FD3B3E /* iOS Tests */,
-				298D7C611BC2C88F00FD3B3E /* OS X Tests */,
 				298D7C671BC2C88F00FD3B3E /* Resources */,
 				298D7C7F1BC2C88F00FD3B3E /* Tests */,
 			);
 			path = Tests;
-			sourceTree = "<group>";
-		};
-		298D7C5C1BC2C88F00FD3B3E /* iOS Tests */ = {
-			isa = PBXGroup;
-			children = (
-				298D7C5D1BC2C88F00FD3B3E /* InfoPlist.strings */,
-				298D7C5F1BC2C88F00FD3B3E /* iOS Tests-Info.plist */,
-				298D7C601BC2C88F00FD3B3E /* iOS Tests-Prefix.pch */,
-			);
-			path = "iOS Tests";
-			sourceTree = "<group>";
-		};
-		298D7C611BC2C88F00FD3B3E /* OS X Tests */ = {
-			isa = PBXGroup;
-			children = (
-				298D7C621BC2C88F00FD3B3E /* InfoPlist.strings */,
-				298D7C641BC2C88F00FD3B3E /* OS X Tests-Info.plist */,
-				298D7C651BC2C88F00FD3B3E /* OS X Tests-Prefix.pch */,
-			);
-			path = "OS X Tests";
 			sourceTree = "<group>";
 		};
 		298D7C671BC2C88F00FD3B3E /* Resources */ = {
@@ -456,8 +418,8 @@
 		2995222F1BBF104D00859F49 = {
 			isa = PBXGroup;
 			children = (
-				299522851BBF13C700859F49 /* UIKit+AFNetworking */,
 				299522451BBF125A00859F49 /* AFNetworking */,
+				299522851BBF13C700859F49 /* UIKit+AFNetworking */,
 				2995223B1BBF104D00859F49 /* Supporting Files */,
 				298D7C561BC2C88F00FD3B3E /* Tests */,
 				2995223A1BBF104D00859F49 /* Products */,
@@ -473,7 +435,7 @@
 				298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */,
 				298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */,
 				2987B0A51BC408A200179A4C /* AFNetworking.framework */,
-				2987B0AE1BC408A200179A4C /* AFNetworking tvOSTests.xctest */,
+				2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -630,9 +592,9 @@
 			productReference = 2987B0A51BC408A200179A4C /* AFNetworking.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		2987B0AD1BC408A200179A4C /* AFNetworking tvOSTests */ = {
+		2987B0AD1BC408A200179A4C /* AFNetworking tvOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2987B0BB1BC408A200179A4C /* Build configuration list for PBXNativeTarget "AFNetworking tvOSTests" */;
+			buildConfigurationList = 2987B0BB1BC408A200179A4C /* Build configuration list for PBXNativeTarget "AFNetworking tvOS Tests" */;
 			buildPhases = (
 				2987B0AA1BC408A200179A4C /* Sources */,
 				2987B0AB1BC408A200179A4C /* Frameworks */,
@@ -643,9 +605,9 @@
 			dependencies = (
 				2987B0B11BC408A200179A4C /* PBXTargetDependency */,
 			);
-			name = "AFNetworking tvOSTests";
+			name = "AFNetworking tvOS Tests";
 			productName = "AFNetworking tvOSTests";
-			productReference = 2987B0AE1BC408A200179A4C /* AFNetworking tvOSTests.xctest */;
+			productReference = 2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		298D7C3A1BC2C79500FD3B3E /* AFNetworking iOS Tests */ = {
@@ -788,7 +750,7 @@
 				2987B0A41BC408A200179A4C /* AFNetworking tvOS */,
 				298D7C3A1BC2C79500FD3B3E /* AFNetworking iOS Tests */,
 				298D7C491BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests */,
-				2987B0AD1BC408A200179A4C /* AFNetworking tvOSTests */,
+				2987B0AD1BC408A200179A4C /* AFNetworking tvOS Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -1029,25 +991,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		298D7C5D1BC2C88F00FD3B3E /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				298D7C5E1BC2C88F00FD3B3E /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		298D7C621BC2C88F00FD3B3E /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				298D7C631BC2C88F00FD3B3E /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		2987B0B61BC408A200179A4C /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1059,13 +1002,15 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Framework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1079,20 +1024,22 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Framework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
 		2987B0B81BC408A200179A4C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/tvOS Tests/tvOS Tests-Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1104,7 +1051,7 @@
 		2987B0B91BC408A200179A4C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/tvOS Tests/tvOS Tests-Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1116,8 +1063,9 @@
 		298D7C431BC2C79500FD3B3E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/iOS Tests/iOS Tests-Prefix.pch";
-				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/iOS Tests/iOS Tests-Info.plist";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-iOS-Tests";
@@ -1128,8 +1076,9 @@
 		298D7C441BC2C79500FD3B3E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/iOS Tests/iOS Tests-Prefix.pch";
-				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/iOS Tests/iOS Tests-Info.plist";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-iOS-Tests";
@@ -1140,9 +1089,10 @@
 		298D7C531BC2C7B200FD3B3E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/OS X Tests/OS X Tests-Prefix.pch";
-				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/OS X Tests/OS X Tests-Info.plist";
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-Mac-OS-X-Tests";
@@ -1154,9 +1104,10 @@
 		298D7C541BC2C7B200FD3B3E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/OS X Tests/OS X Tests-Prefix.pch";
-				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/OS X Tests/OS X Tests-Info.plist";
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-Mac-OS-X-Tests";
@@ -1202,14 +1153,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1244,14 +1198,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -1259,16 +1216,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BITCODE_GENERATION_MODE = marker;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Framework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
 				SKIP_INSTALL = YES;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1276,16 +1237,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BITCODE_GENERATION_MODE = bitcode;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Framework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
 				SKIP_INSTALL = YES;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -1305,6 +1270,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
@@ -1325,6 +1291,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
@@ -1333,6 +1300,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BITCODE_GENERATION_MODE = marker;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1341,12 +1309,15 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Framework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-OS-X";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1354,6 +1325,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BITCODE_GENERATION_MODE = bitcode;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1362,12 +1334,15 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Framework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-OS-X";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -1383,7 +1358,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2987B0BB1BC408A200179A4C /* Build configuration list for PBXNativeTarget "AFNetworking tvOSTests" */ = {
+		2987B0BB1BC408A200179A4C /* Build configuration list for PBXNativeTarget "AFNetworking tvOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2987B0B81BC408A200179A4C /* Debug */,
