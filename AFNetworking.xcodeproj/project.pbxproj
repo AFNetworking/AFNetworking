@@ -199,8 +199,7 @@
 		297824A11BC2D69A0041C395 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
 		297824A21BC2D69A0041C395 /* adn_2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_2.cer; path = ADNNetServerTrustChain/adn_2.cer; sourceTree = "<group>"; };
 		2987B0A51BC408A200179A4C /* AFNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AFNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2987B0AE1BC408A200179A4C /* AFNetworking tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2987B0C91BC40A4F00179A4C /* tvOS Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "tvOS Tests-Info.plist"; sourceTree = "<group>"; };
+		2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking Mac OS X Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		298D7C5E1BC2C88F00FD3B3E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -473,7 +472,7 @@
 				298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */,
 				298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */,
 				2987B0A51BC408A200179A4C /* AFNetworking.framework */,
-				2987B0AE1BC408A200179A4C /* AFNetworking tvOSTests.xctest */,
+				2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -630,9 +629,9 @@
 			productReference = 2987B0A51BC408A200179A4C /* AFNetworking.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		2987B0AD1BC408A200179A4C /* AFNetworking tvOSTests */ = {
+		2987B0AD1BC408A200179A4C /* AFNetworking tvOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2987B0BB1BC408A200179A4C /* Build configuration list for PBXNativeTarget "AFNetworking tvOSTests" */;
+			buildConfigurationList = 2987B0BB1BC408A200179A4C /* Build configuration list for PBXNativeTarget "AFNetworking tvOS Tests" */;
 			buildPhases = (
 				2987B0AA1BC408A200179A4C /* Sources */,
 				2987B0AB1BC408A200179A4C /* Frameworks */,
@@ -643,9 +642,9 @@
 			dependencies = (
 				2987B0B11BC408A200179A4C /* PBXTargetDependency */,
 			);
-			name = "AFNetworking tvOSTests";
+			name = "AFNetworking tvOS Tests";
 			productName = "AFNetworking tvOSTests";
-			productReference = 2987B0AE1BC408A200179A4C /* AFNetworking tvOSTests.xctest */;
+			productReference = 2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		298D7C3A1BC2C79500FD3B3E /* AFNetworking iOS Tests */ = {
@@ -788,7 +787,7 @@
 				2987B0A41BC408A200179A4C /* AFNetworking tvOS */,
 				298D7C3A1BC2C79500FD3B3E /* AFNetworking iOS Tests */,
 				298D7C491BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests */,
-				2987B0AD1BC408A200179A4C /* AFNetworking tvOSTests */,
+				2987B0AD1BC408A200179A4C /* AFNetworking tvOS Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -1383,7 +1382,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2987B0BB1BC408A200179A4C /* Build configuration list for PBXNativeTarget "AFNetworking tvOSTests" */ = {
+		2987B0BB1BC408A200179A4C /* Build configuration list for PBXNativeTarget "AFNetworking tvOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2987B0B81BC408A200179A4C /* Debug */,
