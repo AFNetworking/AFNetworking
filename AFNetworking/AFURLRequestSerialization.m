@@ -564,11 +564,8 @@ forHTTPHeaderField:(NSString *)field
 #pragma mark - NSKeyValueObserving
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
-    if ([AFHTTPRequestSerializerObservedKeyPaths() containsObject:key]) {
-        return NO;
-    }
+    return ![AFHTTPRequestSerializerObservedKeyPaths() containsObject:key] && [super automaticallyNotifiesObserversForKey:key];
 
-    return [super automaticallyNotifiesObserversForKey:key];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
@@ -747,7 +744,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         }
 
         return NO;
-    } else if ([fileURL checkResourceIsReachableAndReturnError:error] == NO) {
+    } else if (![fileURL checkResourceIsReachableAndReturnError:error]) {
         NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"File URL not reachable.", @"AFNetworking", nil)};
         if (error) {
             *error = [[NSError alloc] initWithDomain:AFURLRequestSerializationErrorDomain code:NSURLErrorBadURL userInfo:userInfo];
