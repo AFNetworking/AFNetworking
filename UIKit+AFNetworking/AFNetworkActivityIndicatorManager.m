@@ -60,7 +60,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     return [NSSet setWithObject:@"activityCount"];
 }
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
