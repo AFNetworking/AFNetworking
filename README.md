@@ -15,7 +15,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/archive/master.zip) and try out the included Mac and iPhone example apps
 - Read the ["Getting Started" guide](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking), [FAQ](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ), or [other articles on the Wiki](https://github.com/AFNetworking/AFNetworking/wiki)
 - Check out the [documentation](http://cocoadocs.org/docsets/AFNetworking/) for a comprehensive look at all of the APIs available in AFNetworking
-- Read the [AFNetworking 2.0 Migration Guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-2.0-Migration-Guide) for an overview of the architectural changes from 1.0.
+- Read the [AFNetworking 3.0 Migration Guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-3.0-Migration-Guide) for an overview of the architectural changes from 2.0.
 
 ## Communication
 
@@ -27,14 +27,49 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 ### Installation with CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like AFNetworking in your projects. See the ["Getting Started" guide for more information](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking).
+[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like AFNetworking in your projects. See the ["Getting Started" guide for more information](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking). You can install it with the following command:
+
+```bash
+$ gem install cocoapods
+```
+
+> CocoaPods 0.39.0+ is required to build AFNetworking 3.0.0+.
 
 #### Podfile
 
+To integrate AFNetworking into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
 ```ruby
-platform :ios, '7.0'
-pod "AFNetworking", "~> 3.0"
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '8.0'
+
+pod 'AFNetworking', '~> 3.0'
 ```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
+
+### Installation with Carthage
+
+[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
+
+You can install Carthage with [Homebrew](http://brew.sh/) using the following command:
+
+```bash
+$ brew update
+$ brew install carthage
+```
+
+To integrate AFNetworking into your Xcode project using Carthage, specify it in your `Cartfile`:
+
+```ogdl
+github "AFNetworking/AFNetworking" ~> 3.0
+```
+
+Run `carthage` to build the framework and drag the built `AFNetworking.framework` into your Xcode project.
 
 ## Requirements
 
@@ -237,7 +272,7 @@ Adding pinned SSL certificates to your app helps prevent man-in-the-middle attac
 #### Allowing Invalid SSL Certificates
 
 ```objective-c
-AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
 manager.securityPolicy.allowInvalidCertificates = YES; // not recommended for production
 ```
 
@@ -245,20 +280,7 @@ manager.securityPolicy.allowInvalidCertificates = YES; // not recommended for pr
 
 ## Unit Tests
 
-AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via [CocoaPods](http://cocoapods.org/):
-
-    $ cd Tests
-    $ pod install
-
-Once testing dependencies are installed, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
-
-### Running Tests from the Command Line
-
-Tests can also be run from the command line or within a continuous integration environment. The [`xcpretty`](https://github.com/mneorr/xcpretty) utility needs to be installed before running the tests from the command line:
-
-    $ gem install xcpretty
-
-Once `xcpretty` is installed, you can execute the suite via `rake test`.
+AFNetworking includes a suite of unit tests within the Tests subdirectory. These tests can be run simply be executed the test action on the platform framework you would like to test.
 
 ## Credits
 
