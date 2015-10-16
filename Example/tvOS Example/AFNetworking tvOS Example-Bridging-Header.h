@@ -3,5 +3,4 @@
 //
 
 #import <CommonCrypto/CommonCrypto.h>
-#import "AFNetworking.h"
-#import "UIKit+AFNetworking.h"
+@import AFNetworking;

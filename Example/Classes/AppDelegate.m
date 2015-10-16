@@ -21,11 +21,10 @@
 // THE SOFTWARE.
 
 #import "AppDelegate.h"
+@import AFNetworking;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     #import "GlobalTimelineViewController.h"
-
-    #import "AFNetworkActivityIndicatorManager.h"
 
     @implementation AppDelegate
 
