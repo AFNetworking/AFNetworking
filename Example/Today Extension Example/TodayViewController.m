@@ -25,7 +25,7 @@
 #import "TodayViewController.h"
 #import "Post.h"
 #import "User.h"
-#import "UIImageView+AFNetworking.h"
+@import AFNetworking;
 
 @interface TodayViewController () <NCWidgetProviding>
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
