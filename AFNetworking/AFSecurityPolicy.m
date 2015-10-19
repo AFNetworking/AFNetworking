@@ -308,4 +308,44 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     return [NSSet setWithObject:@"pinnedCertificates"];
 }
 
+#pragma mark - NSSecureCoding
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+
+    self = [self init];
+    if (!self) {
+        return nil;
+    }
+
+    self.SSLPinningMode = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(SSLPinningMode))] unsignedIntegerValue];
+    self.allowInvalidCertificates = [decoder decodeBoolForKey:NSStringFromSelector(@selector(allowInvalidCertificates))];
+    self.validatesDomainName = [decoder decodeBoolForKey:NSStringFromSelector(@selector(validatesDomainName))];
+    self.pinnedCertificates = [decoder decodeObjectOfClass:[NSArray class] forKey:NSStringFromSelector(@selector(pinnedCertificates))];
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:[NSNumber numberWithUnsignedInteger:self.SSLPinningMode] forKey:NSStringFromSelector(@selector(SSLPinningMode))];
+    [coder encodeBool:self.allowInvalidCertificates forKey:NSStringFromSelector(@selector(allowInvalidCertificates))];
+    [coder encodeBool:self.validatesDomainName forKey:NSStringFromSelector(@selector(validatesDomainName))];
+    [coder encodeObject:self.pinnedCertificates forKey:NSStringFromSelector(@selector(pinnedCertificates))];
+}
+
+#pragma mark - NSCopying
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    AFSecurityPolicy *securityPolicy = [[[self class] allocWithZone:zone] init];
+    securityPolicy.SSLPinningMode = self.SSLPinningMode;
+    securityPolicy.allowInvalidCertificates = self.allowInvalidCertificates;
+    securityPolicy.validatesDomainName = self.validatesDomainName;
+    securityPolicy.pinnedCertificates = [self.pinnedCertificates copyWithZone:zone];
+
+    return securityPolicy;
+}
+
 @end
