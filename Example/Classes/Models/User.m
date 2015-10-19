@@ -49,7 +49,9 @@ NSString * const kUserProfileImageDidLoadNotification = @"com.alamofire.user.pro
     
     return self;
 }
-
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 - (NSURL *)avatarImageURL {
     return [NSURL URLWithString:self.avatarImageURLString];
 }
