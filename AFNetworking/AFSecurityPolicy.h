@@ -36,7 +36,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AFSecurityPolicy : NSObject
+@interface AFSecurityPolicy : NSObject <NSSecureCoding, NSCopying>
 
 /**
  The criteria by which server trust should be evaluated against the pinned SSL certificates. Defaults to `AFSSLPinningModeNone`.
