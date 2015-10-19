@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [2.6.1](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.1) (10-13-2015)
+Released on Tuesday, October 13th, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.1+is%3Aclosed).
+
+###Future Compatibility Note
+Note that AFNetworking 3.0 will soon be released, and will drop support for all `NSURLConnection` based API's (`AFHTTPRequestOperationManager`, `AFHTTPRequestOperation`, and `AFURLConnectionOperation`. If you have not already migrated to `NSURLSession` based API's, please do so soon. For more information, please see the [3.0 migration guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-3.0-Migration-Guide).
+
+####Fixed
+* Fixed a bug that prevented empty x-www-form-urlencoded bodies.
+	* Fixed by [Julien Cayzac](https://github.com/jcayzac) in [#2868](https://github.com/AFNetworking/AFNetworking/pull/2868).
+* Fixed bug that prevented AFNetworking from being installed for watchOS via Cocoapods.
+	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2909](https://github.com/AFNetworking/AFNetworking/issues/2909).
+* Added missing nullable attributes to `AFURLRequestSerialization` and `AFURLSessionManager`.
+	* Fixed by [andrewtoth](https://github.com/andrewtoth) in [#2911](https://github.com/AFNetworking/AFNetworking/pull/2911).
+* Migrated to `OS_OBJECT_USE_OBJC`.
+	* Fixed by [canius](https://github.com/canius) in [#2930](https://github.com/AFNetworking/AFNetworking/pull/2930).
+* Added missing nullable tags to UIKit extensions.
+	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#3000](https://github.com/AFNetworking/AFNetworking/pull/3000).
+* Fixed potential infinite recursion loop if multiple versions of AFNetworking are loaded in a target.
+	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2743](https://github.com/AFNetworking/AFNetworking/issues/2743). 
+* Updated Travis CI test script
+	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#3032](https://github.com/AFNetworking/AFNetworking/issues/3032). 
+* Migrated to `FOUNDATION_EXPORT` from `extern`.
+	* Fixed by [Andrey Mikhaylov](https://github.com/pronebird) in [#3041](https://github.com/AFNetworking/AFNetworking/pull/3041).
+* Fixed issue where `AFURLConnectionOperation` could get stuck in an infinite loop.
+	* Fixed by [Mattt Thompson](https://github.com/mattt) in [#2496](https://github.com/AFNetworking/AFNetworking/pull/2496).
+* Fixed regression where URL request serialization would crash on iOS 8 for long URLs.
+	* Fixed by [softenhard](https://github.com/softenhard) in [#3028](https://github.com/AFNetworking/AFNetworking/pull/3028).
+
 ## [2.6.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.0) (08-19-2015)
 Released on Wednesday, August 19th, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.0+is%3Aclosed).
 
