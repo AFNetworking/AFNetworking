@@ -213,6 +213,8 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
     if (_backgroundTaskCleanup) {
         _backgroundTaskCleanup();
     }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
 }
 
 #pragma mark -

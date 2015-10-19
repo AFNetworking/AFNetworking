@@ -163,6 +163,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (void)dealloc {
     [self stopMonitoring];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
 }
 
 #pragma mark -
