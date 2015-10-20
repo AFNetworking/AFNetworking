@@ -20,20 +20,6 @@
                ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9A0A03DA1BD6C4FB008925DC"
-               BuildableName = "AFNetworkingTests.xctest"
-               BlueprintName = "AFNetworkingTests"
-               ReferencedContainer = "container:AFNetworking.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -42,16 +28,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9A0A03DA1BD6C4FB008925DC"
-               BuildableName = "AFNetworkingTests.xctest"
-               BlueprintName = "AFNetworkingTests"
-               ReferencedContainer = "container:AFNetworking.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
