@@ -14,24 +14,24 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9A0A03821BD6C1F1008925DC"
-               BuildableName = "AFNetworking-Framework.framework"
-               BlueprintName = "AFNetworking-Framework"
-               ReferencedContainer = "container:AFNetworking-Framework.xcodeproj">
+               BlueprintIdentifier = "9A0A03CF1BD6C4FB008925DC"
+               BuildableName = "AFNetworking.framework"
+               BlueprintName = "AFNetworking"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "YES"
+            buildForRunning = "NO"
             buildForProfiling = "NO"
             buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9A0A038D1BD6C1F1008925DC"
-               BuildableName = "AFNetworking-FrameworkTests.xctest"
-               BlueprintName = "AFNetworking-FrameworkTests"
-               ReferencedContainer = "container:AFNetworking-Framework.xcodeproj">
+               BlueprintIdentifier = "9A0A03DA1BD6C4FB008925DC"
+               BuildableName = "AFNetworkingTests.xctest"
+               BlueprintName = "AFNetworkingTests"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,20 +46,20 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9A0A038D1BD6C1F1008925DC"
-               BuildableName = "AFNetworking-FrameworkTests.xctest"
-               BlueprintName = "AFNetworking-FrameworkTests"
-               ReferencedContainer = "container:AFNetworking-Framework.xcodeproj">
+               BlueprintIdentifier = "9A0A03DA1BD6C4FB008925DC"
+               BuildableName = "AFNetworkingTests.xctest"
+               BlueprintName = "AFNetworkingTests"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9A0A03821BD6C1F1008925DC"
-            BuildableName = "AFNetworking-Framework.framework"
-            BlueprintName = "AFNetworking-Framework"
-            ReferencedContainer = "container:AFNetworking-Framework.xcodeproj">
+            BlueprintIdentifier = "9A0A03CF1BD6C4FB008925DC"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -75,10 +75,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9A0A03821BD6C1F1008925DC"
-            BuildableName = "AFNetworking-Framework.framework"
-            BlueprintName = "AFNetworking-Framework"
-            ReferencedContainer = "container:AFNetworking-Framework.xcodeproj">
+            BlueprintIdentifier = "9A0A03CF1BD6C4FB008925DC"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -93,10 +93,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9A0A03821BD6C1F1008925DC"
-            BuildableName = "AFNetworking-Framework.framework"
-            BlueprintName = "AFNetworking-Framework"
-            ReferencedContainer = "container:AFNetworking-Framework.xcodeproj">
+            BlueprintIdentifier = "9A0A03CF1BD6C4FB008925DC"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
