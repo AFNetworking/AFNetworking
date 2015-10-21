@@ -1,0 +1,23 @@
+//
+//  AFNetworking.pch
+//  AFNetworking
+//
+//  Created by Camilo Castro on 20-10-15.
+//  Copyright (c) 2015 AFNetworking. All rights reserved.
+//
+
+#ifndef AFNetworking_AFNetworking_pch
+#define AFNetworking_AFNetworking_pch
+
+// see https://github.com/AFNetworking/AFNetworking/issues/2901
+// and http://stackoverflow.com/a/26126037
+
+#ifndef TARGET_OS_IOS
+#define TARGET_OS_IOS TARGET_OS_IPHONE
+#endif
+
+#ifndef TARGET_OS_WATCH
+#define TARGET_OS_WATCH 0
+#endif
+
+#endif
