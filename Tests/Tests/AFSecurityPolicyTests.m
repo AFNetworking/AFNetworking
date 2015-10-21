@@ -561,4 +561,41 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 
     XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
 }
+
+#pragma mark - NSCopying
+- (void)testThatPolicyCanBeCopied {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.allowInvalidCertificates = YES;
+    policy.validatesDomainName = NO;
+
+    AFSecurityPolicy *copiedPolicy = [policy copy];
+    XCTAssertNotEqual(copiedPolicy, policy);
+    XCTAssertEqual(copiedPolicy.allowInvalidCertificates, policy.allowInvalidCertificates);
+    XCTAssertEqual(copiedPolicy.validatesDomainName, policy.validatesDomainName);
+    XCTAssertEqual(copiedPolicy.SSLPinningMode, policy.SSLPinningMode);
+    XCTAssertNotEqual(copiedPolicy.pinnedCertificates, policy.pinnedCertificates);
+    XCTAssertTrue([copiedPolicy.pinnedCertificates isEqualToArray:policy.pinnedCertificates]);
+}
+
+- (void)testThatPolicyCanBeEncodedAndDecoded {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.allowInvalidCertificates = YES;
+    policy.validatesDomainName = NO;
+
+    NSMutableData *archiveData = [NSMutableData new];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:archiveData];
+    [archiver encodeObject:policy forKey:@"policy"];
+    [archiver finishEncoding];
+
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:archiveData];
+    AFSecurityPolicy *unarchivedPolicy = [unarchiver decodeObjectOfClass:[AFSecurityPolicy class] forKey:@"policy"];
+
+    XCTAssertNotEqual(unarchivedPolicy, policy);
+    XCTAssertEqual(unarchivedPolicy.allowInvalidCertificates, policy.allowInvalidCertificates);
+    XCTAssertEqual(unarchivedPolicy.validatesDomainName, policy.validatesDomainName);
+    XCTAssertEqual(unarchivedPolicy.SSLPinningMode, policy.SSLPinningMode);
+    XCTAssertNotEqual(unarchivedPolicy.pinnedCertificates, policy.pinnedCertificates);
+    XCTAssertTrue([unarchivedPolicy.pinnedCertificates isEqualToArray:policy.pinnedCertificates]);
+}
+
 @end
