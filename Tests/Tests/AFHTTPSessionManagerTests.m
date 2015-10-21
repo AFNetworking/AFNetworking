@@ -161,6 +161,26 @@
     XCTAssertNotNil(downloadFilePath);
 }
 
+- (void)testThatSerializationErrorGeneratesErrorAndNullTaskForGET {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Serialization should fail"];
+
+    [self.manager.requestSerializer setQueryStringSerializationWithBlock:^NSString * _Nonnull(NSURLRequest * _Nonnull request, id  _Nonnull parameters, NSError * _Nullable __autoreleasing * _Nullable error) {
+        *error = [NSError errorWithDomain:@"Custom" code:-1 userInfo:nil];
+        return @"";
+    }];
+
+    NSURLSessionTask *nilTask;
+    nilTask = [self.manager
+               GET:@"test"
+               parameters:@{@"key":@"value"}
+               success:nil
+               failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                   XCTAssertNil(task);
+                   [expectation fulfill];
+               }];
+    XCTAssertNil(nilTask);
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+}
 
 
 @end
