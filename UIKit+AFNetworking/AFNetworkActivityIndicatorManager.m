@@ -49,6 +49,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 @property (readwrite, nonatomic, assign) NSInteger activityCount;
 @property (readwrite, nonatomic, strong) NSTimer *activityIndicatorVisibilityTimer;
 @property (readonly, nonatomic, getter = isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
+@property (readonly, nonatomic) NSTimeInterval invisibilityDelay;
 
 - (void)updateNetworkActivityIndicatorVisibility;
 - (void)updateNetworkActivityIndicatorVisibilityDelayed;
@@ -99,17 +100,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     if (self.enabled) {
         [self.activityIndicatorVisibilityTimer invalidate];
         
-        // Delay hiding of activity indicator for a short interval, to avoid flickering
-        // or delay showing of activity indicator for a defined interval
-        NSTimeInterval delay = 0.0;
-        
-        if (self.isNetworkActivityIndicatorVisible) {
-            delay = self.visibilityDelay;
-        } else if (self.visibilityDelay == 0.0) {
-            delay = kAFNetworkActivityIndicatorInvisibilityDelay;
-        }
-        
-        NSLog(@"delay: %lf", delay);
+        NSTimeInterval delay = self.isNetworkActivityIndicatorVisible ? self.visibilityDelay : self.invisibilityDelay;
         
         if (delay == 0.0) {
             [self performSelectorOnMainThread:@selector(updateNetworkActivityIndicatorVisibility) withObject:nil waitUntilDone:NO modes:@[NSRunLoopCommonModes]];
@@ -136,6 +127,10 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateNetworkActivityIndicatorVisibilityDelayed];
     });
+}
+
+- (NSTimeInterval)invisibilityDelay {
+    return (self.visibilityDelay > 0.0) ? 0.0 : kAFNetworkActivityIndicatorInvisibilityDelay;
 }
 
 - (void)incrementActivityCount {
