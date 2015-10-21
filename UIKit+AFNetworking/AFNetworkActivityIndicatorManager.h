@@ -57,6 +57,11 @@ NS_EXTENSION_UNAVAILABLE_IOS("Use view controller based solutions where appropri
 @property (readonly, nonatomic, assign) BOOL isNetworkActivityIndicatorVisible;
 
 /**
+ *  A time to wait before showing the network activity indicator. The default value is 0.
+ */
+@property (nonatomic, assign) NSTimeInterval visibilityDelay;
+
+/**
  Returns the shared network activity indicator manager object for the system.
 
  @return The systemwide network activity indicator manager.
