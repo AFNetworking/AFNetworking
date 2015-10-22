@@ -5,30 +5,37 @@ env:
   global:
   - LC_CTYPE=en_US.UTF-8
   - LANG=en_US.UTF-8
+  - AFN_WORKSPACE=AFNetworking.xcworkspace
+  - IOS_FRAMEWORK_SCHEME="AFNetworking iOS"
+  - MAC_FRAMEOWRK_SCHEME="AFNetworking OS X"
+  - IOS_SDK=iphonesimulator9.1
+  - MAC_SDK=macosx10.11
+  - IOS_EXAMPLE_SCHEME="iOS Example"
+  - MAC_EXAMPLE_SCHEME="OS X Example"
   matrix:
-    - DESTINATION="OS=8.1,name=iPhone 4S" SCHEME="AFNetworking iOS" SDK=iphonesimulator9.1 BUILD_EXAMPLE="YES" POD_LINT="YES" EXAMPLE_SCHEME="iOS Example"
-    - DESTINATION="OS=8.2,name=iPhone 5" SCHEME="AFNetworking iOS" SDK=iphonesimulator9.1 BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="iOS Example"
-    - DESTINATION="OS=8.3,name=iPhone 5S" SCHEME="AFNetworking iOS" SDK=iphonesimulator9.1 BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="iOS Example"
-    - DESTINATION="OS=8.4,name=iPhone 6" SCHEME="AFNetworking iOS" SDK=iphonesimulator9.1 BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="iOS Example"
-    - DESTINATION="OS=9.0,name=iPhone 6 Plus" SCHEME="AFNetworking iOS" SDK=iphonesimulator9.1 BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="iOS Example"
-    - DESTINATION="OS=9.1,name=iPhone 6s" SCHEME="AFNetworking iOS" SDK=iphonesimulator9.1 BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="iOS Example"
-    - DESTINATION="arch=x86_64" SCHEME="AFNetworking OS X" SDK=macosx10.11 BUILD_EXAMPLE="NO" POD_LINT="NO" EXAMPLE_SCHEME="OS X Example"
+    - DESTINATION="OS=8.1,name=iPhone 4S"     SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK" BUILD_EXAMPLE="YES" POD_LINT="YES" EXAMPLE_SCHEME="$IOS_EXAMPLE_SCHEME"
+    - DESTINATION="OS=8.2,name=iPhone 5"      SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK" BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="$IOS_EXAMPLE_SCHEME"
+    - DESTINATION="OS=8.3,name=iPhone 5S"     SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK" BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="$IOS_EXAMPLE_SCHEME"
+    - DESTINATION="OS=8.4,name=iPhone 6"      SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK" BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="$IOS_EXAMPLE_SCHEME"
+    - DESTINATION="OS=9.0,name=iPhone 6 Plus" SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK" BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="$IOS_EXAMPLE_SCHEME"
+    - DESTINATION="OS=9.1,name=iPhone 6s"     SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK" BUILD_EXAMPLE="YES" POD_LINT="NO" EXAMPLE_SCHEME="$IOS_EXAMPLE_SCHEME"
+    - DESTINATION="arch=x86_64"               SCHEME="$MAC_FRAMEOWRK_SCHEME" SDK="$MAC_SDK" BUILD_EXAMPLE="NO" POD_LINT="NO" EXAMPLE_SCHEME="$MAC_EXAMPLE_SCHEME"
 before_install:
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 script:
   - set -o pipefail
   - xcodebuild -version
-  - xcodebuild -project AFNetworking.xcodeproj -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" 
+  - xcodebuild -workspace "$AFN_WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" 
     -configuration Debug ONLY_ACTIVE_ARCH=NO test | xcpretty -c
-  - xcodebuild -project AFNetworking.xcodeproj -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" 
+  - xcodebuild -workspace "$AFN_WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" 
     -configuration Release ONLY_ACTIVE_ARCH=NO test | xcpretty -c
   - if [ $BUILD_EXAMPLE == "YES" ]; then 
-      xcodebuild -workspace AFNetworking.xcworkspace -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" 
+      xcodebuild -workspace "$AFN_WORKSPACE" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" 
       -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty -c; 
     fi
   - if [ $BUILD_EXAMPLE == "YES" ]; then 
-      xcodebuild -workspace AFNetworking.xcworkspace -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" 
+      xcodebuild -workspace "$AFN_WORKSPACE" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" 
       -configuration Release ONLY_ACTIVE_ARCH=NO build | xcpretty -c; 
     fi
   - if [ $POD_LINT == "YES" ]; then
