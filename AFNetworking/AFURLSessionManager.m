@@ -235,7 +235,8 @@ didFinishDownloadingToURL:(NSURL *)location
             NSFileManager *fm = [NSFileManager defaultManager];
             if([fm fileExistsAtPath:[self.downloadFileURL path]]) {
                 [fm removeItemAtURL:self.downloadFileURL error:&fileManagerError];
-            } if(fileManagerError == nil) {
+            }
+            if(fileManagerError == nil) {
                 [fm moveItemAtURL:location toURL:self.downloadFileURL error:&fileManagerError];
             }
             
@@ -1104,7 +1105,8 @@ didFinishDownloadingToURL:(NSURL *)location
             NSFileManager *fm = [NSFileManager defaultManager];
             if([fm fileExistsAtPath:[fileURL path]]) {
                 [fm removeItemAtURL:fileURL error:&error];
-            } if(error == nil) {
+            }
+            if(error == nil) {
                 [fm moveItemAtURL:location toURL:fileURL error:&error];
             }
             
