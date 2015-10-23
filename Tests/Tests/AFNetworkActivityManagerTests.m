@@ -51,48 +51,126 @@
 
 #pragma mark -
 
-- (void)testThatNetworkActivityIndicatorTurnsOffIndicatorWhenRequestSucceeds {
-    XCTestExpectation *requestCompleteExpectation = [self expectationWithDescription:@"Request should succeed"];
+- (void)testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestSucceeds {
+    self.networkActivityIndicatorManager.activationDelay = 0.0;
+    self.networkActivityIndicatorManager.completionDelay = 0.0;
+
+    XCTestExpectation *startExpectation = [self expectationWithDescription:@"Indicator Visible"];
+    XCTestExpectation *endExpectation = [self expectationWithDescription:@"Indicator Hidden"];
+    [self.networkActivityIndicatorManager setNetworkingActivityActionWithBlock:^(BOOL networkActivityIndicatorVisible) {
+        if (networkActivityIndicatorVisible) {
+            [startExpectation fulfill];
+        } else {
+            [endExpectation fulfill];
+        }
+    }];
+
+    XCTestExpectation *requestExpectation = [self expectationWithDescription:@"Request should succeed"];
     [self.sessionManager
      GET:@"/delay/1"
      parameters:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-         [requestCompleteExpectation fulfill];
+         [requestExpectation fulfill];
      }
      failure:nil];
-    [self expectationForPredicate:[NSPredicate predicateWithFormat:@"isNetworkActivityIndicatorVisible == YES"]
-                                               evaluatedWithObject:self.networkActivityIndicatorManager
-                                                           handler:nil];
     [self waitForExpectationsWithTimeout:10.0 handler:nil];
-
-    [self expectationForPredicate:[NSPredicate predicateWithFormat:@"isNetworkActivityIndicatorVisible == NO"]
-              evaluatedWithObject:self.networkActivityIndicatorManager
-                          handler:nil];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
-- (void)testThatNetworkActivityIndicatorTurnsOffIndicatorWhenRequestFails {
-    XCTestExpectation *requestCompleteExpectation = [self expectationWithDescription:@"Request should succeed"];
+- (void)testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestFails {
+    self.networkActivityIndicatorManager.activationDelay = 0.0;
+    self.networkActivityIndicatorManager.completionDelay = 0.0;
+
+    XCTestExpectation *startExpectation = [self expectationWithDescription:@"Indicator Visible"];
+    XCTestExpectation *endExpectation = [self expectationWithDescription:@"Indicator Hidden"];
+    [self.networkActivityIndicatorManager setNetworkingActivityActionWithBlock:^(BOOL networkActivityIndicatorVisible) {
+        if (networkActivityIndicatorVisible) {
+            [startExpectation fulfill];
+        } else {
+            [endExpectation fulfill];
+        }
+    }];
+
+    XCTestExpectation *requestExpectation = [self expectationWithDescription:@"Request should fail"];
     [self.sessionManager
-     GET:@"/status/500"
+     GET:@"/status/404"
      parameters:nil
      success:nil
-     failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-         [requestCompleteExpectation fulfill];
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         [requestExpectation fulfill];
      }];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+}
 
-    [self
-     keyValueObservingExpectationForObject:self.networkActivityIndicatorManager
-     keyPath:@"isNetworkActivityIndicatorVisible"
-     handler:^BOOL(AFNetworkActivityIndicatorManager * observedObject, NSDictionary * _Nonnull change) {
-         return observedObject.isNetworkActivityIndicatorVisible;
-     }];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+- (void)testThatVisibilityDelaysAreApplied {
 
-    [self expectationForPredicate:[NSPredicate predicateWithFormat:@"isNetworkActivityIndicatorVisible == NO"]
-              evaluatedWithObject:self.networkActivityIndicatorManager
-                          handler:nil];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    self.networkActivityIndicatorManager.activationDelay = 1.0;
+    self.networkActivityIndicatorManager.completionDelay = 1.0;
+
+    CFTimeInterval requestStartTime = CACurrentMediaTime();
+    __block CFTimeInterval requestEndTime;
+    __block CFTimeInterval indicatorVisbleTime;
+    __block CFTimeInterval indicatorHiddenTime;
+    XCTestExpectation *startExpectation = [self expectationWithDescription:@"Indicator Visible"];
+    XCTestExpectation *endExpectation = [self expectationWithDescription:@"Indicator Hidden"];
+    [self.networkActivityIndicatorManager setNetworkingActivityActionWithBlock:^(BOOL networkActivityIndicatorVisible) {
+        if (networkActivityIndicatorVisible) {
+             indicatorVisbleTime = CACurrentMediaTime();
+            [startExpectation fulfill];
+        } else {
+            indicatorHiddenTime = CACurrentMediaTime();
+            [endExpectation fulfill];
+        }
+    }];
+
+    XCTestExpectation *requestExpectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager
+     GET:@"/delay/2"
+     parameters:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+         requestEndTime = CACurrentMediaTime();
+         [requestExpectation fulfill];
+     }
+     failure:nil];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+    XCTAssertTrue((indicatorVisbleTime - requestStartTime) > self.networkActivityIndicatorManager.activationDelay);
+    XCTAssertTrue((indicatorHiddenTime - requestEndTime) > self.networkActivityIndicatorManager.completionDelay);
+}
+
+- (void)testThatIndicatorBlockIsOnlyCalledOnceEachForStartAndEndForMultipleRequests {
+    self.networkActivityIndicatorManager.activationDelay = 1.0;
+    self.networkActivityIndicatorManager.completionDelay = 1.0;
+
+    XCTestExpectation *startExpectation = [self expectationWithDescription:@"Indicator Visible"];
+    XCTestExpectation *endExpectation = [self expectationWithDescription:@"Indicator Hidden"];
+    [self.networkActivityIndicatorManager setNetworkingActivityActionWithBlock:^(BOOL networkActivityIndicatorVisible) {
+        if (networkActivityIndicatorVisible) {
+            [startExpectation fulfill];
+        } else {
+            [endExpectation fulfill];
+        }
+    }];
+
+    XCTestExpectation *requestExpectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager
+     GET:@"/delay/4"
+     parameters:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+         [requestExpectation fulfill];
+     }
+     failure:nil];
+
+    XCTestExpectation *secondRequestExpectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager
+     GET:@"/delay/2"
+     parameters:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+
+         [secondRequestExpectation fulfill];
+     }
+     failure:nil];
+
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+
 }
 
 @end
