@@ -36,7 +36,8 @@
 - (void)setUp {
     [super setUp];
     self.localManager = [[AFURLSessionManager alloc] init];
-    
+    [self.localManager.session.configuration.URLCache removeAllCachedResponses];
+
     //Unfortunately, iOS 7 throws an exception when trying to create a background URL Session inside this test target, which means our tests here can only run on iOS 8+
     //Travis actually needs the try catch here. Just doing if ([NSURLSessionConfiguration respondsToSelector:@selector(backgroundSessionWithIdentifier)]) wasn't good enough.
     @try {
@@ -122,7 +123,7 @@
                 [expectation fulfill];
             }];
     [task resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 
     NSMutableURLRequest *cachedRequest = [request mutableCopy];
     cachedRequest.cachePolicy = NSURLRequestReturnCacheDataDontLoad;
@@ -135,7 +136,7 @@
                 [cachedExpectation fulfill];
             }];
     [cachedTask resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
 - (void)testThatCachingBlockPreventCaching {
@@ -148,7 +149,7 @@
      }];
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://httpbin.org/get"]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://httpbin.org/delay/1"]];
     NSURLSessionTask *task;
     task = [self.localManager
             dataTaskWithRequest:request
@@ -157,7 +158,7 @@
                 [expectation fulfill];
             }];
     [task resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 
     NSMutableURLRequest *cachedRequest = [request mutableCopy];
     cachedRequest.cachePolicy = NSURLRequestReturnCacheDataDontLoad;
@@ -172,7 +173,7 @@
                       [cachedExpectation fulfill];
                   }];
     [cachedTask resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
 #pragma mark - Issue #2702 Tests
