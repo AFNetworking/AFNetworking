@@ -263,7 +263,7 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 * Network reachability is a useful tool for determining why a request might have failed.
 	* After a network request has failed, telling the user they're offline is better than giving them a more technical but accurate error, such as "request timed out."
 
-See also [WWDC 2012 session 706, "Networking Best Practices."](https://developer.apple.com/videos/wwdc/2012/#706).
+See also [WWDC 2012 session 706, "Networking Best Practices."](https://developer.apple.com/videos/play/wwdc2012-706/).
 
 #### Shared Network Reachability
 
