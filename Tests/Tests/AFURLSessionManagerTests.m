@@ -144,10 +144,7 @@
 - (void)testThatCachingBlockPreventCaching {
     [self.localManager
      setDataTaskWillCacheResponseBlock:^NSCachedURLResponse * _Nonnull(NSURLSession * _Nonnull session, NSURLSessionDataTask * _Nonnull dataTask, NSCachedURLResponse * _Nonnull proposedResponse) {
-         return [[NSCachedURLResponse alloc] initWithResponse:proposedResponse.response
-                                                         data:proposedResponse.data
-                                                     userInfo:proposedResponse.userInfo
-                                                storagePolicy:NSURLCacheStorageNotAllowed];
+         return nil;
      }];
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
