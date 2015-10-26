@@ -125,6 +125,8 @@
     [task resume];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 
+    XCTAssertNotNil([self.localManager.session.configuration.URLCache cachedResponseForRequest:[request mutableCopy]]);
+
     NSMutableURLRequest *cachedRequest = [request mutableCopy];
     cachedRequest.cachePolicy = NSURLRequestReturnCacheDataDontLoad;
     XCTestExpectation *cachedExpectation = [self expectationWithDescription:@"Cached Request should succeed"];
@@ -159,6 +161,8 @@
             }];
     [task resume];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+
+    XCTAssertNil([self.localManager.session.configuration.URLCache cachedResponseForRequest:[request mutableCopy]]);
 
     NSMutableURLRequest *cachedRequest = [request mutableCopy];
     cachedRequest.cachePolicy = NSURLRequestReturnCacheDataDontLoad;
