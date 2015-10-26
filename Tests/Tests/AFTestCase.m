@@ -27,6 +27,7 @@ NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
 
 - (void)setUp {
     [super setUp];
+    self.networkTimeout = 20.0;
 }
 
 - (void)tearDown {
@@ -37,6 +38,10 @@ NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
 
 - (NSURL *)baseURL {
     return [NSURL URLWithString:AFNetworkingTestsBaseURLString];
+}
+
+- (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler {
+    [self waitForExpectationsWithTimeout:self.networkTimeout handler:nil];
 }
 
 @end

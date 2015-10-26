@@ -26,5 +26,8 @@ extern NSString * const AFNetworkingTestsBaseURLString;
 @interface AFTestCase : XCTestCase
 
 @property (nonatomic, strong, readonly) NSURL *baseURL;
+@property (nonatomic, assign) NSTimeInterval networkTimeout;
+
+- (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler;
 
 @end
