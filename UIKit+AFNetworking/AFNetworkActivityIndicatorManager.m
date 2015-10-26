@@ -102,7 +102,9 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 }
 
 - (BOOL)isNetworkActivityOccurring {
-    return self.activityCount > 0;
+    @synchronized(self) {
+        return self.activityCount > 0;
+    }
 }
 
 - (void)setNetworkActivityIndicatorVisible:(BOOL)networkActivityIndicatorVisible {
