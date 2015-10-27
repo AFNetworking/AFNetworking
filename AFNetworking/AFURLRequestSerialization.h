@@ -59,6 +59,9 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
     AFHTTPRequestQueryStringDefaultStyle = 0,
 };
 
+typedef NSString * __nullable (^AFQueryStringNestedFieldNameFormatterBlock)(NSString * __nullable key, NSString *nestedKey);
+typedef NSString * __nullable (^AFQueryStringArrayFieldNameFormatterBlock)(NSString * key);
+
 @protocol AFMultipartFormData;
 
 /**
@@ -114,6 +117,16 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
  @see NSMutableURLRequest -setTimeoutInterval:
  */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
+
+/**
+ The field name formatter for nested field in query string.
+ */
+@property (nonatomic, copy) AFQueryStringNestedFieldNameFormatterBlock nestedFieldNameFormatterBlock;
+
+/**
+ The field name formatter for array field in query string.
+ */
+@property (nonatomic, copy) AFQueryStringArrayFieldNameFormatterBlock arrayFieldNameFormatterBlock;
 
 ///---------------------------------------
 /// @name Configuring HTTP Request Headers

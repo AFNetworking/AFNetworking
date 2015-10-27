@@ -194,4 +194,59 @@
     XCTAssertTrue([request.URL.query isEqualToString:@"test=%21%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD"]);
 }
 
+- (void)testThatAFHTTPRequestSerialiationHandlesParametersArray {
+    NSArray *parameter = @[@"value1", @"value2"];
+    
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    
+    NSURLRequest *request = [serializer requestWithMethod:@"GET"
+                                                URLString:@"http://test.com"
+                                               parameters:@{@"test":parameter}
+                                                    error:nil];
+    XCTAssertTrue([request.URL.query isEqualToString:@"test%5B%5D=value1&test%5B%5D=value2"]);
+}
+
+- (void)testThatAFHTTPRequestSerialiationHandlesParametersArrayWithFieldNameFormatter {
+    NSArray *parameter = @[@"value1", @"value2"];
+    
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    [serializer setArrayFieldNameFormatterBlock:^(NSString *key) {
+        return key;
+    }];
+    
+    NSURLRequest *request = [serializer requestWithMethod:@"GET"
+                                                URLString:@"http://test.com"
+                                               parameters:@{@"test":parameter}
+                                                    error:nil];
+    XCTAssertTrue([request.URL.query isEqualToString:@"test=value1&test=value2"]);
+}
+
+
+- (void)testThatAFHTTPRequestSerialiationHandlesParametersDictionary {
+    NSDictionary *parameter = @{ @"key1" : @"value1", @"key2" : @"value2" };
+    
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    
+    NSURLRequest *request = [serializer requestWithMethod:@"GET"
+                                                URLString:@"http://test.com"
+                                               parameters:@{@"test":parameter}
+                                                    error:nil];
+    XCTAssertTrue([request.URL.query isEqualToString:@"test%5Bkey1%5D=value1&test%5Bkey2%5D=value2"]);
+}
+
+- (void)testThatAFHTTPRequestSerialiationHandlesParametersDictionaryWithFieldNameFormatter {
+    NSDictionary *parameter = @{ @"key1" : @"value1", @"key2" : @"value2" };
+    
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    [serializer setNestedFieldNameFormatterBlock:^(NSString *key, NSString *nestedKey) {
+        return [NSString stringWithFormat:@"%@{%@}", key, nestedKey];
+    }];
+    
+    NSURLRequest *request = [serializer requestWithMethod:@"GET"
+                                                URLString:@"http://test.com"
+                                               parameters:@{@"test":parameter}
+                                                    error:nil];
+    XCTAssertTrue([request.URL.query isEqualToString:@"test%7Bkey1%7D=value1&test%7Bkey2%7D=value2"]);
+}
+
 @end
