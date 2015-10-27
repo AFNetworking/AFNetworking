@@ -85,11 +85,14 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
 
     static NSUInteger const batchSize = 50;
 
-    NSInteger index = 0;
+    NSUInteger index = 0;
     NSMutableString *escaped = @"".mutableCopy;
 
     while (index < string.length) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wgnu"
         NSUInteger length = MIN(string.length - index, batchSize);
+#pragma GCC diagnostic pop
         NSRange range = NSMakeRange(index, length);
 
         // To avoid breaking up character sequences such as 👴🏻👮🏽
