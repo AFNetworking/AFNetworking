@@ -847,7 +847,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 	NSError *error = nil;
 	NSFileManager *fm = [NSFileManager defaultManager];
 	if([fm fileExistsAtPath:[dstURL path]]) {
-		[fm replaceItemAtURL:srcURL withItemAtURL:dstURL backupItemName:nil options:0 resultingItemURL:0 error:&error];
+		[fm replaceItemAtURL:srcURL withItemAtURL:dstURL backupItemName:nil options:(NSFileManagerItemReplacementOptions)0 resultingItemURL:0 error:&error];
 	} else {
 		[fm moveItemAtURL:srcURL toURL:dstURL error:&error];
 	}
