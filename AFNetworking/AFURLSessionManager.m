@@ -844,17 +844,18 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 + (void)moveItemAtURL:(NSURL *)srcURL toURL:(NSURL *)dstURL downloadTask:(NSURLSessionDownloadTask *)downloadTask
 {
-	NSError *error = nil;
-	NSFileManager *fm = [NSFileManager defaultManager];
-	if([fm fileExistsAtPath:[dstURL path]]) {
-		[fm replaceItemAtURL:srcURL withItemAtURL:dstURL backupItemName:nil options:(NSFileManagerItemReplacementOptions)0 resultingItemURL:0 error:&error];
-	} else {
-		[fm moveItemAtURL:srcURL toURL:dstURL error:&error];
-	}
+    NSError *error = nil;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if([fm fileExistsAtPath:[dstURL path]]) {
+        [fm removeItemAtURL:dstURL error:&error];
+    }
+    if(!error) {
+        [fm moveItemAtURL:srcURL toURL:dstURL error:&error];
+    }
 	
-	if (error) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
-	}
+    if (error) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
+    }
 }
 
 #pragma mark - NSObject
