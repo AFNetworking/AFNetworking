@@ -63,7 +63,7 @@
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
-    self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
+    self.reachabilityManager = [AFNetworkReachabilityManager manager];
 
     self.operationQueue = [[NSOperationQueue alloc] init];
 
