@@ -360,7 +360,7 @@ NSArray *operations = [AFURLConnectionOperation batchOfRequestOperations:@[...] 
 
 ## Unit Tests
 
-AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via [CocoaPods](https://cocoapods.org//):
+AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via [CocoaPods](https://cocoapods.org/):
 
     $ cd Tests
     $ pod install
