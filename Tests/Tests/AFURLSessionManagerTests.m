@@ -102,45 +102,6 @@
     XCTAssertTrue(overallProgress.fractionCompleted == 0.8);
 }
 
-#pragma mark - Caching
-
-- (void)testThatCachingBlockCanCacheRequest {
-    [self.localManager
-     setDataTaskWillCacheResponseBlock:^NSCachedURLResponse * _Nonnull(NSURLSession * _Nonnull session, NSURLSessionDataTask * _Nonnull dataTask, NSCachedURLResponse * _Nonnull proposedResponse) {
-         return [[NSCachedURLResponse alloc] initWithResponse:proposedResponse.response
-                                                         data:proposedResponse.data
-                                                     userInfo:proposedResponse.userInfo
-                                                storagePolicy:NSURLCacheStorageAllowed];
-     }];
-
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://httpbin.org/get"]];
-    NSURLSessionTask *task;
-    task = [self.localManager
-            dataTaskWithRequest:request
-            completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-                XCTAssertNil(error);
-                [expectation fulfill];
-            }];
-    [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
-
-    XCTAssertNotNil([self.localManager.session.configuration.URLCache cachedResponseForRequest:[request mutableCopy]]);
-
-    NSMutableURLRequest *cachedRequest = [request mutableCopy];
-    cachedRequest.cachePolicy = NSURLRequestReturnCacheDataDontLoad;
-    XCTestExpectation *cachedExpectation = [self expectationWithDescription:@"Cached Request should succeed"];
-    NSURLSessionTask *cachedTask;
-    cachedTask = [self.localManager
-            dataTaskWithRequest:cachedRequest
-            completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-                XCTAssertNil(error);
-                [cachedExpectation fulfill];
-            }];
-    [cachedTask resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
-}
-
 #pragma mark - Issue #2702 Tests
 // The following tests are all releated to issue #2702
 

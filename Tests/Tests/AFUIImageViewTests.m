@@ -122,19 +122,6 @@
     XCTAssertEqual(cachedImage, downloadImage);
 }
 
-- (void)testThatPlaceholderImageIsReplacedWhenImageRequestSucceeds {
-    UIImage *placeholder = [UIImage imageNamed:@"logo"];
-    [self.imageView setImageWithURLRequest:self.jpegURLRequest
-                          placeholderImage:placeholder
-                                   success:nil
-                                   failure:nil];
-    [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != %@", placeholder]
-              evaluatedWithObject:self.imageView
-                          handler:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
-    XCTAssertNotNil(self.imageView.image);
-}
-
 - (void)testThatImageBehindRedirectCanBeDownloaded {
     NSURL *redirectURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://httpbin.org/redirect-to?url=%@",self.jpegURL]];
     [self.imageView setImageWithURL:redirectURL];
