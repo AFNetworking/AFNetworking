@@ -26,6 +26,7 @@ typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
     AFSSLPinningModeNone,
     AFSSLPinningModePublicKey,
     AFSSLPinningModeCertificate,
+	AFSSLPinningModeCA
 };
 
 /**
