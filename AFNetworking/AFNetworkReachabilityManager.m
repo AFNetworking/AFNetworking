@@ -191,8 +191,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
         return;
     }
 
+    __block BOOL receivedReachabilityUpdate = NO;
+
     __weak __typeof(self)weakSelf = self;
     AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status) {
+        receivedReachabilityUpdate = YES;
+
         __strong __typeof(weakSelf)strongSelf = weakSelf;
 
         strongSelf.networkReachabilityStatus = status;
@@ -218,11 +222,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
                 SCNetworkReachabilityGetFlags((__bridge SCNetworkReachabilityRef)networkReachability, &flags);
                 AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    callback(status);
+                    if (!receivedReachabilityUpdate) {
+                        callback(status);
 
-                    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-                    [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:@{ AFNetworkingReachabilityNotificationStatusItem: @(status) }];
-
+                        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+                        [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:@{ AFNetworkingReachabilityNotificationStatusItem: @(status) }];
+                    }
 
                 });
             });
