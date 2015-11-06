@@ -125,8 +125,8 @@
     self.af_URLSessionTask = nil;
 
     __weak __typeof(self)weakSelf = self;
-    NSURLSessionDataTask *task;
-    task = [self.sessionManager
+    NSURLSessionDataTask *dataTask;
+    dataTask = [self.sessionManager
             GET:request.URL.absoluteString
             parameters:nil
             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
@@ -145,8 +145,8 @@
                     failure(error);
                 }
             }];
-    self.af_URLSessionTask = task;
-    *progress = [self.sessionManager progressForDataTask:task];
+    self.af_URLSessionTask = dataTask;
+    *progress = [self.sessionManager progressForDataTask:dataTask];
     [self.af_URLSessionTask resume];
 
     if ([self.delegate respondsToSelector:@selector(webViewDidStartLoad:)]) {
