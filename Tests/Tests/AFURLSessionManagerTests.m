@@ -36,7 +36,8 @@
 - (void)setUp {
     [super setUp];
     self.localManager = [[AFURLSessionManager alloc] init];
-    
+    [self.localManager.session.configuration.URLCache removeAllCachedResponses];
+
     //Unfortunately, iOS 7 throws an exception when trying to create a background URL Session inside this test target, which means our tests here can only run on iOS 8+
     //Travis actually needs the try catch here. Just doing if ([NSURLSessionConfiguration respondsToSelector:@selector(backgroundSessionWithIdentifier)]) wasn't good enough.
     @try {
@@ -99,80 +100,6 @@
     downloadProgress.completedUnitCount = 1;
 
     XCTAssertTrue(overallProgress.fractionCompleted == 0.8);
-}
-
-#pragma mark - Caching
-
-- (void)testThatCachingBlockCanCacheRequest {
-    [self.localManager
-     setDataTaskWillCacheResponseBlock:^NSCachedURLResponse * _Nonnull(NSURLSession * _Nonnull session, NSURLSessionDataTask * _Nonnull dataTask, NSCachedURLResponse * _Nonnull proposedResponse) {
-         return [[NSCachedURLResponse alloc] initWithResponse:proposedResponse.response
-                                                         data:proposedResponse.data
-                                                     userInfo:proposedResponse.userInfo
-                                                storagePolicy:NSURLCacheStorageAllowed];
-     }];
-
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://httpbin.org/get"]];
-    NSURLSessionTask *task;
-    task = [self.localManager
-            dataTaskWithRequest:request
-            completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-                XCTAssertNil(error);
-                [expectation fulfill];
-            }];
-    [task resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
-
-    NSMutableURLRequest *cachedRequest = [request mutableCopy];
-    cachedRequest.cachePolicy = NSURLRequestReturnCacheDataDontLoad;
-    XCTestExpectation *cachedExpectation = [self expectationWithDescription:@"Cached Request should succeed"];
-    NSURLSessionTask *cachedTask;
-    cachedTask = [self.localManager
-            dataTaskWithRequest:cachedRequest
-            completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-                XCTAssertNil(error);
-                [cachedExpectation fulfill];
-            }];
-    [cachedTask resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
-}
-
-- (void)testThatCachingBlockPreventCaching {
-    [self.localManager
-     setDataTaskWillCacheResponseBlock:^NSCachedURLResponse * _Nonnull(NSURLSession * _Nonnull session, NSURLSessionDataTask * _Nonnull dataTask, NSCachedURLResponse * _Nonnull proposedResponse) {
-         return [[NSCachedURLResponse alloc] initWithResponse:proposedResponse.response
-                                                         data:proposedResponse.data
-                                                     userInfo:proposedResponse.userInfo
-                                                storagePolicy:NSURLCacheStorageNotAllowed];
-     }];
-
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://httpbin.org/get"]];
-    NSURLSessionTask *task;
-    task = [self.localManager
-            dataTaskWithRequest:request
-            completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-                XCTAssertNil(error);
-                [expectation fulfill];
-            }];
-    [task resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
-
-    NSMutableURLRequest *cachedRequest = [request mutableCopy];
-    cachedRequest.cachePolicy = NSURLRequestReturnCacheDataDontLoad;
-    XCTestExpectation *cachedExpectation = [self expectationWithDescription:@"Cached Request should fail"];
-    NSURLSessionTask *cachedTask;
-    cachedTask = [self.localManager
-                  dataTaskWithRequest:cachedRequest
-                  completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-                      XCTAssertNil(response);
-                      XCTAssertNil(responseObject);
-                      XCTAssertNotNil(error);
-                      [cachedExpectation fulfill];
-                  }];
-    [cachedTask resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
 #pragma mark - Issue #2702 Tests

@@ -34,7 +34,6 @@
 @property (nonatomic, strong) NSURL *jpegURL;
 @property (nonatomic, strong) NSURLRequest *jpegURLRequest;
 
-@property (nonatomic, assign) NSTimeInterval timeout;
 @end
 
 @implementation AFUIImageViewTests
@@ -51,7 +50,6 @@
     self.error404URL = [NSURL URLWithString:@"https://httpbin.org/status/404"];
     self.error404URLRequest = [NSURLRequest requestWithURL:self.error404URL];
 
-    self.timeout = 5.0;
 }
 
 - (void)tearDown {
@@ -65,7 +63,7 @@
     [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != nil"]
               evaluatedWithObject:self.imageView
                           handler:nil];
-    [self waitForExpectationsWithTimeout:self.timeout handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
 - (void)testThatImageDownloadSucceedsWhenDuplicateRequestIsSentToImageView {
@@ -75,7 +73,7 @@
     [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != nil"]
               evaluatedWithObject:self.imageView
                           handler:nil];
-    [self waitForExpectationsWithTimeout:self.timeout handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
 - (void)testThatPlaceholderImageIsSetIfRequestFails {
@@ -89,7 +87,7 @@
                                    failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                                        [expectation fulfill];
                                    }];
-    [self waitForExpectationsWithTimeout:self.timeout handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
     XCTAssertEqual(self.imageView.image, placeholder);
 }
 
@@ -104,7 +102,7 @@
          [cacheExpectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithTimeout:self.timeout handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 
     __block UIImage *cachedImage = nil;
     __block NSHTTPURLResponse *urlResponse;
@@ -118,23 +116,10 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithTimeout:self.timeout handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
     XCTAssertNil(urlResponse);
     XCTAssertNotNil(cachedImage);
     XCTAssertEqual(cachedImage, downloadImage);
-}
-
-- (void)testThatPlaceholderImageIsReplacedWhenImageRequestSucceeds {
-    UIImage *placeholder = [UIImage imageNamed:@"logo"];
-    [self.imageView setImageWithURLRequest:self.jpegURLRequest
-                          placeholderImage:placeholder
-                                   success:nil
-                                   failure:nil];
-    [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != %@", placeholder]
-              evaluatedWithObject:self.imageView
-                          handler:nil];
-    [self waitForExpectationsWithTimeout:self.timeout handler:nil];
-    XCTAssertNotNil(self.imageView.image);
 }
 
 - (void)testThatImageBehindRedirectCanBeDownloaded {
@@ -143,7 +128,7 @@
     [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != nil"]
               evaluatedWithObject:self.imageView
                           handler:nil];
-    [self waitForExpectationsWithTimeout:self.timeout handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
 @end
