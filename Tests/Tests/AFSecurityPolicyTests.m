@@ -50,6 +50,23 @@ static SecTrustRef AFUTHTTPBinOrgServerTrust() {
     return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
 }
 
+static SecTrustRef AFUTHTTPBinOrgServerTrustLeafOnly() {
+	NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"HTTPBinOrgServerTrustChain/httpbin_0" ofType:@"cer"];
+	NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+	NSData *certData = [NSData dataWithContentsOfFile:certPath];
+	
+	return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+	
+}
+
+static SecTrustRef AFUTHTTPBinOrgServerTrustAboveLeaf() {
+	NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"HTTPBinOrgServerTrustChain/httpbin_1" ofType:@"cer"];
+	NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+	NSData *certData = [NSData dataWithContentsOfFile:certPath];
+	
+	return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+}
+
 static SecTrustRef AFUTADNNetServerTrust() {
     NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
     NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"ADNNetServerTrustChain"];
@@ -355,6 +372,14 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecCertificateRef certificate = AFUTCOMODORSACertificate();
     policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
+}
+
+- (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithCertificateAbovePinned {
+	AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCA];
+	
+	SecCertificateRef certificate = AFUTHTTPBinOrgServerTrustAboveLeaf();
+	policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate)];
+	XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrustLeafOnly() forDomain:nil], @"Policy should allow server trust");
 }
 
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned {
