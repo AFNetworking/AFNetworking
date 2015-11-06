@@ -82,6 +82,13 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedManager;
 
 /**
+ Creates and returns a network reachability manager with the default socket address.
+ 
+ @return An initialized network reachability manager, actively monitoring the default socket address.
+ */
++ (instancetype)manager;
+
+/**
  Creates and returns a network reachability manager for the specified domain.
 
  @param domain The domain used to evaluate network reachability.
