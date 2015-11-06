@@ -2,7 +2,43 @@
 All notable changes to this project will be documented in this file.
 `AFNetworking` adheres to [Semantic Versioning](http://semver.org/).
 
----
+--- 
+
+##[2.6.2](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.2) (11/06/2015)
+Released on Friday, November 06, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.2+is%3Aclosed).
+
+#### Added
+* `AFHTTPSessionManager` now copies its `securityPolicy`
+ * Fixed by [mohamede1945](https://github.com/mohamede1945) in [#2887](https://github.com/AFNetworking/AFNetworking/pull/2887).
+
+#### Updated
+* Updated travis to run on 7.1
+ * Fixed by [kcharwood](https://github.com/kcharwood) in [#3132](https://github.com/AFNetworking/AFNetworking/pull/3132).
+* Simplifications of if and return statements in `AFSecurityPolicy`
+ * Fixed by [TorreyBetts](https://github.com/TorreyBetts) in [#3063](https://github.com/AFNetworking/AFNetworking/pull/3063).
+
+#### Fixed
+* Fixed swift interop issue that prevented returning a nil NSURL for a download task
+ * Fixed by [kcharwood](https://github.com/kcharwood) in [#3133](https://github.com/AFNetworking/AFNetworking/pull/3133).
+* Suppressed false positive memory leak warning in Reachability Manager
+ * Fixed by [kcharwood](https://github.com/kcharwood) in [#3131](https://github.com/AFNetworking/AFNetworking/pull/3131).
+* Fixed swift interop issue with throws and Request/Response serialization
+ * Fixed by [kcharwood](https://github.com/kcharwood) in [#3130](https://github.com/AFNetworking/AFNetworking/pull/3130).
+* Fixed race condition in reachability callback delivery
+ * Fixed by [MichaelHackett](https://github.com/MichaelHackett) in [#3117](https://github.com/AFNetworking/AFNetworking/pull/3117).
+* Fixed URLs that were redirecting in the README
+ * Fixed by [frankenbot](https://github.com/frankenbot) in [#3109](https://github.com/AFNetworking/AFNetworking/pull/3109).
+* Fixed Project Warnings
+ * Fixed by [kcharwood](https://github.com/kcharwood) in [#3102](https://github.com/AFNetworking/AFNetworking/pull/3102).
+* Fixed README link to WWDC session
+ * Fixed by [wrtsprt](https://github.com/wrtsprt) in [#3099](https://github.com/AFNetworking/AFNetworking/pull/3099).
+* Switched from `OS_OBJECT_HAVE_OBJC_SUPPORT` to `OS_OBJECT_USE_OBJC` for watchOS 2 support.
+ * Fixed by [kylef](https://github.com/kylef) in [#3065](https://github.com/AFNetworking/AFNetworking/pull/3065).
+* Added missing __nullable attributes to failure blocks in `AFHTTPRequestOperationManager` and `AFHTTPSessionManager`
+ * Fixed by [hoppenichu](https://github.com/hoppenichu) in [#3057](https://github.com/AFNetworking/AFNetworking/pull/3057).
+* Fixed memory leak in NSURLSession handling
+ * Fixed by [olegnaumenko](https://github.com/olegnaumenko) in [#2794](https://github.com/AFNetworking/AFNetworking/pull/2794).
+
 
 ## [2.6.1](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.1) (10-13-2015)
 Released on Tuesday, October 13th, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.1+is%3Aclosed).
