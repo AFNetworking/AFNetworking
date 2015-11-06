@@ -115,9 +115,9 @@
 
     [manager startMonitoring];
 
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:^(NSError *error) {
-        [manager setReachabilityStatusChangeBlock:nil];
-    }];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [manager setReachabilityStatusChangeBlock:nil];
+    
 }
 
 - (void)testAddressReachabilityBlock {
