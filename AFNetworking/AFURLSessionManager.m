@@ -231,7 +231,18 @@ didFinishDownloadingToURL:(NSURL *)location
     if (self.downloadTaskDidFinishDownloading) {
         self.downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
         if (self.downloadFileURL) {
-			[AFURLSessionManager moveItemAtURL:location toURL:self.downloadFileURL downloadTask:downloadTask];
+            NSError *error = nil;
+            NSFileManager *fm = [NSFileManager defaultManager];
+            if([fm fileExistsAtPath:[self.downloadFileURL path]]) {
+                [fm removeItemAtURL:self.downloadFileURL error:&error];
+            }
+            if(!error) {
+                [fm moveItemAtURL:location toURL:self.downloadFileURL error:&error];
+            }
+            
+            if (error) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
+            }
         }
     }
 }
@@ -845,24 +856,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.downloadTaskDidResume = block;
 }
 
-#pragma mark -
-
-+ (void)moveItemAtURL:(NSURL *)srcURL toURL:(NSURL *)dstURL downloadTask:(NSURLSessionDownloadTask *)downloadTask
-{
-    NSError *error = nil;
-    NSFileManager *fm = [NSFileManager defaultManager];
-    if([fm fileExistsAtPath:[dstURL path]]) {
-        [fm removeItemAtURL:dstURL error:&error];
-    }
-    if(!error) {
-        [fm moveItemAtURL:srcURL toURL:dstURL error:&error];
-    }
-	
-    if (error) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
-    }
-}
-
 #pragma mark - NSObject
 
 - (NSString *)description {
@@ -1110,9 +1103,21 @@ didFinishDownloadingToURL:(NSURL *)location
 {
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
     if (self.downloadTaskDidFinishDownloading) {
-        NSURL *fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
-        if (fileURL) {
-			[AFURLSessionManager moveItemAtURL:location toURL:delegate.downloadFileURL downloadTask:downloadTask];
+        NSURL *downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
+        if (downloadFileURL) {
+            delegate.downloadFileURL = downloadFileURL;
+            NSError *error = nil;
+            NSFileManager *fm = [NSFileManager defaultManager];
+            if([fm fileExistsAtPath:[downloadFileURL path]]) {
+                [fm removeItemAtURL:downloadFileURL error:&error];
+            }
+            if(!error) {
+                [fm moveItemAtURL:location toURL:downloadFileURL error:&error];
+            }
+            
+            if (error) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
+            }
         }
     } else if (delegate) {
         [delegate URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];

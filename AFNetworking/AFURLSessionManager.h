@@ -444,19 +444,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setDownloadTaskDidResumeBlock:(nullable void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes))block;
 
-///-----------------------------------------------
-/// @name Write Downloaded File to Path
-///-----------------------------------------------
-
-/**
- Rewriting `-[NSFileManager moveItemAtURL:toURL:error:] to allow replace old data.
- 
- @param srcURL A path of current file url. Must not be `nil`.
- @param dstURL A file destination. Must not be `nil`.
- @param downloadTask The session download task..
- */
-+ (void)moveItemAtURL:(NSURL *)srcURL toURL:(NSURL *)dstURL downloadTask:(NSURLSessionDownloadTask *)downloadTask;
-
 @end
 
 #endif
