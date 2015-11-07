@@ -121,7 +121,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
 #pragma clang diagnostic pop
 }
 
-+ (void)setSharedImageCache:(id <AFImageCache>)imageCache {
++ (void)setSharedImageCache:(__nullable id <AFImageCache>)imageCache {
     objc_setAssociatedObject(self, @selector(sharedImageCache), imageCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -165,7 +165,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
 - (void)setImageForState:(UIControlState)state
           withURLRequest:(NSURLRequest *)urlRequest
         placeholderImage:(UIImage *)placeholderImage
-                 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                 success:(void (^)(NSURLRequest *request, NSHTTPURLResponse * __nullable response, UIImage *image))success
                  failure:(void (^)(NSError *error))failure
 {
     [self cancelImageRequestOperationForState:state];
@@ -173,7 +173,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
     UIImage *cachedImage = [[[self class] sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
         if (success) {
-            success(nil, nil, cachedImage);
+            success(urlRequest, nil, cachedImage);
         } else {
             [self setImage:cachedImage forState:state];
         }
@@ -231,7 +231,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
 - (void)setBackgroundImageForState:(UIControlState)state
                     withURLRequest:(NSURLRequest *)urlRequest
                   placeholderImage:(UIImage *)placeholderImage
-                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
+                           success:(void (^)(NSURLRequest *request, NSHTTPURLResponse * __nullable response, UIImage *image))success
                            failure:(void (^)(NSError *error))failure
 {
     [self cancelBackgroundImageRequestOperationForState:state];
@@ -239,7 +239,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
     UIImage *cachedImage = [[[self class] sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
         if (success) {
-            success(nil, nil, cachedImage);
+            success(urlRequest, nil, cachedImage);
         } else {
             [self setBackgroundImage:cachedImage forState:state];
         }
