@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ##[2.6.2](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.2) (11/06/2015)
 Released on Friday, November 06, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.2+is%3Aclosed).
 
+### Important Upgrade Note for Swift
+* [#3130](https://github.com/AFNetworking/AFNetworking/pull/3130) fixes a swift interop error that does have a breaking API change if you are using Swift. This was [identified](https://github.com/AFNetworking/AFNetworking/issues/3137) after 2.6.2 was released. It changes the method from `throws` to an error pointer, since that method does return an object and also handles an error pointer, which does not play nicely with the Swift/Objective-C error conversion. See [#2810](https://github.com/AFNetworking/AFNetworking/issues/2810) for additional notes. This affects `AFURLRequestionSerializer` and `AFURLResponseSerializer`.
+
 #### Added
 * `AFHTTPSessionManager` now copies its `securityPolicy`
  * Fixed by [mohamede1945](https://github.com/mohamede1945) in [#2887](https://github.com/AFNetworking/AFNetworking/pull/2887).
@@ -22,7 +25,7 @@ Released on Friday, November 06, 2015. All issues associated with this milestone
  * Fixed by [kcharwood](https://github.com/kcharwood) in [#3133](https://github.com/AFNetworking/AFNetworking/pull/3133).
 * Suppressed false positive memory leak warning in Reachability Manager
  * Fixed by [kcharwood](https://github.com/kcharwood) in [#3131](https://github.com/AFNetworking/AFNetworking/pull/3131).
-* Fixed swift interop issue with throws and Request/Response serialization
+* Fixed swift interop issue with throws and Request/Response serialization. 
  * Fixed by [kcharwood](https://github.com/kcharwood) in [#3130](https://github.com/AFNetworking/AFNetworking/pull/3130).
 * Fixed race condition in reachability callback delivery
  * Fixed by [MichaelHackett](https://github.com/MichaelHackett) in [#3117](https://github.com/AFNetworking/AFNetworking/pull/3117).
