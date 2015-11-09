@@ -42,7 +42,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable id)responseObjectForResponse:(nullable NSURLResponse *)response
                            data:(nullable NSData *)data
-                          error:(NSError * __nullable __autoreleasing *)error NS_SWIFT_NOTHROW;
+                          error:(NSError * __nullable __autoreleasing *)error
+#ifdef NS_SWIFT_NOTHROW
+NS_SWIFT_NOTHROW
+#endif
+;
 
 @end
 
