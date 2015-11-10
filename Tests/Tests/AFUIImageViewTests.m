@@ -131,4 +131,12 @@
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
+- (void)testThatNilURLDoesntCrash {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    [self.imageView setImageWithURL:nil];
+#pragma clang diagnostic pop
+
+}
+
 @end
