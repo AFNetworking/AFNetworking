@@ -79,6 +79,13 @@
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure
 {
+
+    if ([urlRequest URL] == nil) {
+        [self cancelImageDownloadTask];
+        self.image = placeholderImage;
+        return;
+    }
+
     if ([self isActiveTaskURLEqualToURLRequest:urlRequest]){
         return;
     }
