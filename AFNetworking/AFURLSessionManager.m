@@ -226,16 +226,22 @@ didCompleteWithError:(NSError *)error
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
-    NSError *fileManagerError = nil;
     self.downloadFileURL = nil;
 
     if (self.downloadTaskDidFinishDownloading) {
         self.downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
         if (self.downloadFileURL) {
-            [[NSFileManager defaultManager] moveItemAtURL:location toURL:self.downloadFileURL error:&fileManagerError];
-
-            if (fileManagerError) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:fileManagerError.userInfo];
+            NSError *error = nil;
+            NSFileManager *fm = [NSFileManager defaultManager];
+            if([fm fileExistsAtPath:[self.downloadFileURL path]]) {
+                [fm removeItemAtURL:self.downloadFileURL error:&error];
+            }
+            if(!error) {
+                [fm moveItemAtURL:location toURL:self.downloadFileURL error:&error];
+            }
+            
+            if (error) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
             }
         }
     }
@@ -1097,20 +1103,23 @@ didFinishDownloadingToURL:(NSURL *)location
 {
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
     if (self.downloadTaskDidFinishDownloading) {
-        NSURL *fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
-        if (fileURL) {
-            delegate.downloadFileURL = fileURL;
+        NSURL *downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
+        if (downloadFileURL) {
+            delegate.downloadFileURL = downloadFileURL;
             NSError *error = nil;
-            [[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&error];
+            NSFileManager *fm = [NSFileManager defaultManager];
+            if([fm fileExistsAtPath:[downloadFileURL path]]) {
+                [fm removeItemAtURL:downloadFileURL error:&error];
+            }
+            if(!error) {
+                [fm moveItemAtURL:location toURL:downloadFileURL error:&error];
+            }
+            
             if (error) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
             }
-
-            return;
         }
-    }
-
-    if (delegate) {
+    } else if (delegate) {
         [delegate URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];
     }
 }
