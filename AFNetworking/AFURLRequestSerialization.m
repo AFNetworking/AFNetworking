@@ -146,44 +146,63 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
 #pragma mark -
 
 FOUNDATION_EXPORT NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary);
-FOUNDATION_EXPORT NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value);
+FOUNDATION_EXPORT NSArray * AFQueryStringPairsFromDictionaryAndFieldNameFormatters(NSDictionary *dictionary, AFQueryStringNestedFieldNameFormatterBlock nestedFieldNameFormatter, AFQueryStringArrayFieldNameFormatterBlock arrayFieldNameFormatter);
+FOUNDATION_EXPORT NSArray * AFQueryStringPairsFromKeyAndValueAndFieldNameFormatters(NSString *key, id value, AFQueryStringNestedFieldNameFormatterBlock nestedFieldNameFormatter, AFQueryStringArrayFieldNameFormatterBlock arrayFieldNameFormatter);
 
-static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
+static NSString * AFQueryStringFromParametersAndFieldNameFormatters(NSDictionary *parameters, AFQueryStringNestedFieldNameFormatterBlock nestedFieldNameFormatter, AFQueryStringArrayFieldNameFormatterBlock arrayFieldNameFormatter) {
     NSMutableArray *mutablePairs = [NSMutableArray array];
-    for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
+    for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionaryAndFieldNameFormatters(parameters, nestedFieldNameFormatter, arrayFieldNameFormatter)) {
         [mutablePairs addObject:[pair URLEncodedStringValue]];
     }
 
     return [mutablePairs componentsJoinedByString:@"&"];
 }
 
+static AFQueryStringNestedFieldNameFormatterBlock AFDefaultQueryStringNestedFieldNameFormatterBlock = ^NSString * __nullable (NSString * __nullable key, NSString *nestedKey) {
+    return [NSString stringWithFormat:@"%@[%@]", key, nestedKey];
+};
+
+static AFQueryStringArrayFieldNameFormatterBlock AFDefaultQueryStringArrayFieldNameFormatterBlock = ^NSString * __nullable (NSString *key) {
+    return [NSString stringWithFormat:@"%@[]", key];
+};
+
 NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) {
-    return AFQueryStringPairsFromKeyAndValue(nil, dictionary);
+    return AFQueryStringPairsFromDictionaryAndFieldNameFormatters(dictionary, AFDefaultQueryStringNestedFieldNameFormatterBlock, AFDefaultQueryStringArrayFieldNameFormatterBlock);
 }
 
-NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
+NSArray * AFQueryStringPairsFromDictionaryAndFieldNameFormatters(NSDictionary *dictionary, AFQueryStringNestedFieldNameFormatterBlock nestedFieldNameFormatter, AFQueryStringArrayFieldNameFormatterBlock arrayFieldNameFormatter) {
+    return AFQueryStringPairsFromKeyAndValueAndFieldNameFormatters(nil, dictionary, nestedFieldNameFormatter, arrayFieldNameFormatter);
+}
+
+NSArray * AFQueryStringPairsFromKeyAndValueAndFieldNameFormatters(NSString *key, id value, AFQueryStringNestedFieldNameFormatterBlock nestedFieldNameFormatter, AFQueryStringArrayFieldNameFormatterBlock arrayFieldNameFormatter) {
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
 
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(compare:)];
 
     if ([value isKindOfClass:[NSDictionary class]]) {
         NSDictionary *dictionary = value;
+        
+        if (!nestedFieldNameFormatter) nestedFieldNameFormatter = AFDefaultQueryStringNestedFieldNameFormatterBlock;
+        
         // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries
         for (id nestedKey in [dictionary.allKeys sortedArrayUsingDescriptors:@[ sortDescriptor ]]) {
             id nestedValue = dictionary[nestedKey];
             if (nestedValue) {
-                [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@"%@[%@]", key, nestedKey] : nestedKey), nestedValue)];
+                [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValueAndFieldNameFormatters((key)? nestedFieldNameFormatter(key, nestedKey) : nestedKey, nestedValue, nestedFieldNameFormatter, arrayFieldNameFormatter)];
             }
         }
     } else if ([value isKindOfClass:[NSArray class]]) {
         NSArray *array = value;
+
+        if (!arrayFieldNameFormatter) arrayFieldNameFormatter = AFDefaultQueryStringArrayFieldNameFormatterBlock;
+        
         for (id nestedValue in array) {
-            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
+            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValueAndFieldNameFormatters(arrayFieldNameFormatter(key), nestedValue, nestedFieldNameFormatter, arrayFieldNameFormatter)];
         }
     } else if ([value isKindOfClass:[NSSet class]]) {
         NSSet *set = value;
         for (id obj in [set sortedArrayUsingDescriptors:@[ sortDescriptor ]]) {
-            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue(key, obj)];
+            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValueAndFieldNameFormatters(key, obj, nestedFieldNameFormatter, arrayFieldNameFormatter)];
         }
     } else {
         [mutableQueryStringComponents addObject:[[AFQueryStringPair alloc] initWithField:key value:value]];
@@ -431,7 +450,7 @@ forHTTPHeaderField:(NSString *)field
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:mutableRequest stringEncoding:NSUTF8StringEncoding];
 
     if (parameters) {
-        for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
+        for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionaryAndFieldNameFormatters(parameters, self.nestedFieldNameFormatterBlock, self.arrayFieldNameFormatterBlock)) {
             NSData *data = nil;
             if ([pair.value isKindOfClass:[NSData class]]) {
                 data = pair.value;
@@ -540,7 +559,7 @@ forHTTPHeaderField:(NSString *)field
         } else {
             switch (self.queryStringSerializationStyle) {
                 case AFHTTPRequestQueryStringDefaultStyle:
-                    query = AFQueryStringFromParameters(parameters);
+                    query = AFQueryStringFromParametersAndFieldNameFormatters(parameters, self.nestedFieldNameFormatterBlock, self.arrayFieldNameFormatterBlock);
                     break;
             }
         }
