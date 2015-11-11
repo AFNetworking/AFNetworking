@@ -260,6 +260,10 @@
 
     self.requestSerializer = [decoder decodeObjectOfClass:[AFHTTPRequestSerializer class] forKey:NSStringFromSelector(@selector(requestSerializer))];
     self.responseSerializer = [decoder decodeObjectOfClass:[AFHTTPResponseSerializer class] forKey:NSStringFromSelector(@selector(responseSerializer))];
+    AFSecurityPolicy *decodedPolicy = [decoder decodeObjectOfClass:[AFSecurityPolicy class] forKey:NSStringFromSelector(@selector(securityPolicy))];
+    if (decodedPolicy) {
+        self.securityPolicy = decodedPolicy;
+    }
 
     return self;
 }
@@ -268,6 +272,7 @@
     [coder encodeObject:self.baseURL forKey:NSStringFromSelector(@selector(baseURL))];
     [coder encodeObject:self.requestSerializer forKey:NSStringFromSelector(@selector(requestSerializer))];
     [coder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
+    [coder encodeObject:self.securityPolicy forKey:NSStringFromSelector(@selector(securityPolicy))];
 }
 
 #pragma mark - NSCopying
@@ -277,6 +282,7 @@
 
     HTTPClient.requestSerializer = [self.requestSerializer copyWithZone:zone];
     HTTPClient.responseSerializer = [self.responseSerializer copyWithZone:zone];
+    HTTPClient.securityPolicy = [self.securityPolicy copyWithZone:zone];
 
     return HTTPClient;
 }

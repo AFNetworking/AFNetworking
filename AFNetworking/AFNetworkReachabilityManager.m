@@ -33,12 +33,6 @@ NSString * const AFNetworkingReachabilityNotificationStatusItem = @"AFNetworking
 
 typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus status);
 
-typedef NS_ENUM(NSUInteger, AFNetworkReachabilityAssociation) {
-    AFNetworkReachabilityForAddress = 1,
-    AFNetworkReachabilityForAddressPair = 2,
-    AFNetworkReachabilityForName = 3,
-};
-
 NSString * AFStringFromNetworkReachabilityStatus(AFNetworkReachabilityStatus status) {
     switch (status) {
         case AFNetworkReachabilityStatusNotReachable:
@@ -76,20 +70,28 @@ static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetwork
     return status;
 }
 
-static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
+/**
+ * Queue a status change notification for the main thread.
+ *
+ * This is done to ensure that the notifications are received in the same order
+ * as they are sent. If notifications are sent directly, it is possible that
+ * a queued notification (for an earlier status condition) is processed after
+ * the later update, resulting in the listener being left in the wrong state.
+ */
+static void AFPostReachabilityStatusChange(SCNetworkReachabilityFlags flags, AFNetworkReachabilityStatusBlock block) {
     AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
-    AFNetworkReachabilityStatusBlock block = (__bridge AFNetworkReachabilityStatusBlock)info;
-    if (block) {
-        block(status);
-    }
-
-
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (block) {
+            block(status);
+        }
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         NSDictionary *userInfo = @{ AFNetworkingReachabilityNotificationStatusItem: @(status) };
         [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:userInfo];
     });
+}
 
+static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
+    AFPostReachabilityStatusChange(flags, (__bridge AFNetworkReachabilityStatusBlock)info);
 }
 
 static const void * AFNetworkReachabilityRetainCallback(const void *info) {
@@ -104,7 +106,6 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 @interface AFNetworkReachabilityManager ()
 @property (readwrite, nonatomic, strong) id networkReachability;
-@property (readwrite, nonatomic, assign) AFNetworkReachabilityAssociation networkReachabilityAssociation;
 @property (readwrite, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
 @property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
 @end
@@ -127,21 +128,22 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 + (instancetype)managerForDomain:(NSString *)domain {
+#ifndef __clang_analyzer__
     SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [domain UTF8String]);
 
     AFNetworkReachabilityManager *manager = [[self alloc] initWithReachability:reachability];
-    manager.networkReachabilityAssociation = AFNetworkReachabilityForName;
 
     return manager;
+#endif
 }
 
 + (instancetype)managerForAddress:(const void *)address {
+#ifndef __clang_analyzer__
     SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr *)address);
-
     AFNetworkReachabilityManager *manager = [[self alloc] initWithReachability:reachability];
-    manager.networkReachabilityAssociation = AFNetworkReachabilityForAddress;
 
     return manager;
+#endif
 }
 
 - (instancetype)initWithReachability:(SCNetworkReachabilityRef)reachability {
@@ -204,28 +206,12 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     SCNetworkReachabilitySetCallback((__bridge SCNetworkReachabilityRef)networkReachability, AFNetworkReachabilityCallback, &context);
     SCNetworkReachabilityScheduleWithRunLoop((__bridge SCNetworkReachabilityRef)networkReachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 
-    switch (self.networkReachabilityAssociation) {
-        case AFNetworkReachabilityForName:
-            break;
-        case AFNetworkReachabilityForAddress:
-        case AFNetworkReachabilityForAddressPair:
-        default: {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
-                SCNetworkReachabilityFlags flags;
-                SCNetworkReachabilityGetFlags((__bridge SCNetworkReachabilityRef)networkReachability, &flags);
-                AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    callback(status);
-
-                    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-                    [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:@{ AFNetworkingReachabilityNotificationStatusItem: @(status) }];
-
-
-                });
-            });
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
+        SCNetworkReachabilityFlags flags;
+        if (SCNetworkReachabilityGetFlags((__bridge SCNetworkReachabilityRef)networkReachability, &flags)) {
+            AFPostReachabilityStatusChange(flags, callback);
         }
-            break;
-    }
+    });
 }
 
 - (void)stopMonitoring {

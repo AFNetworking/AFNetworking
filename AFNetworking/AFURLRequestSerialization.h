@@ -46,8 +46,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(nullable id)parameters
-                                        error:(NSError * __nullable __autoreleasing *)error;
-
+                                        error:(NSError * __nullable __autoreleasing *)error
+#ifdef NS_SWIFT_NOTHROW
+NS_SWIFT_NOTHROW
+#endif
+;
 @end
 
 #pragma mark -
@@ -438,7 +441,7 @@ forHTTPHeaderField:(NSString *)field;
  `AFURLRequestSerializationErrorDomain`
  AFURLRequestSerializer errors. Error codes for `AFURLRequestSerializationErrorDomain` correspond to codes in `NSURLErrorDomain`.
  */
-extern NSString * const AFURLRequestSerializationErrorDomain;
+FOUNDATION_EXPORT NSString * const AFURLRequestSerializationErrorDomain;
 
 /**
  ## User info dictionary keys
@@ -452,7 +455,7 @@ extern NSString * const AFURLRequestSerializationErrorDomain;
  `AFNetworkingOperationFailingURLRequestErrorKey`
  The corresponding value is an `NSURLRequest` containing the request of the operation associated with an error. This key is only present in the `AFURLRequestSerializationErrorDomain`.
  */
-extern NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
+FOUNDATION_EXPORT NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
 
 /**
  ## Throttling Bandwidth for HTTP Request Input Streams
@@ -467,7 +470,7 @@ extern NSString * const AFNetworkingOperationFailingURLRequestErrorKey;
  `kAFUploadStream3GSuggestedDelay`
  Duration of delay each time a packet is read. Equal to 0.2 seconds.
  */
-extern NSUInteger const kAFUploadStream3GSuggestedPacketSize;
-extern NSTimeInterval const kAFUploadStream3GSuggestedDelay;
+FOUNDATION_EXPORT NSUInteger const kAFUploadStream3GSuggestedPacketSize;
+FOUNDATION_EXPORT NSTimeInterval const kAFUploadStream3GSuggestedDelay;
 
 NS_ASSUME_NONNULL_END
