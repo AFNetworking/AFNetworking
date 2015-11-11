@@ -57,6 +57,13 @@ static SecTrustRef AFUTADNNetServerTrust() {
     return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
 }
 
+static SecTrustRef AFUTGoogleComServerTrust() {
+    NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
+    NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"GoogleComServerTrustChain"];
+    
+    return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
+}
+
 static SecCertificateRef AFUTHTTPBinOrgCertificate() {
     NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"httpbinorg_01162016" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
@@ -86,6 +93,22 @@ static SecCertificateRef AFUTAddTrustExternalRootCertificate() {
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
     NSData *certData = [NSData dataWithContentsOfFile:certPath];
 
+    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+}
+
+static SecCertificateRef AFUTGoogleComEquifaxSecureCARootCertificate() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"Equifax_Secure_Certificate_Authority_Root" ofType:@"cer"];
+    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+    NSData *certData = [NSData dataWithContentsOfFile:certPath];
+    
+    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+}
+
+static SecCertificateRef AFUTGoogleComGeoTrustGlobalCARootCertificate() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"GeoTrust_Global_CA_Root" ofType:@"cer"];
+    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+    NSData *certData = [NSData dataWithContentsOfFile:certPath];
+    
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
@@ -396,6 +419,21 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"httpbin.org"], @"Policy should allow server trust");
+}
+
+- (void)testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName {
+    // google.com sends an incomplete certificate chain consisting of 3 certificates ( *.google.com, Google Internet Authority G2 and GeoTrust Global CA)
+    // ( this can be validated in https://www.ssllabs.com/ssltest/analyze.html?d=google.com )
+    // Since there's no Root CA being sent, when `-evaluateServerTrust:` invokes `AFCertificateTrustChainForServerTrust(serverTrust)`, the Root CA isn't present.
+    // Therefore, even though `AFServerTrustIsValid(serverTrust)` succeeds, the next validation fails since no pinned certificate matches
+    // By fetching the `AFCertificateTrustChainForServerTrust(serverTrust)` *after* the `AFServerTrustIsValid(serverTrust)` validation, the complete chain is obtained and the Root CAs match.
+    
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef certificate = AFUTGoogleComEquifaxSecureCARootCertificate();
+    policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate)];
+    
+    XCTAssertTrue([policy evaluateServerTrust:AFUTGoogleComServerTrust() forDomain:@"google.com"], @"Policy should allow server trust");
 }
 
 #pragma mark Negative Server Trust Evaluation Tests
