@@ -35,3 +35,4 @@ Tests/AFNetworking Tests.xcodeproj/xcshareddata/xcschemes/
 /fastlane/screenshots/*/*-landscape_framed.png
 # private envs
 /fastlane/.env*private*
+fastlane/test-output/*
