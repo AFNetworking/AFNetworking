@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
+##[2.6.3](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.3) (11/11/2015)
+Released on Wednesday, November 11, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.3+is%3Aclosed).
+
+#### Fixed
+* Fixed clang analyzer warning suppression that prevented building under some project configurations
+ * Fixed by [kcharwood](https://github.com/kcharwood) in [#3142](https://github.com/AFNetworking/AFNetworking/pull/3142).
+* Restored Xcode 6 compatibility 
+ * Fixed by [jcayzac](https://github.com/jcayzac) in [#3139](https://github.com/AFNetworking/AFNetworking/pull/3139).
+ 
+
 ##[2.6.2](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.2) (11/06/2015)
 Released on Friday, November 06, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.2+is%3Aclosed).
 
