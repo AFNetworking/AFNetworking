@@ -1,0 +1,4 @@
+import_from_git(
+  url: 'git@github.com:AFNetworking/fastlane.git', 
+  branch: '0.0.2'
+)

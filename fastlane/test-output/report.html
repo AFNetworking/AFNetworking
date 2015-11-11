@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Test Results | xcpretty</title>
+    <style type="text/css">
+      body { font-family:Avenir Next, Helvetica Neue, sans-serif; color: #4A4A4A; background-color: #F0F3FB; margin:0;}
+      h1 { font-weight: normal; font-size: 24px; margin: 10px 0 0 0;}
+      h3 { font-weight: normal; margin: 2px; font-size: 1.1em;}
+      header { position: fixed;width: 100%;background: rgba(249, 254, 255, 0.9);margin: 0;padding: 10px;}
+      header:before, header:after { content:""; display:table;}
+      header:after { clear:both;}
+      a:link { color: #A1D761;}
+      footer { clear: both;position: relative;z-index: 10;height: 40px;margin-top: -10px; margin-left:30px; font-size:12px;}
+      table { width:100%; border-collapse: collapse;}
+      tr td:first-child { width:7%}
+      .left { float: left; margin-left:30px;}
+      .right { float: right; margin-right: 40px; margin-top: 0; margin-bottom:0;}
+      .test-suite { margin: 0 0 30px 0;}
+      .test-suite > .heading { font-family:Menlo, Monaco, monospace; font-weight: bold; border-color: #A1D761; background-color: #B8E986; border-width: 1px;}
+      .test-suite.failing > .heading { border-color: #C84F5E; background-color: #E58591;}
+      .test-suite > .heading > .title { margin-top: 4px; margin-left: 10px;}
+      .tests { overflow: scroll;margin: 0 30px 0 60px;}
+      .test, .test-suite > .heading { height: 30px; overflow: hidden; margin: 0 30px;}
+      .test, .test-suite > .heading { border-width: 1px; border-collapse: collapse; border-style: solid; }
+      .test { margin-left: 30px; border-top:none;}
+      .test.failing { border-color: #C84F5E; background-color: #F4DDE0;}
+      .test.passing { border-color: #A1D761;}
+      .test.failing { background-color: #E7A1AA;}
+      .test.passing { background-color: #CAF59F;}
+      .test.failing.odd { background-color: #EEC7CC;}
+      .test.passing.odd { background-color: #E5FBCF;}
+      .details { background-color: #F4DDE0; border: 1px solid #C84F5E;}
+      .test .test-detail:last-child { padding-bottom: 8px;}
+      .test .title { float: left; font-size: 0.9em; margin-top: 8px; font-family: Menlo, Monaco, monospace;}
+      .test .time { float: left;margin: 4px 10px 0 20px;}
+      .test-detail { font-family:Menlo, Monaco, monospace; font-size: 0.9em; margin: 5px 0 5px 0px;}
+      .screenshots { height: auto; overflow: hidden; padding: 4px 4px 0 4px; background-color: #B8E986; border: #A1D761; border-width: 0 1px; border-style: solid; }
+      .screenshots.failing { border-color: #C84F5E; background-color: #E58591; }
+      .screenshot { max-height: 60px; float: left; transition: max-height 0.2s; margin: 0 4px 4px 0 }
+      .screenshot.selected { max-height: 568px; }
+      #test-suites { display: inline-block; width: 100%;margin-top:100px;}
+      #segment-bar { margin-top: 10px;margin-left: 14px;float:right;}
+      #segment-bar a:first-child { border-radius: 9px 0 0 9px; border-right: none;}
+      #segment-bar a:last-child { border-radius: 0 9px 9px 0; border-left: none;}
+      #segment-bar > a { color: #565656; border: 2px solid  #7B7B7B; width: 80px; font-weight: bold; display:inline-block;text-align:center; font-weight: normal;}
+      #segment-bar > a.selected { background-color: #979797; color: #F0F3FB;}
+      #counters { float: left;margin: 10px;text-align: right;}
+      #counters h2 { font-size: 16px; font-family: Avenir, sans-serif; font-weight: lighter; display:inline;}
+      #counters .number { font-size: 20px;}
+      #fail-count { color: #D0021B; margin-left:10px;}
+      @media (max-width: 640px) {
+        h1, #counters, #segment-bar { margin: 5px auto; text-align:center;}
+        header, #segment-bar { width: 100%; position: relative; background:none;}
+        .left, .right { float:none; margin:0;}
+        #test-suites { margin-top: 0;}
+        #counters { float:none;}
+      }
+    </style>
+    <script type="text/javascript">
+      var hide = function(element) { element.style.display = 'none';}
+      var show = function(element) { element.style.display = '';}
+      var isHidden = function(element) { return element.style.display == 'none';}
+      var isSelected = function(element) { return element.classList.contains("selected");}
+      var deselect = function(element) { return element.classList.remove("selected");}
+      var select = function(element) { return element.classList.add("selected");}
+      var toggle = function(element) { isHidden(element) ? show(element) : hide(element);};
+      var toggleTests = function(heading) { toggle(heading.parentNode.children[1]);};
+      var toggleDetails = function(detailClass) {
+        var details = document.querySelectorAll('.' + detailClass);
+        for (var i = details.length - 1; i >= 0; i--) { toggle(details[i]);};
+      };
+      var hideAll = function(collection) {
+        for (var i = collection.length - 1; i >= 0; i--) { hide(collection[i]); };
+      }
+      var showAll = function(collection) {
+        for (var i = collection.length - 1; i >= 0; i--) { show(collection[i]); };
+      }
+      var selectSegment = function(segment) {
+        if (isSelected(segment)) return;
+        var segments = document.querySelectorAll('#segment-bar > a');
+        for (var i = segments.length - 1; i >= 0; i--) { deselect(segments[i]);};
+        select(segment);
+        if (segment.id == "all-segment") {
+          showAll(document.querySelectorAll('.test-suite'));
+          showAll(document.querySelectorAll('.test'));
+        } else if (segment.id == "failing-segment") {
+          hideAll(document.querySelectorAll('.test.passing'));
+          showAll(document.querySelectorAll('.test.failing'));
+          hideAll(document.querySelectorAll('.test-suite.passing'));
+          showAll(document.querySelectorAll('.test-suite.failing'));
+        } else if (segment.id == "passing-segment") {
+          hideAll(document.querySelectorAll('.test.failing'));
+          showAll(document.querySelectorAll('.test.passing'));
+          hideAll(document.querySelectorAll('.test-suite.failing'));
+          showAll(document.querySelectorAll('.test-suite.passing'));
+        }
+      }
+      var toggleScreenshot = function(suiteName, index) {
+        var screenshot = document.getElementById("screenshot-" + suiteName + "-" + index);
+        isSelected(screenshot) ? deselect(screenshot) : select(screenshot);
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <section class="left">
+        <h1>Test Results</h1>
+      </section>
+      <section class="right">
+        <section id="counters">
+          <h2 id="test-count"><span class="number">148</span> tests</h2>
+          
+        </section>
+        <section id="segment-bar">
+          <a id="all-segment" onclick="selectSegment(this);" class="selected">All</a><a id="failing-segment" onclick="selectSegment(this);">Failing</a><a id="passing-segment" onclick="selectSegment(this);">Passing</a>
+        </section>
+      </section>
+    </header>
+    <section id="test-suites">
+      
+        
+        <section class="test-suite passing" id="AFAutoPurgingImageCacheTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFAutoPurgingImageCacheTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDuplicateImageAddedToCacheIsReturned');">
+                <td>
+                  
+                    <h3 class="time">0.032s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDuplicateImageAddedToCacheIsReturned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testImageIsNotRemovedWithURLRequestAndIncorrectIdentifier');">
+                <td>
+                  
+                    <h3 class="time">0.047s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsNotRemovedWithURLRequestAndIncorrectIdentifier</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testImageIsNotRemovedWithURLRequestAndNilIdentifier');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsNotRemovedWithURLRequestAndNilIdentifier</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testImageIsNotReturnedWhenAdditionalIdentifierIsNotSet');">
+                <td>
+                  
+                    <h3 class="time">0.017s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsNotReturnedWhenAdditionalIdentifierIsNotSet</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testImageIsNotReturnedWhenURLDoesntMatch');">
+                <td>
+                  
+                    <h3 class="time">0.004s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsNotReturnedWhenURLDoesntMatch</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testImageIsRemovedWithIdentifier');">
+                <td>
+                  
+                    <h3 class="time">0.029s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsRemovedWithIdentifier</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testImageIsRemovedWithURLRequest');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsRemovedWithURLRequest</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testImageIsRemovedWithURLRequestWithAdditionalIdentifier');">
+                <td>
+                  
+                    <h3 class="time">0.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsRemovedWithURLRequestWithAdditionalIdentifier</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testImageIsReturnedFromCacheForIdentifier');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsReturnedFromCacheForIdentifier</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testImageIsReturnedFromCacheForURLRequest');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsReturnedFromCacheForURLRequest</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testImageIsReturnedFromCacheForURLRequestWithAdditionalIdentifier');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testImageIsReturnedFromCacheForURLRequestWithAdditionalIdentifier</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatImagesArePurgedWhenCapcityIsReached');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatImagesArePurgedWhenCapcityIsReached</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatMemoryUsageDecreasesWhenRemovingImage');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatMemoryUsageDecreasesWhenRemovingImage</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatMemoryUsageIncreasesWhenAddingImage');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatMemoryUsageIncreasesWhenAddingImage</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPrioritizedImagesWithOldestLastAccessDatesAreRemovedDuringPurge');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPrioritizedImagesWithOldestLastAccessDatesAreRemovedDuringPurge</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFHTTPRequestSerializationTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFHTTPRequestSerializationTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testQueryStringSerializationCanFailWithError');">
+                <td>
+                  
+                    <h3 class="time">0.022s</h3>
+                  
+                </td>
+                <td><h3 class="title">testQueryStringSerializationCanFailWithError</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatAFHTTPRequestSerialiationSerializesMIMETypeCorrectly');">
+                <td>
+                  
+                    <h3 class="time">0.009s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatAFHTTPRequestSerialiationSerializesMIMETypeCorrectly</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectly');">
+                <td>
+                  
+                    <h3 class="time">0.004s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectly</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectlyFromQuerySerializationBlock');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectlyFromQuerySerializationBlock</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatAFHTTPRequestSerialiationSerializesURLEncodableQueryParametersCorrectly');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatAFHTTPRequestSerialiationSerializesURLEncodableQueryParametersCorrectly</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatAFHTTPRequestSerialiationSerializesURLEncodedQueryParametersCorrectly');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatAFHTTPRequestSerialiationSerializesURLEncodedQueryParametersCorrectly</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperly');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperly</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperlyWhenNoParameterIsProvided');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperlyWhenNoParameterIsProvided</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatEmojiIsProperlyEncoded');">
+                <td>
+                  
+                    <h3 class="time">0.093s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatEmojiIsProperlyEncoded</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatHTTPHeaderValueCanBeRemoved');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatHTTPHeaderValueCanBeRemoved</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatValueForHTTPHeaderFieldReturnsNilForUnsetHeader');">
+                <td>
+                  
+                    <h3 class="time">0.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatValueForHTTPHeaderFieldReturnsNilForUnsetHeader</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatValueForHTTPHeaderFieldReturnsSetValue');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatValueForHTTPHeaderFieldReturnsSetValue</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFHTTPResponseSerializationTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFHTTPResponseSerializationTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatAFHTTPResponseSerializationFailsAll4XX5XXStatusCodes');">
+                <td>
+                  
+                    <h3 class="time">0.130s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatAFHTTPResponseSerializationFailsAll4XX5XXStatusCodes</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatAFHTTPResponseSerializationHandlesAll2XXCodes');">
+                <td>
+                  
+                    <h3 class="time">0.022s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatAFHTTPResponseSerializationHandlesAll2XXCodes</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFHTTPSessionManagerTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFHTTPSessionManagerTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDownloadFileCompletionSpecifiesURLInCompletionBlock');">
+                <td>
+                  
+                    <h3 class="time">0.334s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDownloadFileCompletionSpecifiesURLInCompletionBlock</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDownloadFileCompletionSpecifiesURLInCompletionWithManagerDidFinishBlock');">
+                <td>
+                  
+                    <h3 class="time">0.224s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDownloadFileCompletionSpecifiesURLInCompletionWithManagerDidFinishBlock</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatOperationInvokesCompletionHandlerWithResponseObjectOnSuccess');">
+                <td>
+                  
+                    <h3 class="time">0.209s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatOperationInvokesCompletionHandlerWithResponseObjectOnSuccess</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatOperationInvokesFailureCompletionBlockWithErrorOnFailure');">
+                <td>
+                  
+                    <h3 class="time">0.204s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatOperationInvokesFailureCompletionBlockWithErrorOnFailure</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatRedirectBlockIsCalledWhen302IsEncountered');">
+                <td>
+                  
+                    <h3 class="time">0.343s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatRedirectBlockIsCalledWhen302IsEncountered</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatSerializationErrorGeneratesErrorAndNullTaskForGET');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatSerializationErrorGeneratesErrorAndNullTaskForGET</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFImageDownloaderTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFImageDownloaderTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatCacheIsIgnoredIfCacheIgnoredInRequest');">
+                <td>
+                  
+                    <h3 class="time">0.271s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatCacheIsIgnoredIfCacheIgnoredInRequest</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatCancellingDownloadCallsCompletionWithCancellationError');">
+                <td>
+                  
+                    <h3 class="time">0.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatCancellingDownloadCallsCompletionWithCancellationError</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatCancellingDownloadWithMultipleResponseHandlersCancelsFirstYetAllowsSecondToComplete');">
+                <td>
+                  
+                    <h3 class="time">0.211s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatCancellingDownloadWithMultipleResponseHandlersCancelsFirstYetAllowsSecondToComplete</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatImageDownloaderCanBeInitializedAndDeinitializedWithActiveDownloads');">
+                <td>
+                  
+                    <h3 class="time">0.004s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatImageDownloaderCanBeInitializedAndDeinitializedWithActiveDownloads</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatImageDownloaderCanDownloadImage');">
+                <td>
+                  
+                    <h3 class="time">0.215s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatImageDownloaderCanDownloadImage</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatImageDownloaderSingletonCanBeInitialized');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatImageDownloaderSingletonCanBeInitialized</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatImageDownloadReceiptIsNilForCachedImage');">
+                <td>
+                  
+                    <h3 class="time">0.211s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatImageDownloadReceiptIsNilForCachedImage</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatItAlwaysCallsTheFailureHandlerOnTheMainQueue');">
+                <td>
+                  
+                    <h3 class="time">0.213s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatItAlwaysCallsTheFailureHandlerOnTheMainQueue</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatItAlwaysCallsTheSuccessHandlerOnTheMainQueue');">
+                <td>
+                  
+                    <h3 class="time">0.214s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatItAlwaysCallsTheSuccessHandlerOnTheMainQueue</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatItCanDownloadMultipleImagesSimultaneously');">
+                <td>
+                  
+                    <h3 class="time">0.359s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatItCanDownloadMultipleImagesSimultaneously</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatResponseIsNilWhenReturnedFromCache');">
+                <td>
+                  
+                    <h3 class="time">0.217s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatResponseIsNilWhenReturnedFromCache</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatSimultaneouslyRequestsForTheSameAssetReceiveSameResponse');">
+                <td>
+                  
+                    <h3 class="time">0.218s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatSimultaneouslyRequestsForTheSameAssetReceiveSameResponse</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFJSONRequestSerializationTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFJSONRequestSerializationTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatJSONRequestSerializationHandlesParametersArray');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatJSONRequestSerializationHandlesParametersArray</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatJSONRequestSerializationHandlesParametersDictionary');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatJSONRequestSerializationHandlesParametersDictionary</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFJSONResponseSerializationTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFJSONResponseSerializationTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatJSONResponseSerializerAcceptsApplicationJSONMimeType');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatJSONResponseSerializerAcceptsApplicationJSONMimeType</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatJSONResponseSerializerAcceptsTextJavaScriptMimeType');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatJSONResponseSerializerAcceptsTextJavaScriptMimeType</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatJSONResponseSerializerAcceptsTextJSONMimeType');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatJSONResponseSerializerAcceptsTextJSONMimeType</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatJSONResponseSerializerDoesNotAcceptNonStandardJSONMimeType');">
+                <td>
+                  
+                    <h3 class="time">0.000s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatJSONResponseSerializerDoesNotAcceptNonStandardJSONMimeType</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatJSONResponseSerializerReturnsDictionaryForValidJSONDictionary');">
+                <td>
+                  
+                    <h3 class="time">0.000s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatJSONResponseSerializerReturnsDictionaryForValidJSONDictionary</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatJSONResponseSerializerReturnsErrorForInvalidJSON');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatJSONResponseSerializerReturnsErrorForInvalidJSON</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFNetworkActivityManagerTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFNetworkActivityManagerTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatIndicatorBlockIsOnlyCalledOnceEachForStartAndEndForMultipleRequests');">
+                <td>
+                  
+                    <h3 class="time">5.213s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatIndicatorBlockIsOnlyCalledOnceEachForStartAndEndForMultipleRequests</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestFails');">
+                <td>
+                  
+                    <h3 class="time">0.202s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestFails</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestSucceeds');">
+                <td>
+                  
+                    <h3 class="time">1.209s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestSucceeds</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatVisibilityDelaysAreApplied');">
+                <td>
+                  
+                    <h3 class="time">3.226s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatVisibilityDelaysAreApplied</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFNetworkReachabilityManagerTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFNetworkReachabilityManagerTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testAddressReachabilityBlock');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testAddressReachabilityBlock</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testAddressReachabilityNotification');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testAddressReachabilityNotification</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testAddressReachabilityStartsInUnknownState');">
+                <td>
+                  
+                    <h3 class="time">0.000s</h3>
+                  
+                </td>
+                <td><h3 class="title">testAddressReachabilityStartsInUnknownState</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDomainReachabilityBlock');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDomainReachabilityBlock</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDomainReachabilityStartsInUnknownState');">
+                <td>
+                  
+                    <h3 class="time">0.000s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDomainReachabilityStartsInUnknownState</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFPropertyListResponseSerializerTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFPropertyListResponseSerializerTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPropertyListResponseSerializerHandles204');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPropertyListResponseSerializerHandles204</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFSecurityPolicyTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFSecurityPolicyTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDefaultPolicyDoesAllowHTTPBinOrgCertificate');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDefaultPolicyDoesAllowHTTPBinOrgCertificate</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDefaultPolicyDoesAllowHTTPBinOrgCertificateForValidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDefaultPolicyDoesAllowHTTPBinOrgCertificateForValidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDefaultPolicyDoesNotAllowCertificateWithInvalidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.306s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDefaultPolicyDoesNotAllowCertificateWithInvalidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDefaultPolicyDoesNotAllowInvalidCertificate');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDefaultPolicyDoesNotAllowInvalidCertificate</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDefaultPolicyHasDomainNamesAreValidatedByDefault');">
+                <td>
+                  
+                    <h3 class="time">0.000s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDefaultPolicyHasDomainNamesAreValidatedByDefault</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDefaultPolicyHasInvalidCertificatesAreDisabledByDefault');">
+                <td>
+                  
+                    <h3 class="time">0.000s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDefaultPolicyHasInvalidCertificatesAreDisabledByDefault</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDefaultPolicyHasNoPinnedCertificates');">
+                <td>
+                  
+                    <h3 class="time">0.000s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDefaultPolicyHasNoPinnedCertificates</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDefaultPolicyPinningModeIsSetToNone');">
+                <td>
+                  
+                    <h3 class="time">0.000s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDefaultPolicyPinningModeIsSetToNone</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned');">
+                <td>
+                  
+                    <h3 class="time">0.010s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned');">
+                <td>
+                  
+                    <h3 class="time">0.007s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned');">
+                <td>
+                  
+                    <h3 class="time">0.010s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned');">
+                <td>
+                  
+                    <h3 class="time">0.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned');">
+                <td>
+                  
+                    <h3 class="time">0.008s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithCertificatePinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithCertificatePinningAndNoPinnedCertificatesDoesNotAllowHTTPBinOrgServerTrust');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningAndNoPinnedCertificatesDoesNotAllowHTTPBinOrgServerTrust</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate');">
+                <td>
+                  
+                    <h3 class="time">0.081s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates');">
+                <td>
+                  
+                    <h3 class="time">0.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithCertificatePinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.004s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithCertificatePinningModeHasHTTPBinOrgPinnedCertificate');">
+                <td>
+                  
+                    <h3 class="time">0.012s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningModeHasHTTPBinOrgPinnedCertificate</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithCertificatePinningModeHasPinnedCertificates');">
+                <td>
+                  
+                    <h3 class="time">0.000s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithCertificatePinningModeHasPinnedCertificates</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned');">
+                <td>
+                  
+                    <h3 class="time">0.011s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned');">
+                <td>
+                  
+                    <h3 class="time">0.008s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned');">
+                <td>
+                  
+                    <h3 class="time">0.011s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned');">
+                <td>
+                  
+                    <h3 class="time">0.009s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.011s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned');">
+                <td>
+                  
+                    <h3 class="time">0.010s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithPublicKeyPinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates');">
+                <td>
+                  
+                    <h3 class="time">0.009s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithPublicKeyPinningAndNoPinnedCertificatesDoesNotAllowHTTPBinOrgServerTrust');">
+                <td>
+                  
+                    <h3 class="time">0.010s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningAndNoPinnedCertificatesDoesNotAllowHTTPBinOrgServerTrust</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithPublicKeyPinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testPolicyWithPublicKeyPinningModeHasHTTPBinOrgPinnedCertificate');">
+                <td>
+                  
+                    <h3 class="time">0.015s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningModeHasHTTPBinOrgPinnedCertificate</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testPolicyWithPublicKeyPinningModeHasPinnedCertificates');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testPolicyWithPublicKeyPinningModeHasPinnedCertificates</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPolicyCanBeCopied');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyCanBeCopied</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatPolicyCanBeEncodedAndDecoded');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyCanBeEncodedAndDecoded</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPolicyWithDomainNameValidationAllowsServerTrustWithValidWildcardDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.004s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithDomainNameValidationAllowsServerTrustWithValidWildcardDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatPolicyWithDomainNameValidationAndSelfSignedCommonNameCertificateAllowsServerTrust');">
+                <td>
+                  
+                    <h3 class="time">0.004s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithDomainNameValidationAndSelfSignedCommonNameCertificateAllowsServerTrust</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPolicyWithDomainNameValidationAndSelfSignedDNSCertificateAllowsServerTrust');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithDomainNameValidationAndSelfSignedDNSCertificateAllowsServerTrust</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatPolicyWithDomainNameValidationAndSelfSignedNoDomainCertificateDoesNotAllowServerTrust');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithDomainNameValidationAndSelfSignedNoDomainCertificateDoesNotAllowServerTrust</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPolicyWithDomainNameValidationDoesNotAllowServerTrustWithInvalidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithDomainNameValidationDoesNotAllowServerTrustWithInvalidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatPolicyWithInvalidCertificatesAllowedAllowsSelfSignedServerTrust');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithInvalidCertificatesAllowedAllowsSelfSignedServerTrust</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPolicyWithInvalidCertificatesAllowedAndNoPinnedCertificatesAndPublicKeyPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.002s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithInvalidCertificatesAllowedAndNoPinnedCertificatesAndPublicKeyPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatPolicyWithInvalidCertificatesAllowedAndNoSSLPinningAndDomainNameValidationDisabledDoesAllowSelfSignedServerTrustForValidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithInvalidCertificatesAllowedAndNoSSLPinningAndDomainNameValidationDisabledDoesAllowSelfSignedServerTrustForValidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPolicyWithInvalidCertificatesAllowedAndNoValidPinnedCertificatesAndNoPinningModeAndDomainValidationDoesNotAllowSelfSignedServerTrustForValidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.001s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithInvalidCertificatesAllowedAndNoValidPinnedCertificatesAndNoPinningModeAndDomainValidationDoesNotAllowSelfSignedServerTrustForValidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesAndNoPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesAndNoPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesDoesAllowSelfSignedServerTrustForValidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesDoesAllowSelfSignedServerTrustForValidDomainName</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatPolicyWithInvalidCertificatesDisabledDoesNotAllowSelfSignedServerTrust');">
+                <td>
+                  
+                    <h3 class="time">0.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithInvalidCertificatesDisabledDoesNotAllowSelfSignedServerTrust</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPolicyWithoutDomainNameValidationAllowsServerTrustWithInvalidDomainName');">
+                <td>
+                  
+                    <h3 class="time">0.004s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPolicyWithoutDomainNameValidationAllowsServerTrustWithInvalidDomainName</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFUIActivityIndicatorViewTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFUIActivityIndicatorViewTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testTaskDidResumeNotificationDoesNotCauseCrashForAIVWithTask');">
+                <td>
+                  
+                    <h3 class="time">1.290s</h3>
+                  
+                </td>
+                <td><h3 class="title">testTaskDidResumeNotificationDoesNotCauseCrashForAIVWithTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testTaskDidSuspendNotificationDoesNotCauseCrashForAIVWithTask');">
+                <td>
+                  
+                    <h3 class="time">2.326s</h3>
+                  
+                </td>
+                <td><h3 class="title">testTaskDidSuspendNotificationDoesNotCauseCrashForAIVWithTask</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFUIImageViewTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFUIImageViewTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testResponseIsNilWhenLoadedFromCache');">
+                <td>
+                  
+                    <h3 class="time">0.337s</h3>
+                  
+                </td>
+                <td><h3 class="title">testResponseIsNilWhenLoadedFromCache</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatImageBehindRedirectCanBeDownloaded');">
+                <td>
+                  
+                    <h3 class="time">1.007s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatImageBehindRedirectCanBeDownloaded</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatImageCanBeDownloadedFromURL');">
+                <td>
+                  
+                    <h3 class="time">1.005s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatImageCanBeDownloadedFromURL</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testThatImageDownloadSucceedsWhenDuplicateRequestIsSentToImageView');">
+                <td>
+                  
+                    <h3 class="time">1.003s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatImageDownloadSucceedsWhenDuplicateRequestIsSentToImageView</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testThatPlaceholderImageIsSetIfRequestFails');">
+                <td>
+                  
+                    <h3 class="time">0.061s</h3>
+                  
+                </td>
+                <td><h3 class="title">testThatPlaceholderImageIsSetIfRequestFails</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFUIRefreshControlTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFUIRefreshControlTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testTaskDidCompleteNotificationDoesNotCauseCrashForUIRCWithTask');">
+                <td>
+                  
+                    <h3 class="time">2.259s</h3>
+                  
+                </td>
+                <td><h3 class="title">testTaskDidCompleteNotificationDoesNotCauseCrashForUIRCWithTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testTaskDidResumeNotificationDoesNotCauseCrashForUIRCWithTask');">
+                <td>
+                  
+                    <h3 class="time">1.206s</h3>
+                  
+                </td>
+                <td><h3 class="title">testTaskDidResumeNotificationDoesNotCauseCrashForUIRCWithTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testTaskDidSuspendNotificationDoesNotCauseCrashForUIRCWithTask');">
+                <td>
+                  
+                    <h3 class="time">2.311s</h3>
+                  
+                </td>
+                <td><h3 class="title">testTaskDidSuspendNotificationDoesNotCauseCrashForUIRCWithTask</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+        
+        <section class="test-suite passing" id="AFURLSessionManagerTests">
+          <section class="heading" onclick="toggleTests(this);">
+            <h3 class="title">AFURLSessionManagerTests</h3>
+          </section>
+          <section class="tests">
+            
+            <table>
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testBackgroundManagerReturnsExpectedClassForDataTask');">
+                <td>
+                  
+                    <h3 class="time">0.021s</h3>
+                  
+                </td>
+                <td><h3 class="title">testBackgroundManagerReturnsExpectedClassForDataTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testBackgroundManagerReturnsExpectedClassForDownloadTask');">
+                <td>
+                  
+                    <h3 class="time">0.009s</h3>
+                  
+                </td>
+                <td><h3 class="title">testBackgroundManagerReturnsExpectedClassForDownloadTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testBackgroundManagerReturnsExpectedClassForUploadTask');">
+                <td>
+                  
+                    <h3 class="time">0.012s</h3>
+                  
+                </td>
+                <td><h3 class="title">testBackgroundManagerReturnsExpectedClassForUploadTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDidResumeNotificationIsReceivedByBackgroundDataTaskAfterResume');">
+                <td>
+                  
+                    <h3 class="time">0.017s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidResumeNotificationIsReceivedByBackgroundDataTaskAfterResume</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDidResumeNotificationIsReceivedByBackgroundDownloadTaskAfterResume');">
+                <td>
+                  
+                    <h3 class="time">0.021s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidResumeNotificationIsReceivedByBackgroundDownloadTaskAfterResume</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDidResumeNotificationIsReceivedByBackgroundUploadTaskAfterResume');">
+                <td>
+                  
+                    <h3 class="time">0.020s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidResumeNotificationIsReceivedByBackgroundUploadTaskAfterResume</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDidResumeNotificationIsReceivedByLocalDataTaskAfterResume');">
+                <td>
+                  
+                    <h3 class="time">0.008s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidResumeNotificationIsReceivedByLocalDataTaskAfterResume</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDidResumeNotificationIsReceivedByLocalDownloadTaskAfterResume');">
+                <td>
+                  
+                    <h3 class="time">0.012s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidResumeNotificationIsReceivedByLocalDownloadTaskAfterResume</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDidResumeNotificationIsReceivedByLocalUploadTaskAfterResume');">
+                <td>
+                  
+                    <h3 class="time">0.012s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidResumeNotificationIsReceivedByLocalUploadTaskAfterResume</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDidSuspendNotificationIsReceivedByBackgroundDataTaskAfterSuspend');">
+                <td>
+                  
+                    <h3 class="time">0.016s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidSuspendNotificationIsReceivedByBackgroundDataTaskAfterSuspend</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDidSuspendNotificationIsReceivedByBackgroundDownloadTaskAfterSuspend');">
+                <td>
+                  
+                    <h3 class="time">0.023s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidSuspendNotificationIsReceivedByBackgroundDownloadTaskAfterSuspend</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDidSuspendNotificationIsReceivedByBackgroundUploadTaskAfterSuspend');">
+                <td>
+                  
+                    <h3 class="time">0.022s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidSuspendNotificationIsReceivedByBackgroundUploadTaskAfterSuspend</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDidSuspendNotificationIsReceivedByLocalDataTaskAfterSuspend');">
+                <td>
+                  
+                    <h3 class="time">0.013s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidSuspendNotificationIsReceivedByLocalDataTaskAfterSuspend</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDidSuspendNotificationIsReceivedByLocalDownloadTaskAfterSuspend');">
+                <td>
+                  
+                    <h3 class="time">0.016s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidSuspendNotificationIsReceivedByLocalDownloadTaskAfterSuspend</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testDidSuspendNotificationIsReceivedByLocalUploadTaskAfterSuspend');">
+                <td>
+                  
+                    <h3 class="time">0.008s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDidSuspendNotificationIsReceivedByLocalUploadTaskAfterSuspend</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testDownloadTasksProgressBecomesPartOfCurrentProgress');">
+                <td>
+                  
+                    <h3 class="time">0.016s</h3>
+                  
+                </td>
+                <td><h3 class="title">testDownloadTasksProgressBecomesPartOfCurrentProgress</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testSwizzlingIsProperlyConfiguredForDummyClass');">
+                <td>
+                  
+                    <h3 class="time">0.008s</h3>
+                  
+                </td>
+                <td><h3 class="title">testSwizzlingIsProperlyConfiguredForDummyClass</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testSwizzlingIsWorkingAsExpectedForBackgroundDataTask');">
+                <td>
+                  
+                    <h3 class="time">0.006s</h3>
+                  
+                </td>
+                <td><h3 class="title">testSwizzlingIsWorkingAsExpectedForBackgroundDataTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testSwizzlingIsWorkingAsExpectedForBackgroundDownloadTask');">
+                <td>
+                  
+                    <h3 class="time">0.010s</h3>
+                  
+                </td>
+                <td><h3 class="title">testSwizzlingIsWorkingAsExpectedForBackgroundDownloadTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testSwizzlingIsWorkingAsExpectedForBackgroundUploadTask');">
+                <td>
+                  
+                    <h3 class="time">0.009s</h3>
+                  
+                </td>
+                <td><h3 class="title">testSwizzlingIsWorkingAsExpectedForBackgroundUploadTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testSwizzlingIsWorkingAsExpectedForForegroundDataTask');">
+                <td>
+                  
+                    <h3 class="time">0.007s</h3>
+                  
+                </td>
+                <td><h3 class="title">testSwizzlingIsWorkingAsExpectedForForegroundDataTask</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testSwizzlingIsWorkingAsExpectedForForegroundDownload');">
+                <td>
+                  
+                    <h3 class="time">0.008s</h3>
+                  
+                </td>
+                <td><h3 class="title">testSwizzlingIsWorkingAsExpectedForForegroundDownload</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing "  onclick="toggleDetails('testSwizzlingIsWorkingAsExpectedForForegroundUpload');">
+                <td>
+                  
+                    <h3 class="time">0.007s</h3>
+                  
+                </td>
+                <td><h3 class="title">testSwizzlingIsWorkingAsExpectedForForegroundUpload</h3></td>
+              </tr>
+              
+            
+              
+              <tr class="test passing odd"  onclick="toggleDetails('testUploadTasksProgressBecomesPartOfCurrentProgress');">
+                <td>
+                  
+                    <h3 class="time">0.008s</h3>
+                  
+                </td>
+                <td><h3 class="title">testUploadTasksProgressBecomesPartOfCurrentProgress</h3></td>
+              </tr>
+              
+            
+            </table>
+          </section>
+        </section>
+      
+    </section>
+    <footer>Report generated with <a href="https://github.com/supermarin/xcpretty">xcpretty</a></footer>
+  </body>
+</html>

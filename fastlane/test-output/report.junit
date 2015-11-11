@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites tests='148' failures='0'>
+  <testsuite name='AFAutoPurgingImageCacheTests' tests='15' failures='0'>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testDuplicateImageAddedToCacheIsReturned' time='0.032'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsNotRemovedWithURLRequestAndIncorrectIdentifier' time='0.047'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsNotRemovedWithURLRequestAndNilIdentifier' time='0.002'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsNotReturnedWhenAdditionalIdentifierIsNotSet' time='0.017'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsNotReturnedWhenURLDoesntMatch' time='0.004'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsRemovedWithIdentifier' time='0.029'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsRemovedWithURLRequest' time='0.006'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsRemovedWithURLRequestWithAdditionalIdentifier' time='0.005'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsReturnedFromCacheForIdentifier' time='0.002'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsReturnedFromCacheForURLRequest' time='0.002'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testImageIsReturnedFromCacheForURLRequestWithAdditionalIdentifier' time='0.002'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testThatImagesArePurgedWhenCapcityIsReached' time='0.003'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testThatMemoryUsageDecreasesWhenRemovingImage' time='0.002'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testThatMemoryUsageIncreasesWhenAddingImage' time='0.003'/>
+    <testcase classname='AFAutoPurgingImageCacheTests' name='testThatPrioritizedImagesWithOldestLastAccessDatesAreRemovedDuringPurge' time='0.002'/>
+  </testsuite>
+  <testsuite name='AFHTTPRequestSerializationTests' tests='12' failures='0'>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testQueryStringSerializationCanFailWithError' time='0.022'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatAFHTTPRequestSerialiationSerializesMIMETypeCorrectly' time='0.009'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectly' time='0.004'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectlyFromQuerySerializationBlock' time='0.002'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatAFHTTPRequestSerialiationSerializesURLEncodableQueryParametersCorrectly' time='0.002'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatAFHTTPRequestSerialiationSerializesURLEncodedQueryParametersCorrectly' time='0.001'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperly' time='0.003'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperlyWhenNoParameterIsProvided' time='0.006'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatEmojiIsProperlyEncoded' time='0.093'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatHTTPHeaderValueCanBeRemoved' time='0.002'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatValueForHTTPHeaderFieldReturnsNilForUnsetHeader' time='0.005'/>
+    <testcase classname='AFHTTPRequestSerializationTests' name='testThatValueForHTTPHeaderFieldReturnsSetValue' time='0.006'/>
+  </testsuite>
+  <testsuite name='AFHTTPResponseSerializationTests' tests='2' failures='0'>
+    <testcase classname='AFHTTPResponseSerializationTests' name='testThatAFHTTPResponseSerializationFailsAll4XX5XXStatusCodes' time='0.130'/>
+    <testcase classname='AFHTTPResponseSerializationTests' name='testThatAFHTTPResponseSerializationHandlesAll2XXCodes' time='0.022'/>
+  </testsuite>
+  <testsuite name='AFHTTPSessionManagerTests' tests='6' failures='0'>
+    <testcase classname='AFHTTPSessionManagerTests' name='testDownloadFileCompletionSpecifiesURLInCompletionBlock' time='0.334'/>
+    <testcase classname='AFHTTPSessionManagerTests' name='testDownloadFileCompletionSpecifiesURLInCompletionWithManagerDidFinishBlock' time='0.224'/>
+    <testcase classname='AFHTTPSessionManagerTests' name='testThatOperationInvokesCompletionHandlerWithResponseObjectOnSuccess' time='0.209'/>
+    <testcase classname='AFHTTPSessionManagerTests' name='testThatOperationInvokesFailureCompletionBlockWithErrorOnFailure' time='0.204'/>
+    <testcase classname='AFHTTPSessionManagerTests' name='testThatRedirectBlockIsCalledWhen302IsEncountered' time='0.343'/>
+    <testcase classname='AFHTTPSessionManagerTests' name='testThatSerializationErrorGeneratesErrorAndNullTaskForGET' time='0.001'/>
+  </testsuite>
+  <testsuite name='AFImageDownloaderTests' tests='12' failures='0'>
+    <testcase classname='AFImageDownloaderTests' name='testThatCacheIsIgnoredIfCacheIgnoredInRequest' time='0.271'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatCancellingDownloadCallsCompletionWithCancellationError' time='0.005'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatCancellingDownloadWithMultipleResponseHandlersCancelsFirstYetAllowsSecondToComplete' time='0.211'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatImageDownloaderCanBeInitializedAndDeinitializedWithActiveDownloads' time='0.004'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatImageDownloaderCanDownloadImage' time='0.215'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatImageDownloaderSingletonCanBeInitialized' time='0.003'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatImageDownloadReceiptIsNilForCachedImage' time='0.211'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatItAlwaysCallsTheFailureHandlerOnTheMainQueue' time='0.213'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatItAlwaysCallsTheSuccessHandlerOnTheMainQueue' time='0.214'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatItCanDownloadMultipleImagesSimultaneously' time='0.359'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatResponseIsNilWhenReturnedFromCache' time='0.217'/>
+    <testcase classname='AFImageDownloaderTests' name='testThatSimultaneouslyRequestsForTheSameAssetReceiveSameResponse' time='0.218'/>
+  </testsuite>
+  <testsuite name='AFJSONRequestSerializationTests' tests='2' failures='0'>
+    <testcase classname='AFJSONRequestSerializationTests' name='testThatJSONRequestSerializationHandlesParametersArray' time='0.001'/>
+    <testcase classname='AFJSONRequestSerializationTests' name='testThatJSONRequestSerializationHandlesParametersDictionary' time='0.001'/>
+  </testsuite>
+  <testsuite name='AFJSONResponseSerializationTests' tests='6' failures='0'>
+    <testcase classname='AFJSONResponseSerializationTests' name='testThatJSONResponseSerializerAcceptsApplicationJSONMimeType' time='0.001'/>
+    <testcase classname='AFJSONResponseSerializationTests' name='testThatJSONResponseSerializerAcceptsTextJavaScriptMimeType' time='0.001'/>
+    <testcase classname='AFJSONResponseSerializationTests' name='testThatJSONResponseSerializerAcceptsTextJSONMimeType' time='0.001'/>
+    <testcase classname='AFJSONResponseSerializationTests' name='testThatJSONResponseSerializerDoesNotAcceptNonStandardJSONMimeType' time='0.000'/>
+    <testcase classname='AFJSONResponseSerializationTests' name='testThatJSONResponseSerializerReturnsDictionaryForValidJSONDictionary' time='0.000'/>
+    <testcase classname='AFJSONResponseSerializationTests' name='testThatJSONResponseSerializerReturnsErrorForInvalidJSON' time='0.001'/>
+  </testsuite>
+  <testsuite name='AFNetworkActivityManagerTests' tests='4' failures='0'>
+    <testcase classname='AFNetworkActivityManagerTests' name='testThatIndicatorBlockIsOnlyCalledOnceEachForStartAndEndForMultipleRequests' time='5.213'/>
+    <testcase classname='AFNetworkActivityManagerTests' name='testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestFails' time='0.202'/>
+    <testcase classname='AFNetworkActivityManagerTests' name='testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestSucceeds' time='1.209'/>
+    <testcase classname='AFNetworkActivityManagerTests' name='testThatVisibilityDelaysAreApplied' time='3.226'/>
+  </testsuite>
+  <testsuite name='AFNetworkReachabilityManagerTests' tests='5' failures='0'>
+    <testcase classname='AFNetworkReachabilityManagerTests' name='testAddressReachabilityBlock' time='0.003'/>
+    <testcase classname='AFNetworkReachabilityManagerTests' name='testAddressReachabilityNotification' time='0.001'/>
+    <testcase classname='AFNetworkReachabilityManagerTests' name='testAddressReachabilityStartsInUnknownState' time='0.000'/>
+    <testcase classname='AFNetworkReachabilityManagerTests' name='testDomainReachabilityBlock' time='0.003'/>
+    <testcase classname='AFNetworkReachabilityManagerTests' name='testDomainReachabilityStartsInUnknownState' time='0.000'/>
+  </testsuite>
+  <testsuite name='AFPropertyListResponseSerializerTests' tests='1' failures='0'>
+    <testcase classname='AFPropertyListResponseSerializerTests' name='testThatPropertyListResponseSerializerHandles204' time='0.001'/>
+  </testsuite>
+  <testsuite name='AFSecurityPolicyTests' tests='49' failures='0'>
+    <testcase classname='AFSecurityPolicyTests' name='testDefaultPolicyDoesAllowHTTPBinOrgCertificate' time='0.006'/>
+    <testcase classname='AFSecurityPolicyTests' name='testDefaultPolicyDoesAllowHTTPBinOrgCertificateForValidDomainName' time='0.003'/>
+    <testcase classname='AFSecurityPolicyTests' name='testDefaultPolicyDoesNotAllowCertificateWithInvalidDomainName' time='0.306'/>
+    <testcase classname='AFSecurityPolicyTests' name='testDefaultPolicyDoesNotAllowInvalidCertificate' time='0.002'/>
+    <testcase classname='AFSecurityPolicyTests' name='testDefaultPolicyHasDomainNamesAreValidatedByDefault' time='0.000'/>
+    <testcase classname='AFSecurityPolicyTests' name='testDefaultPolicyHasInvalidCertificatesAreDisabledByDefault' time='0.000'/>
+    <testcase classname='AFSecurityPolicyTests' name='testDefaultPolicyHasNoPinnedCertificates' time='0.000'/>
+    <testcase classname='AFSecurityPolicyTests' name='testDefaultPolicyPinningModeIsSetToNone' time='0.000'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned' time='0.010'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned' time='0.007'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned' time='0.010'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned' time='0.005'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName' time='0.005'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned' time='0.008'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates' time='0.006'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningAndNoPinnedCertificatesDoesNotAllowHTTPBinOrgServerTrust' time='0.006'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate' time='0.081'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates' time='0.005'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName' time='0.004'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningModeHasHTTPBinOrgPinnedCertificate' time='0.012'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithCertificatePinningModeHasPinnedCertificates' time='0.000'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned' time='0.011'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned' time='0.008'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned' time='0.011'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned' time='0.009'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName' time='0.011'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned' time='0.010'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates' time='0.009'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningAndNoPinnedCertificatesDoesNotAllowHTTPBinOrgServerTrust' time='0.010'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate' time='0.003'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates' time='0.006'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName' time='0.005'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningModeHasHTTPBinOrgPinnedCertificate' time='0.015'/>
+    <testcase classname='AFSecurityPolicyTests' name='testPolicyWithPublicKeyPinningModeHasPinnedCertificates' time='0.001'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyCanBeCopied' time='0.001'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyCanBeEncodedAndDecoded' time='0.001'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithDomainNameValidationAllowsServerTrustWithValidWildcardDomainName' time='0.004'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithDomainNameValidationAndSelfSignedCommonNameCertificateAllowsServerTrust' time='0.004'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithDomainNameValidationAndSelfSignedDNSCertificateAllowsServerTrust' time='0.006'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithDomainNameValidationAndSelfSignedNoDomainCertificateDoesNotAllowServerTrust' time='0.006'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithDomainNameValidationDoesNotAllowServerTrustWithInvalidDomainName' time='0.005'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithInvalidCertificatesAllowedAllowsSelfSignedServerTrust' time='0.001'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithInvalidCertificatesAllowedAndNoPinnedCertificatesAndPublicKeyPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName' time='0.002'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithInvalidCertificatesAllowedAndNoSSLPinningAndDomainNameValidationDisabledDoesAllowSelfSignedServerTrustForValidDomainName' time='0.001'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithInvalidCertificatesAllowedAndNoValidPinnedCertificatesAndNoPinningModeAndDomainValidationDoesNotAllowSelfSignedServerTrustForValidDomainName' time='0.001'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesAndNoPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName' time='0.003'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesDoesAllowSelfSignedServerTrustForValidDomainName' time='0.005'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithInvalidCertificatesDisabledDoesNotAllowSelfSignedServerTrust' time='0.003'/>
+    <testcase classname='AFSecurityPolicyTests' name='testThatPolicyWithoutDomainNameValidationAllowsServerTrustWithInvalidDomainName' time='0.004'/>
+  </testsuite>
+  <testsuite name='AFUIActivityIndicatorViewTests' tests='2' failures='0'>
+    <testcase classname='AFUIActivityIndicatorViewTests' name='testTaskDidResumeNotificationDoesNotCauseCrashForAIVWithTask' time='1.290'/>
+    <testcase classname='AFUIActivityIndicatorViewTests' name='testTaskDidSuspendNotificationDoesNotCauseCrashForAIVWithTask' time='2.326'/>
+  </testsuite>
+  <testsuite name='AFUIImageViewTests' tests='5' failures='0'>
+    <testcase classname='AFUIImageViewTests' name='testResponseIsNilWhenLoadedFromCache' time='0.337'/>
+    <testcase classname='AFUIImageViewTests' name='testThatImageBehindRedirectCanBeDownloaded' time='1.007'/>
+    <testcase classname='AFUIImageViewTests' name='testThatImageCanBeDownloadedFromURL' time='1.005'/>
+    <testcase classname='AFUIImageViewTests' name='testThatImageDownloadSucceedsWhenDuplicateRequestIsSentToImageView' time='1.003'/>
+    <testcase classname='AFUIImageViewTests' name='testThatPlaceholderImageIsSetIfRequestFails' time='0.061'/>
+  </testsuite>
+  <testsuite name='AFUIRefreshControlTests' tests='3' failures='0'>
+    <testcase classname='AFUIRefreshControlTests' name='testTaskDidCompleteNotificationDoesNotCauseCrashForUIRCWithTask' time='2.259'/>
+    <testcase classname='AFUIRefreshControlTests' name='testTaskDidResumeNotificationDoesNotCauseCrashForUIRCWithTask' time='1.206'/>
+    <testcase classname='AFUIRefreshControlTests' name='testTaskDidSuspendNotificationDoesNotCauseCrashForUIRCWithTask' time='2.311'/>
+  </testsuite>
+  <testsuite name='AFURLSessionManagerTests' tests='24' failures='0'>
+    <testcase classname='AFURLSessionManagerTests' name='testBackgroundManagerReturnsExpectedClassForDataTask' time='0.021'/>
+    <testcase classname='AFURLSessionManagerTests' name='testBackgroundManagerReturnsExpectedClassForDownloadTask' time='0.009'/>
+    <testcase classname='AFURLSessionManagerTests' name='testBackgroundManagerReturnsExpectedClassForUploadTask' time='0.012'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidResumeNotificationIsReceivedByBackgroundDataTaskAfterResume' time='0.017'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidResumeNotificationIsReceivedByBackgroundDownloadTaskAfterResume' time='0.021'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidResumeNotificationIsReceivedByBackgroundUploadTaskAfterResume' time='0.020'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidResumeNotificationIsReceivedByLocalDataTaskAfterResume' time='0.008'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidResumeNotificationIsReceivedByLocalDownloadTaskAfterResume' time='0.012'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidResumeNotificationIsReceivedByLocalUploadTaskAfterResume' time='0.012'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidSuspendNotificationIsReceivedByBackgroundDataTaskAfterSuspend' time='0.016'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidSuspendNotificationIsReceivedByBackgroundDownloadTaskAfterSuspend' time='0.023'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidSuspendNotificationIsReceivedByBackgroundUploadTaskAfterSuspend' time='0.022'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidSuspendNotificationIsReceivedByLocalDataTaskAfterSuspend' time='0.013'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidSuspendNotificationIsReceivedByLocalDownloadTaskAfterSuspend' time='0.016'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDidSuspendNotificationIsReceivedByLocalUploadTaskAfterSuspend' time='0.008'/>
+    <testcase classname='AFURLSessionManagerTests' name='testDownloadTasksProgressBecomesPartOfCurrentProgress' time='0.016'/>
+    <testcase classname='AFURLSessionManagerTests' name='testSwizzlingIsProperlyConfiguredForDummyClass' time='0.008'/>
+    <testcase classname='AFURLSessionManagerTests' name='testSwizzlingIsWorkingAsExpectedForBackgroundDataTask' time='0.006'/>
+    <testcase classname='AFURLSessionManagerTests' name='testSwizzlingIsWorkingAsExpectedForBackgroundDownloadTask' time='0.010'/>
+    <testcase classname='AFURLSessionManagerTests' name='testSwizzlingIsWorkingAsExpectedForBackgroundUploadTask' time='0.009'/>
+    <testcase classname='AFURLSessionManagerTests' name='testSwizzlingIsWorkingAsExpectedForForegroundDataTask' time='0.007'/>
+    <testcase classname='AFURLSessionManagerTests' name='testSwizzlingIsWorkingAsExpectedForForegroundDownload' time='0.008'/>
+    <testcase classname='AFURLSessionManagerTests' name='testSwizzlingIsWorkingAsExpectedForForegroundUpload' time='0.007'/>
+    <testcase classname='AFURLSessionManagerTests' name='testUploadTasksProgressBecomesPartOfCurrentProgress' time='0.008'/>
+  </testsuite>
+</testsuites>
