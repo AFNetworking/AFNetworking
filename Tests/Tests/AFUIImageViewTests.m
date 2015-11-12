@@ -83,12 +83,9 @@
     UIImage *placeholder = [UIImage imageNamed:@"logo"];
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
 
-    __weak __typeof__(self) weakSelf = self;
     [self.imageView setImageWithURLRequest:self.error404URLRequest
                           placeholderImage:placeholder
-                                   success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-
-                                   }
+                                   success:nil
                                    failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                                        [expectation fulfill];
                                    }];
