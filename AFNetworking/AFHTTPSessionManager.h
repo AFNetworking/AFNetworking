@@ -151,7 +151,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(nullable id)parameters
-                      success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      success:(nullable void (^)(NSURLSessionDataTask *task, id __nullable responseObject))success
                       failure:(nullable void (^)(NSURLSessionDataTask * __nullable task, NSError *error))failure;
 
 /**
@@ -181,7 +181,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(nullable id)parameters
-                       success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       success:(nullable void (^)(NSURLSessionDataTask *task, id __nullable responseObject))success
                        failure:(nullable void (^)(NSURLSessionDataTask * __nullable task, NSError *error))failure;
 
 /**
@@ -198,7 +198,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(nullable id)parameters
      constructingBodyWithBlock:(nullable void (^)(id <AFMultipartFormData> formData))block
-                       success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       success:(nullable void (^)(NSURLSessionDataTask *task, id __nullable responseObject))success
                        failure:(nullable void (^)(NSURLSessionDataTask * __nullable task, NSError *error))failure;
 
 /**
@@ -213,7 +213,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSURLSessionDataTask *)PUT:(NSString *)URLString
                    parameters:(nullable id)parameters
-                      success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      success:(nullable void (^)(NSURLSessionDataTask *task, id __nullable responseObject))success
                       failure:(nullable void (^)(NSURLSessionDataTask * __nullable task, NSError *error))failure;
 
 /**
@@ -228,7 +228,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSURLSessionDataTask *)PATCH:(NSString *)URLString
                      parameters:(nullable id)parameters
-                        success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                        success:(nullable void (^)(NSURLSessionDataTask *task, id __nullable responseObject))success
                         failure:(nullable void (^)(NSURLSessionDataTask * __nullable task, NSError *error))failure;
 
 /**
@@ -243,7 +243,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSURLSessionDataTask *)DELETE:(NSString *)URLString
                       parameters:(nullable id)parameters
-                         success:(nullable void (^)(NSURLSessionDataTask *task, id responseObject))success
+                         success:(nullable void (^)(NSURLSessionDataTask *task, id __nullable responseObject))success
                          failure:(nullable void (^)(NSURLSessionDataTask * __nullable task, NSError *error))failure;
 
 @end
