@@ -27,7 +27,7 @@ Choose AFNetworking for your next project, or migrate over your existing project
 
 ### Installation with CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like AFNetworking in your projects. See the ["Getting Started" guide for more information](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking).
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like AFNetworking in your projects. See the ["Getting Started" guide for more information](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking).
 
 #### Podfile
 
@@ -263,7 +263,7 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 * Network reachability is a useful tool for determining why a request might have failed.
 	* After a network request has failed, telling the user they're offline is better than giving them a more technical but accurate error, such as "request timed out."
 
-See also [WWDC 2012 session 706, "Networking Best Practices."](https://developer.apple.com/videos/wwdc/2012/#706).
+See also [WWDC 2012 session 706, "Networking Best Practices."](https://developer.apple.com/videos/play/wwdc2012-706/).
 
 #### Shared Network Reachability
 
@@ -360,7 +360,7 @@ NSArray *operations = [AFURLConnectionOperation batchOfRequestOperations:@[...] 
 
 ## Unit Tests
 
-AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via [CocoaPods](http://cocoapods.org/):
+AFNetworking includes a suite of unit tests within the Tests subdirectory. In order to run the unit tests, you must install the testing dependencies via [CocoaPods](https://cocoapods.org/):
 
     $ cd Tests
     $ pod install
@@ -369,7 +369,7 @@ Once testing dependencies are installed, you can execute the test suite via the 
 
 ### Running Tests from the Command Line
 
-Tests can also be run from the command line or within a continuous integration environment. The [`xcpretty`](https://github.com/mneorr/xcpretty) utility needs to be installed before running the tests from the command line:
+Tests can also be run from the command line or within a continuous integration environment. The [`xcpretty`](https://github.com/supermarin/xcpretty) utility needs to be installed before running the tests from the command line:
 
     $ gem install xcpretty
 
@@ -379,11 +379,11 @@ Once `xcpretty` is installed, you can execute the suite via `rake test`.
 
 AFNetworking is owned and maintained by the [Alamofire Software Foundation](http://alamofire.org).
 
-AFNetworking was originally created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](http://en.wikipedia.org/wiki/Gowalla).
+AFNetworking was originally created by [Scott Raymond](https://github.com/sco/) and [Mattt Thompson](https://github.com/mattt/) in the development of [Gowalla for iPhone](https://en.wikipedia.org/wiki/Gowalla).
 
 AFNetworking's logo was designed by [Alan Defibaugh](http://www.alandefibaugh.com/).
 
-And most of all, thanks to AFNetworking's [growing list of contributors](https://github.com/AFNetworking/AFNetworking/contributors).
+And most of all, thanks to AFNetworking's [growing list of contributors](https://github.com/AFNetworking/AFNetworking/graphs/contributors).
 
 ### Security Disclosure
 
