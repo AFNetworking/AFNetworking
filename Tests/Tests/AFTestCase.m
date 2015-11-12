@@ -41,7 +41,7 @@ NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
 }
 
 - (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler {
-    [self waitForExpectationsWithTimeout:self.networkTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:self.networkTimeout handler:handler];
 }
 
 @end

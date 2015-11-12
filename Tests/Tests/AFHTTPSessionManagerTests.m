@@ -121,14 +121,16 @@
         return [dirURL URLByAppendingPathComponent:@"t1.file"];
     }];
 
-    NSURLSessionDownloadTask *downloadTask = [self.manager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
-                                                                          progress:nil
-                                                                       destination:nil
-                                                                 completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-                                                                     downloadFilePath = filePath;
-                                                                     completionBlockExecuted = YES;
-                                                                     [expectation fulfill];
-                                                                 }];
+    NSURLSessionDownloadTask *downloadTask;
+    downloadTask = [self.manager
+                    downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                    progress:nil
+                    destination:nil
+                    completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+                        downloadFilePath = filePath;
+                        completionBlockExecuted = YES;
+                        [expectation fulfill];
+                    }];
     [downloadTask resume];
     [self waitForExpectationsWithTimeout:10.0 handler:nil];
     XCTAssertTrue(completionBlockExecuted);
