@@ -244,9 +244,10 @@
                                            });
                                        }
                                    }
-                                   [strongSelf safelyDecrementActiveTaskCount];
-                                   [strongSelf safelyStartNextTaskIfNecessary];
+
                                }
+                               [strongSelf safelyDecrementActiveTaskCount];
+                               [strongSelf safelyStartNextTaskIfNecessary];
                            });
                        }];
 
