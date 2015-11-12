@@ -54,6 +54,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL allowInvalidCertificates;
 
 /**
+ Whether or not to trust servers with an expired (but ever authorized) SSL certificates. Defaults to `NO`.
+ */
+@property (nonatomic, assign) BOOL allowExpiredAuthorizedCertificates;
+
+/**
  Whether or not to validate the domain name in the certificate's CN field. Defaults to `YES`.
  */
 @property (nonatomic, assign) BOOL validatesDomainName;
