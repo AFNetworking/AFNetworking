@@ -42,6 +42,8 @@
     [super setUp];
     [[UIImageView sharedImageDownloader].imageCache removeAllImages];
     [[[[[[UIImageView sharedImageDownloader] sessionManager] session] configuration] URLCache] removeAllCachedResponses];
+    [UIImageView setSharedImageDownloader:[[AFImageDownloader alloc] init]];
+
     self.imageView = [UIImageView new];
 
     self.jpegURL = [NSURL URLWithString:@"https://httpbin.org/image/jpeg"];
@@ -53,6 +55,7 @@
 }
 
 - (void)tearDown {
+    self.imageView = nil;
     [super tearDown];
 
 }
@@ -80,10 +83,12 @@
     UIImage *placeholder = [UIImage imageNamed:@"logo"];
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
 
-
+    __weak __typeof__(self) weakSelf = self;
     [self.imageView setImageWithURLRequest:self.error404URLRequest
                           placeholderImage:placeholder
-                                   success:nil
+                                   success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+
+                                   }
                                    failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                                        [expectation fulfill];
                                    }];
@@ -120,15 +125,6 @@
     XCTAssertNil(urlResponse);
     XCTAssertNotNil(cachedImage);
     XCTAssertEqual(cachedImage, downloadImage);
-}
-
-- (void)testThatImageBehindRedirectCanBeDownloaded {
-    NSURL *redirectURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://httpbin.org/redirect-to?url=%@",self.jpegURL]];
-    [self.imageView setImageWithURL:redirectURL];
-    [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != nil"]
-              evaluatedWithObject:self.imageView
-                          handler:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
 - (void)testThatNilURLDoesntCrash {
