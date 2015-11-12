@@ -185,4 +185,46 @@
 }
 
 
+# pragma mark - Rest Interface
+
+- (void)testThatSuccessBlockIsCalledFor200 {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.manager
+     GET:@"status/200"
+     parameters:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+         [expectation fulfill];
+     }
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
+- (void)testThatFailureBlockIsCalledFor404 {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.manager
+     GET:@"status/404"
+     parameters:nil
+     success:nil
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error) {
+         [expectation fulfill];
+     }];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
+- (void)testThatResponseObjectIsEmptyFor204 {
+    __block id urlResponseObject = nil;
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.manager
+     GET:@"status/204"
+     parameters:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+         urlResponseObject = responseObject;
+         [expectation fulfill];
+     }
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    XCTAssertNil(urlResponseObject);
+}
+
+
 @end
