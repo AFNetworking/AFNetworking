@@ -50,6 +50,51 @@ static SecTrustRef AFUTHTTPBinOrgServerTrust() {
     return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
 }
 
+static SecTrustRef AFUTHTTPBinOrgServerTrustLeafOnly() {
+	NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"HTTPBinOrgServerTrustChain/httpbin_0" ofType:@"cer"];
+	NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+	NSData *certData = [NSData dataWithContentsOfFile:certPath];
+	
+	
+	
+	NSMutableArray *certs  = [NSMutableArray arrayWithCapacity:1];
+	SecCertificateRef cert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+	[certs addObject:(__bridge id)(cert)];
+	
+	
+	SecPolicyRef policy = SecPolicyCreateBasicX509();
+	SecTrustRef trust = NULL;
+	SecTrustCreateWithCertificates((__bridge CFTypeRef)(certs), policy, &trust);
+	return trust;
+}
+
+static SecTrustRef AFUTADNNetServerTrustLeafOnly() {
+	NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"ADNNetServerTrustChain/adn_0" ofType:@"cer"];
+	NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+	NSData *certData = [NSData dataWithContentsOfFile:certPath];
+	
+	
+	
+	NSMutableArray *certs  = [NSMutableArray arrayWithCapacity:1];
+	SecCertificateRef cert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+	[certs addObject:(__bridge id)(cert)];
+	
+	
+	SecPolicyRef policy = SecPolicyCreateBasicX509();
+	SecTrustRef trust = NULL;
+	SecTrustCreateWithCertificates((__bridge CFTypeRef)(certs), policy, &trust);
+	return trust;
+}
+
+static SecCertificateRef AFUTHTTPBinOrgServerTrustAboveLeaf() {
+	NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"HTTPBinOrgServerTrustChain/httpbin_1" ofType:@"cer"];
+	NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+	NSData *certData = [NSData dataWithContentsOfFile:certPath];
+	
+	SecCertificateRef cert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+	return cert;
+}
+
 static SecTrustRef AFUTADNNetServerTrust() {
     NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
     NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"ADNNetServerTrustChain"];
@@ -375,6 +420,23 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecCertificateRef certificate = AFUTCOMODORSACertificate();
     policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
+}
+
+- (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithCertificateAbovePinned {
+	AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCA];
+	
+	SecCertificateRef certificate = AFUTHTTPBinOrgServerTrustAboveLeaf();
+	policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate)];
+	XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrustLeafOnly() forDomain:nil], @"Policy should allow server trust");
+}
+
+- (void)testPolicyWithCertificatePinningBlocksADNNetServerTrust {
+	
+	AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCA];
+	
+	SecCertificateRef certificate = AFUTHTTPBinOrgServerTrustAboveLeaf();
+	policy.pinnedCertificates = @[ (__bridge_transfer id)SecCertificateCopyData(certificate)];
+	XCTAssertFalse([policy evaluateServerTrust:AFUTADNNetServerTrustLeafOnly() forDomain:nil], @"Policy should NOT allow server trust");
 }
 
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned {
