@@ -48,9 +48,9 @@ NS_ASSUME_NONNULL_BEGIN
 
   By default, this property is set to any (`.cer`) certificates included in the target compiling AFNetworking. Note that if you are using AFNetworking as embedded framework, no certificates will be pinned by default. Use `certificatesInBundle` to load certificates from your target, and then create a new policy by calling `policyWithPinningMode:withPinnedCertificates`.
  
- Note that if you create an array with duplicate certificates, the duplicate certificates will be removed. Note that if pinning is enabled, `evaluateServerTrust:forDomain:` will return true if any pinned certificate matches.
+ Note that if pinning is enabled, `evaluateServerTrust:forDomain:` will return true if any pinned certificate matches.
  */
-@property (nonatomic, strong, nullable) NSArray *pinnedCertificates;
+@property (nonatomic, strong, nullable) NSSet *pinnedCertificates;
 
 /**
  Whether or not to trust servers with an invalid or expired SSL certificates. Defaults to `NO`.
@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return The default security policy.
  */
-+ (NSArray *)certificatesInBundle:(NSBundle *)bundle;
++ (NSSet *)certificatesInBundle:(NSBundle *)bundle;
 
 ///-----------------------------------------
 /// @name Getting Specific Security Policies
@@ -105,7 +105,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return A new security policy.
  */
-+ (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode withPinnedCertificates:(NSArray *)pinnedCertificates;
++ (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode withPinnedCertificates:(NSSet *)pinnedCertificates;
 
 ///------------------------------
 /// @name Evaluating Server Trust

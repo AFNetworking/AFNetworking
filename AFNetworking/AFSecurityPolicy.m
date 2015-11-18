@@ -150,25 +150,25 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 @interface AFSecurityPolicy()
 @property (readwrite, nonatomic, assign) AFSSLPinningMode SSLPinningMode;
-@property (readwrite, nonatomic, strong) NSArray *pinnedPublicKeys;
+@property (readwrite, nonatomic, strong) NSSet *pinnedPublicKeys;
 @end
 
 @implementation AFSecurityPolicy
 
-+ (NSArray *)certificatesInBundle:(NSBundle *)bundle {
++ (NSSet *)certificatesInBundle:(NSBundle *)bundle {
     NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
 
-    NSMutableArray *certificates = [NSMutableArray arrayWithCapacity:[paths count]];
+    NSMutableSet *certificates = [NSMutableSet setWithCapacity:[paths count]];
     for (NSString *path in paths) {
         NSData *certificateData = [NSData dataWithContentsOfFile:path];
         [certificates addObject:certificateData];
     }
 
-    return [[NSArray alloc] initWithArray:certificates];
+    return [NSSet setWithSet:certificates];
 }
 
-+ (NSArray *)defaultPinnedCertificates {
-    static NSArray *_defaultPinnedCertificates = nil;
++ (NSSet *)defaultPinnedCertificates {
+    static NSSet *_defaultPinnedCertificates = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSBundle *bundle = [NSBundle bundleForClass:[self class]];
@@ -189,7 +189,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     return [self policyWithPinningMode:pinningMode withPinnedCertificates:[self defaultPinnedCertificates]];
 }
 
-+ (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode withPinnedCertificates:(NSArray *)pinnedCertificates {
++ (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode withPinnedCertificates:(NSSet *)pinnedCertificates {
     AFSecurityPolicy *securityPolicy = [[self alloc] init];
     securityPolicy.SSLPinningMode = pinningMode;
 
@@ -209,11 +209,11 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     return self;
 }
 
-- (void)setPinnedCertificates:(NSArray *)pinnedCertificates {
-    _pinnedCertificates = [[NSOrderedSet orderedSetWithArray:pinnedCertificates] array];
+- (void)setPinnedCertificates:(NSSet *)pinnedCertificates {
+    _pinnedCertificates = pinnedCertificates;
 
     if (self.pinnedCertificates) {
-        NSMutableArray *mutablePinnedPublicKeys = [NSMutableArray arrayWithCapacity:[self.pinnedCertificates count]];
+        NSMutableSet *mutablePinnedPublicKeys = [NSMutableSet setWithCapacity:[self.pinnedCertificates count]];
         for (NSData *certificate in self.pinnedCertificates) {
             id publicKey = AFPublicKeyForCertificate(certificate);
             if (!publicKey) {
@@ -221,7 +221,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             }
             [mutablePinnedPublicKeys addObject:publicKey];
         }
-        self.pinnedPublicKeys = [NSArray arrayWithArray:mutablePinnedPublicKeys];
+        self.pinnedPublicKeys = [NSSet setWithSet:mutablePinnedPublicKeys];
     } else {
         self.pinnedPublicKeys = nil;
     }
