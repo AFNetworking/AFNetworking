@@ -459,23 +459,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///--------------------
 
 /**
- Posted when a task begins executing.
-
- @deprecated Use `AFNetworkingTaskDidResumeNotification` instead.
- */
-FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidStartNotification DEPRECATED_ATTRIBUTE;
-
-/**
  Posted when a task resumes.
  */
 FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidResumeNotification;
-
-/**
- Posted when a task finishes executing. Includes a userInfo dictionary with additional information about the task.
-
- @deprecated Use `AFNetworkingTaskDidCompleteNotification` instead.
- */
-FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidFinishNotification DEPRECATED_ATTRIBUTE;
 
 /**
  Posted when a task finishes executing. Includes a userInfo dictionary with additional information about the task.
@@ -498,62 +484,27 @@ FOUNDATION_EXPORT NSString * const AFURLSessionDidInvalidateNotification;
 FOUNDATION_EXPORT NSString * const AFURLSessionDownloadTaskDidFailToMoveFileNotification;
 
 /**
- The raw response data of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if response data exists for the task.
-
- @deprecated Use `AFNetworkingTaskDidCompleteResponseDataKey` instead.
- */
-FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidFinishResponseDataKey DEPRECATED_ATTRIBUTE;
-
-/**
- The raw response data of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if response data exists for the task.
+ The raw response data of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidCompleteNotification` if response data exists for the task.
  */
 FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidCompleteResponseDataKey;
 
 /**
- The serialized response object of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the response was serialized.
-
- @deprecated Use `AFNetworkingTaskDidCompleteSerializedResponseKey` instead.
- */
-FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidFinishSerializedResponseKey DEPRECATED_ATTRIBUTE;
-
-/**
- The serialized response object of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the response was serialized.
+ The serialized response object of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidCompleteNotification` if the response was serialized.
  */
 FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidCompleteSerializedResponseKey;
 
 /**
- The response serializer used to serialize the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the task has an associated response serializer.
-
- @deprecated Use `AFNetworkingTaskDidCompleteResponseSerializerKey` instead.
- */
-FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidFinishResponseSerializerKey DEPRECATED_ATTRIBUTE;
-
-/**
- The response serializer used to serialize the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the task has an associated response serializer.
+ The response serializer used to serialize the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidCompleteNotification` if the task has an associated response serializer.
  */
 FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidCompleteResponseSerializerKey;
 
 /**
- The file path associated with the download task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an the response data has been stored directly to disk.
-
- @deprecated Use `AFNetworkingTaskDidCompleteAssetPathKey` instead.
- */
-FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidFinishAssetPathKey DEPRECATED_ATTRIBUTE;
-
-/**
- The file path associated with the download task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an the response data has been stored directly to disk.
+ The file path associated with the download task. Included in the userInfo dictionary of the `AFNetworkingTaskDidCompleteNotification` if an the response data has been stored directly to disk.
  */
 FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidCompleteAssetPathKey;
 
 /**
- Any error associated with the task, or the serialization of the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an error exists.
-
- @deprecated Use `AFNetworkingTaskDidCompleteErrorKey` instead.
- */
-FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidFinishErrorKey DEPRECATED_ATTRIBUTE;
-
-/**
- Any error associated with the task, or the serialization of the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an error exists.
+ Any error associated with the task, or the serialization of the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidCompleteNotification` if an error exists.
  */
 FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidCompleteErrorKey;
 

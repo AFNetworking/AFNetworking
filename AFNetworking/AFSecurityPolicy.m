@@ -229,10 +229,6 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 #pragma mark -
 
-- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust {
-    return [self evaluateServerTrust:serverTrust forDomain:nil];
-}
-
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
                   forDomain:(NSString *)domain
 {

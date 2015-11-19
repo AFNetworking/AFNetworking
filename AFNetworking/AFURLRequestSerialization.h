@@ -164,12 +164,6 @@ forHTTPHeaderField:(NSString *)field;
                                        password:(NSString *)password;
 
 /**
- @deprecated This method has been deprecated. Use -setValue:forHTTPHeaderField: instead.
- */
-- (void)setAuthorizationHeaderFieldWithToken:(NSString *)token DEPRECATED_ATTRIBUTE;
-
-
-/**
  Clears any existing value for the "Authorization" HTTP header.
  */
 - (void)clearAuthorizationHeader;
@@ -204,13 +198,6 @@ forHTTPHeaderField:(NSString *)field;
 ///-------------------------------
 
 /**
- @deprecated This method has been deprecated. Use -requestWithMethod:URLString:parameters:error: instead.
- */
-- (NSMutableURLRequest *)requestWithMethod:(NSString *)method
-                                 URLString:(NSString *)URLString
-                                parameters:(id)parameters DEPRECATED_ATTRIBUTE;
-
-/**
  Creates an `NSMutableURLRequest` object with the specified HTTP method and URL string.
 
  If the HTTP method is `GET`, `HEAD`, or `DELETE`, the parameters will be used to construct a url-encoded query string that is appended to the request's URL. Otherwise, the parameters will be encoded according to the value of the `parameterEncoding` property, and set as the request body.
@@ -226,14 +213,6 @@ forHTTPHeaderField:(NSString *)field;
                                  URLString:(NSString *)URLString
                                 parameters:(nullable id)parameters
                                      error:(NSError * _Nullable __autoreleasing *)error;
-
-/**
- @deprecated This method has been deprecated. Use -multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:error: instead.
- */
-- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
-                                              URLString:(NSString *)URLString
-                                             parameters:(NSDictionary *)parameters
-                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block DEPRECATED_ATTRIBUTE;
 
 /**
  Creates an `NSMutableURLRequest` object with the specified HTTP method and URLString, and constructs a `multipart/form-data` HTTP body, using the specified parameters and multipart form data block. See http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.2
