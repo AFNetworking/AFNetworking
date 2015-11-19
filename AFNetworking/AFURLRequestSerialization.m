@@ -355,10 +355,6 @@ forHTTPHeaderField:(NSString *)field
     [self setValue:[NSString stringWithFormat:@"Basic %@", AFBase64EncodedStringFromString(basicAuthCredentials)] forHTTPHeaderField:@"Authorization"];
 }
 
-- (void)setAuthorizationHeaderFieldWithToken:(NSString *)token {
-    [self setValue:[NSString stringWithFormat:@"Token token=\"%@\"", token] forHTTPHeaderField:@"Authorization"];
-}
-
 - (void)clearAuthorizationHeader {
 	[self.mutableHTTPRequestHeaders removeObjectForKey:@"Authorization"];
 }
@@ -375,13 +371,6 @@ forHTTPHeaderField:(NSString *)field
 }
 
 #pragma mark -
-
-- (NSMutableURLRequest *)requestWithMethod:(NSString *)method
-                                 URLString:(NSString *)URLString
-                                parameters:(id)parameters
-{
-    return [self requestWithMethod:method URLString:URLString parameters:parameters error:nil];
-}
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method
                                  URLString:(NSString *)URLString
@@ -407,14 +396,6 @@ forHTTPHeaderField:(NSString *)field
     mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
 
 	return mutableRequest;
-}
-
-- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
-                                              URLString:(NSString *)URLString
-                                             parameters:(NSDictionary *)parameters
-                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-{
-    return [self multipartFormRequestWithMethod:method URLString:URLString parameters:parameters constructingBodyWithBlock:block error:nil];
 }
 
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
