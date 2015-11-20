@@ -39,10 +39,10 @@
 
     //don't use the shared manager because it retains state between tests
     //but recreate it each time in the same way that the shared manager is created
-    struct sockaddr_in address;
+    struct sockaddr_in6 address;
     bzero(&address, sizeof(address));
-    address.sin_len = sizeof(address);
-    address.sin_family = AF_INET;
+    address.sin6_len = sizeof(address);
+    address.sin6_family = AF_INET6;
     self.addressReachability = [AFNetworkReachabilityManager managerForAddress:&address];
 }
 
