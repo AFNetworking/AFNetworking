@@ -39,11 +39,19 @@
 
     //don't use the shared manager because it retains state between tests
     //but recreate it each time in the same way that the shared manager is created
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 90000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 101100)
     struct sockaddr_in6 address;
     bzero(&address, sizeof(address));
     address.sin6_len = sizeof(address);
     address.sin6_family = AF_INET6;
     self.addressReachability = [AFNetworkReachabilityManager managerForAddress:&address];
+#else
+    struct sockaddr_in address;
+    bzero(&address, sizeof(address));
+    address.sin_len = sizeof(address);
+    address.sin_family = AF_INET;
+    self.addressReachability = [AFNetworkReachabilityManager managerForAddress:&address];
+#endif
 }
 
 - (void)tearDown
