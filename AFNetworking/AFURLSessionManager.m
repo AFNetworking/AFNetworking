@@ -928,6 +928,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 
     if (completionHandler) {
+		NSLog(@"✳️ %s %d ✳️ disposition = %d", __PRETTY_FUNCTION__, __LINE__, disposition);
         completionHandler(disposition, credential);
     }
 }
