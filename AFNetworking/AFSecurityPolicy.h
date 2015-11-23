@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  Note that if pinning is enabled, `evaluateServerTrust:forDomain:` will return true if any pinned certificate matches.
  */
-@property (nonatomic, strong, nullable) NSSet *pinnedCertificates;
+@property (nonatomic, strong, nullable) NSSet <NSData *> *pinnedCertificates;
 
 /**
  Whether or not to trust servers with an invalid or expired SSL certificates. Defaults to `NO`.
@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return The certificates included in the given bundle.
  */
-+ (NSSet *)certificatesInBundle:(NSBundle *)bundle;
++ (NSSet <NSData *> *)certificatesInBundle:(NSBundle *)bundle;
 
 ///-----------------------------------------
 /// @name Getting Specific Security Policies
@@ -105,7 +105,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return A new security policy.
  */
-+ (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode withPinnedCertificates:(NSSet *)pinnedCertificates;
++ (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode withPinnedCertificates:(NSSet <NSData *> *)pinnedCertificates;
 
 ///------------------------------
 /// @name Evaluating Server Trust

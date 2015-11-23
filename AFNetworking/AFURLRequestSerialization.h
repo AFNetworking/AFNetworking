@@ -129,7 +129,7 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 
  @discussion To add or remove default request headers, use `setValue:forHTTPHeaderField:`.
  */
-@property (readonly, nonatomic, strong) NSDictionary *HTTPRequestHeaders;
+@property (readonly, nonatomic, strong) NSDictionary <NSString *, NSString *> *HTTPRequestHeaders;
 
 /**
  Creates and returns a serializer with default configuration.
@@ -175,7 +175,7 @@ forHTTPHeaderField:(NSString *)field;
 /**
  HTTP methods for which serialized requests will encode parameters as a query string. `GET`, `HEAD`, and `DELETE` by default.
  */
-@property (nonatomic, strong) NSSet *HTTPMethodsEncodingParametersInURI;
+@property (nonatomic, strong) NSSet <NSString *> *HTTPMethodsEncodingParametersInURI;
 
 /**
  Set the method of query string serialization according to one of the pre-defined styles.
@@ -229,7 +229,7 @@ forHTTPHeaderField:(NSString *)field;
  */
 - (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
                                               URLString:(NSString *)URLString
-                                             parameters:(nullable NSDictionary *)parameters
+                                             parameters:(nullable NSDictionary <NSString *, id> *)parameters
                               constructingBodyWithBlock:(nullable void (^)(id <AFMultipartFormData> formData))block
                                                   error:(NSError * _Nullable __autoreleasing *)error;
 
@@ -334,7 +334,7 @@ forHTTPHeaderField:(NSString *)field;
  @param headers The HTTP headers to be appended to the form data.
  @param body The data to be encoded and appended to the form data. This parameter must not be `nil`.
  */
-- (void)appendPartWithHeaders:(nullable NSDictionary *)headers
+- (void)appendPartWithHeaders:(nullable NSDictionary <NSString *, NSString *> *)headers
                          body:(NSData *)body;
 
 /**
