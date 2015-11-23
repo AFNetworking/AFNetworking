@@ -126,6 +126,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
+    NSLog(@"ℹ️ %s %@", __PRETTY_FUNCTION__, session);
     self.progress.totalUnitCount = totalBytesExpectedToSend;
     self.progress.completedUnitCount = totalBytesSent;
 }
@@ -134,6 +135,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
+    NSLog(@"ℹ️ %s %@", __PRETTY_FUNCTION__, session);
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
     __strong AFURLSessionManager *manager = self.manager;
@@ -206,6 +208,7 @@ didCompleteWithError:(NSError *)error
           dataTask:(__unused NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
+    NSLog(@"ℹ️ %s %@", __PRETTY_FUNCTION__, session);
     NSUInteger length = data.length;
     long long expectedLength = dataTask.response.expectedContentLength;
     if(expectedLength != -1) {
@@ -221,6 +224,7 @@ didCompleteWithError:(NSError *)error
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
+    NSLog(@"ℹ️ %s %@", __PRETTY_FUNCTION__, session);
     NSError *fileManagerError = nil;
     self.downloadFileURL = nil;
 
@@ -242,6 +246,7 @@ didFinishDownloadingToURL:(NSURL *)location
  totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
+    NSLog(@"ℹ️ %s %@", __PRETTY_FUNCTION__, session);
     self.progress.totalUnitCount = totalBytesExpectedToWrite;
     self.progress.completedUnitCount = totalBytesWritten;
 }
@@ -250,6 +255,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
       downloadTask:(__unused NSURLSessionDownloadTask *)downloadTask
  didResumeAtOffset:(int64_t)fileOffset
 expectedTotalBytes:(int64_t)expectedTotalBytes {
+    NSLog(@"ℹ️ %s %@", __PRETTY_FUNCTION__, session);
     self.progress.totalUnitCount = expectedTotalBytes;
     self.progress.completedUnitCount = fileOffset;
 }
