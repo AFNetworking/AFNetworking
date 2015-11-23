@@ -36,14 +36,7 @@
 
     //both of these manager objects should always be reachable when the tests are run
     self.domainReachability = [AFNetworkReachabilityManager managerForDomain:@"localhost"];
-
-    //don't use the shared manager because it retains state between tests
-    //but recreate it each time in the same way that the shared manager is created
-    struct sockaddr_in address;
-    bzero(&address, sizeof(address));
-    address.sin_len = sizeof(address);
-    address.sin_family = AF_INET;
-    self.addressReachability = [AFNetworkReachabilityManager managerForAddress:&address];
+    self.addressReachability = [AFNetworkReachabilityManager manager];
 }
 
 - (void)tearDown
