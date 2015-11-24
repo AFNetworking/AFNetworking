@@ -60,7 +60,30 @@
     self.backgroundManager = nil;
 }
 
-#pragma mark -
+#pragma mark Progress -
+
+- (void)testDataTaskDoesReportProgress {
+    NSURL *url = [NSURL URLWithString:@"http://i.space.com/images/i/8123/original/saturn-moon-mimas-death-star.jpg"];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    NSURLSessionDataTask *task;
+
+    task = [self.localManager
+            dataTaskWithRequest:request
+            completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                [expectation fulfill];
+            }];
+
+    NSProgress *progress = [self.localManager progressForDataTask:task];
+    [self keyValueObservingExpectationForObject:progress keyPath:@"fractionCompleted"
+                                        handler:^BOOL(NSProgress  *observedProgress, NSDictionary * _Nonnull change) {
+                                            double new = [change[@"new"] doubleValue];
+                                            double old = [change[@"old"] doubleValue];
+                                            return new == 1.0 && old != 0.0;
+                                        }];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
 
 - (void)testUploadTasksProgressBecomesPartOfCurrentProgress {
     NSProgress *overallProgress = [NSProgress progressWithTotalUnitCount:100];
