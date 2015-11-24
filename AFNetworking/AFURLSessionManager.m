@@ -893,7 +893,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 #pragma mark - NSObject
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, self.session, self.operationQueue];
+    return [NSString stringWithFormat:@"<%@: %p, session: %@, operationQueue: %@>", [self class], self, self.session, self.operationQueue];
 }
 
 - (BOOL)respondsToSelector:(SEL)selector {
