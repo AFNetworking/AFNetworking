@@ -278,6 +278,7 @@ NS_ASSUME_NONNULL_BEGIN
  Sets a callback to be called when an undetermined number of bytes have been uploaded to the server.
 
  @param block A block object to be called when an undetermined number of bytes have been uploaded to the server. This block has no return value and takes three arguments: the number of bytes written since the last time the upload progress block was called, the total bytes written, and the total bytes expected to be written during the request, as initially determined by the length of the HTTP body. This block may be called multiple times, and will execute on the main thread.
+ @remarks totalBytesWritten is always non-negative; totalBytesExpectedToWrite can be NSURLSessionTransferSizeUnknown or non-negative
  */
 - (void)setUploadProgressBlock:(nullable void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))block;
 
@@ -285,6 +286,7 @@ NS_ASSUME_NONNULL_BEGIN
  Sets a callback to be called when an undetermined number of bytes have been downloaded from the server.
 
  @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes three arguments: the number of bytes read since the last time the download progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times, and will execute on the main thread.
+ @remarks totalBytesRead is always non-negative; totalBytesExpectedToRead can be NSURLResponseUnknownLength or non-negative
  */
 - (void)setDownloadProgressBlock:(nullable void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))block;
 
