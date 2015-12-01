@@ -146,7 +146,7 @@
                 }
             }];
     self.af_URLSessionTask = dataTask;
-    *progress = [self.sessionManager progressForDataTask:dataTask];
+    *progress = [self.sessionManager downloadProgressForTask:dataTask];
     [self.af_URLSessionTask resume];
 
     if ([self.delegate respondsToSelector:@selector(webViewDidStartLoad:)]) {

@@ -33,6 +33,12 @@
 
 @implementation AFURLSessionManagerTests
 
+- (NSURLRequest *)bigImageURLRequest {
+    NSURL *url = [NSURL URLWithString:@"http://scitechdaily.com/images/New-Image-of-the-Galaxy-Messier-94-also-Known-as-NGC-4736.jpg"];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+    return request;
+}
+
 - (void)setUp {
     [super setUp];
     self.localManager = [[AFURLSessionManager alloc] init];
@@ -62,67 +68,109 @@
 
 #pragma mark Progress -
 
-- (void)testDataTaskDoesReportProgress {
-    NSURL *url = [NSURL URLWithString:@"http://i.space.com/images/i/8123/original/saturn-moon-mimas-death-star.jpg"];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+- (void)testDataTaskDoesReportDownloadProgress {
     NSURLSessionDataTask *task;
 
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress should equal 1.0"];
     task = [self.localManager
-            dataTaskWithRequest:request
-            completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-                [expectation fulfill];
-            }];
-
-    NSProgress *progress = [self.localManager progressForDataTask:task];
-    [self keyValueObservingExpectationForObject:progress keyPath:@"fractionCompleted"
-                                        handler:^BOOL(NSProgress  *observedProgress, NSDictionary * _Nonnull change) {
-                                            double new = [change[@"new"] doubleValue];
-                                            double old = [change[@"old"] doubleValue];
-                                            return new == 1.0 && old != 0.0;
-                                        }];
+            dataTaskWithRequest:[self bigImageURLRequest]
+            uploadProgress:nil
+            downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
+                if (downloadProgress.fractionCompleted == 1.0) {
+                    [expectation fulfill];
+                }
+            }
+            completionHandler:nil];
+    
     [task resume];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
-- (void)testUploadTasksProgressBecomesPartOfCurrentProgress {
-    NSProgress *overallProgress = [NSProgress progressWithTotalUnitCount:100];
+- (void)testDataTaskDownloadProgressCanBeKVOd {
+    NSURLSessionDataTask *task;
 
-    [overallProgress becomeCurrentWithPendingUnitCount:80];
-    NSProgress *uploadProgress = nil;
+    task = [self.localManager
+            dataTaskWithRequest:[self bigImageURLRequest]
+            uploadProgress:nil
+            downloadProgress:nil
+            completionHandler:nil];
 
-    [self.localManager uploadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
-                               fromData:[NSData data]
-                                 progress:&uploadProgress
-                        completionHandler:nil];
-    [overallProgress resignCurrent];
-
-    XCTAssertTrue(overallProgress.fractionCompleted == 0);
-
-    uploadProgress.totalUnitCount = 1;
-    uploadProgress.completedUnitCount = 1;
-
-    XCTAssertTrue(overallProgress.fractionCompleted == 0.8);
+        NSProgress *progress = [self.localManager downloadProgressForTask:task];
+        [self keyValueObservingExpectationForObject:progress keyPath:@"fractionCompleted"
+                                            handler:^BOOL(NSProgress  *observedProgress, NSDictionary * _Nonnull change) {
+                                                double new = [change[@"new"] doubleValue];
+                                                double old = [change[@"old"] doubleValue];
+                                                return new == 1.0 && old != 0.0;
+                                            }];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
-- (void)testDownloadTasksProgressBecomesPartOfCurrentProgress {
-    NSProgress *overallProgress = [NSProgress progressWithTotalUnitCount:100];
+- (void)testDownloadTaskDoesReportProgress {
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress should equal 1.0"];
+    NSURLSessionTask *task;
+    task = [self.localManager
+            downloadTaskWithRequest:[self bigImageURLRequest]
+            progress:^(NSProgress * _Nonnull downloadProgress) {
+                if (downloadProgress.fractionCompleted == 1.0) {
+                    [expectation fulfill];
+                }
+            }
+            destination:nil
+            completionHandler:nil];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
 
-    [overallProgress becomeCurrentWithPendingUnitCount:80];
-    NSProgress *downloadProgress = nil;
+- (void)testUploadTaskDoesReportProgress {
+    NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
+    while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
+        [payload appendString:@"AFNetworking"];
+    }
 
-    [self.localManager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
-                                 progress:&downloadProgress
-                              destination:nil
-                        completionHandler:nil];
-    [overallProgress resignCurrent];
+    NSURL *url = [NSURL URLWithString:[[self.baseURL absoluteString] stringByAppendingString:@"/post"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+    [request setHTTPMethod:@"POST"];
 
-    XCTAssertTrue(overallProgress.fractionCompleted == 0.0);
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress should equal 1.0"];
 
-    downloadProgress.totalUnitCount = 1;
-    downloadProgress.completedUnitCount = 1;
+    NSURLSessionTask *task;
+    task = [self.localManager
+            uploadTaskWithRequest:request
+            fromData:[payload dataUsingEncoding:NSUTF8StringEncoding]
+            progress:^(NSProgress * _Nonnull uploadProgress) {
+                NSLog(@"%@", uploadProgress.localizedDescription);
+                if ([uploadProgress fractionCompleted] == 1.0) {
+                    [expectation fulfill];
+                }
+            }
+            completionHandler:nil];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
 
-    XCTAssertTrue(overallProgress.fractionCompleted == 0.8);
+- (void)testUploadProgressCanBeKVOd {
+    NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
+    while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
+        [payload appendString:@"AFNetworking"];
+    }
+
+    NSURL *url = [NSURL URLWithString:[[self.baseURL absoluteString] stringByAppendingString:@"/post"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+    [request setHTTPMethod:@"POST"];
+
+    NSURLSessionTask *task;
+    task = [self.localManager
+            uploadTaskWithRequest:request
+            fromData:[payload dataUsingEncoding:NSUTF8StringEncoding]
+            progress:nil
+            completionHandler:nil];
+
+    NSProgress *uploadProgress = [self.localManager uploadProgressForTask:task];
+    [self keyValueObservingExpectationForObject:uploadProgress keyPath:NSStringFromSelector(@selector(fractionCompleted)) expectedValue:@(1.0)];
+
+    [task resume];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
 #pragma mark - Issue #2702 Tests
