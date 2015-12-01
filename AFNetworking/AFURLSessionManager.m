@@ -134,35 +134,35 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     self.downloadProgress.totalUnitCount = task.countOfBytesExpectedToReceive;
     [self.uploadProgress setCancellable:YES];
     [self.uploadProgress setCancellationHandler:^{
-        __typeof__(task) strongTask = weakTask;
+        __typeof__(weakTask) strongTask = weakTask;
         [strongTask cancel];
     }];
     [self.uploadProgress setPausable:YES];
     [self.uploadProgress setPausingHandler:^{
-        __typeof__(task) strongTask = weakTask;
+        __typeof__(weakTask) strongTask = weakTask;
         [strongTask suspend];
     }];
     if ([self.uploadProgress respondsToSelector:@selector(setResumingHandler:)]) {
         [self.uploadProgress setResumingHandler:^{
-            __typeof__(task) strongTask = weakTask;
+            __typeof__(weakTask) strongTask = weakTask;
             [strongTask resume];
         }];
     }
 
     [self.downloadProgress setCancellable:YES];
     [self.downloadProgress setCancellationHandler:^{
-        __typeof__(task) strongTask = weakTask;
+        __typeof__(weakTask) strongTask = weakTask;
         [strongTask cancel];
     }];
     [self.downloadProgress setPausable:YES];
     [self.downloadProgress setPausingHandler:^{
-        __typeof__(task) strongTask = weakTask;
+        __typeof__(weakTask) strongTask = weakTask;
         [strongTask suspend];
     }];
 
     if ([self.downloadProgress respondsToSelector:@selector(setResumingHandler:)]) {
         [self.downloadProgress setResumingHandler:^{
-            __typeof__(task) strongTask = weakTask;
+            __typeof__(weakTask) strongTask = weakTask;
             [strongTask resume];
         }];
     }
