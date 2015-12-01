@@ -28,13 +28,11 @@
 #import <TargetConditionals.h>
 #import <Security/Security.h>
 
-#ifdef _SYSTEMCONFIGURATION_H
 #import <netinet/in.h>
 #import <netinet6/in6.h>
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <netdb.h>
-#endif
 
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import <UIKit/UIKit.h>
@@ -87,9 +85,6 @@
 }
 
 #pragma mark -
-
-#ifdef _SYSTEMCONFIGURATION_H
-#endif
 
 - (void)setRequestSerializer:(AFHTTPRequestSerializer <AFURLRequestSerialization> *)requestSerializer {
     NSParameterAssert(requestSerializer);
