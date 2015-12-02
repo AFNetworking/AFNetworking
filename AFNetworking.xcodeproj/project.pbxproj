@@ -453,7 +453,10 @@
 				298D7C561BC2C88F00FD3B3E /* Tests */,
 				2995223A1BBF104D00859F49 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		2995223A1BBF104D00859F49 /* Products */ = {
 			isa = PBXGroup;

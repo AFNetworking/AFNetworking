@@ -226,5 +226,18 @@
     XCTAssertNil(urlResponseObject);
 }
 
+- (void)testHiddenBasicAuthentication {
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should finish"];
+    [self.manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"user" password:@"password"];
+    [self.manager
+     GET:@"hidden-basic-auth/user/password" parameters:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+         [expectation fulfill];
+     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         XCTFail(@"Request should succeed");
+         [expectation fulfill];
+     }];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
 
 @end
