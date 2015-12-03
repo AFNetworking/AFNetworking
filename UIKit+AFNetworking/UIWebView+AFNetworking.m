@@ -129,6 +129,7 @@
     dataTask = [self.sessionManager
             GET:request.URL.absoluteString
             parameters:nil
+            progress:nil
             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 __strong __typeof(weakSelf) strongSelf = weakSelf;
                 if (success) {

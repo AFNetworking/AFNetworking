@@ -176,6 +176,7 @@
     nilTask = [self.manager
                GET:@"test"
                parameters:@{@"key":@"value"}
+               progress:nil
                success:nil
                failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                    XCTAssertNil(task);
@@ -257,6 +258,7 @@
     [self.manager
      GET:@"status/200"
      parameters:nil
+     progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          [expectation fulfill];
      }
@@ -269,6 +271,7 @@
     [self.manager
      GET:@"status/404"
      parameters:nil
+     progress:nil
      success:nil
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error) {
          [expectation fulfill];
@@ -282,6 +285,7 @@
     [self.manager
      GET:@"status/204"
      parameters:nil
+     progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          urlResponseObject = responseObject;
          [expectation fulfill];
