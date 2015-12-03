@@ -22,6 +22,7 @@
 #import "AFTestCase.h"
 
 #import "AFHTTPSessionManager.h"
+#import "AFSecurityPolicy.h"
 
 @interface AFHTTPSessionManagerTests : AFTestCase
 @property (readwrite, nonatomic, strong) AFHTTPSessionManager *manager;
@@ -238,6 +239,31 @@
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
+# pragma mark - Server Trust
+
+- (void)testInvalidServerTrustProducesCorrectError {
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
+    NSURL *googleCertificateURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"google.com" withExtension:@"cer"];
+    NSData *googleCertificateData = [NSData dataWithContentsOfURL:googleCertificateURL];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://apple.com/"]];
+    [manager setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    manager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate withPinnedCertificates:[NSSet setWithObject:googleCertificateData]];
+    [manager
+     GET:@"AFNetworking/AFNetworking"
+     parameters:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+         XCTFail(@"Request should fail");
+         [expectation fulfill];
+     }
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
+         XCTAssertEqual(error.code, NSURLErrorServerCertificateUntrusted);
+         [expectation fulfill];
+     }];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [manager invalidateSessionCancelingTasks:YES];
 }
 
 @end
