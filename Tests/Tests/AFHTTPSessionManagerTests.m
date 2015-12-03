@@ -247,9 +247,11 @@
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
     NSURL *googleCertificateURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"google.com" withExtension:@"cer"];
     NSData *googleCertificateData = [NSData dataWithContentsOfURL:googleCertificateURL];
-    self.manager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate withPinnedCertificates:[NSSet setWithObject:googleCertificateData]];
-    [self.manager
-     GET:@"get"
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://github.com/"]];
+    [manager setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    manager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate withPinnedCertificates:[NSSet setWithObject:googleCertificateData]];
+    [manager
+     GET:@"AFNetworking/AFNetworking"
      parameters:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          XCTFail(@"Request should fail");
@@ -261,6 +263,7 @@
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [manager invalidateSessionCancelingTasks:YES];
 }
 
 @end

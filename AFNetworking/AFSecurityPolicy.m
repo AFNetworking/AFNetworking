@@ -94,7 +94,6 @@ static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
     SecTrustResultType result;
     __Require_noErr_Quiet(SecTrustEvaluate(serverTrust, &result), _out);
 
-    NSLog(@"✳️ %s %d ✳️ SecTrustEvaluate -> %d", __PRETTY_FUNCTION__, __LINE__, result);
     isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
 
 _out:
@@ -270,11 +269,9 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             for (NSData *certificateData in self.pinnedCertificates) {
                 [pinnedCertificates addObject:(__bridge_transfer id)SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificateData)];
             }
-			NSLog(@"✳️ %s %d ✳️ pinnedCertificates = %@", __PRETTY_FUNCTION__, __LINE__, pinnedCertificates);
             SecTrustSetAnchorCertificates(serverTrust, (__bridge CFArrayRef)pinnedCertificates);
 
             if (!AFServerTrustIsValid(serverTrust)) {
-				NSLog(@"✳️ %s %d ✳️ !AFServerTrustIsValid", __PRETTY_FUNCTION__, __LINE__);
                 return NO;
             }
 
@@ -283,12 +280,10 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             
             for (NSData *trustChainCertificate in [serverCertificates reverseObjectEnumerator]) {
                 if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
-					NSLog(@"✳️ %s %d ✳️ pinnedCertificates contains trustChainCertificate", __PRETTY_FUNCTION__, __LINE__);
                     return YES;
                 }
             }
             
-            NSLog(@"✳️ %s %d ✳️ pinnedCertificates does NOT contain trustChainCertificate", __PRETTY_FUNCTION__, __LINE__);
             return NO;
         }
         case AFSSLPinningModePublicKey: {
