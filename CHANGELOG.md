@@ -87,7 +87,7 @@ Released on Wednesday, August 19th, 2015. All issues associated with this milest
 ###Important Upgrade Notes
 Please note the following API/project changes have been made:
 
-* iOS 6 support has now been removed from the podspec. Note that iOS 6 support has not been removed explicitly from the project, but it will be removed in a future update.
+* iOS 6 and OS X 10.8 support has been dropped from the project to facilitate support for watchOS 2. The final release supporting iOS 6 and OS X 10.8 is 2.5.4.
 * **Full Certificate Chain Validation has been removed** from `AFSecurityPolicy`. As discussed in [#2744](https://github.com/AFNetworking/AFNetworking/issues/2744), there was no documented security advantage to pinning against an entire certificate chain. If you were using full certificate chain, please determine and select the most ideal certificate in your chain to pin against.
 	* Implemented by [Kevin Harwood](https://github.com/kcharwood) in [#2856](https://github.com/AFNetworking/AFNetworking/pull/2856).
 * **The request url will now be returned by the `UIImageView` category if the image is returned from cache.** In previous releases, both the request and the response were nil. Going forward, only the response will be nil.
