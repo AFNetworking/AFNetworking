@@ -7,6 +7,7 @@ env:
   - LANG=en_US.UTF-8
   - FASTLANE_LANE=ci_commit
   matrix:
+    - FASTLANE_LANE=code_coverage FASTLANE_ENV=default
     - FASTLANE_ENV=ios81
     - FASTLANE_ENV=ios82
     - FASTLANE_ENV=ios83
@@ -23,6 +24,10 @@ script:
   - set -o pipefail
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
   - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
+after_success:
+  - if [ "$FASTLANE_LANE" == "code_coverage" ]; then
+     bash <(curl -s https://codecov.io/bash);
+    fi
 after_failure:
  - cat -n ~/Library/Logs/scan/*
  - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
