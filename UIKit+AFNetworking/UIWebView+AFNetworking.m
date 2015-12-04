@@ -129,6 +129,7 @@
     dataTask = [self.sessionManager
             GET:request.URL.absoluteString
             parameters:nil
+            progress:nil
             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 __strong __typeof(weakSelf) strongSelf = weakSelf;
                 if (success) {
@@ -146,7 +147,7 @@
                 }
             }];
     self.af_URLSessionTask = dataTask;
-    *progress = [self.sessionManager progressForDataTask:dataTask];
+    *progress = [self.sessionManager downloadProgressForTask:dataTask];
     [self.af_URLSessionTask resume];
 
     if ([self.delegate respondsToSelector:@selector(webViewDidStartLoad:)]) {

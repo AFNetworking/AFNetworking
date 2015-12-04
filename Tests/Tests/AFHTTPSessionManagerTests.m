@@ -176,6 +176,7 @@
     nilTask = [self.manager
                GET:@"test"
                parameters:@{@"key":@"value"}
+               progress:nil
                success:nil
                failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                    XCTAssertNil(task);
@@ -186,6 +187,70 @@
 }
 
 
+#pragma mark - Progress
+
+- (void)testDownloadProgressIsReportedForGET {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+    [self.manager
+     GET:@"image"
+     parameters:nil
+     progress:^(NSProgress * _Nonnull downloadProgress) {
+         if (downloadProgress.fractionCompleted == 1.0) {
+             [expectation fulfill];
+         }
+     }
+     success:nil
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
+- (void)testUploadProgressIsReportedForPOST {
+    NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
+    while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
+        [payload appendString:@"AFNetworking"];
+    }
+
+    __weak __block XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+
+    [self.manager
+     POST:@"post"
+     parameters:payload
+     progress:^(NSProgress * _Nonnull uploadProgress) {
+         if (uploadProgress.fractionCompleted == 1.0) {
+             [expectation fulfill];
+             expectation = nil;
+         }
+     }
+     success:nil
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
+- (void)testUploadProgressIsReportedForStreamingPost {
+    NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
+    while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
+        [payload appendString:@"AFNetworking"];
+    }
+
+    __block __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+
+    [self.manager
+     POST:@"post"
+     parameters:nil
+     constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+         [formData appendPartWithFileData:[payload dataUsingEncoding:NSUTF8StringEncoding] name:@"AFNetworking" fileName:@"AFNetworking" mimeType:@"text/html"];
+     }
+     progress:^(NSProgress * _Nonnull uploadProgress) {
+         if (uploadProgress.fractionCompleted == 1.0) {
+             [expectation fulfill];
+             expectation = nil;
+         }
+     }
+     success:nil
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
 # pragma mark - Rest Interface
 
 - (void)testThatSuccessBlockIsCalledFor200 {
@@ -193,6 +258,7 @@
     [self.manager
      GET:@"status/200"
      parameters:nil
+     progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          [expectation fulfill];
      }
@@ -205,6 +271,7 @@
     [self.manager
      GET:@"status/404"
      parameters:nil
+     progress:nil
      success:nil
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error) {
          [expectation fulfill];
@@ -218,6 +285,7 @@
     [self.manager
      GET:@"status/204"
      parameters:nil
+     progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          urlResponseObject = responseObject;
          [expectation fulfill];
