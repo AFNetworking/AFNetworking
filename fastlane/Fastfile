@@ -1,4 +1,4 @@
 import_from_git(
   url: 'https://github.com/AFNetworking/fastlane.git', 
-  branch: 'feature/code_coverage'
+  branch: '0.0.4'
 )
