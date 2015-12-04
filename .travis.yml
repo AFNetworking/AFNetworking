@@ -20,15 +20,14 @@ before_install:
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
-install:
-  - sudo easy_install cpp-coveralls
-  - sudo easy_install codecov
 script:
   - set -o pipefail
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
   - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
 after_success:
-  - '[ "$FASTLANE_LANE" == "code_coverage" ] && cpp-coveralls --include AFNetworking; codecov --gcov-glob "*AFNetworking * Tests*"'
+  - if [ "$FASTLANE_LANE" == "code_coverage" ]; then
+     bash <(curl -s https://codecov.io/bash);
+    fi
 after_failure:
  - cat -n ~/Library/Logs/scan/*
  - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
