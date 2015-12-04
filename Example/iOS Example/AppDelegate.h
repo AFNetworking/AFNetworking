@@ -20,25 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Availability.h>
+#import <UIKit/UIKit.h>
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-    #import <UIKit/UIKit.h>
+@interface AppDelegate : NSObject <UIApplicationDelegate>
 
-    @interface AppDelegate : NSObject <UIApplicationDelegate>
+@property (nonatomic, strong) UIWindow *window;
+@property (nonatomic, strong) UINavigationController *navigationController;
 
-    @property (nonatomic, strong) UIWindow *window;
-    @property (nonatomic, strong) UINavigationController *navigationController;
-
-    @end
-#else
-    #import <Cocoa/Cocoa.h>
-
-    @interface AppDelegate : NSObject <NSApplicationDelegate>
-
-    @property (strong) IBOutlet NSWindow *window;
-    @property (strong) IBOutlet NSTableView *tableView;
-    @property (strong) IBOutlet NSArrayController *postsArrayController;
-
-    @end
-#endif
+@end

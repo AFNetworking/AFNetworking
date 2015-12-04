@@ -11,7 +11,6 @@
 		291BFDD51BB9E85500FFB029 /* watchOS Example.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 291BFDB91BB9E85400FFB029 /* watchOS Example.app */; };
 		291BFDEE1BB9E8C700FFB029 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 291BFDED1BB9E8C700FFB029 /* main.m */; };
 		291BFDF31BB9E8C700FFB029 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 291BFDF21BB9E8C700FFB029 /* Assets.xcassets */; };
-		291BFDFB1BB9E8DC00FFB029 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F1A91BB9DD9400A4466C /* AppDelegate.m */; };
 		291BFDFD1BB9E8E500FFB029 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19A1BB9DD7300A4466C /* Post.m */; };
 		291BFDFE1BB9E8E900FFB029 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19C1BB9DD7300A4466C /* User.m */; };
 		291BFDFF1BB9E8EC00FFB029 /* AFAppDotNetAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19F1BB9DD7300A4466C /* AFAppDotNetAPIClient.m */; };
@@ -34,7 +33,6 @@
 		29E6F1A41BB9DD7300A4466C /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19A1BB9DD7300A4466C /* Post.m */; };
 		29E6F1A51BB9DD7300A4466C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19C1BB9DD7300A4466C /* User.m */; };
 		29E6F1A61BB9DD7300A4466C /* AFAppDotNetAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19F1BB9DD7300A4466C /* AFAppDotNetAPIClient.m */; };
-		29E6F1AA1BB9DD9400A4466C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F1A91BB9DD9400A4466C /* AppDelegate.m */; };
 		29E6F1AC1BB9DDB600A4466C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29E6F1AB1BB9DDB600A4466C /* Assets.xcassets */; };
 		29E6F1E11BB9E03600A4466C /* Launchscreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29E6F1E01BB9E03600A4466C /* Launchscreen.storyboard */; };
 		29E6F1E91BB9E37200A4466C /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29E6F1E81BB9E37200A4466C /* NotificationCenter.framework */; };
@@ -43,6 +41,8 @@
 		29E6F1F41BB9E37200A4466C /* Today Extension Example.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 29E6F1E61BB9E37200A4466C /* Today Extension Example.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		29E6F1F91BB9E56200A4466C /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19A1BB9DD7300A4466C /* Post.m */; };
 		29E6F1FA1BB9E56500A4466C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19C1BB9DD7300A4466C /* User.m */; };
+		C2BFE0251C11870800BB258D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C2BFE0241C11870800BB258D /* AppDelegate.m */; };
+		C2BFE0281C11872D00BB258D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C2BFE0271C11872D00BB258D /* AppDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -135,8 +135,6 @@
 		29E6F19C1BB9DD7300A4466C /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		29E6F19E1BB9DD7300A4466C /* AFAppDotNetAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFAppDotNetAPIClient.h; sourceTree = "<group>"; };
 		29E6F19F1BB9DD7300A4466C /* AFAppDotNetAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFAppDotNetAPIClient.m; sourceTree = "<group>"; };
-		29E6F1A81BB9DD9400A4466C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		29E6F1A91BB9DD9400A4466C /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		29E6F1AB1BB9DDB600A4466C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29E6F1E01BB9E03600A4466C /* Launchscreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Launchscreen.storyboard; path = "iOS Example/Launchscreen.storyboard"; sourceTree = SOURCE_ROOT; };
 		29E6F1E61BB9E37200A4466C /* Today Extension Example.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Today Extension Example.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -155,6 +153,10 @@
 		29E6F2231BB9E76A00A4466C /* ExtensionDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExtensionDelegate.m; sourceTree = "<group>"; };
 		29E6F2251BB9E76A00A4466C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29E6F2271BB9E76B00A4466C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2BFE0231C11870800BB258D /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C2BFE0241C11870800BB258D /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		C2BFE0261C11872D00BB258D /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C2BFE0271C11872D00BB258D /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,6 +208,8 @@
 		291BFDE81BB9E8C700FFB029 /* OS X Example */ = {
 			isa = PBXGroup;
 			children = (
+				C2BFE0231C11870800BB258D /* AppDelegate.h */,
+				C2BFE0241C11870800BB258D /* AppDelegate.m */,
 				291BFE0F1BB9EC4900FFB029 /* MainMenu.xib */,
 				291BFDF21BB9E8C700FFB029 /* Assets.xcassets */,
 				291BFDF71BB9E8C700FFB029 /* Info.plist */,
@@ -289,6 +293,8 @@
 		29E6F1771BB9DCB500A4466C /* iOS Example */ = {
 			isa = PBXGroup;
 			children = (
+				C2BFE0261C11872D00BB258D /* AppDelegate.h */,
+				C2BFE0271C11872D00BB258D /* AppDelegate.m */,
 				291BFE071BB9EB3400FFB029 /* Controllers */,
 				291BFE0A1BB9EB3400FFB029 /* Views */,
 				29E6F1781BB9DCB500A4466C /* Supporting Files */,
@@ -309,8 +315,6 @@
 		29E6F1941BB9DD7300A4466C /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				29E6F1A81BB9DD9400A4466C /* AppDelegate.h */,
-				29E6F1A91BB9DD9400A4466C /* AppDelegate.m */,
 				29E6F1981BB9DD7300A4466C /* Models */,
 				29E6F19D1BB9DD7300A4466C /* Networking Extensions */,
 			);
@@ -606,7 +610,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				291BFDFF1BB9E8EC00FFB029 /* AFAppDotNetAPIClient.m in Sources */,
-				291BFDFB1BB9E8DC00FFB029 /* AppDelegate.m in Sources */,
+				C2BFE0251C11870800BB258D /* AppDelegate.m in Sources */,
 				291BFDFE1BB9E8E900FFB029 /* User.m in Sources */,
 				291BFDFD1BB9E8E500FFB029 /* Post.m in Sources */,
 				291BFDEE1BB9E8C700FFB029 /* main.m in Sources */,
@@ -631,9 +635,9 @@
 				291BFE0D1BB9EB3400FFB029 /* GlobalTimelineViewController.m in Sources */,
 				291BFE0E1BB9EB3400FFB029 /* PostTableViewCell.m in Sources */,
 				29E6F1A51BB9DD7300A4466C /* User.m in Sources */,
-				29E6F1AA1BB9DD9400A4466C /* AppDelegate.m in Sources */,
 				29E6F17A1BB9DCB500A4466C /* main.m in Sources */,
 				29E6F1A61BB9DD7300A4466C /* AFAppDotNetAPIClient.m in Sources */,
+				C2BFE0281C11872D00BB258D /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
