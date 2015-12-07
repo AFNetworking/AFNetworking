@@ -82,10 +82,11 @@ Run `carthage` to build the framework and drag the built `AFNetworking.framework
 
 | AFNetworking Version | Minimum iOS Target  | Minimum OS X Target  | Minimum watchOS Target  | Minimum tvOS Target  |                                   Notes                                   |
 |:--------------------:|:---------------------------:|:----------------------------:|:----------------------------:|:----------------------------:|:-------------------------------------------------------------------------:|
-| 3.x | iOS 7 | OS X 10.9 | 2.0 | 9.0 | Xcode 7 is required. `NSURLConnectionOperation` support has been removed. |
-| [2.x](https://github.com/AFNetworking/AFNetworking/tree/2.x) | iOS 7 | OS X 10.8 | 2.0 | n/a | Xcode 5 is required. `NSURLSession` subspec requires iOS 7 or OS X 10.9. |
-| [1.x](https://github.com/AFNetworking/AFNetworking/tree/1.x) | iOS 5 | Mac OS X 10.7 | n/a | n/a |
-| [0.10.x](https://github.com/AFNetworking/AFNetworking/tree/0.10.x) | iOS 4 | Mac OS X 10.6 | n/a | n/a |
+| 3.x | iOS 7 | OS X 10.9 | watchOS 2.0 | tvOS 9.0 | Xcode 7+ is required. `NSURLConnectionOperation` support has been removed. |
+| 2.6 -> 2.6.3 | iOS 7 | OS X 10.9 | watchOS 2.0 | n/a | Xcode 7+ is required. |
+| 2.0 -> 2.5.4 | iOS 6 | OS X 10.8 | n/a | n/a | Xcode 5+ is required. `NSURLSession` subspec requires iOS 7 or OS X 10.9. |
+| 1.x | iOS 5 | Mac OS X 10.7 | n/a | n/a |
+| 0.10.x | iOS 4 | Mac OS X 10.6 | n/a | n/a |
 
 (OS X projects must support [64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)).
 
