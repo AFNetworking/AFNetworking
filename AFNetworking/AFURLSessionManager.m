@@ -23,9 +23,9 @@
 #import <objc/runtime.h>
 
 #ifndef NSFoundationVersionNumber_iOS_8_0
-#define NSFoundationVersionNumber_With_Fiexed_5871104061079552_bug 1140.11
+#define NSFoundationVersionNumber_With_Fixed_5871104061079552_bug 1140.11
 #else
-#define NSFoundationVersionNumber_With_Fiexed_5871104061079552_bug NSFoundationVersionNumber_iOS_8_0
+#define NSFoundationVersionNumber_With_Fixed_5871104061079552_bug NSFoundationVersionNumber_iOS_8_0
 #endif
 
 static dispatch_queue_t url_session_manager_creation_queue() {
@@ -39,7 +39,7 @@ static dispatch_queue_t url_session_manager_creation_queue() {
 }
 
 static void url_session_manager_create_task_safely(dispatch_block_t block) {
-    if (NSFoundationVersionNumber < NSFoundationVersionNumber_With_Fiexed_5871104061079552_bug) {
+    if (NSFoundationVersionNumber < NSFoundationVersionNumber_With_Fixed_5871104061079552_bug) {
         // Fix of bug
         // Open Radar:http://openradar.appspot.com/radar?id=5871104061079552 (status: Fixed in iOS8)
         // Issue about:https://github.com/AFNetworking/AFNetworking/issues/2093
