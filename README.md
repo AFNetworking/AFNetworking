@@ -368,14 +368,6 @@ AFNetworking includes a suite of unit tests within the Tests subdirectory. In or
 
 Once testing dependencies are installed, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
 
-### Running Tests from the Command Line
-
-Tests can also be run from the command line or within a continuous integration environment. The [`xcpretty`](https://github.com/supermarin/xcpretty) utility needs to be installed before running the tests from the command line:
-
-    $ gem install xcpretty
-
-Once `xcpretty` is installed, you can execute the suite via `rake test`.
-
 ## Credits
 
 AFNetworking is owned and maintained by the [Alamofire Software Foundation](http://alamofire.org).
