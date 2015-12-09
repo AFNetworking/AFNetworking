@@ -43,7 +43,7 @@ static void url_session_manager_create_task_safely(dispatch_block_t block) {
         // Fix of bug
         // Open Radar:http://openradar.appspot.com/radar?id=5871104061079552 (status: Fixed in iOS8)
         // Issue about:https://github.com/AFNetworking/AFNetworking/issues/2093
-        dispatch_async(url_session_manager_creation_queue(), block);
+        dispatch_sync(url_session_manager_creation_queue(), block);
     } else {
         block();
     }
