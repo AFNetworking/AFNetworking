@@ -173,6 +173,31 @@
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
+#pragma mark - rdar://17029580
+
+- (void)testRDAR17029580IsFixed {
+    //https://github.com/AFNetworking/AFNetworking/issues/2093
+    //https://github.com/AFNetworking/AFNetworking/pull/3205
+    //http://openradar.appspot.com/radar?id=5871104061079552
+    dispatch_queue_t serial_queue = dispatch_queue_create("com.alamofire.networking.test.RDAR17029580", DISPATCH_QUEUE_SERIAL);
+    NSMutableArray *taskIDs = [[NSMutableArray alloc] init];
+    for (NSInteger i = 0; i < 100; i++) {
+        XCTestExpectation *expectation = [self expectationWithDescription:@"Wait for task creation"];
+        __block NSURLSessionTask *task;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            task = [self.localManager
+                    dataTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                    completionHandler:nil];
+            dispatch_sync(serial_queue, ^{
+                XCTAssertFalse([taskIDs containsObject:@(task.taskIdentifier)]);
+                [taskIDs addObject:@(task.taskIdentifier)];
+            });
+            [expectation fulfill];
+        });
+    }
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
 #pragma mark - Issue #2702 Tests
 // The following tests are all releated to issue #2702
 
