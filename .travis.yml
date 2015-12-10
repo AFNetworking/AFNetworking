@@ -6,16 +6,26 @@ env:
   - LC_CTYPE=en_US.UTF-8
   - LANG=en_US.UTF-8
   - FASTLANE_LANE=ci_commit
-  matrix:
-    - FASTLANE_LANE=code_coverage FASTLANE_ENV=default
-    - FASTLANE_ENV=ios81
-    - FASTLANE_ENV=ios82
-    - FASTLANE_ENV=ios83
-    - FASTLANE_ENV=ios84
-    - FASTLANE_ENV=ios90
-    - FASTLANE_ENV=ios91
-    - FASTLANE_ENV=osx
-    - FASTLANE_ENV=tvos90
+matrix:
+  include:
+    - osx_image: xcode7.1
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=default
+    - osx_image: xcode7.1
+      env: FASTLANE_ENV=ios82
+    - osx_image: xcode7.1
+      env: FASTLANE_ENV=ios83
+    - osx_image: xcode7.1
+      env: FASTLANE_ENV=ios84
+    - osx_image: xcode7.1
+      env: FASTLANE_ENV=ios91
+    - osx_image: xcode7.1
+      env: FASTLANE_ENV=osx
+    - osx_image: xcode7.1
+      env: FASTLANE_ENV=tvos90
+    - osx_image: xcode7
+      env: FASTLANE_ENV=ios81_xcode7	  
+    - osx_image: xcode7
+      env: FASTLANE_ENV=ios90_xcode7	  
 before_install:
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
