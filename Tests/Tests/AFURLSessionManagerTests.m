@@ -192,6 +192,7 @@
                 XCTAssertFalse([taskIDs containsObject:@(task.taskIdentifier)]);
                 [taskIDs addObject:@(task.taskIdentifier)];
             });
+            [task cancel];
             [expectation fulfill];
         });
     }
