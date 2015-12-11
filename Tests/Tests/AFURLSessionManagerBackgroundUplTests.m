@@ -41,12 +41,10 @@
     NSURLSessionConfiguration * config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier: @"testId"];
     _sessionManager = [[AFHTTPSessionManager alloc]initWithSessionConfiguration:config ];
     
+    NSString * uploadUrl = [NSString stringWithFormat:@"%@%@",AFNetworkingTestsBaseURLString,@"post"];
+    NSString * imageUrl =  [NSString stringWithFormat:@"%@%@",AFNetworkingTestsBaseURLString,@"image/jpeg"];
     
-    
-    NSString * uploadUrl = [NSString stringWithFormat:@"%@/%@",AFNetworkingTestsBaseURLString,@"post"];
-    
-    NSData * fileData =  [NSData dataWithContentsOfURL:
-                          [NSString stringWithFormat:@"%@/%@",AFNetworkingTestsBaseURLString,@"image/jpeg"]];
+    NSData * fileData =  [NSData dataWithContentsOfURL: [NSURL URLWithString:imageUrl]];
     
     NSString *pathToWrite = [NSTemporaryDirectory() stringByAppendingString:@"test.jpg"];
     
@@ -68,7 +66,9 @@
     self.sessionManager = nil;
     self.fileUploadRequest = nil;
     self.localFileUrl = nil;
-    
+    //Not Sure if it's necessary to remove a local file
+   [[NSFileManager defaultManager] removeItemAtURL:self.localFileUrl error:nil];
+
 }
 
 // Upload works with Default Configuration, but crashes with background configuration
@@ -128,7 +128,7 @@
         XCTAssertNotNil(fileDic);
         XCTAssertNotNil(formDic);
         
-        // Asset Fails. For some reason request params aren't included.
+        // Assert Fails. For some reason request params aren't included.
         
         XCTAssertNotNil([fileDic objectForKey:@"fileData"]);
         XCTAssertTrue([[fileDic objectForKey:@"fileData"] length] > 0);
