@@ -35,6 +35,8 @@
 
 - (void)setUp {
     [super setUp];
+    
+    // Test case won't fail if the defaultSessionConfiguration is set rather than backgroundSessionConfigurationWithIdentifier
     // NSURLSessionConfiguration * config = [NSURLSessionConfiguration  defaultSessionConfiguration];
     NSURLSessionConfiguration * config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier: @"testId"];
     _sessionManager = [[AFHTTPSessionManager alloc]initWithSessionConfiguration:config ];
