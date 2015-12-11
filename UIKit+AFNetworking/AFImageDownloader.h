@@ -91,7 +91,7 @@ typedef NS_ENUM(NSInteger, AFImageDownloadPrioritization) {
 /**
  Initializes the `AFImageDownloader` instance with the given session manager, download prioritization, maximum active download count and image cache.
 
- @param sessionManager The session manager to use to download images
+ @param sessionManager The session manager to use to download images.
  @param downloadPrioritization The download prioritization of the download queue.
  @param maximumActiveDownloads  The maximum number of active downloads allowed at any given time. Recommend `4`.
  @param imageCache The image cache used to store all downloaded images in.
@@ -114,10 +114,30 @@ typedef NS_ENUM(NSInteger, AFImageDownloadPrioritization) {
  @param success A block to be executed when the image data task finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the image created from the response data of request. If the image was returned from cache, the response parameter will be `nil`.
  @param failure A block object to be executed when the image data task finishes unsuccessfully, or that finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error object describing the network or parsing error that occurred.
 
- @return The image download receipt for the data task if available. `nil` if the image is stored in the image
+ @return The image download receipt for the data task if available. `nil` if the image is stored in the cache.
  cache and the URL request cache policy allows the cache to be used.
  */
 - (nullable AFImageDownloadReceipt *)downloadImageForURLRequest:(NSURLRequest *)request
+                                                        success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse  * _Nullable response, UIImage *responseObject))success
+                                                        failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure;
+
+/**
+ Creates a data task using the `sessionManager` instance for the specified URL request.
+
+ If the same data task is already in the queue or currently being downloaded, the success and failure blocks are
+ appended to the already existing task. Once the task completes, all success or failure blocks attached to the
+ task are executed in the order they were added.
+
+ @param request The URL request.
+ @param request The identifier to use for the download receipt that will be created for this request. This must be a unique identifier that does not represent any other request.
+ @param success A block to be executed when the image data task finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the image created from the response data of request. If the image was returned from cache, the response parameter will be `nil`.
+ @param failure A block object to be executed when the image data task finishes unsuccessfully, or that finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error object describing the network or parsing error that occurred.
+
+ @return The image download receipt for the data task if available. `nil` if the image is stored in the cache.
+ cache and the URL request cache policy allows the cache to be used.
+ */
+- (nullable AFImageDownloadReceipt *)downloadImageForURLRequest:(NSURLRequest *)request
+                                                 withReceiptID:(NSUUID *)receiptID
                                                         success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse  * _Nullable response, UIImage *responseObject))success
                                                         failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure;
 
