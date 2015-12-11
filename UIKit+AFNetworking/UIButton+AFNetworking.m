@@ -161,12 +161,14 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
         }
 
         __weak __typeof(self)weakSelf = self;
+        NSUUID *downloadID = [NSUUID UUID];
         AFImageDownloadReceipt *receipt;
         receipt = [downloader
                    downloadImageForURLRequest:urlRequest
+                   withReceiptID:downloadID
                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                       if ([strongSelf isActiveTaskURLEqualToURLRequest:request forState:state]) {
+                       if ([[strongSelf af_imageDownloadReceiptForState:state].receiptID isEqual:downloadID]) {
                            if (success) {
                                success(request, response, responseObject);
                            } else if(responseObject) {
@@ -178,7 +180,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                    }
                    failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                       if ([strongSelf isActiveTaskURLEqualToURLRequest:request forState:state]) {
+                       if ([[strongSelf af_imageDownloadReceiptForState:state].receiptID isEqual:downloadID]) {
                            if (failure) {
                                failure(request, response, error);
                            }
@@ -238,12 +240,14 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
         }
 
         __weak __typeof(self)weakSelf = self;
+        NSUUID *downloadID = [NSUUID UUID];
         AFImageDownloadReceipt *receipt;
         receipt = [downloader
                    downloadImageForURLRequest:urlRequest
+                   withReceiptID:downloadID
                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                       if ([strongSelf isActiveBackgroundTaskURLEqualToURLRequest:request forState:state]) {
+                       if ([[strongSelf af_backgroundImageDownloadReceiptForState:state].receiptID isEqual:downloadID]) {
                            if (success) {
                                success(request, response, responseObject);
                            } else if(responseObject) {
@@ -255,7 +259,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                    }
                    failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                       if ([strongSelf isActiveBackgroundTaskURLEqualToURLRequest:request forState:state]) {
+                       if ([[strongSelf af_backgroundImageDownloadReceiptForState:state].receiptID isEqual:downloadID]) {
                            if (failure) {
                                failure(request, response, error);
                            }

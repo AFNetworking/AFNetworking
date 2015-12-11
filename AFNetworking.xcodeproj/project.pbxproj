@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2960BAC31C1B2F1A00BA02F0 /* AFUIButtonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */; };
 		297824A31BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; };
 		297824A41BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; };
 		297824A51BC2D69A0041C395 /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A11BC2D69A0041C395 /* adn_1.cer */; };
@@ -216,6 +217,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIButtonTests.m; sourceTree = "<group>"; };
 		297824A01BC2D69A0041C395 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
 		297824A11BC2D69A0041C395 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
 		297824A21BC2D69A0041C395 /* adn_2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_2.cer; path = ADNNetServerTrustChain/adn_2.cer; sourceTree = "<group>"; };
@@ -440,6 +442,7 @@
 				298D7C8C1BC2C88F00FD3B3E /* AFUIActivityIndicatorViewTests.m */,
 				298D7C8D1BC2C88F00FD3B3E /* AFUIImageViewTests.m */,
 				298D7C8E1BC2C88F00FD3B3E /* AFUIRefreshControlTests.m */,
+				2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */,
 			);
 			name = "AFNetworking UIKit Tests";
 			sourceTree = "<group>";
@@ -957,6 +960,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2960BAC31C1B2F1A00BA02F0 /* AFUIButtonTests.m in Sources */,
 				298D7C961BC2C94400FD3B3E /* AFTestCase.m in Sources */,
 				298D7CB11BC2CA6E00FD3B3E /* AFHTTPRequestSerializationTests.m in Sources */,
 				297824AE1BC2DBD80041C395 /* AFUIActivityIndicatorViewTests.m in Sources */,

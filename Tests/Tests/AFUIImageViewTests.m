@@ -124,6 +124,24 @@
     XCTAssertEqual(cachedImage, downloadImage);
 }
 
+- (void)testThatImageCanBeCancelledAndDownloadedImmediately {
+    //https://github.com/Alamofire/AlamofireImage/issues/55
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.imageView setImageWithURL:self.jpegURL];
+    [self.imageView cancelImageDownloadTask];
+    __block UIImage *responseImage;
+    [self.imageView
+     setImageWithURLRequest:self.jpegURLRequest
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+         responseImage = image;
+         [expectation fulfill];
+     }
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    XCTAssertNotNil(responseImage);
+}
+
 - (void)testThatNilURLDoesntCrash {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
@@ -131,5 +149,7 @@
 #pragma clang diagnostic pop
 
 }
+
+
 
 @end
