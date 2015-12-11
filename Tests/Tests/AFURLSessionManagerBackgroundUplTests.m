@@ -73,40 +73,6 @@
 
 // Upload works with Default Configuration, but crashes with background configuration
 
-
-// Same XCTAssert in both test cases :P
-
--(void)testUploadStreamedRequest{
-    
-    XCTestExpectation * expectation =  [self expectationWithDescription:@"Should upload an image"];
-    
-    NSURLSessionUploadTask * uploadTask =  [_sessionManager uploadTaskWithStreamedRequest:self.fileUploadRequest progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-        NSLog(@"Uploading: %@", uploadProgress);
-        
-    } completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-        XCTAssertNil(error);
-        XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
-        XCTAssertNotNil([responseObject objectForKey:@"files"]);
-        NSDictionary * fileDic = [responseObject objectForKey:@"files"];
-        NSDictionary * formDic =[responseObject objectForKey:@"form"];
-        XCTAssertNotNil(fileDic);
-        XCTAssertNotNil(formDic);
-        
-        XCTAssertNotNil([fileDic objectForKey:@"fileData"]);
-        XCTAssertTrue([[fileDic objectForKey:@"fileData"] length] > 0);
-        
-        XCTAssertNotNil([formDic objectForKey:@"name"]);
-        XCTAssertTrue([[formDic objectForKey:@"name"] length] > 0);
-        
-        [expectation fulfill];
-        
-    }];
-    [uploadTask resume];
-    
-    [self waitForExpectationsWithCommonTimeoutUsingHandler: nil];
-}
-
 -(void)testUploadTaskRequest{
     
     XCTestExpectation * expectation =  [self expectationWithDescription:@"Should upload an image"];
