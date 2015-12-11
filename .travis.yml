@@ -8,20 +8,24 @@ env:
   - FASTLANE_LANE=ci_commit
 matrix:
   include:
-    - osx_image: xcode7.1
+    - osx_image: xcode7.2
       env: FASTLANE_LANE=code_coverage FASTLANE_ENV=default
-    - osx_image: xcode7.1
+    - osx_image: xcode7.2
       env: FASTLANE_ENV=ios82
-    - osx_image: xcode7.1
+    - osx_image: xcode7.2
       env: FASTLANE_ENV=ios83
-    - osx_image: xcode7.1
+    - osx_image: xcode7.2
       env: FASTLANE_ENV=ios84
-    - osx_image: xcode7.1
-      env: FASTLANE_ENV=ios91
-    - osx_image: xcode7.1
+    - osx_image: xcode7.2
+      env: FASTLANE_ENV=ios92
+    - osx_image: xcode7.2
+      env: FASTLANE_ENV=tvos91	  
+    - osx_image: xcode7.2
       env: FASTLANE_ENV=osx
     - osx_image: xcode7.1
-      env: FASTLANE_ENV=tvos90
+      env: FASTLANE_ENV=ios91_xcode71	  
+    - osx_image: xcode7.1
+      env: FASTLANE_ENV=tvos90_xcode71
     - osx_image: xcode7
       env: FASTLANE_ENV=ios81_xcode7	  
     - osx_image: xcode7
