@@ -374,4 +374,18 @@
     XCTAssertTrue(failureIsOnMainThread);
 }
 
+#pragma marl - misc
+
+- (void)testThatReceiptIDMatchesReturnedID {
+    NSUUID *receiptId = [NSUUID UUID];
+    AFImageDownloadReceipt *receipt =  [self.downloader
+                                        downloadImageForURLRequest:self.jpegRequest
+                                        withReceiptID:receiptId
+                                        success:nil
+                                        failure:nil];
+    XCTAssertEqual(receiptId, receipt.receiptID);
+    [self.downloader cancelTaskForImageDownloadReceipt:receipt];
+
+}
+
 @end
