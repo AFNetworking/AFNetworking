@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
+## [3.0.1](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.1) (12/11/2015)
+Released on Friday, December 11, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.1+is%3Aclosed).
+
+#### Added
+* Added Xcode 7.2 support to Travis
+ * Implemented by Kevin Harwood in [#3216](https://github.com/AFNetworking/AFNetworking/pull/3216).
+
+#### Fixed
+* Fixed race condition with ImageView/Button image downloading when starting/cancelling/starting the same request
+ * Implemented by Kevin Harwood in [#3215](https://github.com/AFNetworking/AFNetworking/pull/3215).
+ 
+
 ## [3.0.0](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.0) (12/10/2015)
 Released on Thursday, December 10, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.0+is%3Aclosed).
 
