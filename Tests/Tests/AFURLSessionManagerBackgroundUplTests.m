@@ -53,10 +53,11 @@
     NSError * writeError;
     [fileData writeToURL:self.localFileUrl options:NSDataWritingAtomic error:&writeError];
     NSDictionary * params = @{@"name" : @"demo"};
+    __weak typeof(self) weakSelf = self;
+
     self.fileUploadRequest = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:uploadUrl parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        
-        [formData appendPartWithFileURL:self.localFileUrl name:@"fileData" error:nil];
-        
+
+        [formData appendPartWithFileURL:weakSelf.localFileUrl name:@"fileData" fileName:[self.localFileUrl lastPathComponent] mimeType:@"image/jpeg" error:nil];
     } error:nil];
 }
 
@@ -75,37 +76,52 @@
 
 -(void)testUploadTaskRequest{
     
+    
     XCTestExpectation * expectation =  [self expectationWithDescription:@"Should upload an image"];
     
     // Seems like params passed in fileUploadRequest are ignored
     
-    NSURLSessionUploadTask * uploadTask =  [_sessionManager uploadTaskWithRequest:self.fileUploadRequest fromFile: self.localFileUrl progress:^(NSProgress * _Nonnull uploadProgress) {
+    AFHTTPRequestSerializer * serializer =   [AFHTTPRequestSerializer serializer];
+    NSString * tmpUrlStr = [[self.localFileUrl absoluteString] stringByAppendingString:[NSString stringWithFormat:@"%d",rand()]];
+    NSURL * tmpUrl = [NSURL URLWithString:tmpUrlStr];
+    
+    __weak typeof(self) weakSelf = self;
+    [serializer requestWithMultipartFormRequest:self.fileUploadRequest writingStreamContentsToFile:tmpUrl completionHandler:^(NSError * _Nullable error) {
         
-        NSLog(@"Uploading: %@", uploadProgress);
-        
-        
-    } completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-        
-        XCTAssertNil(error);
-        XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
-        XCTAssertNotNil([responseObject objectForKey:@"files"]);
-        NSDictionary * fileDic = [responseObject objectForKey:@"files"];
-        NSDictionary * formDic =[responseObject objectForKey:@"form"];
-        XCTAssertNotNil(fileDic);
-        XCTAssertNotNil(formDic);
-        
-        // Assert Fails. For some reason request params aren't included.
-        
-        XCTAssertNotNil([fileDic objectForKey:@"fileData"]);
-        XCTAssertTrue([[fileDic objectForKey:@"fileData"] length] > 0);
-        
-        XCTAssertNotNil([formDic objectForKey:@"name"]);
-        XCTAssertTrue([[formDic objectForKey:@"name"] length] > 0);
-        
-        [expectation fulfill];
-        
+        NSURLSessionUploadTask * uploadTask =  [_sessionManager uploadTaskWithRequest:weakSelf.fileUploadRequest fromFile: tmpUrl progress:^(NSProgress * _Nonnull uploadProgress) {
+            
+            NSLog(@"Uploading: %@", uploadProgress);
+            
+            
+        } completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+            
+            [[NSFileManager defaultManager] removeItemAtURL:tmpUrl error:nil];
+            
+            XCTAssertNil(error);
+            XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
+            XCTAssertNotNil([responseObject objectForKey:@"files"]);
+            NSDictionary * fileDic = [responseObject objectForKey:@"files"];
+            NSDictionary * formDic =[responseObject objectForKey:@"form"];
+            XCTAssertNotNil(fileDic);
+            XCTAssertNotNil(formDic);
+            
+            // Asset Fails. For some reason request params aren't included.
+            
+            XCTAssertNotNil([fileDic objectForKey:@"fileData"]);
+            XCTAssertTrue([[fileDic objectForKey:@"fileData"] length] > 0);
+            
+            XCTAssertNotNil([formDic objectForKey:@"name"]);
+            XCTAssertTrue([[formDic objectForKey:@"name"] length] > 0);
+            
+            [expectation fulfill];
+            
+        }];
+        [uploadTask resume];
+
     }];
-    [uploadTask resume];
+    
+
+
     
     [self waitForExpectationsWithCommonTimeoutUsingHandler: nil];
     
