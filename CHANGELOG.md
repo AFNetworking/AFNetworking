@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
+## [3.0.2](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.2) (12/14/2015)
+Released on Monday, December 14, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.2+is%3Aclosed).
+
+#### Fixed
+* Fixed a crash in `AFURLSessionManager` when resuming download tasks
+ * Implemented by Chongyu Zhu in [#3222](https://github.com/AFNetworking/AFNetworking/pull/3222).
+* Fixed issue where background button image would not be updated
+ * Implemented by eofs in [#3220](https://github.com/AFNetworking/AFNetworking/pull/3220).
+ 
+
 ## [3.0.1](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.1) (12/11/2015)
 Released on Friday, December 11, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.1+is%3Aclosed).
 
