@@ -231,12 +231,12 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
         if (success) {
             success(urlRequest, nil, cachedImage);
         } else {
-            [self setImage:cachedImage forState:state];
+            [self setBackgroundImage:cachedImage forState:state];
         }
         [self af_setBackgroundImageDownloadReceipt:nil forState:state];
     } else {
         if (placeholderImage) {
-            [self setImage:placeholderImage forState:state];
+            [self setBackgroundImage:placeholderImage forState:state];
         }
 
         __weak __typeof(self)weakSelf = self;
@@ -251,7 +251,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                            if (success) {
                                success(request, response, responseObject);
                            } else if(responseObject) {
-                               [strongSelf setImage:responseObject forState:state];
+                               [strongSelf setBackgroundImage:responseObject forState:state];
                            }
                            [strongSelf af_setImageDownloadReceipt:nil forState:state];
                        }
