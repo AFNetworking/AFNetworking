@@ -60,6 +60,20 @@
     
 }
 
+- (void)testThatBackgroundImageChanges {
+    XCTAssertNil([self.button backgroundImageForState:UIControlStateNormal]);
+    [self.button setBackgroundImageForState:UIControlStateNormal withURL:self.jpegURL];
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(UIButton  * _Nonnull button, NSDictionary<NSString *,id> * _Nullable bindings) {
+        return [button backgroundImageForState:UIControlStateNormal] != nil;
+    }];
+    
+    [self expectationForPredicate:predicate
+              evaluatedWithObject:self.button
+                          handler:nil];
+    
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
 - (void)testThatForegroundImageCanBeCancelledAndDownloadedImmediately {
     //https://github.com/Alamofire/AlamofireImage/issues/55
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
