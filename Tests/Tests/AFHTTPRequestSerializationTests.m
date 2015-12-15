@@ -183,6 +183,12 @@
     XCTAssertFalse([serializer.HTTPRequestHeaders.allKeys containsObject:headerField]);
 }
 
+#pragma mark - Helper Methods
+
+- (void)testQueryStringFromParameters {
+    XCTAssertTrue([AFQueryStringFromParameters(@{@"key":@"value",@"key1":@"value&"}) isEqualToString:@"key=value&key1=value%26"]);
+}
+
 #pragma mark - #3028 tests
 //https://github.com/AFNetworking/AFNetworking/pull/3028
 

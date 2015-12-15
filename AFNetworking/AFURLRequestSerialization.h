@@ -31,6 +31,15 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
+ A helper method to generate encoded url query parameters for appending to the end of a URL.
+
+ @param parameters A dictionary of key/values to be encoded.
+
+ @return A url encoded query string
+ */
+FOUNDATION_EXPORT NSString * AFQueryStringFromParameters(NSDictionary *parameters);
+
+/**
  The `AFURLRequestSerialization` protocol is adopted by an object that encodes parameters for a specified HTTP requests. Request serializers may encode parameters as query strings, HTTP bodies, setting the appropriate HTTP header fields as necessary.
 
  For example, a JSON request serializer may set the HTTP body of the request to a JSON representation, and set the `Content-Type` HTTP header field value to `application/json`.
