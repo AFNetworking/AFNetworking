@@ -133,4 +133,21 @@ static NSData * AFJSONTestData() {
     XCTAssertNotNil(error, @"Serialization error should not be nil");
 }
 
+- (void)testThatJSONRemovesKeysWithNullValues {
+    self.responseSerializer.removesKeysWithNullValues = YES;
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type":@"text/json"}];
+    NSData *data = [NSJSONSerialization dataWithJSONObject:@{@"key":@"value",@"nullkey":[NSNull null],@"array":@[@{@"subnullkey":[NSNull null]}]}
+                                                   options:0
+                                                     error:nil];
+
+    NSError *error = nil;
+    NSDictionary *responseObject = [self.responseSerializer responseObjectForResponse:response
+                                                                                 data:data
+                                                                                error:&error];
+    XCTAssertNil(error);
+    XCTAssertNotNil(responseObject[@"key"]);
+    XCTAssertNil(responseObject[@"nullkey"]);
+    XCTAssertNil(responseObject[@"array"][0][@"subnullkey"]);
+}
+
 @end

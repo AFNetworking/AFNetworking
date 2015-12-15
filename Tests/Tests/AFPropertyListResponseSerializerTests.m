@@ -45,4 +45,22 @@
     XCTAssertNil(error, @"Error handling application/x-plist");
 }
 
+- (void)testResponseSerializerCanBeCopied {
+    AFPropertyListResponseSerializer *copiedSerializer = [self.responseSerializer copy];
+    XCTAssertNotNil(copiedSerializer);
+    XCTAssertNotEqual(copiedSerializer, self.responseSerializer);
+    XCTAssertTrue(copiedSerializer.format == self.responseSerializer.format);
+    XCTAssertTrue(copiedSerializer.readOptions == self.responseSerializer.readOptions);
+}
+
+- (void)testResponseSerializerCanBeArchivedAndUnarchived {
+    NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:self.responseSerializer];
+    XCTAssertNotNil(archive);
+    AFPropertyListResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
+    XCTAssertNotNil(unarchivedSerializer);
+    XCTAssertNotEqual(unarchivedSerializer, self.responseSerializer);
+    XCTAssertTrue(unarchivedSerializer.format == self.responseSerializer.format);
+    XCTAssertTrue(unarchivedSerializer.readOptions == self.responseSerializer.readOptions);
+}
+
 @end
