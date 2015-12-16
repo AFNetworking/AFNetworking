@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
+## [3.0.3](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.3) (12/16/2015)
+Released on Wednesday, December 16, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.3+is%3Aclosed).
+
+#### Added
+* Added tests for response serializers to increase test coverage
+ * Implemented by Kevin Harwood in [#3233](https://github.com/AFNetworking/AFNetworking/pull/3233).
+
+#### Fixed
+* Fixed `AFImageResponseSerializer` serialization macros on watchOS and tvOS
+ * Implemented by Charles Joseph in [#3229](https://github.com/AFNetworking/AFNetworking/pull/3229).
+ 
+
 ## [3.0.2](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.2) (12/14/2015)
 Released on Monday, December 14, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.2+is%3Aclosed).
 
