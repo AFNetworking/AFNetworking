@@ -747,7 +747,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 - (instancetype)copyWithZone:(NSZone *)zone {
     AFImageResponseSerializer *serializer = [[[self class] allocWithZone:zone] init];
 
-#if TARGET_OS_IOS || TARGET_OS_TV | TARGET_OS_WATCH
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     serializer.imageScale = self.imageScale;
     serializer.automaticallyInflatesResponseImage = self.automaticallyInflatesResponseImage;
 #endif
