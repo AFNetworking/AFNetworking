@@ -64,4 +64,26 @@
     }];
 }
 
+- (void)testResponseIsValidated {
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[NSURL URLWithString:@"http://test.com"]
+                                                              statusCode:200
+                                                             HTTPVersion:@"1.1"
+                                                            headerFields:@{@"Content-Type":@"text/html"}];
+    NSData *data = [@"text" dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error = nil;
+    XCTAssertTrue([self.responseSerializer validateResponse:response data:data error:&error]);
+}
+
+- (void)testCanBeCopied {
+    AFHTTPResponseSerializer *copiedSerializer = [self.responseSerializer copy];
+    XCTAssertNotNil(copiedSerializer);
+    XCTAssertNotEqual(copiedSerializer, self.responseSerializer);
+    XCTAssertTrue(copiedSerializer.acceptableContentTypes.count == self.responseSerializer.acceptableContentTypes.count);
+    XCTAssertTrue(copiedSerializer.acceptableStatusCodes.count == self.responseSerializer.acceptableStatusCodes.count);
+}
+
+- (void)testSupportsSecureCoding {
+    XCTAssertTrue([AFHTTPResponseSerializer supportsSecureCoding]);
+}
+
 @end
