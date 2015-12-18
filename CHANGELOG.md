@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
+## [3.0.4](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.4) (12/18/2015)
+Released on Friday, December 18, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.4+is%3Aclosed).
+
+#### Fixed
+* Fixed issue where `AFNSURLSessionTaskDidResumeNotification` was removed twice
+ * Implemented by Kevin Harwood in [#3236](https://github.com/AFNetworking/AFNetworking/pull/3236).
+ 
+
 ## [3.0.3](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.3) (12/16/2015)
 Released on Wednesday, December 16, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.3+is%3Aclosed).
 
