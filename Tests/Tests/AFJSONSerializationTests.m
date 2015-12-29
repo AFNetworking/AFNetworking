@@ -133,6 +133,24 @@ static NSData * AFJSONTestData() {
     XCTAssertNotNil(error, @"Serialization error should not be nil");
 }
 
+- (void)testThatJSONResponseSerializerReturnsNilObjectAndNilErrorForEmptyData {
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type":@"text/json"}];
+    NSData *data = [NSData data];
+    NSError *error = nil;
+    id responseObject = [self.responseSerializer responseObjectForResponse:response data:data error:&error];
+    XCTAssertNil(responseObject);
+    XCTAssertNil(error);
+}
+
+- (void)testThatJSONResponseSerializerReturnsNilObjectAndNilErrorForSingleSpace {
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type":@"text/json"}];
+    NSData *data = [@" " dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error = nil;
+    id responseObject = [self.responseSerializer responseObjectForResponse:response data:data error:&error];
+    XCTAssertNil(responseObject);
+    XCTAssertNil(error);
+}
+
 - (void)testThatJSONRemovesKeysWithNullValues {
     self.responseSerializer.removesKeysWithNullValues = YES;
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type":@"text/json"}];
