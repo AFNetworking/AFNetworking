@@ -240,8 +240,6 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         }
     }
 
-    // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
-    // See https://github.com/rails/rails/issues/1742
     NSStringEncoding stringEncoding = self.stringEncoding;
     if (response.textEncodingName) {
         CFStringEncoding encoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName);
@@ -254,13 +252,16 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     NSError *serializationError = nil;
     @autoreleasepool {
         NSString *responseString = [[NSString alloc] initWithData:data encoding:stringEncoding];
-        if (responseString && ![responseString isEqualToString:@" "]) {
+        if (responseString) {
             // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
             // See http://stackoverflow.com/a/12843465/157142
             data = [responseString dataUsingEncoding:NSUTF8StringEncoding];
 
             if (data) {
-                if ([data length] > 0) {
+                // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
+                // See https://github.com/rails/rails/issues/1742
+                BOOL isSpace = [data isEqualToData:[NSData dataWithBytes:" " length:1]];
+                if (data.length > 0 && !isSpace) {
                     responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
                 } else {
                     return nil;
