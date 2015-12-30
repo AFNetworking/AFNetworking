@@ -25,3 +25,5 @@ AFNetworking.framework.zip
 /fastlane/report.xml
 /fastlane/.env*private*
 fastlane/test-output/*
+
+Carthage/Build
