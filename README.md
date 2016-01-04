@@ -236,7 +236,7 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 #### URL Form Parameter Encoding
 
 ```objective-c
-[[AFHTTPRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters];
+[[AFHTTPRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters error:nil];
 ```
 
     POST http://example.com/
@@ -247,7 +247,7 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 #### JSON Parameter Encoding
 
 ```objective-c
-[[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters];
+[[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters error:nil];
 ```
 
     POST http://example.com/
