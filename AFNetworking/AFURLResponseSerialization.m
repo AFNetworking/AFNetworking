@@ -60,11 +60,35 @@ static BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger co
     return NO;
 }
 
+static BOOL AFValueIsNull(id value) {
+    if (!value) {
+        return YES;
+    }
+
+    if ([value isKindOfClass:[NSString class]] && [(NSString *)value length] == 0) {
+        return YES;
+    }
+
+    if ([value isKindOfClass:[NSArray class]] && [(NSArray *)value count] == 0) {
+        return YES;
+    }
+
+    if ([value isKindOfClass:[NSDictionary class]] && [[(NSDictionary *)value allKeys] count] == 0) {
+        return YES;
+    }
+
+    return NO;
+}
+
 static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions readingOptions) {
     if ([JSONObject isKindOfClass:[NSArray class]]) {
-        NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:[(NSArray *)JSONObject count]];
-        for (id value in (NSArray *)JSONObject) {
-            [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions)];
+        NSMutableArray *mutableArray = [NSMutableArray array];
+        for (NSUInteger i = 0; i < [(NSArray *)JSONObject count]; i++) {
+            id value = ((NSArray *)JSONObject)[i];
+            value = AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions);
+            if (!AFValueIsNull(value)) {
+                [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions)];
+            }
         }
 
         return (readingOptions & NSJSONReadingMutableContainers) ? mutableArray : [NSArray arrayWithArray:mutableArray];
@@ -72,10 +96,14 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:JSONObject];
         for (id <NSCopying> key in [(NSDictionary *)JSONObject allKeys]) {
             id value = (NSDictionary *)JSONObject[key];
-            if (!value || [value isEqual:[NSNull null]]) {
+            if ([value isKindOfClass:[NSArray class]] || [value isKindOfClass:[NSDictionary class]]) {
+                value = AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions);
+            }
+
+            if (AFValueIsNull(value)) {
                 [mutableDictionary removeObjectForKey:key];
-            } else if ([value isKindOfClass:[NSArray class]] || [value isKindOfClass:[NSDictionary class]]) {
-                mutableDictionary[key] = AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions);
+            } else {
+                mutableDictionary[key] = value;
             }
         }
 
