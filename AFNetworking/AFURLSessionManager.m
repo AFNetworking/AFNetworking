@@ -234,14 +234,18 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
         }
     }
     else if ([object isEqual:self.downloadProgress]) {
-        if (self.downloadProgressBlock) {
-            self.downloadProgressBlock(object);
-        }
+        dispatch_group_async(self.manager.completionGroup ?: url_session_manager_completion_group(), self.manager.completionQueue ?: dispatch_get_main_queue(), ^{
+            if (self.downloadProgressBlock) {
+                self.downloadProgressBlock(object);
+            }
+        });
     }
     else if ([object isEqual:self.uploadProgress]) {
-        if (self.uploadProgressBlock) {
-            self.uploadProgressBlock(object);
-        }
+        dispatch_group_async(self.manager.completionGroup ?: url_session_manager_completion_group(), self.manager.completionQueue ?: dispatch_get_main_queue(), ^{
+            if (self.uploadProgressBlock) {
+                self.uploadProgressBlock(object);
+            }
+        });
     }
 }
 

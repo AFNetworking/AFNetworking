@@ -159,7 +159,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) dispatch_queue_t completionQueue;
 
 /**
- The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used.
+ The dispatch group for `completionBlock`, `uploadProgressBlock`, and `downloadProgressBlock`. If `NULL` (default), a private dispatch group is used.
  */
 @property (nonatomic, strong, nullable) dispatch_group_t completionGroup;
 
