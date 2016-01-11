@@ -201,7 +201,7 @@ uploadTask = [manager
 NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
 AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
 
-NSURL *URL = [NSURL URLWithString:@"http://example.com/upload"];
+NSURL *URL = [NSURL URLWithString:@"http://httpbin.org/get"];
 NSURLRequest *request = [NSURLRequest requestWithURL:URL];
 
 NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
