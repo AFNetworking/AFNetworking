@@ -111,7 +111,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param failure A block object to be executed when the image data task finishes unsuccessfully, or that finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the error object describing the network or parsing error that occurred.
  */
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
-              placeholderImage:(UIImage *)placeholderImage
+              placeholderImage:(nullable UIImage *)placeholderImage
               downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure;
