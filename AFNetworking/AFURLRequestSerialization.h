@@ -344,9 +344,20 @@ forHTTPHeaderField:(NSString *)field;
 
 /**
  Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
+ 
+ @param data The data to be encoded and appended to the form data.
+ @param name The name to be associated with the specified data. This parameter must not be `nil`.
+ */
+
+- (void)appendPartWithFormData:(NSData *)data
+                          name:(NSString *)name;
+
+/**
+ Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
 
  @param data The data to be encoded and appended to the form data.
  @param name The name to be associated with the specified data. This parameter must not be `nil`.
+ @param contentType The Content-Type of the specified data. This parameter must not be `nil`.
  */
 
 - (void)appendPartWithFormData:(NSData *)data
