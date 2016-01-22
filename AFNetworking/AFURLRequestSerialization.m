@@ -395,7 +395,7 @@ forHTTPHeaderField:(NSString *)field
             }
 
             if (data) {
-                [formData appendPartWithFormData:data name:[pair.field description] contentType:[NSString string]];
+                [formData appendPartWithFormData:data name:[pair.field description]];
             }
         }
     }
