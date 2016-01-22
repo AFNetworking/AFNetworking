@@ -350,7 +350,8 @@ forHTTPHeaderField:(NSString *)field;
  */
 
 - (void)appendPartWithFormData:(NSData *)data
-                          name:(NSString *)name;
+                          name:(NSString *)name
+                   contentType:(NSString *)contentType;
 
 
 /**
