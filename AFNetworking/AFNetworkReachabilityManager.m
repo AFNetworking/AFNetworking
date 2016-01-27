@@ -167,11 +167,11 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 - (void)dealloc {
+    [self stopMonitoring];
+    
     if (_networkReachability != NULL) {
         CFRelease(_networkReachability);
     }
-    
-    [self stopMonitoring];
 }
 
 #pragma mark -
