@@ -52,7 +52,8 @@
 @end
 
 @interface AFImageDownloaderMergedTask : NSObject
-@property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, strong) NSString *URLIdentifier;
+@property (nonatomic, strong) NSUUID *identifier;
 @property (nonatomic, strong) NSURLSessionDataTask *task;
 @property (nonatomic, strong) NSMutableArray <AFImageDownloaderResponseHandler*> *responseHandlers;
 
@@ -60,10 +61,11 @@
 
 @implementation AFImageDownloaderMergedTask
 
-- (instancetype)initWithIdentifier:(NSString *)identifier task:(NSURLSessionDataTask *)task {
+- (instancetype)initWithURLIdentifier:(NSString *)URLIdentifier identifier:(NSUUID *)identifier task:(NSURLSessionDataTask *)task {
     if (self = [self init]) {
-        self.identifier = identifier;
+        self.URLIdentifier = URLIdentifier;
         self.task = task;
+        self.identifier = identifier;
         self.responseHandlers = [[NSMutableArray alloc] init];
     }
     return self;
@@ -186,10 +188,10 @@
                                                         failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure {
     __block NSURLSessionDataTask *task = nil;
     dispatch_sync(self.synchronizationQueue, ^{
-        NSString *identifier = request.URL.absoluteString;
+        NSString *URLIdentifier = request.URL.absoluteString;
 
         // 1) Append the success and failure blocks to a pre-existing request if it already exists
-        AFImageDownloaderMergedTask *existingMergedTask = self.mergedTasks[identifier];
+        AFImageDownloaderMergedTask *existingMergedTask = self.mergedTasks[URLIdentifier];
         if (existingMergedTask != nil) {
             AFImageDownloaderResponseHandler *handler = [[AFImageDownloaderResponseHandler alloc] initWithUUID:receiptID success:success failure:failure];
             [existingMergedTask addResponseHandler:handler];
@@ -218,6 +220,7 @@
         }
 
         // 3) Create the request and set up authentication, validation and response serialization
+        NSUUID *mergedTaskIdentifier = [NSUUID UUID];
         NSURLSessionDataTask *createdTask;
         __weak __typeof__(self) weakSelf = self;
 
@@ -226,26 +229,28 @@
                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
                                __strong __typeof__(weakSelf) strongSelf = weakSelf;
-                               AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithIdentifier:identifier];
-                               if (error) {
-                                   for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
-                                       if (handler.failureBlock) {
-                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                               handler.failureBlock(request, (NSHTTPURLResponse*)response, error);
-                                           });
+                               AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyRemoveMergedTaskWithURLIdentifier:URLIdentifier];
+                               if ([mergedTaskIdentifier isEqual:mergedTask.identifier]) {
+                                   if (error) {
+                                       for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
+                                           if (handler.failureBlock) {
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   handler.failureBlock(request, (NSHTTPURLResponse*)response, error);
+                                               });
+                                           }
                                        }
-                                   }
-                               } else {
-                                   [strongSelf.imageCache addImage:responseObject forRequest:request withAdditionalIdentifier:nil];
+                                   } else {
+                                       [strongSelf.imageCache addImage:responseObject forRequest:request withAdditionalIdentifier:nil];
 
-                                   for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
-                                       if (handler.successBlock) {
-                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                               handler.successBlock(request, (NSHTTPURLResponse*)response, responseObject);
-                                           });
+                                       for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
+                                           if (handler.successBlock) {
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   handler.successBlock(request, (NSHTTPURLResponse*)response, responseObject);
+                                               });
+                                           }
                                        }
-                                   }
 
+                                   }
                                }
                                [strongSelf safelyDecrementActiveTaskCount];
                                [strongSelf safelyStartNextTaskIfNecessary];
@@ -257,10 +262,11 @@
                                                                                                    success:success
                                                                                                    failure:failure];
         AFImageDownloaderMergedTask *mergedTask = [[AFImageDownloaderMergedTask alloc]
-                                                   initWithIdentifier:identifier
+                                                   initWithURLIdentifier:URLIdentifier
+                                                   identifier:mergedTaskIdentifier
                                                    task:createdTask];
         [mergedTask addResponseHandler:handler];
-        self.mergedTasks[identifier] = mergedTask;
+        self.mergedTasks[URLIdentifier] = mergedTask;
 
         // 5) Either start the request or enqueue it depending on the current active request count
         if ([self isActiveRequestCountBelowMaximumLimit]) {
@@ -280,8 +286,8 @@
 
 - (void)cancelTaskForImageDownloadReceipt:(AFImageDownloadReceipt *)imageDownloadReceipt {
     dispatch_sync(self.synchronizationQueue, ^{
-        NSString *identifier = imageDownloadReceipt.task.originalRequest.URL.absoluteString;
-        AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[identifier];
+        NSString *URLIdentifier = imageDownloadReceipt.task.originalRequest.URL.absoluteString;
+        AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[URLIdentifier];
         NSUInteger index = [mergedTask.responseHandlers indexOfObjectPassingTest:^BOOL(AFImageDownloaderResponseHandler * _Nonnull handler, __unused NSUInteger idx, __unused BOOL * _Nonnull stop) {
             return handler.uuid == imageDownloadReceipt.receiptID;
         }];
@@ -301,17 +307,23 @@
 
         if (mergedTask.responseHandlers.count == 0 && mergedTask.task.state == NSURLSessionTaskStateSuspended) {
             [mergedTask.task cancel];
+            [self removeMergedTaskWithURLIdentifier:URLIdentifier];
         }
     });
 }
 
-- (AFImageDownloaderMergedTask*)safelyRemoveMergedTaskWithIdentifier:(NSString *)identifier {
+- (AFImageDownloaderMergedTask*)safelyRemoveMergedTaskWithURLIdentifier:(NSString *)URLIdentifier {
     __block AFImageDownloaderMergedTask *mergedTask = nil;
     dispatch_sync(self.synchronizationQueue, ^{
-        mergedTask = self.mergedTasks[identifier];
-        [self.mergedTasks removeObjectForKey:identifier];
-
+        mergedTask = [self removeMergedTaskWithURLIdentifier:URLIdentifier];
     });
+    return mergedTask;
+}
+
+//This method should only be called from safely within the synchronizationQueue
+- (AFImageDownloaderMergedTask *)removeMergedTaskWithURLIdentifier:(NSString *)URLIdentifier {
+    AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[URLIdentifier];
+    [self.mergedTasks removeObjectForKey:URLIdentifier];
     return mergedTask;
 }
 

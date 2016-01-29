@@ -343,6 +343,39 @@
     XCTAssertNotNil(responseImage);
 }
 
+- (void)testThatItCanDownloadAndCancelAndDownloadAgain {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"no download should fail"];
+    __block NSUInteger successCounter = 0;
+
+    NSArray *imageURLStrings = @[
+                                 @"https://static.pexels.com/photos/1562/italian-landscape-mountains-nature.jpg",
+                                 @"https://static.pexels.com/photos/397/italian-landscape-mountains-nature.jpg",
+                                 @"https://static.pexels.com/photos/2698/dawn-landscape-mountains-nature.jpg",
+                                 @"https://static.pexels.com/photos/2946/dawn-nature-sunset-trees.jpg",
+                                 @"https://static.pexels.com/photos/5021/nature-sunset-person-woman.jpg"
+                                 ];
+
+    for (NSString *imageURLString in imageURLStrings) {
+        AFImageDownloadReceipt *receipt = [self.downloader downloadImageForURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURLString]] success:nil failure:nil];
+        [self.downloader cancelTaskForImageDownloadReceipt:receipt];
+    }
+
+    for (NSString *imageURLString in imageURLStrings) {
+        [self.downloader downloadImageForURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURLString]] success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
+            successCounter++;
+            if (successCounter == [imageURLStrings count] - 1) {
+                [expectation fulfill];
+            }
+        } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+            [expectation fulfill];
+        }];
+    }
+
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+
+    XCTAssertTrue(successCounter == [imageURLStrings count] - 1, @"all downloads should succeed");
+}
+
 #pragma mark - Threading
 - (void)testThatItAlwaysCallsTheSuccessHandlerOnTheMainQueue {
     XCTestExpectation *expectation = [self expectationWithDescription:@"image download should succeed"];
@@ -374,7 +407,7 @@
     XCTAssertTrue(failureIsOnMainThread);
 }
 
-#pragma marl - misc
+#pragma mark - misc
 
 - (void)testThatReceiptIDMatchesReturnedID {
     NSUUID *receiptId = [NSUUID UUID];
@@ -385,7 +418,6 @@
                                         failure:nil];
     XCTAssertEqual(receiptId, receipt.receiptID);
     [self.downloader cancelTaskForImageDownloadReceipt:receipt];
-
 }
 
 @end
