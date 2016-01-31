@@ -85,6 +85,18 @@
     XCTAssertNotNil(responseImage, @"Response image should not be nil");
 }
 
+-(void)testThatImageDownloaderDoesReportProgress {
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress should equal 1.0"];
+    NSUUID *receiptId = [NSUUID UUID];
+    [self.downloader downloadImageForURLRequest:self.pngRequest withReceiptID:receiptId progress:^(NSProgress * _Nonnull downloadProgress) {
+        if (downloadProgress.fractionCompleted == 1.0) {
+            [expectation fulfill];
+        }
+
+    } success:nil failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
 - (void)testThatItCanDownloadMultipleImagesSimultaneously {
     XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 download should succeed"];
     __block NSHTTPURLResponse *urlResponse1 = nil;

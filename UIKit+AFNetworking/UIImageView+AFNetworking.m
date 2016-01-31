@@ -79,11 +79,11 @@
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure
 {
-    
-    [self setImageWithURLRequest:urlRequest placeholderImage:placeholderImage success:success failure:failure downloadProgress:nil];
+ 
+    [self setImageWithURLRequest:urlRequest placeholderImage:placeholderImage progress:nil success:success failure:failure];
 }
 
--(void)setImageWithURLRequest:(NSURLRequest *)urlRequest placeholderImage:(UIImage *)placeholderImage success:(void (^)(NSURLRequest * _Nonnull, NSHTTPURLResponse * _Nullable, UIImage * _Nonnull))success failure:(void (^)(NSURLRequest * _Nonnull, NSHTTPURLResponse * _Nullable, NSError * _Nonnull))failure downloadProgress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
+-(void)setImageWithURLRequest:(NSURLRequest *)urlRequest placeholderImage:(UIImage *)placeholderImage progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock success:(void (^)(NSURLRequest * _Nonnull, NSHTTPURLResponse * _Nullable, UIImage * _Nonnull))success failure:(void (^)(NSURLRequest * _Nonnull, NSHTTPURLResponse * _Nullable, NSError * _Nonnull))failure
 {
     if ([urlRequest URL] == nil) {
         [self cancelImageDownloadTask];
@@ -118,7 +118,16 @@
         NSUUID *downloadID = [NSUUID UUID];
         AFImageDownloadReceipt *receipt;
         
-        receipt = [downloader downloadImageForURLRequest:urlRequest withReceiptID:downloadID success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
+        receipt = [downloader downloadImageForURLRequest:urlRequest withReceiptID:downloadID progress:^(NSProgress * _Nonnull downloadProgress) {
+            
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            if ([strongSelf.af_activeImageDownloadReceipt.receiptID isEqual:downloadID]) {
+                if (downloadProgressBlock) {
+                    downloadProgressBlock (downloadProgress);
+                }
+            }
+            
+        } success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
             
             __strong __typeof(weakSelf)strongSelf = weakSelf;
             if ([strongSelf.af_activeImageDownloadReceipt.receiptID isEqual:downloadID]) {
@@ -130,7 +139,6 @@
                 [strongSelf clearActiveDownloadInformation];
             }
             
-            
         } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
             
             __strong __typeof(weakSelf)strongSelf = weakSelf;
@@ -140,16 +148,6 @@
                 }
                 [strongSelf clearActiveDownloadInformation];
             }
-            
-        } downloadProgress:^(NSProgress * _Nullable downloadProgress) {
-            
-            __strong __typeof(weakSelf)strongSelf = weakSelf;
-            if ([strongSelf.af_activeImageDownloadReceipt.receiptID isEqual:downloadID]) {
-                if (downloadProgressBlock) {
-                    downloadProgressBlock (downloadProgress);
-                }
-            }
-            
         }];
         
         self.af_activeImageDownloadReceipt = receipt;

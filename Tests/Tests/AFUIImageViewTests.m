@@ -142,6 +142,17 @@
     XCTAssertNotNil(responseImage);
 }
 
+- (void)testThatImageDoesReportDownloadProgress {
+    XCTAssertNil(self.imageView.image);
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress should equal 1.0"];
+    [self.imageView setImageWithURLRequest:self.jpegURLRequest placeholderImage:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        if (downloadProgress.fractionCompleted == 1.0) {
+            [expectation fulfill];
+        }
+    } success:nil failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+ 
 - (void)testThatNilURLDoesntCrash {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"

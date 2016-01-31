@@ -193,12 +193,11 @@
                                                         success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse  * _Nullable response, UIImage *responseObject))success
                                                         failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure {
     
-    return [self downloadImageForURLRequest:request withReceiptID:receiptID success:success failure:failure downloadProgress:nil];
+    return [self downloadImageForURLRequest:request withReceiptID:receiptID progress:nil success:success failure:failure];
     
 }
 
--(AFImageDownloadReceipt *)downloadImageForURLRequest:(NSURLRequest *)request withReceiptID:(NSUUID *)receiptID success:(void (^)(NSURLRequest * _Nonnull, NSHTTPURLResponse * _Nullable, UIImage * _Nonnull))success failure:(void (^)(NSURLRequest * _Nonnull, NSHTTPURLResponse * _Nullable, NSError * _Nonnull))failure downloadProgress:(void (^)(NSProgress * _Nullable))downloadProgressBlock {
-    
+-(AFImageDownloadReceipt *)downloadImageForURLRequest:(NSURLRequest *)request withReceiptID:(NSUUID *)receiptID progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock success:(void (^)(NSURLRequest * _Nonnull, NSHTTPURLResponse * _Nullable, UIImage * _Nonnull))success failure:(void (^)(NSURLRequest * _Nonnull, NSHTTPURLResponse * _Nullable, NSError * _Nonnull))failure {
     
     __block NSURLSessionDataTask *task = nil;
     dispatch_sync(self.synchronizationQueue, ^{
