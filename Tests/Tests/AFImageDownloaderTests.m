@@ -344,9 +344,6 @@
 }
 
 - (void)testThatItCanDownloadAndCancelAndDownloadAgain {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"no download should fail"];
-    __block NSUInteger successCounter = 0;
-
     NSArray *imageURLStrings = @[
                                  @"https://static.pexels.com/photos/1562/italian-landscape-mountains-nature.jpg",
                                  @"https://static.pexels.com/photos/397/italian-landscape-mountains-nature.jpg",
@@ -356,24 +353,32 @@
                                  ];
 
     for (NSString *imageURLString in imageURLStrings) {
-        AFImageDownloadReceipt *receipt = [self.downloader downloadImageForURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURLString]] success:nil failure:nil];
+        XCTestExpectation *expectation = [self expectationWithDescription:[NSString stringWithFormat:@"Request %@ should be cancelled", imageURLString]];
+        AFImageDownloadReceipt *receipt = [self.downloader
+                                           downloadImageForURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURLString]]
+                                           success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
+                                               XCTFail(@"Request %@ succeeded when it should have failed", request);
+                                           }
+                                           failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+                                               XCTAssertTrue([error.domain isEqualToString:NSURLErrorDomain]);
+                                               XCTAssertTrue([error code] == NSURLErrorCancelled);
+                                               [expectation fulfill];
+                                           }];
         [self.downloader cancelTaskForImageDownloadReceipt:receipt];
     }
 
     for (NSString *imageURLString in imageURLStrings) {
-        [self.downloader downloadImageForURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURLString]] success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
-            successCounter++;
-            if (successCounter == [imageURLStrings count] - 1) {
-                [expectation fulfill];
-            }
-        } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
-            [expectation fulfill];
-        }];
+        XCTestExpectation *expectation = [self expectationWithDescription:[NSString stringWithFormat:@"Request %@ should succeed", imageURLString]];
+        [self.downloader
+         downloadImageForURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURLString]]
+         success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
+             [expectation fulfill];
+         } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+             XCTFail(@"Request %@ failed with error %@", request, error);
+         }];
     }
 
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
-
-    XCTAssertTrue(successCounter == [imageURLStrings count] - 1, @"all downloads should succeed");
 }
 
 #pragma mark - Threading
