@@ -37,6 +37,11 @@
                BlueprintName = "AFNetworking tvOS Tests"
                ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AFSecurityPolicyTests/testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>
