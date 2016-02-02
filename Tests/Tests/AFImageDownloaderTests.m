@@ -345,11 +345,11 @@
 
 - (void)testThatItCanDownloadAndCancelAndDownloadAgain {
     NSArray *imageURLStrings = @[
-                                 @"https://static.pexels.com/photos/1562/italian-landscape-mountains-nature.jpg",
-                                 @"https://static.pexels.com/photos/397/italian-landscape-mountains-nature.jpg",
-                                 @"https://static.pexels.com/photos/2698/dawn-landscape-mountains-nature.jpg",
-                                 @"https://static.pexels.com/photos/2946/dawn-nature-sunset-trees.jpg",
-                                 @"https://static.pexels.com/photos/5021/nature-sunset-person-woman.jpg"
+                                 @"https://secure.gravatar.com/avatar/5a105e8b9d40e1329780d62ea2265d8a?d=identicon",
+                                 @"https://secure.gravatar.com/avatar/6a105e8b9d40e1329780d62ea2265d8a?d=identicon",
+                                 @"https://secure.gravatar.com/avatar/7a105e8b9d40e1329780d62ea2265d8a?d=identicon",
+                                 @"https://secure.gravatar.com/avatar/8a105e8b9d40e1329780d62ea2265d8a?d=identicon",
+                                 @"https://secure.gravatar.com/avatar/9a105e8b9d40e1329780d62ea2265d8a?d=identicon"
                                  ];
 
     for (NSString *imageURLString in imageURLStrings) {
