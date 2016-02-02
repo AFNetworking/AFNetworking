@@ -85,12 +85,12 @@
     XCTAssertNotNil(responseImage, @"Response image should not be nil");
 }
 
-- (void)testDownloadProgressIsReported {
+- (void)testThatImageDownloadProgressIsReported {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 
     NSUUID *receiptId = [NSUUID UUID];
-    [self.downloader downloadImageForURLRequest:self.pngRequest withReceiptID:receiptId downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
-        if (downloadProgress.fractionCompleted == 1.0) {
+    [self.downloader downloadImageForURLRequest:self.pngRequest withReceiptID:receiptId progress:^(NSProgress * _Nonnull progress) {
+        if (progress.fractionCompleted == 1.0) {
             [expectation fulfill];
         }
     } success:nil failure:nil];

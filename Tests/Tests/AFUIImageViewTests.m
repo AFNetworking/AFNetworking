@@ -69,11 +69,11 @@
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
-- (void)testDownloadProgressIsReported {
+- (void)testThatImageDownloadProgressIsReported {
     XCTAssertNil(self.imageView.image);
     XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
-    [self.imageView setImageWithURLRequest:self.jpegURLRequest placeholderImage:nil downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
-        if (downloadProgress.fractionCompleted == 1.0) {
+    [self.imageView setImageWithURLRequest:self.jpegURLRequest placeholderImage:nil progress:^(NSProgress * _Nonnull progress) {
+        if (progress.fractionCompleted == 1.0) {
             [expectation fulfill];
         }
     } success:nil failure:nil];
