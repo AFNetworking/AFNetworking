@@ -51,6 +51,7 @@
  - `URLSession:willPerformHTTPRedirection:newRequest:completionHandler:`
  - `URLSession:task:didReceiveChallenge:completionHandler:`
  - `URLSession:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:`
+ - `URLSession:task:needNewBodyStream:`
  - `URLSession:task:didCompleteWithError:`
 
  ### `NSURLSessionDataDelegate`
