@@ -220,7 +220,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
         return;
     }
 
-    [self cancelImageDownloadTaskForState:state];
+    [self cancelBackgroundImageDownloadTaskForState:state];
 
     AFImageDownloader *downloader = [[self class] sharedImageDownloader];
     id <AFImageRequestCache> imageCache = downloader.imageCache;
@@ -253,7 +253,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                            } else if(responseObject) {
                                [strongSelf setBackgroundImage:responseObject forState:state];
                            }
-                           [strongSelf af_setImageDownloadReceipt:nil forState:state];
+                           [strongSelf af_setBackgroundImageDownloadReceipt:nil forState:state];
                        }
 
                    }
