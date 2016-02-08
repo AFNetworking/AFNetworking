@@ -135,7 +135,7 @@ NS_ASSUME_NONNULL_BEGIN
  after purge limit.
 
  @param memoryCapacity The total memory capacity of the cache in bytes.
- @param preferredMemoryUsageAfterPurge The preferred memory usage after purge in bytes.
+ @param preferredMemoryCapacity The preferred memory usage after purge in bytes.
 
  @return The new `AutoPurgingImageCache` instance.
  */
