@@ -8,10 +8,10 @@
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "298D7C3A1BC2C79500FD3B3E"
@@ -50,36 +50,6 @@
                BlueprintIdentifier = "298D7C3A1BC2C79500FD3B3E"
                BuildableName = "AFNetworking iOS Tests.xctest"
                BlueprintName = "AFNetworking iOS Tests"
-               ReferencedContainer = "container:AFNetworking.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "AFSecurityPolicyTests/testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2987B0AD1BC408A200179A4C"
-               BuildableName = "AFNetworking tvOS Tests.xctest"
-               BlueprintName = "AFNetworking tvOS Tests"
-               ReferencedContainer = "container:AFNetworking.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "AFSecurityPolicyTests/testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "298D7C491BC2C7B200FD3B3E"
-               BuildableName = "AFNetworking Mac OS X Tests.xctest"
-               BlueprintName = "AFNetworking Mac OS X Tests"
                ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
             <SkippedTests>
