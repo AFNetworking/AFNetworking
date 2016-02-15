@@ -152,7 +152,7 @@
     } success:nil failure:nil];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
- 
+
 - (void)testThatNilURLDoesntCrash {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"

@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Set the shared image downloader used to download images.
- 
+
  @param imageDownloader The shared image downloader used to download images.
  */
 + (void)setSharedImageDownloader:(AFImageDownloader *)imageDownloader;
@@ -58,22 +58,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Asynchronously downloads an image from the specified URL, and sets it once the request is finished. Any previous image request for the receiver will be cancelled.
- 
+
  If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
- 
+
  By default, URL requests have a `Accept` header field value of "image / *", a cache policy of `NSURLCacheStorageAllowed` and a timeout interval of 30 seconds, and are set not handle cookies. To configure URL requests differently, use `setImageWithURLRequest:placeholderImage:success:failure:`
- 
+
  @param url The URL used for the image request.
  */
 - (void)setImageWithURL:(NSURL *)url;
 
 /**
  Asynchronously downloads an image from the specified URL, and sets it once the request is finished. Any previous image request for the receiver will be cancelled.
- 
+
  If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
- 
+
  By default, URL requests have a `Accept` header field value of "image / *", a cache policy of `NSURLCacheStorageAllowed` and a timeout interval of 30 seconds, and are set not handle cookies. To configure URL requests differently, use `setImageWithURLRequest:placeholderImage:success:failure:`
- 
+
  @param url The URL used for the image request.
  @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
  */
@@ -82,11 +82,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Asynchronously downloads an image from the specified URL request, and sets it once the request is finished. Any previous image request for the receiver will be cancelled.
- 
+
  If the image is cached locally, the image is set immediately, otherwise the specified placeholder image will be set immediately, and then the remote image will be set once the request is finished.
- 
+
  If a success block is specified, it is the responsibility of the block to set the image of the image view before returning. If no success block is specified, the default behavior of setting the image with `self.image = image` is applied.
- 
+
  @param urlRequest The URL request used for the image request.
  @param placeholderImage The image to be set initially, until the image request finishes. If `nil`, the image view will not change its image until the image request finishes.
  @param success A block to be executed when the image data task finishes successfully. This block has no return value and takes three arguments: the request sent from the client, the response received from the server, and the image created from the response data of request. If the image was returned from cache, the response parameter will be `nil`.

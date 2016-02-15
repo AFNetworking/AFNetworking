@@ -418,35 +418,38 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"httpbin.org"], @"Policy should allow server trust");
 }
 
-- (void)testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName {
-    // Fix certificate validation for servers providing incomplete chains (#3159) - test case
-    //
-    // google.com has two certification paths and both send incomplete certificate chains, i.e. don't include the Root CA
-    // (this can be validated in https://www.ssllabs.com/ssltest/analyze.html?d=google.com)
-    //
-    // The two certification paths are:
-    // - Path 1: *.google.com, Google Internet Authority G2 (with GeoTrust Global CA Root)
-    // - Path 2: *.google.com, Google Internet Authority G2, GeoTrust Global CA (cross signed) (with Equifax Secure CA Root)
-    //
-    // The common goal of using certificate pinning is to prevent MiTM (man-in-the-middle) attacks, so the Root CA's should be pinned to protect the entire chains.
-    // Since there's no Root CA being sent, when `-evaluateServerTrust:` invokes `AFCertificateTrustChainForServerTrust(serverTrust)`, the Root CA isn't present
-    // Therefore, even though `AFServerTrustIsValid(serverTrust)` succeeds, the next validation fails since no pinned certificate matches the `pinnedCertificates`.
-    // By fetching the `AFCertificateTrustChainForServerTrust(serverTrust)` *after* the `AFServerTrustIsValid(serverTrust)` validation, the complete chain is obtained and the Root CA's match.
-    
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
-    // certification path 1
-    SecCertificateRef certificate = AFUTGoogleComGeoTrustGlobalCARootCertificate();
-    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
-    
-    XCTAssertTrue([policy evaluateServerTrust:AFUTGoogleComServerTrustPath1() forDomain:@"google.com"], @"Policy should allow server trust");
-
-    // certification path 2
-    certificate = AFUTGoogleComEquifaxSecureCARootCertificate();
-    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
-
-    XCTAssertTrue([policy evaluateServerTrust:AFUTGoogleComServerTrustPath2() forDomain:@"google.com"], @"Policy should allow server trust");
-}
+//- (void)testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName {
+//    //TODO THIS TEST HAS BEEN DISABLED UNTIL CERTS HAVE BEEN UPDATED.
+//    //Please see conversation here: https://github.com/AFNetworking/AFNetworking/pull/3159#issuecomment-178647437
+//    //
+//    // Fix certificate validation for servers providing incomplete chains (#3159) - test case
+//    //
+//    // google.com has two certification paths and both send incomplete certificate chains, i.e. don't include the Root CA
+//    // (this can be validated in https://www.ssllabs.com/ssltest/analyze.html?d=google.com)
+//    //
+//    // The two certification paths are:
+//    // - Path 1: *.google.com, Google Internet Authority G2 (with GeoTrust Global CA Root)
+//    // - Path 2: *.google.com, Google Internet Authority G2, GeoTrust Global CA (cross signed) (with Equifax Secure CA Root)
+//    //
+//    // The common goal of using certificate pinning is to prevent MiTM (man-in-the-middle) attacks, so the Root CA's should be pinned to protect the entire chains.
+//    // Since there's no Root CA being sent, when `-evaluateServerTrust:` invokes `AFCertificateTrustChainForServerTrust(serverTrust)`, the Root CA isn't present
+//    // Therefore, even though `AFServerTrustIsValid(serverTrust)` succeeds, the next validation fails since no pinned certificate matches the `pinnedCertificates`.
+//    // By fetching the `AFCertificateTrustChainForServerTrust(serverTrust)` *after* the `AFServerTrustIsValid(serverTrust)` validation, the complete chain is obtained and the Root CA's match.
+//    
+//    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+//
+//    // certification path 1
+//    SecCertificateRef certificate = AFUTGoogleComGeoTrustGlobalCARootCertificate();
+//    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+//    
+//    XCTAssertTrue([policy evaluateServerTrust:AFUTGoogleComServerTrustPath1() forDomain:@"google.com"], @"Policy should allow server trust");
+//
+//    // certification path 2
+//    certificate = AFUTGoogleComEquifaxSecureCARootCertificate();
+//    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+//
+//    XCTAssertTrue([policy evaluateServerTrust:AFUTGoogleComServerTrustPath2() forDomain:@"google.com"], @"Policy should allow server trust");
+//}
 
 #pragma mark Negative Server Trust Evaluation Tests
 
