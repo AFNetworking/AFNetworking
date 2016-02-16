@@ -86,7 +86,7 @@
 }
 
 - (void)testThatImageDownloadProgressIsReported {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Progress should equal 1.0"];
 
     NSUUID *receiptId = [NSUUID UUID];
     [self.downloader downloadImageForURLRequest:self.pngRequest withReceiptID:receiptId progress:^(NSProgress * _Nonnull progress) {
@@ -94,6 +94,46 @@
             [expectation fulfill];
         }
     } success:nil failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
+-(void)testThatImageDownloadProgressIsReportedForMultipleImagesSimultaneously {
+    XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 progress should equal 1.0"];
+    NSUUID *receiptId1 = [NSUUID UUID];
+    [self.downloader downloadImageForURLRequest:self.pngRequest withReceiptID:receiptId1 progress:^(NSProgress * _Nonnull progress) {
+        if (progress.fractionCompleted == 1.0) {
+            [expectation1 fulfill];
+        }
+    } success:nil failure:nil];
+    
+    XCTestExpectation *expectation2 = [self expectationWithDescription:@"image 2 progress should equal 1.0"];
+    NSUUID *receiptId2 = [NSUUID UUID];
+    [self.downloader downloadImageForURLRequest:self.jpegRequest withReceiptID:receiptId2 progress:^(NSProgress * _Nonnull progress) {
+        if (progress.fractionCompleted == 1.0) {
+            [expectation2 fulfill];
+        }
+    } success:nil failure:nil];
+    
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
+-(void)testThatImageDownloadProgressIsReportedForMultipleImagesWithEqualUrlsSimultaneously {
+    XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 progress should equal 1.0"];
+    NSUUID *receiptId1 = [NSUUID UUID];
+    [self.downloader downloadImageForURLRequest:self.pngRequest withReceiptID:receiptId1 progress:^(NSProgress * _Nonnull progress) {
+        if (progress.fractionCompleted == 1.0) {
+            [expectation1 fulfill];
+        }
+    } success:nil failure:nil];
+    
+    XCTestExpectation *expectation2 = [self expectationWithDescription:@"image 2 progress should equal 1.0"];
+    NSUUID *receiptId2 = [NSUUID UUID];
+    [self.downloader downloadImageForURLRequest:self.pngRequest withReceiptID:receiptId2 progress:^(NSProgress * _Nonnull progress) {
+        if (progress.fractionCompleted == 1.0) {
+            [expectation2 fulfill];
+        }
+    } success:nil failure:nil];
+    
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 

@@ -84,7 +84,7 @@
 
 - (void)setImageWithURLRequest:(NSURLRequest *)urlRequest
               placeholderImage:(UIImage *)placeholderImage
-                      progress:(nullable void (^)(NSProgress *progress)) progress
+                      progress:(nullable void (^)(NSProgress *progress))progressBlock
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure
 {
@@ -121,10 +121,18 @@
         __weak __typeof(self)weakSelf = self;
         NSUUID *downloadID = [NSUUID UUID];
         AFImageDownloadReceipt *receipt;
+        
         receipt = [downloader
                    downloadImageForURLRequest:urlRequest
                    withReceiptID:downloadID
-                   progress:progress
+                   progress:^(NSProgress * _Nonnull progress) {
+                       __strong __typeof(weakSelf)strongSelf = weakSelf;
+                       if ([strongSelf.af_activeImageDownloadReceipt.receiptID isEqual:downloadID]) {
+                           if (progressBlock) {
+                               progressBlock(progress);
+                           }
+                       }
+                   }
                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
                        if ([strongSelf.af_activeImageDownloadReceipt.receiptID isEqual:downloadID]) {
@@ -135,7 +143,6 @@
                            }
                            [strongSelf clearActiveDownloadInformation];
                        }
-
                    }
                    failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;

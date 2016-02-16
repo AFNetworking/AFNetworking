@@ -194,7 +194,7 @@
 
 - (nullable AFImageDownloadReceipt *)downloadImageForURLRequest:(NSURLRequest *)request
                                                  withReceiptID:(nonnull NSUUID *)receiptID
-                                                       progress:(nullable void (^)(NSProgress *progress)) progress
+                                                       progress:(nullable void (^)(NSProgress *progress))progressBlock
                                                         success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse  * _Nullable response, UIImage *responseObject))success
                                                         failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure {
     __block NSURLSessionDataTask *task = nil;
@@ -204,7 +204,7 @@
         // 1) Append the success and failure blocks to a pre-existing request if it already exists
         AFImageDownloaderMergedTask *existingMergedTask = self.mergedTasks[URLIdentifier];
         if (existingMergedTask != nil) {
-            AFImageDownloaderResponseHandler *handler = [[AFImageDownloaderResponseHandler alloc] initWithUUID:receiptID progress:progress success:success failure:failure];
+            AFImageDownloaderResponseHandler *handler = [[AFImageDownloaderResponseHandler alloc] initWithUUID:receiptID progress:progressBlock success:success failure:failure];
             [existingMergedTask addResponseHandler:handler];
             task = existingMergedTask.task;
             return;
@@ -238,7 +238,20 @@
         createdTask = [self.sessionManager
                        dataTaskWithRequest:request
                        uploadProgress:nil
-                       downloadProgress:progress
+                       downloadProgress:^(NSProgress * _Nonnull progress) {
+                           dispatch_async(self.responseQueue, ^{
+                               AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[URLIdentifier];
+                               if ([mergedTask.identifier isEqual:mergedTaskIdentifier]) {
+                                   for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
+                                       if (handler.progressBlock) {
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                               handler.progressBlock(progress);
+                                           });
+                                       }
+                                   }
+                               }
+                           });
+                       }
                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
                                __strong __typeof__(weakSelf) strongSelf = weakSelf;
@@ -273,7 +286,7 @@
 
         // 4) Store the response handler for use when the request completes
         AFImageDownloaderResponseHandler *handler = [[AFImageDownloaderResponseHandler alloc] initWithUUID:receiptID
-                                                                                                  progress:progress
+                                                                                                  progress:progressBlock
                                                                                                    success:success
                                                                                                    failure:failure];
         AFImageDownloaderMergedTask *mergedTask = [[AFImageDownloaderMergedTask alloc]

@@ -80,6 +80,25 @@
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
+- (void)testThatImageDownloadProgressIsReportedForMultipleRequests {
+    XCTAssertNil(self.imageView.image);
+    XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 progress should equal 1.0"];
+    [self.imageView setImageWithURLRequest:self.jpegURLRequest placeholderImage:nil progress:^(NSProgress * _Nonnull progress) {
+        if (progress.fractionCompleted == 1.0) {
+            [expectation1 fulfill];
+        }
+    } success:nil failure:nil];
+    
+    XCTestExpectation *expectation2 = [self expectationWithDescription:@"image 3 progress should equal 1.0"];
+    UIImageView *imageView2 = [UIImageView new];
+    [imageView2 setImageWithURLRequest:self.jpegURLRequest placeholderImage:nil progress:^(NSProgress * _Nonnull progress) {
+        if (progress.fractionCompleted == 1.0) {
+            [expectation2 fulfill];
+        }
+    } success:nil failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
 - (void)testThatImageDownloadSucceedsWhenDuplicateRequestIsSentToImageView {
     XCTAssertNil(self.imageView.image);
     [self.imageView setImageWithURL:self.jpegURL];
