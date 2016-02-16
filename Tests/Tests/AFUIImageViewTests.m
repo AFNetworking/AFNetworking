@@ -153,6 +153,25 @@
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
+- (void)testThatImageDoesReportDownloadProgressForSameRequest {
+    XCTAssertNil(self.imageView.image);
+    __weak XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 progress should equal 1.0"];
+    [self.imageView setImageWithURLRequest:self.jpegURLRequest placeholderImage:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        if (downloadProgress.fractionCompleted == 1.0) {
+            [expectation1 fulfill];
+        }
+    } success:nil failure:nil];
+    
+    __weak XCTestExpectation *expectation2 = [self expectationWithDescription:@"image 2 progress should equal 1.0"];
+    UIImageView *imageView2 = [UIImageView new];
+    [imageView2 setImageWithURLRequest:self.jpegURLRequest placeholderImage:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        if (downloadProgress.fractionCompleted == 1.0) {
+            [expectation2 fulfill];
+        }
+    } success:nil failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
 - (void)testThatNilURLDoesntCrash {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"

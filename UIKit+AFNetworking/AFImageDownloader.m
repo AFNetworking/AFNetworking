@@ -234,6 +234,21 @@
 
         createdTask = [self.sessionManager
                        dataTaskWithRequest:request
+                       uploadProgress:nil
+                       downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
+                           dispatch_async(self.responseQueue, ^{
+                               AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[URLIdentifier];
+                               if ([mergedTask.identifier isEqual:mergedTaskIdentifier]) {
+                                   for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
+                                       if (handler.downloadProgressBlock) {
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                               handler.downloadProgressBlock(downloadProgress);
+                                           });
+                                       }
+                                   }
+                               }
+                           });
+                       }
                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
                                __strong __typeof__(weakSelf) strongSelf = weakSelf;
