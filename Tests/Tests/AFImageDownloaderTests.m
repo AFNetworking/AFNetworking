@@ -86,7 +86,7 @@
 }
 
 - (void)testThatItCanDownloadMultipleImagesSimultaneously {
-    XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 download should succeed"];
+    __weak XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 download should succeed"];
     __block NSHTTPURLResponse *urlResponse1 = nil;
     __block UIImage *responseImage1 = nil;
 
@@ -99,7 +99,7 @@
      }
      failure:nil];
 
-    XCTestExpectation *expectation2 = [self expectationWithDescription:@"image 2 download should succeed"];
+    __weak XCTestExpectation *expectation2 = [self expectationWithDescription:@"image 2 download should succeed"];
     __block NSHTTPURLResponse *urlResponse2 = nil;
     __block UIImage *responseImage2 = nil;
 
@@ -122,7 +122,7 @@
 }
 
 - (void)testThatSimultaneouslyRequestsForTheSameAssetReceiveSameResponse {
-    XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 download should succeed"];
+    __weak XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 download should succeed"];
     __block NSHTTPURLResponse *urlResponse1 = nil;
     __block UIImage *responseImage1 = nil;
 
@@ -135,7 +135,7 @@
      }
      failure:nil];
 
-    XCTestExpectation *expectation2 = [self expectationWithDescription:@"image 2 download should succeed"];
+    __weak XCTestExpectation *expectation2 = [self expectationWithDescription:@"image 2 download should succeed"];
     __block NSHTTPURLResponse *urlResponse2 = nil;
     __block UIImage *responseImage2 = nil;
 
