@@ -36,7 +36,7 @@
 @implementation AFImageDownloaderResponseHandler
 
 - (instancetype)initWithUUID:(NSUUID *)uuid
-                    progress:(void (^)(NSProgress *downloadProgress))downloadProgressBlock
+                    progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
                      success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *responseObject))success
                      failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure {
     if (self = [self init]) {
