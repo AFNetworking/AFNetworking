@@ -64,6 +64,22 @@
     XCTAssertNil(self.downloader, @"Downloader should be nil");
 }
 
+- (void)testThatImageDownloaderReturnsNilWithInvalidURL
+{
+    NSURL *pngURL = [NSURL URLWithString:@"https://httpbin.org/image/png"];
+    NSMutableURLRequest *mutableURLRequest = [NSMutableURLRequest requestWithURL:pngURL];
+    [mutableURLRequest setURL:nil];
+    /** NSURLRequest nor NSMutableURLRequest can be initialized with a nil URL, 
+     *  but NSMutableURLRequest can have its URL set to nil 
+     **/
+    NSURLRequest *invalidRequest = [mutableURLRequest copy];
+    AFImageDownloadReceipt *downloadReceipt = [self.downloader downloadImageForURLRequest:invalidRequest
+                                                                                  success:nil
+                                                                                  failure:nil];
+    
+    XCTAssertNil(downloadReceipt, @"downloadReceipt should be nil");
+}
+
 - (void)testThatImageDownloaderCanDownloadImage {
     XCTestExpectation *expectation = [self expectationWithDescription:@"image download should succeed"];
 
