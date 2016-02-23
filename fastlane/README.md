@@ -107,7 +107,7 @@ This lane should be run from your local machine, and will push a tag to the remo
 
  * Commits the changes
 
- * Pushes the commited branch
+ * Pushes the committed branch
 
  * Creates a tag
 
