@@ -29,6 +29,8 @@
 
 @implementation AFImageResponseSerializerTests
 
+#pragma mark NSCopying
+
 - (void)testImageSerializerCanBeCopied {
     AFImageResponseSerializer *responseSerializer = [AFImageResponseSerializer serializer];
     AFImageResponseSerializer *copiedSerializer = [responseSerializer copy];
@@ -41,8 +43,40 @@
 
 }
 
+#pragma mark NSSecureCoding
+
 - (void)testImageSerializerSupportsSecureCoding {
     XCTAssertTrue([AFImageResponseSerializer supportsSecureCoding]);
+}
+
+- (void)testImageSerializerCanBeArchivedAndUnarchived {
+    AFImageResponseSerializer   *responseSerializer = [AFImageResponseSerializer serializer];
+    NSData  *archive    = nil;
+    
+    archive = [NSKeyedArchiver archivedDataWithRootObject:responseSerializer];
+    XCTAssertNotNil(archive);
+    AFImageResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
+    XCTAssertNotNil(unarchivedSerializer);
+    XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
+    XCTAssertTrue(unarchivedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
+    XCTAssertTrue(fabs(unarchivedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);
+}
+
+- (void)testImageSerializerCanBeArchivedAndUnarchivedWithNonDefaultPropertyValues {
+    AFImageResponseSerializer   *responseSerializer = [AFImageResponseSerializer serializer];
+    NSData  *archive    = nil;
+    
+    // Customize the default property values
+    responseSerializer.automaticallyInflatesResponseImage = !responseSerializer.automaticallyInflatesResponseImage;
+    responseSerializer.imageScale = responseSerializer.imageScale * 2.0f;
+    
+    archive = [NSKeyedArchiver archivedDataWithRootObject:responseSerializer];
+    XCTAssertNotNil(archive);
+    AFImageResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
+    XCTAssertNotNil(unarchivedSerializer);
+    XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
+    XCTAssertTrue(unarchivedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
+    XCTAssertTrue(fabs(unarchivedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);
 }
 
 @end
