@@ -36,8 +36,6 @@
     AFImageResponseSerializer *copiedSerializer = [responseSerializer copy];
     XCTAssertNotNil(copiedSerializer);
     XCTAssertNotEqual(copiedSerializer, responseSerializer);
-    XCTAssertTrue(copiedSerializer.acceptableContentTypes.count == responseSerializer.acceptableContentTypes.count);
-    XCTAssertTrue(copiedSerializer.acceptableStatusCodes.count == responseSerializer.acceptableStatusCodes.count);
     XCTAssertTrue([copiedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
     XCTAssertTrue([copiedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
     XCTAssertTrue(copiedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
