@@ -38,8 +38,10 @@
     XCTAssertNotEqual(copiedSerializer, responseSerializer);
     XCTAssertTrue([copiedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
     XCTAssertTrue([copiedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     XCTAssertTrue(copiedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
     XCTAssertTrue(fabs(copiedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);
+#endif
 
 }
 
@@ -60,8 +62,12 @@
     XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
     XCTAssertTrue([unarchivedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
     XCTAssertTrue([unarchivedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
+
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     XCTAssertTrue(unarchivedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
     XCTAssertTrue(fabs(unarchivedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);
+#endif
+    
 }
 
 - (void)testImageSerializerCanBeArchivedAndUnarchivedWithNonDefaultPropertyValues {
@@ -69,16 +75,21 @@
     NSData  *archive    = nil;
     
     // Customize the default property values
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     responseSerializer.automaticallyInflatesResponseImage = !responseSerializer.automaticallyInflatesResponseImage;
     responseSerializer.imageScale = responseSerializer.imageScale * 2.0f;
+#endif
     
     archive = [NSKeyedArchiver archivedDataWithRootObject:responseSerializer];
     XCTAssertNotNil(archive);
     AFImageResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
     XCTAssertNotNil(unarchivedSerializer);
     XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
+
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     XCTAssertTrue(unarchivedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
     XCTAssertTrue(fabs(unarchivedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);
+#endif
 }
 
 @end
