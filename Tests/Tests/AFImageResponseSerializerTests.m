@@ -36,6 +36,9 @@
     XCTAssertNotEqual(copiedSerializer, responseSerializer);
     XCTAssertTrue(copiedSerializer.acceptableContentTypes.count == responseSerializer.acceptableContentTypes.count);
     XCTAssertTrue(copiedSerializer.acceptableStatusCodes.count == responseSerializer.acceptableStatusCodes.count);
+    XCTAssertTrue(copiedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
+    XCTAssertTrue(fabs(copiedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);
+
 }
 
 - (void)testSupportsSecureCoding {
