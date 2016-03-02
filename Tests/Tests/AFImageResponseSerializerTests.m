@@ -29,7 +29,7 @@
 
 @implementation AFImageResponseSerializerTests
 
-- (void)testCanBeCopied {
+- (void)testImageSerializerCanBeCopied {
     AFImageResponseSerializer *responseSerializer = [AFImageResponseSerializer serializer];
     AFImageResponseSerializer *copiedSerializer = [responseSerializer copy];
     XCTAssertNotNil(copiedSerializer);
@@ -41,7 +41,7 @@
 
 }
 
-- (void)testSupportsSecureCoding {
+- (void)testImageSerializerSupportsSecureCoding {
     XCTAssertTrue([AFImageResponseSerializer supportsSecureCoding]);
 }
 
