@@ -38,6 +38,8 @@
     XCTAssertNotEqual(copiedSerializer, responseSerializer);
     XCTAssertTrue(copiedSerializer.acceptableContentTypes.count == responseSerializer.acceptableContentTypes.count);
     XCTAssertTrue(copiedSerializer.acceptableStatusCodes.count == responseSerializer.acceptableStatusCodes.count);
+    XCTAssertTrue([copiedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
+    XCTAssertTrue([copiedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
     XCTAssertTrue(copiedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
     XCTAssertTrue(fabs(copiedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);
 
@@ -58,6 +60,8 @@
     AFImageResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
     XCTAssertNotNil(unarchivedSerializer);
     XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
+    XCTAssertTrue([unarchivedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
+    XCTAssertTrue([unarchivedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
     XCTAssertTrue(unarchivedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
     XCTAssertTrue(fabs(unarchivedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);
 }
