@@ -15,7 +15,6 @@
 		BED5C75E1C8DCB6F00530969 /* AFHTTPRequestOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5C7491C8DCB6F00530969 /* AFHTTPRequestOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5C75F1C8DCB6F00530969 /* AFHTTPRequestOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5C7491C8DCB6F00530969 /* AFHTTPRequestOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5C7601C8DCB6F00530969 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C74A1C8DCB6F00530969 /* AFHTTPRequestOperation.m */; };
-		BED5C7611C8DCB6F00530969 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C74A1C8DCB6F00530969 /* AFHTTPRequestOperation.m */; };
 		BED5C7621C8DCB6F00530969 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C74A1C8DCB6F00530969 /* AFHTTPRequestOperation.m */; };
 		BED5C7631C8DCB6F00530969 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C74A1C8DCB6F00530969 /* AFHTTPRequestOperation.m */; };
 		BED5C7641C8DCB6F00530969 /* AFHTTPRequestOperationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5C74B1C8DCB6F00530969 /* AFHTTPRequestOperationManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -23,7 +22,6 @@
 		BED5C7661C8DCB6F00530969 /* AFHTTPRequestOperationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5C74B1C8DCB6F00530969 /* AFHTTPRequestOperationManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5C7671C8DCB6F00530969 /* AFHTTPRequestOperationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5C74B1C8DCB6F00530969 /* AFHTTPRequestOperationManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5C7681C8DCB6F00530969 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C74C1C8DCB6F00530969 /* AFHTTPRequestOperationManager.m */; };
-		BED5C7691C8DCB6F00530969 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C74C1C8DCB6F00530969 /* AFHTTPRequestOperationManager.m */; };
 		BED5C76A1C8DCB6F00530969 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C74C1C8DCB6F00530969 /* AFHTTPRequestOperationManager.m */; };
 		BED5C76B1C8DCB6F00530969 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C74C1C8DCB6F00530969 /* AFHTTPRequestOperationManager.m */; };
 		BED5C76C1C8DCB6F00530969 /* AFHTTPSessionManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5C74D1C8DCB6F00530969 /* AFHTTPSessionManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -58,7 +56,6 @@
 		BED5C78A1C8DCB6F00530969 /* AFURLConnectionOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5C7541C8DCB6F00530969 /* AFURLConnectionOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5C78B1C8DCB6F00530969 /* AFURLConnectionOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5C7541C8DCB6F00530969 /* AFURLConnectionOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5C78C1C8DCB6F00530969 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C7551C8DCB6F00530969 /* AFURLConnectionOperation.m */; };
-		BED5C78D1C8DCB6F00530969 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C7551C8DCB6F00530969 /* AFURLConnectionOperation.m */; };
 		BED5C78E1C8DCB6F00530969 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C7551C8DCB6F00530969 /* AFURLConnectionOperation.m */; };
 		BED5C78F1C8DCB6F00530969 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5C7551C8DCB6F00530969 /* AFURLConnectionOperation.m */; };
 		BED5C7901C8DCB6F00530969 /* AFURLRequestSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5C7561C8DCB6F00530969 /* AFURLRequestSerialization.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1166,15 +1163,12 @@
 				BED5C7EF1C8DCB7D00530969 /* UIProgressView+AFNetworking.m in Sources */,
 				BED5C7C71C8DCB7D00530969 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				BED5C7E31C8DCB7D00530969 /* UIImageView+AFNetworking.m in Sources */,
-				BED5C7691C8DCB6F00530969 /* AFHTTPRequestOperationManager.m in Sources */,
 				BED5C7BF1C8DCB7D00530969 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				BED5C7FF1C8DCB7E00530969 /* UIWebView+AFNetworking.m in Sources */,
 				BED5C77D1C8DCB6F00530969 /* AFNetworkReachabilityManager.m in Sources */,
-				BED5C78D1C8DCB6F00530969 /* AFURLConnectionOperation.m in Sources */,
 				BED5C7951C8DCB6F00530969 /* AFURLRequestSerialization.m in Sources */,
 				BED5C79D1C8DCB6F00530969 /* AFURLResponseSerialization.m in Sources */,
 				BED5C7D71C8DCB7D00530969 /* UIButton+AFNetworking.m in Sources */,
-				BED5C7611C8DCB6F00530969 /* AFHTTPRequestOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

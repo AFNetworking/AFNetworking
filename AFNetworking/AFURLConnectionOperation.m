@@ -459,7 +459,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 - (void)operationDidStart {
     [self.lock lock];
     if (![self isCancelled]) {
-#if TARGET_OS_IOS
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
 
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -470,7 +469,6 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
 
         [self.outputStream open];
         [self.connection start];
-#endif
     }
     [self.lock unlock];
 
