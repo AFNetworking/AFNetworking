@@ -11,11 +11,11 @@
 		2982AD3217107C0000FFF048 /* adn.cer in Resources */ = {isa = PBXBuildFile; fileRef = 2982AD3117107C0000FFF048 /* adn.cer */; };
 		29900D0A1B6FB14000DE5662 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29900D081B6FB14000DE5662 /* Interface.storyboard */; };
 		29900D0C1B6FB14000DE5662 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29900D0B1B6FB14000DE5662 /* Assets.xcassets */; };
-		29900D131B6FB14000DE5662 /* AFNetworking watchOS Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 29900D121B6FB14000DE5662 /* AFNetworking watchOS Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		29900D131B6FB14000DE5662 /* watchOS Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 29900D121B6FB14000DE5662 /* watchOS Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		29900D191B6FB14000DE5662 /* InterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 29900D181B6FB14000DE5662 /* InterfaceController.m */; };
 		29900D1C1B6FB14000DE5662 /* ExtensionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 29900D1B1B6FB14000DE5662 /* ExtensionDelegate.m */; };
 		29900D1E1B6FB14000DE5662 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29900D1D1B6FB14000DE5662 /* Assets.xcassets */; };
-		29900D221B6FB14000DE5662 /* AFNetworking watchOS.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 29900D061B6FB14000DE5662 /* AFNetworking watchOS.app */; };
+		29900D221B6FB14000DE5662 /* watchOS Example.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 29900D061B6FB14000DE5662 /* watchOS Example.app */; };
 		29900D2B1B6FB19000DE5662 /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 297F56C917A9B1AB0014D95C /* AFSecurityPolicy.m */; };
 		29900D2D1B6FB23000DE5662 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29900D2C1B6FB23000DE5662 /* Security.framework */; };
 		29900D2F1B6FB56A00DE5662 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D5499C17DB0EFE00BFF314 /* AFURLRequestSerialization.m */; };
@@ -122,7 +122,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				29900D131B6FB14000DE5662 /* AFNetworking watchOS Extension.appex in Embed App Extensions */,
+				29900D131B6FB14000DE5662 /* watchOS Extension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,7 +133,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				29900D221B6FB14000DE5662 /* AFNetworking watchOS.app in Embed Watch Content */,
+				29900D221B6FB14000DE5662 /* watchOS Example.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -155,11 +155,11 @@
 		297F56C817A9B1AB0014D95C /* AFSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSecurityPolicy.h; sourceTree = "<group>"; };
 		297F56C917A9B1AB0014D95C /* AFSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicy.m; sourceTree = "<group>"; };
 		2982AD3117107C0000FFF048 /* adn.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = adn.cer; sourceTree = SOURCE_ROOT; };
-		29900D061B6FB14000DE5662 /* AFNetworking watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking watchOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		29900D061B6FB14000DE5662 /* watchOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "watchOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29900D091B6FB14000DE5662 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		29900D0B1B6FB14000DE5662 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29900D0D1B6FB14000DE5662 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		29900D121B6FB14000DE5662 /* AFNetworking watchOS Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "AFNetworking watchOS Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		29900D121B6FB14000DE5662 /* watchOS Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "watchOS Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29900D171B6FB14000DE5662 /* InterfaceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InterfaceController.h; sourceTree = "<group>"; };
 		29900D181B6FB14000DE5662 /* InterfaceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InterfaceController.m; sourceTree = "<group>"; };
 		29900D1A1B6FB14000DE5662 /* ExtensionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExtensionDelegate.h; sourceTree = "<group>"; };
@@ -211,7 +211,7 @@
 		F8E02CF4177A8B710087BB23 /* UIProgressView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIProgressView+AFNetworking.m"; sourceTree = "<group>"; };
 		F8E02CF5177A8B710087BB23 /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		F8E02CF6177A8B710087BB23 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
-		F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AFNetworking iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8E469601395739C00DB05C8 /* iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E469641395739D00DB05C8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F8E469661395739D00DB05C8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F8E469681395739D00DB05C8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -453,10 +453,10 @@
 		F8E469611395739C00DB05C8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */,
+				F8E469601395739C00DB05C8 /* iOS Example.app */,
 				EBE11F481B62EDD200753127 /* Today Extension.appex */,
-				29900D061B6FB14000DE5662 /* AFNetworking watchOS.app */,
-				29900D121B6FB14000DE5662 /* AFNetworking watchOS Extension.appex */,
+				29900D061B6FB14000DE5662 /* watchOS Example.app */,
+				29900D121B6FB14000DE5662 /* watchOS Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -552,9 +552,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		29900D051B6FB14000DE5662 /* AFNetworking watchOS */ = {
+		29900D051B6FB14000DE5662 /* watchOS Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 29900D291B6FB14000DE5662 /* Build configuration list for PBXNativeTarget "AFNetworking watchOS" */;
+			buildConfigurationList = 29900D291B6FB14000DE5662 /* Build configuration list for PBXNativeTarget "watchOS Example" */;
 			buildPhases = (
 				29900D041B6FB14000DE5662 /* Resources */,
 				29900D281B6FB14000DE5662 /* Embed App Extensions */,
@@ -564,14 +564,14 @@
 			dependencies = (
 				29900D151B6FB14000DE5662 /* PBXTargetDependency */,
 			);
-			name = "AFNetworking watchOS";
+			name = "watchOS Example";
 			productName = "AFNetworking watchOS";
-			productReference = 29900D061B6FB14000DE5662 /* AFNetworking watchOS.app */;
+			productReference = 29900D061B6FB14000DE5662 /* watchOS Example.app */;
 			productType = "com.apple.product-type.application.watchapp2";
 		};
-		29900D111B6FB14000DE5662 /* AFNetworking watchOS Extension */ = {
+		29900D111B6FB14000DE5662 /* watchOS Extension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 29900D271B6FB14000DE5662 /* Build configuration list for PBXNativeTarget "AFNetworking watchOS Extension" */;
+			buildConfigurationList = 29900D271B6FB14000DE5662 /* Build configuration list for PBXNativeTarget "watchOS Extension" */;
 			buildPhases = (
 				29900D0E1B6FB14000DE5662 /* Sources */,
 				29900D0F1B6FB14000DE5662 /* Frameworks */,
@@ -581,9 +581,9 @@
 			);
 			dependencies = (
 			);
-			name = "AFNetworking watchOS Extension";
+			name = "watchOS Extension";
 			productName = "AFNetworking watchOS Extension";
-			productReference = 29900D121B6FB14000DE5662 /* AFNetworking watchOS Extension.appex */;
+			productReference = 29900D121B6FB14000DE5662 /* watchOS Extension.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
 		EBE11F471B62EDD200753127 /* Today Extension */ = {
@@ -603,9 +603,9 @@
 			productReference = EBE11F481B62EDD200753127 /* Today Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		F8E4695F1395739C00DB05C8 /* AFNetworking iOS Example */ = {
+		F8E4695F1395739C00DB05C8 /* iOS Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworking iOS Example" */;
+			buildConfigurationList = F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "iOS Example" */;
 			buildPhases = (
 				F8E4695C1395739C00DB05C8 /* Sources */,
 				F8E4695D1395739C00DB05C8 /* Frameworks */,
@@ -619,9 +619,9 @@
 				EBE11F541B62EDD200753127 /* PBXTargetDependency */,
 				29900D211B6FB14000DE5662 /* PBXTargetDependency */,
 			);
-			name = "AFNetworking iOS Example";
+			name = "iOS Example";
 			productName = AFNetworkingExample;
-			productReference = F8E469601395739C00DB05C8 /* AFNetworking iOS Example.app */;
+			productReference = F8E469601395739C00DB05C8 /* iOS Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -664,10 +664,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F8E4695F1395739C00DB05C8 /* AFNetworking iOS Example */,
+				F8E4695F1395739C00DB05C8 /* iOS Example */,
 				EBE11F471B62EDD200753127 /* Today Extension */,
-				29900D051B6FB14000DE5662 /* AFNetworking watchOS */,
-				29900D111B6FB14000DE5662 /* AFNetworking watchOS Extension */,
+				29900D051B6FB14000DE5662 /* watchOS Example */,
+				29900D111B6FB14000DE5662 /* watchOS Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -799,12 +799,12 @@
 /* Begin PBXTargetDependency section */
 		29900D151B6FB14000DE5662 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 29900D111B6FB14000DE5662 /* AFNetworking watchOS Extension */;
+			target = 29900D111B6FB14000DE5662 /* watchOS Extension */;
 			targetProxy = 29900D141B6FB14000DE5662 /* PBXContainerItemProxy */;
 		};
 		29900D211B6FB14000DE5662 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 29900D051B6FB14000DE5662 /* AFNetworking watchOS */;
+			target = 29900D051B6FB14000DE5662 /* watchOS Example */;
 			targetProxy = 29900D201B6FB14000DE5662 /* PBXContainerItemProxy */;
 		};
 		EBE11F541B62EDD200753127 /* PBXTargetDependency */ = {
@@ -1211,7 +1211,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		29900D271B6FB14000DE5662 /* Build configuration list for PBXNativeTarget "AFNetworking watchOS Extension" */ = {
+		29900D271B6FB14000DE5662 /* Build configuration list for PBXNativeTarget "watchOS Extension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				29900D251B6FB14000DE5662 /* Debug */,
@@ -1220,7 +1220,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		29900D291B6FB14000DE5662 /* Build configuration list for PBXNativeTarget "AFNetworking watchOS" */ = {
+		29900D291B6FB14000DE5662 /* Build configuration list for PBXNativeTarget "watchOS Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				29900D231B6FB14000DE5662 /* Debug */,
@@ -1247,7 +1247,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "AFNetworking iOS Example" */ = {
+		F8E469811395739D00DB05C8 /* Build configuration list for PBXNativeTarget "iOS Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8E469821395739D00DB05C8 /* Debug */,
