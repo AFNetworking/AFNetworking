@@ -24,7 +24,7 @@
 
 #import <Availability.h>
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS || TARGET_OS_TV
 
 #import <UIKit/UIKit.h>
 
