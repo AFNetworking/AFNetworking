@@ -41,10 +41,11 @@ FOUNDATION_EXPORT const unsigned char AFNetworkingVersionString[];
 
 #if !TARGET_OS_WATCH
 #import <AFNetworking/AFNetworkReachabilityManager.h>
-#endif
-
+#import <AFNetworking/AFURLConnectionOperation.h>
 #import <AFNetworking/AFHTTPRequestOperation.h>
 #import <AFNetworking/AFHTTPRequestOperationManager.h>
+#endif
+
 #import <AFNetworking/AFURLSessionManager.h>
 #import <AFNetworking/AFHTTPSessionManager.h>
 
