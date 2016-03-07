@@ -149,7 +149,4 @@
    <FileRef
       location = "group:Example/AFNetworking OS X Example.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Tests/Pods/Pods.xcodeproj">
-   </FileRef>
 </Workspace>
