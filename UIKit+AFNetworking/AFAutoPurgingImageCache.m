@@ -44,8 +44,8 @@
 
         CGSize imageSize = CGSizeMake(image.size.width * image.scale, image.size.height * image.scale);
         CGFloat bytesPerPixel = 4.0;
-        CGFloat bytesPerRow = imageSize.width * bytesPerPixel;
-        self.totalBytes = (UInt64)bytesPerPixel * (UInt64)bytesPerRow;
+        CGFloat bytesPerSize = imageSize.width * imageSize.height;
+        self.totalBytes = (UInt64)bytesPerPixel * (UInt64)bytesPerSize;
         self.lastAccessDate = [NSDate date];
     }
     return self;
