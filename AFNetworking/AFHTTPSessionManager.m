@@ -368,170 +368,154 @@ dataTaskWithHTTPMethod:(NSString *)method
 
 #pragma mark - Synchronous
 
-- (NSURLSessionDataTask *)
-GETSynchronously:(NSString *)URLString
-      parameters:(id)parameters
-        progress:(void (^)(NSProgress *_Nonnull))downloadProgress
-         success:(void (^)(NSURLSessionDataTask *_Nonnull, id _Nullable))success
-         failure:(void (^)(NSURLSessionDataTask *_Nullable,
-                           NSError *_Nonnull))failure {
+- (AFHTTPResponse *)GETSynchronously:(NSString *)URLString
+                          parameters:(id)parameters
+                            progress:(void (^)(NSProgress *_Nonnull))
+                                         downloadProgress {
   dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+  AFHTTPResponse *httpResponse = [[AFHTTPResponse alloc] init];
   NSURLSessionDataTask *dataTask = [self GET:URLString
       parameters:parameters
       progress:downloadProgress
       success:^(NSURLSessionDataTask *_Nonnull task,
                 id _Nullable responseObject) {
-        success(task, responseObject);
+        httpResponse.responseObject = responseObject;
         dispatch_semaphore_signal(semaphore);
       }
       failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        failure(task, error);
+        httpResponse.error = error;
         dispatch_semaphore_signal(semaphore);
       }];
+  httpResponse.task = dataTask;
   dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-  return dataTask;
+  return httpResponse;
 }
 
-- (NSURLSessionDataTask *)
-HEADSynchronously:(NSString *)URLString
-       parameters:(id)parameters
-          success:(void (^)(NSURLSessionDataTask *task))success
-          failure:
-              (void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+- (AFHTTPResponse *)HEADSynchronously:(NSString *)URLString
+                           parameters:(id)parameters {
   dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+  AFHTTPResponse *httpResponse = [[AFHTTPResponse alloc] init];
   NSURLSessionDataTask *dataTask = [self HEAD:URLString
       parameters:parameters
       success:^(NSURLSessionDataTask *_Nonnull task) {
-        success(task);
         dispatch_semaphore_signal(semaphore);
       }
       failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        failure(task, error);
+        httpResponse.error = error;
         dispatch_semaphore_signal(semaphore);
       }];
+  httpResponse.task = dataTask;
   dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-  return dataTask;
+  return httpResponse;
 }
 
-- (NSURLSessionDataTask *)
-POSTSynchronously:(NSString *)URLString
-       parameters:(id)parameters
-         progress:(void (^)(NSProgress *_Nonnull))uploadProgress
-          success:(void (^)(NSURLSessionDataTask *_Nonnull,
-                            id _Nullable))success
-          failure:(void (^)(NSURLSessionDataTask *_Nullable,
-                            NSError *_Nonnull))failure {
+- (AFHTTPResponse *)POSTSynchronously:(NSString *)URLString
+                           parameters:(id)parameters
+                             progress:(void (^)(NSProgress *_Nonnull))
+                                          uploadProgress {
   dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+  AFHTTPResponse *httpResponse = [[AFHTTPResponse alloc] init];
   NSURLSessionDataTask *dataTask = [self POST:URLString
       parameters:parameters
       progress:uploadProgress
       success:^(NSURLSessionDataTask *_Nonnull task,
                 id _Nullable responseObject) {
-        success(task, responseObject);
+        httpResponse.responseObject = responseObject;
         dispatch_semaphore_signal(semaphore);
       }
       failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        failure(task, error);
+        httpResponse.error = error;
         dispatch_semaphore_signal(semaphore);
       }];
+  httpResponse.task = dataTask;
   dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-  return dataTask;
+  return httpResponse;
 }
 
-- (NSURLSessionDataTask *)
+- (AFHTTPResponse *)
         POSTSynchronously:(NSString *)URLString
                parameters:(id)parameters
 constructingBodyWithBlock:(void (^)(id<AFMultipartFormData> formData))block
                  progress:
-                     (nullable void (^)(NSProgress *_Nonnull))uploadProgress
-                  success:(void (^)(NSURLSessionDataTask *task,
-                                    id responseObject))success
-                  failure:(void (^)(NSURLSessionDataTask *task,
-                                    NSError *error))failure {
+                     (nullable void (^)(NSProgress *_Nonnull))uploadProgress {
   dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+  AFHTTPResponse *httpResponse = [[AFHTTPResponse alloc] init];
   NSURLSessionDataTask *dataTask = [self POST:URLString
       parameters:parameters
       constructingBodyWithBlock:block
       progress:uploadProgress
       success:^(NSURLSessionDataTask *_Nonnull task,
                 id _Nullable responseObject) {
-        success(task, responseObject);
+        httpResponse.responseObject = responseObject;
         dispatch_semaphore_signal(semaphore);
       }
       failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        failure(task, error);
+        httpResponse.error = error;
         dispatch_semaphore_signal(semaphore);
       }];
+  httpResponse.task = dataTask;
   dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-  return dataTask;
+  return httpResponse;
 }
 
-- (NSURLSessionDataTask *)PUTSynchronously:(NSString *)URLString
-                                parameters:(id)parameters
-                                   success:(void (^)(NSURLSessionDataTask *task,
-                                                     id responseObject))success
-                                   failure:(void (^)(NSURLSessionDataTask *task,
-                                                     NSError *error))failure {
+- (AFHTTPResponse *)PUTSynchronously:(NSString *)URLString
+                          parameters:(id)parameters {
   dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+  AFHTTPResponse *httpResponse = [[AFHTTPResponse alloc] init];
   NSURLSessionDataTask *dataTask = [self PUT:URLString
       parameters:parameters
       success:^(NSURLSessionDataTask *_Nonnull task,
                 id _Nullable responseObject) {
-        success(task, responseObject);
+        httpResponse.responseObject = responseObject;
         dispatch_semaphore_signal(semaphore);
       }
       failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        failure(task, error);
+        httpResponse.error = error;
         dispatch_semaphore_signal(semaphore);
       }];
+  httpResponse.task = dataTask;
   dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-  return dataTask;
+  return httpResponse;
 }
 
-- (NSURLSessionDataTask *)
-PATCHSynchronously:(NSString *)URLString
-        parameters:(id)parameters
-           success:(void (^)(NSURLSessionDataTask *task,
-                             id responseObject))success
-           failure:
-               (void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+- (AFHTTPResponse *)PATCHSynchronously:(NSString *)URLString
+                            parameters:(id)parameters {
   dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+  AFHTTPResponse *httpResponse = [[AFHTTPResponse alloc] init];
   NSURLSessionDataTask *dataTask = [self PATCH:URLString
       parameters:parameters
       success:^(NSURLSessionDataTask *_Nonnull task,
                 id _Nullable responseObject) {
-        success(task, responseObject);
+        httpResponse.responseObject = responseObject;
         dispatch_semaphore_signal(semaphore);
       }
       failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        failure(task, error);
+        httpResponse.error = error;
         dispatch_semaphore_signal(semaphore);
       }];
+  httpResponse.task = dataTask;
   dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-  return dataTask;
+  return httpResponse;
 }
 
-- (NSURLSessionDataTask *)
-DELETESynchronously:(NSString *)URLString
-         parameters:(id)parameters
-            success:(void (^)(NSURLSessionDataTask *task,
-                              id responseObject))success
-            failure:
-                (void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+- (AFHTTPResponse *)DELETESynchronously:(NSString *)URLString
+                             parameters:(id)parameters {
   dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+  AFHTTPResponse *httpResponse = [[AFHTTPResponse alloc] init];
   NSURLSessionDataTask *dataTask = [self DELETE:URLString
       parameters:parameters
       success:^(NSURLSessionDataTask *_Nonnull task,
                 id _Nullable responseObject) {
-        success(task, responseObject);
+        httpResponse.responseObject = responseObject;
         dispatch_semaphore_signal(semaphore);
       }
       failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        failure(task, error);
+        httpResponse.error = error;
         dispatch_semaphore_signal(semaphore);
       }];
+  httpResponse.task = dataTask;
   dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-  return dataTask;
+  return httpResponse;
 }
 
 #pragma mark - NSObject

@@ -31,6 +31,7 @@
 #import <CoreServices/CoreServices.h>
 #endif
 
+#import "AFHTTPResponse.h"
 #import "AFURLSessionManager.h"
 
 /**
@@ -451,69 +452,36 @@ parameters:(nullable id)parameters
 
 #pragma mark - Synchronous
 
-- (nullable NSURLSessionDataTask *)
+- (AFHTTPResponse *)
 GETSynchronously:(NSString *)URLString
       parameters:(nullable id)parameters
         progress:
-            (nullable void (^)(NSProgress *downloadProgress))downloadProgress
-         success:(nullable void (^)(NSURLSessionDataTask *task,
-                                    id _Nullable responseObject))success
-         failure:(nullable void (^)(NSURLSessionDataTask *_Nullable task,
-                                    NSError *error))failure;
+            (nullable void (^)(NSProgress *downloadProgress))downloadProgress;
 
-- (nullable NSURLSessionDataTask *)
-HEADSynchronously:(NSString *)URLString
-       parameters:(nullable id)parameters
-          success:(nullable void (^)(NSURLSessionDataTask *task))success
-          failure:(nullable void (^)(NSURLSessionDataTask *_Nullable task,
-                                     NSError *error))failure;
+- (AFHTTPResponse *)HEADSynchronously:(NSString *)URLString
+                           parameters:(nullable id)parameters;
 
-- (nullable NSURLSessionDataTask *)
+- (AFHTTPResponse *)
 POSTSynchronously:(NSString *)URLString
        parameters:(nullable id)parameters
-         progress:(nullable void (^)(NSProgress *uploadProgress))uploadProgress
-          success:(nullable void (^)(NSURLSessionDataTask *task,
-                                     id _Nullable responseObject))success
-          failure:(nullable void (^)(NSURLSessionDataTask *_Nullable task,
-                                     NSError *error))failure;
+         progress:(nullable void (^)(NSProgress *uploadProgress))uploadProgress;
 
-- (nullable NSURLSessionDataTask *)
-        POSTSynchronously:(NSString *)URLString
-               parameters:(nullable id)parameters
-constructingBodyWithBlock:
-    (nullable void (^)(id<AFMultipartFormData> formData))block
-                 progress:(nullable void (^)(NSProgress *uploadProgress))
-                              uploadProgress
-                  success:
-                      (nullable void (^)(NSURLSessionDataTask *task,
-                                         id _Nullable responseObject))success
-                  failure:
-                      (nullable void (^)(NSURLSessionDataTask *_Nullable task,
-                                         NSError *error))failure;
+- (AFHTTPResponse *)POSTSynchronously:(NSString *)URLString
+                           parameters:(nullable id)parameters
+            constructingBodyWithBlock:
+                (nullable void (^)(id<AFMultipartFormData> formData))block
+                             progress:
+                                 (nullable void (^)(NSProgress *uploadProgress))
+                                     uploadProgress;
 
-- (nullable NSURLSessionDataTask *)
-PUTSynchronously:(NSString *)URLString
-      parameters:(nullable id)parameters
-         success:(nullable void (^)(NSURLSessionDataTask *task,
-                                    id _Nullable responseObject))success
-         failure:(nullable void (^)(NSURLSessionDataTask *_Nullable task,
-                                    NSError *error))failure;
+- (AFHTTPResponse *)PUTSynchronously:(NSString *)URLString
+                          parameters:(nullable id)parameters;
 
-- (nullable NSURLSessionDataTask *)
-PATCHSynchronously:(NSString *)URLString
-        parameters:(nullable id)parameters
-           success:(nullable void (^)(NSURLSessionDataTask *task,
-                                      id _Nullable responseObject))success
-           failure:(nullable void (^)(NSURLSessionDataTask *_Nullable task,
-                                      NSError *error))failure;
+- (AFHTTPResponse *)PATCHSynchronously:(NSString *)URLString
+                            parameters:(nullable id)parameters;
 
-- (nullable NSURLSessionDataTask *)
-DELETESynchronously:(NSString *)URLString
-         parameters:(nullable id)parameters
-            success:(nullable void (^)(NSURLSessionDataTask *task,
-                                       id _Nullable responseObject))success
-            failure:(nullable void (^)(NSURLSessionDataTask *_Nullable task,
-                                       NSError *error))failure;
+- (AFHTTPResponse *)DELETESynchronously:(NSString *)URLString
+                             parameters:(nullable id)parameters;
 
 @end
 
