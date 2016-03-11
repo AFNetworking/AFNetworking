@@ -23,7 +23,7 @@
 #import "UIRefreshControl+AFNetworking.h"
 #import <objc/runtime.h>
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS
 
 #import "AFHTTPRequestOperation.h"
 

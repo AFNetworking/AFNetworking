@@ -24,7 +24,7 @@
 
 #import <Availability.h>
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS
 
 #import <UIKit/UIKit.h>
 
