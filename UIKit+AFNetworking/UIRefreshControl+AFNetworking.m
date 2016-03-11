@@ -23,7 +23,7 @@
 #import "UIRefreshControl+AFNetworking.h"
 #import <objc/runtime.h>
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS
 
 #import "AFHTTPRequestOperation.h"
 

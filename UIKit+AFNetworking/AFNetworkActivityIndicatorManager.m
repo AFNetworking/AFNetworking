@@ -21,7 +21,7 @@
 
 #import "AFNetworkActivityIndicatorManager.h"
 
-#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED)
+#if TARGET_OS_IOS
 
 #import "AFHTTPRequestOperation.h"
 

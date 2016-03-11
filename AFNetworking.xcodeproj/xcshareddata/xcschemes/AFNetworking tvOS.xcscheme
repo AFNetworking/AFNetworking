@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F8E4695F1395739C00DB05C8"
-               BuildableName = "iOS Example.app"
-               BlueprintName = "iOS Example"
-               ReferencedContainer = "container:AFNetworking iOS Example.xcodeproj">
+               BlueprintIdentifier = "2987B0A41BC408A200179A4C"
+               BuildableName = "AFNetworking.framework"
+               BlueprintName = "AFNetworking tvOS"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,14 +28,29 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2987B0AD1BC408A200179A4C"
+               BuildableName = "AFNetworking tvOS Tests.xctest"
+               BlueprintName = "AFNetworking tvOS Tests"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AFSecurityPolicyTests/testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F8E4695F1395739C00DB05C8"
-            BuildableName = "iOS Example.app"
-            BlueprintName = "iOS Example"
-            ReferencedContainer = "container:AFNetworking iOS Example.xcodeproj">
+            BlueprintIdentifier = "2987B0A41BC408A200179A4C"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking tvOS"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -51,16 +66,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F8E4695F1395739C00DB05C8"
-            BuildableName = "iOS Example.app"
-            BlueprintName = "iOS Example"
-            ReferencedContainer = "container:AFNetworking iOS Example.xcodeproj">
+            BlueprintIdentifier = "2987B0A41BC408A200179A4C"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking tvOS"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +84,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F8E4695F1395739C00DB05C8"
-            BuildableName = "iOS Example.app"
-            BlueprintName = "iOS Example"
-            ReferencedContainer = "container:AFNetworking iOS Example.xcodeproj">
+            BlueprintIdentifier = "2987B0A41BC408A200179A4C"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking tvOS"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
