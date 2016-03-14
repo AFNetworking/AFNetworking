@@ -214,7 +214,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param request The HTTP request for the request.
  @param uploadProgress A block object to be executed when the upload progress is updated. Note this block is called on the session queue, not the main queue.
- @param downloadProgress A block object to be executed when the download progress is updated. Note this block is called on the session queue, not the main queue.
+ @param downloadProgress A block object to be executed when the download progress is updated. Note this block is called on the session queue, not the main queue. This block is guaranteed to be called exactly once with fractionCompleted == 1 if the task finished successfully.
  @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
  */
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
@@ -231,7 +231,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param request The HTTP request for the request.
  @param fileURL A URL to the local file to be uploaded.
- @param progress A block object to be executed when the upload progress is updated. Note this block is called on the session queue, not the main queue.
+ @param progress A block object to be executed when the upload progress is updated. Note this block is called on the session queue, not the main queue.  This block is guaranteed to be called exactly once with fractionCompleted == 1 if the task finished successfully.
  @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
 
  @see `attemptsToRecreateUploadTasksForBackgroundSessions`
