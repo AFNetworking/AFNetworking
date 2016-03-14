@@ -189,6 +189,15 @@
     __block NSURLSessionDataTask *task = nil;
     dispatch_sync(self.synchronizationQueue, ^{
         NSString *URLIdentifier = request.URL.absoluteString;
+        if (URLIdentifier == nil) {
+            if (failure) {
+                NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failure(request, nil, error);
+                });
+            }
+            return;
+        }
 
         // 1) Append the success and failure blocks to a pre-existing request if it already exists
         AFImageDownloaderMergedTask *existingMergedTask = self.mergedTasks[URLIdentifier];
