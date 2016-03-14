@@ -73,10 +73,17 @@
      *  but NSMutableURLRequest can have its URL set to nil 
      **/
     NSURLRequest *invalidRequest = [mutableURLRequest copy];
-    AFImageDownloadReceipt *downloadReceipt = [self.downloader downloadImageForURLRequest:invalidRequest
-                                                                                  success:nil
-                                                                                  failure:nil];
-    
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
+    AFImageDownloadReceipt *downloadReceipt = [self.downloader
+                                               downloadImageForURLRequest:invalidRequest
+                                               success:nil
+                                               failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+                                                   XCTAssertNotNil(error);
+                                                   XCTAssertTrue([error.domain isEqualToString:NSURLErrorDomain]);
+                                                   XCTAssertTrue(error.code == NSURLErrorBadURL);
+                                                   [expectation fulfill];
+                                               }];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
     XCTAssertNil(downloadReceipt, @"downloadReceipt should be nil");
 }
 
