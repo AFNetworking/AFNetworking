@@ -63,7 +63,7 @@
 
 @interface AFLinkedListNode : NSObject
 @property (nonatomic, strong) AFCachedImage *image;
-@property (nonatomic, weak) AFLinkedListNode *next;
+@property (nonatomic, strong) AFLinkedListNode *next;
 @property (nonatomic, weak) AFLinkedListNode *prev;
 @property (nonatomic, copy) NSString *identifier;
 
