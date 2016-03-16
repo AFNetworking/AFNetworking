@@ -1,5 +1,5 @@
 // AFAutoPurgingImageCacheTests.m
-// Copyright (c) 2011–2016 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -170,7 +170,7 @@
     NSString *identifier = @"logo";
     XCTAssertTrue(self.cache.memoryUsage == 0);
     [self.cache addImage:self.testImage withIdentifier:identifier];
-    XCTAssertTrue(self.cache.memoryUsage == 13600);
+    XCTAssertTrue(self.cache.memoryUsage == 1020000);
 }
 
 - (void)testThatMemoryUsageDecreasesWhenRemovingImage {
@@ -183,7 +183,7 @@
 
 #pragma mark - Purging
 - (void)testThatImagesArePurgedWhenCapcityIsReached {
-    UInt64 imageSize = 13600;
+    UInt64 imageSize = 1020000;
     NSInteger numberOfImages = 10;
     NSInteger numberOfImagesAfterPurge = 6;
     self.cache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:numberOfImages * imageSize preferredMemoryCapacity:numberOfImagesAfterPurge * imageSize];
@@ -202,7 +202,7 @@
 }
 
 - (void)testThatPrioritizedImagesWithOldestLastAccessDatesAreRemovedDuringPurge {
-    UInt64 imageSize = 13600;
+    UInt64 imageSize = 1020000;
     NSInteger numberOfImages = 10;
     NSInteger numberOfImagesAfterPurge = 6;
     self.cache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:numberOfImages * imageSize preferredMemoryCapacity:numberOfImagesAfterPurge * imageSize];

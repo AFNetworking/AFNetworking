@@ -1,5 +1,5 @@
 // AFImageDownloaderTests.m
-// Copyright (c) 2011–2016 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -62,6 +62,29 @@
                                    failure:nil];
     self.downloader = nil;
     XCTAssertNil(self.downloader, @"Downloader should be nil");
+}
+
+- (void)testThatImageDownloaderReturnsNilWithInvalidURL
+{
+    NSURL *pngURL = [NSURL URLWithString:@"https://httpbin.org/image/png"];
+    NSMutableURLRequest *mutableURLRequest = [NSMutableURLRequest requestWithURL:pngURL];
+    [mutableURLRequest setURL:nil];
+    /** NSURLRequest nor NSMutableURLRequest can be initialized with a nil URL, 
+     *  but NSMutableURLRequest can have its URL set to nil 
+     **/
+    NSURLRequest *invalidRequest = [mutableURLRequest copy];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
+    AFImageDownloadReceipt *downloadReceipt = [self.downloader
+                                               downloadImageForURLRequest:invalidRequest
+                                               success:nil
+                                               failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+                                                   XCTAssertNotNil(error);
+                                                   XCTAssertTrue([error.domain isEqualToString:NSURLErrorDomain]);
+                                                   XCTAssertTrue(error.code == NSURLErrorBadURL);
+                                                   [expectation fulfill];
+                                               }];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    XCTAssertNil(downloadReceipt, @"downloadReceipt should be nil");
 }
 
 - (void)testThatImageDownloaderCanDownloadImage {

@@ -1,5 +1,5 @@
 // AFHTTPResponseSerializationTests.m
-// Copyright (c) 2011–2016 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,34 @@
 
         XCTAssertNil(error, @"Error handling status code %@", @(statusCode));
     }];
+}
+
+- (void)testThatAFHTTPResponseSerializationSucceedsWith205WithNoResponseContentTypeAndNoResponseData {
+    NSInteger statusCode = 205;
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{}];
+
+    XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should be acceptable", @(statusCode));
+
+    NSError *error = nil;
+    self.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+
+    XCTAssertTrue([self.responseSerializer validateResponse:response data:nil error:&error]);
+    XCTAssertNil(error, @"Error handling status code %@", @(statusCode));
+
+    XCTAssertFalse([self.responseSerializer validateResponse:response data:[@"test" dataUsingEncoding:NSUTF8StringEncoding] error:&error]);
+}
+
+- (void)testThatAFHTTPResponseSerializationFailsWith205WithNoResponseContentTypeAndResponseData {
+    NSInteger statusCode = 205;
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{}];
+
+    XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should be acceptable", @(statusCode));
+
+    NSError *error = nil;
+    self.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+
+    XCTAssertFalse([self.responseSerializer validateResponse:response data:[@"test" dataUsingEncoding:NSUTF8StringEncoding] error:&error]);
+    XCTAssertNotNil(error, @"Error handling status code %@", @(statusCode));
 }
 
 - (void)testThatAFHTTPResponseSerializationFailsAll4XX5XXStatusCodes {
