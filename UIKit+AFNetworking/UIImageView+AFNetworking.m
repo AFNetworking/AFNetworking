@@ -98,10 +98,9 @@
     //Use the image from the image cache if it exists
     UIImage *cachedImage = [imageCache imageforRequest:urlRequest withAdditionalIdentifier:nil];
     if (cachedImage) {
+        self.image = cachedImage;
         if (success) {
             success(urlRequest, nil, cachedImage);
-        } else {
-            self.image = cachedImage;
         }
         [self clearActiveDownloadInformation];
     } else {
@@ -118,10 +117,11 @@
                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
                        if ([strongSelf.af_activeImageDownloadReceipt.receiptID isEqual:downloadID]) {
+                           if(responseObject) {
+                               strongSelf.image = responseObject;
+                           }
                            if (success) {
                                success(request, response, responseObject);
-                           } else if(responseObject) {
-                               strongSelf.image = responseObject;
                            }
                            [strongSelf clearActiveDownloadInformation];
                        }
