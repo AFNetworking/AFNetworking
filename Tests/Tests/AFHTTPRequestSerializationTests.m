@@ -24,10 +24,10 @@
 
 #import "AFURLRequestSerialization.h"
 
-@interface AFCustomHTTPREquestSerializer : AFHTTPRequestSerializer
+@interface AFCustomHTTPRequestSerializer : AFHTTPRequestSerializer
 
 @end
-@implementation AFCustomHTTPREquestSerializer
+@implementation AFCustomHTTPRequestSerializer
 
 - (void)addUserAgentHeaderField {
     [self setValue:@"customer-header-field" forHTTPHeaderField:@"User-Agent"];
@@ -207,7 +207,7 @@
     AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
     XCTAssertNotNil(serializer.HTTPRequestHeaders[@"User-Agent"]);
     
-    AFHTTPRequestSerializer *customSerializer = [AFCustomHTTPREquestSerializer serializer];
+    AFHTTPRequestSerializer *customSerializer = [AFCustomHTTPRequestSerializer serializer];
     XCTAssertNotEqualObjects(customSerializer.HTTPRequestHeaders[@"User-Agent"], serializer.HTTPRequestHeaders[@"User-Agent"]);
     XCTAssertEqualObjects(customSerializer.HTTPRequestHeaders[@"User-Agent"], @"customer-header-field");
 }
