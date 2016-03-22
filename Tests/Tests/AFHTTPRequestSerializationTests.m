@@ -20,8 +20,20 @@
 // THE SOFTWARE.
 
 #import "AFTestCase.h"
+#import "AFHTTPRequestSerializer+Protected.h"
 
 #import "AFURLRequestSerialization.h"
+
+@interface AFCustomHTTPREquestSerializer : AFHTTPRequestSerializer
+
+@end
+@implementation AFCustomHTTPREquestSerializer
+
+- (void)addUserAgentHeaderField {
+    [self setValue:@"customer-header-field" forHTTPHeaderField:@"User-Agent"];
+}
+
+@end
 
 @interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
 @property (readwrite, nonatomic, strong) NSMutableArray *HTTPBodyParts;
@@ -187,6 +199,17 @@
     XCTAssertTrue([serializer.HTTPRequestHeaders[headerField] isEqualToString:headerValue]);
     [serializer setValue:nil forHTTPHeaderField:headerField];
     XCTAssertFalse([serializer.HTTPRequestHeaders.allKeys containsObject:headerField]);
+}
+
+#pragma mark - extension points tests
+
+- (void)testThatCustomUserAgentHeaderFieldIsCalledToCustomizeHeader {
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    XCTAssertNotNil(serializer.HTTPRequestHeaders[@"User-Agent"]);
+    
+    AFHTTPRequestSerializer *customSerializer = [AFCustomHTTPREquestSerializer serializer];
+    XCTAssertNotEqualObjects(customSerializer.HTTPRequestHeaders[@"User-Agent"], serializer.HTTPRequestHeaders[@"User-Agent"]);
+    XCTAssertEqualObjects(customSerializer.HTTPRequestHeaders[@"User-Agent"], @"customer-header-field");
 }
 
 #pragma mark - Helper Methods
