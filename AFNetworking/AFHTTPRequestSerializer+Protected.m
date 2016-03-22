@@ -62,6 +62,7 @@
 #elif TARGET_OS_WATCH
     return [[WKInterfaceDevice currentDevice] model];
 #endif
+    return nil;
 }
 
 - (NSString *)systemVersion {
@@ -80,6 +81,7 @@
 #elif TARGET_OS_WATCH
     return [[WKInterfaceDevice currentDevice] screenScale];
 #endif
+    return 1.f;
 }
 
 
