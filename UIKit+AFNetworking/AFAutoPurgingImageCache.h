@@ -1,5 +1,5 @@
 // AFAutoPurgingImageCache.h
-// Copyright (c) 2011–2016 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -135,7 +135,7 @@ NS_ASSUME_NONNULL_BEGIN
  after purge limit.
 
  @param memoryCapacity The total memory capacity of the cache in bytes.
- @param preferredMemoryUsageAfterPurge The preferred memory usage after purge in bytes.
+ @param preferredMemoryCapacity The preferred memory usage after purge in bytes.
 
  @return The new `AutoPurgingImageCache` instance.
  */
