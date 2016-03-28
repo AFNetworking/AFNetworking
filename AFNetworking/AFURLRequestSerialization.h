@@ -151,6 +151,8 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 
  - `Accept-Language` with the contents of `NSLocale +preferredLanguages`
  - `User-Agent` with the contents of various bundle identifiers and OS designations
+        You can subclass `AFHTTPRequestSerializer` and overried `addUserAgentHeaderField` method declared on
+        `AFHTTPRequestSerializer+Protected` to have an extension point over default behavior
 
  @discussion To add or remove default request headers, use `setValue:forHTTPHeaderField:`.
  */

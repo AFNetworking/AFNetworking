@@ -197,6 +197,14 @@
 		5F4323DD1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
 		5F4323DE1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
 		5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
+		F1EBBCD51CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = F1EBBCD31CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h */; };
+		F1EBBCD61CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = F1EBBCD31CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h */; };
+		F1EBBCD71CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = F1EBBCD31CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h */; };
+		F1EBBCD81CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = F1EBBCD31CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h */; };
+		F1EBBCD91CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m in Sources */ = {isa = PBXBuildFile; fileRef = F1EBBCD41CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m */; };
+		F1EBBCDA1CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m in Sources */ = {isa = PBXBuildFile; fileRef = F1EBBCD41CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m */; };
+		F1EBBCDB1CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m in Sources */ = {isa = PBXBuildFile; fileRef = F1EBBCD41CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m */; };
+		F1EBBCDC1CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m in Sources */ = {isa = PBXBuildFile; fileRef = F1EBBCD41CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -305,6 +313,8 @@
 		5F4323D41BF63CB0003B8749 /* GoogleComServerTrustChainPath1 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GoogleComServerTrustChainPath1; sourceTree = "<group>"; };
 		5F4323D81BF63CBA003B8749 /* GoogleComServerTrustChainPath2 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GoogleComServerTrustChainPath2; sourceTree = "<group>"; };
 		5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GeoTrust_Global_CA_Root.cer; sourceTree = "<group>"; };
+		F1EBBCD31CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFHTTPRequestSerializer+Protected.h"; sourceTree = "<group>"; };
+		F1EBBCD41CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFHTTPRequestSerializer+Protected.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -509,6 +519,8 @@
 				2995224C1BBF125A00859F49 /* AFSecurityPolicy.m */,
 				2995224D1BBF125A00859F49 /* AFURLRequestSerialization.h */,
 				2995224E1BBF125A00859F49 /* AFURLRequestSerialization.m */,
+				F1EBBCD31CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h */,
+				F1EBBCD41CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m */,
 				2995224F1BBF125A00859F49 /* AFURLResponseSerialization.h */,
 				299522501BBF125A00859F49 /* AFURLResponseSerialization.m */,
 				299522511BBF125A00859F49 /* AFURLSessionManager.h */,
@@ -575,6 +587,7 @@
 				29D96E951BCC406B00F571A5 /* AFImageDownloader.h in Headers */,
 				29D96E961BCC406B00F571A5 /* UIActivityIndicatorView+AFNetworking.h in Headers */,
 				29D96E971BCC406B00F571A5 /* UIButton+AFNetworking.h in Headers */,
+				F1EBBCD81CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h in Headers */,
 				29D96E981BCC406B00F571A5 /* UIImage+AFNetworking.h in Headers */,
 				29D96E991BCC406B00F571A5 /* UIImageView+AFNetworking.h in Headers */,
 				29D96E9A1BCC406B00F571A5 /* UIProgressView+AFNetworking.h in Headers */,
@@ -599,6 +612,7 @@
 				299522A21BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.h in Headers */,
 				2995223D1BBF104D00859F49 /* AFNetworking.h in Headers */,
 				299522B01BBF13C700859F49 /* UIWebView+AFNetworking.h in Headers */,
+				F1EBBCD51CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h in Headers */,
 				299522AC1BBF13C700859F49 /* UIProgressView+AFNetworking.h in Headers */,
 				299522A61BBF13C700859F49 /* UIButton+AFNetworking.h in Headers */,
 				299522A01BBF13C700859F49 /* AFNetworkActivityIndicatorManager.h in Headers */,
@@ -612,6 +626,7 @@
 			files = (
 				29D96E7A1BCC3D6000F571A5 /* AFHTTPSessionManager.h in Headers */,
 				29D96E7C1BCC3D6000F571A5 /* AFSecurityPolicy.h in Headers */,
+				F1EBBCD61CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h in Headers */,
 				29D96E7D1BCC3D6000F571A5 /* AFURLRequestSerialization.h in Headers */,
 				29D96E7E1BCC3D6000F571A5 /* AFURLResponseSerialization.h in Headers */,
 				29D96E7F1BCC3D6000F571A5 /* AFURLSessionManager.h in Headers */,
@@ -624,6 +639,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29D96E811BCC3D7200F571A5 /* AFHTTPSessionManager.h in Headers */,
+				F1EBBCD71CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.h in Headers */,
 				29D96E821BCC3D7200F571A5 /* AFNetworkReachabilityManager.h in Headers */,
 				29D96E831BCC3D7200F571A5 /* AFSecurityPolicy.h in Headers */,
 				29D96E841BCC3D7200F571A5 /* AFURLRequestSerialization.h in Headers */,
@@ -935,6 +951,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2987B0BD1BC408D900179A4C /* AFNetworkReachabilityManager.m in Sources */,
+				F1EBBCDC1CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m in Sources */,
 				2987B0BE1BC408D900179A4C /* AFSecurityPolicy.m in Sources */,
 				2987B0BC1BC408D900179A4C /* AFHTTPSessionManager.m in Sources */,
 				2987B0C11BC408D900179A4C /* AFURLSessionManager.m in Sources */,
@@ -1025,6 +1042,7 @@
 				299522AA1BBF13C700859F49 /* UIImageView+AFNetworking.m in Sources */,
 				299522B11BBF13C700859F49 /* UIWebView+AFNetworking.m in Sources */,
 				299522591BBF125A00859F49 /* AFSecurityPolicy.m in Sources */,
+				F1EBBCD91CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m in Sources */,
 				299522A71BBF13C700859F49 /* UIButton+AFNetworking.m in Sources */,
 				299522541BBF125A00859F49 /* AFHTTPSessionManager.m in Sources */,
 				2995225F1BBF125A00859F49 /* AFURLSessionManager.m in Sources */,
@@ -1045,6 +1063,7 @@
 				2995226F1BBF133400859F49 /* AFURLRequestSerialization.m in Sources */,
 				2995226E1BBF133400859F49 /* AFSecurityPolicy.m in Sources */,
 				299522701BBF133400859F49 /* AFURLResponseSerialization.m in Sources */,
+				F1EBBCDA1CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m in Sources */,
 				2995226D1BBF133400859F49 /* AFHTTPSessionManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1059,6 +1078,7 @@
 				299522841BBF13A100859F49 /* AFURLSessionManager.m in Sources */,
 				299522821BBF13A100859F49 /* AFURLRequestSerialization.m in Sources */,
 				299522831BBF13A100859F49 /* AFURLResponseSerialization.m in Sources */,
+				F1EBBCDB1CA1D5D000DE16EE /* AFHTTPRequestSerializer+Protected.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
