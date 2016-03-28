@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1BF9F9601C87832B00F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
+		1BF9F9611C87843200F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
+		1BF9F9621C87843300F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
 		1FE783011C5857A100A73B7C /* httpbinorg_01192017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FE783001C58579D00A73B7C /* httpbinorg_01192017.cer */; };
 		1FE783021C5857A100A73B7C /* httpbinorg_01192017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FE783001C58579D00A73B7C /* httpbinorg_01192017.cer */; };
 		1FE783031C5857A200A73B7C /* httpbinorg_01192017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FE783001C58579D00A73B7C /* httpbinorg_01192017.cer */; };
@@ -221,6 +224,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageResponseSerializerTests.m; sourceTree = "<group>"; };
 		1FE783001C58579D00A73B7C /* httpbinorg_01192017.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_01192017.cer; sourceTree = "<group>"; };
 		2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIButtonTests.m; sourceTree = "<group>"; };
 		297824A01BC2D69A0041C395 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
@@ -433,6 +437,7 @@
 				298D7C851BC2C88F00FD3B3E /* AFJSONSerializationTests.m */,
 				298D7C881BC2C88F00FD3B3E /* AFPropertyListResponseSerializerTests.m */,
 				29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */,
+				1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */,
 				298D7C871BC2C88F00FD3B3E /* AFNetworkReachabilityManagerTests.m */,
 				298D7C891BC2C88F00FD3B3E /* AFSecurityPolicyTests.m */,
 				298D7C8F1BC2C88F00FD3B3E /* AFURLSessionManagerTests.m */,
@@ -954,6 +959,7 @@
 				2987B0E31BC40B0900179A4C /* AFUIActivityIndicatorViewTests.m in Sources */,
 				2987B0D01BC40A7600179A4C /* AFSecurityPolicyTests.m in Sources */,
 				2987B0CB1BC40A7600179A4C /* AFHTTPResponseSerializationTests.m in Sources */,
+				1BF9F9621C87843300F1F35A /* AFImageResponseSerializerTests.m in Sources */,
 				2987B0CE1BC40A7600179A4C /* AFNetworkReachabilityManagerTests.m in Sources */,
 				2987B0E01BC40B0900179A4C /* AFAutoPurgingImageCacheTests.m in Sources */,
 				2987B0CA1BC40A7600179A4C /* AFHTTPRequestSerializationTests.m in Sources */,
@@ -975,6 +981,7 @@
 				298D7CB11BC2CA6E00FD3B3E /* AFHTTPRequestSerializationTests.m in Sources */,
 				297824AE1BC2DBD80041C395 /* AFUIActivityIndicatorViewTests.m in Sources */,
 				297824AD1BC2DBA40041C395 /* AFNetworkActivityManagerTests.m in Sources */,
+				1BF9F9601C87832B00F1F35A /* AFImageResponseSerializerTests.m in Sources */,
 				298D7CDD1BC2CAF700FD3B3E /* AFSecurityPolicyTests.m in Sources */,
 				298D7CD31BC2CAE800FD3B3E /* AFHTTPResponseSerializationTests.m in Sources */,
 				297824B01BC2DC2D0041C395 /* AFUIImageViewTests.m in Sources */,
@@ -998,6 +1005,7 @@
 				29D341401C20D46400A7D266 /* AFCompoundResponseSerializerTests.m in Sources */,
 				298D7CB21BC2CA6E00FD3B3E /* AFHTTPRequestSerializationTests.m in Sources */,
 				298D7CDE1BC2CAF800FD3B3E /* AFSecurityPolicyTests.m in Sources */,
+				1BF9F9611C87843200F1F35A /* AFImageResponseSerializerTests.m in Sources */,
 				298D7C971BC2C94500FD3B3E /* AFTestCase.m in Sources */,
 				298D7CD81BC2CAF000FD3B3E /* AFJSONSerializationTests.m in Sources */,
 				298D7CDC1BC2CAF500FD3B3E /* AFPropertyListResponseSerializerTests.m in Sources */,
