@@ -517,7 +517,7 @@
     NSData *googleCertificateData = [NSData dataWithContentsOfURL:googleCertificateURL];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://apple.com/"]];
     [manager setResponseSerializer:[AFHTTPResponseSerializer serializer]];
-    manager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate withPinnedCertificates:[NSSet setWithObject:googleCertificateData]];
+    manager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey withPinnedCertificates:[NSSet setWithObject:googleCertificateData]];
     [manager
      GET:@"AFNetworking/AFNetworking"
      parameters:nil
