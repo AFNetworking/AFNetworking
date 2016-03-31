@@ -511,7 +511,7 @@
 
 # pragma mark - Server Trust
 
-- (void)testInvalidServerTrustProducesCorrectError {
+- (void)testInvalidServerTrustProducesCorrectErrorForCertificatePinning {
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
     NSURL *googleCertificateURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"google.com" withExtension:@"cer"];
     NSData *googleCertificateData = [NSData dataWithContentsOfURL:googleCertificateURL];
@@ -519,7 +519,31 @@
     [manager setResponseSerializer:[AFHTTPResponseSerializer serializer]];
     manager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate withPinnedCertificates:[NSSet setWithObject:googleCertificateData]];
     [manager
-     GET:@"AFNetworking/AFNetworking"
+     GET:@""
+     parameters:nil
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+         XCTFail(@"Request should fail");
+         [expectation fulfill];
+     }
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
+         XCTAssertEqual(error.code, NSURLErrorServerCertificateUntrusted);
+         [expectation fulfill];
+     }];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [manager invalidateSessionCancelingTasks:YES];
+}
+
+- (void)testInvalidServerTrustProducesCorrectErrorForPublicKeyPinning {
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
+    NSURL *googleCertificateURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"google.com" withExtension:@"cer"];
+    NSData *googleCertificateData = [NSData dataWithContentsOfURL:googleCertificateURL];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://apple.com/"]];
+    [manager setResponseSerializer:[AFHTTPResponseSerializer serializer]];
+    manager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey withPinnedCertificates:[NSSet setWithObject:googleCertificateData]];
+    [manager
+     GET:@""
      parameters:nil
      progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
