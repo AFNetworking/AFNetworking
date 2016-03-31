@@ -983,7 +983,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                     disposition = NSURLSessionAuthChallengePerformDefaultHandling;
                 }
             } else {
-                disposition = NSURLSessionAuthChallengeRejectProtectionSpace;
+                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
         } else {
             disposition = NSURLSessionAuthChallengePerformDefaultHandling;
@@ -1030,7 +1030,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                 disposition = NSURLSessionAuthChallengeUseCredential;
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
             } else {
-                disposition = NSURLSessionAuthChallengeRejectProtectionSpace;
+                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
         } else {
             disposition = NSURLSessionAuthChallengePerformDefaultHandling;
