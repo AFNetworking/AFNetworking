@@ -181,12 +181,15 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     }
 }
 
+static const void * const ServerTrustErrorKey = &ServerTrustErrorKey;
+
 #pragma mark - NSURLSessionTaskDelegate
 
 - (void)URLSession:(__unused NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
+    error = objc_getAssociatedObject(task, ServerTrustErrorKey) ?: error;
     __strong AFURLSessionManager *manager = self.manager;
 
     __block id responseObject = nil;
@@ -972,6 +975,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                 disposition = NSURLSessionAuthChallengeUseCredential;
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
             } else {
+                // TODO: good userInfo with localized description etc.
+                NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorServerCertificateUntrusted userInfo:nil];
+                objc_setAssociatedObject(task, ServerTrustErrorKey, error, OBJC_ASSOCIATION_RETAIN);
                 disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
         } else {
