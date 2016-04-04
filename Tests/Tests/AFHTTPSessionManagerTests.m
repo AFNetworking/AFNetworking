@@ -579,7 +579,7 @@
      }
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
-         XCTAssertEqual(error.code, NSURLErrorCancelled);
+         XCTAssertEqual(error.code, NSURLErrorServerCertificateUntrusted);
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeout];
@@ -603,7 +603,7 @@
      }
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
-         XCTAssertEqual(error.code, NSURLErrorCancelled);
+         XCTAssertEqual(error.code, NSURLErrorServerCertificateUntrusted);
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeout];
