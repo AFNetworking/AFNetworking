@@ -183,6 +183,21 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 static const void * const ServerTrustErrorKey = &ServerTrustErrorKey;
 
+static NSError * ServerTrustError(SecTrustRef serverTrust, NSURL *url)
+{
+    NSBundle *CFNetworkBundle = [NSBundle bundleWithIdentifier:@"com.apple.CFNetwork"];
+    NSString *defaultValue = @"The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.";
+    NSString *descriptionFormat = NSLocalizedStringWithDefaultValue(@"Err-1202.w", nil, CFNetworkBundle, defaultValue, @"") ?: defaultValue;
+    NSString *localizedDescription = [descriptionFormat componentsSeparatedByString:@"%@"].count <= 2 ? [NSString localizedStringWithFormat:descriptionFormat, url.host] : descriptionFormat;
+    NSDictionary *userInfo = @{
+        NSURLErrorFailingURLErrorKey: url,
+        NSURLErrorFailingURLStringErrorKey: url.absoluteString,
+        NSURLErrorFailingURLPeerTrustErrorKey: (__bridge id)serverTrust,
+        NSLocalizedDescriptionKey: localizedDescription
+    };
+    return [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorServerCertificateUntrusted userInfo:userInfo];
+}
+
 #pragma mark - NSURLSessionTaskDelegate
 
 - (void)URLSession:(__unused NSURLSession *)session
@@ -975,9 +990,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                 disposition = NSURLSessionAuthChallengeUseCredential;
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
             } else {
-                // TODO: good userInfo with localized description etc.
-                NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorServerCertificateUntrusted userInfo:nil];
-                objc_setAssociatedObject(task, ServerTrustErrorKey, error, OBJC_ASSOCIATION_RETAIN);
+                objc_setAssociatedObject(task, ServerTrustErrorKey, ServerTrustError(challenge.protectionSpace.serverTrust, task.currentRequest.URL), OBJC_ASSOCIATION_RETAIN);
                 disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
         } else {

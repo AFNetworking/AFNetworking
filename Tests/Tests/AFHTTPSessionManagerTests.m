@@ -580,6 +580,7 @@
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
          XCTAssertEqual(error.code, NSURLErrorServerCertificateUntrusted);
+         XCTAssertEqualObjects(error.localizedDescription, @"The certificate for this server is invalid. You might be connecting to a server that is pretending to be “apple.com” which could put your confidential information at risk.");
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeout];
@@ -604,6 +605,7 @@
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
          XCTAssertEqual(error.code, NSURLErrorServerCertificateUntrusted);
+         XCTAssertEqualObjects(error.localizedDescription, @"The certificate for this server is invalid. You might be connecting to a server that is pretending to be “apple.com” which could put your confidential information at risk.");
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeout];
