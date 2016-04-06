@@ -250,13 +250,11 @@
                        downloadProgress:^(NSProgress * _Nonnull progress) {
                            dispatch_async(self.responseQueue, ^{
                                AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[URLIdentifier];
-                               if ([mergedTask.identifier isEqual:mergedTaskIdentifier]) {
-                                   for (AFImageDownloaderResponseHandler *handler in [mergedTask.responseHandlers copy]) {
-                                       if (handler.progressBlock) {
-                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                               handler.progressBlock(progress);
-                                           });
-                                       }
+                               for (AFImageDownloaderResponseHandler *handler in [mergedTask.responseHandlers copy]) {
+                                   if (handler.progressBlock) {
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           handler.progressBlock(progress);
+                                       });
                                    }
                                }
                            });
