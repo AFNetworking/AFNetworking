@@ -1,5 +1,5 @@
 // AFHTTPRequestSerializationTests.m
-// Copyright (c) 2011–2016 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -98,6 +98,12 @@
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"value"} error:nil];
 
     XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=value"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+}
+
+- (void)testThatEmptyDictionaryParametersAreProperlyEncoded {
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{} error:nil];
+    XCTAssertFalse([serializedRequest.URL.absoluteString hasSuffix:@"?"]);
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesURLEncodableQueryParametersCorrectly {

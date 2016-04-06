@@ -4,6 +4,56 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
+## [3.1.0](https://github.com/AFNetworking/AFNetworking/releases/tag/3.1.0) (03/31/2016)
+Released on Thursday, March 31, 2016. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.1.0+is%3Aclosed).
+
+#### Added
+* Improved `AFImageResponseSerializer` test coverage
+ * Implemented by quellish in [#3367](https://github.com/AFNetworking/AFNetworking/pull/3367).
+* Exposed `AFQueryStringFromParameters` and `AFPercentEscapedStringFromString` for public use.
+ * Implemented by Kevin Harwood in [#3160](https://github.com/AFNetworking/AFNetworking/pull/3160).
+
+#### Updated
+* Updated Test Suite to run on Xcode 7.3
+ * Implemented by Kevin Harwood in [#3418](https://github.com/AFNetworking/AFNetworking/pull/3418).
+* Added white space to URLs in code comment to allow Xcode to properly parse them
+ * Implemented by Draveness in [#3384](https://github.com/AFNetworking/AFNetworking/pull/3384).
+* Updated documentation to match method names and correct compiler warnings
+ * Implemented by Hakon Hanesand in [#3369](https://github.com/AFNetworking/AFNetworking/pull/3369).
+* Use `NSKeyValueChangeNewKey` constant in change dictionary rather than hardcoded string.
+ * Implemented by Wenbin Zhang in [#3360](https://github.com/AFNetworking/AFNetworking/pull/3360).
+* Resolved compiler warnings for documentation errors
+ * Implemented by Ricardo Santos in [#3336](https://github.com/AFNetworking/AFNetworking/pull/3336).
+
+#### Changed
+* Reverted `NSURLSessionAuthChallengeDisposition` to `NSURLSessionAuthChallengeCancelAuthenticationChallenge` for SSL Pinning
+ * Implemented by Kevin Harwood in [#3417](https://github.com/AFNetworking/AFNetworking/pull/3417).
+
+#### Fixed
+* Removed trailing question mark in query string if parameters are empty
+ * Implemented by Kevin Harwood in [#3386](https://github.com/AFNetworking/AFNetworking/pull/3386).
+* Fixed crash if bad URL was passed into the image downloader
+ * Implemented by Christian Wen and Kevin Harwood in [#3385](https://github.com/AFNetworking/AFNetworking/pull/3385).
+* Fixed image memory calculation
+ * Implemented by 周明宇 in [#3344](https://github.com/AFNetworking/AFNetworking/pull/3344).
+* Fixed issue where UIButton image downloading called wrong cancel method
+ * Implemented by duanhong in [#3332](https://github.com/AFNetworking/AFNetworking/pull/3332).
+* Fixed image downloading cancellation race condition
+ * Implemented by Kevin Harwood in [#3325](https://github.com/AFNetworking/AFNetworking/pull/3325).
+* Fixed static analyzer warnings on AFNetworkReachabilityManager
+ * Implemented by Jeff Kelley in [#3315](https://github.com/AFNetworking/AFNetworking/pull/3315).
+* Fixed issue where download progress would not be reported in iOS 7
+ * Implemented by zwm in [#3294](https://github.com/AFNetworking/AFNetworking/pull/3294).
+* Fixed status code 204/205 handling
+ * Implemented by Kevin Harwood in [#3292](https://github.com/AFNetworking/AFNetworking/pull/3292).
+* Fixed crash when passing nil/null for progress in UIWebView extension
+ * Implemented by Kevin Harwood in [#3289](https://github.com/AFNetworking/AFNetworking/pull/3289).
+
+#### Removed
+* Removed workaround for NSJSONSerialization bug that was fixed in iOS 7
+ * Implemented by Cédric Luthi in [#3253](https://github.com/AFNetworking/AFNetworking/pull/3253).
+ 
+
 ## [3.0.4](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.4) (12/18/2015)
 Released on Friday, December 18, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.4+is%3Aclosed).
 

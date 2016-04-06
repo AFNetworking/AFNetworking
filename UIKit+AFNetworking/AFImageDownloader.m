@@ -1,5 +1,5 @@
 // AFImageDownloader.m
-// Copyright (c) 2011–2016 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -200,6 +200,15 @@
     __block NSURLSessionDataTask *task = nil;
     dispatch_sync(self.synchronizationQueue, ^{
         NSString *URLIdentifier = request.URL.absoluteString;
+        if (URLIdentifier == nil) {
+            if (failure) {
+                NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failure(request, nil, error);
+                });
+            }
+            return;
+        }
 
         // 1) Append the success and failure blocks to a pre-existing request if it already exists
         AFImageDownloaderMergedTask *existingMergedTask = self.mergedTasks[URLIdentifier];

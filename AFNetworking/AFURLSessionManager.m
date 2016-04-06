@@ -1,5 +1,5 @@
 // AFURLSessionManager.m
-// Copyright (c) 2011–2016 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -224,13 +224,13 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     if ([object isKindOfClass:[NSURLSessionTask class]] || [object isKindOfClass:[NSURLSessionDownloadTask class]]) {
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesReceived))]) {
-            self.downloadProgress.completedUnitCount = [change[@"new"] longLongValue];
+            self.downloadProgress.completedUnitCount = [change[NSKeyValueChangeNewKey] longLongValue];
         } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesExpectedToReceive))]) {
-            self.downloadProgress.totalUnitCount = [change[@"new"] longLongValue];
+            self.downloadProgress.totalUnitCount = [change[NSKeyValueChangeNewKey] longLongValue];
         } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesSent))]) {
-            self.uploadProgress.completedUnitCount = [change[@"new"] longLongValue];
+            self.uploadProgress.completedUnitCount = [change[NSKeyValueChangeNewKey] longLongValue];
         } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesExpectedToSend))]) {
-            self.uploadProgress.totalUnitCount = [change[@"new"] longLongValue];
+            self.uploadProgress.totalUnitCount = [change[NSKeyValueChangeNewKey] longLongValue];
         }
     }
     else if ([object isEqual:self.downloadProgress]) {
@@ -983,7 +983,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                     disposition = NSURLSessionAuthChallengePerformDefaultHandling;
                 }
             } else {
-                disposition = NSURLSessionAuthChallengeRejectProtectionSpace;
+                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
         } else {
             disposition = NSURLSessionAuthChallengePerformDefaultHandling;
@@ -1030,7 +1030,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                 disposition = NSURLSessionAuthChallengeUseCredential;
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
             } else {
-                disposition = NSURLSessionAuthChallengeRejectProtectionSpace;
+                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
         } else {
             disposition = NSURLSessionAuthChallengePerformDefaultHandling;

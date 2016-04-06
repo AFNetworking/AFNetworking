@@ -1,5 +1,5 @@
 // UIButton+AFNetworking.m
-// Copyright (c) 2011–2016 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -220,7 +220,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
         return;
     }
 
-    [self cancelImageDownloadTaskForState:state];
+    [self cancelBackgroundImageDownloadTaskForState:state];
 
     AFImageDownloader *downloader = [[self class] sharedImageDownloader];
     id <AFImageRequestCache> imageCache = downloader.imageCache;
@@ -253,7 +253,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                            } else if(responseObject) {
                                [strongSelf setBackgroundImage:responseObject forState:state];
                            }
-                           [strongSelf af_setImageDownloadReceipt:nil forState:state];
+                           [strongSelf af_setBackgroundImageDownloadReceipt:nil forState:state];
                        }
 
                    }
