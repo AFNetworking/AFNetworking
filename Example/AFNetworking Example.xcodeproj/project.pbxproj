@@ -153,6 +153,7 @@
 		29E6F2231BB9E76A00A4466C /* ExtensionDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExtensionDelegate.m; sourceTree = "<group>"; };
 		29E6F2251BB9E76A00A4466C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29E6F2271BB9E76B00A4466C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A9C75A811CB4CE6300475426 /* PlaygroundExamples.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PlaygroundExamples.xcodeproj; path = PlaygroundExamples/PlaygroundExamples.xcodeproj; sourceTree = "<group>"; };
 		C2BFE0231C11870800BB258D /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C2BFE0241C11870800BB258D /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C2BFE0261C11872D00BB258D /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -261,6 +262,7 @@
 		29E6F16A1BB9DA2E00A4466C = {
 			isa = PBXGroup;
 			children = (
+				A9C75A811CB4CE6300475426 /* PlaygroundExamples.xcodeproj */,
 				29E6F1AB1BB9DDB600A4466C /* Assets.xcassets */,
 				29E6F1941BB9DD7300A4466C /* Classes */,
 				29E6F1771BB9DCB500A4466C /* iOS Example */,
@@ -383,6 +385,13 @@
 				29E6F2271BB9E76B00A4466C /* Info.plist */,
 			);
 			path = "watchOS Example Extension";
+			sourceTree = "<group>";
+		};
+		A9C75A821CB4CE6300475426 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -533,6 +542,12 @@
 			mainGroup = 29E6F16A1BB9DA2E00A4466C;
 			productRefGroup = 29E6F1761BB9DCB500A4466C /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = A9C75A821CB4CE6300475426 /* Products */;
+					ProjectRef = A9C75A811CB4CE6300475426 /* PlaygroundExamples.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				29E6F1741BB9DCB500A4466C /* iOS Example */,
