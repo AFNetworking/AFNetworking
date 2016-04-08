@@ -181,7 +181,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     }
 }
 
-static const void * const ServerTrustErrorKey = &ServerTrustErrorKey;
+static const void * const AuthenticationChallengeErrorKey = &AuthenticationChallengeErrorKey;
 
 static NSError * ServerTrustError(SecTrustRef serverTrust, NSURL *url)
 {
@@ -204,7 +204,7 @@ static NSError * ServerTrustError(SecTrustRef serverTrust, NSURL *url)
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
-    error = objc_getAssociatedObject(task, ServerTrustErrorKey) ?: error;
+    error = objc_getAssociatedObject(task, AuthenticationChallengeErrorKey) ?: error;
     __strong AFURLSessionManager *manager = self.manager;
 
     __block id responseObject = nil;
@@ -991,7 +991,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             disposition = NSURLSessionAuthChallengeUseCredential;
             credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
         } else {
-            objc_setAssociatedObject(task, ServerTrustErrorKey, ServerTrustError(challenge.protectionSpace.serverTrust, task.currentRequest.URL), OBJC_ASSOCIATION_RETAIN);
+            objc_setAssociatedObject(task, AuthenticationChallengeErrorKey, ServerTrustError(challenge.protectionSpace.serverTrust, task.currentRequest.URL), OBJC_ASSOCIATION_RETAIN);
             disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
     }
