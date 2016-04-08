@@ -227,7 +227,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
         return [data isEqualToData:certData];
     }];
 
-    XCTAssertEqual(set.count, 1, @"HTTPBin.org certificate not found in the default certificates");
+    XCTAssertEqual(set.count, 1U, @"HTTPBin.org certificate not found in the default certificates");
 }
 
 #pragma mark Positive Server Trust Evaluation Tests
@@ -349,7 +349,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
         return [data isEqualToData:certData];
     }];
 
-    XCTAssertEqual(set.count, 1, @"HTTPBin.org certificate not found in the default certificates");
+    XCTAssertEqual(set.count, 1U, @"HTTPBin.org certificate not found in the default certificates");
 }
 
 #pragma mark Positive Server Trust Evaluation Tests

@@ -71,14 +71,15 @@
     [notificationCenter removeObserver:self name:AFNetworkingTaskDidCompleteNotification object:nil];
 
     if (task) {
+        UIRefreshControl *refreshControl = self.refreshControl;
         if (task.state == NSURLSessionTaskStateRunning) {
-            [self.refreshControl beginRefreshing];
+            [refreshControl beginRefreshing];
 
             [notificationCenter addObserver:self selector:@selector(af_beginRefreshing) name:AFNetworkingTaskDidResumeNotification object:task];
             [notificationCenter addObserver:self selector:@selector(af_endRefreshing) name:AFNetworkingTaskDidCompleteNotification object:task];
             [notificationCenter addObserver:self selector:@selector(af_endRefreshing) name:AFNetworkingTaskDidSuspendNotification object:task];
         } else {
-            [self.refreshControl endRefreshing];
+            [refreshControl endRefreshing];
         }
     }
 }
