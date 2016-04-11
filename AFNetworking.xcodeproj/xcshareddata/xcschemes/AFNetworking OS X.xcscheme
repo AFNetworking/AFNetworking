@@ -40,40 +40,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "AFCompoundResponseSerializerTests">
-               </Test>
-               <Test
-                  Identifier = "AFHTTPRequestSerializationTests">
-               </Test>
-               <Test
-                  Identifier = "AFHTTPResponseSerializationTests">
-               </Test>
-               <Test
-                  Identifier = "AFHTTPSessionManagerTests">
-               </Test>
-               <Test
-                  Identifier = "AFImageResponseSerializerTests">
-               </Test>
-               <Test
-                  Identifier = "AFJSONRequestSerializationTests">
-               </Test>
-               <Test
-                  Identifier = "AFJSONResponseSerializationTests">
-               </Test>
-               <Test
-                  Identifier = "AFPropertyListResponseSerializerTests">
-               </Test>
-               <Test
-                  Identifier = "AFSecurityPolicyTests">
-               </Test>
-               <Test
                   Identifier = "AFSecurityPolicyTests/testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName">
-               </Test>
-               <Test
-                  Identifier = "AFTestCase">
-               </Test>
-               <Test
-                  Identifier = "AFURLSessionManagerTests">
                </Test>
             </SkippedTests>
          </TestableReference>
