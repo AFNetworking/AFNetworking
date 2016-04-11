@@ -180,13 +180,13 @@
 - (void)testThatImageBehindRedirectCanBeDownloaded {
     XCTestExpectation *expectation = [self expectationWithDescription:@"image download should succeed"];
     NSURL *redirectURL = [self.jpegRequest URL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:redirectURL];
+    NSURLRequest *downloadRequest = [NSURLRequest requestWithURL:redirectURL];
 
     __block NSHTTPURLResponse *urlResponse = nil;
     __block UIImage *responseImage = nil;
 
     [self.downloader
-     downloadImageForURLRequest:request
+     downloadImageForURLRequest:downloadRequest
      success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
          urlResponse = response;
          responseImage = responseObject;
@@ -421,11 +421,11 @@
 
 - (void)testThatItAlwaysCallsTheFailureHandlerOnTheMainQueue {
     NSURL *url = [NSURL URLWithString:@"https://httpbin.org/status/404"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *notFoundRequest = [NSURLRequest requestWithURL:url];
     XCTestExpectation *expectation = [self expectationWithDescription:@"image download should fail"];
     __block BOOL failureIsOnMainThread = false;
     [self.downloader
-     downloadImageForURLRequest:request
+     downloadImageForURLRequest:notFoundRequest
      success:nil
      failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
          failureIsOnMainThread = [[NSThread currentThread] isMainThread];

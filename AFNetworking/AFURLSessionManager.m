@@ -249,8 +249,6 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
     __strong AFURLSessionManager *manager = self.manager;
 
     __block id responseObject = nil;
@@ -312,7 +310,6 @@ didCompleteWithError:(NSError *)error
             });
         });
     }
-#pragma clang diagnostic pop
 }
 
 #pragma mark - NSURLSessionDataTaskDelegate

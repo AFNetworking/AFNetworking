@@ -58,10 +58,7 @@
         _af_defaultHTTPSessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
     });
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
     return objc_getAssociatedObject(self, @selector(sessionManager)) ?: _af_defaultHTTPSessionManager;
-#pragma clang diagnostic pop
 }
 
 - (void)setSessionManager:(AFHTTPSessionManager *)sessionManager {
@@ -75,10 +72,7 @@
         _af_defaultResponseSerializer = [AFHTTPResponseSerializer serializer];
     });
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
     return objc_getAssociatedObject(self, @selector(responseSerializer)) ?: _af_defaultResponseSerializer;
-#pragma clang diagnostic pop
 }
 
 - (void)setResponseSerializer:(AFHTTPResponseSerializer<AFURLResponseSerialization> *)responseSerializer {

@@ -147,10 +147,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 - (void)decrementActivityCount {
     [self willChangeValueForKey:@"activityCount"];
 	@synchronized(self) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
 		_activityCount = MAX(_activityCount - 1, 0);
-#pragma clang diagnostic pop
 	}
     [self didChangeValueForKey:@"activityCount"];
 

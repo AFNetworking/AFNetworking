@@ -39,7 +39,7 @@
 - (void)testThatAFHTTPResponseSerializationHandlesAll2XXCodes {
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
     [indexSet enumerateIndexesUsingBlock:^(NSUInteger statusCode, BOOL *stop) {
-        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
+        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:(NSInteger)statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
 
         XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should be acceptable", @(statusCode));
 
@@ -54,7 +54,7 @@
     NSInteger statusCode = 205;
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{}];
 
-    XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should be acceptable", @(statusCode));
+    XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:(NSUInteger)statusCode], @"Status code %@ should be acceptable", @(statusCode));
 
     NSError *error = nil;
     self.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
@@ -69,7 +69,7 @@
     NSInteger statusCode = 205;
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{}];
 
-    XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should be acceptable", @(statusCode));
+    XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:(NSUInteger)statusCode], @"Status code %@ should be acceptable", @(statusCode));
 
     NSError *error = nil;
     self.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
@@ -81,7 +81,7 @@
 - (void)testThatAFHTTPResponseSerializationFailsAll4XX5XXStatusCodes {
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(400, 200)];
     [indexSet enumerateIndexesUsingBlock:^(NSUInteger statusCode, BOOL *stop) {
-        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
+        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:(NSInteger)statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/html"}];
 
         XCTAssert(![self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should not be acceptable", @(statusCode));
 
