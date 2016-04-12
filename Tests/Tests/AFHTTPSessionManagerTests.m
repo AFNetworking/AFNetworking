@@ -617,7 +617,7 @@
 - (void)testAuthenticationChallengeHandlerCredentialResult {
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request succeed with provided credentials"];
     self.manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [self.manager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nonnull)) {
+    [self.manager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
         if ([challenge.protectionSpace.realm isEqualToString:@"Fake Realm"]) {
             return [NSURLCredential credentialWithUser:@"user" password:@"passwd" persistence:NSURLCredentialPersistenceNone];
         }
