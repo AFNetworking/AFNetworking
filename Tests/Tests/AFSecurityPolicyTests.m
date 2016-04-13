@@ -57,19 +57,19 @@ static SecTrustRef AFUTADNNetServerTrust() {
     return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
 }
 
-static SecTrustRef AFUTGoogleComServerTrustPath1() {
-    NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
-    NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"GoogleComServerTrustChainPath1"];
-    
-    return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
-}
-
-static SecTrustRef AFUTGoogleComServerTrustPath2() {
-    NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
-    NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"GoogleComServerTrustChainPath2"];
-
-    return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
-}
+//static SecTrustRef AFUTGoogleComServerTrustPath1() {
+//    NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
+//    NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"GoogleComServerTrustChainPath1"];
+//    
+//    return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
+//}
+//
+//static SecTrustRef AFUTGoogleComServerTrustPath2() {
+//    NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
+//    NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"GoogleComServerTrustChainPath2"];
+//
+//    return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
+//}
 
 static SecCertificateRef AFUTHTTPBinOrgCertificate() {
     NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"httpbinorg_01192017" ofType:@"cer"];
@@ -103,21 +103,21 @@ static SecCertificateRef AFUTAddTrustExternalRootCertificate() {
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
-static SecCertificateRef AFUTGoogleComEquifaxSecureCARootCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"Equifax_Secure_Certificate_Authority_Root" ofType:@"cer"];
-    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
-    NSData *certData = [NSData dataWithContentsOfFile:certPath];
-    
-    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
-}
-
-static SecCertificateRef AFUTGoogleComGeoTrustGlobalCARootCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"GeoTrust_Global_CA_Root" ofType:@"cer"];
-    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
-    NSData *certData = [NSData dataWithContentsOfFile:certPath];
-    
-    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
-}
+//static SecCertificateRef AFUTGoogleComEquifaxSecureCARootCertificate() {
+//    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"Equifax_Secure_Certificate_Authority_Root" ofType:@"cer"];
+//    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+//    NSData *certData = [NSData dataWithContentsOfFile:certPath];
+//    
+//    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+//}
+//
+//static SecCertificateRef AFUTGoogleComGeoTrustGlobalCARootCertificate() {
+//    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"GeoTrust_Global_CA_Root" ofType:@"cer"];
+//    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+//    NSData *certData = [NSData dataWithContentsOfFile:certPath];
+//    
+//    return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
+//}
 
 static SecCertificateRef AFUTSelfSignedCertificateWithoutDomain() {
     NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"NoDomains" ofType:@"cer"];
@@ -227,7 +227,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
         return [data isEqualToData:certData];
     }];
 
-    XCTAssertEqual(set.count, 1, @"HTTPBin.org certificate not found in the default certificates");
+    XCTAssertEqual(set.count, 1U, @"HTTPBin.org certificate not found in the default certificates");
 }
 
 #pragma mark Positive Server Trust Evaluation Tests
@@ -349,7 +349,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
         return [data isEqualToData:certData];
     }];
 
-    XCTAssertEqual(set.count, 1, @"HTTPBin.org certificate not found in the default certificates");
+    XCTAssertEqual(set.count, 1U, @"HTTPBin.org certificate not found in the default certificates");
 }
 
 #pragma mark Positive Server Trust Evaluation Tests
