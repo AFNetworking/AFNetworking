@@ -54,11 +54,7 @@
     NSInteger statusCode = 205;
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{}];
 
-<<<<<<< HEAD
-    XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should be acceptable", @(statusCode));
-=======
     XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:(NSUInteger)statusCode], @"Status code %@ should be acceptable", @(statusCode));
->>>>>>> rushi/master
 
     NSError *error = nil;
     self.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
@@ -73,11 +69,7 @@
     NSInteger statusCode = 205;
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{}];
 
-<<<<<<< HEAD
-    XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:statusCode], @"Status code %@ should be acceptable", @(statusCode));
-=======
     XCTAssert([self.responseSerializer.acceptableStatusCodes containsIndex:(NSUInteger)statusCode], @"Status code %@ should be acceptable", @(statusCode));
->>>>>>> rushi/master
 
     NSError *error = nil;
     self.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
