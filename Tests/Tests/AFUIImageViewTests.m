@@ -153,7 +153,7 @@
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
-- (void)testThatImageDoesReportDownloadProgressForSameRequest {
+- (void)testThatMultipleImagesDoesReportDownloadProgressForSameRequest {
     XCTAssertNil(self.imageView.image);
     __weak XCTestExpectation *expectation1 = [self expectationWithDescription:@"image 1 progress should equal 1.0"];
     [self.imageView setImageWithURLRequest:self.jpegURLRequest placeholderImage:nil progress:^(NSProgress * _Nonnull downloadProgress) {

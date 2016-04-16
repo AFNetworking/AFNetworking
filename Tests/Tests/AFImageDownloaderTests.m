@@ -184,7 +184,6 @@
         if (downloadProgress.fractionCompleted == 1.0) {
             [expectation fulfill];
         }
-        
     } success:nil failure:nil];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
