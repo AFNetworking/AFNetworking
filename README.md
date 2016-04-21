@@ -126,6 +126,30 @@ Run `carthage` to build the framework and drag the built `AFNetworking.framework
 
 `AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
 
+#### Simple GET
+
+```objective-c
+AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+NSDictionary *optionalParams = @{@"key": @"value"};
+[manager GET:@"http://example.com/resources.json" parameters:optionalParams progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    NSLog(@"JSON: %@", responseObject);
+} failure:^(NSURLSessionTask *operation, NSError *error) {
+    NSLog(@"Error: %@", error);
+}];
+```
+
+#### Simple POST
+
+```objective-c
+AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+NSDictionary *optionalParams = @{@"key": @"value"};
+[manager POST:@"http://example.com/resources.json" parameters:optionalParams progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    NSLog(@"JSON: %@", responseObject);
+} failure:^(NSURLSessionTask *operation, NSError *error) {
+    NSLog(@"Error: %@", error);
+}];
+```
+
 #### Creating a Download Task
 
 ```objective-c
