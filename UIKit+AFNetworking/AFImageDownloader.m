@@ -235,6 +235,8 @@
 
         createdTask = [self.sessionManager
                        dataTaskWithRequest:request
+                       uploadProgress:nil
+                       downloadProgress:nil
                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
                                __strong __typeof__(weakSelf) strongSelf = weakSelf;
