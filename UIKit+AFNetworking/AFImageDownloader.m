@@ -210,6 +210,19 @@
             default:
                 break;
         }
+        
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)[[[self class] defaultURLCache] cachedResponseForRequest:request].response;
+        if (response != nil) {
+            NSDictionary *headerFields = [(NSHTTPURLResponse *)response allHeaderFields];
+            id Etag = [headerFields objectForKey:@"Etag"];
+            if (Etag != nil) {
+                [(NSMutableURLRequest *)request setValue:Etag forHTTPHeaderField:@"If-None-Match"];
+            }
+            id lastModify = [headerFields objectForKey:@"Last-Modified"];
+            if (lastModify != nil) {
+                [(NSMutableURLRequest *)request setValue:lastModify forHTTPHeaderField:@"If-Modified-Since"];
+            }
+        }
 
         // 3) Create the request and set up authentication, validation and response serialization
         NSURLSessionDataTask *createdTask;
