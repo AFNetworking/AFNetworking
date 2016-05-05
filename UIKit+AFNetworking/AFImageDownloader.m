@@ -227,7 +227,19 @@
             default:
                 break;
         }
-
+        
+        NSHTTPURLResponse *cachedResponse = (NSHTTPURLResponse *)[[[self class] defaultURLCache] cachedResponseForRequest:request].response;
+        if (cachedResponse != nil) {
+            NSDictionary *headerFields = [(NSHTTPURLResponse *)cachedResponse allHeaderFields];
+            id eTag = [headerFields objectForKey:@"Etag"];
+            if (eTag != nil) {
+                [(NSMutableURLRequest *)request setValue:eTag forHTTPHeaderField:@"If-None-Match"];
+            }
+            id lastModify = [headerFields objectForKey:@"Last-Modified"];
+            if (lastModify != nil) {
+                [(NSMutableURLRequest *)request setValue:lastModify forHTTPHeaderField:@"If-Modified-Since"];
+            }
+        }
         // 3) Create the request and set up authentication, validation and response serialization
         NSUUID *mergedTaskIdentifier = [NSUUID UUID];
         NSURLSessionDataTask *createdTask;
