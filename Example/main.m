@@ -1,5 +1,5 @@
 // main.m
-// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import <TargetConditionals.h>
+#if TARGET_OS_IOS || TARGET_OS_TV
   #import <UIKit/UIKit.h>
 
   int main(int argc, char *argv[]) {

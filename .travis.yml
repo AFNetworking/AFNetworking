@@ -1,7 +1,53 @@
 language: objective-c
+osx_image: xcode7.1
+sudo: false
+env:
+  global:
+  - LC_CTYPE=en_US.UTF-8
+  - LANG=en_US.UTF-8
+  - FASTLANE_LANE=ci_commit
+matrix:
+  include:
+    - osx_image: xcode7.3
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=default
+    - osx_image: xcode7.3
+      env: FASTLANE_ENV=ios83
+    - osx_image: xcode7.3
+      env: FASTLANE_ENV=ios84
+    - osx_image: xcode7.3
+      env: FASTLANE_ENV=tvos91	  
+    - osx_image: xcode7.3
+      env: FASTLANE_ENV=osx
+    - osx_image: xcode7.3
+      env: FASTLANE_ENV=ios93
+    - osx_image: xcode7.2
+      env: FASTLANE_ENV=ios92_xcode72	  
+    - osx_image: xcode7.1
+      env: FASTLANE_ENV=ios91_xcode71	  
+    - osx_image: xcode7.1
+      env: FASTLANE_ENV=tvos90_xcode71
+    - osx_image: xcode7
+      env: FASTLANE_ENV=ios81_xcode7	  
+    - osx_image: xcode7
+      env: FASTLANE_ENV=ios90_xcode7	  
 before_install:
-    - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
-    - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
-    - cd Tests && pod install && cd $TRAVIS_BUILD_DIR
-script: rake test
-
+  - gem install fastlane --no-rdoc --no-ri --no-document --quiet
+  - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
+  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+script:
+  - set -o pipefail
+  - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
+  - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
+after_success:
+  - if [ "$FASTLANE_LANE" == "code_coverage" ]; then
+     bash <(curl -s https://codecov.io/bash);
+    fi
+after_failure:
+ - cat -n ~/Library/Logs/scan/*
+ - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
+ - cat -n ~/Library/Logs/DiagnosticReports/xctest*.crash
+# deploy:
+#   provider: script
+#   script: fastlane complete_framework_release --env deploy
+#   on:
+#     tags: true
