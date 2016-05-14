@@ -2,7 +2,253 @@
 All notable changes to this project will be documented in this file.
 `AFNetworking` adheres to [Semantic Versioning](http://semver.org/).
 
----
+--- 
+
+## [3.1.0](https://github.com/AFNetworking/AFNetworking/releases/tag/3.1.0) (03/31/2016)
+Released on Thursday, March 31, 2016. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.1.0+is%3Aclosed).
+
+#### Added
+* Improved `AFImageResponseSerializer` test coverage
+ * Implemented by quellish in [#3367](https://github.com/AFNetworking/AFNetworking/pull/3367).
+* Exposed `AFQueryStringFromParameters` and `AFPercentEscapedStringFromString` for public use.
+ * Implemented by Kevin Harwood in [#3160](https://github.com/AFNetworking/AFNetworking/pull/3160).
+
+#### Updated
+* Updated Test Suite to run on Xcode 7.3
+ * Implemented by Kevin Harwood in [#3418](https://github.com/AFNetworking/AFNetworking/pull/3418).
+* Added white space to URLs in code comment to allow Xcode to properly parse them
+ * Implemented by Draveness in [#3384](https://github.com/AFNetworking/AFNetworking/pull/3384).
+* Updated documentation to match method names and correct compiler warnings
+ * Implemented by Hakon Hanesand in [#3369](https://github.com/AFNetworking/AFNetworking/pull/3369).
+* Use `NSKeyValueChangeNewKey` constant in change dictionary rather than hardcoded string.
+ * Implemented by Wenbin Zhang in [#3360](https://github.com/AFNetworking/AFNetworking/pull/3360).
+* Resolved compiler warnings for documentation errors
+ * Implemented by Ricardo Santos in [#3336](https://github.com/AFNetworking/AFNetworking/pull/3336).
+
+#### Changed
+* Reverted `NSURLSessionAuthChallengeDisposition` to `NSURLSessionAuthChallengeCancelAuthenticationChallenge` for SSL Pinning
+ * Implemented by Kevin Harwood in [#3417](https://github.com/AFNetworking/AFNetworking/pull/3417).
+
+#### Fixed
+* Removed trailing question mark in query string if parameters are empty
+ * Implemented by Kevin Harwood in [#3386](https://github.com/AFNetworking/AFNetworking/pull/3386).
+* Fixed crash if bad URL was passed into the image downloader
+ * Implemented by Christian Wen and Kevin Harwood in [#3385](https://github.com/AFNetworking/AFNetworking/pull/3385).
+* Fixed image memory calculation
+ * Implemented by 周明宇 in [#3344](https://github.com/AFNetworking/AFNetworking/pull/3344).
+* Fixed issue where UIButton image downloading called wrong cancel method
+ * Implemented by duanhong in [#3332](https://github.com/AFNetworking/AFNetworking/pull/3332).
+* Fixed image downloading cancellation race condition
+ * Implemented by Kevin Harwood in [#3325](https://github.com/AFNetworking/AFNetworking/pull/3325).
+* Fixed static analyzer warnings on AFNetworkReachabilityManager
+ * Implemented by Jeff Kelley in [#3315](https://github.com/AFNetworking/AFNetworking/pull/3315).
+* Fixed issue where download progress would not be reported in iOS 7
+ * Implemented by zwm in [#3294](https://github.com/AFNetworking/AFNetworking/pull/3294).
+* Fixed status code 204/205 handling
+ * Implemented by Kevin Harwood in [#3292](https://github.com/AFNetworking/AFNetworking/pull/3292).
+* Fixed crash when passing nil/null for progress in UIWebView extension
+ * Implemented by Kevin Harwood in [#3289](https://github.com/AFNetworking/AFNetworking/pull/3289).
+
+#### Removed
+* Removed workaround for NSJSONSerialization bug that was fixed in iOS 7
+ * Implemented by Cédric Luthi in [#3253](https://github.com/AFNetworking/AFNetworking/pull/3253).
+ 
+
+## [3.0.4](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.4) (12/18/2015)
+Released on Friday, December 18, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.4+is%3Aclosed).
+
+#### Fixed
+* Fixed issue where `AFNSURLSessionTaskDidResumeNotification` was removed twice
+ * Implemented by Kevin Harwood in [#3236](https://github.com/AFNetworking/AFNetworking/pull/3236).
+ 
+
+## [3.0.3](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.3) (12/16/2015)
+Released on Wednesday, December 16, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.3+is%3Aclosed).
+
+#### Added
+* Added tests for response serializers to increase test coverage
+ * Implemented by Kevin Harwood in [#3233](https://github.com/AFNetworking/AFNetworking/pull/3233).
+
+#### Fixed
+* Fixed `AFImageResponseSerializer` serialization macros on watchOS and tvOS
+ * Implemented by Charles Joseph in [#3229](https://github.com/AFNetworking/AFNetworking/pull/3229).
+ 
+
+## [3.0.2](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.2) (12/14/2015)
+Released on Monday, December 14, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.2+is%3Aclosed).
+
+#### Fixed
+* Fixed a crash in `AFURLSessionManager` when resuming download tasks
+ * Implemented by Chongyu Zhu in [#3222](https://github.com/AFNetworking/AFNetworking/pull/3222).
+* Fixed issue where background button image would not be updated
+ * Implemented by eofs in [#3220](https://github.com/AFNetworking/AFNetworking/pull/3220).
+ 
+
+## [3.0.1](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.1) (12/11/2015)
+Released on Friday, December 11, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.1+is%3Aclosed).
+
+#### Added
+* Added Xcode 7.2 support to Travis
+ * Implemented by Kevin Harwood in [#3216](https://github.com/AFNetworking/AFNetworking/pull/3216).
+
+#### Fixed
+* Fixed race condition with ImageView/Button image downloading when starting/cancelling/starting the same request
+ * Implemented by Kevin Harwood in [#3215](https://github.com/AFNetworking/AFNetworking/pull/3215).
+ 
+
+## [3.0.0](https://github.com/AFNetworking/AFNetworking/releases/tag/3.0.0) (12/10/2015)
+Released on Thursday, December 10, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.0+is%3Aclosed).
+
+For detailed information about migrating to AFNetworking 3.0.0, please reference the [migration guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-3.0-Migration-Guide). All 3.0.0 beta changes will be tracked with this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.0.0+is%3Aclosed).
+
+#### Added
+* Added support for older versions of Xcode to Travis
+ * Implemented by Kevin Harwood in [#3209](https://github.com/AFNetworking/AFNetworking/pull/3209).
+* Added support for [Codecov.io](https://codecov.io/github/AFNetworking/AFNetworking/AFNetworking?branch=master#sort=coverage&dir=desc)
+ * Implemented by Cédric Luthi and Kevin Harwood in [#3196](https://github.com/AFNetworking/AFNetworking/pull/3196).
+ *  * **Please help us increase overall coverage by submitting a pull request!**
+* Added support for IPv6 to Reachability
+ * Implemented by SAMUKEI and Kevin Harwood in [#3174](https://github.com/AFNetworking/AFNetworking/pull/3174).
+* Added support for Objective-C light weight generics
+ * Implemented by Kevin Harwood in [#3166](https://github.com/AFNetworking/AFNetworking/pull/3166).
+* Added nullability attributes to response object in success block
+ * Implemented by Nathan Racklyeft in [#3154](https://github.com/AFNetworking/AFNetworking/pull/3154).
+* Migrated to Fastlane for CI and Deployment
+ * Implemented by Kevin Harwood in [#3148](https://github.com/AFNetworking/AFNetworking/pull/3148).
+* Added support for tvOS
+ * Implemented by Kevin Harwood in [#3128](https://github.com/AFNetworking/AFNetworking/issues/3128).
+* New image downloading architecture
+ * Implemented by Kevin Harwood in [#3122](https://github.com/AFNetworking/AFNetworking/issues/3122).
+* Added Carthage Support
+ * Implemented by Kevin Harwood in [#3121](https://github.com/AFNetworking/AFNetworking/issues/3121).
+* Added a method to create a unique reachability manager
+ * Implemented by Mo Bitar in [#3111](https://github.com/AFNetworking/AFNetworking/pull/3111).
+* Added a initial delay to the network indicator per the Apple HIG
+ * Implemented by Kevin Harwood in [#3094](https://github.com/AFNetworking/AFNetworking/pull/3094).
+
+#### Updated
+* Improved testing reliability for continuous integration
+ * Implemented by Kevin Harwood in [#3124](https://github.com/AFNetworking/AFNetworking/pull/3124).
+* Example project now consumes AFNetworking as a library.
+ * Implemented by Kevin Harwood in [#3068](https://github.com/AFNetworking/AFNetworking/pull/3068).
+* Migrated to using `instancetype` where applicable
+ * Implemented by Kyle Fuller in [#3064](https://github.com/AFNetworking/AFNetworking/pull/3064).
+* Tweaks to project to support Framework Project
+ * Implemented by Christian Noon in [#3062](https://github.com/AFNetworking/AFNetworking/pull/3062).
+
+#### Changed
+* Split the iOS and OS X AppDelegate classes in the Example Project
+ * Implemented by Cédric Luthi in [#3193](https://github.com/AFNetworking/AFNetworking/pull/3193).
+* Changed SSL Pinning Error to be `NSURLErrorServerCertificateUntrusted`
+ * Implemented by Cédric Luthi and Kevin Harwood in [#3191](https://github.com/AFNetworking/AFNetworking/pull/3191).
+* New Progress Reporting API using `NSProgress`
+ * Implemented by Kevin Harwood in [#3187](https://github.com/AFNetworking/AFNetworking/pull/3187).
+* Changed `pinnedCertificates` type in `AFSecurityPolicy` from `NSArray` to `NSSet`
+ * Implemented by Cédric Luthi in [#3164](https://github.com/AFNetworking/AFNetworking/pull/3164).
+
+#### Fixed
+* Improved task creation performance for iOS 8+
+ * Implemented by nikitahils, Nikita G and Kevin Harwood in [#3208](https://github.com/AFNetworking/AFNetworking/pull/3208).
+* Fixed certificate validation for servers providing incomplete chains
+ * Implemented by André Pacheco Neves in [#3159](https://github.com/AFNetworking/AFNetworking/pull/3159).
+* Fixed bug in `AFMultipartBodyStream` that may cause the input stream to read more bytes than required.
+ * Implemented by bang in [#3153](https://github.com/AFNetworking/AFNetworking/pull/3153).
+* Fixed race condition crash from Resume/Suspend task notifications
+ * Implemented by Kevin Harwood in [#3152](https://github.com/AFNetworking/AFNetworking/pull/3152).
+* Fixed `AFImageDownloader` stalling after numerous failures
+ * Implemented by Rick Silva in [#3150](https://github.com/AFNetworking/AFNetworking/pull/3150).
+* Fixed warnings generated in UIWebView category
+ * Implemented by Kevin Harwood in [#3126](https://github.com/AFNetworking/AFNetworking/pull/3126).
+
+#### Removed
+* Removed AFBase64EncodedStringFromString static function
+ * Implemented by Cédric Luthi in [#3188](https://github.com/AFNetworking/AFNetworking/pull/3188).
+* Removed code supporting conditional compilation for unsupported development configurations.
+ * Implemented by Cédric Luthi in [#3177](https://github.com/AFNetworking/AFNetworking/pull/3177).
+* Removed deprecated methods, properties, and notifications from AFN 2.x
+ * Implemented by Kevin Harwood in [#3168](https://github.com/AFNetworking/AFNetworking/pull/3168).
+* Removed support for `NSURLConnection`
+ * Implemented by Kevin Harwood in [#3120](https://github.com/AFNetworking/AFNetworking/issues/3120).
+* Removed `UIAlertView` category support since it is now deprecated
+ * Implemented by Kevin Harwood in [#3034](https://github.com/AFNetworking/AFNetworking/pull/3034).
+
+
+##[2.6.3](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.3) (11/11/2015)
+Released on Wednesday, November 11, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.3+is%3Aclosed).
+
+#### Fixed
+* Fixed clang analyzer warning suppression that prevented building under some project configurations
+ * Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#3142](https://github.com/AFNetworking/AFNetworking/pull/3142).
+* Restored Xcode 6 compatibility 
+ * Fixed by [jcayzac](https://github.com/jcayzac) in [#3139](https://github.com/AFNetworking/AFNetworking/pull/3139).
+ 
+
+##[2.6.2](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.2) (11/06/2015)
+Released on Friday, November 06, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.2+is%3Aclosed).
+
+### Important Upgrade Note for Swift
+* [#3130](https://github.com/AFNetworking/AFNetworking/pull/3130) fixes a swift interop error that does have a breaking API change if you are using Swift. This was [identified](https://github.com/AFNetworking/AFNetworking/issues/3137) after 2.6.2 was released. It changes the method from `throws` to an error pointer, since that method does return an object and also handles an error pointer, which does not play nicely with the Swift/Objective-C error conversion. See [#2810](https://github.com/AFNetworking/AFNetworking/issues/2810) for additional notes. This affects `AFURLRequestionSerializer` and `AFURLResponseSerializer`.
+
+#### Added
+* `AFHTTPSessionManager` now copies its `securityPolicy`
+ * Fixed by [mohamede1945](https://github.com/mohamede1945) in [#2887](https://github.com/AFNetworking/AFNetworking/pull/2887).
+
+#### Updated
+* Updated travis to run on 7.1
+ * Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#3132](https://github.com/AFNetworking/AFNetworking/pull/3132).
+* Simplifications of if and return statements in `AFSecurityPolicy`
+ * Fixed by [TorreyBetts](https://github.com/TorreyBetts) in [#3063](https://github.com/AFNetworking/AFNetworking/pull/3063).
+
+#### Fixed
+* Fixed swift interop issue that prevented returning a nil NSURL for a download task
+ * Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#3133](https://github.com/AFNetworking/AFNetworking/pull/3133).
+* Suppressed false positive memory leak warning in Reachability Manager
+ * Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#3131](https://github.com/AFNetworking/AFNetworking/pull/3131).
+* Fixed swift interop issue with throws and Request/Response serialization. 
+ * Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#3130](https://github.com/AFNetworking/AFNetworking/pull/3130).
+* Fixed race condition in reachability callback delivery
+ * Fixed by [MichaelHackett](https://github.com/MichaelHackett) in [#3117](https://github.com/AFNetworking/AFNetworking/pull/3117).
+* Fixed URLs that were redirecting in the README
+ * Fixed by [frankenbot](https://github.com/frankenbot) in [#3109](https://github.com/AFNetworking/AFNetworking/pull/3109).
+* Fixed Project Warnings
+ * Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#3102](https://github.com/AFNetworking/AFNetworking/pull/3102).
+* Fixed README link to WWDC session
+ * Fixed by [wrtsprt](https://github.com/wrtsprt) in [#3099](https://github.com/AFNetworking/AFNetworking/pull/3099).
+* Switched from `OS_OBJECT_HAVE_OBJC_SUPPORT` to `OS_OBJECT_USE_OBJC` for watchOS 2 support.
+ * Fixed by [kylef](https://github.com/kylef) in [#3065](https://github.com/AFNetworking/AFNetworking/pull/3065).
+* Added missing __nullable attributes to failure blocks in `AFHTTPRequestOperationManager` and `AFHTTPSessionManager`
+ * Fixed by [hoppenichu](https://github.com/hoppenichu) in [#3057](https://github.com/AFNetworking/AFNetworking/pull/3057).
+* Fixed memory leak in NSURLSession handling
+ * Fixed by [olegnaumenko](https://github.com/olegnaumenko) in [#2794](https://github.com/AFNetworking/AFNetworking/pull/2794).
+
+
+## [2.6.1](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.1) (10-13-2015)
+Released on Tuesday, October 13th, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.1+is%3Aclosed).
+
+###Future Compatibility Note
+Note that AFNetworking 3.0 will soon be released, and will drop support for all `NSURLConnection` based API's (`AFHTTPRequestOperationManager`, `AFHTTPRequestOperation`, and `AFURLConnectionOperation`. If you have not already migrated to `NSURLSession` based API's, please do so soon. For more information, please see the [3.0 migration guide](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-3.0-Migration-Guide).
+
+####Fixed
+* Fixed a bug that prevented empty x-www-form-urlencoded bodies.
+	* Fixed by [Julien Cayzac](https://github.com/jcayzac) in [#2868](https://github.com/AFNetworking/AFNetworking/pull/2868).
+* Fixed bug that prevented AFNetworking from being installed for watchOS via Cocoapods.
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2909](https://github.com/AFNetworking/AFNetworking/issues/2909).
+* Added missing nullable attributes to `AFURLRequestSerialization` and `AFURLSessionManager`.
+	* Fixed by [andrewtoth](https://github.com/andrewtoth) in [#2911](https://github.com/AFNetworking/AFNetworking/pull/2911).
+* Migrated to `OS_OBJECT_USE_OBJC`.
+	* Fixed by [canius](https://github.com/canius) in [#2930](https://github.com/AFNetworking/AFNetworking/pull/2930).
+* Added missing nullable tags to UIKit extensions.
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#3000](https://github.com/AFNetworking/AFNetworking/pull/3000).
+* Fixed potential infinite recursion loop if multiple versions of AFNetworking are loaded in a target.
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2743](https://github.com/AFNetworking/AFNetworking/issues/2743). 
+* Updated Travis CI test script
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#3032](https://github.com/AFNetworking/AFNetworking/issues/3032). 
+* Migrated to `FOUNDATION_EXPORT` from `extern`.
+	* Fixed by [Andrey Mikhaylov](https://github.com/pronebird) in [#3041](https://github.com/AFNetworking/AFNetworking/pull/3041).
+* Fixed issue where `AFURLConnectionOperation` could get stuck in an infinite loop.
+	* Fixed by [Mattt Thompson](https://github.com/mattt) in [#2496](https://github.com/AFNetworking/AFNetworking/pull/2496).
+* Fixed regression where URL request serialization would crash on iOS 8 for long URLs.
+	* Fixed by [softenhard](https://github.com/softenhard) in [#3028](https://github.com/AFNetworking/AFNetworking/pull/3028).
 
 ## [2.6.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.0) (08-19-2015)
 Released on Wednesday, August 19th, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.0+is%3Aclosed).
@@ -10,14 +256,14 @@ Released on Wednesday, August 19th, 2015. All issues associated with this milest
 ###Important Upgrade Notes
 Please note the following API/project changes have been made:
 
-* iOS 6 support has now been removed from the podspec. Note that iOS 6 support has not been removed explicitly from the project, but it will be removed in a future update.
+* iOS 6 and OS X 10.8 support has been dropped from the project to facilitate support for watchOS 2. The final release supporting iOS 6 and OS X 10.8 is 2.5.4.
 * **Full Certificate Chain Validation has been removed** from `AFSecurityPolicy`. As discussed in [#2744](https://github.com/AFNetworking/AFNetworking/issues/2744), there was no documented security advantage to pinning against an entire certificate chain. If you were using full certificate chain, please determine and select the most ideal certificate in your chain to pin against.
-	* Implemented by [Kevin Harwood](https://github.com/kcharwood) in [#2856](https://github.com/AFNetworking/AFNetworking/pull/2856).
+	* Implemented by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2856](https://github.com/AFNetworking/AFNetworking/pull/2856).
 * **The request url will now be returned by the `UIImageView` category if the image is returned from cache.** In previous releases, both the request and the response were nil. Going forward, only the response will be nil.
 	* Implemented by [Chris Gibbs](https://github.com/chrisgibbs) in [#2771](https://github.com/AFNetworking/AFNetworking/pull/2771).
 * **Support for App Extension Targets is now baked in using `NS_EXTENSION_UNAVAILABLE_IOS`.** You no longer need to define `AF_APP_EXTENSIONS` in order to include code in a extension target.
 	* Implemented by [bnickel](https://github.com/bnickel) in [#2737](https://github.com/AFNetworking/AFNetworking/pull/2737).
-* This release now supports watchOS 2.0, which relys on target conditionals that are only present in Xcode 7 and iOS 9/watchOS 2.0/OS X 10.10. If you install the library using CocoaPods, AFNetworking will define these target conditionals for on older platforms, allowing your code to complile. If you do not use Cocoapods, you will need to add the following code your to PCH file.
+* This release now supports watchOS 2.0, which relys on target conditionals that are only present in Xcode 7 and iOS 9/watchOS 2.0/OS X 10.10. If you install the library using CocoaPods, AFNetworking will define these target conditionals for on older platforms, allowing your code to compile. If you do not use Cocoapods, you will need to add the following code your to PCH file.
 
 ```
 #ifndef TARGET_OS_IOS
@@ -28,7 +274,7 @@ Please note the following API/project changes have been made:
 #endif
 ```
 * This release migrates query parameter serialization to model AlamoFire and adhere to RFC standards. Note that `/` and `?` are no longer encoded by default.
-	* Implemented by [Kevin Harwood](https://github.com/kcharwood) in [#2908](https://github.com/AFNetworking/AFNetworking/pull/2908).
+	* Implemented by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2908](https://github.com/AFNetworking/AFNetworking/pull/2908).
 
 
 
@@ -36,27 +282,27 @@ Please note the following API/project changes have been made:
 
 ####Added
 * Added watchOS 2.0 support. `AFNetworking` can now be added to watchOS targets using CocoaPods.
-	* Added by [Kevin Harwood](https://github.com/kcharwood) in [#2837](https://github.com/AFNetworking/AFNetworking/issues/2837).
+	* Added by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2837](https://github.com/AFNetworking/AFNetworking/issues/2837).
 * Added nullability annotations to all of the header files to improve Swift interoperability.
-	* Added by [Frank LSF](https://github.com/franklsf95) and [Kevin Harwood](https://github.com/kcharwood) in [#2814](https://github.com/AFNetworking/AFNetworking/pull/2814).
+	* Added by [Frank LSF](https://github.com/franklsf95) and [Kevin Harwood](https://github.com/Kevin Harwood) in [#2814](https://github.com/AFNetworking/AFNetworking/pull/2814).
 * Converted source to Modern Objective-C Syntax.
-	* Implemented by [Matt Shedlick](https://github.com/mattshedlick) and [Kevin Harwood](https://github.com/kcharwood) in [#2688](https://github.com/AFNetworking/AFNetworking/pull/2688).
+	* Implemented by [Matt Shedlick](https://github.com/mattshedlick) and [Kevin Harwood](https://github.com/Kevin Harwood) in [#2688](https://github.com/AFNetworking/AFNetworking/pull/2688).
 * Improved memory performance when download large objects.
-	* Fixed by [Gabe Zabrino](https://github.com/gfzabarino) and [Kevin Harwood](https://github.com/kcharwood) in [#2672](https://github.com/AFNetworking/AFNetworking/pull/2672).
+	* Fixed by [Gabe Zabrino](https://github.com/gfzabarino) and [Kevin Harwood](https://github.com/Kevin Harwood) in [#2672](https://github.com/AFNetworking/AFNetworking/pull/2672).
 
 ####Fixed
 * Fixed a crash related for objects that observe notifications but don't properly unregister.
-	* Fixed by [Kevin Harwood](https://github.com/kcharwood) and [bnickle](https://github.com/bnickel) in [#2741](https://github.com/AFNetworking/AFNetworking/pull/2741).
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) and [bnickle](https://github.com/bnickel) in [#2741](https://github.com/AFNetworking/AFNetworking/pull/2741).
 * Fixed a race condition crash that occured with `AFImageResponseSerialization`.
-	* Fixed by [Paulo Ferreria](https://github.com/paulosotu) and [Kevin Harwood](https://github.com/kcharwood) in [#2815](https://github.com/AFNetworking/AFNetworking/pull/2815).
+	* Fixed by [Paulo Ferreria](https://github.com/paulosotu) and [Kevin Harwood](https://github.com/Kevin Harwood) in [#2815](https://github.com/AFNetworking/AFNetworking/pull/2815).
 * Fixed an issue where tests failed to run on CI due to unavailable simulators.
-	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2834](https://github.com/AFNetworking/AFNetworking/pull/2834).
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2834](https://github.com/AFNetworking/AFNetworking/pull/2834).
 * Fixed "method override not found" warnings in Xcode 7 Betas
 	* Fixed by [Ben Guo](https://github.com/benzguo) in [#2822](https://github.com/AFNetworking/AFNetworking/pull/2822)
 * Removed Duplicate Import and UIKit Header file.
 	* Fixed by [diehardest](https://github.com/diehardest) in [#2813](https://github.com/AFNetworking/AFNetworking/pull/2813)
 * Removed the ability to include duplicate certificates in the pinned certificate chain.
-	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2756](https://github.com/AFNetworking/AFNetworking/pull/2756).
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2756](https://github.com/AFNetworking/AFNetworking/pull/2756).
 * Fixed potential memory leak in `AFNetworkReachabilityManager`.
 	* Fixed by [Julien Cayzac](https://github.com/jcayzac) in [#2867](https://github.com/AFNetworking/AFNetworking/pull/2867).
 
@@ -66,7 +312,7 @@ Please note the following API/project changes have been made:
 * Added `startMonitoring` call to the Reachability section of the README
 	* Added by [Jawwad Ahmad](https://github.com/jawwad) in [#2831](https://github.com/AFNetworking/AFNetworking/pull/2831).
 * Fixed documentation error around how `baseURL` is used for reachability monitoring.
-	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2761](https://github.com/AFNetworking/AFNetworking/pull/2761).
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2761](https://github.com/AFNetworking/AFNetworking/pull/2761).
 * Numerous spelling corrections in the documentation.
 	* Fixed by [Antoine Cœur](https://github.com/Coeur) in [#2732](https://github.com/AFNetworking/AFNetworking/pull/2732) and [#2898](https://github.com/AFNetworking/AFNetworking/pull/2898).
 
@@ -75,16 +321,16 @@ Released on 2015-05-14. All issues associated with this milestone can be found u
 
 ####Updated
 * Updated the CI test script to run iOS tests on all versions of iOS that are installed on the build machine.
-	* Updated by [Kevin Harwood](https://github.com/kcharwood) in [#2716](https://github.com/AFNetworking/AFNetworking/pull/2716).
+	* Updated by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2716](https://github.com/AFNetworking/AFNetworking/pull/2716).
 	
 ####Fixed
 
 * Fixed an issue where `AFNSURLSessionTaskDidResumeNotification` and `AFNSURLSessionTaskDidSuspendNotification` were not being properly called due to implementation differences in `NSURLSessionTask` in iOS 7 and iOS 8, which also affects the `AFNetworkActivityIndicatorManager`. 
-	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2702](https://github.com/AFNetworking/AFNetworking/pull/2702).
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2702](https://github.com/AFNetworking/AFNetworking/pull/2702).
 * Fixed an issue where the OS X test linker would throw a warning during tests.
 	* Fixed by [Christian Noon](https://github.com/cnoon) in [#2719](https://github.com/AFNetworking/AFNetworking/pull/2719).
 * Fixed an issue where tests would randomly fail due to mocked objects not being cleaned up.
-	* Fixed by [Kevin Harwood](https://github.com/kcharwood) in [#2717](https://github.com/AFNetworking/AFNetworking/pull/2717).
+	* Fixed by [Kevin Harwood](https://github.com/Kevin Harwood) in [#2717](https://github.com/AFNetworking/AFNetworking/pull/2717).
 
 
 ## [2.5.3](https://github.com/AFNetworking/AFNetworking/releases/tag/2.5.3) (2015-04-20)

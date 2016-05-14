@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'AFNetworking'
-  s.version  = '2.6.0'
+  s.version  = '3.1.0'
   s.license  = 'MIT'
   s.summary  = 'A delightful iOS and OS X networking framework.'
   s.homepage = 'https://github.com/AFNetworking/AFNetworking'
@@ -20,12 +20,17 @@ Pod::Spec.new do |s|
 #ifndef TARGET_OS_WATCH
   #define TARGET_OS_WATCH 0
 #endif
+
+#ifndef TARGET_OS_TV
+  #define TARGET_OS_TV 0
+#endif
 EOS
   s.prefix_header_contents = pch_AF
   
   s.ios.deployment_target = '7.0'
   s.osx.deployment_target = '10.9'
   s.watchos.deployment_target = '2.0'
+  s.tvos.deployment_target = '9.0'
   
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
@@ -44,6 +49,7 @@ EOS
   s.subspec 'Reachability' do |ss|
     ss.ios.deployment_target = '7.0'
     ss.osx.deployment_target = '10.9'
+    ss.tvos.deployment_target = '9.0'
 
     ss.source_files = 'AFNetworking/AFNetworkReachabilityManager.{h,m}'
     ss.public_header_files = 'AFNetworking/AFNetworkReachabilityManager.h'
@@ -51,26 +57,11 @@ EOS
     ss.frameworks = 'SystemConfiguration'
   end
 
-  s.subspec 'NSURLConnection' do |ss|
-    ss.ios.deployment_target = '7.0'
-    ss.osx.deployment_target = '10.9'
-
-    ss.dependency 'AFNetworking/Serialization'
-    ss.dependency 'AFNetworking/Reachability'
-    ss.dependency 'AFNetworking/Security'
-
-    ss.source_files = 'AFNetworking/AFURLConnectionOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperation.{h,m}', 'AFNetworking/AFHTTPRequestOperationManager.{h,m}'
-    ss.public_header_files = 'AFNetworking/AFURLConnectionOperation.h', 'AFNetworking/AFHTTPRequestOperation.h', 'AFNetworking/AFHTTPRequestOperationManager.h'
-  end
-
   s.subspec 'NSURLSession' do |ss|
-    ss.ios.deployment_target = '7.0'
-    ss.osx.deployment_target = '10.9'
-    ss.watchos.deployment_target = '2.0'
-    
     ss.dependency 'AFNetworking/Serialization'
     ss.ios.dependency 'AFNetworking/Reachability'
     ss.osx.dependency 'AFNetworking/Reachability'
+    ss.tvos.dependency 'AFNetworking/Reachability'
     ss.dependency 'AFNetworking/Security'
 
     ss.source_files = 'AFNetworking/AF{URL,HTTP}SessionManager.{h,m}'
@@ -78,8 +69,8 @@ EOS
   end
 
   s.subspec 'UIKit' do |ss|
-    ss.platform = :ios
-    ss.dependency 'AFNetworking/NSURLConnection'
+    ss.ios.deployment_target = '7.0'
+    ss.tvos.deployment_target = '9.0'
     ss.dependency 'AFNetworking/NSURLSession'
 
     ss.public_header_files = 'UIKit+AFNetworking/*.h'

@@ -1,5 +1,5 @@
 // AFNetworkActivityIndicatorManager.h
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,16 @@
 
 #import <Foundation/Foundation.h>
 
-#import <Availability.h>
+#import <TargetConditionals.h>
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if TARGET_OS_IOS
 
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- `AFNetworkActivityIndicatorManager` manages the state of the network activity indicator in the status bar. When enabled, it will listen for notifications indicating that a network request operation has started or finished, and start or stop animating the indicator accordingly. The number of active requests is incremented and decremented much like a stack or a semaphore, and the activity indicator will animate so long as that number is greater than zero.
+ `AFNetworkActivityIndicatorManager` manages the state of the network activity indicator in the status bar. When enabled, it will listen for notifications indicating that a session task has started or finished, and start or stop animating the indicator accordingly. The number of active requests is incremented and decremented much like a stack or a semaphore, and the activity indicator will animate so long as that number is greater than zero.
 
  You should enable the shared instance of `AFNetworkActivityIndicatorManager` when your application finishes launching. In `AppDelegate application:didFinishLaunchingWithOptions:` you can do so with the following code:
 
@@ -52,9 +52,25 @@ NS_EXTENSION_UNAVAILABLE_IOS("Use view controller based solutions where appropri
 @property (nonatomic, assign, getter = isEnabled) BOOL enabled;
 
 /**
- A Boolean value indicating whether the network activity indicator is currently displayed in the status bar.
+ A Boolean value indicating whether the network activity indicator manager is currently active.
+*/
+@property (readonly, nonatomic, assign, getter=isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
+
+/**
+ A time interval indicating the minimum duration of networking activity that should occur before the activity indicator is displayed. The default value 1 second. If the network activity indicator should be displayed immediately when network activity occurs, this value should be set to 0 seconds.
+ 
+ Apple's HIG describes the following:
+
+ > Display the network activity indicator to provide feedback when your app accesses the network for more than a couple of seconds. If the operation finishes sooner than that, you don’t have to show the network activity indicator, because the indicator is likely to disappear before users notice its presence.
+
  */
-@property (readonly, nonatomic, assign) BOOL isNetworkActivityIndicatorVisible;
+@property (nonatomic, assign) NSTimeInterval activationDelay;
+
+/**
+ A time interval indicating the duration of time of no networking activity required before the activity indicator is disabled. This allows for continuous display of the network activity indicator across multiple requests. The default value is 0.17 seconds.
+ */
+
+@property (nonatomic, assign) NSTimeInterval completionDelay;
 
 /**
  Returns the shared network activity indicator manager object for the system.
@@ -72,6 +88,13 @@ NS_EXTENSION_UNAVAILABLE_IOS("Use view controller based solutions where appropri
  Decrements the number of active network requests. If this number becomes zero after decrementing, this will stop animating the status bar network activity indicator.
  */
 - (void)decrementActivityCount;
+
+/**
+ Set the a custom method to be executed when the network activity indicator manager should be hidden/shown. By default, this is null, and the UIApplication Network Activity Indicator will be managed automatically. If this block is set, it is the responsiblity of the caller to manager the network activity indicator going forward.
+
+ @param block A block to be executed when the network activity indicator status changes.
+ */
+- (void)setNetworkingActivityActionWithBlock:(nullable void (^)(BOOL networkActivityIndicatorVisible))block;
 
 @end
 

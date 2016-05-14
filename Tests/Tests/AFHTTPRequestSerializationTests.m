@@ -1,5 +1,5 @@
 // AFHTTPRequestSerializationTests.m
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -65,11 +65,45 @@
 
 #pragma mark -
 
+- (void)testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperly {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    request.HTTPMethod = @"POST";
+
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:request withParameters:@{@"key":@"value"} error:nil];
+    NSString *contentType = serializedRequest.allHTTPHeaderFields[@"Content-Type"];
+
+    XCTAssertNotNil(contentType);
+    XCTAssertEqualObjects(contentType, @"application/x-www-form-urlencoded");
+
+    XCTAssertNotNil(serializedRequest.HTTPBody);
+    XCTAssertEqualObjects(serializedRequest.HTTPBody, [@"key=value" dataUsingEncoding:NSUTF8StringEncoding]);
+}
+
+- (void)testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperlyWhenNoParameterIsProvided {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    request.HTTPMethod = @"POST";
+
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:request withParameters:nil error:nil];
+    NSString *contentType = serializedRequest.allHTTPHeaderFields[@"Content-Type"];
+
+    XCTAssertNotNil(contentType);
+    XCTAssertEqualObjects(contentType, @"application/x-www-form-urlencoded");
+
+    XCTAssertNotNil(serializedRequest.HTTPBody);
+    XCTAssertEqualObjects(serializedRequest.HTTPBody, [NSData data]);
+}
+
 - (void)testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectly {
     NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"value"} error:nil];
 
     XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=value"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+}
+
+- (void)testThatEmptyDictionaryParametersAreProperlyEncoded {
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{} error:nil];
+    XCTAssertFalse([serializedRequest.URL.absoluteString hasSuffix:@"?"]);
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesURLEncodableQueryParametersCorrectly {
@@ -107,7 +141,7 @@
     Class streamClass = NSClassFromString(@"AFStreamingMultipartFormData");
     id <AFMultipartFormDataTest> formData = [[streamClass alloc] initWithURLRequest:originalRequest stringEncoding:NSUTF8StringEncoding];
 
-    NSURL *fileURL = [NSURL fileURLWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"adn_0" ofType:@"cer"]];
+    NSURL *fileURL = [NSURL fileURLWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"ADNNetServerTrustChain/adn_0" ofType:@"cer"]];
 
     [formData appendPartWithFileURL:fileURL name:@"test" error:NULL];
 
@@ -121,14 +155,12 @@
 - (void)testThatValueForHTTPHeaderFieldReturnsSetValue {
     [self.requestSerializer setValue:@"Actual Value" forHTTPHeaderField:@"Set-Header"];
     NSString *value = [self.requestSerializer valueForHTTPHeaderField:@"Set-Header"];
-
-    expect(value).to.equal(@"Actual Value");
+    XCTAssertTrue([value isEqualToString:@"Actual Value"]);
 }
 
 - (void)testThatValueForHTTPHeaderFieldReturnsNilForUnsetHeader {
     NSString *value = [self.requestSerializer valueForHTTPHeaderField:@"Unset-Header"];
-
-    expect(value).to.beNil();
+    XCTAssertNil(value);
 }
 
 - (void)testQueryStringSerializationCanFailWithError {
@@ -143,9 +175,46 @@
 
     NSError *error;
     NSURLRequest *request = [serializer requestWithMethod:@"GET" URLString:@"url" parameters:@{} error:&error];
+    XCTAssertNil(request);
+    XCTAssertEqual(error, serializerError);
+}
 
-    expect(request).to.beNil();
-    expect(error).to.equal(serializerError);
+- (void)testThatHTTPHeaderValueCanBeRemoved {
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    NSString *headerField = @"TestHeader";
+    NSString *headerValue = @"test";
+    [serializer setValue:headerValue forHTTPHeaderField:headerField];
+    XCTAssertTrue([serializer.HTTPRequestHeaders[headerField] isEqualToString:headerValue]);
+    [serializer setValue:nil forHTTPHeaderField:headerField];
+    XCTAssertFalse([serializer.HTTPRequestHeaders.allKeys containsObject:headerField]);
+}
+
+#pragma mark - Helper Methods
+
+- (void)testQueryStringFromParameters {
+    XCTAssertTrue([AFQueryStringFromParameters(@{@"key":@"value",@"key1":@"value&"}) isEqualToString:@"key=value&key1=value%26"]);
+}
+
+- (void)testPercentEscapingString {
+    XCTAssertTrue([AFPercentEscapedStringFromString(@":#[]@!$&'()*+,;=?/") isEqualToString:@"%3A%23%5B%5D%40%21%24%26%27%28%29%2A%2B%2C%3B%3D?/"]);
+}
+
+#pragma mark - #3028 tests
+//https://github.com/AFNetworking/AFNetworking/pull/3028
+
+- (void)testThatEmojiIsProperlyEncoded {
+    //Start with an odd number of characters so we can cross the 50 character boundry
+    NSMutableString *parameter = [NSMutableString stringWithString:@"!"];
+    while (parameter.length < 50) {
+        [parameter appendString:@"👴🏿👷🏻👮🏽"];
+    }
+
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    NSURLRequest *request = [serializer requestWithMethod:@"GET"
+                                                URLString:@"http://test.com"
+                                               parameters:@{@"test":parameter}
+                                                    error:nil];
+    XCTAssertTrue([request.URL.query isEqualToString:@"test=%21%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD"]);
 }
 
 @end

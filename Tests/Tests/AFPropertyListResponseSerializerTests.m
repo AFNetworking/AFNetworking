@@ -1,5 +1,5 @@
 // AFPropertyListResponseSerializerTests.m
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -43,6 +43,24 @@
 
     XCTAssertNil(responseObject, @"Response should be nil when handling 204 with application/x-plist");
     XCTAssertNil(error, @"Error handling application/x-plist");
+}
+
+- (void)testResponseSerializerCanBeCopied {
+    AFPropertyListResponseSerializer *copiedSerializer = [self.responseSerializer copy];
+    XCTAssertNotNil(copiedSerializer);
+    XCTAssertNotEqual(copiedSerializer, self.responseSerializer);
+    XCTAssertTrue(copiedSerializer.format == self.responseSerializer.format);
+    XCTAssertTrue(copiedSerializer.readOptions == self.responseSerializer.readOptions);
+}
+
+- (void)testResponseSerializerCanBeArchivedAndUnarchived {
+    NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:self.responseSerializer];
+    XCTAssertNotNil(archive);
+    AFPropertyListResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
+    XCTAssertNotNil(unarchivedSerializer);
+    XCTAssertNotEqual(unarchivedSerializer, self.responseSerializer);
+    XCTAssertTrue(unarchivedSerializer.format == self.responseSerializer.format);
+    XCTAssertTrue(unarchivedSerializer.readOptions == self.responseSerializer.readOptions);
 }
 
 @end

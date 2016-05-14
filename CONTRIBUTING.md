@@ -8,6 +8,7 @@ Please read it before you start participating.
 * [Asking Questions](#asking-questions)
 * [Reporting Security Issues](#reporting-security-issues)
 * [Reporting Issues](#reporting-other-issues)
+* [Submitting Pull Requests](#submitting-pull-requests)
 * [Developers Certificate of Origin](#developers-certificate-of-origin)
 * [Code of Conduct](#code-of-conduct)
 
@@ -51,6 +52,10 @@ When reporting issues, please include the following:
 * Any other details that would be useful in understanding the problem
 
 This information will help us review and fix your issue faster.
+
+## Submitting Pull Requests
+
+Pull requests are welcome, and greatly encouraged. When submitting a pull request, please create proper test cases demonstrating the issue to be fixed or the new feature.
 
 ## Developer's Certificate of Origin 1.1
 

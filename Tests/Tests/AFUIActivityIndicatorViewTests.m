@@ -1,5 +1,5 @@
 // AFUIActivityIndicatorViewTests.h
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +20,22 @@
 // THE SOFTWARE.
 
 #import "AFTestCase.h"
-#import <AFNetworking/UIActivityIndicatorView+AFNetworking.h>
-#import <AFNetworking/AFURLSessionManager.h>
-#import <AFNetworking/AFHTTPRequestOperationManager.h>
+#import "UIActivityIndicatorView+AFNetworking.h"
+#import "AFURLSessionManager.h"
 
 @interface AFUIActivityIndicatorViewTests : AFTestCase
 @property (nonatomic, strong) NSURLRequest *request;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) AFURLSessionManager *sessionManager;
-@property (nonatomic, strong) AFHTTPRequestOperationManager *operationManager;
 @end
 
 @implementation AFUIActivityIndicatorViewTests
 
 - (void)setUp {
     [super setUp];
-    self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     self.request = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"delay/1"]];
     self.sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:nil];
-    self.operationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:self.baseURL];
 }
 
 - (void)tearDown {
@@ -52,6 +49,8 @@
     [self expectationForNotification:AFNetworkingTaskDidResumeNotification object:nil handler:nil];
     NSURLSessionDataTask *task = [self.sessionManager
                                   dataTaskWithRequest:self.request
+                                  uploadProgress:nil
+                                  downloadProgress:nil
                                   completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
                                       [expectation fulfill];
                                   }];
@@ -60,15 +59,18 @@
     self.activityIndicatorView = nil;
     
     [task resume];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
     [task cancel];
 }
+
 
 - (void)testTaskDidCompleteNotificationDoesNotCauseCrashForAIVWithTask {
     XCTestExpectation *expectation = [self expectationWithDescription:@"No Crash"];
     [self expectationForNotification:AFNetworkingTaskDidCompleteNotification object:nil handler:nil];
     NSURLSessionDataTask *task = [self.sessionManager
                                   dataTaskWithRequest:self.request
+                                  uploadProgress:nil
+                                  downloadProgress:nil
                                   completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
                                       //Without the dispatch after, this test would PASS errorenously because the test
                                       //would finish before the notification was posted to all objects that were
@@ -82,7 +84,7 @@
     self.activityIndicatorView = nil;
     
     [task resume];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
     [task cancel];
 }
 
@@ -91,6 +93,8 @@
     [self expectationForNotification:AFNetworkingTaskDidSuspendNotification object:nil handler:nil];
     NSURLSessionDataTask *task = [self.sessionManager
                                   dataTaskWithRequest:self.request
+                                  uploadProgress:nil
+                                  downloadProgress:nil
                                   completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
                                       //Without the dispatch after, this test would PASS errorenously because the test
                                       //would finish before the notification was posted to all objects that were
@@ -106,62 +110,8 @@
     [task resume];
     [task suspend];
     [task resume];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
     [task cancel];
-}
-
-- (void)testOperationDidStartNotificationDoesNotCauseCrashForAIVWithOperation {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"No Crash"];
-    [self expectationForNotification:AFNetworkingOperationDidStartNotification object:nil handler:nil];
-    AFHTTPRequestOperation *operation = [self.operationManager
-                                         HTTPRequestOperationWithRequest:self.request
-                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                             [expectation fulfill];
-                                         } failure:nil];
-    [self.activityIndicatorView setAnimatingWithStateOfOperation:operation];
-    self.activityIndicatorView = nil;
-    [operation start];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
-    [operation cancel];
-}
-
-- (void)testOperationDidFinishNotificationDoesNotCauseCrashForAIVWithOperation {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"No Crash"];
-    [self expectationForNotification:AFNetworkingOperationDidFinishNotification object:nil handler:nil];
-    AFHTTPRequestOperation *operation = [self.operationManager
-                                         HTTPRequestOperationWithRequest:self.request
-                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                             //Without the dispatch after, this test would PASS errorenously because the test
-                                             //would finish before the notification was posted to all objects that were
-                                             //observing it.
-                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                  [expectation fulfill];
-                                             });
-
-                                         } failure:nil];
-    [self.activityIndicatorView setAnimatingWithStateOfOperation:operation];
-    self.activityIndicatorView = nil;
-    [operation start];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
-    [operation cancel];
-}
-
-// Tests issue #2739. -[UIActivityIndicatorView dealloc] removes an observer and clobbering it in a category creates a zombie reference.
-- (void)testBackgroundingDoesNotCauseCrashWithOperation {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"No Crash"];
-    AFHTTPRequestOperation *operation = [self.operationManager
-                                         HTTPRequestOperationWithRequest:self.request
-                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                         } failure:nil];
-    [self.activityIndicatorView setAnimatingWithStateOfOperation:operation];
-    self.activityIndicatorView = nil;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidEnterBackgroundNotification object:nil];
-        [expectation fulfill];
-    });
-    
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
 @end

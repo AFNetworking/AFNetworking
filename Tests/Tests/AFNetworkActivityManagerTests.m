@@ -1,5 +1,5 @@
 // AFNetworkActivityManagerTests.m
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,11 @@
 #import "AFTestCase.h"
 
 #import "AFNetworkActivityIndicatorManager.h"
-#import "AFHTTPRequestOperation.h"
+#import "AFHTTPSessionManager.h"
 
 @interface AFNetworkActivityManagerTests : AFTestCase
 @property (nonatomic, strong) AFNetworkActivityIndicatorManager *networkActivityIndicatorManager;
-@property (nonatomic, assign) BOOL isNetworkActivityIndicatorVisible;
-@property (nonatomic, strong) id mockApplication;
+@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 @end
 
 #pragma mark -
@@ -37,71 +36,146 @@
 - (void)setUp {
     [super setUp];
 
+    self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:self.baseURL sessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+
     self.networkActivityIndicatorManager = [[AFNetworkActivityIndicatorManager alloc] init];
     self.networkActivityIndicatorManager.enabled = YES;
-
-    self.mockApplication = [OCMockObject mockForClass:[UIApplication class]];
-    [[[self.mockApplication stub] andReturn:self.mockApplication] sharedApplication];
-
-    [[[self.mockApplication stub] andDo:^(NSInvocation *invocation) {
-        [invocation setReturnValue:(void *)&_isNetworkActivityIndicatorVisible];
-    }] isNetworkActivityIndicatorVisible];
-
-    [[[self.mockApplication stub] andDo:^(NSInvocation *invocation) {
-        [invocation getArgument:&_isNetworkActivityIndicatorVisible atIndex:2];
-    }] setNetworkActivityIndicatorVisible:YES];
 }
 
 - (void)tearDown {
     [super tearDown];
-    [self.mockApplication stopMocking];
-    
-    self.mockApplication = nil;
     self.networkActivityIndicatorManager = nil;
+
+    [self.sessionManager invalidateSessionCancelingTasks:YES];
 }
 
 #pragma mark -
 
-- (void)testThatNetworkActivityIndicatorTurnsOffIndicatorWhenRequestSucceeds {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
-    } failure:nil];
+- (void)testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestSucceeds {
+    self.networkActivityIndicatorManager.activationDelay = 0.0;
+    self.networkActivityIndicatorManager.completionDelay = 0.0;
 
-    [operation start];
-
-    expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beTruthy();
-}
-
-- (void)testThatNetworkActivityIndicatorTurnsOffIndicatorWhenRequestFails {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/500" relativeToURL:self.baseURL]];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:nil failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beFalsy();
+    XCTestExpectation *startExpectation = [self expectationWithDescription:@"Indicator Visible"];
+    XCTestExpectation *endExpectation = [self expectationWithDescription:@"Indicator Hidden"];
+    [self.networkActivityIndicatorManager setNetworkingActivityActionWithBlock:^(BOOL networkActivityIndicatorVisible) {
+        if (networkActivityIndicatorVisible) {
+            [startExpectation fulfill];
+        } else {
+            [endExpectation fulfill];
+        }
     }];
 
-    [operation start];
-
-    expect([self.mockApplication isNetworkActivityIndicatorVisible]).will.beTruthy();
+    XCTestExpectation *requestExpectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager
+     GET:@"/delay/1"
+     parameters:nil
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+         [requestExpectation fulfill];
+     }
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
-- (void)testThatNetworkActivityIsUnchangedWhenManagerIsDisabled {
-    self.networkActivityIndicatorManager.enabled = NO;
+- (void)testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestFails {
+    self.networkActivityIndicatorManager.activationDelay = 0.0;
+    self.networkActivityIndicatorManager.completionDelay = 0.0;
 
-    __block BOOL didChangeNetworkActivityIndicatorVisible = NO;
+    XCTestExpectation *startExpectation = [self expectationWithDescription:@"Indicator Visible"];
+    XCTestExpectation *endExpectation = [self expectationWithDescription:@"Indicator Hidden"];
+    [self.networkActivityIndicatorManager setNetworkingActivityActionWithBlock:^(BOOL networkActivityIndicatorVisible) {
+        if (networkActivityIndicatorVisible) {
+            [startExpectation fulfill];
+        } else {
+            [endExpectation fulfill];
+        }
+    }];
 
-    [[[self.mockApplication stub] andDo:^(NSInvocation *invocation) {
-        didChangeNetworkActivityIndicatorVisible = YES;
-    }] setNetworkActivityIndicatorVisible:YES];
+    XCTestExpectation *requestExpectation = [self expectationWithDescription:@"Request should fail"];
+    [self.sessionManager
+     GET:@"/status/404"
+     parameters:nil
+     progress:nil
+     success:nil
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         [requestExpectation fulfill];
+     }];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setCompletionBlockWithSuccess:nil failure:nil];
+- (void)testThatVisibilityDelaysAreApplied {
 
-    [operation start];
+    self.networkActivityIndicatorManager.activationDelay = 1.0;
+    self.networkActivityIndicatorManager.completionDelay = 1.0;
 
-    expect(didChangeNetworkActivityIndicatorVisible).will.beFalsy();
+    CFTimeInterval requestStartTime = CACurrentMediaTime();
+    __block CFTimeInterval requestEndTime;
+    __block CFTimeInterval indicatorVisbleTime;
+    __block CFTimeInterval indicatorHiddenTime;
+    XCTestExpectation *startExpectation = [self expectationWithDescription:@"Indicator Visible"];
+    XCTestExpectation *endExpectation = [self expectationWithDescription:@"Indicator Hidden"];
+    [self.networkActivityIndicatorManager setNetworkingActivityActionWithBlock:^(BOOL networkActivityIndicatorVisible) {
+        if (networkActivityIndicatorVisible) {
+             indicatorVisbleTime = CACurrentMediaTime();
+            [startExpectation fulfill];
+        } else {
+            indicatorHiddenTime = CACurrentMediaTime();
+            [endExpectation fulfill];
+        }
+    }];
+
+    XCTestExpectation *requestExpectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager
+     GET:@"/delay/2"
+     parameters:nil
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+         requestEndTime = CACurrentMediaTime();
+         [requestExpectation fulfill];
+     }
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    XCTAssertTrue((indicatorVisbleTime - requestStartTime) > self.networkActivityIndicatorManager.activationDelay);
+    XCTAssertTrue((indicatorHiddenTime - requestEndTime) > self.networkActivityIndicatorManager.completionDelay);
+}
+
+- (void)testThatIndicatorBlockIsOnlyCalledOnceEachForStartAndEndForMultipleRequests {
+    self.networkActivityIndicatorManager.activationDelay = 1.0;
+    self.networkActivityIndicatorManager.completionDelay = 1.0;
+
+    XCTestExpectation *startExpectation = [self expectationWithDescription:@"Indicator Visible"];
+    XCTestExpectation *endExpectation = [self expectationWithDescription:@"Indicator Hidden"];
+    [self.networkActivityIndicatorManager setNetworkingActivityActionWithBlock:^(BOOL networkActivityIndicatorVisible) {
+        if (networkActivityIndicatorVisible) {
+            [startExpectation fulfill];
+        } else {
+            [endExpectation fulfill];
+        }
+    }];
+
+    XCTestExpectation *requestExpectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager
+     GET:@"/delay/4"
+     parameters:nil
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+         [requestExpectation fulfill];
+     }
+     failure:nil];
+
+    XCTestExpectation *secondRequestExpectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager
+     GET:@"/delay/2"
+     parameters:nil
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+
+         [secondRequestExpectation fulfill];
+     }
+     failure:nil];
+
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+
 }
 
 @end
