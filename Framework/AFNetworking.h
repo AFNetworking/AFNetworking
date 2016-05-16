@@ -31,6 +31,7 @@ FOUNDATION_EXPORT const unsigned char AFNetworkingVersionString[];
 
 #import <Availability.h>
 #import <TargetConditionals.h>
+#import <AFNetworking/AFAvailability.h>
 
 #ifndef _AFNETWORKING_
 #define _AFNETWORKING_
