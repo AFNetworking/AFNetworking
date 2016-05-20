@@ -77,6 +77,11 @@
     CGFloat calculatedHeight = [[self class] detailTextHeight:self.post.text];
     detailTextLabelFrame.size.height = calculatedHeight;
     self.detailTextLabel.frame = detailTextLabelFrame;
+    
+    CGRect separatorViewFrame = self.subviews[1].frame;
+    separatorViewFrame.origin.x = 70.0f;
+    separatorViewFrame.size.width = [UIScreen mainScreen].bounds.size.width;
+    self.subviews[1].frame = separatorViewFrame;
 }
 
 @end
