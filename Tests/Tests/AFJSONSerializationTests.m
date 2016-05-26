@@ -25,7 +25,7 @@
 #import "AFURLResponseSerialization.h"
 
 static NSData * AFJSONTestData() {
-    return [NSJSONSerialization dataWithJSONObject:@{@"foo": @"bar"} options:0 error:nil];
+    return [NSJSONSerialization dataWithJSONObject:@{@"foo": @"bar"} options:(NSJSONWritingOptions)0 error:nil];
 }
 
 #pragma mark -
@@ -155,7 +155,7 @@ static NSData * AFJSONTestData() {
     self.responseSerializer.removesKeysWithNullValues = YES;
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type":@"text/json"}];
     NSData *data = [NSJSONSerialization dataWithJSONObject:@{@"key":@"value",@"nullkey":[NSNull null],@"array":@[@{@"subnullkey":[NSNull null]}]}
-                                                   options:0
+                                                   options:(NSJSONWritingOptions)0
                                                      error:nil];
 
     NSError *error = nil;

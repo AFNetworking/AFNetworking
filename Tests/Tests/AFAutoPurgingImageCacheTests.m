@@ -184,10 +184,10 @@
 #pragma mark - Purging
 - (void)testThatImagesArePurgedWhenCapcityIsReached {
     UInt64 imageSize = 1020000;
-    NSInteger numberOfImages = 10;
-    NSInteger numberOfImagesAfterPurge = 6;
+    UInt64 numberOfImages = 10;
+    UInt64 numberOfImagesAfterPurge = 6;
     self.cache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:numberOfImages * imageSize preferredMemoryCapacity:numberOfImagesAfterPurge * imageSize];
-    NSInteger index = 1;
+    NSUInteger index = 1;
     while (YES) {
         NSString * identifier = [NSString stringWithFormat:@"image-%ld",(long)index];
         [self.cache addImage:self.testImage withIdentifier:identifier];
@@ -203,10 +203,10 @@
 
 - (void)testThatPrioritizedImagesWithOldestLastAccessDatesAreRemovedDuringPurge {
     UInt64 imageSize = 1020000;
-    NSInteger numberOfImages = 10;
-    NSInteger numberOfImagesAfterPurge = 6;
+    UInt64 numberOfImages = 10;
+    UInt64 numberOfImagesAfterPurge = 6;
     self.cache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:numberOfImages * imageSize preferredMemoryCapacity:numberOfImagesAfterPurge * imageSize];
-    for (NSInteger index = 0; index < numberOfImages; index ++) {
+    for (NSUInteger index = 0; index < numberOfImages; index ++) {
         NSString * identifier = [NSString stringWithFormat:@"image-%ld",(long)index];
         [self.cache addImage:self.testImage withIdentifier:identifier];
     }
@@ -219,7 +219,7 @@
     UInt64 postPurgeMemoryUsage = self.cache.memoryUsage;
     XCTAssertTrue(postPurgeMemoryUsage < prePurgeMemoryUsage);
 
-    for (NSInteger index = 0; index <= numberOfImages ; index++) {
+    for (NSUInteger index = 0; index <= numberOfImages ; index++) {
         NSString * identifier = [NSString stringWithFormat:@"image-%ld",(long)index];
         UIImage *cachedImage = [self.cache imageWithIdentifier:identifier];
         if (index == 0 || index >= 6) {

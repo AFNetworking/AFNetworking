@@ -187,6 +187,8 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             task = [self.localManager
                     dataTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                    uploadProgress:nil
+                    downloadProgress:nil
                     completionHandler:nil];
             dispatch_sync(serial_queue, ^{
                 XCTAssertFalse([taskIDs containsObject:@(task.taskIdentifier)]);
@@ -204,19 +206,25 @@
 
 - (void)testDidResumeNotificationIsReceivedByLocalDataTaskAfterResume {
     NSURLSessionDataTask *task = [self.localManager dataTaskWithRequest:[self _delayURLRequest]
-                                                 completionHandler:nil];
+                                                         uploadProgress:nil
+                                                       downloadProgress:nil
+                                                      completionHandler:nil];
     [self _testResumeNotificationForTask:task];
 }
 
 - (void)testDidSuspendNotificationIsReceivedByLocalDataTaskAfterSuspend {
     NSURLSessionDataTask *task = [self.localManager dataTaskWithRequest:[self _delayURLRequest]
-                                                 completionHandler:nil];
+                                                         uploadProgress:nil
+                                                       downloadProgress:nil
+                                                      completionHandler:nil];
     [self _testSuspendNotificationForTask:task];
 }
 
 - (void)testDidResumeNotificationIsReceivedByBackgroundDataTaskAfterResume {
     if (self.backgroundManager) {
         NSURLSessionDataTask *task = [self.backgroundManager dataTaskWithRequest:[self _delayURLRequest]
+                                                                  uploadProgress:nil
+                                                                downloadProgress:nil
                                                                completionHandler:nil];
         [self _testResumeNotificationForTask:task];
     }
@@ -225,6 +233,8 @@
 - (void)testDidSuspendNotificationIsReceivedByBackgroundDataTaskAfterSuspend {
     if (self.backgroundManager) {
         NSURLSessionDataTask *task = [self.backgroundManager dataTaskWithRequest:[self _delayURLRequest]
+                                                                  uploadProgress:nil
+                                                                downloadProgress:nil
                                                                completionHandler:nil];
         [self _testSuspendNotificationForTask:task];
     }
@@ -232,17 +242,17 @@
 
 - (void)testDidResumeNotificationIsReceivedByLocalUploadTaskAfterResume {
     NSURLSessionUploadTask *task = [self.localManager uploadTaskWithRequest:[self _delayURLRequest]
-                                                              fromData:[NSData data]
-                                                              progress:nil
-                                                     completionHandler:nil];
+                                                                   fromData:[NSData data]
+                                                                   progress:nil
+                                                          completionHandler:nil];
     [self _testResumeNotificationForTask:task];
 }
 
 - (void)testDidSuspendNotificationIsReceivedByLocalUploadTaskAfterSuspend {
     NSURLSessionUploadTask *task = [self.localManager uploadTaskWithRequest:[self _delayURLRequest]
-                                                              fromData:[NSData data]
-                                                              progress:nil
-                                                     completionHandler:nil];
+                                                                   fromData:[NSData data]
+                                                                   progress:nil
+                                                          completionHandler:nil];
     [self _testSuspendNotificationForTask:task];
 }
 
@@ -318,7 +328,9 @@
 
 - (void)testSwizzlingIsWorkingAsExpectedForForegroundDataTask {
     NSURLSessionTask *task = [self.localManager dataTaskWithRequest:[self _delayURLRequest]
-                                             completionHandler:nil];
+                                                     uploadProgress:nil
+                                                   downloadProgress:nil
+                                                  completionHandler:nil];
     [self _testSwizzlingForTask:task];
     [task cancel];
 }
@@ -368,6 +380,8 @@
 - (void)testBackgroundManagerReturnsExpectedClassForDataTask {
     if (self.backgroundManager) {
         NSURLSessionTask *task = [self.backgroundManager dataTaskWithRequest:[self _delayURLRequest]
+                                                              uploadProgress:nil
+                                                            downloadProgress:nil
                                                            completionHandler:nil];
         XCTAssert([NSStringFromClass([task class]) isEqualToString:@"__NSCFBackgroundDataTask"]);
     } else {

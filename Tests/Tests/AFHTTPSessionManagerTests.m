@@ -54,7 +54,8 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
-    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
+                                                 completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockResponseObject = responseObject;
         blockError = error;
         [expectation fulfill];
@@ -75,7 +76,8 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
-    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
+                                                 completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
         [expectation fulfill];
     }];
@@ -94,8 +96,9 @@
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
-    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    NSURLRequest *redirectRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
+    NSURLSessionDataTask *redirectTask = [self.manager dataTaskWithRequest:redirectRequest uploadProgress:nil downloadProgress:nil
+                                                         completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
         [expectation fulfill];
     }];
@@ -108,11 +111,11 @@
         return request;
     }];
 
-    [task resume];
+    [redirectTask resume];
 
     [self waitForExpectationsWithTimeout:10.0 handler:nil];
 
-    XCTAssertTrue(task.state == NSURLSessionTaskStateCompleted);
+    XCTAssertTrue(redirectTask.state == NSURLSessionTaskStateCompleted);
     XCTAssertNil(blockError);
     XCTAssertTrue(success);
 }
