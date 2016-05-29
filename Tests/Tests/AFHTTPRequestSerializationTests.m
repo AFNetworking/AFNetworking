@@ -66,7 +66,7 @@
 #pragma mark -
 
 - (void)testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperly {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"http://example.com"]];
     request.HTTPMethod = @"POST";
 
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:request withParameters:@{@"key":@"value"} error:nil];
@@ -80,7 +80,7 @@
 }
 
 - (void)testThatAFHTTPRequestSerializationSerializesPOSTRequestsProperlyWhenNoParameterIsProvided {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"http://example.com"]];
     request.HTTPMethod = @"POST";
 
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:request withParameters:nil error:nil];
@@ -94,27 +94,27 @@
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesQueryParametersCorrectly {
-    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"value"} error:nil];
 
     XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=value"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
 }
 
 - (void)testThatEmptyDictionaryParametersAreProperlyEncoded {
-    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{} error:nil];
     XCTAssertFalse([serializedRequest.URL.absoluteString hasSuffix:@"?"]);
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesURLEncodableQueryParametersCorrectly {
-    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@" :#[]@!$&'()*+,;=/?"} error:nil];
 
     XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=%20%3A%23%5B%5D%40%21%24%26%27%28%29%2A%2B%2C%3B%3D/?"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesURLEncodedQueryParametersCorrectly {
-    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"%20%21%22%23%24%25%26%27%28%29%2A%2B%2C%2F"} error:nil];
 
     XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key=%2520%2521%2522%2523%2524%2525%2526%2527%2528%2529%252A%252B%252C%252F"], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
@@ -130,18 +130,21 @@
          return query;
      }];
 
-    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"http://example.com"]];
     NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@"value"} error:nil];
 
     XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key**value"], @"Custom Query parameters have not been serialized correctly (%@) by the query string block.", [[serializedRequest URL] query]);
 }
 
 - (void)testThatAFHTTPRequestSerialiationSerializesMIMETypeCorrectly {
-    NSMutableURLRequest *originalRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSMutableURLRequest *originalRequest = [NSMutableURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"http://example.com"]];
     Class streamClass = NSClassFromString(@"AFStreamingMultipartFormData");
     id <AFMultipartFormDataTest> formData = [[streamClass alloc] initWithURLRequest:originalRequest stringEncoding:NSUTF8StringEncoding];
+    
+    NSString * cert = [[NSBundle bundleForClass:[self class]] pathForResource:@"ADNNetServerTrustChain/adn_0" ofType:@"cer"];
+    NSAssert(cert != nil, @"Could not find certificate");
 
-    NSURL *fileURL = [NSURL fileURLWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"ADNNetServerTrustChain/adn_0" ofType:@"cer"]];
+    NSURL *fileURL = [NSURL fileURLWithPath:cert];
 
     [formData appendPartWithFileURL:fileURL name:@"test" error:NULL];
 

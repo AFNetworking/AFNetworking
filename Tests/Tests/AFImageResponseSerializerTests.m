@@ -36,8 +36,10 @@
     AFImageResponseSerializer *copiedSerializer = [responseSerializer copy];
     XCTAssertNotNil(copiedSerializer);
     XCTAssertNotEqual(copiedSerializer, responseSerializer);
-    XCTAssertTrue([copiedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
-    XCTAssertTrue([copiedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
+    XCTAssertNotNil(responseSerializer.acceptableContentTypes);
+    XCTAssertNotNil(responseSerializer.acceptableStatusCodes);
+    XCTAssertTrue([copiedSerializer.acceptableContentTypes isEqualToSet:(NSSet <NSString *> * _Nonnull)responseSerializer.acceptableContentTypes]);
+    XCTAssertTrue([copiedSerializer.acceptableStatusCodes isEqualToIndexSet:(NSIndexSet * _Nonnull)responseSerializer.acceptableStatusCodes]);
 #if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     XCTAssertTrue(copiedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
     XCTAssertTrue(fabs(copiedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);
@@ -60,8 +62,10 @@
     AFImageResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
     XCTAssertNotNil(unarchivedSerializer);
     XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
-    XCTAssertTrue([unarchivedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
-    XCTAssertTrue([unarchivedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
+    XCTAssertNotNil(responseSerializer.acceptableContentTypes);
+    XCTAssertNotNil(responseSerializer.acceptableStatusCodes);
+    XCTAssertTrue([unarchivedSerializer.acceptableContentTypes isEqualToSet:(NSSet <NSString *> * _Nonnull)responseSerializer.acceptableContentTypes]);
+    XCTAssertTrue([unarchivedSerializer.acceptableStatusCodes isEqualToIndexSet:(NSIndexSet * _Nonnull)responseSerializer.acceptableStatusCodes]);
 
 #if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     XCTAssertTrue(unarchivedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);

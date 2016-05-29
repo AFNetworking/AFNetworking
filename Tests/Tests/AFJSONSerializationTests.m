@@ -48,8 +48,12 @@ static NSData * AFJSONTestData() {
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:AFNetworkingTestsBaseURLString parameters:parameters error:&error];
 
     XCTAssertNil(error, @"Serialization error should be nil");
+    
+    NSData *bodyData = [request HTTPBody];
+    
+    XCTAssertNotNil(bodyData);
 
-    NSString *body = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
+    NSString *body = [[NSString alloc] initWithData:(NSData * _Nonnull)bodyData encoding:NSUTF8StringEncoding];
 
     XCTAssertTrue([@"{\"key\":\"value\"}" isEqualToString:body], @"Parameters were not encoded correctly");
 }
@@ -61,7 +65,11 @@ static NSData * AFJSONTestData() {
 
     XCTAssertNil(error, @"Serialization error should be nil");
 
-    NSString *body = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
+    NSData *bodyData = [request HTTPBody];
+    
+    XCTAssertNotNil(bodyData);
+    
+    NSString *body = [[NSString alloc] initWithData:(NSData * _Nonnull)bodyData encoding:NSUTF8StringEncoding];
 
     XCTAssertTrue([@"[{\"key\":\"value\"}]" isEqualToString:body], @"Parameters were not encoded correctly");
 }

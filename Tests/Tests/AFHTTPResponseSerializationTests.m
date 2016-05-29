@@ -93,7 +93,7 @@
 }
 
 - (void)testResponseIsValidated {
-    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[NSURL URLWithString:@"http://test.com"]
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"http://test.com"]
                                                               statusCode:200
                                                              HTTPVersion:@"1.1"
                                                             headerFields:@{@"Content-Type":@"text/html"}];

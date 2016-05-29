@@ -237,22 +237,26 @@
                        dataTaskWithRequest:request
                        uploadProgress:nil
                        downloadProgress:nil
-                       completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                       completionHandler:^(NSURLResponse * _Nonnull response, id _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
                                __strong __typeof__(weakSelf) strongSelf = weakSelf;
                                AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[URLIdentifier];
                                if ([mergedTask.identifier isEqual:mergedTaskIdentifier]) {
                                    mergedTask = [strongSelf safelyRemoveMergedTaskWithURLIdentifier:URLIdentifier];
-                                   if (error) {
+                                   NSError *localError = error;
+                                   if(localError == nil && (responseObject == nil || ![responseObject isKindOfClass:[UIImage class]])) {
+                                       localError = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorZeroByteResource userInfo:nil];
+                                   }
+                                   if (localError) {
                                        for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
                                            if (handler.failureBlock) {
                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                   handler.failureBlock(request, (NSHTTPURLResponse*)response, error);
+                                                   handler.failureBlock(request, (NSHTTPURLResponse*)response, localError);
                                                });
                                            }
                                        }
                                    } else {
-                                       [strongSelf.imageCache addImage:responseObject forRequest:request withAdditionalIdentifier:nil];
+                                       [strongSelf.imageCache addImage:(UIImage * _Nonnull)responseObject forRequest:request withAdditionalIdentifier:nil];
 
                                        for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
                                            if (handler.successBlock) {

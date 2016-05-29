@@ -378,7 +378,7 @@
     for (NSString *imageURLString in imageURLStrings) {
         XCTestExpectation *expectation = [self expectationWithDescription:[NSString stringWithFormat:@"Request %@ should be cancelled", imageURLString]];
         AFImageDownloadReceipt *receipt = [self.downloader
-                                           downloadImageForURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURLString]]
+                                           downloadImageForURLRequest:[NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:imageURLString]]
                                            success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
                                                XCTFail(@"Request %@ succeeded when it should have failed", request);
                                            }
@@ -393,7 +393,7 @@
     for (NSString *imageURLString in imageURLStrings) {
         XCTestExpectation *expectation = [self expectationWithDescription:[NSString stringWithFormat:@"Request %@ should succeed", imageURLString]];
         [self.downloader
-         downloadImageForURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURLString]]
+         downloadImageForURLRequest:[NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:imageURLString]]
          success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
              [expectation fulfill];
          } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {

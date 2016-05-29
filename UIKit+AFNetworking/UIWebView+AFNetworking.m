@@ -112,6 +112,7 @@
             failure:(void (^)(NSError *error))failure
 {
     NSParameterAssert(request);
+    NSAssert(request.URL.absoluteString != nil, @"Missing request URL");
 
     if (self.af_URLSessionTask.state == NSURLSessionTaskStateRunning || self.af_URLSessionTask.state == NSURLSessionTaskStateSuspended) {
         [self.af_URLSessionTask cancel];
@@ -121,7 +122,7 @@
     __weak __typeof(self)weakSelf = self;
     NSURLSessionDataTask *dataTask;
     dataTask = [self.sessionManager
-            GET:request.URL.absoluteString
+            GET:(NSString * _Nonnull)request.URL.absoluteString
             parameters:nil
             progress:nil
             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
@@ -129,7 +130,7 @@
                 if (success) {
                     success((NSHTTPURLResponse *)task.response, responseObject);
                 }
-                [strongSelf loadData:responseObject MIMEType:MIMEType textEncodingName:textEncodingName baseURL:[task.currentRequest URL]];
+                [strongSelf loadData:responseObject MIMEType:MIMEType textEncodingName:textEncodingName baseURL:(NSURL * _Nonnull)[task.currentRequest URL]];
 
                 if ([strongSelf.delegate respondsToSelector:@selector(webViewDidStartLoad:)]) {
                     [strongSelf.delegate webViewDidFinishLoad:strongSelf];

@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface AFHTTPResponseSerializer : NSObject <AFURLResponseSerialization>
 
-- (instancetype)init;
+- (nonnull instancetype)init;
 
 /**
  The string encoding used to serialize data received from the server, when no string encoding is specified by the response. `NSUTF8StringEncoding` by default.
@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Creates and returns a serializer with default configuration.
  */
-+ (instancetype)serializer;
++ (nonnull instancetype)serializer;
 
 ///-----------------------------------------
 /// @name Configuring Response Serialization

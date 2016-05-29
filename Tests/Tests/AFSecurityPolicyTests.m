@@ -627,7 +627,8 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertEqual(copiedPolicy.allowInvalidCertificates, policy.allowInvalidCertificates);
     XCTAssertEqual(copiedPolicy.validatesDomainName, policy.validatesDomainName);
     XCTAssertEqual(copiedPolicy.SSLPinningMode, policy.SSLPinningMode);
-    XCTAssertTrue([copiedPolicy.pinnedCertificates isEqualToSet:policy.pinnedCertificates]);
+    XCTAssertNotNil(policy.pinnedCertificates);
+    XCTAssertTrue([copiedPolicy.pinnedCertificates isEqualToSet:(NSSet <NSData *> * _Nonnull)policy.pinnedCertificates]);
 }
 
 - (void)testThatPolicyCanBeEncodedAndDecoded {
@@ -648,7 +649,8 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertEqual(unarchivedPolicy.allowInvalidCertificates, policy.allowInvalidCertificates);
     XCTAssertEqual(unarchivedPolicy.validatesDomainName, policy.validatesDomainName);
     XCTAssertEqual(unarchivedPolicy.SSLPinningMode, policy.SSLPinningMode);
-    XCTAssertTrue([unarchivedPolicy.pinnedCertificates isEqualToSet:policy.pinnedCertificates]);
+    XCTAssertNotNil(policy.pinnedCertificates);
+    XCTAssertTrue([unarchivedPolicy.pinnedCertificates isEqualToSet:(NSSet <NSData *> * _Nonnull)policy.pinnedCertificates]);
 }
 
 @end

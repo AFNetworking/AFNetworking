@@ -492,10 +492,13 @@ forHTTPHeaderField:(NSString *)field
             }
         }
     }
-
-    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+    
+    if([request HTTPMethod] == nil) {
+        return nil;
+    }
+    if ([self.HTTPMethodsEncodingParametersInURI containsObject:(NSString * _Nonnull)[[request HTTPMethod] uppercaseString]]) {
         if (query && query.length > 0) {
-            mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];
+            mutableRequest.URL = [NSURL URLWithString:(NSString * _Nonnull)[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];
         }
     } else {
         // #2864: an empty string is a valid x-www-form-urlencoded payload
@@ -701,7 +704,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         return NO;
     }
 
-    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:error];
+    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:(NSString * _Nonnull)[fileURL path] error:error];
     if (!fileAttributes) {
         return NO;
     }
@@ -1218,8 +1221,12 @@ typedef enum {
                                         error:(NSError *__autoreleasing *)error
 {
     NSParameterAssert(request);
+    
+    if([request HTTPMethod] == nil) {
+        return nil;
+    }
 
-    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+    if ([self.HTTPMethodsEncodingParametersInURI containsObject:(NSString * _Nonnull)[[request HTTPMethod] uppercaseString]]) {
         return [super requestBySerializingRequest:request withParameters:parameters error:error];
     }
 
@@ -1297,8 +1304,12 @@ typedef enum {
                                         error:(NSError *__autoreleasing *)error
 {
     NSParameterAssert(request);
+    
+    if([request HTTPMethod] == nil) {
+        return nil;
+    }
 
-    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+    if ([self.HTTPMethodsEncodingParametersInURI containsObject:(NSString * _Nonnull)[[request HTTPMethod] uppercaseString]]) {
         return [super requestBySerializingRequest:request withParameters:parameters error:error];
     }
 

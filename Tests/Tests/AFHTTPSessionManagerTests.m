@@ -53,7 +53,7 @@
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
     NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
                                                  completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockResponseObject = responseObject;
@@ -75,7 +75,7 @@
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
     NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
                                                  completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
@@ -96,7 +96,7 @@
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
-    NSURLRequest *redirectRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
+    NSURLRequest *redirectRequest = [NSURLRequest requestWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
     NSURLSessionDataTask *redirectTask = [self.manager dataTaskWithRequest:redirectRequest uploadProgress:nil downloadProgress:nil
                                                          completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
@@ -276,7 +276,7 @@
      POST:@"post"
      parameters:nil
      constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-         [formData appendPartWithFileData:[payload dataUsingEncoding:NSUTF8StringEncoding] name:@"AFNetworking" fileName:@"AFNetworking" mimeType:@"text/html"];
+         [formData appendPartWithFileData:(NSData * _Nonnull)[payload dataUsingEncoding:NSUTF8StringEncoding] name:@"AFNetworking" fileName:@"AFNetworking" mimeType:@"text/html"];
      }
      progress:^(NSProgress * _Nonnull uploadProgress) {
          if (uploadProgress.fractionCompleted == 1.0) {
@@ -382,7 +382,7 @@
      POST:@"post"
      parameters:@{@"key":@"value"}
      constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-         [formData appendPartWithFileData:[@"Data" dataUsingEncoding:NSUTF8StringEncoding]
+         [formData appendPartWithFileData:(NSData * _Nonnull)[@"Data" dataUsingEncoding:NSUTF8StringEncoding]
                                      name:@"DataName"
                                  fileName:@"DataFileName"
                                  mimeType:@"data"];
@@ -479,7 +479,7 @@
      POST:@"post"
      parameters:@{@"key":@"value"}
      constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-         [formData appendPartWithFileData:[@"Data" dataUsingEncoding:NSUTF8StringEncoding]
+         [formData appendPartWithFileData:(NSData * _Nonnull)[@"Data" dataUsingEncoding:NSUTF8StringEncoding]
                                      name:@"DataName"
                                  fileName:@"DataFileName"
                                  mimeType:@"data"];

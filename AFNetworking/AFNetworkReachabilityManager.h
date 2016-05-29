@@ -87,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return An initialized network reachability manager, actively monitoring the specified domain.
  */
-+ (instancetype)managerForDomain:(NSString *)domain;
++ (nonnull instancetype)managerForDomain:(NSString * _Nonnull)domain;
 
 /**
  Creates and returns a network reachability manager for the socket address.
@@ -96,7 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return An initialized network reachability manager, actively monitoring the specified socket address.
  */
-+ (instancetype)managerForAddress:(const void *)address;
++ (nonnull instancetype)managerForAddress:(const void * _Nonnull)address;
 
 /**
  Initializes an instance of a network reachability manager from the specified reachability object.

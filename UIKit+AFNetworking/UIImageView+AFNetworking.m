@@ -148,8 +148,9 @@
     self.af_activeImageDownloadReceipt = nil;
 }
 
-- (BOOL)isActiveTaskURLEqualToURLRequest:(NSURLRequest *)urlRequest {
-    return [self.af_activeImageDownloadReceipt.task.originalRequest.URL.absoluteString isEqualToString:urlRequest.URL.absoluteString];
+- (BOOL)isActiveTaskURLEqualToURLRequest:(NSURLRequest * _Nonnull)urlRequest {
+    NSAssert(urlRequest.URL.absoluteString, @"Nil URL in request");
+    return [self.af_activeImageDownloadReceipt.task.originalRequest.URL.absoluteString isEqualToString:(NSString * _Nonnull)urlRequest.URL.absoluteString];
 }
 
 @end

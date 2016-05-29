@@ -115,8 +115,8 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     NSError *validationError = nil;
 
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
-        if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:[response MIMEType]] &&
-            !([response MIMEType] == nil && [data length] == 0)) {
+        if (self.acceptableContentTypes && [response MIMEType] != nil && ![self.acceptableContentTypes containsObject:(NSString * _Nonnull)[response MIMEType]] &&
+            [data length] != 0) {
 
             if ([data length] > 0 && [response URL]) {
                 NSMutableDictionary *mutableUserInfo = [@{
@@ -512,7 +512,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 #import <UIKit/UIKit.h>
 
 @interface UIImage (AFNetworkingSafeImageLoading)
-+ (UIImage *)af_safeImageWithData:(NSData *)data;
++ (UIImage * _Nullable)af_safeImageWithData:(NSData * _Nonnull)data;
 @end
 
 static NSLock* imageLock = nil;
@@ -534,13 +534,17 @@ static NSLock* imageLock = nil;
 
 @end
 
-static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
+static UIImage * _Nullable AFImageWithDataAtScale(NSData * _Nonnull data, CGFloat scale) {
     UIImage *image = [UIImage af_safeImageWithData:data];
+    if(image == nil) {
+        return nil;
+    }
+    
     if (image.images) {
         return image;
     }
     
-    return [[UIImage alloc] initWithCGImage:[image CGImage] scale:scale orientation:image.imageOrientation];
+    return [[UIImage alloc] initWithCGImage:(CGImageRef _Nonnull)[image CGImage] scale:scale orientation:image.imageOrientation];
 }
 
 static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *response, NSData *data, CGFloat scale) {

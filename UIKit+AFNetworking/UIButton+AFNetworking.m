@@ -287,13 +287,15 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
 }
 
 - (BOOL)isActiveTaskURLEqualToURLRequest:(NSURLRequest *)urlRequest forState:(UIControlState)state {
+    NSAssert(urlRequest.URL.absoluteString != nil, @"URL string must not be nil");
     AFImageDownloadReceipt *receipt = [self af_imageDownloadReceiptForState:state];
-    return [receipt.task.originalRequest.URL.absoluteString isEqualToString:urlRequest.URL.absoluteString];
+    return [receipt.task.originalRequest.URL.absoluteString isEqualToString:(NSString * _Nonnull)urlRequest.URL.absoluteString];
 }
 
 - (BOOL)isActiveBackgroundTaskURLEqualToURLRequest:(NSURLRequest *)urlRequest forState:(UIControlState)state {
+    NSAssert(urlRequest.URL.absoluteString != nil, @"URL string must not be nil");
     AFImageDownloadReceipt *receipt = [self af_backgroundImageDownloadReceiptForState:state];
-    return [receipt.task.originalRequest.URL.absoluteString isEqualToString:urlRequest.URL.absoluteString];
+    return [receipt.task.originalRequest.URL.absoluteString isEqualToString:(NSString * _Nonnull)urlRequest.URL.absoluteString];
 }
 
 

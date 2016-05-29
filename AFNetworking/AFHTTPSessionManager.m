@@ -41,7 +41,7 @@
 #endif
 
 @interface AFHTTPSessionManager ()
-@property (readwrite, nonatomic, strong) NSURL *baseURL;
+@property (readwrite, nonatomic, strong, nullable) NSURL *baseURL;
 @end
 
 @implementation AFHTTPSessionManager
@@ -183,7 +183,11 @@
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSError *serializationError = nil;
-    NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters constructingBodyWithBlock:block error:&serializationError];
+    NSString *url = [[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString];
+    if(url == nil) {
+        return nil;
+    }
+    NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST" URLString:url parameters:parameters constructingBodyWithBlock:block error:&serializationError];
     if (serializationError) {
         if (failure) {
             dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
@@ -256,7 +260,11 @@
                                          failure:(void (^)(NSURLSessionDataTask *, NSError *))failure
 {
     NSError *serializationError = nil;
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
+    NSString *url = [[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString];
+    if(url == nil) {
+        return nil;
+    }
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:url parameters:parameters error:&serializationError];
     if (serializationError) {
         if (failure) {
             dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
@@ -317,8 +325,12 @@
         return nil;
     }
 
-    self.requestSerializer = [decoder decodeObjectOfClass:[AFHTTPRequestSerializer class] forKey:NSStringFromSelector(@selector(requestSerializer))];
-    self.responseSerializer = [decoder decodeObjectOfClass:[AFHTTPResponseSerializer class] forKey:NSStringFromSelector(@selector(responseSerializer))];
+    AFHTTPRequestSerializer <AFURLRequestSerialization> * requestSerializer = [decoder decodeObjectOfClass:[AFHTTPRequestSerializer class] forKey:NSStringFromSelector(@selector(requestSerializer))];
+    NSAssert(requestSerializer != nil, @"Request serializer cannot be nil");
+    self.requestSerializer = requestSerializer;
+    AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer = [decoder decodeObjectOfClass:[AFHTTPResponseSerializer class] forKey:NSStringFromSelector(@selector(responseSerializer))];
+    NSAssert(requestSerializer != nil, @"Response serializer must not be nil");
+    self.responseSerializer = responseSerializer;
     AFSecurityPolicy *decodedPolicy = [decoder decodeObjectOfClass:[AFSecurityPolicy class] forKey:NSStringFromSelector(@selector(securityPolicy))];
     if (decodedPolicy) {
         self.securityPolicy = decodedPolicy;

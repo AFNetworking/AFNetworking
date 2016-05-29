@@ -970,8 +970,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
-                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+            if (challenge.protectionSpace.serverTrust != nil && [self.securityPolicy evaluateServerTrust:(SecTrustRef _Nonnull)challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+                credential = [NSURLCredential credentialForTrust:(SecTrustRef _Nonnull)challenge.protectionSpace.serverTrust];
                 if (credential) {
                     disposition = NSURLSessionAuthChallengeUseCredential;
                 } else {
@@ -1021,9 +1021,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         disposition = self.taskDidReceiveAuthenticationChallenge(session, task, challenge, &credential);
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+            if (challenge.protectionSpace.serverTrust != nil && [self.securityPolicy evaluateServerTrust:(SecTrustRef _Nonnull)challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
                 disposition = NSURLSessionAuthChallengeUseCredential;
-                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                credential = [NSURLCredential credentialForTrust:(SecTrustRef _Nonnull)challenge.protectionSpace.serverTrust];
             } else {
                 disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
