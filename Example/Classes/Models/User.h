@@ -24,6 +24,9 @@
 
 extern NSString * const kUserProfileImageDidLoadNotification;
 
+
+
+
 @interface User : NSObject
 
 @property (readonly, nonatomic, assign) NSUInteger userID;
