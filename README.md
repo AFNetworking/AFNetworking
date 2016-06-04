@@ -51,7 +51,9 @@ To integrate AFNetworking into your Xcode project using CocoaPods, specify it in
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 
+target 'TargetName' do
 pod 'AFNetworking', '~> 3.0'
+end
 ```
 
 Then, run the following command:
