@@ -46,11 +46,18 @@
 }
 
 - (void)testResponseSerializerCanBeCopied {
+    [self.responseSerializer setAcceptableContentTypes:[NSSet setWithObject:@"test/type"]];
+    [self.responseSerializer setAcceptableStatusCodes:[NSIndexSet indexSetWithIndex:100]];
+    [self.responseSerializer setFormat:NSPropertyListXMLFormat_v1_0];
+    [self.responseSerializer setReadOptions:NSPropertyListMutableContainers];
+
     AFPropertyListResponseSerializer *copiedSerializer = [self.responseSerializer copy];
     XCTAssertNotNil(copiedSerializer);
     XCTAssertNotEqual(copiedSerializer, self.responseSerializer);
-    XCTAssertTrue(copiedSerializer.format == self.responseSerializer.format);
-    XCTAssertTrue(copiedSerializer.readOptions == self.responseSerializer.readOptions);
+    XCTAssertEqual(copiedSerializer.format, self.responseSerializer.format);
+    XCTAssertEqual(copiedSerializer.readOptions, self.responseSerializer.readOptions);
+    XCTAssertEqual(copiedSerializer.acceptableContentTypes, self.responseSerializer.acceptableContentTypes);
+    XCTAssertEqual(copiedSerializer.acceptableStatusCodes, self.responseSerializer.acceptableStatusCodes);
 }
 
 - (void)testResponseSerializerCanBeArchivedAndUnarchived {
