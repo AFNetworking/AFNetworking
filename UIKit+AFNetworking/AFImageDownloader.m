@@ -110,6 +110,9 @@
 @implementation AFImageDownloader
 
 + (NSURLCache *)defaultURLCache {
+    if ([[[UIDevice currentDevice] systemVersion] compare:@"8.2" options:NSNumericSearch] == NSOrderedAscending) {
+        return [NSURLCache sharedURLCache];
+    }
     return [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024
                                          diskCapacity:150 * 1024 * 1024
                                              diskPath:@"com.alamofire.imagedownloader"];
