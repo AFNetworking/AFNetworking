@@ -52,7 +52,7 @@
 @end
 
 @interface AFImageDownloaderMergedTask : NSObject
-@property (nonatomic, strong) NSString *URLIdentifier;
+@property (nonatomic, copy) NSString *URLIdentifier;
 @property (nonatomic, strong) NSUUID *identifier;
 @property (nonatomic, strong) NSURLSessionDataTask *task;
 @property (nonatomic, strong) NSMutableArray <AFImageDownloaderResponseHandler*> *responseHandlers;

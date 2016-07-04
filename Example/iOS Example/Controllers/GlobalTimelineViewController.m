@@ -29,7 +29,7 @@
 @import AFNetworking;
 
 @interface GlobalTimelineViewController ()
-@property (readwrite, nonatomic, strong) NSArray *posts;
+@property (readwrite, nonatomic, copy) NSArray *posts;
 @end
 
 @implementation GlobalTimelineViewController

@@ -27,7 +27,7 @@
 @interface Post : NSObject
 
 @property (nonatomic, assign) NSUInteger postID;
-@property (nonatomic, strong) NSString *text;
+@property (nonatomic, copy) NSString *text;
 
 @property (nonatomic, strong) User *user;
 

@@ -624,7 +624,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 @interface AFHTTPBodyPart : NSObject
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
-@property (nonatomic, strong) NSDictionary *headers;
+@property (nonatomic, copy) NSDictionary *headers;
 @property (nonatomic, copy) NSString *boundary;
 @property (nonatomic, strong) id body;
 @property (nonatomic, assign) unsigned long long bodyContentLength;

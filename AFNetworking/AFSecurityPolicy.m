@@ -150,7 +150,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 @interface AFSecurityPolicy()
 @property (readwrite, nonatomic, assign) AFSSLPinningMode SSLPinningMode;
-@property (readwrite, nonatomic, strong) NSSet *pinnedPublicKeys;
+@property (readwrite, nonatomic, copy) NSSet *pinnedPublicKeys;
 @end
 
 @implementation AFSecurityPolicy

@@ -36,7 +36,7 @@
 
 @interface AFHTTPBodyPart : NSObject
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
-@property (nonatomic, strong) NSDictionary *headers;
+@property (nonatomic, copy) NSDictionary *headers;
 @property (nonatomic, copy) NSString *boundary;
 @property (nonatomic, strong) id body;
 @property (nonatomic, assign) NSUInteger bodyContentLength;

@@ -133,22 +133,22 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The data, upload, and download tasks currently run by the managed session.
  */
-@property (readonly, nonatomic, strong) NSArray <NSURLSessionTask *> *tasks;
+@property (readonly, nonatomic, copy) NSArray <NSURLSessionTask *> *tasks;
 
 /**
  The data tasks currently run by the managed session.
  */
-@property (readonly, nonatomic, strong) NSArray <NSURLSessionDataTask *> *dataTasks;
+@property (readonly, nonatomic, copy) NSArray <NSURLSessionDataTask *> *dataTasks;
 
 /**
  The upload tasks currently run by the managed session.
  */
-@property (readonly, nonatomic, strong) NSArray <NSURLSessionUploadTask *> *uploadTasks;
+@property (readonly, nonatomic, copy) NSArray <NSURLSessionUploadTask *> *uploadTasks;
 
 /**
  The download tasks currently run by the managed session.
  */
-@property (readonly, nonatomic, strong) NSArray <NSURLSessionDownloadTask *> *downloadTasks;
+@property (readonly, nonatomic, copy) NSArray <NSURLSessionDownloadTask *> *downloadTasks;
 
 ///-------------------------------
 /// @name Managing Callback Queues

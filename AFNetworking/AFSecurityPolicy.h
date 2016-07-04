@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  Note that if pinning is enabled, `evaluateServerTrust:forDomain:` will return true if any pinned certificate matches.
  */
-@property (nonatomic, strong, nullable) NSSet <NSData *> *pinnedCertificates;
+@property (nonatomic, copy, nullable) NSSet <NSData *> *pinnedCertificates;
 
 /**
  Whether or not to trust servers with an invalid or expired SSL certificates. Defaults to `NO`.
