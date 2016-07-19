@@ -925,30 +925,41 @@ didBecomeInvalidWithError:(NSError *)error
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
-    NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
     __block NSURLCredential *credential = nil;
+    __block NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
 
     if (self.sessionDidReceiveAuthenticationChallenge) {
         disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
+        
+        if (completionHandler) {
+            completionHandler(disposition, credential);
+        }
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
-                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
-                if (credential) {
-                    disposition = NSURLSessionAuthChallengeUseCredential;
-                } else {
-                    disposition = NSURLSessionAuthChallengePerformDefaultHandling;
-                }
-            } else {
-                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-            }
+            [self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust
+                                           forDomain:challenge.protectionSpace.host
+                                   completionHandler:^(BOOL isValid) {
+                                       if (isValid) {
+                                           credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                                           
+                                           if (credential) {
+                                               disposition = NSURLSessionAuthChallengeUseCredential;
+                                           } else {
+                                               disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+                                           }
+                                       }
+                                       
+                                       if (completionHandler) {
+                                           completionHandler(disposition, credential);
+                                       }
+                                   }];
         } else {
             disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+            
+            if (completionHandler) {
+                completionHandler(disposition, credential);
+            }
         }
-    }
-
-    if (completionHandler) {
-        completionHandler(disposition, credential);
     }
 }
 
@@ -976,26 +987,36 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
-    NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
     __block NSURLCredential *credential = nil;
-
+    __block NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+    
     if (self.taskDidReceiveAuthenticationChallenge) {
         disposition = self.taskDidReceiveAuthenticationChallenge(session, task, challenge, &credential);
+        
+        if (completionHandler) {
+            completionHandler(disposition, credential);
+        }
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
-                disposition = NSURLSessionAuthChallengeUseCredential;
-                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
-            } else {
-                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
-            }
+            [self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust
+                                           forDomain:challenge.protectionSpace.host
+                                   completionHandler:^(BOOL isValid) {
+                                       if (isValid) {
+                                           disposition = NSURLSessionAuthChallengeUseCredential;
+                                           credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                                       }
+                                       
+                                       if (completionHandler) {
+                                           completionHandler(disposition, credential);
+                                       }
+                                   }];
         } else {
             disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+            
+            if (completionHandler) {
+                completionHandler(disposition, credential);
+            }
         }
-    }
-
-    if (completionHandler) {
-        completionHandler(disposition, credential);
     }
 }
 

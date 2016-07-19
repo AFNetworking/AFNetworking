@@ -124,6 +124,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
                   forDomain:(nullable NSString *)domain;
 
+/**
+ Whether or not the specified server trust should be accepted, based on the security policy.
+ 
+ This method should be used when responding to an authentication challenge from a server. It's execution 
+ is asynchronous.
+ 
+ @param serverTrust The X.509 certificate trust of the server.
+ @param domain The domain of serverTrust. If `nil`, the domain will not be validated.
+ @param completionHandler a block to be invoked with the result whether to trust the server
+ */
+- (void)evaluateServerTrust:(SecTrustRef)serverTrust
+                  forDomain:(nullable NSString *)domain
+          completionHandler:(void (^)(BOOL isValid))completionHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

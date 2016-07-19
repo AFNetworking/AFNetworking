@@ -187,10 +187,36 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertTrue([policy evaluateServerTrust:trust forDomain:nil], @"Valid Certificate should be allowed by default.");
 }
 
+- (void)testAsyncDefaultPolicyDoesAllowHTTPBinOrgCertificate {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Valid Certificate should be allowed by default.");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testDefaultPolicyDoesAllowHTTPBinOrgCertificateForValidDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
     XCTAssertTrue([policy evaluateServerTrust:trust forDomain:@"httpbin.org"], @"Valid Certificate should be allowed by default.");
+}
+
+- (void)testAsyncDefaultPolicyDoesAllowHTTPBinOrgCertificateForValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [policy evaluateServerTrust:trust forDomain:@"httpbin.org" completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Valid Certificate should be allowed by default.");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 #pragma mark Negative Server Trust Evaluation Tests
@@ -202,10 +228,37 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"Invalid Certificates should not be allowed");
 }
 
+- (void)testAsyncDefaultPolicyDoesNotAllowInvalidCertificate {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithoutDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [policy evaluateServerTrust:trust forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Invalid Certificates should not be allowed");
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testDefaultPolicyDoesNotAllowCertificateWithInvalidDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
     SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
     XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"apple.com"], @"Certificate should not be allowed because the domain names do not match.");
+}
+
+- (void)testAsyncDefaultPolicyDoesNotAllowCertificateWithInvalidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    SecTrustRef trust = AFUTHTTPBinOrgServerTrust();
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [policy evaluateServerTrust:trust forDomain:@"apple.com" completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Certificate should not be allowed because the domain names do not match.");
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 #pragma mark - Public Key Pinning Tests
@@ -233,67 +286,179 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 #pragma mark Positive Server Trust Evaluation Tests
 - (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
 
+- (void)testAsyncPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
 
+- (void)testAsyncPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    SecCertificateRef certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef certificate = AFUTCOMODORSACertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
 
+- (void)testAsyncPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    SecCertificateRef certificate = AFUTCOMODORSACertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef certificate = AFUTAddTrustExternalRootCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
 
+- (void)testAsyncPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    SecCertificateRef certificate = AFUTAddTrustExternalRootCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     SecCertificateRef intermedaite1Certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
     SecCertificateRef intermedaite2Certificate = AFUTCOMODORSACertificate();
     SecCertificateRef rootCertificate = AFUTAddTrustExternalRootCertificate();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
-                                                        (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite1Certificate),
-                                                        (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite2Certificate),
-                                                        (__bridge_transfer NSData *)SecCertificateCopyData(rootCertificate), nil]];
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite1Certificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite2Certificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(rootCertificate), nil]];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow HTTPBinOrg server trust because at least one of the pinned certificates is valid");
+    
+}
 
+- (void)testAsyncPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    
+    SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
+    SecCertificateRef intermedaite1Certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
+    SecCertificateRef intermedaite2Certificate = AFUTCOMODORSACertificate();
+    SecCertificateRef rootCertificate = AFUTAddTrustExternalRootCertificate();
+    [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite1Certificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite2Certificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(rootCertificate), nil]];
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow HTTPBinOrg server trust because at least one of the pinned certificates is valid");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testPolicyWithPublicKeyPinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
-                                                        (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow HTTPBinOrg server trust because at least one of the pinned certificates is valid");
+}
+
+- (void)testAsyncPolicyWithPublicKeyPinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    
+    SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
+    SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
+    [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
+
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow HTTPBinOrg server trust because at least one of the pinned certificates is valid");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"httpbin.org"], @"Policy should allow server trust");
+}
+
+- (void)testAsyncPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"httpbin.org" completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 #pragma mark Negative Server Trust Evaluation Tests
@@ -304,30 +469,91 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertFalse([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should not allow server trust because the policy is set to public key pinning and it does not contain any pinned certificates.");
 }
 
+- (void)testAsyncPolicyWithPublicKeyPinningAndNoPinnedCertificatesDoesNotAllowHTTPBinOrgServerTrust {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    policy.pinnedCertificates = [NSSet set];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow server trust because the policy is set to public key pinning and it does not contain any pinned certificates.");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertFalse([policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil], @"Policy should not allow ADN server trust for pinned HTTPBin.org certificate");
 }
 
+- (void)testAsyncPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow ADN server trust for pinned HTTPBin.org certificate");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithPublicKeyPinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertFalse([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invaliddomainname.com"], @"Policy should not allow server trust");
 }
 
+- (void)testAsyncPolicyWithPublicKeyPinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invaliddomainname.com" completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
-                                                        (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
     XCTAssertFalse([policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil], @"Policy should not allow ADN server trust because there are no matching pinned certificates");
+}
+
+- (void)testAsyncPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    
+    SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
+    SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
+    [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
+
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow ADN server trust because there are no matching pinned certificates");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 #pragma mark - Certificate Pinning Tests
@@ -355,34 +581,94 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 #pragma mark Positive Server Trust Evaluation Tests
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
 
+- (void)testAsyncPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
 
+- (void)testAsyncPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef certificate = AFUTCOMODORSACertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
 
+- (void)testAsyncPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef certificate = AFUTCOMODORSACertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef certificate = AFUTAddTrustExternalRootCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
+}
+
+- (void)testAsyncPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef certificate = AFUTAddTrustExternalRootCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned {
@@ -400,22 +686,78 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 
 }
 
+- (void)testAsyncPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithEntireCertificateChainPinned {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
+    SecCertificateRef intermedaite1Certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
+    SecCertificateRef intermedaite2Certificate = AFUTCOMODORSACertificate();
+    SecCertificateRef rootCertificate = AFUTAddTrustExternalRootCertificate();
+    [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite1Certificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite2Certificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(rootCertificate), nil]];
+
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow HTTPBinOrg server trust because at least one of the pinned certificates is valid");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithCertificatePinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
-                                                        (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow HTTPBinOrg server trust because at least one of the pinned certificates is valid");
+}
+
+- (void)testAsyncPolicyWithCertificatePinningAllowsHTTPBirnOrgServerTrustWithHTTPbinOrgPinnedCertificateAndAdditionalPinnedCertificates {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
+    SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
+    [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
+
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow HTTPBinOrg server trust because at least one of the pinned certificates is valid");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"httpbin.org"], @"Policy should allow server trust");
+}
+
+- (void)testAsyncPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"httpbin.org" completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 //- (void)testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName {
@@ -459,30 +801,91 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertFalse([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should not allow server trust because the policy does not contain any pinned certificates.");
 }
 
+- (void)testAsyncPolicyWithCertificatePinningAndNoPinnedCertificatesDoesNotAllowHTTPBinOrgServerTrust {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.pinnedCertificates = [NSSet set];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow server trust because the policy does not contain any pinned certificates.");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertFalse([policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil], @"Policy should not allow ADN server trust for pinned HTTPBin.org certificate");
 }
 
+- (void)testAsyncPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow ADN server trust for pinned HTTPBin.org certificate");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithCertificatePinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertFalse([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invaliddomainname.com"], @"Policy should not allow server trust");
 }
 
+- (void)testAsyncPolicyWithCertificatePinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invaliddomainname.com" completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
-                                                        (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
     XCTAssertFalse([policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil], @"Policy should not allow ADN server trust because there are no matching pinned certificates");
+}
+
+- (void)testAsyncPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
+    SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
+    [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow ADN server trust because there are no matching pinned certificates");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 #pragma mark - Domain Name Validation Tests
@@ -494,31 +897,92 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invalid.org"], @"Policy should allow server trust because domain name validation is disabled");
 }
 
+- (void)testAsyncThatPolicyWithoutDomainNameValidationAllowsServerTrustWithInvalidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    [policy setValidatesDomainName:NO];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invalid.org" completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust because domain name validation is disabled");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testThatPolicyWithDomainNameValidationAllowsServerTrustWithValidWildcardDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"test.httpbin.org"], @"Policy should allow server trust");
 }
 
+- (void)testAsyncThatPolicyWithDomainNameValidationAllowsServerTrustWithValidWildcardDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"test.httpbin.org" completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testThatPolicyWithDomainNameValidationAndSelfSignedCommonNameCertificateAllowsServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithCommonNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
     [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
     [policy setAllowInvalidCertificates:YES];
-
+    
     XCTAssertTrue([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should allow server trust");
+}
+
+- (void)testAsyncThatPolicyWithDomainNameValidationAndSelfSignedCommonNameCertificateAllowsServerTrust {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithCommonNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
+    [policy setAllowInvalidCertificates:YES];
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:@"foobar.com" completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testThatPolicyWithDomainNameValidationAndSelfSignedDNSCertificateAllowsServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-
+    
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
     [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
     [policy setAllowInvalidCertificates:YES];
-
+    
     XCTAssertTrue([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should allow server trust");
+}
+
+- (void)testAsyncThatPolicyWithDomainNameValidationAndSelfSignedDNSCertificateAllowsServerTrust {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
+    [policy setAllowInvalidCertificates:YES];
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:@"foobar.com" completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 #pragma mark Negative Evaluation Tests
@@ -528,15 +992,45 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     XCTAssertFalse([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invalid.org"], @"Policy should not allow allow server trust");
 }
 
+- (void)testAsyncThatPolicyWithDomainNameValidationDoesNotAllowServerTrustWithInvalidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invalid.org" completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testThatPolicyWithDomainNameValidationAndSelfSignedNoDomainCertificateDoesNotAllowServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-
+    
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithoutDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
     [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
     [policy setAllowInvalidCertificates:YES];
-
+    
     XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust");
+}
+
+- (void)testAsyncThatPolicyWithDomainNameValidationAndSelfSignedNoDomainCertificateDoesNotAllowServerTrust {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithoutDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
+    [policy setAllowInvalidCertificates:YES];
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:@"foobar.com" completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow server trust");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 #pragma mark - Self Signed Certificate Tests
@@ -545,11 +1039,28 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
 - (void)testThatPolicyWithInvalidCertificatesAllowedAllowsSelfSignedServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
     [policy setAllowInvalidCertificates:YES];
-
+    
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
-
+    
     XCTAssertTrue([policy evaluateServerTrust:trust forDomain:nil], @"Policy should allow server trust because invalid certificates are allowed");
+}
+
+- (void)testAsyncThatPolicyWithInvalidCertificatesAllowedAllowsSelfSignedServerTrust {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    [policy setAllowInvalidCertificates:YES];
+    
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust because invalid certificates are allowed");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesDoesAllowSelfSignedServerTrustForValidDomainName {
@@ -558,30 +1069,81 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
     [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
-
+    
     XCTAssertTrue([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should allow server trust because invalid certificates are allowed");
+}
+
+- (void)testAsyncThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesDoesAllowSelfSignedServerTrustForValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    [policy setAllowInvalidCertificates:YES];
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:@"foobar.com" completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust because invalid certificates are allowed");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testThatPolicyWithInvalidCertificatesAllowedAndNoSSLPinningAndDomainNameValidationDisabledDoesAllowSelfSignedServerTrustForValidDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
     [policy setValidatesDomainName:NO];
-
+    
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
-
+    
     XCTAssertTrue([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should allow server trust because invalid certificates are allowed");
+}
+
+- (void)testAsyncThatPolicyWithInvalidCertificatesAllowedAndNoSSLPinningAndDomainNameValidationDisabledDoesAllowSelfSignedServerTrustForValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setValidatesDomainName:NO];
+    
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:@"foobar.com" completionHandler:^(BOOL isValid) {
+        XCTAssertTrue(isValid, @"Policy should allow server trust because invalid certificates are allowed");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 #pragma mark Negative Test Cases
 
 - (void)testThatPolicyWithInvalidCertificatesDisabledDoesNotAllowSelfSignedServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
-
+    
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
-
+    
     XCTAssertFalse([policy evaluateServerTrust:trust forDomain:nil], @"Policy should not allow server trust because invalid certificates are not allowed");
+}
+
+- (void)testAsyncThatPolicyWithInvalidCertificatesDisabledDoesNotAllowSelfSignedServerTrust {
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:nil completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow server trust because invalid certificates are not allowed");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testThatPolicyWithInvalidCertificatesAllowedAndNoPinnedCertificatesAndPublicKeyPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName {
@@ -590,8 +1152,25 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     [policy setPinnedCertificates:[NSSet set]];
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
-
+    
     XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
+}
+
+- (void)testAsyncThatPolicyWithInvalidCertificatesAllowedAndNoPinnedCertificatesAndPublicKeyPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setPinnedCertificates:[NSSet set]];
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:@"foobar.com" completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesAndNoPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName {
@@ -600,19 +1179,54 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
     [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
-
+    
     XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
+}
+
+- (void)testAsyncThatPolicyWithInvalidCertificatesAllowedAndValidPinnedCertificatesAndNoPinningModeDoesNotAllowSelfSignedServerTrustForValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    [policy setPinnedCertificates:[NSSet setWithObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)]];
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:@"foobar.com" completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 - (void)testThatPolicyWithInvalidCertificatesAllowedAndNoValidPinnedCertificatesAndNoPinningModeAndDomainValidationDoesNotAllowSelfSignedServerTrustForValidDomainName {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     [policy setAllowInvalidCertificates:YES];
     [policy setPinnedCertificates:[NSSet set]];
-
+    
     SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
     SecTrustRef trust = AFUTTrustWithCertificate(certificate);
-
+    
     XCTAssertFalse([policy evaluateServerTrust:trust forDomain:@"foobar.com"], @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
+}
+
+- (void)testAsyncThatPolicyWithInvalidCertificatesAllowedAndNoValidPinnedCertificatesAndNoPinningModeAndDomainValidationDoesNotAllowSelfSignedServerTrustForValidDomainName {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    [policy setAllowInvalidCertificates:YES];
+    [policy setPinnedCertificates:[NSSet set]];
+    
+    SecCertificateRef certificate = AFUTSelfSignedCertificateWithDNSNameDomain();
+    SecTrustRef trust = AFUTTrustWithCertificate(certificate);
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+    
+    [policy evaluateServerTrust:trust forDomain:@"foobar.com" completionHandler:^(BOOL isValid) {
+        XCTAssertFalse(isValid, @"Policy should not allow server trust because invalid certificates are allowed but there are no pinned certificates");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 #pragma mark - NSCopying
