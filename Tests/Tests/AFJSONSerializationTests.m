@@ -66,28 +66,6 @@ static NSData * AFJSONTestData() {
     XCTAssertTrue([@"[{\"key\":\"value\"}]" isEqualToString:body], @"Parameters were not encoded correctly");
 }
 
-- (void)testThatJSONRequestSerializationHandlesHeaderValueSetToReferenceCountedStringFromMultipleThreads {
-    @autoreleasepool {
-        int dispatchTarget = 1000;
-        __block int completionCount = 0;
-        for(int i=0; i<dispatchTarget; i++) {
-            NSString *nonStaticNonTaggedPointerString = [NSString stringWithFormat:@"%@", [NSDate dateWithTimeIntervalSince1970:i]];
-            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
-            dispatch_async(queue, ^{
-                
-                [self.requestSerializer setValue:nonStaticNonTaggedPointerString forHTTPHeaderField:@"FrequentlyUpdatedHeaderField"];
-                
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    completionCount++;
-                });
-            });
-        }
-        while (completionCount < dispatchTarget) {
-            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-        }
-    } // Test succeeds if it does not EXC_BAD_ACCESS when cleaning up the @autoreleasepool
-}
-
 @end
 
 #pragma mark -
