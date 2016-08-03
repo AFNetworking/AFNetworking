@@ -186,7 +186,6 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 @interface AFHTTPRequestSerializer ()
 @property (readwrite, nonatomic, strong) NSMutableSet *mutableObservedChangedKeyPaths;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *mutableHTTPRequestHeaders;
-@property (readwrite, nonatomic, strong) dispatch_queue_t requestHeaderModificationQueue;
 @property (readwrite, nonatomic, assign) AFHTTPRequestQueryStringSerializationStyle queryStringSerializationStyle;
 @property (readwrite, nonatomic, copy) AFQueryStringSerializationBlock queryStringSerialization;
 @end
@@ -206,7 +205,6 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
     self.stringEncoding = NSUTF8StringEncoding;
 
     self.mutableHTTPRequestHeaders = [NSMutableDictionary dictionary];
-    self.requestHeaderModificationQueue = dispatch_queue_create("requestHeaderModificationQueue", DISPATCH_QUEUE_CONCURRENT);
 
     // Accept-Language HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
     NSMutableArray *acceptLanguagesComponents = [NSMutableArray array];
@@ -302,27 +300,17 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 #pragma mark -
 
 - (NSDictionary *)HTTPRequestHeaders {
-    NSDictionary __block *value;
-    dispatch_sync(self.requestHeaderModificationQueue, ^{
-        value = [NSDictionary dictionaryWithDictionary:self.mutableHTTPRequestHeaders];
-    });
-    return value;
+    return [NSDictionary dictionaryWithDictionary:self.mutableHTTPRequestHeaders];
 }
 
 - (void)setValue:(NSString *)value
 forHTTPHeaderField:(NSString *)field
 {
-    dispatch_barrier_async(self.requestHeaderModificationQueue, ^{
-        [self.mutableHTTPRequestHeaders setValue:value forKey:field];
-    });
+	[self.mutableHTTPRequestHeaders setValue:value forKey:field];
 }
 
 - (NSString *)valueForHTTPHeaderField:(NSString *)field {
-    NSString __block *value;
-    dispatch_sync(self.requestHeaderModificationQueue, ^{
-        value = [self.mutableHTTPRequestHeaders valueForKey:field];
-    });
-    return value;
+    return [self.mutableHTTPRequestHeaders valueForKey:field];
 }
 
 - (void)setAuthorizationHeaderFieldWithUsername:(NSString *)username
@@ -334,9 +322,7 @@ forHTTPHeaderField:(NSString *)field
 }
 
 - (void)clearAuthorizationHeader {
-    dispatch_barrier_async(self.requestHeaderModificationQueue, ^{
-        [self.mutableHTTPRequestHeaders removeObjectForKey:@"Authorization"];
-    });
+	[self.mutableHTTPRequestHeaders removeObjectForKey:@"Authorization"];
 }
 
 #pragma mark -
@@ -568,9 +554,7 @@ forHTTPHeaderField:(NSString *)field
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    dispatch_sync(self.requestHeaderModificationQueue, ^{
-        [coder encodeObject:self.mutableHTTPRequestHeaders forKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
-    });
+    [coder encodeObject:self.mutableHTTPRequestHeaders forKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
     [coder encodeInteger:self.queryStringSerializationStyle forKey:NSStringFromSelector(@selector(queryStringSerializationStyle))];
 }
 
@@ -578,9 +562,7 @@ forHTTPHeaderField:(NSString *)field
 
 - (instancetype)copyWithZone:(NSZone *)zone {
     AFHTTPRequestSerializer *serializer = [[[self class] allocWithZone:zone] init];
-    dispatch_sync(self.requestHeaderModificationQueue, ^{
-        serializer.mutableHTTPRequestHeaders = [self.mutableHTTPRequestHeaders mutableCopyWithZone:zone];
-    });
+    serializer.mutableHTTPRequestHeaders = [self.mutableHTTPRequestHeaders mutableCopyWithZone:zone];
     serializer.queryStringSerializationStyle = self.queryStringSerializationStyle;
     serializer.queryStringSerialization = self.queryStringSerialization;
 
