@@ -27,20 +27,21 @@
 #import "AFURLSessionManager.h"
 
 @interface AFActivityIndicatorViewNotificationObserver : NSObject
-@property (readonly, nonatomic, weak) UIActivityIndicatorView *activityIndicatorView;
+@property (readonly, nonatomic, weak) UIActivityIndicatorView *activityIndicatorView;//weak
 - (instancetype)initWithActivityIndicatorView:(UIActivityIndicatorView *)activityIndicatorView;
 
 - (void)setAnimatingWithStateOfTask:(NSURLSessionTask *)task;
 
 @end
 
-@implementation UIActivityIndicatorView (AFNetworking)
+@implementation UIActivityIndicatorView (AFNetworking)//UIActivityIndicatorView 这个View的作用是什么**??**
 
 - (AFActivityIndicatorViewNotificationObserver *)af_notificationObserver {
     AFActivityIndicatorViewNotificationObserver *notificationObserver = objc_getAssociatedObject(self, @selector(af_notificationObserver));
     if (notificationObserver == nil) {
         notificationObserver = [[AFActivityIndicatorViewNotificationObserver alloc] initWithActivityIndicatorView:self];
         objc_setAssociatedObject(self, @selector(af_notificationObserver), notificationObserver, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//        objc_setAssociatedObject(<#id object#>, <#const void *key#>, <#id value#>, <#objc_AssociationPolicy policy#>)
     }
     return notificationObserver;
 }
@@ -57,14 +58,26 @@
 {
     self = [super init];
     if (self) {
-        _activityIndicatorView = activityIndicatorView;
+        _activityIndicatorView = activityIndicatorView;//weak,仅仅是将View传过来
     }
     return self;
 }
 
 - (void)setAnimatingWithStateOfTask:(NSURLSessionTask *)task {
+    /*
+     NSURLSessionTask:代表一个请求任务。eg，
+     （1）获得NSURLSession对象
+     
+     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[[NSOperationQueue alloc] init]];
+      (2)创建请求任务
+     
+     NSURLSessionTask *task = [session dataTaskWithRequest:（此处为NSURLRequest对象）];
+      (3)启动任务
+     
+     [task resume];
+     */
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-
+    //先移除之前的Observer, 防止多次添加（多次移除同一标识的消息观察者不会引起崩溃）
     [notificationCenter removeObserver:self name:AFNetworkingTaskDidResumeNotification object:nil];
     [notificationCenter removeObserver:self name:AFNetworkingTaskDidSuspendNotification object:nil];
     [notificationCenter removeObserver:self name:AFNetworkingTaskDidCompleteNotification object:nil];
@@ -77,7 +90,12 @@
             } else {
                 [activityIndicatorView stopAnimating];
             }
-
+            /*
+             AFNetworkingTaskDidResumeNotification:任务继续
+             AFNetworkingTaskDidCompleteNotification:任务完成
+             AFNetworkingTaskDidSuspendNotification:任务挂起
+             */
+            //添加观察者
             [notificationCenter addObserver:self selector:@selector(af_startAnimating) name:AFNetworkingTaskDidResumeNotification object:task];
             [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingTaskDidCompleteNotification object:task];
             [notificationCenter addObserver:self selector:@selector(af_stopAnimating) name:AFNetworkingTaskDidSuspendNotification object:task];

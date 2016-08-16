@@ -1,22 +1,8 @@
 // AFNetworkActivityIndicatorManager.m
 // Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
+
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
 #import "AFNetworkActivityIndicatorManager.h"
@@ -64,7 +50,6 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
     dispatch_once(&oncePredicate, ^{
         _sharedManager = [[self alloc] init];
     });
-
     return _sharedManager;
 }
 
@@ -114,6 +99,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
              _networkActivityIndicatorVisible = networkActivityIndicatorVisible;
         }
         [self didChangeValueForKey:@"networkActivityIndicatorVisible"];
+        //这个应该就是控制状态栏的菊花是否转圈 以及 菊花的样式的地方的地方
         if (self.networkActivityActionBlock) {
             self.networkActivityActionBlock(networkActivityIndicatorVisible);
         } else {
@@ -147,7 +133,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 - (void)decrementActivityCount {
     [self willChangeValueForKey:@"activityCount"];
 	@synchronized(self) {
-		_activityCount = MAX(_activityCount - 1, 0);
+		_activityCount = MAX(_activityCount - 1, 0);//这一笔，有点绝了，不直接使用_activityCount--，防止了-1的情况出现，如果直接用“--_activityCount”计算次数会增加（多了一次赋值）
 	}
     [self didChangeValueForKey:@"activityCount"];
 
@@ -155,7 +141,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
         [self updateCurrentStateForNetworkActivityChange];
     });
 }
-
+//#warning mark 这两个函数要弄懂 , , , 钦   此
 - (void)networkRequestDidStart:(NSNotification *)notification {
     if ([AFNetworkRequestFromNotification(notification) URL]) {
         [self incrementActivityCount];
@@ -172,7 +158,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 - (void)setCurrentState:(AFNetworkActivityManagerState)currentState {
     @synchronized(self) {
         if (_currentState != currentState) {
-            [self willChangeValueForKey:@"currentState"];
+            [self willChangeValueForKey:@"currentState"];//
             _currentState = currentState;
             switch (currentState) {
                 case AFNetworkActivityManagerStateNotActive:
@@ -191,12 +177,14 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
                     [self startCompletionDelayTimer];
                     break;
             }
-            [self didChangeValueForKey:@"currentState"];
+            [self didChangeValueForKey:@"currentState"];//
         }
         
     }
 }
-
+/**
+ * 该函数在_activityCount增加，减少和赋值的过程中均有调用
+ */
 - (void)updateCurrentStateForNetworkActivityChange {
     if (self.enabled) {
         switch (self.currentState) {
@@ -209,7 +197,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
                 //No op. Let the delay timer finish out.
                 break;
             case AFNetworkActivityManagerStateActive:
-                if (!self.isNetworkActivityOccurring) {
+                if (!self.isNetworkActivityOccurring/*return self.activityCount > 0;*/) {
                     [self setCurrentState:AFNetworkActivityManagerStateDelayingEnd];
                 }
                 break;
@@ -223,8 +211,11 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 }
 
 - (void)startActivationDelayTimer {
+    // 定义了一个名为activationDelayTimer的定时器，定时器的时间为self.activationDelay。\
+       执行完定时器后，执行activationDelayTimerFired函数
     self.activationDelayTimer = [NSTimer
                                  timerWithTimeInterval:self.activationDelay target:self selector:@selector(activationDelayTimerFired) userInfo:nil repeats:NO];
+    //将定时器添加到runtime中，其中mode用NSRunLoopCommonModes而不用NSDefaultRunLoopMode，是为了防止UI操作阻碍计时器任务
     [[NSRunLoop mainRunLoop] addTimer:self.activationDelayTimer forMode:NSRunLoopCommonModes];
 }
 
@@ -247,7 +238,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 }
 
 - (void)cancelActivationDelayTimer {
-    [self.activationDelayTimer invalidate];
+    [self.activationDelayTimer invalidate];//invalidate：使计时器失效
 }
 
 - (void)cancelCompletionDelayTimer {

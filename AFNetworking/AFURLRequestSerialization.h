@@ -233,6 +233,17 @@ forHTTPHeaderField:(NSString *)field;
  @param error The error that occurred while constructing the request.
 
  @return An `NSMutableURLRequest` object.
+ 使用指定的HTTP method和URLString来构建一个NSMutableURLRequest对象实例
+ 
+ 如果method是GET、HEAD、DELETE，那parameter将会被用来构建一个基于url编码的查询字符串（query url）
+ ，并且这个字符串会直接加到request的url后面。对于其他的Method，比如POST/PUT，它们会根
+ 据parameterEncoding属性进行编码，而后加到request的http body上。
+ @ method request的HTTP methodt，比如 `GET`, `POST`, `PUT`, or `DELETE`. 该参数不能为空
+ @ URLString 用来创建request的URL
+ @ parameters 既可以对method为GET的request设置一个查询字符串(query string)，也可以设置到request的HTTP body上
+ @ error 构建request时发生的错误
+ 
+ @return  一个NSMutableURLRequest的对象
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method
                                  URLString:(NSString *)URLString

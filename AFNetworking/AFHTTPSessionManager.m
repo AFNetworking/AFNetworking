@@ -108,15 +108,20 @@
 
     return [self GET:URLString parameters:parameters progress:nil success:success failure:failure];
 }
-
+//使用GET类型的Request来创建并运行一个NSURLSessionDataTask
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(id)parameters
                      progress:(void (^)(NSProgress * _Nonnull))downloadProgress
                       success:(void (^)(NSURLSessionDataTask * _Nonnull, id _Nullable))success
                       failure:(void (^)(NSURLSessionDataTask * _Nullable, NSError * _Nonnull))failure
 {
-
-    NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@"GET"
+    /**
+     * 创建一个NSURLSessionDataTask对象
+     
+     NSURLSessionTask的继承关系：NSURLSessionTask -> (1)NSURLSessionDataTask -> NSURLSessionUploadTask;
+                                                -> (2)NSURLSessionDownloadTask
+     */
+    NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@"GET"//指定请求类型
                                                         URLString:URLString
                                                        parameters:parameters
                                                    uploadProgress:nil
@@ -124,7 +129,7 @@
                                                           success:success
                                                           failure:failure];
 
-    [dataTask resume];
+    [dataTask resume];//调用dataTask的resume，进行网络请求
 
     return dataTask;
 }
@@ -247,7 +252,7 @@
     return dataTask;
 }
 
-- (NSURLSessionDataTask *)dataTaskWithHTTPMethod:(NSString *)method
+- (NSURLSessionDataTask *)dataTaskWithHTTPMethod:(NSString *)method//GET、HEAD、POT、DELETE、PATCH
                                        URLString:(NSString *)URLString
                                       parameters:(id)parameters
                                   uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgress
@@ -257,9 +262,9 @@
 {
     NSError *serializationError = nil;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
-    if (serializationError) {
-        if (failure) {
-            dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
+    if (serializationError) {//构建request失败的操作
+        if (failure) {//是否存在失败的处理
+            dispatch_async(self.completionQueue ?: dispatch_get_main_queue()/*判断是否存在执行请求完成或失败的方法的线程，如果没有就抛给主线程*/, ^{
                 failure(nil, serializationError);
             });
         }
@@ -267,7 +272,7 @@
         return nil;
     }
 
-    __block NSURLSessionDataTask *dataTask = nil;
+    __block NSURLSessionDataTask *dataTask = nil;//这里为什么要用__block(没见哪里需要修改dataTask，并且也没见不加__block就不能修改它的地方啊。难道这和C的函数有关系) **!!** 看他的创建是__block，并且要在url_session_manager_create_task_safely{}中赋值，可能是为了类型一致吧
     dataTask = [self dataTaskWithRequest:request
                           uploadProgress:uploadProgress
                         downloadProgress:downloadProgress

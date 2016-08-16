@@ -177,7 +177,41 @@ static NSArray * AFHTTPRequestSerializerObservedKeyPaths() {
     dispatch_once(&onceToken, ^{
         _AFHTTPRequestSerializerObservedKeyPaths = @[NSStringFromSelector(@selector(allowsCellularAccess)), NSStringFromSelector(@selector(cachePolicy)), NSStringFromSelector(@selector(HTTPShouldHandleCookies)), NSStringFromSelector(@selector(HTTPShouldUsePipelining)), NSStringFromSelector(@selector(networkServiceType)), NSStringFromSelector(@selector(timeoutInterval))];
     });
+    /*
+    是否允许使用设备的蜂窝移动网络来创建request，默认为允许:
+    
+    @property (nonatomic, assign) BOOL allowsCellularAccess;
+    
+   
+     创建的request所使用的缓存策略，默认使用`NSURLRequestUseProtocolCachePolicy`，该策略表示
+     如果缓存不存在，直接从服务端获取。如果缓存存在，会根据response中的Cache-Control字段判断
+     下一步操作，如: Cache-Control字段为must-revalidata, 则 询问服务端该数据是否有更新，无更新话
+     直接返回给用户缓存数据，若已更新，则请求服务端.
+    
+    @property (nonatomic, assign) NSURLRequestCachePolicy cachePolicy;
+    
+   
+     如果设置HTTPShouldHandleCookies为YES，就处理存储在NSHTTPCookieStore中的cookies
+     HTTPShouldHandleCookies表示是否应该给request设置cookie并随request一起发送出去
+  
+    @property (nonatomic, assign) BOOL HTTPShouldHandleCookies;
+    
 
+     HTTPShouldUsePipelining表示receiver(理解为iOS客户端)的下一个信息是否必须等到上一个请求回复才能发送。
+     如果为YES表示可以，NO表示必须等receiver收到先前的回复才能发送下个信息。
+    
+    @property (nonatomic, assign) BOOL HTTPShouldUsePipelining;
+    
+  
+     设定request的network service类型. 默认是`NSURLNetworkServiceTypeDefault`.
+     这个network service是为了告诉系统网络层这个request使用的目的
+     比如NSURLNetworkServiceTypeVoIP表示的就这个request是用来请求网际协议通话技术(Voice over IP)。
+     系统能根据提供的信息来优化网络处理，从而优化电池寿命，网络性能等等
+    @property (nonatomic, assign) NSURLRequestNetworkServiceType networkServiceType;
+    
+     超时机制，默认60秒
+    @property (nonatomic, assign) NSTimeInterval timeoutInterval;
+     */
     return _AFHTTPRequestSerializerObservedKeyPaths;
 }
 
@@ -242,8 +276,8 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 
     self.mutableObservedChangedKeyPaths = [NSMutableSet set];
     for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
-        if ([self respondsToSelector:NSSelectorFromString(keyPath)]) {
-            [self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:AFHTTPRequestSerializerObserverContext];
+        if ([self respondsToSelector:NSSelectorFromString(keyPath)]) {//NSSelectorFromString(keyPath)   return SEL
+            [self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:AFHTTPRequestSerializerObserverContext];//添加观察者
         }
     }
 
@@ -253,7 +287,7 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 - (void)dealloc {
     for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
         if ([self respondsToSelector:NSSelectorFromString(keyPath)]) {
-            [self removeObserver:self forKeyPath:keyPath context:AFHTTPRequestSerializerObserverContext];
+            [self removeObserver:self forKeyPath:keyPath context:AFHTTPRequestSerializerObserverContext];//添加观察者
         }
     }
 }
@@ -357,13 +391,17 @@ forHTTPHeaderField:(NSString *)field
                                 parameters:(id)parameters
                                      error:(NSError *__autoreleasing *)error
 {
+    //判断method和URLString是否为nil
+    /**
+     * 方法或函数应当在代码最开始处使用 NSParameterAssert / NSCParameterAssert 来强制输入的值满足先验条件，这是一条金科玉律；其他情况下使用 NSAssert / NSCAssert。
+     */
     NSParameterAssert(method);
     NSParameterAssert(URLString);
 
     NSURL *url = [NSURL URLWithString:URLString];
 
     NSParameterAssert(url);
-
+    //创建URLRequest
     NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:url];
     mutableRequest.HTTPMethod = method;
 
@@ -372,7 +410,7 @@ forHTTPHeaderField:(NSString *)field
             [mutableRequest setValue:[self valueForKeyPath:keyPath] forKey:keyPath];
         }
     }
-
+    //将传入的parameters进行编码，并添加到request中
     mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
 
 	return mutableRequest;
@@ -526,15 +564,15 @@ forHTTPHeaderField:(NSString *)field
 }
 
 #pragma mark - NSKeyValueObserving
-
+//类方法，由系统调用来，判断某个属性是否相应KVO机制，当值放生变化是自动发送消息
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
-    if ([AFHTTPRequestSerializerObservedKeyPaths() containsObject:key]) {
+    if ([AFHTTPRequestSerializerObservedKeyPaths() containsObject:key]) {/**<关闭某个属性的自动KVO机制*/
         return NO;
     }
 
     return [super automaticallyNotifiesObserversForKey:key];
 }
-
+//
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(__unused id)object
                         change:(NSDictionary *)change
