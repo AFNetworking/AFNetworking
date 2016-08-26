@@ -1,23 +1,5 @@
-// AFURLRequestSerialization.h
-// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+
+#pragma mark 继承关系：AFHTTPRequestSerializer -> (AFJSONRequestSerializer, AFPropertyListRequestSerializer)
 
 #import <Foundation/Foundation.h>
 #import <TargetConditionals.h>
@@ -45,7 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
  @return The percent-escaped string.
  */
 FOUNDATION_EXPORT NSString * AFPercentEscapedStringFromString(NSString *string);
-
+/**??**这两个方法暂且记下
+ 
+ NSString * AFPercentEscapedStringFromString(NSString *string)
+ NSString * AFQueryStringFromParameters(NSDictionary *parameters)
+ 
+*/
 /**
  A helper method to generate encoded url query parameters for appending to the end of a URL.
 
@@ -74,14 +61,16 @@ FOUNDATION_EXPORT NSString * AFQueryStringFromParameters(NSDictionary *parameter
 - (nullable NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(nullable id)parameters
                                         error:(NSError * _Nullable __autoreleasing *)error NS_SWIFT_NOTHROW;
-
+/*
+ *   这里牵涉到了协议使用的一些细节：
+ **（1）协议只是定义了一些可以脱离某个具体的类存在的方法，有协议的地方不一定要有代理
+ **（2）至于方法的实现这和一般的方法定义并没有什么两样，只是有了必须实现和选择实现之分
+ **（3）父类遵循的协议，子类默认已经遵循
+ **（4）子类方法中同样可以super 调用父类的协议方法实现
+ */
 @end
 
 #pragma mark -
-
-/**
-
- */
 typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
     AFHTTPRequestQueryStringDefaultStyle = 0,
 };
@@ -216,7 +205,7 @@ forHTTPHeaderField:(NSString *)field;
 
  @param block A block that defines a process of encoding parameters into a query string. This block returns the query string and takes three arguments: the request, the parameters to encode, and the error that occurred when attempting to encode parameters for the given request.
  */
-- (void)setQueryStringSerializationWithBlock:(nullable NSString * (^)(NSURLRequest *request, id parameters, NSError * __autoreleasing *error))block;
+- (void)setQueryStringSerializationWithBlock:(nullable NSString * (^)(NSURLRequest *request, id parameters, NSError * __autoreleasing *error))block;//这个方法是给用户设置用的
 
 ///-------------------------------
 /// @name Creating Request Objects
@@ -233,6 +222,10 @@ forHTTPHeaderField:(NSString *)field;
  @param error The error that occurred while constructing the request.
 
  @return An `NSMutableURLRequest` object.
+ 
+ 
+ 
+ 
  使用指定的HTTP method和URLString来构建一个NSMutableURLRequest对象实例
  
  如果method是GET、HEAD、DELETE，那parameter将会被用来构建一个基于url编码的查询字符串（query url）

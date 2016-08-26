@@ -1,23 +1,4 @@
-// AFURLRequestSerialization.m
-// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+#pragma mark --继承关系：
 
 #import "AFURLRequestSerialization.h"
 
@@ -39,7 +20,7 @@ typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, id 
     - Sub-Delimiters: "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "="
 
  In RFC 3986 - Section 3.4, it states that the "?" and "/" characters should not be escaped to allow
- query strings to include a URL. Therefore, all "reserved" characters with the exception of "?" and "/"
+ query strings to include a URL. Therefore, all "reserved" characters with the exception(例外) of "?" and "/"
  should be percent-escaped in the query string.
     - parameter string: The string to be percent-escaped.
     - returns: The percent-escaped string.
@@ -104,6 +85,11 @@ NSString * AFPercentEscapedStringFromString(NSString *string) {
 - (NSString *)URLEncodedStringValue {
     if (!self.value || [self.value isEqual:[NSNull null]]) {
         return AFPercentEscapedStringFromString([self.field description]);
+        /**<
+         description方法是NSObject自带的方法，包括类方法和对象方法
+        + (NSString *)description; // 默认返回 类名
+        - (NSString *)description; // 默认返回 <类名：内存地址>
+         */
     } else {
         return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedStringFromString([self.field description]), AFPercentEscapedStringFromString([self.value description])];
     }
@@ -132,8 +118,10 @@ NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) {
 NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
 
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(compare:)];
-
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(compare:)];//selector:@selector(compare:）自定义sortDescriptor的排序规则
+    /**
+     * 由于字典的value的类型不确定（有可能是Set、Dic、Array、String）所以要用递归的方式来解析传过来的字典
+     */
     if ([value isKindOfClass:[NSDictionary class]]) {
         NSDictionary *dictionary = value;
         // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries
@@ -244,6 +232,7 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 
     // Accept-Language HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
     NSMutableArray *acceptLanguagesComponents = [NSMutableArray array];
+#pragma mark ---这里为什么这样处理，就先不用管了，以后有时间看
     [[NSLocale preferredLanguages] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         float q = 1.0f - (idx * 0.1f);
         [acceptLanguagesComponents addObject:[NSString stringWithFormat:@"%@;q=%0.1g", obj, q]];
@@ -335,9 +324,9 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 
 #pragma mark -
 
-- (NSDictionary *)HTTPRequestHeaders {
+- (NSDictionary *)HTTPRequestHeaders {//加这一步应该是为了在对HTTPRequestHeaders进行操作的时候，尽量的减少self.mutableHTTPRequestHeaders发生变化对它的影响
     NSDictionary __block *value;
-    dispatch_sync(self.requestHeaderModificationQueue, ^{
+    dispatch_sync(self.requestHeaderModificationQueue, ^{//一定要同步 **??**异步任务后加个同步任务，同步任务直接执行还是等待异步任务执行完后再执行？
         value = [NSDictionary dictionaryWithDictionary:self.mutableHTTPRequestHeaders];
     });
     return value;
@@ -507,7 +496,7 @@ forHTTPHeaderField:(NSString *)field
     return mutableRequest;
 }
 
-#pragma mark - AFURLRequestSerialization
+#pragma mark - AFURLRequestSerialization----AFHTTPRequestSerializer-----
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(id)parameters
@@ -527,14 +516,12 @@ forHTTPHeaderField:(NSString *)field
     if (parameters) {
         if (self.queryStringSerialization) {
             NSError *serializationError;
-            query = self.queryStringSerialization(request, parameters, &serializationError);
-
+            query = self.queryStringSerialization(request, parameters, &serializationError);/**<self.queryStringSerialization用以用户自定义的构建查询函数的block*/
             if (serializationError) {
                 if (error) {
                     *error = serializationError;
                 }
-
-                return nil;
+                return nil;//**??**query的作用到底是什么，在它无法构建的时候，就结束整个网络的请求？
             }
         } else {
             switch (self.queryStringSerializationStyle) {
@@ -1267,7 +1254,7 @@ typedef enum {
     return serializer;
 }
 
-#pragma mark - AFURLRequestSerialization
+#pragma mark - AFURLRequestSerialization---AFJSONRequestSerializer---
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
                                withParameters:(id)parameters
@@ -1348,7 +1335,7 @@ typedef enum {
 
 #pragma mark - AFURLRequestSerializer
 
-- (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
+- (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request//AFPropertyListRequestSerializer
                                withParameters:(id)parameters
                                         error:(NSError *__autoreleasing *)error
 {

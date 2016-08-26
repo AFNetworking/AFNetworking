@@ -143,13 +143,13 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 #pragma mark - NSProgress Tracking
 
 - (void)setupProgressForTask:(NSURLSessionTask *)task {
-    __weak __typeof__(task) weakTask = task;
+    __weak __typeof__(task) weakTask = task;//避免循环引用
 
-    self.uploadProgress.totalUnitCount = task.countOfBytesExpectedToSend;
-    self.downloadProgress.totalUnitCount = task.countOfBytesExpectedToReceive;
+    self.uploadProgress.totalUnitCount = task.countOfBytesExpectedToSend;//上传的总大小
+    self.downloadProgress.totalUnitCount = task.countOfBytesExpectedToReceive;//下载的总大小**!!**这个怎么会在网络任务还没有发起的时候就设置，不是应该得到请求头的时候才有吗。网上说这个会更新，但是更新的地方在哪里,(并且为什么要在这里设置),更新的地方在289行附近
     [self.uploadProgress setCancellable:YES];
     [self.uploadProgress setCancellationHandler:^{
-        __typeof__(weakTask) strongTask = weakTask;
+        __typeof__(weakTask) strongTask = weakTask;//__strong 确保在 Block 内，strongSelf 不会被释放。这里没有写__strong -我猜测是因为系统默认为变量添加了
         [strongTask cancel];
     }];
     [self.uploadProgress setPausable:YES];
@@ -286,7 +286,7 @@ didCompleteWithError:(NSError *)error
     didReceiveData:(NSData *)data
 {
     self.downloadProgress.completedUnitCount = dataTask.countOfBytesReceived;
-    self.downloadProgress.totalUnitCount = dataTask.countOfBytesExpectedToReceive;
+    self.downloadProgress.totalUnitCount = dataTask.countOfBytesExpectedToReceive;//////找到downloadProgress更新的地方了，哈哈哈哈！但是这样实时的去获取totalUnitCount有必要吗**??**,并且还损耗性能
 
     [self.mutableData appendData:data];
 }
@@ -597,10 +597,10 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     NSParameterAssert(task);
     NSParameterAssert(delegate);
 
-    [self.lock lock];
+    [self.lock lock];//NSLock来加锁，这个很简单，和@synchronized作用类似，不过@synchronized多了一个可以使用变量作为互斥信号量的功能
     self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
     [delegate setupProgressForTask:task];
-    [self addNotificationObserverForTask:task];
+    [self addNotificationObserverForTask:task];//添加通知
     [self.lock unlock];
 }
 
@@ -614,7 +614,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     delegate.completionHandler = completionHandler;
 
     dataTask.taskDescription = self.taskDescriptionForSessionTasks;
-    [self setDelegate:delegate forTask:dataTask];
+    [self setDelegate:delegate forTask:dataTask];//将一个session task和一个AFURLSessionManagerTaskDelegate类型的delegate变量绑在一起
 
     delegate.uploadProgressBlock = uploadProgressBlock;
     delegate.downloadProgressBlock = downloadProgressBlock;
@@ -754,7 +754,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     __block NSURLSessionDataTask *dataTask = nil;
     url_session_manager_create_task_safely(^{
-        dataTask = [self.session dataTaskWithRequest:request];
+        dataTask = [self.session dataTaskWithRequest:request];//创建SessionDataTask
     });
 
     [self addDelegateForDataTask:dataTask uploadProgress:uploadProgressBlock downloadProgress:downloadProgressBlock completionHandler:completionHandler];
@@ -956,17 +956,28 @@ didBecomeInvalidWithError:(NSError *)error
     [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDidInvalidateNotification object:session];
 }
 
+
 - (void)URLSession:(NSURLSession *)session
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
+    //挑战处理类型为 默认
+    /*
+     NSURLSessionAuthChallengePerformDefaultHandling：默认方式处理
+     NSURLSessionAuthChallengeUseCredential：使用指定的证书
+     NSURLSessionAuthChallengeCancelAuthenticationChallenge：取消挑战
+     */
     NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
     __block NSURLCredential *credential = nil;
 
-    if (self.sessionDidReceiveAuthenticationChallenge) {
+    if (self.sessionDidReceiveAuthenticationChallenge /**< // sessionDidReceiveAuthenticationChallenge是自定义方法，用来如何应对服务器端的认证挑战*/) {
         disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
     } else {
+        // 此处服务器要求客户端的接收认证挑战方法是NSURLAuthenticationMethodServerTrust
+        // 也就是说服务器端需要客户端返回一个根据认证挑战的保护空间提供的信任（即challenge.protectionSpace.serverTrust）产生的挑战证书。
+        // 而这个证书就需要使用credentialForTrust:来创建一个NSURLCredential对象
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            // 基于客户端的安全策略来决定是否信任该服务器，不信任的话，也就没必要响应挑战
             if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
                 if (credential) {
@@ -985,7 +996,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     if (completionHandler) {
         completionHandler(disposition, credential);
     }
-}
+}/**<函数作用：
+  web服务器接收到客户端请求时，有时候需要先验证客户端是否为正常用户，再决定是够返回真实数据。这种情况称之为服务端要求客户端接收挑战（NSURLAuthenticationChallenge *challenge）。接收到挑战后，客户端要根据服务端传来的challenge来生成completionHandler所需的NSURLSessionAuthChallengeDisposition disposition和NSURLCredential *credential（disposition指定应对这个挑战的方法，而credential是客户端生成的挑战证书，注意只有challenge中认证方法为NSURLAuthenticationMethodServerTrust的时候，才需要生成挑战证书）。最后调用completionHandler回应服务器端的挑战。相关网址：http://xiongzenghuidegithub.github.io/blog/2015/12/28/nsurlcredential-shen-fen-ren-zheng/*/
 
 #pragma mark - NSURLSessionTaskDelegate
 
