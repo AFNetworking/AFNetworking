@@ -710,7 +710,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         }
 
         return NO;
-    } else if ([fileURL checkResourceIsReachableAndReturnError:error] == NO) {
+    } else if (![fileURL checkResourceIsReachableAndReturnError:error]) {
         NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"File URL not reachable.", @"AFNetworking", nil)};
         if (error) {
             *error = [[NSError alloc] initWithDomain:AFURLRequestSerializationErrorDomain code:NSURLErrorBadURL userInfo:userInfo];

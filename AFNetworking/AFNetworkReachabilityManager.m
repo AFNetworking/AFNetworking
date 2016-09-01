@@ -55,7 +55,7 @@ static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetwork
     BOOL isNetworkReachable = (isReachable && (!needsConnection || canConnectWithoutUserInteraction));
 
     AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusUnknown;
-    if (isNetworkReachable == NO) {
+    if (!isNetworkReachable) {
         status = AFNetworkReachabilityStatusNotReachable;
     }
 #if	TARGET_OS_IPHONE
