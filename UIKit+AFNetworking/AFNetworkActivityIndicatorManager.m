@@ -92,7 +92,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 
 - (void)setEnabled:(BOOL)enabled {
     _enabled = enabled;
-    if (enabled == NO) {
+    if (!enabled) {
         [self setCurrentState:AFNetworkActivityManagerStateNotActive];
     }
 }
