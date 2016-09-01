@@ -223,8 +223,9 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 }
 
 - (void)startActivationDelayTimer {
+    __weak __typeof__(self) weakSelf = self;
     self.activationDelayTimer = [NSTimer
-                                 timerWithTimeInterval:self.activationDelay target:self selector:@selector(activationDelayTimerFired) userInfo:nil repeats:NO];
+                                 timerWithTimeInterval:self.activationDelay target:weakSelf selector:@selector(activationDelayTimerFired) userInfo:nil repeats:NO];
     [[NSRunLoop mainRunLoop] addTimer:self.activationDelayTimer forMode:NSRunLoopCommonModes];
 }
 
@@ -238,7 +239,8 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 
 - (void)startCompletionDelayTimer {
     [self.completionDelayTimer invalidate];
-    self.completionDelayTimer = [NSTimer timerWithTimeInterval:self.completionDelay target:self selector:@selector(completionDelayTimerFired) userInfo:nil repeats:NO];
+    __weak __typeof__(self) weakSelf = self;
+    self.completionDelayTimer = [NSTimer timerWithTimeInterval:self.completionDelay target:weakSelf selector:@selector(completionDelayTimerFired) userInfo:nil repeats:NO];
     [[NSRunLoop mainRunLoop] addTimer:self.completionDelayTimer forMode:NSRunLoopCommonModes];
 }
 
