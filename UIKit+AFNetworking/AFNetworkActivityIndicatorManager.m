@@ -44,6 +44,80 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 
 typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisible);
 
+@interface AFWeakProxy : NSProxy
+
+@property (nonatomic, weak, readonly) id target;
+
+- (instancetype)initWithTarget:(id)target;
+
+@end
+
+@implementation AFWeakProxy
+
+- (instancetype)initWithTarget:(id)target {
+    _target = target;
+    return self;
+}
+
+- (id)forwardingTargetForSelector:(SEL)selector {
+    return _target;
+}
+
+- (void)forwardInvocation:(NSInvocation *)invocation {
+    void *null = NULL;
+    [invocation setReturnValue:&null];
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
+    return [NSObject instanceMethodSignatureForSelector:@selector(init)];
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    return [_target respondsToSelector:aSelector];
+}
+
+- (BOOL)isEqual:(id)object {
+    return [_target isEqual:object];
+}
+
+- (NSUInteger)hash {
+    return [_target hash];
+}
+
+- (Class)superclass {
+    return [_target superclass];
+}
+
+- (Class)class {
+    return [_target class];
+}
+
+- (BOOL)isKindOfClass:(Class)aClass {
+    return [_target isKindOfClass:aClass];
+}
+
+- (BOOL)isMemberOfClass:(Class)aClass {
+    return [_target isMemberOfClass:aClass];
+}
+
+- (BOOL)conformsToProtocol:(Protocol *)aProtocol {
+    return [_target conformsToProtocol:aProtocol];
+}
+
+- (BOOL)isProxy {
+    return YES;
+}
+
+- (NSString *)description {
+    return [_target description];
+}
+
+- (NSString *)debugDescription {
+    return [_target debugDescription];
+}
+
+@end
+
 @interface AFNetworkActivityIndicatorManager ()
 @property (readwrite, nonatomic, assign) NSInteger activityCount;
 @property (readwrite, nonatomic, strong) NSTimer *activationDelayTimer;
@@ -223,7 +297,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 }
 
 - (void)startActivationDelayTimer {
-    __weak __typeof__(self) weakSelf = self;
+    AFWeakProxy *weakSelf = [[AFWeakProxy alloc] initWithTarget:self];
     self.activationDelayTimer = [NSTimer
                                  timerWithTimeInterval:self.activationDelay target:weakSelf selector:@selector(activationDelayTimerFired) userInfo:nil repeats:NO];
     [[NSRunLoop mainRunLoop] addTimer:self.activationDelayTimer forMode:NSRunLoopCommonModes];
@@ -239,7 +313,7 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 
 - (void)startCompletionDelayTimer {
     [self.completionDelayTimer invalidate];
-    __weak __typeof__(self) weakSelf = self;
+    AFWeakProxy *weakSelf = [[AFWeakProxy alloc] initWithTarget:self];
     self.completionDelayTimer = [NSTimer timerWithTimeInterval:self.completionDelay target:weakSelf selector:@selector(completionDelayTimerFired) userInfo:nil repeats:NO];
     [[NSRunLoop mainRunLoop] addTimer:self.completionDelayTimer forMode:NSRunLoopCommonModes];
 }
