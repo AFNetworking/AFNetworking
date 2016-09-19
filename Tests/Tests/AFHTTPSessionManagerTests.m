@@ -228,13 +228,14 @@
 #pragma mark - Progress
 
 - (void)testDownloadProgressIsReportedForGET {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+    __weak __block XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
     [self.manager
      GET:@"image"
      parameters:nil
      progress:^(NSProgress * _Nonnull downloadProgress) {
          if (downloadProgress.fractionCompleted == 1.0) {
              [expectation fulfill];
+             expectation = nil;
          }
      }
      success:nil
