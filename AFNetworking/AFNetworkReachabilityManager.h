@@ -107,6 +107,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (instancetype)initWithReachability:(SCNetworkReachabilityRef)reachability NS_DESIGNATED_INITIALIZER;
 
+/**
+ *  Initializes an instance of a network reachability manager
+ *
+ *  @return nil as this method is unavailable
+ */
+- (nullable instancetype)init NS_UNAVAILABLE;
+
 ///--------------------------------------------------
 /// @name Starting & Stopping Reachability Monitoring
 ///--------------------------------------------------
