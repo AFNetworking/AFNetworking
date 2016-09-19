@@ -512,6 +512,56 @@
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
+# pragma mark - Security Policy
+
+- (void)testValidSecureNoPinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    XCTAssertNoThrow(manager.securityPolicy = securityPolicy);
+}
+
+- (void)testValidInsecureNoPinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    XCTAssertNoThrow(manager.securityPolicy = securityPolicy);
+}
+
+- (void)testValidCertificatePinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    XCTAssertNoThrow(manager.securityPolicy = securityPolicy);
+}
+
+- (void)testInvalidCertificatePinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
+}
+
+- (void)testValidPublicKeyPinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    XCTAssertNoThrow(manager.securityPolicy = securityPolicy);
+}
+
+- (void)testInvalidPublicKeyPinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
+}
+
+- (void)testInvalidCertificatePinningSecurityPolicyWithoutBaseURL {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
+}
+
+- (void)testInvalidPublicKeyPinningSecurityPolicyWithoutBaseURL {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
+}
+
 # pragma mark - Server Trust
 
 - (void)testInvalidServerTrustProducesCorrectErrorForCertificatePinning {
