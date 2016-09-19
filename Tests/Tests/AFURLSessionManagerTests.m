@@ -140,7 +140,7 @@
             fromData:[payload dataUsingEncoding:NSUTF8StringEncoding]
             progress:^(NSProgress * _Nonnull uploadProgress) {
                 NSLog(@"%@", uploadProgress.localizedDescription);
-                if ([uploadProgress fractionCompleted] == 1.0) {
+                if (uploadProgress.fractionCompleted == 1.0) {
                     [expectation fulfill];
                 }
             }

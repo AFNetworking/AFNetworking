@@ -285,8 +285,8 @@ didCompleteWithError:(NSError *)error
           dataTask:(__unused NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
-    self.downloadProgress.completedUnitCount = dataTask.countOfBytesReceived;
     self.downloadProgress.totalUnitCount = dataTask.countOfBytesExpectedToReceive;
+    self.downloadProgress.completedUnitCount = dataTask.countOfBytesReceived;
 
     [self.mutableData appendData:data];
 }
@@ -296,8 +296,8 @@ didCompleteWithError:(NSError *)error
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend{
     
-    self.uploadProgress.completedUnitCount = task.countOfBytesSent;
     self.uploadProgress.totalUnitCount = task.countOfBytesExpectedToSend;
+    self.uploadProgress.completedUnitCount = task.countOfBytesSent;
 }
 
 #pragma mark - NSURLSessionDownloadDelegate
