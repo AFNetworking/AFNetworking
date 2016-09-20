@@ -32,8 +32,6 @@ matrix:
       env: FASTLANE_ENV=ios90_xcode7	  
 before_install:
   # Force bundler 1.12.5 because version 1.13 has issues, see https://github.com/fastlane/fastlane/issues/6065#issuecomment-246044617
-  - gem install specific_install --no-rdoc --no-ri --no-document --quiet
-  - gem specific_install https://github.com/0xced/fastlane.git -b raw-output_style -d scan
   - gem install bundler -v 1.12.5 --no-rdoc --no-ri --no-document --quiet
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
