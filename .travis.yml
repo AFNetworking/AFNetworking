@@ -40,8 +40,6 @@ before_install:
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 script:
   - set -o pipefail
-  - defaults write com.apple.dt.xcodebuild IDETestOperationsObserverDebugLogLevel 3
-  - defaults write com.apple.dt.xcodebuild iPhoneSimulatorLogLevel 3
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
   - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
 after_success:
