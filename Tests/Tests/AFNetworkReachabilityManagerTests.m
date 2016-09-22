@@ -95,10 +95,11 @@
         BOOL reachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
                           || status == AFNetworkReachabilityStatusReachableViaWWAN);
 
-        XCTAssert(reachable, @"Expected network to be reachable but got '%@'", AFStringFromNetworkReachabilityStatus(status));
         XCTAssertEqual(reachable, weakManager.isReachable, @"Expected status to match 'isReachable'");
 
-        [expectation fulfill];
+        if (reachable) {
+            [expectation fulfill];
+        }
     }];
 
     [manager startMonitoring];
