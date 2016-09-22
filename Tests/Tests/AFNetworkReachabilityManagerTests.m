@@ -81,10 +81,9 @@
     [self verifyReachabilityNotificationGetsPostedWithManager:self.addressReachability];
 }
 
-//Commenting out for Travis Stability
-//- (void)testDomainReachabilityNotification {
-//    [self verifyReachabilityNotificationGetsPostedWithManager:self.domainReachability];
-//}
+- (void)testDomainReachabilityNotification {
+    [self verifyReachabilityNotificationGetsPostedWithManager:self.domainReachability];
+}
 
 - (void)verifyReachabilityStatusBlockGetsCalledWithManager:(AFNetworkReachabilityManager *)manager
 {
@@ -113,9 +112,8 @@
     [self verifyReachabilityStatusBlockGetsCalledWithManager:self.addressReachability];
 }
 
-//Commenting out for Travis Stability
-//- (void)testDomainReachabilityBlock {
-//    [self verifyReachabilityStatusBlockGetsCalledWithManager:self.domainReachability];
-//}
+- (void)testDomainReachabilityBlock {
+    [self verifyReachabilityStatusBlockGetsCalledWithManager:self.domainReachability];
+}
 
 @end
