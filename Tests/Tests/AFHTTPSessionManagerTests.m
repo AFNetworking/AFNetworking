@@ -228,7 +228,7 @@
 #pragma mark - Progress
 
 - (void)testDownloadProgressIsReportedForGET {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
     [self.manager
      GET:@"image"
      parameters:nil
@@ -248,7 +248,7 @@
         [payload appendString:@"AFNetworking"];
     }
 
-    __weak __block XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 
     [self.manager
      POST:@"post"
@@ -256,7 +256,6 @@
      progress:^(NSProgress * _Nonnull uploadProgress) {
          if (uploadProgress.fractionCompleted == 1.0) {
              [expectation fulfill];
-             expectation = nil;
          }
      }
      success:nil
@@ -270,7 +269,7 @@
         [payload appendString:@"AFNetworking"];
     }
 
-    __block __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 
     [self.manager
      POST:@"post"
@@ -281,7 +280,6 @@
      progress:^(NSProgress * _Nonnull uploadProgress) {
          if (uploadProgress.fractionCompleted == 1.0) {
              [expectation fulfill];
-             expectation = nil;
          }
      }
      success:nil
