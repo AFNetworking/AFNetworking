@@ -106,7 +106,6 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
             if ([(NSURLSessionTask *)object state] == NSURLSessionTaskStateCompleted) {
                 @try {
                     [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
-
                     if (context == AFTaskCountOfBytesSentContext) {
                         [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesSent))];
                     }
