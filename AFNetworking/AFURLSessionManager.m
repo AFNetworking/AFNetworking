@@ -679,13 +679,11 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 #pragma mark -
 
 - (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (cancelPendingTasks) {
-            [self.session invalidateAndCancel];
-        } else {
-            [self.session finishTasksAndInvalidate];
-        }
-    });
+    if (cancelPendingTasks) {
+        [self.session invalidateAndCancel];
+    } else {
+        [self.session finishTasksAndInvalidate];
+    }
 }
 
 #pragma mark -
