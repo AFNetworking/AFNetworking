@@ -77,6 +77,18 @@ static NSData * AFJSONTestData() {
     XCTAssertNotNil(error, @"Expected non-nil error.");
 }
 
+- (void)testThatJSONRequestSerializationErrorsWithInvalidJSON {
+    NSDictionary *parameters = @{@"key":[NSSet setWithObject:@"value"]};
+    NSError *error = nil;
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:AFNetworkingTestsBaseURLString parameters:parameters error:&error];
+    
+    XCTAssertNil(request, @"Request should be nil");
+    XCTAssertNotNil(error, @"Serialization error should be not nil");
+    XCTAssertEqualObjects(error.domain, AFURLRequestSerializationErrorDomain);
+    XCTAssertEqual(error.code, NSURLErrorCannotDecodeContentData);
+    XCTAssertEqualObjects(error.localizedFailureReason, @"The `parameters` argument is not valid JSON.");
+}
+
 @end
 
 #pragma mark -
