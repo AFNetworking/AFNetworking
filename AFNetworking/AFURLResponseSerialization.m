@@ -257,7 +257,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         responseObject = AFJSONObjectByRemovingKeysWithNullValues(responseObject, self.readingOptions);
     }
 
-    if (error) {
+    if (error && !responseObject) {
         *error = AFErrorWithUnderlyingError(serializationError, *error);
     }
 
@@ -378,7 +378,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     NSError *serializationError = nil;
     NSXMLDocument *document = [[NSXMLDocument alloc] initWithData:data options:self.options error:&serializationError];
 
-    if (error) {
+    if (error && !document) {
         *error = AFErrorWithUnderlyingError(serializationError, *error);
     }
 
@@ -465,7 +465,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         responseObject = [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:NULL error:&serializationError];
     }
 
-    if (error) {
+    if (error && !responseObject) {
         *error = AFErrorWithUnderlyingError(serializationError, *error);
     }
 
