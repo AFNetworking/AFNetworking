@@ -25,6 +25,13 @@
 
 #import "AFURLSessionManager.h"
 
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+#define NSFoundationVersionNumber_With_Fixed_28588583_bug 0.0
+#else
+#define NSFoundationVersionNumber_With_Fixed_28588583_bug DBL_MAX
+#endif
+
+
 @interface AFURLSessionManagerTests : AFTestCase
 @property (readwrite, nonatomic, strong) AFURLSessionManager *localManager;
 @property (readwrite, nonatomic, strong) AFURLSessionManager *backgroundManager;
@@ -44,15 +51,20 @@
     self.localManager = [[AFURLSessionManager alloc] init];
     [self.localManager.session.configuration.URLCache removeAllCachedResponses];
 
-    //Unfortunately, iOS 7 throws an exception when trying to create a background URL Session inside this test target, which means our tests here can only run on iOS 8+
-    //Travis actually needs the try catch here. Just doing if ([NSURLSessionConfiguration respondsToSelector:@selector(backgroundSessionWithIdentifier)]) wasn't good enough.
-    @try {
+    //It was discovered that background sessions were hanging the test target
+    //on iOS 10 and Xcode 8.
+    //
+    //rdar://28588583
+    //
+    //For now, we'll disable the unit tests for background managers until that can
+    //be resolved
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_With_Fixed_28588583_bug) {
         NSString *identifier = [NSString stringWithFormat:@"com.afnetworking.tests.urlsession.%@", [[NSUUID UUID] UUIDString]];
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
         self.backgroundManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     }
-    @catch (NSException *exception) {
-
+    else {
+        self.backgroundManager = nil;
     }
 }
 
@@ -384,6 +396,7 @@
                                                             downloadProgress:nil
                                                            completionHandler:nil];
         XCTAssert([NSStringFromClass([task class]) isEqualToString:@"__NSCFBackgroundDataTask"]);
+        [task cancel];
     } else {
         NSLog(@"Unable to run %@ because self.backgroundManager is nil", NSStringFromSelector(_cmd));
     }
@@ -399,6 +412,7 @@
                                                              completionHandler:nil];
 #pragma clang diagnostic pop
         XCTAssert([NSStringFromClass([task class]) isEqualToString:@"__NSCFBackgroundUploadTask"]);
+        [task cancel];
     } else {
         NSLog(@"Unable to run %@ because self.backgroundManager is nil", NSStringFromSelector(_cmd));
     }
@@ -411,6 +425,7 @@
                                                                      destination:nil
                                                                completionHandler:nil];
         XCTAssert([NSStringFromClass([task class]) isEqualToString:@"__NSCFBackgroundDownloadTask"]);
+        [task cancel];
     } else {
         NSLog(@"Unable to run %@ because self.backgroundManager is nil", NSStringFromSelector(_cmd));
     }
