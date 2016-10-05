@@ -8,6 +8,10 @@ env:
   - FASTLANE_LANE=ci_commit
 matrix:
   include:
+    - osx_image: xcode8
+      env: FASTLANE_ENV=ios10
+    - osx_image: xcode8
+      env: FASTLANE_ENV=tvos10
     - osx_image: xcode7.3
       env: FASTLANE_LANE=code_coverage FASTLANE_ENV=default
     - osx_image: xcode7.3
@@ -15,21 +19,21 @@ matrix:
     - osx_image: xcode7.3
       env: FASTLANE_ENV=ios84
     - osx_image: xcode7.3
-      env: FASTLANE_ENV=tvos91	  
+      env: FASTLANE_ENV=tvos91
     - osx_image: xcode7.3
       env: FASTLANE_ENV=osx
     - osx_image: xcode7.3
       env: FASTLANE_ENV=ios93
     - osx_image: xcode7.2
-      env: FASTLANE_ENV=ios92_xcode72	  
+      env: FASTLANE_ENV=ios92
     - osx_image: xcode7.1
-      env: FASTLANE_ENV=ios91_xcode71	  
+      env: FASTLANE_ENV=ios91
     - osx_image: xcode7.1
-      env: FASTLANE_ENV=tvos90_xcode71
+      env: FASTLANE_ENV=tvos90
     - osx_image: xcode7
-      env: FASTLANE_ENV=ios81_xcode7	  
+      env: FASTLANE_ENV=ios81
     - osx_image: xcode7
-      env: FASTLANE_ENV=ios90_xcode7	  
+      env: FASTLANE_ENV=ios90
 before_install:
   # Force bundler 1.12.5 because version 1.13 has issues, see https://github.com/fastlane/fastlane/issues/6065#issuecomment-246044617
   - gem uninstall bundler -v '>1.12.5' --force || echo "bundler >1.12.5 is not installed"
