@@ -34,7 +34,7 @@
 - (void)setUp {
     [super setUp];
     self.webView = [UIWebView new];
-    self.HTMLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://httpbin.org/html"]];
+    self.HTMLRequest = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"html"]];
 }
 
 - (void)testNilProgressDoesNotCauseCrash {
