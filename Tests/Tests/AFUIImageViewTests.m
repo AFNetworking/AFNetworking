@@ -28,10 +28,8 @@
 @property (nonatomic, strong) NSURLRequest *cachedImageRequest;
 @property (nonatomic, strong) UIImageView *imageView;
 
-@property (nonatomic, strong) NSURL *error404URL;
 @property (nonatomic, strong) NSURLRequest *error404URLRequest;
 
-@property (nonatomic, strong) NSURL *jpegURL;
 @property (nonatomic, strong) NSURLRequest *jpegURLRequest;
 
 @end
@@ -46,12 +44,9 @@
 
     self.imageView = [UIImageView new];
 
-    self.jpegURL = [NSURL URLWithString:@"https://httpbin.org/image/jpeg"];
     self.jpegURLRequest = [NSURLRequest requestWithURL:self.jpegURL];
 
-    self.error404URL = [NSURL URLWithString:@"https://httpbin.org/status/404"];
-    self.error404URLRequest = [NSURLRequest requestWithURL:self.error404URL];
-
+    self.error404URLRequest = [NSURLRequest requestWithURL:[self URLWithStatusCode:404]];
 }
 
 - (void)tearDown {

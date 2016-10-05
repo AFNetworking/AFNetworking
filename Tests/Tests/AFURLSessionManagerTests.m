@@ -441,7 +441,7 @@
 }
 
 - (NSURLRequest *)_delayURLRequest {
-    return [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"delay/1"]];
+    return [NSURLRequest requestWithURL:self.delayURL];
 }
 
 - (IMP)_implementationForTask:(NSURLSessionTask  *)task selector:(SEL)selector {
