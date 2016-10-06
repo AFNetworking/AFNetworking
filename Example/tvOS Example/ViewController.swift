@@ -31,7 +31,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
         for _ in 1...100 {
             let gravatar = Gravatar(
-                emailAddress: NSUUID().UUIDString,
+                emailAddress: UUID().uuidString,
                 defaultImage: Gravatar.DefaultImage.Identicon,
                 forceDefault: true
             )
@@ -45,21 +45,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         // Dispose of any resources that can be recreated.
     }
 
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return gravatars.count
     }
 
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionViewCell", forIndexPath: indexPath) as! CollectionViewCell
-        cell.update(forGravatar: gravatars[indexPath.item])
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionViewCell", for: indexPath) as! CollectionViewCell
+        cell.update(forGravatar: gravatars[(indexPath as NSIndexPath).item])
         return cell
     }
 
-    func collectionView(collectionView: UICollectionView, canFocusItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
         return true
     }
 
@@ -73,7 +73,7 @@ class CollectionViewCell : UICollectionViewCell {
     }
 
     func update(forGravatar gravatar:Gravatar) {
-        self.avatarView.setImageWithURL(gravatar.URL(size: self.bounds.size.width))
+        self.avatarView.setImageWith(gravatar.URL(size: self.bounds.size.width) as URL)
     }
 }
 

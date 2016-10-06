@@ -40,6 +40,22 @@ NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
     return [NSURL URLWithString:AFNetworkingTestsBaseURLString];
 }
 
+- (NSURL *)pngURL {
+    return [self.baseURL URLByAppendingPathComponent:@"image/png"];
+}
+
+- (NSURL *)jpegURL {
+    return [self.baseURL URLByAppendingPathComponent:@"image/jpeg"];
+}
+
+- (NSURL *)delayURL {
+    return [self.baseURL URLByAppendingPathComponent:@"delay/1"];
+}
+
+- (NSURL *)URLWithStatusCode:(NSInteger)statusCode {
+    return [self.baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"status/%@", @(statusCode)]];
+}
+
 - (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler {
     [self waitForExpectationsWithTimeout:self.networkTimeout handler:handler];
 }

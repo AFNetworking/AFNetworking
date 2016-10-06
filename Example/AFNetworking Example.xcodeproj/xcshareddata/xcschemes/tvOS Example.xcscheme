@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0710"
+   LastUpgradeVersion = "0800"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "298D7C3A1BC2C79500FD3B3E"
-               BuildableName = "AFNetworking iOS Tests.xctest"
-               BlueprintName = "AFNetworking iOS Tests"
+               BlueprintIdentifier = "2987B0AD1BC408A200179A4C"
+               BuildableName = "AFNetworking tvOS Tests.xctest"
+               BlueprintName = "AFNetworking tvOS Tests"
                ReferencedContainer = "container:../AFNetworking.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

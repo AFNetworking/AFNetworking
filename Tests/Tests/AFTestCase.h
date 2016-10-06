@@ -26,6 +26,11 @@ extern NSString * const AFNetworkingTestsBaseURLString;
 @interface AFTestCase : XCTestCase
 
 @property (nonatomic, strong, readonly) NSURL *baseURL;
+@property (nonatomic, strong, readonly) NSURL *pngURL;
+@property (nonatomic, strong, readonly) NSURL *jpegURL;
+@property (nonatomic, strong, readonly) NSURL *delayURL;
+- (NSURL *)URLWithStatusCode:(NSInteger)statusCode;
+
 @property (nonatomic, assign) NSTimeInterval networkTimeout;
 
 - (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler;

@@ -35,10 +35,8 @@
     self.downloader = [[AFImageDownloader alloc] init];
     [[AFImageDownloader defaultURLCache] removeAllCachedResponses];
     [[[AFImageDownloader defaultInstance] imageCache] removeAllImages];
-    NSURL *pngURL = [NSURL URLWithString:@"https://httpbin.org/image/png"];
-    self.pngRequest = [NSURLRequest requestWithURL:pngURL];
-    NSURL *jpegURL = [NSURL URLWithString:@"https://httpbin.org/image/jpeg"];
-    self.jpegRequest = [NSURLRequest requestWithURL:jpegURL];
+    self.pngRequest = [NSURLRequest requestWithURL:self.pngURL];
+    self.jpegRequest = [NSURLRequest requestWithURL:self.jpegURL];
 }
 
 - (void)tearDown {
@@ -66,8 +64,7 @@
 
 - (void)testThatImageDownloaderReturnsNilWithInvalidURL
 {
-    NSURL *pngURL = [NSURL URLWithString:@"https://httpbin.org/image/png"];
-    NSMutableURLRequest *mutableURLRequest = [NSMutableURLRequest requestWithURL:pngURL];
+    NSMutableURLRequest *mutableURLRequest = [NSMutableURLRequest requestWithURL:self.pngURL];
     [mutableURLRequest setURL:nil];
     /** NSURLRequest nor NSMutableURLRequest can be initialized with a nil URL, 
      *  but NSMutableURLRequest can have its URL set to nil 
@@ -420,8 +417,7 @@
 }
 
 - (void)testThatItAlwaysCallsTheFailureHandlerOnTheMainQueue {
-    NSURL *url = [NSURL URLWithString:@"https://httpbin.org/status/404"];
-    NSURLRequest *notFoundRequest = [NSURLRequest requestWithURL:url];
+    NSURLRequest *notFoundRequest = [NSURLRequest requestWithURL:[self URLWithStatusCode:404]];
     XCTestExpectation *expectation = [self expectationWithDescription:@"image download should fail"];
     __block BOOL failureIsOnMainThread = false;
     [self.downloader
