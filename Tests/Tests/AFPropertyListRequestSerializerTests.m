@@ -1,4 +1,4 @@
-// AFPropertyListResponseSerializerTests.m
+// AFPropertyListRequestSerializerTests.m
 // Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
