@@ -50,6 +50,7 @@
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:AFNetworkingTestsBaseURLString parameters:parameters error:&error];
     
     XCTAssertNil(request, @"Expected nil request.");
+    XCTAssertNotNil(error, @"Expected non-nil error.");
 }
 
 @end
