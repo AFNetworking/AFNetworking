@@ -21,8 +21,6 @@
 
 #import <XCTest/XCTest.h>
 
-extern NSString * const AFNetworkingTestsBaseURLString;
-
 @interface AFTestCase : XCTestCase
 
 @property (nonatomic, strong, readonly) NSURL *baseURL;
