@@ -168,4 +168,18 @@ static NSData * AFJSONTestData() {
     XCTAssertNil(responseObject[@"array"][0][@"subnullkey"]);
 }
 
+- (void)testThatJSONResponseSerializerCanBeCopied {
+    [self.responseSerializer setAcceptableStatusCodes:[NSIndexSet indexSetWithIndex:100]];
+    [self.responseSerializer setAcceptableContentTypes:[NSSet setWithObject:@"test/type"]];
+    [self.responseSerializer setReadingOptions:NSJSONReadingMutableLeaves];
+    [self.responseSerializer setRemovesKeysWithNullValues:YES];
+
+    AFJSONResponseSerializer *copiedSerializer = [self.responseSerializer copy];
+    XCTAssertNotEqual(copiedSerializer, self.responseSerializer);
+    XCTAssertEqual(copiedSerializer.acceptableStatusCodes, self.responseSerializer.acceptableStatusCodes);
+    XCTAssertEqual(copiedSerializer.acceptableContentTypes, self.responseSerializer.acceptableContentTypes);
+    XCTAssertEqual(copiedSerializer.readingOptions, self.responseSerializer.readingOptions);
+    XCTAssertEqual(copiedSerializer.removesKeysWithNullValues, self.responseSerializer.removesKeysWithNullValues);
+}
+
 @end

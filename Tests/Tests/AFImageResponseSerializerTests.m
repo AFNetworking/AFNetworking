@@ -33,11 +33,14 @@
 
 - (void)testImageSerializerCanBeCopied {
     AFImageResponseSerializer *responseSerializer = [AFImageResponseSerializer serializer];
+    [responseSerializer setAcceptableContentTypes:[NSSet setWithObject:@"test/type"]];
+    [responseSerializer setAcceptableStatusCodes:[NSIndexSet indexSetWithIndex:100]];
+
     AFImageResponseSerializer *copiedSerializer = [responseSerializer copy];
     XCTAssertNotNil(copiedSerializer);
     XCTAssertNotEqual(copiedSerializer, responseSerializer);
-    XCTAssertTrue([copiedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
-    XCTAssertTrue([copiedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
+    XCTAssertEqual(copiedSerializer.acceptableContentTypes, responseSerializer.acceptableContentTypes);
+    XCTAssertEqual(copiedSerializer.acceptableStatusCodes, responseSerializer.acceptableStatusCodes);
 #if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     XCTAssertTrue(copiedSerializer.automaticallyInflatesResponseImage == responseSerializer.automaticallyInflatesResponseImage);
     XCTAssertTrue(fabs(copiedSerializer.imageScale - responseSerializer.imageScale) <= 0.001);

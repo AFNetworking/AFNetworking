@@ -94,6 +94,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
 
+///-------------------------------
+/// @name Managing Security Policy
+///-------------------------------
+
+/**
+ The security policy used by created session to evaluate server trust for secure connections. `AFURLSessionManager` uses the `defaultPolicy` unless otherwise specified. A security policy configured with `AFSSLPinningModePublicKey` or `AFSSLPinningModeCertificate` can only be applied on a session manager initialized with a secure base URL (i.e. https). Applying a security policy with pinning enabled on an insecure session manager throws an `Invalid Security Policy` exception.
+ */
+@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
+
 ///---------------------
 /// @name Initialization
 ///---------------------

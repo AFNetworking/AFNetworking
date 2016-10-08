@@ -131,7 +131,7 @@
                 }
                 [strongSelf loadData:responseObject MIMEType:MIMEType textEncodingName:textEncodingName baseURL:[task.currentRequest URL]];
 
-                if ([strongSelf.delegate respondsToSelector:@selector(webViewDidStartLoad:)]) {
+                if ([strongSelf.delegate respondsToSelector:@selector(webViewDidFinishLoad:)]) {
                     [strongSelf.delegate webViewDidFinishLoad:strongSelf];
                 }
             }
