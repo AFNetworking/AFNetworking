@@ -36,6 +36,27 @@
 
 #pragma mark -
 
+- (void)testThatPropertyListResponseSerializerAcceptsPlistData {
+    NSData *data = [NSPropertyListSerialization dataWithPropertyList:@{@"foo": @"bar"} format:NSPropertyListXMLFormat_v1_0 options:0 error:NULL];
+    
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"application/x-plist"}];
+    NSError *error = nil;
+    id responseObject = [self.responseSerializer responseObjectForResponse:response data:data error:&error];
+    
+    XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]], @"Expected valid dictionary.");
+}
+
+- (void)testThatPropertyListResponseSerializerHandlesInvalidPlistData {
+    NSData *data = [NSJSONSerialization dataWithJSONObject:@{@"foo": @"bar"} options:(NSJSONWritingOptions)0 error:nil];
+    
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"application/x-plist"}];
+    NSError *error = nil;
+    id responseObject = [self.responseSerializer responseObjectForResponse:response data:data error:&error];
+    
+    XCTAssertNil(responseObject, @"Expected nil responseObject.");
+    XCTAssertNotNil(error, @"Expected non-nil error.");
+}
+
 - (void)testThatPropertyListResponseSerializerHandles204 {
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:204 HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"application/x-plist"}];
     NSError *error;
