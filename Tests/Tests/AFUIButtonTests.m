@@ -66,7 +66,7 @@
               evaluatedWithObject:self.button
                           handler:nil];
     
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatForegroundImageCanBeCancelledAndDownloadedImmediately {
@@ -84,7 +84,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertNotNil(responseImage);
 }
 
@@ -103,7 +103,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertNotNil(responseImage);
 }
 

@@ -56,6 +56,10 @@ NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
     return [self.baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"status/%@", @(statusCode)]];
 }
 
+- (void)waitForExpectationsWithCommonTimeout {
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
 - (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler {
     [self waitForExpectationsWithTimeout:self.networkTimeout handler:handler];
 }
