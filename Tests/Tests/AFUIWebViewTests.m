@@ -48,7 +48,7 @@
          return HTML;
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testNULLProgressDoesNotCauseCrash {
@@ -61,7 +61,7 @@
          return HTML;
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testProgressIsSet {
@@ -78,7 +78,7 @@
     [self keyValueObservingExpectationForObject:progress
                                         keyPath:@"fractionCompleted"
                                   expectedValue:@(1.0)];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testRequestWithCustomHeaders {
@@ -98,7 +98,7 @@
          return string;
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 @end

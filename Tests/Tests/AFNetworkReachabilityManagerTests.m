@@ -79,7 +79,7 @@
 
     [manager startMonitoring];
 
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testAddressReachabilityNotification {
@@ -108,7 +108,7 @@
 
     [manager startMonitoring];
 
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [manager setReachabilityStatusChangeBlock:nil];
     
 }
