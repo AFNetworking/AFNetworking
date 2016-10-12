@@ -45,7 +45,7 @@ static NSData * AFJSONTestData() {
 - (void)testThatJSONRequestSerializationHandlesParametersDictionary {
     NSDictionary *parameters = @{@"key":@"value"};
     NSError *error = nil;
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:AFNetworkingTestsBaseURLString parameters:parameters error:&error];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:self.baseURL.absoluteString parameters:parameters error:&error];
 
     XCTAssertNil(error, @"Serialization error should be nil");
 
@@ -57,7 +57,7 @@ static NSData * AFJSONTestData() {
 - (void)testThatJSONRequestSerializationHandlesParametersArray {
     NSArray *parameters = @[@{@"key":@"value"}];
     NSError *error = nil;
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:AFNetworkingTestsBaseURLString parameters:parameters error:&error];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:self.baseURL.absoluteString parameters:parameters error:&error];
 
     XCTAssertNil(error, @"Serialization error should be nil");
 
@@ -71,7 +71,7 @@ static NSData * AFJSONTestData() {
     
     NSDictionary *parameters = @{@"key":string};
     NSError *error = nil;
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:AFNetworkingTestsBaseURLString parameters:parameters error:&error];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:self.baseURL.absoluteString parameters:parameters error:&error];
     
     XCTAssertNil(request, @"Expected nil request.");
     XCTAssertNotNil(error, @"Expected non-nil error.");
@@ -80,7 +80,7 @@ static NSData * AFJSONTestData() {
 - (void)testThatJSONRequestSerializationErrorsWithInvalidJSON {
     NSDictionary *parameters = @{@"key":[NSSet setWithObject:@"value"]};
     NSError *error = nil;
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:AFNetworkingTestsBaseURLString parameters:parameters error:&error];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:self.baseURL.absoluteString parameters:parameters error:&error];
     
     XCTAssertNil(request, @"Request should be nil");
     XCTAssertNotNil(error, @"Serialization error should be not nil");

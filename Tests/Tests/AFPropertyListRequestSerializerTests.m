@@ -39,7 +39,7 @@
 - (void)testThatPropertyListRequestSerializerAcceptsPlist {
     NSDictionary *parameters = @{@"key":@"value"};
     NSError *error = nil;
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:AFNetworkingTestsBaseURLString parameters:parameters error:&error];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:self.baseURL.absoluteString parameters:parameters error:&error];
     
     XCTAssertNotNil(request, @"Expected non-nil request.");
 }
@@ -47,7 +47,7 @@
 - (void)testThatPropertyListRequestSerializerHandlesInvalidPlist {
     NSDictionary *parameters = @{@42:@"value"};
     NSError *error = nil;
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:AFNetworkingTestsBaseURLString parameters:parameters error:&error];
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:self.baseURL.absoluteString parameters:parameters error:&error];
     
     XCTAssertNil(request, @"Expected nil request.");
     XCTAssertNotNil(error, @"Expected non-nil error.");
