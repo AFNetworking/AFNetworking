@@ -64,12 +64,9 @@
                              handler:^BOOL(NSNotification *note) {
                                  AFNetworkReachabilityStatus status;
                                  status = [note.userInfo[AFNetworkingReachabilityNotificationStatusItem] integerValue];
-                                 BOOL reachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
-                                                   || status == AFNetworkReachabilityStatusReachableViaWWAN);
-
-                                 XCTAssertEqual(reachable, manager.isReachable, @"Expected status to match 'isReachable'");
-
-                                 return reachable;
+                                 BOOL isReachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
+                                                     || status == AFNetworkReachabilityStatusReachableViaWWAN);
+                                 return isReachable;
                              }];
 
     [manager startMonitoring];
@@ -89,14 +86,10 @@
 {
     __weak __block XCTestExpectation *expectation = [self expectationWithDescription:@"reachability status change block gets called"];
 
-    typeof(manager) __weak weakManager = manager;
     [manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        BOOL reachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
-                          || status == AFNetworkReachabilityStatusReachableViaWWAN);
-
-        XCTAssertEqual(reachable, weakManager.isReachable, @"Expected status to match 'isReachable'");
-
-        if (reachable) {
+        BOOL isReachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
+                            || status == AFNetworkReachabilityStatusReachableViaWWAN);
+        if (isReachable) {
             [expectation fulfill];
             expectation = nil;
         }
