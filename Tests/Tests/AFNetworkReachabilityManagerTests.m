@@ -87,7 +87,7 @@
 
 - (void)verifyReachabilityStatusBlockGetsCalledWithManager:(AFNetworkReachabilityManager *)manager
 {
-    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"reachability status change block gets called"];
+    __weak __block XCTestExpectation *expectation = [self expectationWithDescription:@"reachability status change block gets called"];
 
     typeof(manager) __weak weakManager = manager;
     [manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
@@ -98,6 +98,7 @@
 
         if (reachable) {
             [expectation fulfill];
+            expectation = nil;
         }
     }];
 
