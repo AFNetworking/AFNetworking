@@ -83,7 +83,7 @@ static NSData * AFXMLTestData() {
     NSError *error = nil;
     [self.responseSerializer responseObjectForResponse:response data:[@"<foo" dataUsingEncoding:NSUTF8StringEncoding] error:&error];
 
-    XCTAssertNotNil(error, @"Serialization error should be nil");
+    XCTAssertNotNil(error, @"Serialization error should not be nil");
 }
 
 - (void)testThatXMLDocumentResponseSerializerCanBeCopied {
