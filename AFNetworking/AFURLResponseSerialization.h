@@ -163,7 +163,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init;
 
 /**
- Input and output options specifically intended for `NSXMLDocument` objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONReadingOptions". `0` by default.
+ Input and output options specifically intended for `NSXMLDocument` objects. For possible values, see the `NSXMLDocument` documentation section "Input and Output Options". `0` by default.
  */
 @property (nonatomic, assign) NSUInteger options;
 
