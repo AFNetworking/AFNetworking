@@ -43,7 +43,7 @@ static NSData * AFXMLTestData() {
     self.responseSerializer = [AFXMLParserResponseSerializer serializer];
 }
 
-- (void)testThatXMLParserResponseSerializerAccpetsApplicationXMLMimeType {
+- (void)testThatXMLParserResponseSerializerAcceptsApplicationXMLMimeType {
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"application/xml"}];
     NSError *error = nil;
     [self.responseSerializer validateResponse:response data:AFXMLTestData() error:&error];
@@ -51,7 +51,7 @@ static NSData * AFXMLTestData() {
     XCTAssertNil(error, @"Error handling application/xml");
 }
 
-- (void)testThatXMLParserResponseSerializerAccpetsTextXMLMimeType {
+- (void)testThatXMLParserResponseSerializerAcceptsTextXMLMimeType {
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"text/xml"}];
     NSError *error = nil;
     [self.responseSerializer validateResponse:response data:AFXMLTestData() error:&error];
@@ -59,7 +59,7 @@ static NSData * AFXMLTestData() {
     XCTAssertNil(error, @"Error handling text/xml");
 }
 
-- (void)testThatXMLParserResponseSerializerDoesNotAcceptNonStandardXMLMimeType {
+- (void)testThatXMLParserResponseSerializerDoesNotAcceptsNonStandardXMLMimeType {
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type": @"nonstandard/xml"}];
     NSError *error = nil;
     [self.responseSerializer validateResponse:response data:AFXMLTestData() error:&error];
