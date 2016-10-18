@@ -1001,7 +1001,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             NSAssert(disposition == NSURLSessionAuthChallengePerformDefaultHandling || disposition == NSURLSessionAuthChallengeCancelAuthenticationChallenge || disposition == NSURLSessionAuthChallengeRejectProtectionSpace, @"");
             evaluateServerTrust = disposition == NSURLSessionAuthChallengePerformDefaultHandling && [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
         } else {
-            NSAssert(NO, @"Invalid result, must be nil or NSError or NSURLCredential or NSNumber");
+            @throw [NSException exceptionWithName:@"Invalid Return Value" reason:@"The return value from the authentication challenge handler must be nil, an NSError, an NSURLCredential or an NSNumber." userInfo:nil];
         }
     } else if (self.taskDidReceiveAuthenticationChallenge) {
         NSLog(@"WARNING: -[AFURLSessionManager setTaskDidReceiveAuthenticationChallengeBlock:] is deprecated, use -[AFURLSessionManager setAuthenticationChallengeHandler:] instead.");
