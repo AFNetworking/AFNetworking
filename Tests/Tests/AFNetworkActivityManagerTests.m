@@ -74,7 +74,7 @@
          [requestExpectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatNetworkActivityIndicatorTurnsOnAndOffIndicatorWhenRequestFails {
@@ -100,7 +100,7 @@
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          [requestExpectation fulfill];
      }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatVisibilityDelaysAreApplied {
@@ -134,7 +134,7 @@
          [requestExpectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertTrue((indicatorVisbleTime - requestStartTime) > self.networkActivityIndicatorManager.activationDelay);
     XCTAssertTrue((indicatorHiddenTime - requestEndTime) > self.networkActivityIndicatorManager.completionDelay);
 }
@@ -174,7 +174,7 @@
      }
      failure:nil];
 
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 
 }
 

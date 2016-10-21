@@ -27,7 +27,6 @@ before_install:
   - gem install bundler -v 1.12.5 --no-rdoc --no-ri --no-document --quiet
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
-  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 script:
   - set -o pipefail
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV

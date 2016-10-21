@@ -294,15 +294,14 @@ expectedTotalBytes:(int64_t)expectedTotalBytes{
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
-    NSError *fileManagerError = nil;
     self.downloadFileURL = nil;
 
     if (self.downloadTaskDidFinishDownloading) {
         self.downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
         if (self.downloadFileURL) {
-            [[NSFileManager defaultManager] moveItemAtURL:location toURL:self.downloadFileURL error:&fileManagerError];
+            NSError *fileManagerError = nil;
 
-            if (fileManagerError) {
+            if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:self.downloadFileURL error:&fileManagerError]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:fileManagerError.userInfo];
             }
         }
@@ -1143,8 +1142,8 @@ didFinishDownloadingToURL:(NSURL *)location
         if (fileURL) {
             delegate.downloadFileURL = fileURL;
             NSError *error = nil;
-            [[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&error];
-            if (error) {
+            
+            if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&error]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
             }
 

@@ -59,7 +59,7 @@
     self.refreshControl = nil;
     
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [task cancel];
 }
 
@@ -83,7 +83,7 @@
     self.refreshControl = nil;
     
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [task cancel];
 }
 
@@ -109,7 +109,7 @@
     [task resume];
     [task suspend];
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [task cancel];
 }
 
