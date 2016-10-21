@@ -244,7 +244,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     // See https://github.com/rails/rails/issues/1742
     BOOL isSpace = [data isEqualToData:[NSData dataWithBytes:" " length:1]];
     
-    if (data.length == 0 || isSpace) {
+    if (!data || data.length == 0 || isSpace) {
         return nil;
     }
     
