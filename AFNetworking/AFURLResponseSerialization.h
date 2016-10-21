@@ -57,10 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)init;
 
-/**
- The string encoding used to serialize data received from the server, when no string encoding is specified by the response. `NSUTF8StringEncoding` by default.
- */
-@property (nonatomic, assign) NSStringEncoding stringEncoding;
+@property (nonatomic, assign) NSStringEncoding stringEncoding DEPRECATED_MSG_ATTRIBUTE("The string encoding is never used. AFHTTPResponseSerializer only validates status codes and content types but does not try to decode the received data in any way.");
 
 /**
  Creates and returns a serializer with default configuration.

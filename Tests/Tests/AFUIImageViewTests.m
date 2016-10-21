@@ -61,7 +61,7 @@
     [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != nil"]
               evaluatedWithObject:self.imageView
                           handler:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatImageDownloadSucceedsWhenDuplicateRequestIsSentToImageView {
@@ -71,7 +71,7 @@
     [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != nil"]
               evaluatedWithObject:self.imageView
                           handler:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatPlaceholderImageIsSetIfRequestFails {
@@ -84,7 +84,7 @@
                                    failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                                        [expectation fulfill];
                                    }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertEqual(self.imageView.image, placeholder);
 }
 
@@ -99,7 +99,7 @@
          [cacheExpectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 
     __block UIImage *cachedImage = nil;
     __block NSHTTPURLResponse *urlResponse;
@@ -113,7 +113,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertNil(urlResponse);
     XCTAssertNotNil(cachedImage);
     XCTAssertEqual(cachedImage, downloadImage);
@@ -133,7 +133,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertNotNil(responseImage);
 }
 

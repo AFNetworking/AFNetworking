@@ -239,7 +239,7 @@
      }
      success:nil
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testUploadProgressIsReportedForPOST {
@@ -260,7 +260,7 @@
      }
      success:nil
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testUploadProgressIsReportedForStreamingPost {
@@ -284,7 +284,7 @@
      }
      success:nil
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 # pragma mark - HTTP Status Codes
@@ -299,7 +299,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatFailureBlockIsCalledFor404 {
@@ -312,7 +312,7 @@
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error) {
          [expectation fulfill];
      }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatResponseObjectIsEmptyFor204 {
@@ -327,7 +327,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertNil(urlResponseObject);
 }
 
@@ -344,7 +344,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testHEAD {
@@ -357,7 +357,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testPOST {
@@ -371,7 +371,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testPOSTWithConstructingBody {
@@ -392,7 +392,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testPUT {
@@ -405,7 +405,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testDELETE {
@@ -418,7 +418,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testPATCH {
@@ -432,7 +432,7 @@
      }
      failure:nil];
 
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 #pragma mark - Deprecated Rest Interface
@@ -450,7 +450,7 @@
      }
      failure:nil];
 #pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testDeprecatedPOST {
@@ -466,7 +466,7 @@
      }
      failure:nil];
 #pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testDeprecatedPOSTWithConstructingBody {
@@ -489,7 +489,7 @@
      }
      failure:nil];
 #pragma clang diagnostic pop    
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 #pragma mark - Auth
@@ -507,7 +507,7 @@
          XCTFail(@"Request should succeed");
          [expectation fulfill];
      }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 # pragma mark - Security Policy
@@ -582,7 +582,7 @@
          XCTAssertEqual(error.code, NSURLErrorCancelled);
          [expectation fulfill];
      }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [manager invalidateSessionCancelingTasks:YES];
 }
 
@@ -606,7 +606,7 @@
          XCTAssertEqual(error.code, NSURLErrorCancelled);
          [expectation fulfill];
      }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [manager invalidateSessionCancelingTasks:YES];
 }
 

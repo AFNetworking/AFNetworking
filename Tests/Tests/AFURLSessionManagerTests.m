@@ -95,7 +95,7 @@
             completionHandler:nil];
     
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testDataTaskDownloadProgressCanBeKVOd {
@@ -115,7 +115,7 @@
                                                 return new == 1.0 && old != 0.0;
                                             }];
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testDownloadTaskDoesReportProgress {
@@ -131,7 +131,7 @@
             destination:nil
             completionHandler:nil];
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testUploadTaskDoesReportProgress {
@@ -158,7 +158,7 @@
             }
             completionHandler:nil];
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testUploadProgressCanBeKVOd {
@@ -182,7 +182,7 @@
     [self keyValueObservingExpectationForObject:uploadProgress keyPath:NSStringFromSelector(@selector(fractionCompleted)) expectedValue:@(1.0)];
 
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 #pragma mark - rdar://17029580
@@ -210,7 +210,7 @@
             [expectation fulfill];
         });
     }
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 #pragma mark - Issue #2702 Tests
