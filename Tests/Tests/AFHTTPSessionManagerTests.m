@@ -54,7 +54,8 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
-    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
+                                                 completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockResponseObject = responseObject;
         blockError = error;
         [expectation fulfill];
@@ -75,7 +76,8 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
-    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
+                                                 completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
         [expectation fulfill];
     }];
@@ -95,7 +97,8 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
     NSURLRequest *redirectRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
-    NSURLSessionDataTask *redirectTask = [self.manager dataTaskWithRequest:redirectRequest completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    NSURLSessionDataTask *redirectTask = [self.manager dataTaskWithRequest:redirectRequest uploadProgress:nil downloadProgress:nil
+                                                         completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
         [expectation fulfill];
     }];
@@ -225,7 +228,7 @@
 #pragma mark - Progress
 
 - (void)testDownloadProgressIsReportedForGET {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
     [self.manager
      GET:@"image"
      parameters:nil
@@ -236,7 +239,7 @@
      }
      success:nil
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testUploadProgressIsReportedForPOST {
@@ -245,7 +248,7 @@
         [payload appendString:@"AFNetworking"];
     }
 
-    __weak __block XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 
     [self.manager
      POST:@"post"
@@ -253,12 +256,11 @@
      progress:^(NSProgress * _Nonnull uploadProgress) {
          if (uploadProgress.fractionCompleted == 1.0) {
              [expectation fulfill];
-             expectation = nil;
          }
      }
      success:nil
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testUploadProgressIsReportedForStreamingPost {
@@ -267,7 +269,7 @@
         [payload appendString:@"AFNetworking"];
     }
 
-    __block __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 
     [self.manager
      POST:@"post"
@@ -278,12 +280,11 @@
      progress:^(NSProgress * _Nonnull uploadProgress) {
          if (uploadProgress.fractionCompleted == 1.0) {
              [expectation fulfill];
-             expectation = nil;
          }
      }
      success:nil
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 # pragma mark - HTTP Status Codes
@@ -298,7 +299,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatFailureBlockIsCalledFor404 {
@@ -311,7 +312,7 @@
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error) {
          [expectation fulfill];
      }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatResponseObjectIsEmptyFor204 {
@@ -326,7 +327,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertNil(urlResponseObject);
 }
 
@@ -343,7 +344,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testHEAD {
@@ -356,7 +357,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testPOST {
@@ -370,7 +371,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testPOSTWithConstructingBody {
@@ -391,7 +392,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testPUT {
@@ -404,7 +405,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testDELETE {
@@ -417,7 +418,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testPATCH {
@@ -431,7 +432,7 @@
      }
      failure:nil];
 
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 #pragma mark - Deprecated Rest Interface
@@ -449,7 +450,7 @@
      }
      failure:nil];
 #pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testDeprecatedPOST {
@@ -465,7 +466,7 @@
      }
      failure:nil];
 #pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testDeprecatedPOSTWithConstructingBody {
@@ -488,7 +489,7 @@
      }
      failure:nil];
 #pragma clang diagnostic pop    
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 #pragma mark - Auth
@@ -506,7 +507,57 @@
          XCTFail(@"Request should succeed");
          [expectation fulfill];
      }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
+}
+
+# pragma mark - Security Policy
+
+- (void)testValidSecureNoPinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    XCTAssertNoThrow(manager.securityPolicy = securityPolicy);
+}
+
+- (void)testValidInsecureNoPinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    XCTAssertNoThrow(manager.securityPolicy = securityPolicy);
+}
+
+- (void)testValidCertificatePinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    XCTAssertNoThrow(manager.securityPolicy = securityPolicy);
+}
+
+- (void)testInvalidCertificatePinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
+}
+
+- (void)testValidPublicKeyPinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    XCTAssertNoThrow(manager.securityPolicy = securityPolicy);
+}
+
+- (void)testInvalidPublicKeyPinningSecurityPolicy {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://example.com"]];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
+}
+
+- (void)testInvalidCertificatePinningSecurityPolicyWithoutBaseURL {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
+}
+
+- (void)testInvalidPublicKeyPinningSecurityPolicyWithoutBaseURL {
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
+    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
 }
 
 # pragma mark - Server Trust
@@ -531,7 +582,7 @@
          XCTAssertEqual(error.code, NSURLErrorCancelled);
          [expectation fulfill];
      }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [manager invalidateSessionCancelingTasks:YES];
 }
 
@@ -555,7 +606,7 @@
          XCTAssertEqual(error.code, NSURLErrorCancelled);
          [expectation fulfill];
      }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [manager invalidateSessionCancelingTasks:YES];
 }
 

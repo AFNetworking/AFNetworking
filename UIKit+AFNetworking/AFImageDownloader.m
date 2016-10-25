@@ -110,6 +110,16 @@
 @implementation AFImageDownloader
 
 + (NSURLCache *)defaultURLCache {
+    // It's been discovered that a crash will occur on certain versions
+    // of iOS if you customize the cache.
+    //
+    // More info can be found here: https://devforums.apple.com/message/1102182#1102182
+    //
+    // When iOS 7 support is dropped, this should be modified to use
+    // NSProcessInfo methods instead.
+    if ([[[UIDevice currentDevice] systemVersion] compare:@"8.2" options:NSNumericSearch] == NSOrderedAscending) {
+        return [NSURLCache sharedURLCache];
+    }
     return [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024
                                          diskCapacity:150 * 1024 * 1024
                                              diskPath:@"com.alamofire.imagedownloader"];
@@ -235,6 +245,8 @@
 
         createdTask = [self.sessionManager
                        dataTaskWithRequest:request
+                       uploadProgress:nil
+                       downloadProgress:nil
                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
                                __strong __typeof__(weakSelf) strongSelf = weakSelf;

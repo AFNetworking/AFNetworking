@@ -64,51 +64,40 @@
                              handler:^BOOL(NSNotification *note) {
                                  AFNetworkReachabilityStatus status;
                                  status = [note.userInfo[AFNetworkingReachabilityNotificationStatusItem] integerValue];
-                                 BOOL reachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
-                                                   || status == AFNetworkReachabilityStatusReachableViaWWAN);
-
-                                 if (reachable) {
-                                     XCTAssert(reachable,
-                                               @"Expected network to be reachable but got '%@'",
-                                               AFStringFromNetworkReachabilityStatus(status));
-                                     XCTAssertEqual(reachable, manager.isReachable, @"Expected status to match 'isReachable'");
-                                 }
-
-                                 return reachable;
+                                 BOOL isReachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
+                                                     || status == AFNetworkReachabilityStatusReachableViaWWAN);
+                                 return isReachable;
                              }];
 
     [manager startMonitoring];
 
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testAddressReachabilityNotification {
     [self verifyReachabilityNotificationGetsPostedWithManager:self.addressReachability];
 }
 
-//Commenting out for Travis Stability
-//- (void)testDomainReachabilityNotification {
-//    [self verifyReachabilityNotificationGetsPostedWithManager:self.domainReachability];
-//}
+- (void)testDomainReachabilityNotification {
+    [self verifyReachabilityNotificationGetsPostedWithManager:self.domainReachability];
+}
 
 - (void)verifyReachabilityStatusBlockGetsCalledWithManager:(AFNetworkReachabilityManager *)manager
 {
-    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"reachability status change block gets called"];
+    __weak __block XCTestExpectation *expectation = [self expectationWithDescription:@"reachability status change block gets called"];
 
-    typeof(manager) __weak weakManager = manager;
     [manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        BOOL reachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
-                          || status == AFNetworkReachabilityStatusReachableViaWWAN);
-
-        XCTAssert(reachable, @"Expected network to be reachable but got '%@'", AFStringFromNetworkReachabilityStatus(status));
-        XCTAssertEqual(reachable, weakManager.isReachable, @"Expected status to match 'isReachable'");
-
-        [expectation fulfill];
+        BOOL isReachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
+                            || status == AFNetworkReachabilityStatusReachableViaWWAN);
+        if (isReachable) {
+            [expectation fulfill];
+            expectation = nil;
+        }
     }];
 
     [manager startMonitoring];
 
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [manager setReachabilityStatusChangeBlock:nil];
     
 }

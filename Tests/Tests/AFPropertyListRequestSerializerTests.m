@@ -1,4 +1,4 @@
-// AFTestCase.m
+// AFPropertyListRequestSerializerTests.m
 // Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,46 +21,36 @@
 
 #import "AFTestCase.h"
 
-@implementation AFTestCase
+#import "AFURLRequestSerialization.h"
+
+@interface AFPropertyListRequestSerializerTests : AFTestCase
+@property (nonatomic, strong) AFPropertyListRequestSerializer *requestSerializer;
+@end
+
+@implementation AFPropertyListRequestSerializerTests
 
 - (void)setUp {
     [super setUp];
-    self.networkTimeout = 20.0;
-}
-
-- (void)tearDown {
-    [super tearDown];
+    self.requestSerializer = [AFPropertyListRequestSerializer serializer];
 }
 
 #pragma mark -
 
-- (NSURL *)baseURL {
-    NSDictionary *environment = [[NSProcessInfo processInfo] environment];
-    return [NSURL URLWithString:environment[@"HTTPBIN_BASE_URL"] ?: @"https://httpbin.org"];
+- (void)testThatPropertyListRequestSerializerAcceptsPlist {
+    NSDictionary *parameters = @{@"key":@"value"};
+    NSError *error = nil;
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:self.baseURL.absoluteString parameters:parameters error:&error];
+    
+    XCTAssertNotNil(request, @"Expected non-nil request.");
 }
 
-- (NSURL *)pngURL {
-    return [self.baseURL URLByAppendingPathComponent:@"image/png"];
-}
-
-- (NSURL *)jpegURL {
-    return [self.baseURL URLByAppendingPathComponent:@"image/jpeg"];
-}
-
-- (NSURL *)delayURL {
-    return [self.baseURL URLByAppendingPathComponent:@"delay/1"];
-}
-
-- (NSURL *)URLWithStatusCode:(NSInteger)statusCode {
-    return [self.baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"status/%@", @(statusCode)]];
-}
-
-- (void)waitForExpectationsWithCommonTimeout {
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
-}
-
-- (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler {
-    [self waitForExpectationsWithTimeout:self.networkTimeout handler:handler];
+- (void)testThatPropertyListRequestSerializerHandlesInvalidPlist {
+    NSDictionary *parameters = @{@42:@"value"};
+    NSError *error = nil;
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:self.baseURL.absoluteString parameters:parameters error:&error];
+    
+    XCTAssertNil(request, @"Expected nil request.");
+    XCTAssertNotNil(error, @"Expected non-nil error.");
 }
 
 @end
