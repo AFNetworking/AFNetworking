@@ -48,7 +48,7 @@
 }
 
 - (NSURL *)gifsURL {
-    return [NSURL URLWithString:@"http://www.801390.com.cn/imgall/o53xolrtm5uwm4zomnxw2/s/0/1o/01obw.gif"];
+    return [NSURL URLWithString:@"http://67.media.tumblr.com/tumblr_m9cmp8nu1n1qfc8cw.gif"];
 }
 
 - (NSURL *)delayURL {
