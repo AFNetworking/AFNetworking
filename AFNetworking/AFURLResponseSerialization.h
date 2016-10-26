@@ -124,7 +124,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Whether to remove keys with `NSNull` values from response JSON. Defaults to `NO`.
  */
-@property (nonatomic, assign) BOOL removesKeysWithNullValues;
+@property (nonatomic, assign) BOOL removesKeysWithNullValues;//是否排除dic对应的value为NSNull的情况
 
 /**
  Creates and returns a JSON serializer with specified reading and writing options.

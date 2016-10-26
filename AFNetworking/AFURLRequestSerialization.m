@@ -411,16 +411,19 @@ forHTTPHeaderField:(NSString *)field
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
                                                   error:(NSError *__autoreleasing *)error
 {
+    //必须要有method并且method不能为GET和HEAD，因为http支持multipart协议是建立在post上的
     NSParameterAssert(method);
     NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
-
     NSMutableURLRequest *mutableRequest = [self requestWithMethod:method URLString:URLString parameters:nil error:error];
 
+    // 使用initWithURLRequest:stringEncoding:来初始化一个AFStreamingMultipartFormData变量
+    // 每个AFStreamMultipartFormData主要是为了构建bodyStream
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:mutableRequest stringEncoding:NSUTF8StringEncoding];
-
+// 处理parameters，比如上面的@"Filename":"HTTP.pdf"，首先构建一个AFQueryStringPair，其中field为"Filename"，value为"HTTP.pdf" http://www.cnblogs.com/polobymulberry/p/5160946.html#_label3
     if (parameters) {
         for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
             NSData *data = nil;
+            // 然后会根据对应value的类型，构建出一个NSData变量。比如此处的value是一个NSString，所以调用//data = [[pair.value description] dataUsingEncoding:self.stringEncoding];将NSString->NSDat
             if ([pair.value isKindOfClass:[NSData class]]) {
                 data = pair.value;
             } else if ([pair.value isEqual:[NSNull null]]) {
@@ -428,39 +431,53 @@ forHTTPHeaderField:(NSString *)field
             } else {
                 data = [[pair.value description] dataUsingEncoding:self.stringEncoding];
             }
-
+        // bodyStream构造最主要的部分就在这了（虽然后面requestByFinalizingMultipartFormData函数还会稍微处理一下）
+        // 根据data和name构建Request的header和body
             if (data) {
                 [formData appendPartWithFormData:data name:[pair.field description]];
             }
         }
     }
-
+    // 参考上面的例子，其实还是往formData中添加数据
     if (block) {
         block(formData);
     }
-
+    // 做最终的处理，比如设置一下MultipartRequest的bodyStream或者其特有的content-type等等，后面也会详解
     return [formData requestByFinalizingMultipartFormData];
 }
 
+
+/**
+ 将原来request中的HTTPBodyStream内容异步写入到指定文件中，随后调用completionHandler处理。最后返回新的request。
+ @param request multipart形式的request，其中HTTPBodyStream属性不能为nil
+ @param fileURL multipart request中的HTTPBodyStream内容写入的文件位置
+ @param handler 用于处理的block
+ @discussion NSURLSessionTask中有一个bug，当HTTP body的内容是来自NSStream的时候，request无法发送Content-Length到服务器端，此问题在Amazon S3的Web服务中尤为显著。作为一个解决方案，该函数的request参数使用的是multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:error:构建出的request，或者其他HTTPBodyStream属性不为空的request。接着将HTTPBodyStream的内容先写到指定的文件中，再返回一个原来那个request的拷贝，其中该拷贝的HTTPBodyStream属性值要置为空。至此，可以使用AFURLSessionManager -uploadTaskWithRequest:fromFile:progress:completionHandler:函数构建一个上传任务，或者将文件内容转变为NSData类型，并且指定给新request的HTTPBody属性。
+ @see https://github.com/AFNetworking/AFNetworking/issues/1398
+ */
 - (NSMutableURLRequest *)requestWithMultipartFormRequest:(NSURLRequest *)request
                              writingStreamContentsToFile:(NSURL *)fileURL
                                        completionHandler:(void (^)(NSError *error))handler
 {
+    
     NSParameterAssert(request.HTTPBodyStream);
-    NSParameterAssert([fileURL isFileURL]);
+    NSParameterAssert([fileURL isFileURL]);//文件路径要合法
 
     NSInputStream *inputStream = request.HTTPBodyStream;
+    // 使用outputStream将HTTPBodyStream的内容写入到路径为fileURL的文件中
     NSOutputStream *outputStream = [[NSOutputStream alloc] initWithURL:fileURL append:NO];
     __block NSError *error = nil;
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // 指定在当前RunLoop中(currentRunLoop)运行inputStreamm/outputStream，意味着在currentRunLoop中处理流操作
         [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         [outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-
+        // 打开
         [inputStream open];
         [outputStream open];
 
         while ([inputStream hasBytesAvailable] && [outputStream hasSpaceAvailable]) {
+            // 每次从inputStream中读取最多1024bytes大小的数据，放在buffer中，给outputStream写入file
             uint8_t buffer[1024];
 
             NSInteger bytesRead = [inputStream read:buffer maxLength:1024];
@@ -468,7 +485,7 @@ forHTTPHeaderField:(NSString *)field
                 error = inputStream.streamError;
                 break;
             }
-
+             // 将上面读取的buffer写入到outputStream中，即写入文件
             NSInteger bytesWritten = [outputStream write:buffer maxLength:(NSUInteger)bytesRead];
             if (outputStream.streamError || bytesWritten < 0) {
                 error = outputStream.streamError;
@@ -617,19 +634,22 @@ forHTTPHeaderField:(NSString *)field
 #pragma mark -
 
 static NSString * AFCreateMultipartFormBoundary() {
+    // 使用两个十六进制随机数拼接在Boundary后面来表示分隔符 , %08x为整型以16进制方式输出的格式字符串，会把后续对应参数的整型数字，以16进制输出。08的含义为，输出的16进制值占8位，不足部分左侧补0。
     return [NSString stringWithFormat:@"Boundary+%08X%08X", arc4random(), arc4random()];
 }
-
+//  \n是换行，英文是New line，表示使光标到行首
+//  \r是回车，英文是Carriage return，表示使光标下移一格
+//  \r\n表示回车换行
 static NSString * const kAFMultipartFormCRLF = @"\r\n";
-
+//如果是开头分隔符的，那么只需在分隔符结尾加一个换行符
 static inline NSString * AFMultipartFormInitialBoundary(NSString *boundary) {
     return [NSString stringWithFormat:@"--%@%@", boundary, kAFMultipartFormCRLF];
 }
-
+//如果是中间部分分隔符，那么需要分隔符前面和结尾都加换行符
 static inline NSString * AFMultipartFormEncapsulationBoundary(NSString *boundary) {
     return [NSString stringWithFormat:@"%@--%@%@", kAFMultipartFormCRLF, boundary, kAFMultipartFormCRLF];
 }
-
+//如果是末尾，还得使用--分隔符--作为请求体的结束标志
 static inline NSString * AFMultipartFormFinalBoundary(NSString *boundary) {
     return [NSString stringWithFormat:@"%@--%@--%@", kAFMultipartFormCRLF, boundary, kAFMultipartFormCRLF];
 }
@@ -682,8 +702,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @interface AFStreamingMultipartFormData ()
 @property (readwrite, nonatomic, copy) NSMutableURLRequest *request;
 @property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
-@property (readwrite, nonatomic, copy) NSString *boundary;
-@property (readwrite, nonatomic, strong) AFMultipartBodyStream *bodyStream;
+@property (readwrite, nonatomic, copy) NSString *boundary;//mutipart 的请求中的分割符
+@property (readwrite, nonatomic, strong) AFMultipartBodyStream *bodyStream; // mutipart 的请求体
 @end
 
 @implementation AFStreamingMultipartFormData
@@ -846,9 +866,11 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     // Reset the initial and final boundaries to ensure correct Content-Length
     [self.bodyStream setInitialAndFinalBoundaries];
     [self.request setHTTPBodyStream:self.bodyStream];
-
-    [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary] forHTTPHeaderField:@"Content-Type"];
-    [self.request setValue:[NSString stringWithFormat:@"%llu", [self.bodyStream contentLength]] forHTTPHeaderField:@"Content-Length"];
+    //为multipart协议支持构建自己独有的请求头
+    
+    [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary/*分隔符*/] forHTTPHeaderField:@"Content-Type"];//Sets the specified HTTP header field.
+//    If the length of your upload body data can be determined automatically (for example, if you provide the body content with an NSData object), then the value of Content-Length is set for you
+    [self.request setValue:[NSString stringWithFormat:@"%llu", [self.bodyStream/*请求体*/ contentLength]] forHTTPHeaderField:@"Content-Length"];
 
     return self.request;
 }
@@ -916,24 +938,32 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 - (NSInteger)read:(uint8_t *)buffer
         maxLength:(NSUInteger)length
 {
-    if ([self streamStatus] == NSStreamStatusClosed) {
+    if ([self streamStatus] == NSStreamStatusClosed) {// 输入流关闭状态，无法读取
         return 0;
     }
 
     NSInteger totalNumberOfBytesRead = 0;
 
+    // 一般来说都是直接读取length长度的数据，但是考虑到最后一次需要读出的数据长度(self.numberOfBytesInPacket)一般是小于length
+    // 所以此处使用了MIN(length, self.numberOfBytesInPacket)
     while ((NSUInteger)totalNumberOfBytesRead < MIN(length, self.numberOfBytesInPacket)) {
+        // 类似于我们构建request的逆向过程，我们对于HTTPBodyStream的读取也是分成一个一个AFHTTPBodyPart来的
+        // 如果当前AFHTTPBodyPart对象读取完成，那么就使用enumerator读取下一个AFHTTPBodyPart
         if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
             if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
                 break;
             }
         } else {
+            // 读取当前AFHTTPBodyPart对象
             NSUInteger maxLength = MIN(length, self.numberOfBytesInPacket) - (NSUInteger)totalNumberOfBytesRead;
+             // 使用的是AFHTTPBodyPart的read:maxLength:函数
             NSInteger numberOfBytesRead = [self.currentHTTPBodyPart read:&buffer[totalNumberOfBytesRead] maxLength:maxLength];
             if (numberOfBytesRead == -1) {
+                // 读取出错
                 self.streamError = self.currentHTTPBodyPart.inputStream.streamError;
                 break;
             } else {
+                 // totalNumberOfBytesRead表示目前已经读取的字节数，可以作为读取后的数据放置于buffer的起始位置，如buffer[totalNumberOfBytesRead]
                 totalNumberOfBytesRead += numberOfBytesRead;
 
                 if (self.delay > 0.0f) {
@@ -990,9 +1020,11 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 - (void)removeFromRunLoop:(__unused NSRunLoop *)aRunLoop
                   forMode:(__unused NSString *)mode
 {}
-
+// AFMultipartBodyStream函数
+// 计算上面那个bodyStream的总长度作为Content-Length
 - (unsigned long long)contentLength {
     unsigned long long length = 0;
+    // 注意bodyStream是由多个AFHTTPBodyPart对象组成的，比如上面那个例子就是有三个对象组成
     for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
         length += [bodyPart contentLength];
     }
@@ -1101,15 +1133,15 @@ typedef enum {
 
 - (unsigned long long)contentLength {
     unsigned long long length = 0;
-
+ // 需要拼接上分割符
     NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary(self.boundary) : AFMultipartFormEncapsulationBoundary(self.boundary)) dataUsingEncoding:self.stringEncoding];
     length += [encapsulationBoundaryData length];
-
+    // 每个AFHTTPBodyPart对象中还有Content-Disposition等header-使用stringForHeader获取
     NSData *headersData = [[self stringForHeaders] dataUsingEncoding:self.stringEncoding];
     length += [headersData length];
 
     length += _bodyContentLength;
-
+    // 如果是最后一个AFHTTPBodyPart，还需要加上“--分隔符--”的长度
     NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary(self.boundary) dataUsingEncoding:self.stringEncoding] : [NSData data]);
     length += [closingBoundaryData length];
 
@@ -1141,32 +1173,33 @@ typedef enum {
         maxLength:(NSUInteger)length
 {
     NSInteger totalNumberOfBytesRead = 0;
-
+    // 使用分隔符将对应bodyPart数据封装起来
     if (_phase == AFEncapsulationBoundaryPhase) {
         NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary(self.boundary) : AFMultipartFormEncapsulationBoundary(self.boundary)) dataUsingEncoding:self.stringEncoding];
         totalNumberOfBytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
     }
-
+    // 如果读取到的是bodyPart对应的header部分，那么使用stringForHeaders获取到对应header，并读取到buffer中
     if (_phase == AFHeaderPhase) {
         NSData *headersData = [[self stringForHeaders] dataUsingEncoding:self.stringEncoding];
         totalNumberOfBytesRead += [self readData:headersData intoBuffer:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
     }
-
+    // 如果读取到的是bodyPart的内容主体，即inputStream，那么就直接使用inputStream写入数据到buffer中
     if (_phase == AFBodyPhase) {
         NSInteger numberOfBytesRead = 0;
-
+         // 使用系统自带的NSInputStream的read:maxLength:函数读取
         numberOfBytesRead = [self.inputStream read:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
         if (numberOfBytesRead == -1) {
             return -1;
         } else {
             totalNumberOfBytesRead += numberOfBytesRead;
-
+            // 如果内容主体都读取完了，那么很有可能下一次读取的就是下一个bodyPart的header
+            // 所以此处要调用transitionToNextPhase，调整对应_phase
             if ([self.inputStream streamStatus] >= NSStreamStatusAtEnd) {
                 [self transitionToNextPhase];
             }
         }
     }
-
+    // 如果是最后一个AFHTTPBodyPart对象，那么就需要添加在末尾”--分隔符--"
     if (_phase == AFFinalBoundaryPhase) {
         NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary(self.boundary) dataUsingEncoding:self.stringEncoding] : [NSData data]);
         totalNumberOfBytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
@@ -1174,16 +1207,19 @@ typedef enum {
 
     return totalNumberOfBytesRead;
 }
-
+// 上面那个函数中大量使用了read:intoBuffer:maxLength:函数
+// 这里我们将read:intoBuffer:maxLength:理解成一种将NSData类型的data转化为(uint8_t *)类型的buffer的手段，核心是使用了NSData的getBytes:range:函数
 - (NSInteger)readData:(NSData *)data
            intoBuffer:(uint8_t *)buffer
             maxLength:(NSUInteger)length
 {
+     // 求取range，需要考虑文件末尾比maxLength会小的情况
     NSRange range = NSMakeRange((NSUInteger)_phaseReadOffset, MIN([data length] - ((NSUInteger)_phaseReadOffset), length));
+    // 核心：NSData *---->uint8_t*
     [data getBytes:buffer range:range];
 
     _phaseReadOffset += range.length;
-
+    // 读取完成就更新_phase的状态
     if (((NSUInteger)_phaseReadOffset) >= [data length]) {
         [self transitionToNextPhase];
     }
@@ -1239,7 +1275,16 @@ typedef enum {
 @end
 
 #pragma mark -
+/*
+AFJSONRequestSerializer和AFPropertyListRequestSerializer
+这两个类都是继承自AFHTTPRequestSerializer，和父类不同的是：
 
+AFJSONRequestSerializer给参数（parameters）编码时使用的是系统自带的- [NSJSONSerialization dataWithJSONObject:options:error:]方法，另外Content-Type设定的是”application/json”。json格式我想大家都很熟悉了，就不赘述了。
+AFPropertyListRequestSerializer给参数（parameters）编码时使用的是系统自带的- [NSPropertyListSerialization dataWithPropertyList:format:options:error:]方法，另外Content-Type设定的是”application/x-plist”。此处比AFJSONRequestSerializer多了一个format参数，具体的format形式有以下几种：
+1. OpenStep
+2. XML（常用）
+3. BinaryFormat
+ */
 @implementation AFJSONRequestSerializer
 
 + (instancetype)serializer {

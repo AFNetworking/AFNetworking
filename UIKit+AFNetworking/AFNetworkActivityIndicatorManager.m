@@ -141,13 +141,13 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
         [self updateCurrentStateForNetworkActivityChange];
     });
 }
-//#warning mark 这两个函数要弄懂 , , , 钦   此
+//#warning mark 这两个函数要弄懂 , , , 钦   此  *** 收到重新开始的通知
 - (void)networkRequestDidStart:(NSNotification *)notification {
     if ([AFNetworkRequestFromNotification(notification) URL]) {
         [self incrementActivityCount];
     }
 }
-
+//*** 收到完成的通知
 - (void)networkRequestDidFinish:(NSNotification *)notification {
     if ([AFNetworkRequestFromNotification(notification) URL]) {
         [self decrementActivityCount];

@@ -206,7 +206,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 
 #pragma mark -
 
-@implementation AFJSONResponseSerializer
+@implementation AFJSONResponseSerializer//AFJSONResponseSerializer接受的content-type有@"application/json", @"text/json", @"text/javascript"
 
 + (instancetype)serializer {
     return [self serializerWithReadingOptions:(NSJSONReadingOptions)0];
@@ -252,12 +252,14 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     } else {
         return nil;
     }
-
+    // 如果需要移除JSON数据中对应value为空（nil或NSNull）的key，那么就使用AFJSONObjectByRemovingKeysWithNullValues函数
+    // AFJSONObjectByRemovingKeysWithNullValues通过递归的方法，把JSON中NSDictionary的数据（不包括NSArray）中的对应value为空的key移除
     if (self.removesKeysWithNullValues && responseObject) {
         responseObject = AFJSONObjectByRemovingKeysWithNullValues(responseObject, self.readingOptions);
     }
 
     if (error) {
+        // 如果serializationError不为空，那么最终的error其实就是serializationError
         *error = AFErrorWithUnderlyingError(serializationError, *error);
     }
 
@@ -419,7 +421,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 
 #pragma mark -
 
-@implementation AFPropertyListResponseSerializer
+@implementation AFPropertyListResponseSerializer//plist格式
 
 + (instancetype)serializer {
     return [self serializerWithFormat:NSPropertyListXMLFormat_v1_0 readOptions:0];
@@ -460,7 +462,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 
     id responseObject;
     NSError *serializationError = nil;
-
+     // 使用系统的NSPropertyListSerialization来解析NSData数据
     if (data) {
         responseObject = [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:NULL error:&serializationError];
     }
@@ -636,8 +638,9 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 }
 #endif
 
-
+//AFImageResponseSerializer接受的content-type有@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon", @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap"
 @implementation AFImageResponseSerializer
+
 
 - (instancetype)init {
     self = [super init];

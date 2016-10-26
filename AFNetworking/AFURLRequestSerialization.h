@@ -299,7 +299,7 @@ forHTTPHeaderField:(NSString *)field;
  */
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL
                          name:(NSString *)name
-                        error:(NSError * _Nullable __autoreleasing *)error;
+                        error:(NSError * _Nullable __autoreleasing *)error;//根据文件位置构造数据源，使用文件类型名作为mimeType
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
@@ -316,7 +316,7 @@ forHTTPHeaderField:(NSString *)field;
                          name:(NSString *)name
                      fileName:(NSString *)fileName
                      mimeType:(NSString *)mimeType
-                        error:(NSError * _Nullable __autoreleasing *)error;
+                        error:(NSError * _Nullable __autoreleasing *)error;//根据文件位置构造数据源，需要提供mimeType
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the data from the input stream and the multipart form boundary.
@@ -331,7 +331,7 @@ forHTTPHeaderField:(NSString *)field;
                              name:(NSString *)name
                          fileName:(NSString *)fileName
                            length:(int64_t)length
-                         mimeType:(NSString *)mimeType;
+                         mimeType:(NSString *)mimeType;//直接使用NSInputStream作为数据源
 
 /**
  Appends the HTTP header `Content-Disposition: file; filename=#{filename}; name=#{name}"` and `Content-Type: #{mimeType}`, followed by the encoded file data and the multipart form boundary.
@@ -344,7 +344,7 @@ forHTTPHeaderField:(NSString *)field;
 - (void)appendPartWithFileData:(NSData *)data
                           name:(NSString *)name
                       fileName:(NSString *)fileName
-                      mimeType:(NSString *)mimeType;
+                      mimeType:(NSString *)mimeType;//使用NSData作为数据源
 
 /**
  Appends the HTTP headers `Content-Disposition: form-data; name=#{name}"`, followed by the encoded data and the multipart form boundary.
@@ -354,7 +354,7 @@ forHTTPHeaderField:(NSString *)field;
  */
 
 - (void)appendPartWithFormData:(NSData *)data
-                          name:(NSString *)name;
+                          name:(NSString *)name;//使用NSData作为数据源，NSData并不是一个文件，可能只是一个字符串
 
 
 /**
