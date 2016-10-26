@@ -137,7 +137,7 @@
     XCTAssertNotNil(responseImage);
 }
 
-- (void)testGifsImageImageCanBeCancelledAndDownloadedImmediately {
+- (void)testGifsImageCanBeCancelledAndDownloadedImmediately {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
     [self.imageView setImageWithURL:self.gifsURL];
     [self.imageView cancelImageDownloadTask];
