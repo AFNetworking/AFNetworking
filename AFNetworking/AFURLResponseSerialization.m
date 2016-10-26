@@ -615,26 +615,17 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         CGDataProviderRelease(dataProvider);
     } else if ([response.MIMEType isEqualToString:@"image/gif"]) {
         CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
-        
         size_t count = CGImageSourceGetCount(source);
-        
         UIImage *gifImage;
         
-        if (count <= 1) {
-            gifImage = [[UIImage alloc] initWithData:data];
-        }else{
+        if (count > 1) {
             NSMutableArray *images = [NSMutableArray array];
-            
             NSTimeInterval duration = 0.0f;
             
             for (size_t i = 0; i < count; i++) {
                 CGImageRef image = CGImageSourceCreateImageAtIndex(source, i, NULL);
-                
                 duration += AFFrameDurationFromSourceAtIndex(source, i);
-                
-                
                 [images addObject:[UIImage imageWithCGImage:image scale:scale orientation:UIImageOrientationUp]];
-                
                 CGImageRelease(image);
             }
             
@@ -646,8 +637,9 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
         }
         
         CFRelease(source);
-        
-        return gifImage;
+        if (gifImage) {
+            return gifImage;
+        }
     }
 
 
