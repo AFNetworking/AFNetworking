@@ -47,6 +47,10 @@
     return [self.baseURL URLByAppendingPathComponent:@"image/jpeg"];
 }
 
+- (NSURL *)gifsURL {
+    return [NSURL URLWithString:@"http://www.801390.com.cn/imgall/o53xolrtm5uwm4zomnxw2/s/0/1o/01obw.gif"];
+}
+
 - (NSURL *)delayURL {
     return [self.baseURL URLByAppendingPathComponent:@"delay/1"];
 }
