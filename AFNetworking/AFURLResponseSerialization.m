@@ -521,6 +521,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 
 #if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
 #import <CoreGraphics/CoreGraphics.h>
+#import <ImageIO/ImageIO.h>
 #import <UIKit/UIKit.h>
 
 @interface UIImage (AFNetworkingSafeImageLoading)
@@ -555,17 +556,50 @@ static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
     return [[UIImage alloc] initWithCGImage:[image CGImage] scale:scale orientation:image.imageOrientation];
 }
 
+static float AFFrameDurationFromSourceAtIndex(CGImageSourceRef source, NSUInteger index){
+    float frameDuration = 0.1f;
+    CFDictionaryRef cfFrameProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil);
+    NSDictionary *frameProperties = (__bridge NSDictionary *)cfFrameProperties;
+    NSDictionary *gifProperties = frameProperties[(NSString *)kCGImagePropertyGIFDictionary];
+    
+    NSNumber *delayTimeUnclampedProp = gifProperties[(NSString *)kCGImagePropertyGIFUnclampedDelayTime];
+    if (delayTimeUnclampedProp) {
+        frameDuration = [delayTimeUnclampedProp floatValue];
+    }
+    else {
+        
+        NSNumber *delayTimeProp = gifProperties[(NSString *)kCGImagePropertyGIFDelayTime];
+        if (delayTimeProp) {
+            frameDuration = [delayTimeProp floatValue];
+        }
+    }
+    
+    // Many annoying ads specify a 0 duration to make an image flash as quickly as possible.
+    // We follow Firefox's behavior and use a duration of 100 ms for any frames that specify
+    // a duration of <= 10 ms. See <rdar://problem/7689300> and <http://webkit.org/b/36082>
+    // for more information.
+    
+    if (frameDuration < 0.011f) {
+        frameDuration = 0.100f;
+    }
+    
+    CFRelease(cfFrameProperties);
+    return frameDuration;
+}
+
 static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *response, NSData *data, CGFloat scale) {
     if (!data || [data length] == 0) {
         return nil;
     }
 
     CGImageRef imageRef = NULL;
-    CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
 
     if ([response.MIMEType isEqualToString:@"image/png"]) {
+        CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
         imageRef = CGImageCreateWithPNGDataProvider(dataProvider,  NULL, true, kCGRenderingIntentDefault);
+        CGDataProviderRelease(dataProvider);
     } else if ([response.MIMEType isEqualToString:@"image/jpeg"]) {
+        CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
         imageRef = CGImageCreateWithJPEGDataProvider(dataProvider, NULL, true, kCGRenderingIntentDefault);
 
         if (imageRef) {
@@ -578,9 +612,36 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
                 imageRef = NULL;
             }
         }
+        CGDataProviderRelease(dataProvider);
+    } else if ([response.MIMEType isEqualToString:@"image/gif"]) {
+        CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
+        size_t count = CGImageSourceGetCount(source);
+        UIImage *gifImage;
+        
+        if (count > 1) {
+            NSMutableArray *images = [NSMutableArray array];
+            NSTimeInterval duration = 0.0f;
+            
+            for (size_t i = 0; i < count; i++) {
+                CGImageRef image = CGImageSourceCreateImageAtIndex(source, i, NULL);
+                duration += AFFrameDurationFromSourceAtIndex(source, i);
+                [images addObject:[UIImage imageWithCGImage:image scale:scale orientation:UIImageOrientationUp]];
+                CGImageRelease(image);
+            }
+            
+            if (!duration) {
+                duration = (1.0f / 10.0f) * count;
+            }
+            
+            gifImage = [UIImage animatedImageWithImages:images duration:duration];
+        }
+        
+        CFRelease(source);
+        if (gifImage) {
+            return gifImage;
+        }
     }
 
-    CGDataProviderRelease(dataProvider);
 
     UIImage *image = AFImageWithDataAtScale(data, scale);
     if (!imageRef) {
