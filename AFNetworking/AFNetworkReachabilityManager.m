@@ -174,13 +174,13 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
             BOOL connectionRequired = ((flags & kSCNetworkFlagsConnectionRequired) != 0);
             if (SCNetworkReachabilityGetFlags(reachability, &flags)) {
 #if	TARGET_OS_IPHONE
-                BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0);
-                if (isReachable && !connectionRequired) {
+                BOOL isWWAN = ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0);
+                if (isWWAN && !connectionRequired) {
                     self.networkReachabilityStatus = AFNetworkReachabilityStatusReachableViaWWAN;
                     break;
                 }
 #endif	// TARGET_OS_IPHONE
-                isReachable = ((flags & kSCNetworkFlagsReachable) != 0);
+                BOOL isReachable = ((flags & kSCNetworkFlagsReachable) != 0);
                 if (isReachable && !connectionRequired) {
                     self.networkReachabilityStatus = AFNetworkReachabilityStatusReachableViaWWAN;
                 }
