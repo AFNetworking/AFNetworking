@@ -182,7 +182,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #endif	// TARGET_OS_IPHONE
                 BOOL isReachable = ((flags & kSCNetworkFlagsReachable) != 0);
                 if (isReachable && !connectionRequired) {
-                    self.networkReachabilityStatus = AFNetworkReachabilityStatusReachableViaWWAN;
+                    self.networkReachabilityStatus = AFNetworkReachabilityStatusReachableViaWiFi;
                 }
             }
         }while (NO);
