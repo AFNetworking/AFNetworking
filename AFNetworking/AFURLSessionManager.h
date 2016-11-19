@@ -237,7 +237,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @see `attemptsToRecreateUploadTasksForBackgroundSessions`
  */
-- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request
+- (NSURLSessionUploadTask * _Nullable)uploadTaskWithRequest:(NSURLRequest *)request
                                          fromFile:(NSURL *)fileURL
                                          progress:(nullable void (^)(NSProgress *uploadProgress))uploadProgressBlock
                                 completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject, NSError  * _Nullable error))completionHandler;
