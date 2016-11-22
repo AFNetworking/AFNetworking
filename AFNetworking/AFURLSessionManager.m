@@ -615,7 +615,12 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     if (destination) {
         delegate.downloadTaskDidFinishDownloading = ^NSURL * (NSURLSession * __unused session, NSURLSessionDownloadTask *task, NSURL *location) {
-            return destination(location, task.response);
+            if(((NSHTTPURLResponse *) task.response).statusCode != 200) {
+                return location;
+            }
+            else {
+                return destination(location, task.response);
+            }
         };
     }
 
