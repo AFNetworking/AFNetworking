@@ -144,17 +144,20 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 + (instancetype)manager
 {
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 90000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 101100)
-    struct sockaddr_in6 address;
-    bzero(&address, sizeof(address));
-    address.sin6_len = sizeof(address);
-    address.sin6_family = AF_INET6;
-#else
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber10_10_3) {
+        struct sockaddr_in6 address;
+        bzero(&address, sizeof(address));
+        address.sin6_len = sizeof(address);
+        address.sin6_family = AF_INET6;
+        
+        return [self managerForAddress:&address];
+    }
+    
     struct sockaddr_in address;
     bzero(&address, sizeof(address));
     address.sin_len = sizeof(address);
     address.sin_family = AF_INET;
-#endif
+    
     return [self managerForAddress:&address];
 }
 
