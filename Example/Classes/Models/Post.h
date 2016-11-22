@@ -38,4 +38,8 @@
 @end
 
 @interface Post (NSCoding) <NSSecureCoding>
+
+
+
+
 @end

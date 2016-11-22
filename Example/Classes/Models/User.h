@@ -24,6 +24,9 @@
 
 extern NSString * const kUserProfileImageDidLoadNotification;
 
+
+
+
 @interface User : NSObject
 
 @property (readonly, nonatomic, assign) NSUInteger userID;
@@ -33,6 +36,12 @@ extern NSString * const kUserProfileImageDidLoadNotification;
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 @property (nonatomic, strong) NSImage *profileImage;
 #endif
+
+
+
+
+
+
 
 - (instancetype)initWithAttributes:(NSDictionary *)attributes;
 
