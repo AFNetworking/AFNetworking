@@ -42,6 +42,15 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference>
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "298D7C3A1BC2C79500FD3B3E"
+               BuildableName = "AFNetworking iOS Tests.xctest"
+               BlueprintName = "AFNetworking iOS Tests"
+               ReferencedContainer = "container:../AFNetworking.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

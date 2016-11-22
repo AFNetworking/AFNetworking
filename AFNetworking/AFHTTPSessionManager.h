@@ -71,6 +71,7 @@
  @warning Managers for background sessions must be owned for the duration of their use. This can be accomplished by creating an application-wide or shared singleton instance.
  */
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface AFHTTPSessionManager : AFURLSessionManager <NSSecureCoding, NSCopying>
@@ -302,3 +303,8 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+extern NSString * _Nullable const AFNetworkingHTTPSessionDidStartNotification;
+extern NSString * _Nullable const AFNetworkingHTTPSessionDidFinishNotification;
+extern NSString * _Nullable const AFNetworkingHTTPSessionDidCompleteErrorKey;
+extern NSString * _Nullable const AFNetworkingHTTPSessionDidCompleteResponseKey;

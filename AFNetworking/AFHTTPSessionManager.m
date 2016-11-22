@@ -40,6 +40,11 @@
 #import <WatchKit/WatchKit.h>
 #endif
 
+NSString * const AFNetworkingHTTPSessionDidStartNotification    = @"com.alamofire.networking.session.start";
+NSString * const AFNetworkingHTTPSessionDidFinishNotification   = @"com.alamofire.networking.session.finish";
+NSString * const AFNetworkingHTTPSessionDidCompleteErrorKey     = @"com.alamofire.networking.session.error";
+NSString * const AFNetworkingHTTPSessionDidCompleteResponseKey  = @"com.alamofire.networking.session.response";
+
 @interface AFHTTPSessionManager ()
 @property (readwrite, nonatomic, strong) NSURL *baseURL;
 @end
@@ -200,8 +205,12 @@
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     NSError *serializationError = nil;
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters constructingBodyWithBlock:block error:&serializationError];
+    [notificationCenter postNotificationName:AFNetworkingHTTPSessionDidStartNotification object:request userInfo:nil];
+
     if (serializationError) {
+        [notificationCenter postNotificationName:AFNetworkingHTTPSessionDidFinishNotification object:nil userInfo:@{AFNetworkingHTTPSessionDidCompleteErrorKey: serializationError}];
         if (failure) {
             dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
                 failure(nil, serializationError);
@@ -213,13 +222,19 @@
 
     __block NSURLSessionDataTask *task = [self uploadTaskWithStreamedRequest:request progress:uploadProgress completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
         if (error) {
+
+            [notificationCenter postNotificationName:AFNetworkingHTTPSessionDidFinishNotification object:task userInfo:@{AFNetworkingHTTPSessionDidCompleteErrorKey: error}];
+
             if (failure) {
                 failure(task, error);
             }
         } else {
+            [notificationCenter postNotificationName:AFNetworkingHTTPSessionDidFinishNotification object:task userInfo:@{AFNetworkingHTTPSessionDidCompleteResponseKey: responseObject}];
+
             if (success) {
                 success(task, responseObject);
             }
+            
         }
     }];
 
@@ -273,8 +288,14 @@
                                          failure:(void (^)(NSURLSessionDataTask *, NSError *))failure
 {
     NSError *serializationError = nil;
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
+    [notificationCenter postNotificationName:AFNetworkingHTTPSessionDidStartNotification object:request userInfo:nil];
+
     if (serializationError) {
+
+        [notificationCenter postNotificationName:AFNetworkingHTTPSessionDidFinishNotification object:nil userInfo:@{AFNetworkingHTTPSessionDidCompleteErrorKey: serializationError}];
+
         if (failure) {
             dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
                 failure(nil, serializationError);
@@ -290,13 +311,19 @@
                         downloadProgress:downloadProgress
                        completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
         if (error) {
+            [notificationCenter postNotificationName:AFNetworkingHTTPSessionDidFinishNotification object:dataTask userInfo:@{AFNetworkingHTTPSessionDidCompleteErrorKey: error}];
+
             if (failure) {
                 failure(dataTask, error);
             }
+
         } else {
+            [notificationCenter postNotificationName:AFNetworkingHTTPSessionDidFinishNotification object:dataTask userInfo:@{AFNetworkingHTTPSessionDidCompleteResponseKey: responseObject}];
+
             if (success) {
                 success(dataTask, responseObject);
             }
+
         }
     }];
 
