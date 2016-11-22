@@ -210,10 +210,22 @@
 
         return nil;
     }
-
+    __weak typeof(self) wself=self;
     __block NSURLSessionDataTask *task = [self uploadTaskWithStreamedRequest:request progress:uploadProgress completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
+                if (wself.retryFilter!=nil) {
+                    if (wself.retryFilter()) {
+                        [[wself POST:URLString parameters:parameters constructingBodyWithBlock:block progress:uploadProgress success:success failure:failure] resume];
+                        return ;
+                    }
+                }
+                if (wself.retryTimes>0) {
+                    [[wself POST:URLString parameters:parameters constructingBodyWithBlock:block progress:uploadProgress success:success failure:failure] resume];
+                    wself.retryTimes--;
+                    return ;
+                }
+
                 failure(task, error);
             }
         } else {
@@ -283,7 +295,7 @@
 
         return nil;
     }
-
+    __weak typeof(self) wself=self;
     __block NSURLSessionDataTask *dataTask = nil;
     dataTask = [self dataTaskWithRequest:request
                           uploadProgress:uploadProgress
@@ -291,6 +303,18 @@
                        completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
         if (error) {
             if (failure) {
+                if (wself.retryFilter!=nil) {
+                    if (wself.retryFilter()) {
+                        [[wself dataTaskWithHTTPMethod:method URLString:URLString parameters:parameters uploadProgress:uploadProgress downloadProgress:downloadProgress success:success failure:failure] resume];
+                        return ;
+                    }
+                }
+                if (wself.retryTimes>0) {
+                    [[wself dataTaskWithHTTPMethod:method URLString:URLString parameters:parameters uploadProgress:uploadProgress downloadProgress:downloadProgress success:success failure:failure] resume];
+                    wself.retryTimes--;
+                    return ;
+                }
+
                 failure(dataTask, error);
             }
         } else {
