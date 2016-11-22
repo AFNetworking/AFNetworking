@@ -30,7 +30,6 @@
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) NSString *identifier;
 @property (nonatomic, assign) UInt64 totalBytes;
-@property (nonatomic, strong) NSDate *lastAccessDate;
 @property (nonatomic, assign) UInt64 currentMemoryUsage;
 
 @end
@@ -46,28 +45,51 @@
         CGFloat bytesPerPixel = 4.0;
         CGFloat bytesPerSize = imageSize.width * imageSize.height;
         self.totalBytes = (UInt64)bytesPerPixel * (UInt64)bytesPerSize;
-        self.lastAccessDate = [NSDate date];
     }
     return self;
 }
 
 - (UIImage*)accessImage {
-    self.lastAccessDate = [NSDate date];
     return self.image;
 }
 
 - (NSString *)description {
-    NSString *descriptionString = [NSString stringWithFormat:@"Idenfitier: %@  lastAccessDate: %@ ", self.identifier, self.lastAccessDate];
+    NSString *descriptionString = [NSString stringWithFormat:@"Idenfitier: %@", self.identifier];
     return descriptionString;
 
 }
 
 @end
 
+@interface AFLinkedListNode : NSObject
+@property (nonatomic, strong) AFCachedImage *image;
+@property (nonatomic, strong) AFLinkedListNode *next;
+@property (nonatomic, weak) AFLinkedListNode *prev;
+@property (nonatomic, copy) NSString *identifier;
+
+- (instancetype)initWithImage:(AFCachedImage *)image identifier:(NSString *)identifier;
+@end
+
+@implementation AFLinkedListNode
+
+- (instancetype)initWithImage:(AFCachedImage *)image identifier:(NSString *)identifier
+{
+    self = [super init];
+    if (self) {
+        _image = image;
+        _identifier = identifier;
+    }
+    return self;
+}
+
+@end
+
 @interface AFAutoPurgingImageCache ()
-@property (nonatomic, strong) NSMutableDictionary <NSString* , AFCachedImage*> *cachedImages;
+@property (nonatomic, strong) NSMutableDictionary <NSString* , AFLinkedListNode*> *cachedImages;
 @property (nonatomic, assign) UInt64 currentMemoryUsage;
 @property (nonatomic, strong) dispatch_queue_t synchronizationQueue;
+@property (nonatomic, strong) AFLinkedListNode *head;
+@property (nonatomic, strong) AFLinkedListNode *tail;
 @end
 
 @implementation AFAutoPurgingImageCache
@@ -107,37 +129,65 @@
     return result;
 }
 
+- (BOOL)isExceedingMaxUsageAfterAddingImage:(AFCachedImage *)image
+{
+    return self.currentMemoryUsage + image.totalBytes > self.memoryCapacity;
+}
+
+- (void)removeNode:(AFLinkedListNode *)node
+{
+    if (node == self.head && node == self.tail) {
+        self.head = nil;
+        self.tail = nil;
+        return;
+    }
+    if (node == self.head) {
+        node.next.prev = nil;
+        self.head = node.next;
+    } else if (node == self.tail) {
+        node.prev.next = nil;
+        self.tail = node.prev;
+    } else {
+        node.next.prev = node.prev;
+        node.prev.next = node.next;
+    }
+}
+
+- (void)addNodeToHead:(AFLinkedListNode *)node
+{
+    node.prev = nil;
+    self.head.prev = node;
+    node.next = self.head;
+    self.head = node;
+}
+
+
 - (void)addImage:(UIImage *)image withIdentifier:(NSString *)identifier {
     dispatch_barrier_async(self.synchronizationQueue, ^{
         AFCachedImage *cacheImage = [[AFCachedImage alloc] initWithImage:image identifier:identifier];
-
-        AFCachedImage *previousCachedImage = self.cachedImages[identifier];
-        if (previousCachedImage != nil) {
-            self.currentMemoryUsage -= previousCachedImage.totalBytes;
+        AFLinkedListNode *cachedImageNode = self.cachedImages[identifier];
+        if (cachedImageNode != nil) {
+            AFCachedImage *previouslyCachedImage = cachedImageNode.image;
+            cachedImageNode.image = cacheImage;
+            [self removeNode:cachedImageNode];
+            self.currentMemoryUsage -= previouslyCachedImage.totalBytes;
+        } else {
+            cachedImageNode = [[AFLinkedListNode alloc] initWithImage:cacheImage identifier:identifier];
+            self.cachedImages[identifier] = cachedImageNode;
         }
-
-        self.cachedImages[identifier] = cacheImage;
-        self.currentMemoryUsage += cacheImage.totalBytes;
-    });
-
-    dispatch_barrier_async(self.synchronizationQueue, ^{
+        [self addNodeToHead:cachedImageNode];
+        if (self.tail == nil) {
+            self.tail = cachedImageNode;
+        }
+        self.currentMemoryUsage += cachedImageNode.image.totalBytes;
         if (self.currentMemoryUsage > self.memoryCapacity) {
-            UInt64 bytesToPurge = self.currentMemoryUsage - self.preferredMemoryUsageAfterPurge;
-            NSMutableArray <AFCachedImage*> *sortedImages = [NSMutableArray arrayWithArray:self.cachedImages.allValues];
-            NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastAccessDate"
-                                                                           ascending:YES];
-            [sortedImages sortUsingDescriptors:@[sortDescriptor]];
-
-            UInt64 bytesPurged = 0;
-
-            for (AFCachedImage *cachedImage in sortedImages) {
-                [self.cachedImages removeObjectForKey:cachedImage.identifier];
-                bytesPurged += cachedImage.totalBytes;
-                if (bytesPurged >= bytesToPurge) {
-                    break ;
-                }
+            while (self.currentMemoryUsage > self.preferredMemoryUsageAfterPurge) {
+                AFLinkedListNode *currentTail = self.tail;
+                [self removeNode:currentTail];
+                [self.cachedImages removeObjectForKey:currentTail.identifier];
+                self.currentMemoryUsage -= currentTail.image.totalBytes;
+                currentTail = nil;
             }
-            self.currentMemoryUsage -= bytesPurged;
         }
     });
 }
@@ -145,10 +195,11 @@
 - (BOOL)removeImageWithIdentifier:(NSString *)identifier {
     __block BOOL removed = NO;
     dispatch_barrier_sync(self.synchronizationQueue, ^{
-        AFCachedImage *cachedImage = self.cachedImages[identifier];
-        if (cachedImage != nil) {
+        AFLinkedListNode *cachedImageNode = self.cachedImages[identifier];
+        if (cachedImageNode != nil) {
             [self.cachedImages removeObjectForKey:identifier];
-            self.currentMemoryUsage -= cachedImage.totalBytes;
+            [self removeNode:cachedImageNode];
+            self.currentMemoryUsage -= cachedImageNode.image.totalBytes;
             removed = YES;
         }
     });
@@ -161,6 +212,8 @@
         if (self.cachedImages.count > 0) {
             [self.cachedImages removeAllObjects];
             self.currentMemoryUsage = 0;
+            self.head = nil;
+            self.tail = nil;
             removed = YES;
         }
     });
@@ -170,8 +223,12 @@
 - (nullable UIImage *)imageWithIdentifier:(NSString *)identifier {
     __block UIImage *image = nil;
     dispatch_sync(self.synchronizationQueue, ^{
-        AFCachedImage *cachedImage = self.cachedImages[identifier];
-        image = [cachedImage accessImage];
+        AFLinkedListNode *cachedImageNode = self.cachedImages[identifier];
+        image = [cachedImageNode.image accessImage];
+        if (cachedImageNode != self.head) {
+            [self removeNode:cachedImageNode];
+            [self addNodeToHead:cachedImageNode];
+        }
     });
     return image;
 }

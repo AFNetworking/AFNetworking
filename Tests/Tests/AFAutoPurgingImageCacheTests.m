@@ -230,4 +230,20 @@
     }
 }
 
+- (void)testAutoPurgingCachePerformance {
+    UInt64 imageSize = 1020000;
+    NSInteger numberOfImages = 10;
+    NSInteger numberOfImagesAfterPurge = 6;
+    [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:^{
+        self.cache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:numberOfImages * imageSize preferredMemoryCapacity:numberOfImagesAfterPurge * imageSize];
+        [self startMeasuring];
+        for (NSInteger index = 0; index < 10000; index++) {
+            NSString * identifier = [NSString stringWithFormat:@"image-%ld",(long)index];
+            [self.cache addImage:self.testImage withIdentifier:identifier];
+        }
+        [self stopMeasuring];
+        [self.cache removeAllImages];
+        self.cache = nil;
+    }];
+}
 @end
