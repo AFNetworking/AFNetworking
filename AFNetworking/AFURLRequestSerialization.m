@@ -339,6 +339,10 @@ forHTTPHeaderField:(NSString *)field
     });
 }
 
+-(void)clearHTTPHeaderWithKey:(NSString*)key
+{
+    [self.mutableHTTPRequestHeaders removeObjectForKey:key];
+}
 #pragma mark -
 
 - (void)setQueryStringSerializationWithStyle:(AFHTTPRequestQueryStringSerializationStyle)style {
