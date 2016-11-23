@@ -145,8 +145,13 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
         }
     } else if ([value isKindOfClass:[NSArray class]]) {
         NSArray *array = value;
-        for (id nestedValue in array) {
-            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
+        NSString *arrayKey = [NSString stringWithFormat:@"%@[]", key];
+        if (array.count == 0) {
+            [mutableQueryStringComponents addObject:[[AFQueryStringPair alloc] initWithField:arrayKey value:nil]];
+        } else {
+            for (id nestedValue in array) {
+                [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue(arrayKey, nestedValue)];
+            }
         }
     } else if ([value isKindOfClass:[NSSet class]]) {
         NSSet *set = value;
