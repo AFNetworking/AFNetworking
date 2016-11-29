@@ -81,6 +81,8 @@
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 
+    self.startRequestsImmediately = YES;
+    
     return self;
 }
 
@@ -141,8 +143,10 @@
                                                           success:success
                                                           failure:failure];
 
-    [dataTask resume];
-
+    if (self.startRequestsImmediately) {
+        [dataTask resume];
+    }
+    
     return dataTask;
 }
 
@@ -157,8 +161,10 @@
         }
     } failure:failure];
 
-    [dataTask resume];
-
+    if (self.startRequestsImmediately) {
+        [dataTask resume];
+    }
+    
     return dataTask;
 }
 
@@ -178,8 +184,10 @@
 {
     NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@"POST" URLString:URLString parameters:parameters uploadProgress:uploadProgress downloadProgress:nil success:success failure:failure];
 
-    [dataTask resume];
-
+    if (self.startRequestsImmediately) {
+        [dataTask resume];
+    }
+    
     return dataTask;
 }
 
@@ -222,9 +230,11 @@
             }
         }
     }];
-
-    [task resume];
-
+    
+    if (self.startRequestsImmediately) {
+        [task resume];
+    }
+    
     return task;
 }
 
@@ -235,8 +245,10 @@
 {
     NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@"PUT" URLString:URLString parameters:parameters uploadProgress:nil downloadProgress:nil success:success failure:failure];
 
-    [dataTask resume];
-
+    if (self.startRequestsImmediately) {
+        [dataTask resume];
+    }
+    
     return dataTask;
 }
 
@@ -247,8 +259,10 @@
 {
     NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@"PATCH" URLString:URLString parameters:parameters uploadProgress:nil downloadProgress:nil success:success failure:failure];
 
-    [dataTask resume];
-
+    if (self.startRequestsImmediately) {
+        [dataTask resume];
+    }
+    
     return dataTask;
 }
 
@@ -259,8 +273,10 @@
 {
     NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@"DELETE" URLString:URLString parameters:parameters uploadProgress:nil downloadProgress:nil success:success failure:failure];
 
-    [dataTask resume];
-
+    if (self.startRequestsImmediately) {
+        [dataTask resume];
+    }
+    
     return dataTask;
 }
 

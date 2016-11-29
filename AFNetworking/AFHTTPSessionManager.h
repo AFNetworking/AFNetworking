@@ -103,6 +103,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
+/**
+ Whether to start requests immediately after being constructed. 'YES' by default.
+ */
+@property (nonatomic, assign) BOOL startRequestsImmediately;
+
 ///---------------------
 /// @name Initialization
 ///---------------------
