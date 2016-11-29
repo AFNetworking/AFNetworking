@@ -320,6 +320,16 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSProgress *)downloadProgressForTask:(NSURLSessionTask *)task;
 
+
+///---------------------------------
+/// @name Getting CompletionHandler for Tasks
+///---------------------------------
+/**
+ Returns the completionHandler  of the specified task.
+ */
+- (nullable void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandlerForTask:(NSURLSessionTask *)task;
+
+
 ///-----------------------------------------
 /// @name Setting Session Delegate Callbacks
 ///-----------------------------------------
