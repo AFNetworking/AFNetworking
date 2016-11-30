@@ -259,6 +259,18 @@ forHTTPHeaderField:(NSString *)field;
                                                   error:(NSError * _Nullable __autoreleasing *)error;
 
 /**
+ Same as above, allowing you to specify your own boundary
+ @param boundary The multipart boundary to use when constructing the request
+ */
+
+- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
+                                              URLString:(NSString *)URLString
+                                             parameters:(NSDictionary *)parameters
+                                               boundary:(NSString *)boundary
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+                                                  error:(NSError *__autoreleasing *)error;
+
+/**
  Creates an `NSMutableURLRequest` by removing the `HTTPBodyStream` from a request, and asynchronously writing its contents into the specified file, invoking the completion handler when finished.
 
  @param request The multipart form request. The `HTTPBodyStream` property of `request` must not be `nil`.

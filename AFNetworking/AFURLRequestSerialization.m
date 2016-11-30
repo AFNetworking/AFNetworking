@@ -166,6 +166,10 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 - (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
                     stringEncoding:(NSStringEncoding)encoding;
 
+- (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
+                    stringEncoding:(NSStringEncoding)encoding
+                          boundary:(NSString *)boundary;
+
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData;
 @end
 
@@ -384,12 +388,33 @@ forHTTPHeaderField:(NSString *)field
                               constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
                                                   error:(NSError *__autoreleasing *)error
 {
+    return [self multipartFormRequestWithMethod:method
+                                      URLString:URLString
+                                     parameters:parameters
+                                       boundary:nil
+                      constructingBodyWithBlock:block
+                                          error:error];
+}
+
+- (NSMutableURLRequest *)multipartFormRequestWithMethod:(NSString *)method
+                                              URLString:(NSString *)URLString
+                                             parameters:(NSDictionary *)parameters
+                                               boundary:(NSString *)boundary
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+                                                  error:(NSError *__autoreleasing *)error
+{
     NSParameterAssert(method);
     NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
 
     NSMutableURLRequest *mutableRequest = [self requestWithMethod:method URLString:URLString parameters:nil error:error];
 
-    __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:mutableRequest stringEncoding:NSUTF8StringEncoding];
+    __block AFStreamingMultipartFormData *formData;
+    
+    if (boundary) {
+        formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:mutableRequest stringEncoding:NSUTF8StringEncoding boundary:boundary];
+    } else {
+        formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:mutableRequest stringEncoding:NSUTF8StringEncoding];
+    }
 
     if (parameters) {
         for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
@@ -676,6 +701,20 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     self.boundary = AFCreateMultipartFormBoundary();
     self.bodyStream = [[AFMultipartBodyStream alloc] initWithStringEncoding:encoding];
 
+    return self;
+}
+
+- (id)initWithURLRequest:(NSMutableURLRequest *)urlRequest
+          stringEncoding:(NSStringEncoding)encoding
+                boundary:(NSString *)boundary
+{
+    self = [self initWithURLRequest:urlRequest stringEncoding:encoding];
+    if (!self) {
+        return nil;
+    }
+    
+    self.boundary = boundary;
+    
     return self;
 }
 
