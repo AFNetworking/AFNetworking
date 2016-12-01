@@ -356,6 +356,7 @@
     if (decodedPolicy) {
         self.securityPolicy = decodedPolicy;
     }
+    self.startRequestsImmediately = [decoder decodeBoolForKey:NSStringFromSelector(@selector(startRequestsImmediately))];
 
     return self;
 }
@@ -372,6 +373,7 @@
     [coder encodeObject:self.requestSerializer forKey:NSStringFromSelector(@selector(requestSerializer))];
     [coder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
     [coder encodeObject:self.securityPolicy forKey:NSStringFromSelector(@selector(securityPolicy))];
+    [coder encodeBool:self.startRequestsImmediately forKey:NSStringFromSelector(@selector(startRequestsImmediately))];
 }
 
 #pragma mark - NSCopying
