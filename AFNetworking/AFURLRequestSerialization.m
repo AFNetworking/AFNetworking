@@ -847,11 +847,14 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @end
 
 @implementation AFMultipartBodyStream
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-atomic-properties"
 #if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1100)
 @synthesize delegate;
 #endif
 @synthesize streamStatus;
 @synthesize streamError;
+#pragma clang diagnostic pop
 
 - (instancetype)initWithStringEncoding:(NSStringEncoding)encoding {
     self = [super init];
