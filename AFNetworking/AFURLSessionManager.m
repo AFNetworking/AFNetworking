@@ -231,6 +231,17 @@ didCompleteWithError:(NSError *)error
 
             if (responseObject) {
                 userInfo[AFNetworkingTaskDidCompleteSerializedResponseKey] = responseObject;
+                
+                if (serializationError) {
+                    NSDictionary* userInfo =  ({
+                        NSMutableDictionary* d = serializationError.userInfo.mutableCopy;
+                        d[AFNetworkingTaskDidCompleteSerializedResponseKey] = responseObject;
+                        d;
+                    });
+                    serializationError = [NSError errorWithDomain: serializationError.domain
+                                                             code: serializationError.code
+                                                         userInfo: userInfo];
+                }
             }
 
             if (serializationError) {
