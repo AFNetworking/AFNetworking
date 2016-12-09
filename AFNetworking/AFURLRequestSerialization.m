@@ -197,6 +197,16 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
     return [[self alloc] init];
 }
 
+- (instancetype) initWithEncoding:(NSStringEncoding)encoding
+{
+    self = [self init];
+    if(self) {
+        self.stringEncoding = encoding;
+    }
+    
+    return self;
+}
+
 - (instancetype)init {
     self = [super init];
     if (!self) {

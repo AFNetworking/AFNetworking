@@ -162,6 +162,13 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestQueryStringSerializationStyle) {
 + (instancetype)serializer;
 
 /**
+ initializes a serializer with a specified encoding.
+ 
+ @param encoding the encoding to be used during serialization
+ */
+- (instancetype)initWithEncoding:(NSStringEncoding)encoding;
+
+/**
  Sets the value for the HTTP headers set in request objects made by the HTTP client. If `nil`, removes the existing value for that header.
 
  @param field The HTTP header to set a default value for
