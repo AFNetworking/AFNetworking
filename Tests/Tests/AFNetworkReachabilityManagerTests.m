@@ -74,12 +74,50 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
+- (void)verifyReachabilityNotificationGetsPostedIncludingObjectWithManager:(AFNetworkReachabilityManager *)manager
+{
+    [self expectationForNotification:AFNetworkingReachabilityDidChangeNotification
+                              object:(__bridge id _Nullable)manager.networkReachability
+                             handler:^BOOL(NSNotification *note) {
+                                 AFNetworkReachabilityStatus status;
+                                 status = [note.userInfo[AFNetworkingReachabilityNotificationStatusItem] integerValue];
+                                 BOOL isReachable = (status == AFNetworkReachabilityStatusReachableViaWiFi
+                                                     || status == AFNetworkReachabilityStatusReachableViaWWAN);
+                                 return isReachable;
+                             }];
+
+    [manager startMonitoring];
+    
+    [self waitForExpectationsWithCommonTimeout];
+}
+
 - (void)testAddressReachabilityNotification {
     [self verifyReachabilityNotificationGetsPostedWithManager:self.addressReachability];
 }
 
 - (void)testDomainReachabilityNotification {
     [self verifyReachabilityNotificationGetsPostedWithManager:self.domainReachability];
+}
+
+- (void)testAddressReachabilityNotificationGetsPostedWithObjectAndCanBeListenedSpecifically {
+    [self verifyReachabilityNotificationGetsPostedIncludingObjectWithManager:self.addressReachability];
+}
+
+- (void)testDomainReachabilityNotificationGetsPostedWithObjectAndCanBeListenedSpecifically {
+    [self verifyReachabilityNotificationGetsPostedIncludingObjectWithManager:self.domainReachability];
+}
+
+- (void)testReachabilityNotificationIsIgnoredWhenListeningForOtherPostObject {
+    __block BOOL addressObserverNotCalled = YES;
+    id<NSObject> observer = [[NSNotificationCenter defaultCenter] addObserverForName:AFNetworkingReachabilityDidChangeNotification
+                                                                              object:(__bridge id _Nullable)self.addressReachability.networkReachability
+                                                                               queue:nil
+                                                                          usingBlock:^(NSNotification * _Nonnull note) {
+                                                                              addressObserverNotCalled = NO;
+                                                                          }];
+    [self verifyReachabilityNotificationGetsPostedIncludingObjectWithManager:self.domainReachability];
+    XCTAssertTrue(addressObserverNotCalled);
+    [[NSNotificationCenter defaultCenter] removeObserver:observer];
 }
 
 - (void)verifyReachabilityStatusBlockGetsCalledWithManager:(AFNetworkReachabilityManager *)manager

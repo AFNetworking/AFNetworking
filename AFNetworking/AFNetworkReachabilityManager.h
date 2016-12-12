@@ -45,6 +45,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface AFNetworkReachabilityManager : NSObject
 
 /**
+ The underlying network reachability (can be used to listen for specific AFNetworkingReachabilityDidChangeNotification notifications)
+ */
+@property (readonly, nonatomic, assign) SCNetworkReachabilityRef networkReachability;
+
+/**
  The current network reachability status.
  */
 @property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
