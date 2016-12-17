@@ -791,6 +791,11 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     url_session_manager_create_task_safely(^{
         downloadTask = [self.session downloadTaskWithRequest:request];
     });
+    
+    if (!downloadTask)
+    {
+        return nil;
+    }
 
     [self addDelegateForDownloadTask:downloadTask progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
 
