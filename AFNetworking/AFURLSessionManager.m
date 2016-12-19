@@ -546,12 +546,13 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     delegate.completionHandler = completionHandler;
 
     int64_t totalUnitCount = uploadTask.countOfBytesExpectedToSend;
-    if(totalUnitCount == NSURLSessionTransferSizeUnknown) {
+    //去掉数据总量推断，使用指定的Content-Length
+//    if(totalUnitCount == NSURLSessionTransferSizeUnknown) {
         NSString *contentLength = [uploadTask.originalRequest valueForHTTPHeaderField:@"Content-Length"];
         if(contentLength) {
             totalUnitCount = (int64_t)[contentLength longLongValue];
         }
-    }
+//    }
 
     if (delegate.progress) {
         delegate.progress.totalUnitCount = totalUnitCount;
