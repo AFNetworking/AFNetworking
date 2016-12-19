@@ -59,7 +59,7 @@ static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetwork
         status = AFNetworkReachabilityStatusNotReachable;
     }
 #if	TARGET_OS_IPHONE
-    else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0) {
+    else if ((flags & kSCNetworkReachabilityFlagsIsWWAN)) {
         status = AFNetworkReachabilityStatusReachableViaWWAN;
     }
 #endif
