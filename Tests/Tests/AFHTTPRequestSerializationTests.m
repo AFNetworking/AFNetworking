@@ -150,6 +150,13 @@
     XCTAssertTrue([part.headers[@"Content-Type"] isEqualToString:@"application/x-x509-ca-cert"], @"MIME Type has not been obtained correctly (%@)", part.headers[@"Content-Type"]);
 }
 
+- (void)testThatAFHTTPRequestSerlizationSerializesParamsThatHaveEmptyArray {
+    NSURLRequest *originalRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com"]];
+    NSURLRequest *serializedRequest = [self.requestSerializer requestBySerializingRequest:originalRequest withParameters:@{@"key":@[]} error:nil];
+   
+    XCTAssertTrue([[[serializedRequest URL] query] isEqualToString:@"key%5B%5D="], @"Query parameters have not been serialized correctly (%@)", [[serializedRequest URL] query]);
+}
+
 #pragma mark -
 
 - (void)testThatValueForHTTPHeaderFieldReturnsSetValue {
