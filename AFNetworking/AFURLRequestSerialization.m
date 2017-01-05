@@ -210,8 +210,15 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 
     // Accept-Language HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
     NSMutableArray *acceptLanguagesComponents = [NSMutableArray array];
+	// Language Tags; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.10
+    // [NSLocale preferredLanguages] returns a list of 'primary-tag', e.g. en, fr, zh-Hans
+	// so we should inject the full locale before adding just the primary ones, e.g. en-GB, fr-CA, zh-CN
+	NSLocale *locale = [NSLocale currentLocale];
+    [acceptLanguagesComponents addObject:[NSString stringWithFormat:@"%@-%@;q=1",
+										  [locale objectForKey:NSLocaleLanguageCode],
+										  [locale objectForKey:NSLocaleCountryCode]]];
     [[NSLocale preferredLanguages] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        float q = 1.0f - (idx * 0.1f);
+        float q = 0.9f - (idx * 0.1f);
         [acceptLanguagesComponents addObject:[NSString stringWithFormat:@"%@;q=%0.1g", obj, q]];
         *stop = q <= 0.5f;
     }];
