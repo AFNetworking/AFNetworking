@@ -25,7 +25,7 @@
 @interface AFImageDownloaderTests : AFTestCase
 @property (nonatomic, strong) NSURLRequest *pngRequest;
 @property (nonatomic, strong) NSURLRequest *jpegRequest;
-@property (nonatomic, strong) NSURLRequest *gifsRequest;
+@property (nonatomic, strong) NSURLRequest *gifRequest;
 @property (nonatomic, strong) AFImageDownloader *downloader;
 @end
 
@@ -38,7 +38,7 @@
     [[[AFImageDownloader defaultInstance] imageCache] removeAllImages];
     self.pngRequest = [NSURLRequest requestWithURL:self.pngURL];
     self.jpegRequest = [NSURLRequest requestWithURL:self.jpegURL];
-    self.gifsRequest = [NSURLRequest requestWithURL:self.gifsURL];
+    self.gifRequest = [NSURLRequest requestWithURL:self.gifURL];
 }
 
 - (void)tearDown {
@@ -139,7 +139,7 @@
     __block UIImage *responseImage3 = nil;
     
     [self.downloader
-     downloadImageForURLRequest:self.gifsRequest
+     downloadImageForURLRequest:self.gifRequest
      success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
          urlResponse3 = response;
          responseImage3 = responseObject;
@@ -191,7 +191,7 @@
     __block UIImage *responseImage3 = nil;
     
     [self.downloader
-     downloadImageForURLRequest:self.gifsRequest
+     downloadImageForURLRequest:self.gifRequest
      success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
          urlResponse3 = response;
          responseImage3 = responseObject;

@@ -26,7 +26,7 @@
 @property (nonatomic, strong, readonly) NSURL *baseURL;
 @property (nonatomic, strong, readonly) NSURL *pngURL;
 @property (nonatomic, strong, readonly) NSURL *jpegURL;
-@property (nonatomic, strong, readonly) NSURL *gifsURL;
+@property (nonatomic, strong, readonly) NSURL *gifURL;
 @property (nonatomic, strong, readonly) NSURL *delayURL;
 - (NSURL *)URLWithStatusCode:(NSInteger)statusCode;
 

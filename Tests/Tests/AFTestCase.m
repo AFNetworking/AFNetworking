@@ -47,7 +47,7 @@
     return [self.baseURL URLByAppendingPathComponent:@"image/jpeg"];
 }
 
-- (NSURL *)gifsURL {
+- (NSURL *)gifURL {
     return [NSURL URLWithString:@"http://67.media.tumblr.com/tumblr_m9cmp8nu1n1qfc8cw.gif"];
 }
 
