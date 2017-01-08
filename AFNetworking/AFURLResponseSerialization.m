@@ -556,22 +556,23 @@ static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
     return [[UIImage alloc] initWithCGImage:[image CGImage] scale:scale orientation:image.imageOrientation];
 }
 
-static float AFFrameDurationFromSourceAtIndex(CGImageSourceRef source, NSUInteger index){
+static float AFFrameDurationFromSourceAtIndex(CGImageSourceRef source, NSUInteger index) {
     float frameDuration = 0.1f;
-    CFDictionaryRef cfFrameProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil);
-    NSDictionary *frameProperties = (__bridge NSDictionary *)cfFrameProperties;
-    NSDictionary *gifProperties = frameProperties[(NSString *)kCGImagePropertyGIFDictionary];
-    
-    NSNumber *delayTimeUnclampedProp = gifProperties[(NSString *)kCGImagePropertyGIFUnclampedDelayTime];
-    if (delayTimeUnclampedProp) {
-        frameDuration = [delayTimeUnclampedProp floatValue];
-    }
-    else {
-        
-        NSNumber *delayTimeProp = gifProperties[(NSString *)kCGImagePropertyGIFDelayTime];
-        if (delayTimeProp) {
-            frameDuration = [delayTimeProp floatValue];
+    CFDictionaryRef cfFramePropertiesDictionary = CGImageSourceCopyPropertiesAtIndex(source, index, NULL);
+    if (cfFramePropertiesDictionary) {
+        CFDictionaryRef cfGifPropertiesDictionary = CFDictionaryGetValue(cfFramePropertiesDictionary, kCGImagePropertyGIFDictionary);
+        if (cfGifPropertiesDictionary) {
+            NSNumber *delayTimeUnclampedProp = (__bridge NSNumber*)CFDictionaryGetValue(cfGifPropertiesDictionary, kCGImagePropertyGIFUnclampedDelayTime);
+            if (delayTimeUnclampedProp) {
+                frameDuration = [delayTimeUnclampedProp floatValue];
+            }else {
+                NSNumber *delayTimeProp = (__bridge NSNumber*)CFDictionaryGetValue(cfGifPropertiesDictionary, kCGImagePropertyGIFUnclampedDelayTime);
+                if (delayTimeProp) {
+                    frameDuration = [delayTimeProp floatValue];
+                }
+            }
         }
+        CFRelease(cfFramePropertiesDictionary);
     }
     
     // Many annoying ads specify a 0 duration to make an image flash as quickly as possible.
@@ -583,17 +584,72 @@ static float AFFrameDurationFromSourceAtIndex(CGImageSourceRef source, NSUIntege
         frameDuration = 0.100f;
     }
     
-    CFRelease(cfFrameProperties);
     return frameDuration;
+}
+
+static UIImage * _Nullable AFInflatedImageFromImageRefAndOrientationAtScale(CGImageRef imageRef, UIImageOrientation imageOrientation, CGFloat scale) {
+    
+    if (!imageRef) {
+        return nil;
+    }
+    
+    size_t width = CGImageGetWidth(imageRef);
+    size_t height = CGImageGetHeight(imageRef);
+    size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
+    
+    if (width * height > 1024 * 1024 || bitsPerComponent > 8) {
+        return nil;
+    }
+    
+    // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate
+    size_t bytesPerRow = 0;
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(colorSpace);
+    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
+    
+    if (colorSpaceModel == kCGColorSpaceModelRGB) {
+        uint32_t alpha = (bitmapInfo & kCGBitmapAlphaInfoMask);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+        if (alpha == kCGImageAlphaNone) {
+            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
+            bitmapInfo |= kCGImageAlphaNoneSkipFirst;
+        } else if (!(alpha == kCGImageAlphaNoneSkipFirst || alpha == kCGImageAlphaNoneSkipLast)) {
+            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
+            bitmapInfo |= kCGImageAlphaPremultipliedFirst;
+        }
+#pragma clang diagnostic pop
+    }
+    
+    CGContextRef context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
+    
+    CGColorSpaceRelease(colorSpace);
+    
+    if (!context) {
+        return nil;
+    }
+    
+    CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, width, height), imageRef);
+    CGImageRef inflatedImageRef = CGBitmapContextCreateImage(context);
+    
+    CGContextRelease(context);
+    
+    UIImage *inflatedImage = [[UIImage alloc] initWithCGImage:inflatedImageRef scale:scale orientation:imageOrientation];
+    
+    CGImageRelease(inflatedImageRef);
+
+    return inflatedImage;
 }
 
 static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *response, NSData *data, CGFloat scale) {
     if (!data || [data length] == 0) {
         return nil;
     }
-
+    
+    UIImage *defaultImage = AFImageWithDataAtScale(data, scale);
+    UIImage *inflatedImage = nil;
     CGImageRef imageRef = NULL;
-
+    
     if ([response.MIMEType isEqualToString:@"image/png"]) {
         CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
         imageRef = CGImageCreateWithPNGDataProvider(dataProvider,  NULL, true, kCGRenderingIntentDefault);
@@ -613,98 +669,66 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
             }
         }
         CGDataProviderRelease(dataProvider);
+        
     } else if ([response.MIMEType isEqualToString:@"image/gif"]) {
         CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
-        size_t count = CGImageSourceGetCount(source);
-        UIImage *gifImage;
         
-        if (count > 1) {
-            NSMutableArray *images = [NSMutableArray array];
-            NSTimeInterval duration = 0.0f;
+        if (source) {
+            size_t count = CGImageSourceGetCount(source);
             
-            for (size_t i = 0; i < count; i++) {
-                CGImageRef image = CGImageSourceCreateImageAtIndex(source, i, NULL);
-                duration += AFFrameDurationFromSourceAtIndex(source, i);
-                [images addObject:[UIImage imageWithCGImage:image scale:scale orientation:UIImageOrientationUp]];
-                CGImageRelease(image);
+            if (count > 1) {
+                NSMutableArray *images = [NSMutableArray array];
+                NSTimeInterval duration = 0.0f;
+                UIImageOrientation imageOrientation = defaultImage ? defaultImage.imageOrientation : UIImageOrientationUp;
+                
+                for (size_t i = 0; i < count; i++) {
+                    CGImageRef currentImageRef = CGImageSourceCreateImageAtIndex(source, i, NULL);
+                    UIImage *currentImage = AFInflatedImageFromImageRefAndOrientationAtScale(currentImageRef, imageOrientation, scale);
+                    CGImageRelease(currentImageRef);
+                    currentImageRef = NULL;
+                    
+                    if (currentImage == nil) {
+                        //currentImage is wrong, need cancel gif proccess
+                        break;
+                    }
+                    duration += AFFrameDurationFromSourceAtIndex(source, i);
+                    [images addObject:currentImage];
+                }
+                
+                if (images.count > 1) {
+                    if (!duration) {
+                        duration = (1.0f / 10.0f) * count;
+                    }
+                    inflatedImage = [UIImage animatedImageWithImages:images duration:duration];
+                }
             }
             
-            if (!duration) {
-                duration = (1.0f / 10.0f) * count;
-            }
-            
-            gifImage = [UIImage animatedImageWithImages:images duration:duration];
-        }
-        
-        CFRelease(source);
-        if (gifImage) {
-            return gifImage;
+            CFRelease(source);
         }
     }
-
-
-    UIImage *image = AFImageWithDataAtScale(data, scale);
-    if (!imageRef) {
-        if (image.images || !image) {
-            return image;
-        }
-
-        imageRef = CGImageCreateCopy([image CGImage]);
+    
+    if (!inflatedImage) {
+        
         if (!imageRef) {
-            return nil;
+            
+            if (defaultImage.images || !defaultImage) {
+                return defaultImage;
+            }
+            
+            imageRef = CGImageCreateCopy([defaultImage CGImage]);
+            
+            if (!imageRef) {
+                return nil;
+            }
         }
+        inflatedImage = AFInflatedImageFromImageRefAndOrientationAtScale(imageRef, defaultImage.imageOrientation, scale);
     }
-
-    size_t width = CGImageGetWidth(imageRef);
-    size_t height = CGImageGetHeight(imageRef);
-    size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
-
-    if (width * height > 1024 * 1024 || bitsPerComponent > 8) {
+    
+    if (imageRef) {
         CGImageRelease(imageRef);
-
-        return image;
+        imageRef = NULL;
     }
-
-    // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate
-    size_t bytesPerRow = 0;
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(colorSpace);
-    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
-
-    if (colorSpaceModel == kCGColorSpaceModelRGB) {
-        uint32_t alpha = (bitmapInfo & kCGBitmapAlphaInfoMask);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wassign-enum"
-        if (alpha == kCGImageAlphaNone) {
-            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-            bitmapInfo |= kCGImageAlphaNoneSkipFirst;
-        } else if (!(alpha == kCGImageAlphaNoneSkipFirst || alpha == kCGImageAlphaNoneSkipLast)) {
-            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-            bitmapInfo |= kCGImageAlphaPremultipliedFirst;
-        }
-#pragma clang diagnostic pop
-    }
-
-    CGContextRef context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
-
-    CGColorSpaceRelease(colorSpace);
-
-    if (!context) {
-        CGImageRelease(imageRef);
-
-        return image;
-    }
-
-    CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, width, height), imageRef);
-    CGImageRef inflatedImageRef = CGBitmapContextCreateImage(context);
-
-    CGContextRelease(context);
-
-    UIImage *inflatedImage = [[UIImage alloc] initWithCGImage:inflatedImageRef scale:scale orientation:image.imageOrientation];
-
-    CGImageRelease(inflatedImageRef);
-    CGImageRelease(imageRef);
-
+    
     return inflatedImage;
 }
 #endif
