@@ -721,7 +721,12 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
                 return nil;
             }
         }
+        
         inflatedImage = AFInflatedImageFromImageRefAndOrientationAtScale(imageRef, defaultImage.imageOrientation, scale);
+        
+        if (inflatedImage == nil) {
+            inflatedImage = defaultImage;
+        }
     }
     
     if (imageRef) {
