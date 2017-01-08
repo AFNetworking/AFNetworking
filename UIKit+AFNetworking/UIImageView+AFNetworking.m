@@ -98,6 +98,13 @@
             success(urlRequest, nil, cachedImage);
         } else {
             self.image = cachedImage;
+            if (self.animationImages.count > 1) {
+                self.animationImages = cachedImage.images;
+                self.animationDuration = cachedImage.duration;
+                [self startAnimating];
+            }else{
+                [self stopAnimating];
+            }
         }
         [self clearActiveDownloadInformation];
     } else {
@@ -118,6 +125,13 @@
                                success(request, response, responseObject);
                            } else if(responseObject) {
                                strongSelf.image = responseObject;
+                               if (self.animationImages.count > 1) {
+                                   self.animationImages = cachedImage.images;
+                                   self.animationDuration = cachedImage.duration;
+                                   [self startAnimating];
+                               }else{
+                                   [self stopAnimating];
+                               }
                            }
                            [strongSelf clearActiveDownloadInformation];
                        }
