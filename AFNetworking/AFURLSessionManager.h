@@ -497,4 +497,10 @@ FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidCompleteAssetPathKey;
  */
 FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidCompleteErrorKey;
 
+/**
+ The session task metrics taken from the download task. Included in the userInfo dictionary of the `AFNetworkingTaskDidCompleteSessionTaskMetrics`
+ */
+FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidCompleteSessionTaskMetrics;
+
+
 NS_ASSUME_NONNULL_END

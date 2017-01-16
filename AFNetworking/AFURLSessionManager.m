@@ -80,6 +80,7 @@ NSString * const AFNetworkingTaskDidCompleteResponseSerializerKey = @"com.alamof
 NSString * const AFNetworkingTaskDidCompleteResponseDataKey = @"com.alamofire.networking.complete.finish.responsedata";
 NSString * const AFNetworkingTaskDidCompleteErrorKey = @"com.alamofire.networking.task.complete.error";
 NSString * const AFNetworkingTaskDidCompleteAssetPathKey = @"com.alamofire.networking.task.complete.assetpath";
+NSString * const AFNetworkingTaskDidCompleteSessionTaskMetrics = @"com.alamofire.networking.complete.sessiontaskmetrics";
 
 static NSString * const AFURLSessionManagerLockName = @"com.alamofire.networking.session.manager.lock";
 
@@ -118,6 +119,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @property (nonatomic, strong) NSProgress *uploadProgress;
 @property (nonatomic, strong) NSProgress *downloadProgress;
 @property (nonatomic, copy) NSURL *downloadFileURL;
+@property (nonatomic, strong) NSURLSessionTaskMetrics *sessionTaskMetrics;
 @property (nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
 @property (nonatomic, copy) AFURLSessionTaskProgressBlock uploadProgressBlock;
 @property (nonatomic, copy) AFURLSessionTaskProgressBlock downloadProgressBlock;
@@ -206,6 +208,10 @@ didCompleteWithError:(NSError *)error
         userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
     } else if (data) {
         userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
+    }
+
+    if(self.sessionTaskMetrics) {
+        userInfo[AFNetworkingTaskDidCompleteSessionTaskMetrics] = self.sessionTaskMetrics;
     }
 
     if (error) {
@@ -1057,6 +1063,14 @@ didCompleteWithError:(NSError *)error
 
     if (self.taskDidComplete) {
         self.taskDidComplete(session, task, error);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
+    if(task) {
+        [self delegateForTask:task].sessionTaskMetrics = metrics;
     }
 }
 
