@@ -287,6 +287,24 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
+# pragma mark - AFNetworkingTaskDidCompleteNotification
+
+- (void)testAFNetworkingTaskDidCompleteNotificationForGET {
+    [self expectationForNotification:AFNetworkingTaskDidCompleteNotification object:nil handler:^BOOL(NSNotification * _Nonnull notification) {
+        if (NSClassFromString(@"NSURLSessionTaskMetrics")) {
+            return [notification userInfo][AFNetworkingTaskDidCompleteSessionTaskMetrics] != nil;
+        }
+        return YES;
+    }];
+    [self.manager
+     GET:@"image"
+     parameters:nil
+     progress:nil
+     success:nil
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeout];
+}
+
 # pragma mark - HTTP Status Codes
 
 - (void)testThatSuccessBlockIsCalledFor200 {
