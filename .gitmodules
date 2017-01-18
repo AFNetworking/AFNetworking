@@ -1,0 +1,3 @@
+[submodule "AFNetworkingXMLRPCExample/XMLRPC"]
+	path = AFNetworkingXMLRPCExample/XMLRPC
+	url = git://github.com/eczarny/xmlrpc.git
