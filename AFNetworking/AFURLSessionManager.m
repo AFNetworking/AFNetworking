@@ -119,7 +119,9 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @property (nonatomic, strong) NSProgress *uploadProgress;
 @property (nonatomic, strong) NSProgress *downloadProgress;
 @property (nonatomic, copy) NSURL *downloadFileURL;
-@property (nonatomic, strong) NSURLSessionTaskMetrics *sessionTaskMetrics;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+@property (nonatomic, strong) id sessionTaskMetrics;
+#endif
 @property (nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
 @property (nonatomic, copy) AFURLSessionTaskProgressBlock uploadProgressBlock;
 @property (nonatomic, copy) AFURLSessionTaskProgressBlock downloadProgressBlock;
@@ -210,9 +212,11 @@ didCompleteWithError:(NSError *)error
         userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
     }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
     if(self.sessionTaskMetrics) {
         userInfo[AFNetworkingTaskDidCompleteSessionTaskMetrics] = self.sessionTaskMetrics;
     }
+#endif
 
     if (error) {
         userInfo[AFNetworkingTaskDidCompleteErrorKey] = error;
@@ -1066,6 +1070,7 @@ didCompleteWithError:(NSError *)error
     }
 }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
@@ -1073,6 +1078,7 @@ didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
         [self delegateForTask:task].sessionTaskMetrics = metrics;
     }
 }
+#endif
 
 #pragma mark - NSURLSessionDataDelegate
 
