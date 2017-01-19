@@ -1070,7 +1070,7 @@ didCompleteWithError:(NSError *)error
     }
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
