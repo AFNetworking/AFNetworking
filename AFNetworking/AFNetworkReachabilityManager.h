@@ -148,6 +148,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setReachabilityStatusChangeBlock:(nullable void (^)(AFNetworkReachabilityStatus status))block;
 
+/**
+ Allows you to set network status for Reacability to assist in unit test that is not connected to a network
+ 
+ @param Takes in the networkreachability status you want to test
+ */
+- (void)setReachabilityForUnitTest:(AFNetworkReachabilityStatus) status;
+
 @end
 
 ///----------------
