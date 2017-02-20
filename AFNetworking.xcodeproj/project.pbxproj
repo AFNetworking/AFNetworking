@@ -197,6 +197,14 @@
 		5F4323DD1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
 		5F4323DE1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
 		5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
+		88D1B5FD1E59D847002A6EE4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D1B5FC1E59D847002A6EE4 /* UIKit.framework */; };
+		88D1B5FF1E59D851002A6EE4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D1B5FE1E59D851002A6EE4 /* CoreGraphics.framework */; };
+		88D1B6011E59D85A002A6EE4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D1B6001E59D85A002A6EE4 /* Security.framework */; };
+		88D1B6031E59D865002A6EE4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D1B6021E59D865002A6EE4 /* SystemConfiguration.framework */; };
+		88D1B6051E59D86F002A6EE4 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D1B6041E59D86F002A6EE4 /* MobileCoreServices.framework */; };
+		88D1B6061E59D8C9002A6EE4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D1B5FC1E59D847002A6EE4 /* UIKit.framework */; };
+		88D1B6071E59D8D4002A6EE4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D1B6001E59D85A002A6EE4 /* Security.framework */; };
+		88D1B6091E59D8EF002A6EE4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D1B6081E59D8EF002A6EE4 /* QuartzCore.framework */; };
 		E91164651DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */; };
 		E91164661DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */; };
 		E91164671DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */; };
@@ -308,6 +316,12 @@
 		5F4323D41BF63CB0003B8749 /* GoogleComServerTrustChainPath1 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GoogleComServerTrustChainPath1; sourceTree = "<group>"; };
 		5F4323D81BF63CBA003B8749 /* GoogleComServerTrustChainPath2 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GoogleComServerTrustChainPath2; sourceTree = "<group>"; };
 		5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GeoTrust_Global_CA_Root.cer; sourceTree = "<group>"; };
+		88D1B5FC1E59D847002A6EE4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		88D1B5FE1E59D851002A6EE4 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		88D1B6001E59D85A002A6EE4 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		88D1B6021E59D865002A6EE4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		88D1B6041E59D86F002A6EE4 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		88D1B6081E59D8EF002A6EE4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListRequestSerializerTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -331,6 +345,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88D1B6091E59D8EF002A6EE4 /* QuartzCore.framework in Frameworks */,
+				88D1B6071E59D8D4002A6EE4 /* Security.framework in Frameworks */,
+				88D1B6061E59D8C9002A6EE4 /* UIKit.framework in Frameworks */,
 				297824AB1BC2DB060041C395 /* AFNetworking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,6 +364,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88D1B6051E59D86F002A6EE4 /* MobileCoreServices.framework in Frameworks */,
+				88D1B6031E59D865002A6EE4 /* SystemConfiguration.framework in Frameworks */,
+				88D1B6011E59D85A002A6EE4 /* Security.framework in Frameworks */,
+				88D1B5FF1E59D851002A6EE4 /* CoreGraphics.framework in Frameworks */,
+				88D1B5FD1E59D847002A6EE4 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,6 +495,7 @@
 				2995223B1BBF104D00859F49 /* Supporting Files */,
 				298D7C561BC2C88F00FD3B3E /* Tests */,
 				2995223A1BBF104D00859F49 /* Products */,
+				88D1B5FB1E59D847002A6EE4 /* Frameworks */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -561,6 +584,19 @@
 				5F4323B51BF63741003B8749 /* google.com.cer */,
 			);
 			path = Google.com;
+			sourceTree = "<group>";
+		};
+		88D1B5FB1E59D847002A6EE4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				88D1B6081E59D8EF002A6EE4 /* QuartzCore.framework */,
+				88D1B6041E59D86F002A6EE4 /* MobileCoreServices.framework */,
+				88D1B6021E59D865002A6EE4 /* SystemConfiguration.framework */,
+				88D1B6001E59D85A002A6EE4 /* Security.framework */,
+				88D1B5FE1E59D851002A6EE4 /* CoreGraphics.framework */,
+				88D1B5FC1E59D847002A6EE4 /* UIKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
