@@ -147,7 +147,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
         NSArray *array = value;
 	NSUInteger i = 0;
         for (id nestedValue in array) {
-            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[%d]", key, (unsigned long)i++], nestedValue)];
+            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[%ld]", key, (unsigned long)i++], nestedValue)];
         }
     } else if ([value isKindOfClass:[NSSet class]]) {
         NSSet *set = value;
