@@ -41,6 +41,27 @@
     objc_setAssociatedObject(self, @selector(af_activeImageDownloadReceipt), imageDownloadReceipt, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
++ (void)load{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class clazz = self.class;
+        Method origMethod = class_getInstanceMethod(clazz, @selector(setImage:));
+        Method newMethod = class_getInstanceMethod(clazz, @selector(_setImage:));
+        if (origMethod && newMethod) {
+            method_exchangeImplementations(origMethod, newMethod);
+        }
+    });
+}
+
+- (void)_setImage:(UIImage *)image{
+    if ([self respondsToSelector:@selector(af_imageRequestOperation)]) {
+        if (self.af_imageRequestOperation && ![self.af_imageRequestOperation isFinished]) {
+            [self cancelImageRequestOperation];
+        }
+    }
+    [self _setImage:image];
+}
+
 @end
 
 #pragma mark -
