@@ -365,6 +365,7 @@ forHTTPHeaderField:(NSString *)field
     NSParameterAssert(url);
 
     NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:url];
+	mutableRequest.timeoutInterval = self.timeoutInterval;
     mutableRequest.HTTPMethod = method;
 
     for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {

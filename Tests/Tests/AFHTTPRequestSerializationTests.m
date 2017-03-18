@@ -239,4 +239,16 @@
     XCTAssertTrue([request.URL.query isEqualToString:@"test=%21%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD"]);
 }
 
+- (void)testThatAFHTTPRequestSerializationSetsTheTimeoutIntervalForAnyRequestsItCreates {
+	NSTimeInterval expected = 123.0;
+	AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+	serializer.timeoutInterval = expected;
+
+	NSMutableURLRequest *request = [serializer requestWithMethod:@"GET" URLString:@"http://example.com/resource" parameters:nil error:NULL];
+
+	NSTimeInterval actual = request.timeoutInterval;
+
+	XCTAssertEqualWithAccuracy(actual, expected, 0.1);
+}
+
 @end
