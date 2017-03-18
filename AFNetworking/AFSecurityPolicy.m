@@ -19,6 +19,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#if !defined(TARGET_OS_IOS)
+#define TARGET_OS_IOS TARGET_OS_IPHONE
+#endif
+
 #import "AFSecurityPolicy.h"
 
 #import <AssertMacros.h>
