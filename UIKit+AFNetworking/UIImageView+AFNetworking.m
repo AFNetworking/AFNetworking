@@ -103,6 +103,11 @@
     } else {
         if (placeholderImage) {
             self.image = placeholderImage;
+        } else {
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(36, 36), NO, 0.0);
+            UIImage *placeHolderBlankImage = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            self.image = placeHolderBlankImage;
         }
 
         __weak __typeof(self)weakSelf = self;
