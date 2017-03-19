@@ -105,7 +105,6 @@ NS_ASSUME_NONNULL_BEGIN
 
  By default, `AFJSONResponseSerializer` accepts the following MIME types, which includes the official standard, `application/json`, as well as other commonly-used types:
 
- - `application/json`
  - `text/json`
  - `text/javascript`
  */
@@ -139,7 +138,6 @@ NS_ASSUME_NONNULL_BEGIN
 
  By default, `AFXMLParserResponseSerializer` accepts the following MIME types, which includes the official standard, `application/xml`, as well as other commonly-used types:
 
- - `application/xml`
  - `text/xml`
  */
 @interface AFXMLParserResponseSerializer : AFHTTPResponseSerializer
@@ -155,7 +153,6 @@ NS_ASSUME_NONNULL_BEGIN
 
  By default, `AFXMLDocumentResponseSerializer` accepts the following MIME types, which includes the official standard, `application/xml`, as well as other commonly-used types:
 
- - `application/xml`
  - `text/xml`
  */
 @interface AFXMLDocumentResponseSerializer : AFHTTPResponseSerializer
