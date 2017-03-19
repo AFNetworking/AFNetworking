@@ -506,6 +506,10 @@ forHTTPHeaderField:(NSString *)field
             }
         }
     }
+	
+    if (!query) {
+        return mutableRequest;
+    }
 
     if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
         if (query && query.length > 0) {
