@@ -325,6 +325,13 @@ forHTTPHeaderField:(NSString *)field
     return value;
 }
 
+- (void)removeHTTPHeaderField:(NSString *)field {
+    dispatch_barrier_async(self.requestHeaderModificationQueue, ^{
+        [self.mutableHTTPRequestHeaders removeObjectForKey:field];
+    });
+}
+
+
 - (void)setAuthorizationHeaderFieldWithUsername:(NSString *)username
                                        password:(NSString *)password
 {
