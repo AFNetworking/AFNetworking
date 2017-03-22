@@ -331,7 +331,6 @@ forHTTPHeaderField:(NSString *)field
     });
 }
 
-
 - (void)setAuthorizationHeaderFieldWithUsername:(NSString *)username
                                        password:(NSString *)password
 {
