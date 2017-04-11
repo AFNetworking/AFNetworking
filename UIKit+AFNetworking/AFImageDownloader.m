@@ -145,6 +145,7 @@
     NSURLSessionConfiguration *defaultConfiguration = [self.class defaultURLSessionConfiguration];
     AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:defaultConfiguration];
     sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
+    [sessionManager.requestSerializer setValue:@"image/*" forHTTPHeaderField:@"Accept"];
 
     return [self initWithSessionManager:sessionManager
                  downloadPrioritization:AFImageDownloadPrioritizationFIFO

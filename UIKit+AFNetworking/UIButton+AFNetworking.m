@@ -122,8 +122,8 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                  withURL:(NSURL *)url
         placeholderImage:(UIImage *)placeholderImage
 {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    AFHTTPRequestSerializer <AFURLRequestSerialization> * requestSerializer = [[self class] sharedImageDownloader].sessionManager.requestSerializer;
+    NSURLRequest *request = [requestSerializer requestWithMethod:@"GET" URLString:url.absoluteString parameters:nil error:nil];
 
     [self setImageForState:state withURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
 }
