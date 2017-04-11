@@ -64,6 +64,11 @@
 - (void)setImageWithURL:(NSURL *)url
        placeholderImage:(UIImage *)placeholderImage
 {
+    if (!url) {
+        self.image = placeholderImage;
+        return;
+    }
+    
     AFHTTPRequestSerializer <AFURLRequestSerialization> * requestSerializer = [[self class] sharedImageDownloader].sessionManager.requestSerializer;
     NSURLRequest *request = [requestSerializer requestWithMethod:@"GET" URLString:url.absoluteString parameters:nil error:nil];
 
