@@ -154,7 +154,6 @@
 - (void)cancelImageDownloadTask {
     if (self.af_activeImageDownloadReceipt != nil) {
         [[self.class sharedImageDownloader] cancelTaskForImageDownloadReceipt:self.af_activeImageDownloadReceipt];
-        [self clearActiveDownloadInformation];
      }
 }
 
