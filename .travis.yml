@@ -15,8 +15,9 @@ matrix:
       env: FASTLANE_ENV=ios10_xcode8
     - osx_image: xcode8
       env: FASTLANE_ENV=tvos10_xcode8
-    - osx_image: xcode8
-      env: FASTLANE_ENV=osx
+#   tmp not test on OSX due to https://github.com/AFNetworking/AFNetworking/issues/3926
+#    - osx_image: xcode8
+#      env: FASTLANE_ENV=osx
     - osx_image: xcode7.3
       env: FASTLANE_ENV=ios93_xcode73
     - osx_image: xcode7.3
