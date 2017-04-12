@@ -79,6 +79,12 @@ static SecCertificateRef AFUTHTTPBinOrgCertificate() {
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
+static NSData *AFUTHTTPBinOrigCertificateData() {
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"httpbinorg_06152017" ofType:@"cer"];
+    NSCAssert(certPath != nil, @"Path for certificate should not be nil");
+    return [NSData dataWithContentsOfFile:certPath];
+}
+
 static SecCertificateRef AFUTAddTrustExternalRootCertificate() {
     NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"LETS_ENCRYPT_AUTHORITY_X3" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
@@ -204,9 +210,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey withPinnedCertificates:[AFSecurityPolicy certificatesInBundle:bundle]];
 
-    SecCertificateRef cert = AFUTHTTPBinOrgCertificate();
-    NSData *certData = (__bridge NSData *)(SecCertificateCopyData(cert));
-    CFRelease(cert);
+    NSData *certData = AFUTHTTPBinOrigCertificateData();
     NSSet *set = [policy.pinnedCertificates objectsPassingTest:^BOOL(NSData *data, BOOL *stop) {
         return [data isEqualToData:certData];
     }];
