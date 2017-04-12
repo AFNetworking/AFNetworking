@@ -311,9 +311,7 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate withPinnedCertificates:[AFSecurityPolicy certificatesInBundle:bundle]];
 
-    SecCertificateRef cert = AFUTHTTPBinOrgCertificate();
-    NSData *certData = (__bridge NSData *)(SecCertificateCopyData(cert));
-    CFRelease(cert);
+    NSData *certData = AFUTHTTPBinOrigCertificateData();
     NSSet *set = [policy.pinnedCertificates objectsPassingTest:^BOOL(NSData *data, BOOL *stop) {
         return [data isEqualToData:certData];
     }];
