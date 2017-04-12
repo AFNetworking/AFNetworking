@@ -137,6 +137,38 @@
     XCTAssertNotNil(responseImage);
 }
 
+- (void)testGifsImageCanBeCancelledAndDownloadedImmediately {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.imageView setImageWithURL:self.gifURL];
+    [self.imageView cancelImageDownloadTask];
+    __block UIImage *gifsImage;
+    [self.imageView
+     setImageWithURLRequest:[NSURLRequest requestWithURL:self.gifURL]
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+         if (image.images.count > 1) {
+             gifsImage = image;
+         }
+         [expectation fulfill];
+     }
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeout];
+    XCTAssertNotNil(gifsImage);
+    
+}
+
+- (void)testCancelImageRequest {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should canceled"];
+    [self.imageView setImageWithURLRequest:self.jpegURLRequest
+                          placeholderImage:nil
+                                   success:nil
+                                   failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+                                       [expectation fulfill];
+                                   }];
+    [self.imageView cancelImageDownloadTask];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
 - (void)testThatNilURLDoesntCrash {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"

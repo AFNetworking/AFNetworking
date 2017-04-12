@@ -25,6 +25,7 @@
 @interface AFImageDownloaderTests : AFTestCase
 @property (nonatomic, strong) NSURLRequest *pngRequest;
 @property (nonatomic, strong) NSURLRequest *jpegRequest;
+@property (nonatomic, strong) NSURLRequest *gifRequest;
 @property (nonatomic, strong) AFImageDownloader *downloader;
 @end
 
@@ -37,6 +38,7 @@
     [[[AFImageDownloader defaultInstance] imageCache] removeAllImages];
     self.pngRequest = [NSURLRequest requestWithURL:self.pngURL];
     self.jpegRequest = [NSURLRequest requestWithURL:self.jpegURL];
+    self.gifRequest = [NSURLRequest requestWithURL:self.gifURL];
 }
 
 - (void)tearDown {
@@ -131,6 +133,19 @@
          [expectation2 fulfill];
      }
      failure:nil];
+    
+    XCTestExpectation *expectation3 = [self expectationWithDescription:@"image 3 download should succeed"];
+    __block NSHTTPURLResponse *urlResponse3 = nil;
+    __block UIImage *responseImage3 = nil;
+    
+    [self.downloader
+     downloadImageForURLRequest:self.gifRequest
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
+         urlResponse3 = response;
+         responseImage3 = responseObject;
+         [expectation3 fulfill];
+     }
+     failure:nil];
 
     [self waitForExpectationsWithCommonTimeout];
 
@@ -139,6 +154,9 @@
 
     XCTAssertNotNil(urlResponse2, @"HTTPURLResponse should not be nil");
     XCTAssertNotNil(responseImage2, @"Respone image should not be nil");
+    
+    XCTAssertNotNil(urlResponse3, @"HTTPURLResponse should not be nil");
+    XCTAssertNotNil(responseImage3, @"Respone image should not be nil");
 }
 
 - (void)testThatSimultaneouslyRequestsForTheSameAssetReceiveSameResponse {
@@ -167,11 +185,25 @@
          [expectation2 fulfill];
      }
      failure:nil];
+    
+    XCTestExpectation *expectation3 = [self expectationWithDescription:@"image 2 download should succeed"];
+    __block NSHTTPURLResponse *urlResponse3 = nil;
+    __block UIImage *responseImage3 = nil;
+    
+    [self.downloader
+     downloadImageForURLRequest:self.gifRequest
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull responseObject) {
+         urlResponse3 = response;
+         responseImage3 = responseObject;
+         [expectation3 fulfill];
+     }
+     failure:nil];
 
     [self waitForExpectationsWithCommonTimeout];
 
     XCTAssertEqual(urlResponse1, urlResponse2, @"responses should be equal");
     XCTAssertEqual(responseImage2, responseImage2, @"responses should be equal");
+    XCTAssertEqual(responseImage3, responseImage3, @"responses should be equal");
 }
 
 - (void)testThatImageBehindRedirectCanBeDownloaded {
