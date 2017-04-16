@@ -306,7 +306,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param block A block object to be executed when the request URL was changed. The block returns an `NSURLRequest` object, the URL request to redirect, and takes three arguments: the URL connection object, the the proposed redirected request, and the URL response that caused the redirect.
  */
-- (void)setRedirectResponseBlock:(nullable NSURLRequest * (^)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse))block;
+- (void)setRedirectResponseBlock:(nullable NSURLRequest * _Nullable (^)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse))block;
 
 
 /**
