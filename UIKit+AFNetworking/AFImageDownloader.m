@@ -321,9 +321,13 @@
             NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey:failureReason};
             NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
             if (handler.failureBlock) {
-                dispatch_async(dispatch_get_main_queue(), ^{
+                if ([NSThread isMainThread]) {
                     handler.failureBlock(imageDownloadReceipt.task.originalRequest, nil, error);
-                });
+                }else{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        handler.failureBlock(imageDownloadReceipt.task.originalRequest, nil, error);
+                    });
+                }
             }
         }
 
