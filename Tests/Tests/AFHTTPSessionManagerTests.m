@@ -196,6 +196,43 @@
     [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
+- (void)testStartRequestsImmediatelyDefaultResumesTaskForGET {
+    NSURLSessionDataTask *dataTask = [self.manager GET:@"get"
+                                            parameters:nil
+                                              progress:nil
+                                               success:nil
+                                               failure:nil];
+    XCTAssertEqual(dataTask.state, NSURLSessionTaskStateRunning);
+}
+
+- (void)testStartRequestsImmediatelyFalseDoesNotResumeTaskForGET {
+    self.manager.startRequestsImmediately = NO;
+    NSURLSessionDataTask *dataTask = [self.manager GET:@"get"
+                                            parameters:nil
+                                              progress:nil
+                                               success:nil
+                                               failure:nil];
+    XCTAssertEqual(dataTask.state, NSURLSessionTaskStateSuspended);
+}
+
+- (void)testStartRequestImmediatelyChangedForGET {
+    self.manager.startRequestsImmediately = YES;
+    NSURLSessionDataTask *resumedDataTask = [self.manager GET:@"get"
+                                                   parameters:nil
+                                                     progress:nil
+                                                      success:nil
+                                                      failure:nil];
+    XCTAssertEqual(resumedDataTask.state, NSURLSessionTaskStateRunning);
+    
+    self.manager.startRequestsImmediately = NO;
+    NSURLSessionDataTask *suspendedDataTask = [self.manager GET:@"get"
+                                                     parameters:nil
+                                                       progress:nil
+                                                        success:nil
+                                                        failure:nil];
+    XCTAssertEqual(suspendedDataTask.state, NSURLSessionTaskStateSuspended);
+}
+
 #pragma mark - NSCoding
 
 - (void)testSupportsSecureCoding {
