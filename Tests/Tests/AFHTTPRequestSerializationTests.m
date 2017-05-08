@@ -239,4 +239,13 @@
     XCTAssertTrue([request.URL.query isEqualToString:@"test=%21%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD%F0%9F%91%B4%F0%9F%8F%BF%F0%9F%91%B7%F0%9F%8F%BB%F0%9F%91%AE%F0%9F%8F%BD"]);
 }
 
+#pragma mark - urlquery fix
+
+- (void)testURLEndUpWithQuestionMark {
+    
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    NSURLRequest *request = [serializer requestBySerializingRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://test.com?"]] withParameters:@{@"test":@"boom"} error:nil];
+    XCTAssertTrue([AFQueryStringFromParameters(@{@"test":@"boom"}) isEqualToString:request.URL.query]);
+}
+
 @end
