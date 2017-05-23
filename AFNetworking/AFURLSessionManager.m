@@ -484,8 +484,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.operationQueue = [[NSOperationQueue alloc] init];
     self.operationQueue.maxConcurrentOperationCount = 1;
 
-    self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
-
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
@@ -518,6 +516,15 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (NSURLSession *)session{
+    @synchronized (self) {
+        if (_session == nil) {
+            _session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
+        }
+    }
+    return _session;
 }
 
 #pragma mark -
@@ -632,6 +639,12 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [self.lock lock];
     [self removeNotificationObserverForTask:task];
     [self.mutableTaskDelegatesKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
+    if (self.mutableTaskDelegatesKeyedByTaskIdentifier.count == 0) {
+        @synchronized (self) {
+            [self.session finishTasksAndInvalidate];
+            self.session = nil;
+        }
+    }
     [self.lock unlock];
 }
 
