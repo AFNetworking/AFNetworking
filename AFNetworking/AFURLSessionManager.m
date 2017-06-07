@@ -373,8 +373,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
             7) If the current class implementation of `resume` is not equal to the super class implementation of `resume` AND the current implementation of `resume` is not equal to the original implementation of `af_resume`, THEN swizzle the methods
             8) Set the current class to the super class, and repeat steps 3-8
          */
-        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-        NSURLSession * session = [NSURLSession sessionWithConfiguration:configuration];
+        NSURLSession * session = [NSURLSession sharedSession];
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnonnull"
         NSURLSessionDataTask *localDataTask = [session dataTaskWithURL:nil];
@@ -394,7 +393,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         }
         
         [localDataTask cancel];
-        [session finishTasksAndInvalidate];
     }
 }
 
