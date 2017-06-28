@@ -26,24 +26,24 @@ NS_ASSUME_NONNULL_BEGIN
 @interface AFTestCertificates : NSObject
 
 // Root Certificate
-@property (class, nonatomic, readonly) SecCertificateRef rootCA;
++ (SecCertificateRef)rootCA;
 
 // Intermediate Certificates
-@property (class, nonatomic, readonly) SecCertificateRef intermediateCA1;
-@property (class, nonatomic, readonly) SecCertificateRef intermediateCA2;
++ (SecCertificateRef)intermediateCA1;
++ (SecCertificateRef)intermediateCA2;
 
 // Leaf Certificates - Signed by CA1
-@property (class, nonatomic, readonly) SecCertificateRef leafWildcard;
-@property (class, nonatomic, readonly) SecCertificateRef leafMultipleDNSNames;
-@property (class, nonatomic, readonly) SecCertificateRef leafSignedByCA1;
-@property (class, nonatomic, readonly) SecCertificateRef leafDNSNameAndURI;
++ (SecCertificateRef)leafWildcard;
++ (SecCertificateRef)leafMultipleDNSNames;
++ (SecCertificateRef)leafSignedByCA1;
++ (SecCertificateRef)leafDNSNameAndURI;
 
 // Leaf Certificates - Signed by CA2
-@property (class, nonatomic, readonly) SecCertificateRef leafExpired;
-@property (class, nonatomic, readonly) SecCertificateRef leafMissingDNSNameAndURI;
-@property (class, nonatomic, readonly) SecCertificateRef leafSignedByCA2;
-@property (class, nonatomic, readonly) SecCertificateRef leafValidDNSName;
-@property (class, nonatomic, readonly) SecCertificateRef leafValidURI;
++ (SecCertificateRef)leafExpired;
++ (SecCertificateRef)leafMissingDNSNameAndURI;
++ (SecCertificateRef)leafSignedByCA2;
++ (SecCertificateRef)leafValidDNSName;
++ (SecCertificateRef)leafValidURI;
 
 @end
 

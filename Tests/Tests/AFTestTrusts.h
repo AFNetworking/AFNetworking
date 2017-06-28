@@ -28,21 +28,21 @@ SecTrustRef AFTrustRefWithCertificates(SecCertificateRef firstCert, ...) NS_RETU
 @interface AFTestTrusts : NSObject
 
 // Leaf Trusts - Signed by CA1
-@property (class, nonatomic, readonly) SecTrustRef leafWildcard;
-@property (class, nonatomic, readonly) SecTrustRef leafMultipleDNSNames;
-@property (class, nonatomic, readonly) SecTrustRef leafSignedByCA1;
-@property (class, nonatomic, readonly) SecTrustRef leafDNSNameAndURI;
++ (SecTrustRef)leafWildcard;
++ (SecTrustRef)leafMultipleDNSNames;
++ (SecTrustRef)leafSignedByCA1;
++ (SecTrustRef)leafDNSNameAndURI;
 
 // Leaf Trusts - Signed by CA2
-@property (class, nonatomic, readonly) SecTrustRef leafExpired;
-@property (class, nonatomic, readonly) SecTrustRef leafMissingDNSNameAndURI;
-@property (class, nonatomic, readonly) SecTrustRef leafSignedByCA2;
-@property (class, nonatomic, readonly) SecTrustRef leafValidDNSName;
-@property (class, nonatomic, readonly) SecTrustRef leafValidURI;
++ (SecTrustRef)leafExpired;
++ (SecTrustRef)leafMissingDNSNameAndURI;
++ (SecTrustRef)leafSignedByCA2;
++ (SecTrustRef)leafValidDNSName;
++ (SecTrustRef)leafValidURI;
 
 // Invalid Trusts
-@property (class, nonatomic, readonly) SecTrustRef leafValidDNSNameMissingIntermediate;
-@property (class, nonatomic, readonly) SecTrustRef leafValidDNSNameWithIncorrectIntermediate;
++ (SecTrustRef)leafValidDNSNameMissingIntermediate;
++ (SecTrustRef)leafValidDNSNameWithIncorrectIntermediate;
 
 @end
 
