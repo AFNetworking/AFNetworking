@@ -33,26 +33,26 @@
 //       anchor certificates to the passed-in server trust. Move that evaluation to
 //       the "no SSL pinning mode" switch case?
 
-- (void)testThatPinnedLeafCertificatePassesEvaluationWithoutHostValidation {
-    // Given
-    NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.leafValidDNSName;
-    
-    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
-    
-    AFSecurityPolicy *securityPolicy =
-    [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate
-                     withPinnedCertificates:[NSSet setWithObject:certificateData]];
-    securityPolicy.validatesDomainName = NO;
-    
-    // When
-    BOOL serverTrustIsValid = [securityPolicy evaluateServerTrust:serverTrust
-                                                        forDomain:host];
-    
-    // Then
-    XCTAssertTrue(serverTrustIsValid, @"server trust should pass evaluation");
-}
+//- (void)testThatPinnedLeafCertificatePassesEvaluationWithoutHostValidation {
+//    // Given
+//    NSString *host = @"test.alamofire.org";
+//    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
+//    SecCertificateRef certificate = AFTestCertificates.leafValidDNSName;
+//    
+//    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
+//    
+//    AFSecurityPolicy *securityPolicy =
+//    [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate
+//                     withPinnedCertificates:[NSSet setWithObject:certificateData]];
+//    securityPolicy.validatesDomainName = NO;
+//    
+//    // When
+//    BOOL serverTrustIsValid = [securityPolicy evaluateServerTrust:serverTrust
+//                                                        forDomain:host];
+//    
+//    // Then
+//    XCTAssertTrue(serverTrustIsValid, @"server trust should pass evaluation");
+//}
 
 //- (void)testThatPinnedIntermediateCertificatePassesEvaluationWithoutHostValidation {
 //    // Given
