@@ -133,10 +133,12 @@
     
     NSMutableData *archiveData = [NSMutableData new];
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:archiveData];
+    archiver.requiresSecureCoding = YES;
     [archiver encodeObject:policy forKey:@"policy"];
     [archiver finishEncoding];
     
     NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:archiveData];
+    unarchiver.requiresSecureCoding = YES;
     AFSecurityPolicy *unarchivedPolicy = [unarchiver decodeObjectOfClass:[AFSecurityPolicy class] forKey:@"policy"];
     
     XCTAssertNotEqual(unarchivedPolicy, policy);
