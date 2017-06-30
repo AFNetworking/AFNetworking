@@ -30,9 +30,11 @@
 // MARK: Validate Certificate Chain Without Validating Host
 
 // TODO: These tests fail because AFServerTrustIsValid is called before setting the
-//       anchor certificates to the passed-in server trust. Move that evaluation to
-//       the "no SSL pinning mode" switch case?
-
+//       anchor certificates to the passed-in server trust. AFNetworking does not
+//       currently support using self-signed certificates (or any certificate that
+//       is not trusted by the system) without setting `allowsInvalidCertificates`
+//       to `YES`, so for now this configuration is not supported.
+//
 //- (void)testThatPinnedLeafCertificatePassesEvaluationWithoutHostValidation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
