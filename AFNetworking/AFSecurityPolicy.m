@@ -308,24 +308,22 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 }
 
 - (instancetype)initWithCoder:(NSCoder *)decoder {
+
     self = [self init];
-    
-    if (self) {
-        _SSLPinningMode = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(SSLPinningMode))] unsignedIntegerValue];
-        _allowInvalidCertificates = [decoder decodeBoolForKey:NSStringFromSelector(@selector(allowInvalidCertificates))];
-        _validatesDomainName = [decoder decodeBoolForKey:NSStringFromSelector(@selector(validatesDomainName))];
-        
-        // To properly support NSSecureCoding, we also need to pass in the type of
-        // the array elements here.
-        NSSet <Class> *typesToDecodeForPinnedCertificates =
-        [NSSet setWithObjects:[NSArray class], [NSData class], nil];
-        
-        NSArray *decodedPinnedCertificates =
-        [decoder decodeObjectOfClasses:typesToDecodeForPinnedCertificates
-                                forKey:NSStringFromSelector(@selector(pinnedCertificates))];
-        
-        _pinnedCertificates = [NSSet setWithArray:decodedPinnedCertificates];
+    if (!self) {
+        return nil;
     }
+
+    self.SSLPinningMode = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(SSLPinningMode))] unsignedIntegerValue];
+    self.allowInvalidCertificates = [decoder decodeBoolForKey:NSStringFromSelector(@selector(allowInvalidCertificates))];
+    self.validatesDomainName = [decoder decodeBoolForKey:NSStringFromSelector(@selector(validatesDomainName))];
+    
+    // To properly support NSSecureCoding, we also need to pass in the type of
+    // the set elements here.
+    NSSet <Class> *typesToDecodeForPinnedCertificates =
+    [NSSet setWithObjects:[NSSet class], [NSData class], nil];
+    
+    self.pinnedCertificates = [decoder decodeObjectOfClasses:typesToDecodeForPinnedCertificates forKey:NSStringFromSelector(@selector(pinnedCertificates))];
 
     return self;
 }
@@ -334,7 +332,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     [coder encodeObject:[NSNumber numberWithUnsignedInteger:self.SSLPinningMode] forKey:NSStringFromSelector(@selector(SSLPinningMode))];
     [coder encodeBool:self.allowInvalidCertificates forKey:NSStringFromSelector(@selector(allowInvalidCertificates))];
     [coder encodeBool:self.validatesDomainName forKey:NSStringFromSelector(@selector(validatesDomainName))];
-    [coder encodeObject:self.pinnedCertificates.allObjects forKey:NSStringFromSelector(@selector(pinnedCertificates))];
+    [coder encodeObject:self.pinnedCertificates forKey:NSStringFromSelector(@selector(pinnedCertificates))];
 }
 
 #pragma mark - NSCopying
