@@ -82,11 +82,11 @@
 
 @end
 
-@interface AFSecurityPolicyCopyingTests : AFSecurityPolicyTests
+@interface AFSecurityPolicySerializationTests : AFSecurityPolicyTests
 
 @end
 
-@implementation AFSecurityPolicyCopyingTests
+@implementation AFSecurityPolicySerializationTests
 
 - (void)testThatPolicyCanBeCopied {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
@@ -103,6 +103,29 @@
 }
 
 - (void)testThatPolicyCanBeEncodedAndDecoded {
+    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    policy.allowInvalidCertificates = YES;
+    policy.validatesDomainName = NO;
+    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData([AFTestCertificates leafSignedByCA1])];
+    
+    NSMutableData *archiveData = [NSMutableData new];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:archiveData];
+    [archiver encodeObject:policy forKey:@"policy"];
+    [archiver finishEncoding];
+    
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:archiveData];
+    AFSecurityPolicy *unarchivedPolicy = [unarchiver decodeObjectForKey:@"policy"];
+    
+    XCTAssertNotEqual(unarchivedPolicy, policy);
+    XCTAssertEqual(unarchivedPolicy.allowInvalidCertificates, policy.allowInvalidCertificates);
+    XCTAssertEqual(unarchivedPolicy.validatesDomainName, policy.validatesDomainName);
+    XCTAssertEqual(unarchivedPolicy.SSLPinningMode, policy.SSLPinningMode);
+    XCTAssertTrue([unarchivedPolicy.pinnedCertificates isEqualToSet:policy.pinnedCertificates]);
+}
+
+- (void)testThatPolicyCanBeEncodedAndDecodedSecurely {
+    XCTAssertTrue([AFSecurityPolicy supportsSecureCoding]);
+    
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     policy.allowInvalidCertificates = YES;
     policy.validatesDomainName = NO;
