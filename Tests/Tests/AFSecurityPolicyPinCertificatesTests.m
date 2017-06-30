@@ -439,6 +439,7 @@
 // TODO: The following tests require that certificate validation be disabled while
 //       also enabling SSL pinning, which is not currently supported, as there is a
 //       call to AFServerTrustIsValid() for the passed server trust, even if
+//       `allowInvalidCertificates` is set to YES.
 
 //- (void)testThatPinningExpiredLeafCertificateWithoutCertificateChainValidationPassesEvaluation {
 //    // Given
