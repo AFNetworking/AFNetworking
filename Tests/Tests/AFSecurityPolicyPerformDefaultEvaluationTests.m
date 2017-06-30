@@ -33,7 +33,7 @@
 - (void)testThatValidCertificateChainPassesEvaluationWithoutHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     securityPolicy.validatesDomainName = NO;
     
@@ -50,8 +50,8 @@
     // Given
     NSString *host = @"test.alamofire.org";
     SecTrustRef serverTrust =
-    AFTrustRefWithCertificates(AFTestCertificates.leafValidDNSName,
-                               AFTestCertificates.intermediateCA2,
+    AFTrustRefWithCertificates([AFTestCertificates leafValidDNSName],
+                               [AFTestCertificates intermediateCA2],
                                NULL);
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     securityPolicy.validatesDomainName = NO;
@@ -67,7 +67,7 @@
 - (void)testThatMissingDNSNameLeafCertificatePassesEvaluationWithoutHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafMissingDNSNameAndURI;
+    SecTrustRef serverTrust = [AFTestTrusts leafMissingDNSNameAndURI];
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     securityPolicy.validatesDomainName = NO;
 
@@ -83,7 +83,7 @@
 - (void)testThatExpiredCertificateChainFailsEvaluationWithoutHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
+    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     securityPolicy.validatesDomainName = NO;
 
@@ -99,7 +99,7 @@
 - (void)testThatMissingIntermediateCertificateInChainFailsEvaluationWithoutHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSNameMissingIntermediate;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSNameMissingIntermediate];
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     securityPolicy.validatesDomainName = NO;
 
@@ -117,7 +117,7 @@
 - (void)testThatValidCertificateChainPassesEvaluationWithHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     
     // When
@@ -133,8 +133,8 @@
     // Given
     NSString *host = @"test.alamofire.org";
     SecTrustRef serverTrust =
-    AFTrustRefWithCertificates(AFTestCertificates.leafValidDNSName,
-                               AFTestCertificates.intermediateCA2,
+    AFTrustRefWithCertificates([AFTestCertificates leafValidDNSName],
+                               [AFTestCertificates intermediateCA2],
                                NULL);
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     
@@ -149,7 +149,7 @@
 - (void)testThatMissingDNSNameLeafCertificateFailsEvaluationWithHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafMissingDNSNameAndURI;
+    SecTrustRef serverTrust = [AFTestTrusts leafMissingDNSNameAndURI];
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     
     // When
@@ -164,7 +164,7 @@
 - (void)testThatWildcardedLeafCertificateChainPassesEvaluationWithHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafWildcard;
+    SecTrustRef serverTrust = [AFTestTrusts leafWildcard];
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     
     // When
@@ -179,7 +179,7 @@
 - (void)testThatExpiredCertificateChainFailsEvaluationWithHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
+    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     
     // When
@@ -194,7 +194,7 @@
 - (void)testThatMissingIntermediateCertificateInChainFailsEvaluationWithHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSNameMissingIntermediate;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSNameMissingIntermediate];
     AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
     
     // When

@@ -36,8 +36,8 @@
 //- (void)testThatPinnedLeafCertificatePassesEvaluationWithoutHostValidation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-//    SecCertificateRef certificate = AFTestCertificates.leafValidDNSName;
+//    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+//    SecCertificateRef certificate = [AFTestCertificates leafValidDNSName];
 //    
 //    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
 //    
@@ -57,8 +57,8 @@
 //- (void)testThatPinnedIntermediateCertificatePassesEvaluationWithoutHostValidation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-//    SecCertificateRef certificate = AFTestCertificates.intermediateCA2;
+//    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+//    SecCertificateRef certificate = [AFTestCertificates intermediateCA2];
 //    
 //    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
 //    
@@ -78,8 +78,8 @@
 //- (void)testThatPinnedRootCertificatePassesEvaluationWithoutHostValidation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-//    SecCertificateRef certificate = AFTestCertificates.rootCA;
+//    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+//    SecCertificateRef certificate = [AFTestCertificates rootCA];
 //    
 //    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
 //    
@@ -99,8 +99,8 @@
 - (void)testThatPinningLeafCertificateNotInCertificateChainFailsEvaluationWithoutHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.leafSignedByCA2;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+    SecCertificateRef certificate = [AFTestCertificates leafSignedByCA2];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -120,8 +120,8 @@
 - (void)testThatPinningIntermediateCertificateNotInCertificateChainFailsEvaluationWithoutHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.intermediateCA1;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+    SecCertificateRef certificate = [AFTestCertificates intermediateCA1];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -141,8 +141,8 @@
 - (void)testThatPinningExpiredLeafCertificateFailsEvaluationWithoutHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
-    SecCertificateRef certificate = AFTestCertificates.leafExpired;
+    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
+    SecCertificateRef certificate = [AFTestCertificates leafExpired];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -162,8 +162,8 @@
 - (void)testThatPinningIntermediateCertificateWithExpiredLeafCertificateFailsEvaluationWithoutHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
-    SecCertificateRef certificate = AFTestCertificates.intermediateCA2;
+    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
+    SecCertificateRef certificate = [AFTestCertificates intermediateCA2];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -187,8 +187,8 @@
 //- (void)testThatPinnedLeafCertificatePassesEvaluationWithHostValidation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-//    SecCertificateRef certificate = AFTestCertificates.leafValidDNSName;
+//    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+//    SecCertificateRef certificate = [AFTestCertificates leafValidDNSName];
 //    
 //    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
 //    
@@ -207,8 +207,8 @@
 //- (void)testThatPinnedIntermediateCertificatePassesEvaluationWithHostValidation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-//    SecCertificateRef certificate = AFTestCertificates.intermediateCA2;
+//    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+//    SecCertificateRef certificate = [AFTestCertificates intermediateCA2];
 //    
 //    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
 //    
@@ -227,8 +227,8 @@
 //- (void)testThatPinnedRootCertificatePassesEvaluationWithHostValidation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-//    SecCertificateRef certificate = AFTestCertificates.rootCA;
+//    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+//    SecCertificateRef certificate = [AFTestCertificates rootCA];
 //    
 //    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
 //    
@@ -247,8 +247,8 @@
 - (void)testThatPinningLeafCertificateNotInCertificateChainFailsEvaluationWithHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.leafSignedByCA2;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+    SecCertificateRef certificate = [AFTestCertificates leafSignedByCA2];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -267,8 +267,8 @@
 - (void)testThatPinningIntermediateCertificateNotInCertificateChainFailsEvaluationWithHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.intermediateCA1;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+    SecCertificateRef certificate = [AFTestCertificates intermediateCA1];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -287,8 +287,8 @@
 - (void)testThatPinningExpiredLeafCertificateFailsEvaluationWithHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
-    SecCertificateRef certificate = AFTestCertificates.leafExpired;
+    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
+    SecCertificateRef certificate = [AFTestCertificates leafExpired];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -307,8 +307,8 @@
 - (void)testThatPinningIntermediateCertificateWithExpiredLeafCertificateFailsEvaluationWithHostValidation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
-    SecCertificateRef certificate = AFTestCertificates.intermediateCA2;
+    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
+    SecCertificateRef certificate = [AFTestCertificates intermediateCA2];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -329,8 +329,8 @@
 - (void)testThatPinnedLeafCertificateWithoutCertificateChainValidationPassesEvaluation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.leafValidDNSName;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+    SecCertificateRef certificate = [AFTestCertificates leafValidDNSName];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -351,8 +351,8 @@
 - (void)testThatPinnedIntermediateCertificateWithoutCertificateChainValidationPassesEvaluation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.intermediateCA2;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+    SecCertificateRef certificate = [AFTestCertificates intermediateCA2];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -373,8 +373,8 @@
 - (void)testThatPinnedRootCertificateWithoutCertificateChainValidationPassesEvaluation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.rootCA;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+    SecCertificateRef certificate = [AFTestCertificates rootCA];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -395,8 +395,8 @@
 - (void)testThatPinningLeafCertificateNotInCertificateChainWithoutCertificateChainValidationFailsEvaluation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.leafSignedByCA2;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+    SecCertificateRef certificate = [AFTestCertificates leafSignedByCA2];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -417,8 +417,8 @@
 - (void)testThatPinningIntermediateCertificateNotInCertificateChainWithoutCertificateChainValidationFailsEvaluation {
     // Given
     NSString *host = @"test.alamofire.org";
-    SecTrustRef serverTrust = AFTestTrusts.leafValidDNSName;
-    SecCertificateRef certificate = AFTestCertificates.intermediateCA1;
+    SecTrustRef serverTrust = [AFTestTrusts leafValidDNSName];
+    SecCertificateRef certificate = [AFTestCertificates intermediateCA1];
     
     NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
     
@@ -444,8 +444,8 @@
 //- (void)testThatPinningExpiredLeafCertificateWithoutCertificateChainValidationPassesEvaluation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
-//    SecCertificateRef certificate = AFTestCertificates.leafExpired;
+//    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
+//    SecCertificateRef certificate = [AFTestCertificates leafExpired];
 //    
 //    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
 //    
@@ -466,8 +466,8 @@
 //- (void)testThatPinningIntermediateCertificateWithExpiredLeafCertificateWithoutCertificateChainValidationPassesEvaluation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
-//    SecCertificateRef certificate = AFTestCertificates.intermediateCA2;
+//    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
+//    SecCertificateRef certificate = [AFTestCertificates intermediateCA2];
 //    
 //    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
 //    
@@ -488,8 +488,8 @@
 //- (void)testThatPinningRootCertificateWithExpiredLeafCertificateWithoutCertificateChainValidationPassesEvaluation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
-//    SecCertificateRef certificate = AFTestCertificates.rootCA;
+//    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
+//    SecCertificateRef certificate = [AFTestCertificates rootCA];
 //    
 //    NSData *certificateData = (__bridge NSData *)SecCertificateCopyData(certificate);
 //    
@@ -510,7 +510,7 @@
 //- (void)testThatPinningMultipleCertificatesWithoutCertificateChainValidationPassesEvaluation {
 //    // Given
 //    NSString *host = @"test.alamofire.org";
-//    SecTrustRef serverTrust = AFTestTrusts.leafExpired;
+//    SecTrustRef serverTrust = [AFTestTrusts leafExpired];
 //    
 //    NSMutableSet<NSData *> *certificateData = [[NSMutableSet alloc] init];
 //    
@@ -519,11 +519,11 @@
 //        [certificateData addObject:(__bridge_transfer NSData *)data];
 //    };
 //    
-//    addCertificateDataToSet(AFTestCertificates.leafMultipleDNSNames); // not in certificate chain
-//    addCertificateDataToSet(AFTestCertificates.leafSignedByCA1);      // not in certificate chain
-//    addCertificateDataToSet(AFTestCertificates.leafExpired);          // in certificate chain 👍🏼👍🏼
-//    addCertificateDataToSet(AFTestCertificates.leafWildcard);         // not in certificate chain
-//    addCertificateDataToSet(AFTestCertificates.leafDNSNameAndURI);    // not in certificate chain
+//    addCertificateDataToSet([AFTestCertificates leafMultipleDNSNames]); // not in certificate chain
+//    addCertificateDataToSet([AFTestCertificates leafSignedByCA1]);      // not in certificate chain
+//    addCertificateDataToSet([AFTestCertificates leafExpired]);          // in certificate chain 👍🏼👍🏼
+//    addCertificateDataToSet([AFTestCertificates leafWildcard]);         // not in certificate chain
+//    addCertificateDataToSet([AFTestCertificates leafDNSNameAndURI]);    // not in certificate chain
 //    
 //    AFSecurityPolicy *securityPolicy =
 //    [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate

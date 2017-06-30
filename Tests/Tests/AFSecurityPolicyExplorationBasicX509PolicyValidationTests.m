@@ -30,9 +30,9 @@
 - (void)testThatAnchoredRootCertificatePassesBasicX509ValidationWithRootInTrust {
     // Given
     SecTrustRef trust =
-    AFTrustRefWithCertificates(AFTestCertificates.leafDNSNameAndURI,
-                               AFTestCertificates.intermediateCA1,
-                               AFTestCertificates.rootCA,
+    AFTrustRefWithCertificates([AFTestCertificates leafDNSNameAndURI],
+                               [AFTestCertificates intermediateCA1],
+                               [AFTestCertificates rootCA],
                                NULL);
     
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
@@ -46,7 +46,7 @@
 
 - (void)testThatAnchoredRootCertificatePassesBasicX509ValidationWithoutRootInTrust {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafDNSNameAndURI;
+    SecTrustRef trust = [AFTestTrusts leafDNSNameAndURI];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When
@@ -58,7 +58,7 @@
 
 - (void)testThatCertificateMissingDNSNamePassesBasicX509Validation {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafMissingDNSNameAndURI;
+    SecTrustRef trust = [AFTestTrusts leafMissingDNSNameAndURI];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When
@@ -70,7 +70,7 @@
 
 - (void)testThatExpiredCertificateFailsBasicX509Validation {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafExpired;
+    SecTrustRef trust = [AFTestTrusts leafExpired];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When

@@ -30,9 +30,9 @@
 - (void)testThatAnchoredRootCertificatePassesSSLValidationWithRootInTrust {
     // Given
     SecTrustRef trust =
-    AFTrustRefWithCertificates(AFTestCertificates.leafDNSNameAndURI,
-                               AFTestCertificates.intermediateCA1,
-                               AFTestCertificates.rootCA,
+    AFTrustRefWithCertificates([AFTestCertificates leafDNSNameAndURI],
+                               [AFTestCertificates intermediateCA1],
+                               [AFTestCertificates rootCA],
                                NULL);
     
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
@@ -47,7 +47,7 @@
 
 - (void)testThatAnchoredRootCertificatePassesSSLValidationWithoutRootInTrust {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafDNSNameAndURI;
+    SecTrustRef trust = [AFTestTrusts leafDNSNameAndURI];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When
@@ -60,7 +60,7 @@
 
 - (void)testThatCertificateMissingDNSNameFailsSSLValidation {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafMissingDNSNameAndURI;
+    SecTrustRef trust = [AFTestTrusts leafMissingDNSNameAndURI];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When
@@ -73,7 +73,7 @@
 
 - (void)testThatWildcardCertificatePassesSSLValidation {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafWildcard; // *.alamofire.org
+    SecTrustRef trust = [AFTestTrusts leafWildcard]; // *.alamofire.org
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When
@@ -86,7 +86,7 @@
 
 - (void)testThatDNSNameCertificatePassesSSLValidation {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafValidDNSName;
+    SecTrustRef trust = [AFTestTrusts leafValidDNSName];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When
@@ -99,7 +99,7 @@
 
 - (void)testThatURICertificateFailsSSLValidation {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafValidURI;
+    SecTrustRef trust = [AFTestTrusts leafValidURI];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When
@@ -112,7 +112,7 @@
 
 - (void)testThatMultipleDNSNamesCertificatePassesSSLValidationForAllEntries {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafMultipleDNSNames;
+    SecTrustRef trust = [AFTestTrusts leafMultipleDNSNames];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When
@@ -133,7 +133,7 @@
 
 - (void)testThatPassingNilForHostParameterAllowsCertificateMissingDNSNameToPassSSLValidation {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafMissingDNSNameAndURI;
+    SecTrustRef trust = [AFTestTrusts leafMissingDNSNameAndURI];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When
@@ -147,7 +147,7 @@
 
 - (void)testThatExpiredCertificateFailsSSLValidation {
     // Given
-    SecTrustRef trust = AFTestTrusts.leafExpired;
+    SecTrustRef trust = [AFTestTrusts leafExpired];
     [self setRootCertificateAsLoneAnchorCertificateForTrust:trust];
     
     // When

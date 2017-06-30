@@ -55,78 +55,78 @@ SecTrustRef AFTrustRefWithCertificates(SecCertificateRef firstCert, ...)
 @implementation AFTestTrusts
 
 + (SecTrustRef)leafWildcard {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafWildcard,
-                                      AFTestCertificates.intermediateCA1,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafWildcard],
+                                      [AFTestCertificates intermediateCA1],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafMultipleDNSNames {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafMultipleDNSNames,
-                                      AFTestCertificates.intermediateCA1,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafMultipleDNSNames],
+                                      [AFTestCertificates intermediateCA1],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafSignedByCA1 {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafSignedByCA1,
-                                      AFTestCertificates.intermediateCA1,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafSignedByCA1],
+                                      [AFTestCertificates intermediateCA1],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafDNSNameAndURI {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafDNSNameAndURI,
-                                      AFTestCertificates.intermediateCA1,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafDNSNameAndURI],
+                                      [AFTestCertificates intermediateCA1],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafExpired {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafExpired,
-                                      AFTestCertificates.intermediateCA2,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafExpired],
+                                      [AFTestCertificates intermediateCA2],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafMissingDNSNameAndURI {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafMissingDNSNameAndURI,
-                                      AFTestCertificates.intermediateCA2,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafMissingDNSNameAndURI],
+                                      [AFTestCertificates intermediateCA2],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafSignedByCA2 {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafSignedByCA2,
-                                      AFTestCertificates.intermediateCA2,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafSignedByCA2],
+                                      [AFTestCertificates intermediateCA2],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafValidDNSName {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafValidDNSName,
-                                      AFTestCertificates.intermediateCA2,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafValidDNSName],
+                                      [AFTestCertificates intermediateCA2],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafValidURI {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafValidURI,
-                                      AFTestCertificates.intermediateCA2,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafValidURI],
+                                      [AFTestCertificates intermediateCA2],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafValidDNSNameMissingIntermediate {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafValidDNSName,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafValidDNSName],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 
 + (SecTrustRef)leafValidDNSNameWithIncorrectIntermediate {
-    return AFTrustRefWithCertificates(AFTestCertificates.leafValidDNSName,
-                                      AFTestCertificates.intermediateCA1,
-                                      AFTestCertificates.rootCA,
+    return AFTrustRefWithCertificates([AFTestCertificates leafValidDNSName],
+                                      [AFTestCertificates intermediateCA1],
+                                      [AFTestCertificates rootCA],
                                       NULL);
 }
 

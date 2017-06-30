@@ -24,7 +24,7 @@
 @implementation AFSecurityPolicyTests
 
 - (void)setRootCertificateAsLoneAnchorCertificateForTrust:(SecTrustRef)trust {
-    SecCertificateRef rootCA = AFTestCertificates.rootCA;
+    SecCertificateRef rootCA = [AFTestCertificates rootCA];
     
     CFArrayRef anchorCertificats = CFArrayCreate(kCFAllocatorDefault,
                                                  (const void **)&rootCA,
