@@ -95,6 +95,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic, strong) NSURLSession *session;
 
 /**
+ Invalidate session
+ */
+@property (nonatomic, strong) NSURLSession *invalidatedSession;
+
+/**
  The operation queue on which delegate callbacks are run.
  */
 @property (readonly, nonatomic, strong) NSOperationQueue *operationQueue;

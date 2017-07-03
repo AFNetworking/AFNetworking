@@ -719,7 +719,14 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     __block NSURLSessionDataTask *dataTask = nil;
     url_session_manager_create_task_safely(^{
-        dataTask = [self.session dataTaskWithRequest:request];
+//        dataTask = [self.session dataTaskWithRequest:request];
+        /** vinhsteven: fixed crash when lose connection suddenly.
+         the invalidatedSession was assigned when session is invalidated in - (void)URLSession:(NSURLSession *)session
+         didBecomeInvalidWithError:(NSError *)error
+         */
+        if (self.session != self.invalidatedSession) {
+            dataTask = [self.session dataTaskWithRequest:request];
+        }
     });
 
     [self addDelegateForDataTask:dataTask uploadProgress:uploadProgressBlock downloadProgress:downloadProgressBlock completionHandler:completionHandler];
@@ -914,6 +921,9 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 - (void)URLSession:(NSURLSession *)session
 didBecomeInvalidWithError:(NSError *)error
 {
+    /** vinhsteven: fixed crash when lose connection suddenly. */
+    self.invalidatedSession = session;
+    
     if (self.sessionDidBecomeInvalid) {
         self.sessionDidBecomeInvalid(session, error);
     }
