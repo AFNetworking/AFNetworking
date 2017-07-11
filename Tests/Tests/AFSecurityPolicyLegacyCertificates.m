@@ -54,7 +54,7 @@ SecTrustRef AFUTADNNetServerTrust() {
 //}
 
 SecCertificateRef AFUTHTTPBinOrgCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:NSClassFromString(@"AFSecurityPolicyTests")] pathForResource:@"httpbinorg_01192017" ofType:@"cer"];
+    NSString *certPath = [[NSBundle bundleForClass:NSClassFromString(@"AFSecurityPolicyTests")] pathForResource:@"httpbinorg_08132017" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
     NSData *certData = [NSData dataWithContentsOfFile:certPath];
     
