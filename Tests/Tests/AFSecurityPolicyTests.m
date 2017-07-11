@@ -153,7 +153,7 @@
 - (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
     
-    SecCertificateRef certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
+    SecCertificateRef certificate = AFUTLetsEncryptAuthorityCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
@@ -178,7 +178,7 @@
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
     
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
-    SecCertificateRef intermedaite1Certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
+    SecCertificateRef intermedaite1Certificate = AFUTLetsEncryptAuthorityCertificate();
     SecCertificateRef intermedaite2Certificate = AFUTCOMODORSACertificate();
     SecCertificateRef rootCertificate = AFUTAddTrustExternalRootCertificate();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
@@ -276,7 +276,7 @@
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     
-    SecCertificateRef certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
+    SecCertificateRef certificate = AFUTLetsEncryptAuthorityCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
@@ -301,7 +301,7 @@
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
-    SecCertificateRef intermedaite1Certificate = AFUTCOMODORSADomainValidationSecureServerCertificate();
+    SecCertificateRef intermedaite1Certificate = AFUTLetsEncryptAuthorityCertificate();
     SecCertificateRef intermedaite2Certificate = AFUTCOMODORSACertificate();
     SecCertificateRef rootCertificate = AFUTAddTrustExternalRootCertificate();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),

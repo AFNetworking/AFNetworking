@@ -15,13 +15,10 @@
 		1F7A1E281F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7A1E251F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m */; };
 		1F7A1E331F14802E008AD462 /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */; };
 		1F7A1E341F14802E008AD462 /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */; };
-		1F7A1E351F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
 		1F7A1E371F14802E008AD462 /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */; };
 		1F7A1E381F14802E008AD462 /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */; };
-		1F7A1E391F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
 		1F7A1E3B1F14802E008AD462 /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */; };
 		1F7A1E3C1F14802E008AD462 /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */; };
-		1F7A1E3D1F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
 		1F8CE76C1F1485B1006C0B02 /* httpbinorg_08132017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8CE76B1F1485B1006C0B02 /* httpbinorg_08132017.cer */; };
 		1F8CE76D1F1485B1006C0B02 /* httpbinorg_08132017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8CE76B1F1485B1006C0B02 /* httpbinorg_08132017.cer */; };
 		1F8CE76E1F1485B1006C0B02 /* httpbinorg_08132017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8CE76B1F1485B1006C0B02 /* httpbinorg_08132017.cer */; };
@@ -34,6 +31,9 @@
 		1F8CE7791F148663006C0B02 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8CE7721F148663006C0B02 /* NoDomains.cer */; };
 		1F8CE77A1F148663006C0B02 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8CE7721F148663006C0B02 /* NoDomains.cer */; };
 		1F8CE77B1F148663006C0B02 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8CE7721F148663006C0B02 /* NoDomains.cer */; };
+		1F8CE77D1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8CE77C1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer */; };
+		1F8CE77E1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8CE77C1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer */; };
+		1F8CE77F1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8CE77C1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer */; };
 		1F998BF11F03422900F2362A /* AFTestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F998BF01F03422900F2362A /* AFTestCertificates.m */; };
 		1F998BF21F03422900F2362A /* AFTestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F998BF01F03422900F2362A /* AFTestCertificates.m */; };
 		1F998BF31F03422900F2362A /* AFTestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F998BF01F03422900F2362A /* AFTestCertificates.m */; };
@@ -295,11 +295,11 @@
 		1F7A1E251F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicyLegacyCertificates.m; sourceTree = "<group>"; };
 		1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AddTrust_External_CA_Root.cer; sourceTree = "<group>"; };
 		1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Certification_Authority.cer; sourceTree = "<group>"; };
-		1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Domain_Validation_Secure_Server_CA.cer; sourceTree = "<group>"; };
 		1F8CE76B1F1485B1006C0B02 /* httpbinorg_08132017.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_08132017.cer; sourceTree = "<group>"; };
 		1F8CE7701F148663006C0B02 /* AltName.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AltName.cer; sourceTree = "<group>"; };
 		1F8CE7711F148663006C0B02 /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
 		1F8CE7721F148663006C0B02 /* NoDomains.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = NoDomains.cer; sourceTree = "<group>"; };
+		1F8CE77C1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Let's Encrypt Authority X3.cer"; sourceTree = "<group>"; };
 		1F998BEF1F03422900F2362A /* AFTestCertificates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTestCertificates.h; sourceTree = "<group>"; };
 		1F998BF01F03422900F2362A /* AFTestCertificates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTestCertificates.m; sourceTree = "<group>"; };
 		1F998BF61F034D8100F2362A /* alamofire-root-ca.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "alamofire-root-ca.cer"; sourceTree = "<group>"; };
@@ -461,7 +461,7 @@
 				1FF170951F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain */,
 				1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */,
 				1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */,
-				1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */,
+				1F8CE77C1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer */,
 				1F8CE76B1F1485B1006C0B02 /* httpbinorg_08132017.cer */,
 			);
 			path = HTTPBin.org;
@@ -1003,9 +1003,9 @@
 				1F998C291F034D8100F2362A /* test.alamofire.org.cer in Resources */,
 				1FC530B51F03745400A3AE8E /* google.com.cer in Resources */,
 				1F8CE7781F148663006C0B02 /* foobar.com.cer in Resources */,
+				1F8CE77F1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer in Resources */,
 				1F998C351F034D8100F2362A /* expired.badssl.com-intermediate-ca-1.cer in Resources */,
 				1F998C4D1F034D8100F2362A /* certPEM.crt in Resources */,
-				1F7A1E3D1F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1043,9 +1043,9 @@
 				1F998C271F034D8100F2362A /* test.alamofire.org.cer in Resources */,
 				1FC530B31F03745400A3AE8E /* google.com.cer in Resources */,
 				1F8CE7761F148663006C0B02 /* foobar.com.cer in Resources */,
+				1F8CE77D1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer in Resources */,
 				1F998C331F034D8100F2362A /* expired.badssl.com-intermediate-ca-1.cer in Resources */,
 				1F998C4B1F034D8100F2362A /* certPEM.crt in Resources */,
-				1F7A1E351F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1083,9 +1083,9 @@
 				1F998C281F034D8100F2362A /* test.alamofire.org.cer in Resources */,
 				1FC530B41F03745400A3AE8E /* google.com.cer in Resources */,
 				1F8CE7771F148663006C0B02 /* foobar.com.cer in Resources */,
+				1F8CE77E1F1486EE006C0B02 /* Let's Encrypt Authority X3.cer in Resources */,
 				1F998C341F034D8100F2362A /* expired.badssl.com-intermediate-ca-1.cer in Resources */,
 				1F998C4C1F034D8100F2362A /* certPEM.crt in Resources */,
-				1F7A1E391F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

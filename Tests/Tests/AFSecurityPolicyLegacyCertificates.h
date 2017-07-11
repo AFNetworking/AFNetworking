@@ -12,7 +12,7 @@ SecTrustRef AFUTTrustChainForCertsInDirectory(NSString *directoryPath);
 SecTrustRef AFUTHTTPBinOrgServerTrust(void);
 SecTrustRef AFUTADNNetServerTrust(void);
 SecCertificateRef AFUTHTTPBinOrgCertificate(void);
-SecCertificateRef AFUTCOMODORSADomainValidationSecureServerCertificate(void);
+SecCertificateRef AFUTLetsEncryptAuthorityCertificate(void);
 SecCertificateRef AFUTCOMODORSACertificate(void);
 SecCertificateRef AFUTAddTrustExternalRootCertificate(void);
 SecCertificateRef AFUTSelfSignedCertificateWithoutDomain(void);

@@ -61,8 +61,8 @@ SecCertificateRef AFUTHTTPBinOrgCertificate() {
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
-SecCertificateRef AFUTCOMODORSADomainValidationSecureServerCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:NSClassFromString(@"AFSecurityPolicyTests")] pathForResource:@"COMODO_RSA_Domain_Validation_Secure_Server_CA" ofType:@"cer"];
+SecCertificateRef AFUTLetsEncryptAuthorityCertificate() {
+    NSString *certPath = [[NSBundle bundleForClass:NSClassFromString(@"AFSecurityPolicyTests")] pathForResource:@"Let's Encrypt Authority X3" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
     NSData *certData = [NSData dataWithContentsOfFile:certPath];
     
