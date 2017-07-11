@@ -10,6 +10,21 @@
 		1BF9F9601C87832B00F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
 		1BF9F9611C87843200F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
 		1BF9F9621C87843300F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
+		1F7A1E261F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7A1E251F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m */; };
+		1F7A1E271F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7A1E251F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m */; };
+		1F7A1E281F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7A1E251F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m */; };
+		1F7A1E331F14802E008AD462 /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */; };
+		1F7A1E341F14802E008AD462 /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */; };
+		1F7A1E351F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
+		1F7A1E361F14802E008AD462 /* httpbinorg_01192017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2D1F148024008AD462 /* httpbinorg_01192017.cer */; };
+		1F7A1E371F14802E008AD462 /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */; };
+		1F7A1E381F14802E008AD462 /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */; };
+		1F7A1E391F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
+		1F7A1E3A1F14802E008AD462 /* httpbinorg_01192017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2D1F148024008AD462 /* httpbinorg_01192017.cer */; };
+		1F7A1E3B1F14802E008AD462 /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */; };
+		1F7A1E3C1F14802E008AD462 /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */; };
+		1F7A1E3D1F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
+		1F7A1E3E1F14802E008AD462 /* httpbinorg_01192017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F7A1E2D1F148024008AD462 /* httpbinorg_01192017.cer */; };
 		1F998BF11F03422900F2362A /* AFTestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F998BF01F03422900F2362A /* AFTestCertificates.m */; };
 		1F998BF21F03422900F2362A /* AFTestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F998BF01F03422900F2362A /* AFTestCertificates.m */; };
 		1F998BF31F03422900F2362A /* AFTestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F998BF01F03422900F2362A /* AFTestCertificates.m */; };
@@ -103,6 +118,9 @@
 		1FC530B31F03745400A3AE8E /* google.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FC530B21F03745400A3AE8E /* google.com.cer */; };
 		1FC530B41F03745400A3AE8E /* google.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FC530B21F03745400A3AE8E /* google.com.cer */; };
 		1FC530B51F03745400A3AE8E /* google.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FC530B21F03745400A3AE8E /* google.com.cer */; };
+		1FF170961F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 1FF170951F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain */; };
+		1FF170971F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 1FF170951F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain */; };
+		1FF170981F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 1FF170951F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain */; };
 		2960BAC31C1B2F1A00BA02F0 /* AFUIButtonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */; };
 		297824AA1BC2DAD80041C395 /* AFAutoPurgingImageCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C801BC2C88F00FD3B3E /* AFAutoPurgingImageCacheTests.m */; };
 		297824AB1BC2DB060041C395 /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 299522391BBF104D00859F49 /* AFNetworking.framework */; };
@@ -264,6 +282,12 @@
 
 /* Begin PBXFileReference section */
 		1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageResponseSerializerTests.m; sourceTree = "<group>"; };
+		1F7A1E241F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFSecurityPolicyLegacyCertificates.h; sourceTree = "<group>"; };
+		1F7A1E251F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicyLegacyCertificates.m; sourceTree = "<group>"; };
+		1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AddTrust_External_CA_Root.cer; sourceTree = "<group>"; };
+		1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Certification_Authority.cer; sourceTree = "<group>"; };
+		1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Domain_Validation_Secure_Server_CA.cer; sourceTree = "<group>"; };
+		1F7A1E2D1F148024008AD462 /* httpbinorg_01192017.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_01192017.cer; sourceTree = "<group>"; };
 		1F998BEF1F03422900F2362A /* AFTestCertificates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTestCertificates.h; sourceTree = "<group>"; };
 		1F998BF01F03422900F2362A /* AFTestCertificates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTestCertificates.m; sourceTree = "<group>"; };
 		1F998BF61F034D8100F2362A /* alamofire-root-ca.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "alamofire-root-ca.cer"; sourceTree = "<group>"; };
@@ -298,6 +322,7 @@
 		1FC530A51F035BB200A3AE8E /* AFSecurityPolicyPinCertificatesTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicyPinCertificatesTests.m; sourceTree = "<group>"; };
 		1FC530A91F036ABD00A3AE8E /* AFSecurityPolicyPinPublicKeysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicyPinPublicKeysTests.m; sourceTree = "<group>"; };
 		1FC530B21F03745400A3AE8E /* google.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = google.com.cer; sourceTree = "<group>"; };
+		1FF170951F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HTTPBinOrgServerTrustChain; sourceTree = "<group>"; };
 		2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIButtonTests.m; sourceTree = "<group>"; };
 		2987B0A51BC408A200179A4C /* AFNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AFNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -418,11 +443,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1F7A1E291F148024008AD462 /* HTTPBin.org */ = {
+			isa = PBXGroup;
+			children = (
+				1FF170951F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain */,
+				1F7A1E2A1F148024008AD462 /* AddTrust_External_CA_Root.cer */,
+				1F7A1E2B1F148024008AD462 /* COMODO_RSA_Certification_Authority.cer */,
+				1F7A1E2C1F148024008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */,
+				1F7A1E2D1F148024008AD462 /* httpbinorg_01192017.cer */,
+			);
+			path = HTTPBin.org;
+			sourceTree = "<group>";
+		};
 		1F998BF41F034D8100F2362A /* Certificates */ = {
 			isa = PBXGroup;
 			children = (
 				1F998BF51F034D8100F2362A /* alamofire.org */,
 				1F998C021F034D8100F2362A /* expired.badssl.com */,
+				1F7A1E291F148024008AD462 /* HTTPBin.org */,
 				1F998C071F034D8100F2362A /* selfSignedAndMalformedCerts */,
 				1FC530B21F03745400A3AE8E /* google.com.cer */,
 			);
@@ -476,13 +514,15 @@
 		1FC5308C1F03566400A3AE8E /* Security Policy */ = {
 			isa = PBXGroup;
 			children = (
-				1FC530911F0356CF00A3AE8E /* AFSecurityPolicyTests.h */,
-				298D7C891BC2C88F00FD3B3E /* AFSecurityPolicyTests.m */,
 				1FC5308D1F0356A000A3AE8E /* AFSecurityPolicyExplorationBasicX509PolicyValidationTests.m */,
 				1FC530961F03573C00A3AE8E /* AFSecurityPolicyExplorationSSLPolicyValidationTests.m */,
+				1F7A1E241F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.h */,
+				1F7A1E251F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m */,
 				1FC5309A1F0357A400A3AE8E /* AFSecurityPolicyPerformDefaultEvaluationTests.m */,
 				1FC530A51F035BB200A3AE8E /* AFSecurityPolicyPinCertificatesTests.m */,
 				1FC530A91F036ABD00A3AE8E /* AFSecurityPolicyPinPublicKeysTests.m */,
+				1FC530911F0356CF00A3AE8E /* AFSecurityPolicyTests.h */,
+				298D7C891BC2C88F00FD3B3E /* AFSecurityPolicyTests.m */,
 				1F998BEF1F03422900F2362A /* AFTestCertificates.h */,
 				1F998BF01F03422900F2362A /* AFTestCertificates.m */,
 				1F998C541F034E0500F2362A /* AFTestTrusts.h */,
@@ -914,8 +954,10 @@
 				1F998C1D1F034D8100F2362A /* missing-dns-name-and-uri.cer in Resources */,
 				1F998C501F034D8100F2362A /* keyDER.der in Resources */,
 				1F998C3B1F034D8100F2362A /* expired.badssl.com-leaf.cer in Resources */,
+				1F7A1E3C1F14802E008AD462 /* COMODO_RSA_Certification_Authority.cer in Resources */,
 				1F998C3E1F034D8100F2362A /* expired.badssl.com-root-ca.cer in Resources */,
 				1F998C2C1F034D8100F2362A /* valid-dns-name.cer in Resources */,
+				1FF170981F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain in Resources */,
 				1F998C531F034D8100F2362A /* randomGibberish.crt in Resources */,
 				2987B0DC1BC40AF600179A4C /* logo.png in Resources */,
 				1F998C261F034D8100F2362A /* signed-by-ca2.cer in Resources */,
@@ -927,14 +969,17 @@
 				1F998C201F034D8100F2362A /* multiple-dns-names.cer in Resources */,
 				1F998C471F034D8100F2362A /* certDER.der in Resources */,
 				1F998C4A1F034D8100F2362A /* certPEM.cer in Resources */,
+				1F7A1E3E1F14802E008AD462 /* httpbinorg_01192017.cer in Resources */,
 				1F998C441F034D8100F2362A /* certDER.crt in Resources */,
 				1F998C141F034D8100F2362A /* alamofire-signing-ca1.cer in Resources */,
 				1F998C411F034D8100F2362A /* certDER.cer in Resources */,
+				1F7A1E3B1F14802E008AD462 /* AddTrust_External_CA_Root.cer in Resources */,
 				1F998C111F034D8100F2362A /* alamofire-root-ca.cer in Resources */,
 				1F998C291F034D8100F2362A /* test.alamofire.org.cer in Resources */,
 				1FC530B51F03745400A3AE8E /* google.com.cer in Resources */,
 				1F998C351F034D8100F2362A /* expired.badssl.com-intermediate-ca-1.cer in Resources */,
 				1F998C4D1F034D8100F2362A /* certPEM.crt in Resources */,
+				1F7A1E3D1F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -946,8 +991,10 @@
 				298D7CBA1BC2CA9800FD3B3E /* logo.png in Resources */,
 				1F998C1B1F034D8100F2362A /* missing-dns-name-and-uri.cer in Resources */,
 				1F998C4E1F034D8100F2362A /* keyDER.der in Resources */,
+				1F7A1E341F14802E008AD462 /* COMODO_RSA_Certification_Authority.cer in Resources */,
 				1F998C391F034D8100F2362A /* expired.badssl.com-leaf.cer in Resources */,
 				1F998C3C1F034D8100F2362A /* expired.badssl.com-root-ca.cer in Resources */,
+				1FF170961F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain in Resources */,
 				1F998C2A1F034D8100F2362A /* valid-dns-name.cer in Resources */,
 				1F998C511F034D8100F2362A /* randomGibberish.crt in Resources */,
 				1F998C241F034D8100F2362A /* signed-by-ca2.cer in Resources */,
@@ -959,14 +1006,17 @@
 				1F998C1E1F034D8100F2362A /* multiple-dns-names.cer in Resources */,
 				1F998C451F034D8100F2362A /* certDER.der in Resources */,
 				1F998C481F034D8100F2362A /* certPEM.cer in Resources */,
+				1F7A1E361F14802E008AD462 /* httpbinorg_01192017.cer in Resources */,
 				1F998C421F034D8100F2362A /* certDER.crt in Resources */,
 				1F998C121F034D8100F2362A /* alamofire-signing-ca1.cer in Resources */,
 				1F998C3F1F034D8100F2362A /* certDER.cer in Resources */,
+				1F7A1E331F14802E008AD462 /* AddTrust_External_CA_Root.cer in Resources */,
 				1F998C0F1F034D8100F2362A /* alamofire-root-ca.cer in Resources */,
 				1F998C271F034D8100F2362A /* test.alamofire.org.cer in Resources */,
 				1FC530B31F03745400A3AE8E /* google.com.cer in Resources */,
 				1F998C331F034D8100F2362A /* expired.badssl.com-intermediate-ca-1.cer in Resources */,
 				1F998C4B1F034D8100F2362A /* certPEM.crt in Resources */,
+				1F7A1E351F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -978,8 +1028,10 @@
 				298D7CB91BC2CA9800FD3B3E /* logo.png in Resources */,
 				1F998C1C1F034D8100F2362A /* missing-dns-name-and-uri.cer in Resources */,
 				1F998C4F1F034D8100F2362A /* keyDER.der in Resources */,
+				1F7A1E381F14802E008AD462 /* COMODO_RSA_Certification_Authority.cer in Resources */,
 				1F998C3A1F034D8100F2362A /* expired.badssl.com-leaf.cer in Resources */,
 				1F998C3D1F034D8100F2362A /* expired.badssl.com-root-ca.cer in Resources */,
+				1FF170971F1483B700AEB2E4 /* HTTPBinOrgServerTrustChain in Resources */,
 				1F998C2B1F034D8100F2362A /* valid-dns-name.cer in Resources */,
 				1F998C521F034D8100F2362A /* randomGibberish.crt in Resources */,
 				1F998C251F034D8100F2362A /* signed-by-ca2.cer in Resources */,
@@ -991,14 +1043,17 @@
 				1F998C1F1F034D8100F2362A /* multiple-dns-names.cer in Resources */,
 				1F998C461F034D8100F2362A /* certDER.der in Resources */,
 				1F998C491F034D8100F2362A /* certPEM.cer in Resources */,
+				1F7A1E3A1F14802E008AD462 /* httpbinorg_01192017.cer in Resources */,
 				1F998C431F034D8100F2362A /* certDER.crt in Resources */,
 				1F998C131F034D8100F2362A /* alamofire-signing-ca1.cer in Resources */,
 				1F998C401F034D8100F2362A /* certDER.cer in Resources */,
+				1F7A1E371F14802E008AD462 /* AddTrust_External_CA_Root.cer in Resources */,
 				1F998C101F034D8100F2362A /* alamofire-root-ca.cer in Resources */,
 				1F998C281F034D8100F2362A /* test.alamofire.org.cer in Resources */,
 				1FC530B41F03745400A3AE8E /* google.com.cer in Resources */,
 				1F998C341F034D8100F2362A /* expired.badssl.com-intermediate-ca-1.cer in Resources */,
 				1F998C4C1F034D8100F2362A /* certPEM.crt in Resources */,
+				1F7A1E391F14802E008AD462 /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1066,6 +1121,7 @@
 				2987B0CA1BC40A7600179A4C /* AFHTTPRequestSerializationTests.m in Sources */,
 				29D341411C20D46400A7D266 /* AFCompoundResponseSerializerTests.m in Sources */,
 				2987B0E11BC40B0900179A4C /* AFImageDownloaderTests.m in Sources */,
+				1F7A1E281F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m in Sources */,
 				2987B0CF1BC40A7600179A4C /* AFPropertyListResponseSerializerTests.m in Sources */,
 				1FC530A01F0357E500A3AE8E /* AFSecurityPolicyPerformDefaultEvaluationTests.m in Sources */,
 				2987B0D21BC40AD800179A4C /* AFTestCase.m in Sources */,
@@ -1100,6 +1156,7 @@
 				1FC5309E1F0357E500A3AE8E /* AFSecurityPolicyPerformDefaultEvaluationTests.m in Sources */,
 				1FC530971F03573C00A3AE8E /* AFSecurityPolicyExplorationSSLPolicyValidationTests.m in Sources */,
 				297824AA1BC2DAD80041C395 /* AFAutoPurgingImageCacheTests.m in Sources */,
+				1F7A1E261F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m in Sources */,
 				298D7C981BC2CA2500FD3B3E /* AFURLSessionManagerTests.m in Sources */,
 				297824AC1BC2DB450041C395 /* AFImageDownloaderTests.m in Sources */,
 				29F5EF031C47E64F008B976A /* AFUIWebViewTests.m in Sources */,
@@ -1130,6 +1187,7 @@
 				298D7CDC1BC2CAF500FD3B3E /* AFPropertyListResponseSerializerTests.m in Sources */,
 				1FC530AB1F036ABD00A3AE8E /* AFSecurityPolicyPinPublicKeysTests.m in Sources */,
 				298D7CD61BC2CAED00FD3B3E /* AFHTTPSessionManagerTests.m in Sources */,
+				1F7A1E271F147E0A008AD462 /* AFSecurityPolicyLegacyCertificates.m in Sources */,
 				298D7CDA1BC2CAF300FD3B3E /* AFNetworkReachabilityManagerTests.m in Sources */,
 				298D7C991BC2CA2600FD3B3E /* AFURLSessionManagerTests.m in Sources */,
 			);
