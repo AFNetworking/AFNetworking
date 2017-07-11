@@ -386,11 +386,6 @@
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invalid.org"], @"Policy should allow server trust because domain name validation is disabled");
 }
 
-- (void)testThatPolicyWithDomainNameValidationAllowsServerTrustWithValidWildcardDomainName {
-    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
-    XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"test.httpbin.org"], @"Policy should allow server trust");
-}
-
 - (void)testThatPolicyWithDomainNameValidationAndSelfSignedCommonNameCertificateAllowsServerTrust {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
     
