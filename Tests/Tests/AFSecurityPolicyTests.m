@@ -150,18 +150,10 @@
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
 
-- (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned {
+- (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediateCertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
     
     SecCertificateRef certificate = AFUTLetsEncryptAuthorityCertificate();
-    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
-    XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
-}
-
-- (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned {
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-    
-    SecCertificateRef certificate = AFUTCOMODORSACertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
@@ -178,12 +170,10 @@
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
     
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
-    SecCertificateRef intermedaite1Certificate = AFUTLetsEncryptAuthorityCertificate();
-    SecCertificateRef intermedaite2Certificate = AFUTCOMODORSACertificate();
+    SecCertificateRef intermediateCertificate = AFUTLetsEncryptAuthorityCertificate();
     SecCertificateRef rootCertificate = AFUTAddTrustExternalRootCertificate();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
-                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite1Certificate),
-                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite2Certificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermediateCertificate),
                                    (__bridge_transfer NSData *)SecCertificateCopyData(rootCertificate), nil]];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow HTTPBinOrg server trust because at least one of the pinned certificates is valid");
     
@@ -273,18 +263,10 @@
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
 
-- (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate1CertificatePinned {
+- (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediateCertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     
     SecCertificateRef certificate = AFUTLetsEncryptAuthorityCertificate();
-    policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
-    XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
-}
-
-- (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgIntermediate2CertificatePinned {
-    AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-    
-    SecCertificateRef certificate = AFUTCOMODORSACertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
@@ -301,12 +283,10 @@
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
-    SecCertificateRef intermedaite1Certificate = AFUTLetsEncryptAuthorityCertificate();
-    SecCertificateRef intermedaite2Certificate = AFUTCOMODORSACertificate();
+    SecCertificateRef intermediateCertificate = AFUTLetsEncryptAuthorityCertificate();
     SecCertificateRef rootCertificate = AFUTAddTrustExternalRootCertificate();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
-                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite1Certificate),
-                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermedaite2Certificate),
+                                   (__bridge_transfer NSData *)SecCertificateCopyData(intermediateCertificate),
                                    (__bridge_transfer NSData *)SecCertificateCopyData(rootCertificate), nil]];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow HTTPBinOrg server trust because at least one of the pinned certificates is valid");
     
