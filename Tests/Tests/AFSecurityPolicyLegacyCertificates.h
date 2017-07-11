@@ -13,7 +13,7 @@ SecTrustRef AFUTHTTPBinOrgServerTrust(void);
 SecTrustRef AFUTADNNetServerTrust(void);
 SecCertificateRef AFUTHTTPBinOrgCertificate(void);
 SecCertificateRef AFUTLetsEncryptAuthorityCertificate(void);
-SecCertificateRef AFUTAddTrustExternalRootCertificate(void);
+SecCertificateRef AFUTDSTRootCertificate(void);
 SecCertificateRef AFUTSelfSignedCertificateWithoutDomain(void);
 SecCertificateRef AFUTSelfSignedCertificateWithCommonNameDomain(void);
 SecCertificateRef AFUTSelfSignedCertificateWithDNSNameDomain(void);

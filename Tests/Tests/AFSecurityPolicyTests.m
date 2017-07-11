@@ -161,7 +161,7 @@
 - (void)testPolicyWithPublicKeyPinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
     
-    SecCertificateRef certificate = AFUTAddTrustExternalRootCertificate();
+    SecCertificateRef certificate = AFUTDSTRootCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
@@ -171,7 +171,7 @@
     
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     SecCertificateRef intermediateCertificate = AFUTLetsEncryptAuthorityCertificate();
-    SecCertificateRef rootCertificate = AFUTAddTrustExternalRootCertificate();
+    SecCertificateRef rootCertificate = AFUTDSTRootCertificate();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
                                    (__bridge_transfer NSData *)SecCertificateCopyData(intermediateCertificate),
                                    (__bridge_transfer NSData *)SecCertificateCopyData(rootCertificate), nil]];
@@ -274,7 +274,7 @@
 - (void)testPolicyWithCertificatePinningAllowsHTTPBinOrgServerTrustWithHTTPBinOrgRootCertificatePinned {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     
-    SecCertificateRef certificate = AFUTAddTrustExternalRootCertificate();
+    SecCertificateRef certificate = AFUTDSTRootCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
     XCTAssertTrue([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should allow server trust");
 }
@@ -284,7 +284,7 @@
     
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     SecCertificateRef intermediateCertificate = AFUTLetsEncryptAuthorityCertificate();
-    SecCertificateRef rootCertificate = AFUTAddTrustExternalRootCertificate();
+    SecCertificateRef rootCertificate = AFUTDSTRootCertificate();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
                                    (__bridge_transfer NSData *)SecCertificateCopyData(intermediateCertificate),
                                    (__bridge_transfer NSData *)SecCertificateCopyData(rootCertificate), nil]];

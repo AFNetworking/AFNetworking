@@ -69,8 +69,8 @@ SecCertificateRef AFUTLetsEncryptAuthorityCertificate() {
     return SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
 }
 
-SecCertificateRef AFUTAddTrustExternalRootCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:NSClassFromString(@"AFSecurityPolicyTests")] pathForResource:@"AddTrust_External_CA_Root" ofType:@"cer"];
+SecCertificateRef AFUTDSTRootCertificate() {
+    NSString *certPath = [[NSBundle bundleForClass:NSClassFromString(@"AFSecurityPolicyTests")] pathForResource:@"DST Root CA X3" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
     NSData *certData = [NSData dataWithContentsOfFile:certPath];
     
