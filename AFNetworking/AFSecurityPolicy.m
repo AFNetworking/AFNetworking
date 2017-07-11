@@ -191,11 +191,10 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 - (instancetype)init {
     self = [super init];
-    if (!self) {
-        return nil;
+    
+    if (self) {
+        _validatesDomainName = YES;
     }
-
-    self.validatesDomainName = YES;
 
     return self;
 }
@@ -308,23 +307,21 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 }
 
 - (instancetype)initWithCoder:(NSCoder *)decoder {
-
     self = [self init];
-    if (!self) {
-        return nil;
+    
+    if (self) {
+        _SSLPinningMode = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(SSLPinningMode))] unsignedIntegerValue];
+        _allowInvalidCertificates = [decoder decodeBoolForKey:NSStringFromSelector(@selector(allowInvalidCertificates))];
+        _validatesDomainName = [decoder decodeBoolForKey:NSStringFromSelector(@selector(validatesDomainName))];
+        
+        // To properly support NSSecureCoding, we also need to pass in the type of
+        // the set elements here.
+        NSSet <Class> *typesToDecodeForPinnedCertificates =
+        [NSSet setWithObjects:[NSSet class], [NSData class], nil];
+        
+        _pinnedCertificates = [decoder decodeObjectOfClasses:typesToDecodeForPinnedCertificates forKey:NSStringFromSelector(@selector(pinnedCertificates))];
     }
-
-    self.SSLPinningMode = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(SSLPinningMode))] unsignedIntegerValue];
-    self.allowInvalidCertificates = [decoder decodeBoolForKey:NSStringFromSelector(@selector(allowInvalidCertificates))];
-    self.validatesDomainName = [decoder decodeBoolForKey:NSStringFromSelector(@selector(validatesDomainName))];
     
-    // To properly support NSSecureCoding, we also need to pass in the type of
-    // the set elements here.
-    NSSet <Class> *typesToDecodeForPinnedCertificates =
-    [NSSet setWithObjects:[NSSet class], [NSData class], nil];
-    
-    self.pinnedCertificates = [decoder decodeObjectOfClasses:typesToDecodeForPinnedCertificates forKey:NSStringFromSelector(@selector(pinnedCertificates))];
-
     return self;
 }
 
