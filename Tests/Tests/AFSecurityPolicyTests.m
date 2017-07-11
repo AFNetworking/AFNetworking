@@ -205,12 +205,12 @@
     XCTAssertFalse([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should not allow server trust because the policy is set to public key pinning and it does not contain any pinned certificates.");
 }
 
-- (void)testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate {
+- (void)testPolicyWithPublicKeyPinningDoesNotAllowAlamofireServerTrustWithHTTPBinOrgPinnedCertificate {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
     
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
-    XCTAssertFalse([policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil], @"Policy should not allow ADN server trust for pinned HTTPBin.org certificate");
+    XCTAssertFalse([policy evaluateServerTrust:[AFTestTrusts leafSignedByCA1] forDomain:nil], @"Policy should not allow Alamofire server trust for pinned HTTPBin.org certificate");
 }
 
 - (void)testPolicyWithPublicKeyPinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName {
@@ -221,14 +221,14 @@
     XCTAssertFalse([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invaliddomainname.com"], @"Policy should not allow server trust");
 }
 
-- (void)testPolicyWithPublicKeyPinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates {
+- (void)testPolicyWithPublicKeyPinningDoesNotAllowAlamofireServerTrustWithMultipleInvalidPinnedCertificates {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
     
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
                                    (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
-    XCTAssertFalse([policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil], @"Policy should not allow ADN server trust because there are no matching pinned certificates");
+    XCTAssertFalse([policy evaluateServerTrust:[AFTestTrusts leafSignedByCA1] forDomain:nil], @"Policy should not allow ADN server trust because there are no matching pinned certificates");
 }
 
 #pragma mark - Certificate Pinning Tests
@@ -351,12 +351,12 @@
     XCTAssertFalse([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:nil], @"Policy should not allow server trust because the policy does not contain any pinned certificates.");
 }
 
-- (void)testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithHTTPBinOrgPinnedCertificate {
+- (void)testPolicyWithCertificatePinningDoesNotAllowAlamofireServerTrustWithHTTPBinOrgPinnedCertificate {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     
     SecCertificateRef certificate = AFUTHTTPBinOrgCertificate();
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(certificate)];
-    XCTAssertFalse([policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil], @"Policy should not allow ADN server trust for pinned HTTPBin.org certificate");
+    XCTAssertFalse([policy evaluateServerTrust:[AFTestTrusts leafSignedByCA1] forDomain:nil], @"Policy should not allow Alamofire server trust for pinned HTTPBin.org certificate");
 }
 
 - (void)testPolicyWithCertificatePinningDoesNotAllowHTTPBinOrgServerTrustWithHTTPBinOrgLeafCertificatePinnedAndInvalidDomainName {
@@ -367,14 +367,14 @@
     XCTAssertFalse([policy evaluateServerTrust:AFUTHTTPBinOrgServerTrust() forDomain:@"invaliddomainname.com"], @"Policy should not allow server trust");
 }
 
-- (void)testPolicyWithCertificatePinningDoesNotAllowADNServerTrustWithMultipleInvalidPinnedCertificates {
+- (void)testPolicyWithCertificatePinningDoesNotAllowAlamofireServerTrustWithMultipleInvalidPinnedCertificates {
     AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     
     SecCertificateRef httpBinCertificate = AFUTHTTPBinOrgCertificate();
     SecCertificateRef selfSignedCertificate = AFUTSelfSignedCertificateWithCommonNameDomain();
     [policy setPinnedCertificates:[NSSet setWithObjects:(__bridge_transfer NSData *)SecCertificateCopyData(httpBinCertificate),
                                    (__bridge_transfer NSData *)SecCertificateCopyData(selfSignedCertificate), nil]];
-    XCTAssertFalse([policy evaluateServerTrust:AFUTADNNetServerTrust() forDomain:nil], @"Policy should not allow ADN server trust because there are no matching pinned certificates");
+    XCTAssertFalse([policy evaluateServerTrust:[AFTestTrusts leafSignedByCA1] forDomain:nil], @"Policy should not allow Alamofire server trust because there are no matching pinned certificates");
 }
 
 #pragma mark - Domain Name Validation Tests

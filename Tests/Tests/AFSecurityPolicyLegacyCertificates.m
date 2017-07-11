@@ -32,13 +32,6 @@ SecTrustRef AFUTHTTPBinOrgServerTrust() {
     return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
 }
 
-SecTrustRef AFUTADNNetServerTrust() {
-    NSString *bundlePath = [[NSBundle bundleForClass:NSClassFromString(@"AFSecurityPolicyTests")] resourcePath];
-    NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"ADNNetServerTrustChain"];
-    
-    return AFUTTrustChainForCertsInDirectory(serverCertDirectoryPath);
-}
-
 //static SecTrustRef AFUTGoogleComServerTrustPath1() {
 //    NSString *bundlePath = [[NSBundle bundleForClass:NSClassFromString(@"AFSecurityPolicyTests")] resourcePath];
 //    NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"GoogleComServerTrustChainPath1"];
