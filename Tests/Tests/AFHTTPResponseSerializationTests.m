@@ -114,4 +114,31 @@
     XCTAssertTrue([AFHTTPResponseSerializer supportsSecureCoding]);
 }
 
+- (void)testResponseObjectWithNullValueInArrayWhenRemovesKeysWithNullValuesTrue {
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type":@"text/json"}];
+    
+    NSDictionary *dict = @{ @"tags": @[@"guns n roses", @"blackandwhite", [NSNull null]] };
+    NSError *jsError;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
+                                                       options:(NSJSONWritingOptions)0
+                                                         error:&jsError];
+    
+    AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingMutableLeaves];
+    serializer.removesKeysWithNullValues = YES;
+    
+    NSError *error;
+    
+    id result = [serializer responseObjectForResponse:response data:jsonData error:&error];
+    
+//    NSDictionary *result=[NSJSONSerialization
+//                              JSONObjectWithData:data
+//                              options:NSJSONReadingMutableLeaves
+//                              error:nil];
+    
+    if ([result[@"tags"] containsObject:[NSNull null]]) {
+        XCTFail(@"null exist");
+    }
+
+}
+
 @end
