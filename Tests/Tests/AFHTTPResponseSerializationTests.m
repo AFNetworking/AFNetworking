@@ -130,11 +130,6 @@
     
     id result = [serializer responseObjectForResponse:response data:jsonData error:&error];
     
-//    NSDictionary *result=[NSJSONSerialization
-//                              JSONObjectWithData:data
-//                              options:NSJSONReadingMutableLeaves
-//                              error:nil];
-    
     if ([result[@"tags"] containsObject:[NSNull null]]) {
         XCTFail(@"null exist");
     }
