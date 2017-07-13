@@ -129,10 +129,7 @@
     NSError *error;
     
     id result = [serializer responseObjectForResponse:response data:jsonData error:&error];
-    
-    if ([result[@"tags"] containsObject:[NSNull null]]) {
-        XCTFail(@"null exist");
-    }
+    XCTAssertTrue(![result[@"tags"] containsObject:[NSNull null]],@"null not deleted");
 
 }
 
