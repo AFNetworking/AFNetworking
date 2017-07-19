@@ -180,6 +180,13 @@ forHTTPHeaderField:(NSString *)field;
 - (nullable NSString *)valueForHTTPHeaderField:(NSString *)field;
 
 /**
+ Removes the key for the HTTP headers set in the request serializer.
+ 
+ @param field The HTTP header field to remove
+ */
+- (void)removeHTTPHeaderField:(NSString *)field;
+
+/**
  Sets the "Authorization" HTTP header set in request objects made by the HTTP client to a basic authentication value with Base64-encoded username and password. This overwrites any existing value for this header.
 
  @param username The HTTP basic auth username
