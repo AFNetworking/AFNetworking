@@ -106,15 +106,9 @@
 
 @end
 
-static NSURLCache* _defaultURLCache = nil;
-
 @implementation AFImageDownloader
 
 + (NSURLCache *)defaultURLCache {
-    
-    if (_defaultURLCache) {
-        return _defaultURLCache;
-    }
     
     // It's been discovered that a crash will occur on certain versions
     // of iOS if you customize the cache.
@@ -129,11 +123,6 @@ static NSURLCache* _defaultURLCache = nil;
     return [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024
                                          diskCapacity:150 * 1024 * 1024
                                              diskPath:@"com.alamofire.imagedownloader"];
-}
-
-+ (void)setDefaultURLCache:(NSURLCache *)defaultCache {
-    
-    _defaultURLCache = defaultCache;
 }
 
 + (NSURLSessionConfiguration *)defaultURLSessionConfiguration {
