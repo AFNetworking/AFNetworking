@@ -291,8 +291,6 @@
 
 - (void)testThatImageCacheIsPromptedShouldCacheNot {
     XCTestExpectation *expectation3 = [self expectationWithDescription:@"image 1 shouldCache called"];
-    XCTestExpectation *expectation4 = [self expectationWithDescription:@"image 1 & 2 addCache NOT called"];
-    expectation4.inverted = YES;
     
     MockAFAutoPurgingImageCache *mock = [[MockAFAutoPurgingImageCache alloc] init];
     mock.shouldCache = ^BOOL(UIImage *img, NSURLRequest *req, NSString *iden) {
