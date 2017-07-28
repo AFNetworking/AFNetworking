@@ -154,7 +154,11 @@ static NSURLCache* _defaultURLCache = nil;
 
 - (instancetype)init {
     NSURLSessionConfiguration *defaultConfiguration = [self.class defaultURLSessionConfiguration];
-    AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:defaultConfiguration];
+    return [self initWithSessionConfiguration:defaultConfiguration];
+}
+
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
+    AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
     sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
 
     return [self initWithSessionManager:sessionManager
