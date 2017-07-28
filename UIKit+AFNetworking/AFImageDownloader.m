@@ -266,7 +266,9 @@
                                            }
                                        }
                                    } else {
-                                       [strongSelf.imageCache addImage:responseObject forRequest:request withAdditionalIdentifier:nil];
+                                       if ([strongSelf.imageCache shouldCacheImage:responseObject forRequest:request withAdditionalIdentifier:nil]) {
+                                           [strongSelf.imageCache addImage:responseObject forRequest:request withAdditionalIdentifier:nil];
+                                       }
 
                                        for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
                                            if (handler.successBlock) {
