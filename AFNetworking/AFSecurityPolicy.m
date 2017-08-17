@@ -84,9 +84,17 @@ static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
     BOOL isValid = NO;
     SecTrustResultType result;
     __Require_noErr_Quiet(SecTrustEvaluate(serverTrust, &result), _out);
-
-    isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
-
+    if(result == kSecTrustResultUnspecified || result == kSecTrustResultProceed){
+        isValid = YES;
+    }
+    else if(result == kSecTrustResultRecoverableTrustFailure){
+        CFDataRef errDataRef = SecTrustCopyExceptions(serverTrust);
+        SecTrustSetExceptions(serverTrust, errDataRef);
+        SecTrustEvaluate(serverTrust, &result);
+        if(result == kSecTrustResultProceed || result == kSecTrustResultUnspecified){
+            isValid = YES;
+        }
+    }
 _out:
     return isValid;
 }
