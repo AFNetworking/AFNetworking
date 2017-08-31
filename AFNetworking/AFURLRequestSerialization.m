@@ -60,10 +60,7 @@ NSString * AFPercentEscapedStringFromString(NSString *string) {
     NSMutableString *escaped = @"".mutableCopy;
 
     while (index < string.length) {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wgnu"
         NSUInteger length = MIN(string.length - index, batchSize);
-#pragma GCC diagnostic pop
         NSRange range = NSMakeRange(index, length);
 
         // To avoid breaking up character sequences such as 👴🏻👮🏽
@@ -189,6 +186,7 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 @interface AFHTTPRequestSerializer ()
 @property (readwrite, nonatomic, strong) NSMutableSet *mutableObservedChangedKeyPaths;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *mutableHTTPRequestHeaders;
+@property (readwrite, nonatomic, strong) dispatch_queue_t requestHeaderModificationQueue;
 @property (readwrite, nonatomic, assign) AFHTTPRequestQueryStringSerializationStyle queryStringSerializationStyle;
 @property (readwrite, nonatomic, copy) AFQueryStringSerializationBlock queryStringSerialization;
 @end
@@ -208,6 +206,7 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
     self.stringEncoding = NSUTF8StringEncoding;
 
     self.mutableHTTPRequestHeaders = [NSMutableDictionary dictionary];
+    self.requestHeaderModificationQueue = dispatch_queue_create("requestHeaderModificationQueue", DISPATCH_QUEUE_CONCURRENT);
 
     // Accept-Language HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
     NSMutableArray *acceptLanguagesComponents = [NSMutableArray array];
@@ -219,8 +218,6 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
     [self setValue:[acceptLanguagesComponents componentsJoinedByString:@", "] forHTTPHeaderField:@"Accept-Language"];
 
     NSString *userAgent = nil;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
 #if TARGET_OS_IOS
     // User-Agent Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
     userAgent = [NSString stringWithFormat:@"%@/%@ (%@; iOS %@; Scale/%0.2f)", [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleExecutableKey] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleIdentifierKey], [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleVersionKey], [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion], [[UIScreen mainScreen] scale]];
@@ -230,7 +227,6 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
     userAgent = [NSString stringWithFormat:@"%@/%@ (Mac OS X %@)", [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleExecutableKey] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleIdentifierKey], [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleVersionKey], [[NSProcessInfo processInfo] operatingSystemVersionString]];
 #endif
-#pragma clang diagnostic pop
     if (userAgent) {
         if (![userAgent canBeConvertedToEncoding:NSASCIIStringEncoding]) {
             NSMutableString *mutableUserAgent = [userAgent mutableCopy];
@@ -306,17 +302,27 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 #pragma mark -
 
 - (NSDictionary *)HTTPRequestHeaders {
-    return [NSDictionary dictionaryWithDictionary:self.mutableHTTPRequestHeaders];
+    NSDictionary __block *value;
+    dispatch_sync(self.requestHeaderModificationQueue, ^{
+        value = [NSDictionary dictionaryWithDictionary:self.mutableHTTPRequestHeaders];
+    });
+    return value;
 }
 
 - (void)setValue:(NSString *)value
 forHTTPHeaderField:(NSString *)field
 {
-	[self.mutableHTTPRequestHeaders setValue:value forKey:field];
+    dispatch_barrier_async(self.requestHeaderModificationQueue, ^{
+        [self.mutableHTTPRequestHeaders setValue:value forKey:field];
+    });
 }
 
 - (NSString *)valueForHTTPHeaderField:(NSString *)field {
-    return [self.mutableHTTPRequestHeaders valueForKey:field];
+    NSString __block *value;
+    dispatch_sync(self.requestHeaderModificationQueue, ^{
+        value = [self.mutableHTTPRequestHeaders valueForKey:field];
+    });
+    return value;
 }
 
 - (void)setAuthorizationHeaderFieldWithUsername:(NSString *)username
@@ -328,7 +334,9 @@ forHTTPHeaderField:(NSString *)field
 }
 
 - (void)clearAuthorizationHeader {
-	[self.mutableHTTPRequestHeaders removeObjectForKey:@"Authorization"];
+    dispatch_barrier_async(self.requestHeaderModificationQueue, ^{
+        [self.mutableHTTPRequestHeaders removeObjectForKey:@"Authorization"];
+    });
 }
 
 #pragma mark -
@@ -560,7 +568,9 @@ forHTTPHeaderField:(NSString *)field
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    [coder encodeObject:self.mutableHTTPRequestHeaders forKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
+    dispatch_sync(self.requestHeaderModificationQueue, ^{
+        [coder encodeObject:self.mutableHTTPRequestHeaders forKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
+    });
     [coder encodeInteger:self.queryStringSerializationStyle forKey:NSStringFromSelector(@selector(queryStringSerializationStyle))];
 }
 
@@ -568,7 +578,9 @@ forHTTPHeaderField:(NSString *)field
 
 - (instancetype)copyWithZone:(NSZone *)zone {
     AFHTTPRequestSerializer *serializer = [[[self class] allocWithZone:zone] init];
-    serializer.mutableHTTPRequestHeaders = [self.mutableHTTPRequestHeaders mutableCopyWithZone:zone];
+    dispatch_sync(self.requestHeaderModificationQueue, ^{
+        serializer.mutableHTTPRequestHeaders = [self.mutableHTTPRequestHeaders mutableCopyWithZone:zone];
+    });
     serializer.queryStringSerializationStyle = self.queryStringSerializationStyle;
     serializer.queryStringSerialization = self.queryStringSerialization;
 
@@ -835,14 +847,11 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @end
 
 @implementation AFMultipartBodyStream
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wimplicit-atomic-properties"
 #if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1100)
 @synthesize delegate;
 #endif
 @synthesize streamStatus;
 @synthesize streamError;
-#pragma clang diagnostic pop
 
 - (instancetype)initWithStringEncoding:(NSStringEncoding)encoding {
     self = [super init];
@@ -888,8 +897,6 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
     NSInteger totalNumberOfBytesRead = 0;
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
     while ((NSUInteger)totalNumberOfBytesRead < MIN(length, self.numberOfBytesInPacket)) {
         if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
             if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
@@ -910,7 +917,6 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
             }
         }
     }
-#pragma clang diagnostic pop
 
     return totalNumberOfBytesRead;
 }
@@ -1091,8 +1097,6 @@ typedef enum {
         return YES;
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wcovered-switch-default"
     switch (self.inputStream.streamStatus) {
         case NSStreamStatusNotOpen:
         case NSStreamStatusOpening:
@@ -1106,7 +1110,6 @@ typedef enum {
         default:
             return NO;
     }
-#pragma clang diagnostic pop
 }
 
 - (NSInteger)read:(uint8_t *)buffer
@@ -1151,11 +1154,8 @@ typedef enum {
            intoBuffer:(uint8_t *)buffer
             maxLength:(NSUInteger)length
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
     NSRange range = NSMakeRange((NSUInteger)_phaseReadOffset, MIN([data length] - ((NSUInteger)_phaseReadOffset), length));
     [data getBytes:buffer range:range];
-#pragma clang diagnostic pop
 
     _phaseReadOffset += range.length;
 
@@ -1174,8 +1174,6 @@ typedef enum {
         return YES;
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wcovered-switch-default"
     switch (_phase) {
         case AFEncapsulationBoundaryPhase:
             _phase = AFHeaderPhase;
@@ -1195,7 +1193,6 @@ typedef enum {
             break;
     }
     _phaseReadOffset = 0;
-#pragma clang diagnostic pop
 
     return YES;
 }
@@ -1257,7 +1254,21 @@ typedef enum {
             [mutableRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         }
 
-        [mutableRequest setHTTPBody:[NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error]];
+        if (![NSJSONSerialization isValidJSONObject:parameters]) {
+            if (error) {
+                NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"The `parameters` argument is not valid JSON.", @"AFNetworking", nil)};
+                *error = [[NSError alloc] initWithDomain:AFURLRequestSerializationErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+            }
+            return nil;
+        }
+
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error];
+        
+        if (!jsonData) {
+            return nil;
+        }
+        
+        [mutableRequest setHTTPBody:jsonData];
     }
 
     return mutableRequest;
@@ -1336,7 +1347,13 @@ typedef enum {
             [mutableRequest setValue:@"application/x-plist" forHTTPHeaderField:@"Content-Type"];
         }
 
-        [mutableRequest setHTTPBody:[NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error]];
+        NSData *plistData = [NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error];
+        
+        if (!plistData) {
+            return nil;
+        }
+        
+        [mutableRequest setHTTPBody:plistData];
     }
 
     return mutableRequest;

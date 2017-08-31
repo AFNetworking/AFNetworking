@@ -28,10 +28,8 @@
 @property (nonatomic, strong) NSURLRequest *cachedImageRequest;
 @property (nonatomic, strong) UIImageView *imageView;
 
-@property (nonatomic, strong) NSURL *error404URL;
 @property (nonatomic, strong) NSURLRequest *error404URLRequest;
 
-@property (nonatomic, strong) NSURL *jpegURL;
 @property (nonatomic, strong) NSURLRequest *jpegURLRequest;
 
 @end
@@ -46,12 +44,9 @@
 
     self.imageView = [UIImageView new];
 
-    self.jpegURL = [NSURL URLWithString:@"https://httpbin.org/image/jpeg"];
     self.jpegURLRequest = [NSURLRequest requestWithURL:self.jpegURL];
 
-    self.error404URL = [NSURL URLWithString:@"https://httpbin.org/status/404"];
-    self.error404URLRequest = [NSURLRequest requestWithURL:self.error404URL];
-
+    self.error404URLRequest = [NSURLRequest requestWithURL:[self URLWithStatusCode:404]];
 }
 
 - (void)tearDown {
@@ -66,7 +61,7 @@
     [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != nil"]
               evaluatedWithObject:self.imageView
                           handler:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatImageDownloadSucceedsWhenDuplicateRequestIsSentToImageView {
@@ -76,7 +71,7 @@
     [self expectationForPredicate:[NSPredicate predicateWithFormat:@"image != nil"]
               evaluatedWithObject:self.imageView
                           handler:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testThatPlaceholderImageIsSetIfRequestFails {
@@ -89,7 +84,7 @@
                                    failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                                        [expectation fulfill];
                                    }];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertEqual(self.imageView.image, placeholder);
 }
 
@@ -104,7 +99,7 @@
          [cacheExpectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 
     __block UIImage *cachedImage = nil;
     __block NSHTTPURLResponse *urlResponse;
@@ -118,7 +113,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertNil(urlResponse);
     XCTAssertNotNil(cachedImage);
     XCTAssertEqual(cachedImage, downloadImage);
@@ -138,7 +133,7 @@
          [expectation fulfill];
      }
      failure:nil];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertNotNil(responseImage);
 }
 

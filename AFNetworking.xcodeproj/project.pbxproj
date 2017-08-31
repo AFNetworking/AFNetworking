@@ -7,9 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1FE783011C5857A100A73B7C /* httpbinorg_01192017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FE783001C58579D00A73B7C /* httpbinorg_01192017.cer */; };
-		1FE783021C5857A100A73B7C /* httpbinorg_01192017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FE783001C58579D00A73B7C /* httpbinorg_01192017.cer */; };
-		1FE783031C5857A200A73B7C /* httpbinorg_01192017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FE783001C58579D00A73B7C /* httpbinorg_01192017.cer */; };
+		1BF9F9601C87832B00F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
+		1BF9F9611C87843200F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
+		1BF9F9621C87843300F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
+		1F6F7DF71F17051000C979D0 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */; };
+		1F6F7DF81F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
+		1F6F7DF91F17051000C979D0 /* httpbinorg_08132017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF41F1703A100C979D0 /* httpbinorg_08132017.cer */; };
+		1F6F7DFA1F17051000C979D0 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */; };
+		1F6F7DFB1F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
+		1F6F7DFC1F17051000C979D0 /* httpbinorg_08132017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF41F1703A100C979D0 /* httpbinorg_08132017.cer */; };
+		1F6F7DFD1F17051100C979D0 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */; };
+		1F6F7DFE1F17051100C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
+		1F6F7DFF1F17051100C979D0 /* httpbinorg_08132017.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF41F1703A100C979D0 /* httpbinorg_08132017.cer */; };
 		2960BAC31C1B2F1A00BA02F0 /* AFUIButtonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */; };
 		297824A31BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; };
 		297824A41BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; };
@@ -51,9 +60,6 @@
 		2987B0D51BC40AE900179A4C /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A21BC2D69A0041C395 /* adn_2.cer */; };
 		2987B0D61BC40AEC00179A4C /* ADNNetServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 298D7CDF1BC2CB5A00FD3B3E /* ADNNetServerTrustChain */; };
 		2987B0D71BC40AF000179A4C /* HTTPBinOrgServerTrustChain in Resources */ = {isa = PBXBuildFile; fileRef = 298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */; };
-		2987B0D81BC40AF300179A4C /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */; };
-		2987B0D91BC40AF300179A4C /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */; };
-		2987B0DA1BC40AF300179A4C /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
 		2987B0DC1BC40AF600179A4C /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C771BC2C88F00FD3B3E /* logo.png */; };
 		2987B0DD1BC40AFB00179A4C /* AltName.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C791BC2C88F00FD3B3E /* AltName.cer */; };
 		2987B0DE1BC40AFB00179A4C /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C7A1BC2C88F00FD3B3E /* foobar.com.cer */; };
@@ -77,12 +83,6 @@
 		298D7CBE1BC2CA9D00FD3B3E /* AltName.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C791BC2C88F00FD3B3E /* AltName.cer */; };
 		298D7CBF1BC2CA9D00FD3B3E /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C7A1BC2C88F00FD3B3E /* foobar.com.cer */; };
 		298D7CC01BC2CA9D00FD3B3E /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C7B1BC2C88F00FD3B3E /* NoDomains.cer */; };
-		298D7CC11BC2CAA100FD3B3E /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */; };
-		298D7CC21BC2CAA100FD3B3E /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */; };
-		298D7CC31BC2CAA100FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
-		298D7CC51BC2CAA200FD3B3E /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */; };
-		298D7CC61BC2CAA200FD3B3E /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */; };
-		298D7CC71BC2CAA200FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
 		298D7CD31BC2CAE800FD3B3E /* AFHTTPResponseSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C821BC2C88F00FD3B3E /* AFHTTPResponseSerializationTests.m */; };
 		298D7CD41BC2CAE900FD3B3E /* AFHTTPResponseSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C821BC2C88F00FD3B3E /* AFHTTPResponseSerializationTests.m */; };
 		298D7CD51BC2CAEC00FD3B3E /* AFHTTPSessionManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 298D7C831BC2C88F00FD3B3E /* AFHTTPSessionManagerTests.m */; };
@@ -194,6 +194,9 @@
 		5F4323DD1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
 		5F4323DE1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
 		5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
+		E91164651DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */; };
+		E91164661DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */; };
+		E91164671DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -221,7 +224,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1FE783001C58579D00A73B7C /* httpbinorg_01192017.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_01192017.cer; sourceTree = "<group>"; };
+		1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageResponseSerializerTests.m; sourceTree = "<group>"; };
+		1F6F7DF41F1703A100C979D0 /* httpbinorg_08132017.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_08132017.cer; sourceTree = "<group>"; };
+		1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Let's Encrypt Authority X3.cer"; sourceTree = "<group>"; };
+		1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DST Root CA X3.cer"; sourceTree = "<group>"; };
 		2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIButtonTests.m; sourceTree = "<group>"; };
 		297824A01BC2D69A0041C395 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
 		297824A11BC2D69A0041C395 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
@@ -230,9 +236,6 @@
 		2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking Mac OS X Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AddTrust_External_CA_Root.cer; sourceTree = "<group>"; };
-		298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Certification_Authority.cer; sourceTree = "<group>"; };
-		298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Domain_Validation_Secure_Server_CA.cer; sourceTree = "<group>"; };
 		298D7C771BC2C88F00FD3B3E /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		298D7C791BC2C88F00FD3B3E /* AltName.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AltName.cer; sourceTree = "<group>"; };
 		298D7C7A1BC2C88F00FD3B3E /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
@@ -301,6 +304,7 @@
 		5F4323D41BF63CB0003B8749 /* GoogleComServerTrustChainPath1 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GoogleComServerTrustChainPath1; sourceTree = "<group>"; };
 		5F4323D81BF63CBA003B8749 /* GoogleComServerTrustChainPath2 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GoogleComServerTrustChainPath2; sourceTree = "<group>"; };
 		5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GeoTrust_Global_CA_Root.cer; sourceTree = "<group>"; };
+		E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListRequestSerializerTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -395,10 +399,9 @@
 			isa = PBXGroup;
 			children = (
 				298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */,
-				298D7C6E1BC2C88F00FD3B3E /* AddTrust_External_CA_Root.cer */,
-				298D7C6F1BC2C88F00FD3B3E /* COMODO_RSA_Certification_Authority.cer */,
-				298D7C701BC2C88F00FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */,
-				1FE783001C58579D00A73B7C /* httpbinorg_01192017.cer */,
+				1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */,
+				1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */,
+				1F6F7DF41F1703A100C979D0 /* httpbinorg_08132017.cer */,
 			);
 			path = HTTPBin.org;
 			sourceTree = "<group>";
@@ -432,7 +435,9 @@
 				298D7C831BC2C88F00FD3B3E /* AFHTTPSessionManagerTests.m */,
 				298D7C851BC2C88F00FD3B3E /* AFJSONSerializationTests.m */,
 				298D7C881BC2C88F00FD3B3E /* AFPropertyListResponseSerializerTests.m */,
+				E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */,
 				29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */,
+				1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */,
 				298D7C871BC2C88F00FD3B3E /* AFNetworkReachabilityManagerTests.m */,
 				298D7C891BC2C88F00FD3B3E /* AFSecurityPolicyTests.m */,
 				298D7C8F1BC2C88F00FD3B3E /* AFURLSessionManagerTests.m */,
@@ -763,7 +768,7 @@
 		299522301BBF104D00859F49 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = AFNetworking;
 				TargetAttributes = {
 					2987B0A41BC408A200179A4C = {
@@ -771,9 +776,11 @@
 					};
 					2987B0AD1BC408A200179A4C = {
 						CreatedOnToolsVersion = 7.1;
+						ProvisioningStyle = Manual;
 					};
 					298D7C3A1BC2C79500FD3B3E = {
 						CreatedOnToolsVersion = 7.0.1;
+						ProvisioningStyle = Manual;
 					};
 					298D7C491BC2C7B200FD3B3E = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -826,22 +833,21 @@
 			files = (
 				2987B0DE1BC40AFB00179A4C /* foobar.com.cer in Resources */,
 				2987B0D61BC40AEC00179A4C /* ADNNetServerTrustChain in Resources */,
-				2987B0D91BC40AF300179A4C /* COMODO_RSA_Certification_Authority.cer in Resources */,
 				2987B0DF1BC40AFB00179A4C /* NoDomains.cer in Resources */,
 				2987B0D41BC40AE900179A4C /* adn_1.cer in Resources */,
+				1F6F7DFF1F17051100C979D0 /* httpbinorg_08132017.cer in Resources */,
 				2987B0DD1BC40AFB00179A4C /* AltName.cer in Resources */,
 				2987B0D71BC40AF000179A4C /* HTTPBinOrgServerTrustChain in Resources */,
 				2987B0D31BC40AE900179A4C /* adn_0.cer in Resources */,
 				2987B0DC1BC40AF600179A4C /* logo.png in Resources */,
-				2987B0D81BC40AF300179A4C /* AddTrust_External_CA_Root.cer in Resources */,
 				2987B0D51BC40AE900179A4C /* adn_2.cer in Resources */,
-				2987B0DA1BC40AF300179A4C /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 				5F4323D71BF63CB0003B8749 /* GoogleComServerTrustChainPath1 in Resources */,
+				1F6F7DFE1F17051100C979D0 /* Let's Encrypt Authority X3.cer in Resources */,
 				5F4323DB1BF63CBA003B8749 /* GoogleComServerTrustChainPath2 in Resources */,
 				5F4323BD1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
-				1FE783031C5857A200A73B7C /* httpbinorg_01192017.cer in Resources */,
 				5F4323C01BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
+				1F6F7DFD1F17051100C979D0 /* DST Root CA X3.cer in Resources */,
 				5F4323CF1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323C31BF63741003B8749 /* google.com.cer in Resources */,
 			);
@@ -851,24 +857,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				298D7CC51BC2CAA200FD3B3E /* AddTrust_External_CA_Root.cer in Resources */,
 				298D7CBF1BC2CA9D00FD3B3E /* foobar.com.cer in Resources */,
 				298D7CBA1BC2CA9800FD3B3E /* logo.png in Resources */,
-				298D7CC61BC2CAA200FD3B3E /* COMODO_RSA_Certification_Authority.cer in Resources */,
 				297824A31BC2D69A0041C395 /* adn_0.cer in Resources */,
-				298D7CC71BC2CAA200FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 				298D7CE31BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */,
+				1F6F7DF91F17051000C979D0 /* httpbinorg_08132017.cer in Resources */,
 				297824A71BC2D69A0041C395 /* adn_2.cer in Resources */,
 				297824A51BC2D69A0041C395 /* adn_1.cer in Resources */,
 				298D7CC01BC2CA9D00FD3B3E /* NoDomains.cer in Resources */,
 				298D7CE01BC2CB5A00FD3B3E /* ADNNetServerTrustChain in Resources */,
 				298D7CBE1BC2CA9D00FD3B3E /* AltName.cer in Resources */,
 				5F4323D51BF63CB0003B8749 /* GoogleComServerTrustChainPath1 in Resources */,
+				1F6F7DF81F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */,
 				5F4323D91BF63CBA003B8749 /* GoogleComServerTrustChainPath2 in Resources */,
 				5F4323BB1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DD1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
-				1FE783011C5857A100A73B7C /* httpbinorg_01192017.cer in Resources */,
 				5F4323BE1BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
+				1F6F7DF71F17051000C979D0 /* DST Root CA X3.cer in Resources */,
 				5F4323CD1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323C11BF63741003B8749 /* google.com.cer in Resources */,
 			);
@@ -878,24 +883,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				298D7CC11BC2CAA100FD3B3E /* AddTrust_External_CA_Root.cer in Resources */,
 				298D7CBC1BC2CA9C00FD3B3E /* foobar.com.cer in Resources */,
 				298D7CB91BC2CA9800FD3B3E /* logo.png in Resources */,
-				298D7CC21BC2CAA100FD3B3E /* COMODO_RSA_Certification_Authority.cer in Resources */,
 				297824A41BC2D69A0041C395 /* adn_0.cer in Resources */,
-				298D7CC31BC2CAA100FD3B3E /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
 				298D7CE41BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */,
+				1F6F7DFC1F17051000C979D0 /* httpbinorg_08132017.cer in Resources */,
 				297824A81BC2D69A0041C395 /* adn_2.cer in Resources */,
 				297824A61BC2D69A0041C395 /* adn_1.cer in Resources */,
 				298D7CBD1BC2CA9C00FD3B3E /* NoDomains.cer in Resources */,
 				298D7CE11BC2CB5A00FD3B3E /* ADNNetServerTrustChain in Resources */,
 				298D7CBB1BC2CA9C00FD3B3E /* AltName.cer in Resources */,
 				5F4323D61BF63CB0003B8749 /* GoogleComServerTrustChainPath1 in Resources */,
+				1F6F7DFB1F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */,
 				5F4323DA1BF63CBA003B8749 /* GoogleComServerTrustChainPath2 in Resources */,
 				5F4323BC1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323CE1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
-				1FE783021C5857A100A73B7C /* httpbinorg_01192017.cer in Resources */,
 				5F4323DE1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
+				1F6F7DFA1F17051000C979D0 /* DST Root CA X3.cer in Resources */,
 				5F4323BF1BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
 				5F4323C21BF63741003B8749 /* google.com.cer in Resources */,
 			);
@@ -954,6 +958,7 @@
 				2987B0E31BC40B0900179A4C /* AFUIActivityIndicatorViewTests.m in Sources */,
 				2987B0D01BC40A7600179A4C /* AFSecurityPolicyTests.m in Sources */,
 				2987B0CB1BC40A7600179A4C /* AFHTTPResponseSerializationTests.m in Sources */,
+				1BF9F9621C87843300F1F35A /* AFImageResponseSerializerTests.m in Sources */,
 				2987B0CE1BC40A7600179A4C /* AFNetworkReachabilityManagerTests.m in Sources */,
 				2987B0E01BC40B0900179A4C /* AFAutoPurgingImageCacheTests.m in Sources */,
 				2987B0CA1BC40A7600179A4C /* AFHTTPRequestSerializationTests.m in Sources */,
@@ -962,6 +967,7 @@
 				2987B0CF1BC40A7600179A4C /* AFPropertyListResponseSerializerTests.m in Sources */,
 				2987B0D21BC40AD800179A4C /* AFTestCase.m in Sources */,
 				2987B0CD1BC40A7600179A4C /* AFJSONSerializationTests.m in Sources */,
+				E91164671DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -972,9 +978,11 @@
 				29D3413F1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m in Sources */,
 				2960BAC31C1B2F1A00BA02F0 /* AFUIButtonTests.m in Sources */,
 				298D7C961BC2C94400FD3B3E /* AFTestCase.m in Sources */,
+				E91164651DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m in Sources */,
 				298D7CB11BC2CA6E00FD3B3E /* AFHTTPRequestSerializationTests.m in Sources */,
 				297824AE1BC2DBD80041C395 /* AFUIActivityIndicatorViewTests.m in Sources */,
 				297824AD1BC2DBA40041C395 /* AFNetworkActivityManagerTests.m in Sources */,
+				1BF9F9601C87832B00F1F35A /* AFImageResponseSerializerTests.m in Sources */,
 				298D7CDD1BC2CAF700FD3B3E /* AFSecurityPolicyTests.m in Sources */,
 				298D7CD31BC2CAE800FD3B3E /* AFHTTPResponseSerializationTests.m in Sources */,
 				297824B01BC2DC2D0041C395 /* AFUIImageViewTests.m in Sources */,
@@ -997,7 +1005,9 @@
 				298D7CD41BC2CAE900FD3B3E /* AFHTTPResponseSerializationTests.m in Sources */,
 				29D341401C20D46400A7D266 /* AFCompoundResponseSerializerTests.m in Sources */,
 				298D7CB21BC2CA6E00FD3B3E /* AFHTTPRequestSerializationTests.m in Sources */,
+				E91164661DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m in Sources */,
 				298D7CDE1BC2CAF800FD3B3E /* AFSecurityPolicyTests.m in Sources */,
+				1BF9F9611C87843200F1F35A /* AFImageResponseSerializerTests.m in Sources */,
 				298D7C971BC2C94500FD3B3E /* AFTestCase.m in Sources */,
 				298D7CD81BC2CAF000FD3B3E /* AFJSONSerializationTests.m in Sources */,
 				298D7CDC1BC2CAF500FD3B3E /* AFPropertyListResponseSerializerTests.m in Sources */,
@@ -1079,6 +1089,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BITCODE_GENERATION_MODE = marker;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1101,6 +1112,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BITCODE_GENERATION_MODE = bitcode;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1122,6 +1134,8 @@
 		2987B0B81BC408A200179A4C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ./Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-tvOSTests";
@@ -1134,6 +1148,8 @@
 		2987B0B91BC408A200179A4C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ./Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-tvOSTests";
@@ -1146,7 +1162,8 @@
 		298D7C431BC2C79500FD3B3E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = ./Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1159,7 +1176,8 @@
 		298D7C441BC2C79500FD3B3E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = ./Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1207,14 +1225,24 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -1230,11 +1258,24 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
@@ -1258,14 +1299,24 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -1275,11 +1326,24 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
@@ -1300,11 +1364,11 @@
 			buildSettings = {
 				BITCODE_GENERATION_MODE = marker;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_WARN_SHADOW = YES;
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1322,11 +1386,11 @@
 			buildSettings = {
 				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_WARN_SHADOW = YES;
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1342,7 +1406,9 @@
 		2995226B1BBF129200859F49 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1363,7 +1429,9 @@
 		2995226C1BBF129200859F49 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

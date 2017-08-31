@@ -97,8 +97,6 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         return nil;
     }
 
-    self.stringEncoding = NSUTF8StringEncoding;
-
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
     self.acceptableContentTypes = nil;
 
@@ -242,23 +240,28 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         }
     }
 
-    id responseObject = nil;
-    NSError *serializationError = nil;
     // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
     // See https://github.com/rails/rails/issues/1742
     BOOL isSpace = [data isEqualToData:[NSData dataWithBytes:" " length:1]];
-    if (data.length > 0 && !isSpace) {
-        responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
-    } else {
+    
+    if (data.length == 0 || isSpace) {
         return nil;
     }
+    
+    NSError *serializationError = nil;
+    
+    id responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
 
-    if (self.removesKeysWithNullValues && responseObject) {
-        responseObject = AFJSONObjectByRemovingKeysWithNullValues(responseObject, self.readingOptions);
+    if (!responseObject)
+    {
+        if (error) {
+            *error = AFErrorWithUnderlyingError(serializationError, *error);
+        }
+        return nil;
     }
-
-    if (error) {
-        *error = AFErrorWithUnderlyingError(serializationError, *error);
+    
+    if (self.removesKeysWithNullValues) {
+        return AFJSONObjectByRemovingKeysWithNullValues(responseObject, self.readingOptions);
     }
 
     return responseObject;
@@ -288,7 +291,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 #pragma mark - NSCopying
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    AFJSONResponseSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    AFJSONResponseSerializer *serializer = [super copyWithZone:zone];
     serializer.readingOptions = self.readingOptions;
     serializer.removesKeysWithNullValues = self.removesKeysWithNullValues;
 
@@ -378,10 +381,14 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     NSError *serializationError = nil;
     NSXMLDocument *document = [[NSXMLDocument alloc] initWithData:data options:self.options error:&serializationError];
 
-    if (error) {
-        *error = AFErrorWithUnderlyingError(serializationError, *error);
+    if (!document)
+    {
+        if (error) {
+            *error = AFErrorWithUnderlyingError(serializationError, *error);
+        }
+        return nil;
     }
-
+    
     return document;
 }
 
@@ -407,7 +414,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 #pragma mark - NSCopying
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    AFXMLDocumentResponseSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    AFXMLDocumentResponseSerializer *serializer = [super copyWithZone:zone];
     serializer.options = self.options;
 
     return serializer;
@@ -458,15 +465,20 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         }
     }
 
-    id responseObject;
-    NSError *serializationError = nil;
-
-    if (data) {
-        responseObject = [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:NULL error:&serializationError];
+    if (!data) {
+        return nil;
     }
-
-    if (error) {
-        *error = AFErrorWithUnderlyingError(serializationError, *error);
+    
+    NSError *serializationError = nil;
+    
+    id responseObject = [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:NULL error:&serializationError];
+    
+    if (!responseObject)
+    {
+        if (error) {
+            *error = AFErrorWithUnderlyingError(serializationError, *error);
+        }
+        return nil;
     }
 
     return responseObject;
@@ -496,7 +508,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
 #pragma mark - NSCopying
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    AFPropertyListResponseSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    AFPropertyListResponseSerializer *serializer = [super copyWithZone:zone];
     serializer.format = self.format;
     serializer.readOptions = self.readOptions;
 
@@ -722,7 +734,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #pragma mark - NSCopying
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    AFImageResponseSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    AFImageResponseSerializer *serializer = [super copyWithZone:zone];
 
 #if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     serializer.imageScale = self.imageScale;
@@ -796,7 +808,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #pragma mark - NSCopying
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    AFCompoundResponseSerializer *serializer = [[[self class] allocWithZone:zone] init];
+    AFCompoundResponseSerializer *serializer = [super copyWithZone:zone];
     serializer.responseSerializers = self.responseSerializers;
 
     return serializer;

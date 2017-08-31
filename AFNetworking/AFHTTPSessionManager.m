@@ -98,6 +98,23 @@
     [super setResponseSerializer:responseSerializer];
 }
 
+@dynamic securityPolicy;
+
+- (void)setSecurityPolicy:(AFSecurityPolicy *)securityPolicy {
+    if (securityPolicy.SSLPinningMode != AFSSLPinningModeNone && ![self.baseURL.scheme isEqualToString:@"https"]) {
+        NSString *pinningMode = @"Unknown Pinning Mode";
+        switch (securityPolicy.SSLPinningMode) {
+            case AFSSLPinningModeNone:        pinningMode = @"AFSSLPinningModeNone"; break;
+            case AFSSLPinningModeCertificate: pinningMode = @"AFSSLPinningModeCertificate"; break;
+            case AFSSLPinningModePublicKey:   pinningMode = @"AFSSLPinningModePublicKey"; break;
+        }
+        NSString *reason = [NSString stringWithFormat:@"A security policy configured with `%@` can only be applied on a manager with a secure base URL (i.e. https)", pinningMode];
+        @throw [NSException exceptionWithName:@"Invalid Security Policy" reason:reason userInfo:nil];
+    }
+
+    [super setSecurityPolicy:securityPolicy];
+}
+
 #pragma mark -
 
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
@@ -186,12 +203,9 @@
     NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters constructingBodyWithBlock:block error:&serializationError];
     if (serializationError) {
         if (failure) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
             dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
                 failure(nil, serializationError);
             });
-#pragma clang diagnostic pop
         }
 
         return nil;
@@ -262,12 +276,9 @@
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
     if (serializationError) {
         if (failure) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu"
             dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
                 failure(nil, serializationError);
             });
-#pragma clang diagnostic pop
         }
 
         return nil;
