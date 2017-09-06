@@ -655,10 +655,10 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 #pragma mark -
 
 @interface AFStreamingMultipartFormData ()
-@property (readwrite, nonatomic, copy) NSMutableURLRequest *request;
-@property (readwrite, nonatomic, assign) NSStringEncoding stringEncoding;
-@property (readwrite, nonatomic, copy) NSString *boundary;
-@property (readwrite, nonatomic, strong) AFMultipartBodyStream *bodyStream;
+@property (readonly, nonatomic, strong) NSMutableURLRequest *request;
+@property (readonly, nonatomic, assign) NSStringEncoding stringEncoding;
+@property (readonly, nonatomic, strong) NSString *boundary;
+@property (readonly, nonatomic, strong) AFMultipartBodyStream *bodyStream;
 @end
 
 @implementation AFStreamingMultipartFormData
@@ -671,10 +671,10 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         return nil;
     }
 
-    self.request = urlRequest;
-    self.stringEncoding = encoding;
-    self.boundary = AFCreateMultipartFormBoundary();
-    self.bodyStream = [[AFMultipartBodyStream alloc] initWithStringEncoding:encoding];
+    _request = [urlRequest mutableCopy];
+    _stringEncoding = encoding;
+    _boundary = AFCreateMultipartFormBoundary();
+    _bodyStream = [[AFMultipartBodyStream alloc] initWithStringEncoding:encoding];
 
     return self;
 }
