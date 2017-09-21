@@ -165,7 +165,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
 
     _networkReachability = CFRetain(reachability);
-    self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
+    self.networkReachabilityStatus =  [self checkNetworkReachabilityStatus];
 
     return self;
 }
@@ -183,6 +183,13 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
 }
 
+#pragma mark - fix the bug of isReachableXXX method is ineffective, by x5.
+- (AFNetworkReachabilityStatus)checkNetworkReachabilityStatus
+{
+    SCNetworkReachabilityFlags flags;
+    return SCNetworkReachabilityGetFlags(_networkReachability, &flags) ? AFNetworkReachabilityStatusForFlags(flags) : AFNetworkReachabilityStatusNotReachable;
+}
+
 #pragma mark -
 
 - (BOOL)isReachable {
@@ -190,11 +197,11 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 - (BOOL)isReachableViaWWAN {
-    return self.networkReachabilityStatus == AFNetworkReachabilityStatusReachableViaWWAN;
+    return self.networkReachabilityStatus = [self checkNetworkReachabilityStatus] == AFNetworkReachabilityStatusReachableViaWWAN;
 }
 
 - (BOOL)isReachableViaWiFi {
-    return self.networkReachabilityStatus == AFNetworkReachabilityStatusReachableViaWiFi;
+    return self.networkReachabilityStatus = [self checkNetworkReachabilityStatus] == AFNetworkReachabilityStatusReachableViaWiFi;
 }
 
 #pragma mark -
