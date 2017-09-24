@@ -183,7 +183,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
 }
 
-#pragma mark - fix the bug of isReachable method is ineffective, by x5. for master
+#pragma mark - fix the bug of isReachable method is ineffective, by x5. tag => 3.1.1
 - (AFNetworkReachabilityStatus)checkNetworkReachabilityStatus
 {
     SCNetworkReachabilityFlags flags;
