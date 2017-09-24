@@ -165,7 +165,11 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
 
     _networkReachability = CFRetain(reachability);
+<<<<<<< HEAD
     self.networkReachabilityStatus =  [self checkNetworkReachabilityStatus];
+=======
+    self.networkReachabilityStatus = [self checkNetworkReachabilityStatus];
+>>>>>>> 3.1.1
 
     return self;
 }
@@ -183,7 +187,11 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     }
 }
 
+<<<<<<< HEAD
 #pragma mark - fix the bug of isReachableXXX method is ineffective, by x5.
+=======
+#pragma mark - fix the bug of isReachable method is ineffective, by x5.
+>>>>>>> 3.1.1
 - (AFNetworkReachabilityStatus)checkNetworkReachabilityStatus
 {
     SCNetworkReachabilityFlags flags;
