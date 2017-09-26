@@ -96,7 +96,6 @@
 @interface AFImageDownloader ()
 
 @property (nonatomic, strong) dispatch_queue_t synchronizationQueue;
-@property (nonatomic, strong) dispatch_queue_t responseQueue;
 
 @property (nonatomic, assign) NSInteger maximumActiveDownloads;
 @property (nonatomic, assign) NSInteger activeRequestCount;
@@ -169,9 +168,7 @@
 
         NSString *name = [NSString stringWithFormat:@"com.alamofire.imagedownloader.synchronizationqueue-%@", [[NSUUID UUID] UUIDString]];
         self.synchronizationQueue = dispatch_queue_create([name cStringUsingEncoding:NSASCIIStringEncoding], DISPATCH_QUEUE_SERIAL);
-
-        name = [NSString stringWithFormat:@"com.alamofire.imagedownloader.responsequeue-%@", [[NSUUID UUID] UUIDString]];
-        self.responseQueue = dispatch_queue_create([name cStringUsingEncoding:NSASCIIStringEncoding], DISPATCH_QUEUE_CONCURRENT);
+        
     }
 
     return self;
@@ -248,11 +245,11 @@
                        uploadProgress:nil
                        downloadProgress:nil
                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-                           dispatch_async(self.responseQueue, ^{
-                               __strong __typeof__(weakSelf) strongSelf = weakSelf;
-                               AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[URLIdentifier];
+                           __strong __typeof__(weakSelf) strongSelf = weakSelf;
+                           dispatch_async(strongSelf.synchronizationQueue, ^{
+                               AFImageDownloaderMergedTask *mergedTask = strongSelf.mergedTasks[URLIdentifier];
                                if ([mergedTask.identifier isEqual:mergedTaskIdentifier]) {
-                                   mergedTask = [strongSelf safelyRemoveMergedTaskWithURLIdentifier:URLIdentifier];
+                                   [strongSelf.mergedTasks removeObjectForKey:URLIdentifier];
                                    if (error) {
                                        for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
                                            if (handler.failureBlock) {
@@ -274,8 +271,8 @@
                                        
                                    }
                                }
-                               [strongSelf safelyDecrementActiveTaskCount];
-                               [strongSelf safelyStartNextTaskIfNecessary];
+                               [strongSelf decrementActiveTaskCount];
+                               [strongSelf startNextTaskIfNecessary];
                            });
                        }];
 
@@ -334,14 +331,6 @@
     });
 }
 
-- (AFImageDownloaderMergedTask*)safelyRemoveMergedTaskWithURLIdentifier:(NSString *)URLIdentifier {
-    __block AFImageDownloaderMergedTask *mergedTask = nil;
-    dispatch_sync(self.synchronizationQueue, ^{
-        mergedTask = [self removeMergedTaskWithURLIdentifier:URLIdentifier];
-    });
-    return mergedTask;
-}
-
 //This method should only be called from safely within the synchronizationQueue
 - (AFImageDownloaderMergedTask *)removeMergedTaskWithURLIdentifier:(NSString *)URLIdentifier {
     AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[URLIdentifier];
@@ -349,26 +338,22 @@
     return mergedTask;
 }
 
-- (void)safelyDecrementActiveTaskCount {
-    dispatch_sync(self.synchronizationQueue, ^{
-        if (self.activeRequestCount > 0) {
-            self.activeRequestCount -= 1;
-        }
-    });
+- (void)decrementActiveTaskCount {
+    if (self.activeRequestCount > 0) {
+        self.activeRequestCount -= 1;
+    }
 }
 
-- (void)safelyStartNextTaskIfNecessary {
-    dispatch_sync(self.synchronizationQueue, ^{
-        if ([self isActiveRequestCountBelowMaximumLimit]) {
-            while (self.queuedMergedTasks.count > 0) {
-                AFImageDownloaderMergedTask *mergedTask = [self dequeueMergedTask];
-                if (mergedTask.task.state == NSURLSessionTaskStateSuspended) {
-                    [self startMergedTask:mergedTask];
-                    break;
-                }
+- (void)startNextTaskIfNecessary {
+    if ([self isActiveRequestCountBelowMaximumLimit]) {
+        while (self.queuedMergedTasks.count > 0) {
+            AFImageDownloaderMergedTask *mergedTask = [self dequeueMergedTask];
+            if (mergedTask.task.state == NSURLSessionTaskStateSuspended) {
+                [self startMergedTask:mergedTask];
+                break;
             }
         }
-    });
+    }
 }
 
 - (void)startMergedTask:(AFImageDownloaderMergedTask *)mergedTask {
