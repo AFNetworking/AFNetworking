@@ -1,5 +1,5 @@
 // AFTestCase.m
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,11 @@
 
 #import "AFTestCase.h"
 
-NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
-
 @implementation AFTestCase
 
 - (void)setUp {
     [super setUp];
-
-    [Expecta setAsynchronousTestTimeout:5.0];
+    self.networkTimeout = 20.0;
 }
 
 - (void)tearDown {
@@ -38,7 +35,32 @@ NSString * const AFNetworkingTestsBaseURLString = @"https://httpbin.org/";
 #pragma mark -
 
 - (NSURL *)baseURL {
-    return [NSURL URLWithString:AFNetworkingTestsBaseURLString];
+    NSDictionary *environment = [[NSProcessInfo processInfo] environment];
+    return [NSURL URLWithString:environment[@"HTTPBIN_BASE_URL"] ?: @"https://httpbin.org"];
+}
+
+- (NSURL *)pngURL {
+    return [self.baseURL URLByAppendingPathComponent:@"image/png"];
+}
+
+- (NSURL *)jpegURL {
+    return [self.baseURL URLByAppendingPathComponent:@"image/jpeg"];
+}
+
+- (NSURL *)delayURL {
+    return [self.baseURL URLByAppendingPathComponent:@"delay/1"];
+}
+
+- (NSURL *)URLWithStatusCode:(NSInteger)statusCode {
+    return [self.baseURL URLByAppendingPathComponent:[NSString stringWithFormat:@"status/%@", @(statusCode)]];
+}
+
+- (void)waitForExpectationsWithCommonTimeout {
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
+- (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler {
+    [self waitForExpectationsWithTimeout:self.networkTimeout handler:handler];
 }
 
 @end

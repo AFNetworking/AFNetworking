@@ -1,5 +1,5 @@
-// AFNetworkActivityManagerTests.m
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// AFURLSessionManagerTests.m
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,13 @@
 
 #import "AFURLSessionManager.h"
 
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+#define NSFoundationVersionNumber_With_Fixed_28588583_bug 0.0
+#else
+#define NSFoundationVersionNumber_With_Fixed_28588583_bug DBL_MAX
+#endif
+
+
 @interface AFURLSessionManagerTests : AFTestCase
 @property (readwrite, nonatomic, strong) AFURLSessionManager *localManager;
 @property (readwrite, nonatomic, strong) AFURLSessionManager *backgroundManager;
@@ -33,24 +40,37 @@
 
 @implementation AFURLSessionManagerTests
 
+- (NSURLRequest *)bigImageURLRequest {
+    NSURL *url = [NSURL URLWithString:@"http://scitechdaily.com/images/New-Image-of-the-Galaxy-Messier-94-also-Known-as-NGC-4736.jpg"];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+    return request;
+}
+
 - (void)setUp {
     [super setUp];
     self.localManager = [[AFURLSessionManager alloc] init];
-    
-    //Unfortunately, iOS 7 throws an exception when trying to create a background URL Session inside this test target, which means our tests here can only run on iOS 8+
-    //Travis actually needs the try catch here. Just doing if ([NSURLSessionConfiguration respondsToSelector:@selector(backgroundSessionWithIdentifier)]) wasn't good enough.
-    @try {
+    [self.localManager.session.configuration.URLCache removeAllCachedResponses];
+
+    //It was discovered that background sessions were hanging the test target
+    //on iOS 10 and Xcode 8.
+    //
+    //rdar://28588583
+    //
+    //For now, we'll disable the unit tests for background managers until that can
+    //be resolved
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_With_Fixed_28588583_bug) {
         NSString *identifier = [NSString stringWithFormat:@"com.afnetworking.tests.urlsession.%@", [[NSUUID UUID] UUIDString]];
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
         self.backgroundManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     }
-    @catch (NSException *exception) {
-
+    else {
+        self.backgroundManager = nil;
     }
 }
 
 - (void)tearDown {
     [super tearDown];
+    [self.localManager.session.configuration.URLCache removeAllCachedResponses];
     [self.localManager invalidateSessionCancelingTasks:YES];
     self.localManager = nil;
     
@@ -58,48 +78,139 @@
     self.backgroundManager = nil;
 }
 
-#pragma mark -
+#pragma mark Progress -
 
-- (void)testUploadTasksProgressBecomesPartOfCurrentProgress {
-    NSProgress *overallProgress = [NSProgress progressWithTotalUnitCount:100];
+- (void)testDataTaskDoesReportDownloadProgress {
+    NSURLSessionDataTask *task;
 
-    [overallProgress becomeCurrentWithPendingUnitCount:80];
-    NSProgress *uploadProgress = nil;
-
-    [self.localManager uploadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
-                               fromData:[NSData data]
-                                 progress:&uploadProgress
-                        completionHandler:nil];
-    [overallProgress resignCurrent];
-
-    expect(overallProgress.fractionCompleted).to.equal(0);
-
-    uploadProgress.totalUnitCount = 1;
-    uploadProgress.completedUnitCount = 1;
-
-
-    expect(overallProgress.fractionCompleted).to.equal(0.8);
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress should equal 1.0"];
+    task = [self.localManager
+            dataTaskWithRequest:[self bigImageURLRequest]
+            uploadProgress:nil
+            downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
+                if (downloadProgress.fractionCompleted == 1.0) {
+                    [expectation fulfill];
+                }
+            }
+            completionHandler:nil];
+    
+    [task resume];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
-- (void)testDownloadTasksProgressBecomesPartOfCurrentProgress {
-    NSProgress *overallProgress = [NSProgress progressWithTotalUnitCount:100];
+- (void)testDataTaskDownloadProgressCanBeKVOd {
+    NSURLSessionDataTask *task;
 
-    [overallProgress becomeCurrentWithPendingUnitCount:80];
-    NSProgress *downloadProgress = nil;
+    task = [self.localManager
+            dataTaskWithRequest:[self bigImageURLRequest]
+            uploadProgress:nil
+            downloadProgress:nil
+            completionHandler:nil];
 
-    [self.localManager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
-                                 progress:&downloadProgress
-                              destination:nil
-                        completionHandler:nil];
-    [overallProgress resignCurrent];
+        NSProgress *progress = [self.localManager downloadProgressForTask:task];
+        [self keyValueObservingExpectationForObject:progress keyPath:@"fractionCompleted"
+                                            handler:^BOOL(NSProgress  *observedProgress, NSDictionary * _Nonnull change) {
+                                                double new = [change[@"new"] doubleValue];
+                                                double old = [change[@"old"] doubleValue];
+                                                return new == 1.0 && old != 0.0;
+                                            }];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeout];
+}
 
-    expect(overallProgress.fractionCompleted).to.equal(0);
+- (void)testDownloadTaskDoesReportProgress {
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress should equal 1.0"];
+    NSURLSessionTask *task;
+    task = [self.localManager
+            downloadTaskWithRequest:[self bigImageURLRequest]
+            progress:^(NSProgress * _Nonnull downloadProgress) {
+                if (downloadProgress.fractionCompleted == 1.0) {
+                    [expectation fulfill];
+                }
+            }
+            destination:nil
+            completionHandler:nil];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeout];
+}
 
-    downloadProgress.totalUnitCount = 1;
-    downloadProgress.completedUnitCount = 1;
+- (void)testUploadTaskDoesReportProgress {
+    NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
+    while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
+        [payload appendString:@"AFNetworking"];
+    }
 
+    NSURL *url = [NSURL URLWithString:[[self.baseURL absoluteString] stringByAppendingString:@"/post"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+    [request setHTTPMethod:@"POST"];
 
-    expect(overallProgress.fractionCompleted).to.equal(0.8);
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress should equal 1.0"];
+
+    NSURLSessionTask *task;
+    task = [self.localManager
+            uploadTaskWithRequest:request
+            fromData:[payload dataUsingEncoding:NSUTF8StringEncoding]
+            progress:^(NSProgress * _Nonnull uploadProgress) {
+                NSLog(@"%@", uploadProgress.localizedDescription);
+                if (uploadProgress.fractionCompleted == 1.0) {
+                    [expectation fulfill];
+                }
+            }
+            completionHandler:nil];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeout];
+}
+
+- (void)testUploadProgressCanBeKVOd {
+    NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
+    while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
+        [payload appendString:@"AFNetworking"];
+    }
+
+    NSURL *url = [NSURL URLWithString:[[self.baseURL absoluteString] stringByAppendingString:@"/post"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+    [request setHTTPMethod:@"POST"];
+
+    NSURLSessionTask *task;
+    task = [self.localManager
+            uploadTaskWithRequest:request
+            fromData:[payload dataUsingEncoding:NSUTF8StringEncoding]
+            progress:nil
+            completionHandler:nil];
+
+    NSProgress *uploadProgress = [self.localManager uploadProgressForTask:task];
+    [self keyValueObservingExpectationForObject:uploadProgress keyPath:NSStringFromSelector(@selector(fractionCompleted)) expectedValue:@(1.0)];
+
+    [task resume];
+    [self waitForExpectationsWithCommonTimeout];
+}
+
+#pragma mark - rdar://17029580
+
+- (void)testRDAR17029580IsFixed {
+    //https://github.com/AFNetworking/AFNetworking/issues/2093
+    //https://github.com/AFNetworking/AFNetworking/pull/3205
+    //http://openradar.appspot.com/radar?id=5871104061079552
+    dispatch_queue_t serial_queue = dispatch_queue_create("com.alamofire.networking.test.RDAR17029580", DISPATCH_QUEUE_SERIAL);
+    NSMutableArray *taskIDs = [[NSMutableArray alloc] init];
+    for (NSInteger i = 0; i < 100; i++) {
+        XCTestExpectation *expectation = [self expectationWithDescription:@"Wait for task creation"];
+        __block NSURLSessionTask *task;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            task = [self.localManager
+                    dataTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                    uploadProgress:nil
+                    downloadProgress:nil
+                    completionHandler:nil];
+            dispatch_sync(serial_queue, ^{
+                XCTAssertFalse([taskIDs containsObject:@(task.taskIdentifier)]);
+                [taskIDs addObject:@(task.taskIdentifier)];
+            });
+            [task cancel];
+            [expectation fulfill];
+        });
+    }
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 #pragma mark - Issue #2702 Tests
@@ -107,19 +218,25 @@
 
 - (void)testDidResumeNotificationIsReceivedByLocalDataTaskAfterResume {
     NSURLSessionDataTask *task = [self.localManager dataTaskWithRequest:[self _delayURLRequest]
-                                                 completionHandler:nil];
+                                                         uploadProgress:nil
+                                                       downloadProgress:nil
+                                                      completionHandler:nil];
     [self _testResumeNotificationForTask:task];
 }
 
 - (void)testDidSuspendNotificationIsReceivedByLocalDataTaskAfterSuspend {
     NSURLSessionDataTask *task = [self.localManager dataTaskWithRequest:[self _delayURLRequest]
-                                                 completionHandler:nil];
+                                                         uploadProgress:nil
+                                                       downloadProgress:nil
+                                                      completionHandler:nil];
     [self _testSuspendNotificationForTask:task];
 }
 
 - (void)testDidResumeNotificationIsReceivedByBackgroundDataTaskAfterResume {
     if (self.backgroundManager) {
         NSURLSessionDataTask *task = [self.backgroundManager dataTaskWithRequest:[self _delayURLRequest]
+                                                                  uploadProgress:nil
+                                                                downloadProgress:nil
                                                                completionHandler:nil];
         [self _testResumeNotificationForTask:task];
     }
@@ -128,6 +245,8 @@
 - (void)testDidSuspendNotificationIsReceivedByBackgroundDataTaskAfterSuspend {
     if (self.backgroundManager) {
         NSURLSessionDataTask *task = [self.backgroundManager dataTaskWithRequest:[self _delayURLRequest]
+                                                                  uploadProgress:nil
+                                                                downloadProgress:nil
                                                                completionHandler:nil];
         [self _testSuspendNotificationForTask:task];
     }
@@ -135,36 +254,42 @@
 
 - (void)testDidResumeNotificationIsReceivedByLocalUploadTaskAfterResume {
     NSURLSessionUploadTask *task = [self.localManager uploadTaskWithRequest:[self _delayURLRequest]
-                                                              fromData:[NSData data]
-                                                              progress:nil
-                                                     completionHandler:nil];
+                                                                   fromData:[NSData data]
+                                                                   progress:nil
+                                                          completionHandler:nil];
     [self _testResumeNotificationForTask:task];
 }
 
 - (void)testDidSuspendNotificationIsReceivedByLocalUploadTaskAfterSuspend {
     NSURLSessionUploadTask *task = [self.localManager uploadTaskWithRequest:[self _delayURLRequest]
-                                                              fromData:[NSData data]
-                                                              progress:nil
-                                                     completionHandler:nil];
+                                                                   fromData:[NSData data]
+                                                                   progress:nil
+                                                          completionHandler:nil];
     [self _testSuspendNotificationForTask:task];
 }
 
 - (void)testDidResumeNotificationIsReceivedByBackgroundUploadTaskAfterResume {
     if (self.backgroundManager) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
         NSURLSessionUploadTask *task = [self.backgroundManager uploadTaskWithRequest:[self _delayURLRequest]
                                                                             fromFile:nil
                                                                             progress:nil
                                                                    completionHandler:nil];
+#pragma clang diagnostic pop
         [self _testResumeNotificationForTask:task];
     }
 }
 
 - (void)testDidSuspendNotificationIsReceivedByBackgroundUploadTaskAfterSuspend {
     if (self.backgroundManager) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
         NSURLSessionUploadTask *task = [self.backgroundManager uploadTaskWithRequest:[self _delayURLRequest]
                                                                             fromFile:nil
                                                                             progress:nil
                                                                    completionHandler:nil];
+#pragma clang diagnostic pop
         [self _testSuspendNotificationForTask:task];
     }
 }
@@ -215,7 +340,9 @@
 
 - (void)testSwizzlingIsWorkingAsExpectedForForegroundDataTask {
     NSURLSessionTask *task = [self.localManager dataTaskWithRequest:[self _delayURLRequest]
-                                             completionHandler:nil];
+                                                     uploadProgress:nil
+                                                   downloadProgress:nil
+                                                  completionHandler:nil];
     [self _testSwizzlingForTask:task];
     [task cancel];
 }
@@ -265,8 +392,11 @@
 - (void)testBackgroundManagerReturnsExpectedClassForDataTask {
     if (self.backgroundManager) {
         NSURLSessionTask *task = [self.backgroundManager dataTaskWithRequest:[self _delayURLRequest]
+                                                              uploadProgress:nil
+                                                            downloadProgress:nil
                                                            completionHandler:nil];
         XCTAssert([NSStringFromClass([task class]) isEqualToString:@"__NSCFBackgroundDataTask"]);
+        [task cancel];
     } else {
         NSLog(@"Unable to run %@ because self.backgroundManager is nil", NSStringFromSelector(_cmd));
     }
@@ -274,11 +404,15 @@
 
 - (void)testBackgroundManagerReturnsExpectedClassForUploadTask {
     if (self.backgroundManager) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
         NSURLSessionTask *task = [self.backgroundManager uploadTaskWithRequest:[self _delayURLRequest]
                                                                       fromFile:nil
                                                                       progress:nil
                                                              completionHandler:nil];
+#pragma clang diagnostic pop
         XCTAssert([NSStringFromClass([task class]) isEqualToString:@"__NSCFBackgroundUploadTask"]);
+        [task cancel];
     } else {
         NSLog(@"Unable to run %@ because self.backgroundManager is nil", NSStringFromSelector(_cmd));
     }
@@ -291,6 +425,7 @@
                                                                      destination:nil
                                                                completionHandler:nil];
         XCTAssert([NSStringFromClass([task class]) isEqualToString:@"__NSCFBackgroundDownloadTask"]);
+        [task cancel];
     } else {
         NSLog(@"Unable to run %@ because self.backgroundManager is nil", NSStringFromSelector(_cmd));
     }
@@ -321,7 +456,7 @@
 }
 
 - (NSURLRequest *)_delayURLRequest {
-    return [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"delay/1"]];
+    return [NSURLRequest requestWithURL:self.delayURL];
 }
 
 - (IMP)_implementationForTask:(NSURLSessionTask  *)task selector:(SEL)selector {

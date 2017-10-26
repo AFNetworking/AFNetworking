@@ -1,7 +1,46 @@
 language: objective-c
+osx_image: xcode7.1
+sudo: false
+env:
+  global:
+  - LC_CTYPE=en_US.UTF-8
+  - LANG=en_US.UTF-8
+  - LANGUAGE=en_US.UTF-8
+  - FASTLANE_LANE=ci_commit
+matrix:
+  include:
+    - osx_image: xcode8
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=default
+    - osx_image: xcode8
+      env: FASTLANE_ENV=ios10_xcode8
+    - osx_image: xcode8
+      env: FASTLANE_ENV=tvos10_xcode8
+    - osx_image: xcode8
+      env: FASTLANE_ENV=osx
+    - osx_image: xcode7.3
+      env: FASTLANE_ENV=ios93_xcode73
+    - osx_image: xcode7.3
+      env: FASTLANE_ENV=ios81_xcode73
 before_install:
-    - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
-    - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
-    - cd Tests && pod install && cd $TRAVIS_BUILD_DIR
-script: rake test
-
+  # Force bundler 1.12.5 because version 1.13 has issues, see https://github.com/fastlane/fastlane/issues/6065#issuecomment-246044617
+  - gem uninstall bundler -v '>1.12.5' --force || echo "bundler >1.12.5 is not installed"
+  - gem install bundler -v 1.12.5 --no-rdoc --no-ri --no-document --quiet
+  - gem install fastlane --no-rdoc --no-ri --no-document --quiet
+  - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
+script:
+  - set -o pipefail
+  - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
+  - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
+after_success:
+  - if [ "$FASTLANE_LANE" == "code_coverage" ]; then
+     bash <(curl -s https://codecov.io/bash);
+    fi
+after_failure:
+ - cat -n ~/Library/Logs/scan/*
+ - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
+ - cat -n ~/Library/Logs/DiagnosticReports/xctest*.crash
+# deploy:
+#   provider: script
+#   script: fastlane complete_framework_release --env deploy
+#   on:
+#     tags: true

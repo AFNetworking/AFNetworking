@@ -1,6 +1,6 @@
 // Post.h
 //
-// Copyright (c) 2012 Mattt Thompson (http://mattt.me/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,4 +35,7 @@
 
 + (NSURLSessionDataTask *)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block;
 
+@end
+
+@interface Post (NSCoding) <NSSecureCoding>
 @end
