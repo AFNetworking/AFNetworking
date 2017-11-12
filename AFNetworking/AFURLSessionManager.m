@@ -39,13 +39,16 @@ static dispatch_queue_t url_session_manager_creation_queue() {
 }
 
 static void url_session_manager_create_task_safely(dispatch_block_t block) {
-    if (NSFoundationVersionNumber < NSFoundationVersionNumber_With_Fixed_5871104061079552_bug) {
-        // Fix of bug
-        // Open Radar:http://openradar.appspot.com/radar?id=5871104061079552 (status: Fixed in iOS8)
-        // Issue about:https://github.com/AFNetworking/AFNetworking/issues/2093
-        dispatch_sync(url_session_manager_creation_queue(), block);
-    } else {
-        block();
+    
+    if (block != nil) {
+        if (NSFoundationVersionNumber < NSFoundationVersionNumber_With_Fixed_5871104061079552_bug) {
+            // Fix of bug
+            // Open Radar:http://openradar.appspot.com/radar?id=5871104061079552 (status: Fixed in iOS8)
+            // Issue about:https://github.com/AFNetworking/AFNetworking/issues/2093
+            dispatch_sync(url_session_manager_creation_queue(), block);
+        } else {
+            block();
+        }
     }
 }
 
@@ -373,8 +376,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
             7) If the current class implementation of `resume` is not equal to the super class implementation of `resume` AND the current implementation of `resume` is not equal to the original implementation of `af_resume`, THEN swizzle the methods
             8) Set the current class to the super class, and repeat steps 3-8
          */
-        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-        NSURLSession * session = [NSURLSession sessionWithConfiguration:configuration];
+        NSURLSession * session = [NSURLSession sharedSession];
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnonnull"
         NSURLSessionDataTask *localDataTask = [session dataTaskWithURL:nil];
@@ -394,7 +396,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         }
         
         [localDataTask cancel];
-        [session finishTasksAndInvalidate];
     }
 }
 
@@ -484,8 +485,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.operationQueue = [[NSOperationQueue alloc] init];
     self.operationQueue.maxConcurrentOperationCount = 1;
 
-    self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
-
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 
     self.securityPolicy = [AFSecurityPolicy defaultPolicy];
@@ -499,17 +498,20 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.lock = [[NSLock alloc] init];
     self.lock.name = AFURLSessionManagerLockName;
 
+    __weak typeof(self) weakSelf = self;
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         for (NSURLSessionDataTask *task in dataTasks) {
-            [self addDelegateForDataTask:task uploadProgress:nil downloadProgress:nil completionHandler:nil];
+            [strongSelf addDelegateForDataTask:task uploadProgress:nil downloadProgress:nil completionHandler:nil];
         }
 
         for (NSURLSessionUploadTask *uploadTask in uploadTasks) {
-            [self addDelegateForUploadTask:uploadTask progress:nil completionHandler:nil];
+            [strongSelf addDelegateForUploadTask:uploadTask progress:nil completionHandler:nil];
         }
 
         for (NSURLSessionDownloadTask *downloadTask in downloadTasks) {
-            [self addDelegateForDownloadTask:downloadTask progress:nil destination:nil completionHandler:nil];
+            [strongSelf addDelegateForDownloadTask:downloadTask progress:nil destination:nil completionHandler:nil];
         }
     }];
 
@@ -521,6 +523,19 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 }
 
 #pragma mark -
+
+- (NSURLSession *)session {
+    
+    @synchronized (self) {
+        if (!_session) {
+            _session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
+        }
+    }
+    return _session;
+}
+
+#pragma mark -
+
 
 - (NSString *)taskDescriptionForSessionTasks {
     return [NSString stringWithFormat:@"%p", self];
@@ -683,6 +698,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     } else {
         [self.session finishTasksAndInvalidate];
     }
+    self.session = nil;
 }
 
 #pragma mark -
@@ -1057,6 +1073,12 @@ didCompleteWithError:(NSError *)error
 
     if (self.taskDidComplete) {
         self.taskDidComplete(session, task, error);
+    }
+    
+    if (self.mutableTaskDelegatesKeyedByTaskIdentifier.allKeys.count == 0) {
+        @synchronized (self) {
+            [self invalidateSessionCancelingTasks:NO];
+        }
     }
 }
 
