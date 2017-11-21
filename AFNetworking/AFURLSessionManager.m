@@ -1209,7 +1209,11 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    [coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
+    if ([self.session.configuration conformsToProtocol:@protocol(NSCoding)]) {
+        [coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
+    } else {
+        [coder encodeObject:self.session.configuration.identifier forKey:@"identifier"];
+    }
 }
 
 #pragma mark - NSCopying
