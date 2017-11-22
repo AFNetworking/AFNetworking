@@ -39,17 +39,13 @@ static dispatch_queue_t url_session_manager_creation_queue() {
 }
 
 static void url_session_manager_create_task_safely(dispatch_block_t _Nonnull block) {
-    NSCAssert(block != NULL, @"Expected block to be non-NULL");
-    
-    if (block != NULL) {
-        if (NSFoundationVersionNumber < NSFoundationVersionNumber_With_Fixed_5871104061079552_bug) {
-            // Fix of bug
-            // Open Radar:http://openradar.appspot.com/radar?id=5871104061079552 (status: Fixed in iOS8)
-            // Issue about:https://github.com/AFNetworking/AFNetworking/issues/2093
-            dispatch_sync(url_session_manager_creation_queue(), block);
-        } else {
-            block();
-        }
+    if (NSFoundationVersionNumber < NSFoundationVersionNumber_With_Fixed_5871104061079552_bug) {
+        // Fix of bug
+        // Open Radar:http://openradar.appspot.com/radar?id=5871104061079552 (status: Fixed in iOS8)
+        // Issue about:https://github.com/AFNetworking/AFNetworking/issues/2093
+        dispatch_sync(url_session_manager_creation_queue(), block);
+    } else {
+        block();
     }
 }
 
