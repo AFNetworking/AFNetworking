@@ -1211,9 +1211,10 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 - (void)encodeWithCoder:(NSCoder *)coder {
     if ([self.session.configuration conformsToProtocol:@protocol(NSCoding)]) {
         [coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
-    } else {
-        [coder encodeObject:self.session.configuration.identifier forKey:@"identifier"];
     }
+    /* else { #1825 bug. Although apple delete NSCoding protocol from NSURLSessionConfiguration. The concrete class does conform to NSCoding. Unit test can't reach here. So I delete the else branch.
+        [coder encodeObject:self.session.configuration.identifier forKey:@"identifier"];
+    }*/
 }
 
 #pragma mark - NSCopying
