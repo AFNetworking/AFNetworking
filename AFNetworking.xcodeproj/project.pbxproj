@@ -239,7 +239,7 @@
 		2987B0A51BC408A200179A4C /* AFNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AFNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking Mac OS X Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		298D7C4A1BC2C7B200FD3B3E /* AFNetworking macOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AFNetworking macOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		298D7C771BC2C88F00FD3B3E /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		298D7C791BC2C88F00FD3B3E /* AltName.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AltName.cer; sourceTree = "<group>"; };
 		298D7C7A1BC2C88F00FD3B3E /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
@@ -489,7 +489,7 @@
 				299522651BBF129200859F49 /* AFNetworking.framework */,
 				299522771BBF136400859F49 /* AFNetworking.framework */,
 				298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */,
-				298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */,
+				298D7C4A1BC2C7B200FD3B3E /* AFNetworking macOS Tests.xctest */,
 				2987B0A51BC408A200179A4C /* AFNetworking.framework */,
 				2987B0AE1BC408A200179A4C /* AFNetworking tvOS Tests.xctest */,
 			);
@@ -698,9 +698,9 @@
 			productReference = 298D7C3B1BC2C79500FD3B3E /* AFNetworking iOS Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		298D7C491BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests */ = {
+		298D7C491BC2C7B200FD3B3E /* AFNetworking macOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 298D7C521BC2C7B200FD3B3E /* Build configuration list for PBXNativeTarget "AFNetworking Mac OS X Tests" */;
+			buildConfigurationList = 298D7C521BC2C7B200FD3B3E /* Build configuration list for PBXNativeTarget "AFNetworking macOS Tests" */;
 			buildPhases = (
 				298D7C461BC2C7B200FD3B3E /* Sources */,
 				298D7C471BC2C7B200FD3B3E /* Frameworks */,
@@ -711,9 +711,9 @@
 			dependencies = (
 				298D7C511BC2C7B200FD3B3E /* PBXTargetDependency */,
 			);
-			name = "AFNetworking Mac OS X Tests";
+			name = "AFNetworking macOS Tests";
 			productName = "AFNetworking Mac OS X Tests";
-			productReference = 298D7C4A1BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests.xctest */;
+			productReference = 298D7C4A1BC2C7B200FD3B3E /* AFNetworking macOS Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		299522381BBF104D00859F49 /* AFNetworking iOS */ = {
@@ -752,9 +752,9 @@
 			productReference = 299522651BBF129200859F49 /* AFNetworking.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		299522761BBF136400859F49 /* AFNetworking OS X */ = {
+		299522761BBF136400859F49 /* AFNetworking macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2995227C1BBF136400859F49 /* Build configuration list for PBXNativeTarget "AFNetworking OS X" */;
+			buildConfigurationList = 2995227C1BBF136400859F49 /* Build configuration list for PBXNativeTarget "AFNetworking macOS" */;
 			buildPhases = (
 				299522721BBF136400859F49 /* Sources */,
 				299522731BBF136400859F49 /* Frameworks */,
@@ -765,7 +765,7 @@
 			);
 			dependencies = (
 			);
-			name = "AFNetworking OS X";
+			name = "AFNetworking macOS";
 			productName = "AFNetworking OS X";
 			productReference = 299522771BBF136400859F49 /* AFNetworking.framework */;
 			productType = "com.apple.product-type.framework";
@@ -818,10 +818,10 @@
 			targets = (
 				299522381BBF104D00859F49 /* AFNetworking iOS */,
 				299522641BBF129200859F49 /* AFNetworking watchOS */,
-				299522761BBF136400859F49 /* AFNetworking OS X */,
+				299522761BBF136400859F49 /* AFNetworking macOS */,
 				2987B0A41BC408A200179A4C /* AFNetworking tvOS */,
 				298D7C3A1BC2C79500FD3B3E /* AFNetworking iOS Tests */,
-				298D7C491BC2C7B200FD3B3E /* AFNetworking Mac OS X Tests */,
+				298D7C491BC2C7B200FD3B3E /* AFNetworking macOS Tests */,
 				2987B0AD1BC408A200179A4C /* AFNetworking tvOS Tests */,
 			);
 		};
@@ -1091,7 +1091,7 @@
 		};
 		298D7C511BC2C7B200FD3B3E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 299522761BBF136400859F49 /* AFNetworking OS X */;
+			target = 299522761BBF136400859F49 /* AFNetworking macOS */;
 			targetProxy = 298D7C501BC2C7B200FD3B3E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1559,7 +1559,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		298D7C521BC2C7B200FD3B3E /* Build configuration list for PBXNativeTarget "AFNetworking Mac OS X Tests" */ = {
+		298D7C521BC2C7B200FD3B3E /* Build configuration list for PBXNativeTarget "AFNetworking macOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				298D7C531BC2C7B200FD3B3E /* Debug */,
@@ -1595,7 +1595,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2995227C1BBF136400859F49 /* Build configuration list for PBXNativeTarget "AFNetworking OS X" */ = {
+		2995227C1BBF136400859F49 /* Build configuration list for PBXNativeTarget "AFNetworking macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2995227D1BBF136400859F49 /* Debug */,

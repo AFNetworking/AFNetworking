@@ -30,8 +30,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "29E6F1E51BB9E37200A4466C"
-               BuildableName = "Today Extension Example.appex"
-               BlueprintName = "Today Extension Example"
+               BuildableName = "iOS Today Extension Example.appex"
+               BlueprintName = "iOS Today Extension Example"
                ReferencedContainer = "container:AFNetworking Example.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

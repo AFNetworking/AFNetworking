@@ -14,24 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "298D7C491BC2C7B200FD3B3E"
-               BuildableName = "AFNetworking Mac OS X Tests.xctest"
-               BlueprintName = "AFNetworking Mac OS X Tests"
-               ReferencedContainer = "container:../AFNetworking.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "291BFDE61BB9E8C700FFB029"
-               BuildableName = "OS X Example.app"
-               BlueprintName = "OS X Example"
-               ReferencedContainer = "container:AFNetworking Example.xcodeproj">
+               BlueprintIdentifier = "299522761BBF136400859F49"
+               BuildableName = "AFNetworking.framework"
+               BlueprintName = "AFNetworking macOS"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -41,28 +27,41 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       language = ""
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "NO"
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "298D7C491BC2C7B200FD3B3E"
-               BuildableName = "AFNetworking Mac OS X Tests.xctest"
-               BlueprintName = "AFNetworking Mac OS X Tests"
-               ReferencedContainer = "container:../AFNetworking.xcodeproj">
+               BuildableName = "AFNetworking macOS Tests.xctest"
+               BlueprintName = "AFNetworking macOS Tests"
+               ReferencedContainer = "container:AFNetworking.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AFSecurityPolicyTests/testPolicyWithCertificatePinningAllowsGoogleComServerTrustIncompleteChainWithRootCertificatePinnedAndValidDomainName">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "291BFDE61BB9E8C700FFB029"
-            BuildableName = "OS X Example.app"
-            BlueprintName = "OS X Example"
-            ReferencedContainer = "container:AFNetworking Example.xcodeproj">
+            BlueprintIdentifier = "299522761BBF136400859F49"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking macOS"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "HTTPBIN_BASE_URL"
+            value = "http://127.0.0.1:5000"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -77,16 +76,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "291BFDE61BB9E8C700FFB029"
-            BuildableName = "OS X Example.app"
-            BlueprintName = "OS X Example"
-            ReferencedContainer = "container:AFNetworking Example.xcodeproj">
+            BlueprintIdentifier = "299522761BBF136400859F49"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking macOS"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -96,16 +94,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "291BFDE61BB9E8C700FFB029"
-            BuildableName = "OS X Example.app"
-            BlueprintName = "OS X Example"
-            ReferencedContainer = "container:AFNetworking Example.xcodeproj">
+            BlueprintIdentifier = "299522761BBF136400859F49"
+            BuildableName = "AFNetworking.framework"
+            BlueprintName = "AFNetworking macOS"
+            ReferencedContainer = "container:AFNetworking.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
