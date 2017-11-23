@@ -499,4 +499,11 @@
 }
 #pragma clang diagnostic pop
 
+#pragma mark - NSCopying 
+
+- (void)testCanBeCopied {
+    AFURLSessionManager *copyManager = [self.localManager copy];
+    XCTAssertNotNil(copyManager);
+}
+
 @end
