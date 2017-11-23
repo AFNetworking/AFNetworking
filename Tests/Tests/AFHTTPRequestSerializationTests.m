@@ -169,7 +169,9 @@
     NSError *serializerError = [NSError errorWithDomain:@"TestDomain" code:0 userInfo:nil];
 
     [serializer setQueryStringSerializationWithBlock:^NSString *(NSURLRequest *request, NSDictionary *parameters, NSError *__autoreleasing *error) {
-        *error = serializerError;
+        if (error != NULL) {
+            *error = serializerError;
+        }
         return nil;
     }];
 
