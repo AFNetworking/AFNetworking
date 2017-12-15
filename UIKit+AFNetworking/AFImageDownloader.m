@@ -106,10 +106,10 @@
 
 @end
 
-
 @implementation AFImageDownloader
 
 + (NSURLCache *)defaultURLCache {
+    
     // It's been discovered that a crash will occur on certain versions
     // of iOS if you customize the cache.
     //
@@ -143,7 +143,11 @@
 
 - (instancetype)init {
     NSURLSessionConfiguration *defaultConfiguration = [self.class defaultURLSessionConfiguration];
-    AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:defaultConfiguration];
+    return [self initWithSessionConfiguration:defaultConfiguration];
+}
+
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
+    AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
     sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
 
     return [self initWithSessionManager:sessionManager
@@ -250,7 +254,7 @@
                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
                                __strong __typeof__(weakSelf) strongSelf = weakSelf;
-                               AFImageDownloaderMergedTask *mergedTask = self.mergedTasks[URLIdentifier];
+                               AFImageDownloaderMergedTask *mergedTask = strongSelf.mergedTasks[URLIdentifier];
                                if ([mergedTask.identifier isEqual:mergedTaskIdentifier]) {
                                    mergedTask = [strongSelf safelyRemoveMergedTaskWithURLIdentifier:URLIdentifier];
                                    if (error) {
@@ -262,7 +266,9 @@
                                            }
                                        }
                                    } else {
-                                       [strongSelf.imageCache addImage:responseObject forRequest:request withAdditionalIdentifier:nil];
+                                       if ([strongSelf.imageCache shouldCacheImage:responseObject forRequest:request withAdditionalIdentifier:nil]) {
+                                           [strongSelf.imageCache addImage:responseObject forRequest:request withAdditionalIdentifier:nil];
+                                       }
 
                                        for (AFImageDownloaderResponseHandler *handler in mergedTask.responseHandlers) {
                                            if (handler.successBlock) {
