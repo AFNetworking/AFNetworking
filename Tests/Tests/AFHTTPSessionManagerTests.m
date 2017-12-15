@@ -178,7 +178,9 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Serialization should fail"];
 
     [self.manager.requestSerializer setQueryStringSerializationWithBlock:^NSString * _Nonnull(NSURLRequest * _Nonnull request, id  _Nonnull parameters, NSError * _Nullable __autoreleasing * _Nullable error) {
-        *error = [NSError errorWithDomain:@"Custom" code:-1 userInfo:nil];
+        if (error != NULL) {
+            *error = [NSError errorWithDomain:@"Custom" code:-1 userInfo:nil];
+        }
         return @"";
     }];
 

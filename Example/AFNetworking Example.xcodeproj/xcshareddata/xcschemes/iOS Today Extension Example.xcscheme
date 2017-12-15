@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0800"
+   LastUpgradeVersion = "0910"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -30,8 +30,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "29E6F1E51BB9E37200A4466C"
-               BuildableName = "Today Extension Example.appex"
-               BlueprintName = "Today Extension Example"
+               BuildableName = "iOS Today Extension Example.appex"
+               BlueprintName = "iOS Today Extension Example"
                ReferencedContainer = "container:AFNetworking Example.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -55,8 +55,19 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "298D7C3A1BC2C79500FD3B3E"
+               BuildableName = "AFNetworking iOS Tests.xctest"
+               BlueprintName = "AFNetworking iOS Tests"
+               ReferencedContainer = "container:../AFNetworking.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
@@ -74,6 +85,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = ""
       selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
+      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
