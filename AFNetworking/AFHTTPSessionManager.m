@@ -166,11 +166,11 @@
     return [self HEAD:URLString parameters:parameters headers:nil success:success failure:failure];
 }
 
--(NSURLSessionDataTask *)HEAD:(NSString *)URLString
-                   parameters:(id)parameters
-                      headers:(NSDictionary<NSString *,NSString *> *)headers
-                      success:(void (^)(NSURLSessionDataTask * _Nonnull))success
-                      failure:(void (^)(NSURLSessionDataTask * _Nullable, NSError * _Nonnull))failure
+- (NSURLSessionDataTask *)HEAD:(NSString *)URLString
+                    parameters:(id)parameters
+                       headers:(NSDictionary<NSString *,NSString *> *)headers
+                       success:(void (^)(NSURLSessionDataTask * _Nonnull))success
+                       failure:(void (^)(NSURLSessionDataTask * _Nullable, NSError * _Nonnull))failure
 {
     NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@"HEAD" URLString:URLString parameters:parameters headers:headers uploadProgress:nil downloadProgress:nil success:^(NSURLSessionDataTask *task, __unused id responseObject) {
         if (success) {
