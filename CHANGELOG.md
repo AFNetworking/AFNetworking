@@ -4,6 +4,74 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
+## [3.2.0](https://github.com/AFNetworking/AFNetworking/releases/tag/3.2.0) (12/15/2017)
+Released on Friday, December 15, 2017. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.2.0+is%3Aclosed).
+
+#### Added
+* Config `AFImageDownloader` `NSURLCache` and ask `AFImageRequestCache` implementer if an image should be cached
+	* Implemented by wjehenddher in [#4010](https://github.com/AFNetworking/AFNetworking/pull/4010).
+* Add `XMLParser`/`XMLDocument` serializer tests
+	* Implemented by skyline75489 in [#3753](https://github.com/AFNetworking/AFNetworking/pull/3753).
+* Enable custom httpbin URL with `HTTPBIN_BASE_URL` environment variable
+	* Implemented by 0xced in [#3748](https://github.com/AFNetworking/AFNetworking/pull/3748).
+* `AFHTTPSessionManager` now throws exception if SSL pinning mode is set for non https sessions
+	* Implemented by 0xced in [#3687](https://github.com/AFNetworking/AFNetworking/pull/3687).
+
+#### Updated
+* Update security policy test certificates
+	* Implemented by SlaunchaMan in [#4103](https://github.com/AFNetworking/AFNetworking/pull/4103).
+* Allow return value of HTTP redirection block to be `NULL`
+	* Implemented by TheDom in [#3975](https://github.com/AFNetworking/AFNetworking/pull/3975).
+* Clarify documentation for supported encodings in `AFJSONResponseSerializer`
+	* Implemented by skyline75489 in [#3750](https://github.com/AFNetworking/AFNetworking/pull/3750).
+* Handle Error Pointers according to Cocoa Convention
+	* Implemented by tclementdev in [#3653](https://github.com/AFNetworking/AFNetworking/pull/3653).
+* Updates `AFHTTPSessionManager` documentation to reflect v3.x change
+	* Implemented by ecaselles in [#3476](https://github.com/AFNetworking/AFNetworking/pull/3476).
+* Improved code base to generate fewer warnings when using stricter compiler settings
+	* Implemented by 0xced in [3431](https://github.com/AFNetworking/AFNetworking/pull/3431).
+
+#### Changed
+* Change “Mac OS X” and “OS X” references to “macOS”
+	* Implemented by SlaunchaMan in [#4104](https://github.com/AFNetworking/AFNetworking/pull/4104).
+
+#### Fixed
+* Fixed crash around customizing `NSURLCache` size for < iOS 8.2
+	* Implemented by kcharwood in [#3735](https://github.com/AFNetworking/AFNetworking/pull/3735).
+* Fixed issue where `UIWebView` extension did not preserve all of the request information
+	* Implemented by skyline75489 in [#3733](https://github.com/AFNetworking/AFNetworking/pull/3733).
+* Fixed bug with webview delegate callback
+	* Implemented by kcharwood in [#3727](https://github.com/AFNetworking/AFNetworking/pull/3727).
+* Fixed crash when passing invalid JSON to request serialization
+	* Implemented by 0xced in [#3719](https://github.com/AFNetworking/AFNetworking/pull/3719).
+* Fixed potential KVO crasher for URL Session Task delegates
+	* Implemented by 0xced in [#3718](https://github.com/AFNetworking/AFNetworking/pull/3718).
+* Removed ambiguous array creation in `AFSecurityPolicy`
+	* Implemented by sgl0v in [#3679](https://github.com/AFNetworking/AFNetworking/pull/3679).
+* Fixed issue where `NS_UNAVAILABLE` is not reported for `AFNetworkReachabilityManager`
+	* Implemented by Microbee23 in [#3649](https://github.com/AFNetworking/AFNetworking/pull/3649).
+* Require app extension api only on watchOS
+	* Implemented by ethansinjin in [#3612](https://github.com/AFNetworking/AFNetworking/pull/3612).
+* Remove KVO of progress in favor of using the NSURLSession delegate APIs
+	* Implemented by coreyfloyd in [#3607](https://github.com/AFNetworking/AFNetworking/pull/3607).
+* Fixed an issue where registering a `UIProgessView` to a task that was causing a crash
+	* Implemented by Starscream27 in [#3604](https://github.com/AFNetworking/AFNetworking/pull/3604).
+* Moved `[self didChangeValueForKey:@"currentState"]` into correct scope
+	* Implemented by chenxin0123 in [#3565](https://github.com/AFNetworking/AFNetworking/pull/3565).
+* Fixed issue where response serializers did not inherit super class copying
+	* Implemented by kcharwood in [#3559](https://github.com/AFNetworking/AFNetworking/pull/3559).
+* Fixed crashes due to race conditions with `NSMutableDictionary` access in `AFHTTPRequestSerializer`
+	* Implemented by alexbird in [#3526](https://github.com/AFNetworking/AFNetworking/pull/3526).
+* Updated dash character to improve markdown parsing for license
+	* Implemented by gemmakbarlow in [#3488](https://github.com/AFNetworking/AFNetworking/pull/3488).
+
+#### Removed
+* Deprecate the unused stringEncoding property of `AFHTTPResponseSerializer`
+	* Implemented by 0xced in [#3751](https://github.com/AFNetworking/AFNetworking/pull/3751).
+* Removed unused `AFTaskStateChangedContext`
+	* Implemented by yulingtianxia in [#3432](https://github.com/AFNetworking/AFNetworking/pull/3432).
+ 
+
 ## [3.1.0](https://github.com/AFNetworking/AFNetworking/releases/tag/3.1.0) (03/31/2016)
 Released on Thursday, March 31, 2016. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.1.0+is%3Aclosed).
 
