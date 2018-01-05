@@ -73,6 +73,17 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol AFImageRequestCache <AFImageCache>
 
 /**
+ Asks if the image should be cached using an identifier created from the request and additional identifier.
+ 
+ @param image The image to be cached.
+ @param request The unique URL request identifing the image asset.
+ @param identifier The additional identifier to apply to the URL request to identify the image.
+ 
+ @return A BOOL indicating whether or not the image should be added to the cache. YES will cache, NO will prevent caching.
+ */
+- (BOOL)shouldCacheImage:(UIImage *)image forRequest:(NSURLRequest *)request withAdditionalIdentifier:(nullable NSString *)identifier;
+
+/**
  Adds the image to the cache using an identifier created from the request and additional identifier.
 
  @param image The image to cache.

@@ -108,6 +108,8 @@ NS_ASSUME_NONNULL_BEGIN
  - `application/json`
  - `text/json`
  - `text/javascript`
+
+ In RFC 7159 - Section 8.1, it states that JSON text is required to be encoded in UTF-8, UTF-16, or UTF-32, and the default encoding is UTF-8. NSJSONSerialization provides support for all the encodings listed in the specification, and recommends UTF-8 for efficiency. Using an unsupported encoding will result in serialization error. See the `NSJSONSerialization` documentation for more details.
  */
 @interface AFJSONResponseSerializer : AFHTTPResponseSerializer
 
@@ -163,7 +165,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init;
 
 /**
- Input and output options specifically intended for `NSXMLDocument` objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONReadingOptions". `0` by default.
+ Input and output options specifically intended for `NSXMLDocument` objects. For possible values, see the `NSXMLDocument` documentation section "Input and Output Options". `0` by default.
  */
 @property (nonatomic, assign) NSUInteger options;
 

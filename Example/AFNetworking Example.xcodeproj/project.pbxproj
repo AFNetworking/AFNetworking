@@ -38,7 +38,7 @@
 		29E6F1E91BB9E37200A4466C /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29E6F1E81BB9E37200A4466C /* NotificationCenter.framework */; };
 		29E6F1ED1BB9E37200A4466C /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F1EC1BB9E37200A4466C /* TodayViewController.m */; };
 		29E6F1F01BB9E37200A4466C /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29E6F1EE1BB9E37200A4466C /* MainInterface.storyboard */; };
-		29E6F1F41BB9E37200A4466C /* Today Extension Example.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 29E6F1E61BB9E37200A4466C /* Today Extension Example.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		29E6F1F41BB9E37200A4466C /* iOS Today Extension Example.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 29E6F1E61BB9E37200A4466C /* iOS Today Extension Example.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		29E6F1F91BB9E56200A4466C /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19A1BB9DD7300A4466C /* Post.m */; };
 		29E6F1FA1BB9E56500A4466C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19C1BB9DD7300A4466C /* User.m */; };
 		C2BFE0251C11870800BB258D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C2BFE0241C11870800BB258D /* AppDelegate.m */; };
@@ -87,7 +87,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				29E6F1F41BB9E37200A4466C /* Today Extension Example.appex in Embed App Extensions */,
+				29E6F1F41BB9E37200A4466C /* iOS Today Extension Example.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -108,7 +108,7 @@
 /* Begin PBXFileReference section */
 		291BFDB91BB9E85400FFB029 /* watchOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "watchOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		291BFDC51BB9E85500FFB029 /* watchOS Example Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "watchOS Example Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		291BFDE71BB9E8C700FFB029 /* OS X Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OS X Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		291BFDE71BB9E8C700FFB029 /* macOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "macOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		291BFDED1BB9E8C700FFB029 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		291BFDF21BB9E8C700FFB029 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		291BFDF71BB9E8C700FFB029 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -137,7 +137,7 @@
 		29E6F19F1BB9DD7300A4466C /* AFAppDotNetAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFAppDotNetAPIClient.m; sourceTree = "<group>"; };
 		29E6F1AB1BB9DDB600A4466C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29E6F1E01BB9E03600A4466C /* Launchscreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Launchscreen.storyboard; path = "iOS Example/Launchscreen.storyboard"; sourceTree = SOURCE_ROOT; };
-		29E6F1E61BB9E37200A4466C /* Today Extension Example.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Today Extension Example.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		29E6F1E61BB9E37200A4466C /* iOS Today Extension Example.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "iOS Today Extension Example.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29E6F1E81BB9E37200A4466C /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		29E6F1EB1BB9E37200A4466C /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
 		29E6F1EC1BB9E37200A4466C /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
@@ -205,7 +205,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		291BFDE81BB9E8C700FFB029 /* OS X Example */ = {
+		291BFDE81BB9E8C700FFB029 /* macOS Example */ = {
 			isa = PBXGroup;
 			children = (
 				C2BFE0231C11870800BB258D /* AppDelegate.h */,
@@ -215,7 +215,7 @@
 				291BFDF71BB9E8C700FFB029 /* Info.plist */,
 				291BFDEC1BB9E8C700FFB029 /* Supporting Files */,
 			);
-			path = "OS X Example";
+			path = "macOS Example";
 			sourceTree = "<group>";
 		};
 		291BFDEC1BB9E8C700FFB029 /* Supporting Files */ = {
@@ -267,7 +267,7 @@
 				29E6F1EA1BB9E37200A4466C /* Today Extension Example */,
 				29E6F20F1BB9E76A00A4466C /* watchOS Example */,
 				29E6F21E1BB9E76A00A4466C /* watchOS Example Extension */,
-				291BFDE81BB9E8C700FFB029 /* OS X Example */,
+				291BFDE81BB9E8C700FFB029 /* macOS Example */,
 				291BFE161BB9ECEE00FFB029 /* tvOS Example */,
 				29E6F1E71BB9E37200A4466C /* Frameworks */,
 				29E6F1761BB9DCB500A4466C /* Products */,
@@ -281,10 +281,10 @@
 			isa = PBXGroup;
 			children = (
 				29E6F1751BB9DCB500A4466C /* iOS Example.app */,
-				29E6F1E61BB9E37200A4466C /* Today Extension Example.appex */,
+				29E6F1E61BB9E37200A4466C /* iOS Today Extension Example.appex */,
 				291BFDB91BB9E85400FFB029 /* watchOS Example.app */,
 				291BFDC51BB9E85500FFB029 /* watchOS Example Extension.appex */,
-				291BFDE71BB9E8C700FFB029 /* OS X Example.app */,
+				291BFDE71BB9E8C700FFB029 /* macOS Example.app */,
 				291BFE151BB9ECEE00FFB029 /* tvOS Example.app */,
 			);
 			name = Products;
@@ -422,9 +422,9 @@
 			productReference = 291BFDC51BB9E85500FFB029 /* watchOS Example Extension.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
-		291BFDE61BB9E8C700FFB029 /* OS X Example */ = {
+		291BFDE61BB9E8C700FFB029 /* macOS Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 291BFDF81BB9E8C700FFB029 /* Build configuration list for PBXNativeTarget "OS X Example" */;
+			buildConfigurationList = 291BFDF81BB9E8C700FFB029 /* Build configuration list for PBXNativeTarget "macOS Example" */;
 			buildPhases = (
 				291BFDE31BB9E8C700FFB029 /* Sources */,
 				291BFDE41BB9E8C700FFB029 /* Frameworks */,
@@ -434,9 +434,9 @@
 			);
 			dependencies = (
 			);
-			name = "OS X Example";
+			name = "macOS Example";
 			productName = "OS X Example";
-			productReference = 291BFDE71BB9E8C700FFB029 /* OS X Example.app */;
+			productReference = 291BFDE71BB9E8C700FFB029 /* macOS Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 		291BFE141BB9ECEE00FFB029 /* tvOS Example */ = {
@@ -477,9 +477,9 @@
 			productReference = 29E6F1751BB9DCB500A4466C /* iOS Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		29E6F1E51BB9E37200A4466C /* Today Extension Example */ = {
+		29E6F1E51BB9E37200A4466C /* iOS Today Extension Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 29E6F1F51BB9E37200A4466C /* Build configuration list for PBXNativeTarget "Today Extension Example" */;
+			buildConfigurationList = 29E6F1F51BB9E37200A4466C /* Build configuration list for PBXNativeTarget "iOS Today Extension Example" */;
 			buildPhases = (
 				29E6F1E21BB9E37200A4466C /* Sources */,
 				29E6F1E31BB9E37200A4466C /* Frameworks */,
@@ -489,9 +489,9 @@
 			);
 			dependencies = (
 			);
-			name = "Today Extension Example";
+			name = "iOS Today Extension Example";
 			productName = "Today Extension Example";
-			productReference = 29E6F1E61BB9E37200A4466C /* Today Extension Example.appex */;
+			productReference = 29E6F1E61BB9E37200A4466C /* iOS Today Extension Example.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -500,7 +500,7 @@
 		29E6F16B1BB9DA2E00A4466C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0910;
 				TargetAttributes = {
 					291BFDB81BB9E85400FFB029 = {
 						CreatedOnToolsVersion = 7.1;
@@ -537,10 +537,10 @@
 			projectRoot = "";
 			targets = (
 				29E6F1741BB9DCB500A4466C /* iOS Example */,
-				29E6F1E51BB9E37200A4466C /* Today Extension Example */,
+				29E6F1E51BB9E37200A4466C /* iOS Today Extension Example */,
 				291BFDB81BB9E85400FFB029 /* watchOS Example */,
 				291BFDC41BB9E85500FFB029 /* watchOS Example Extension */,
-				291BFDE61BB9E8C700FFB029 /* OS X Example */,
+				291BFDE61BB9E8C700FFB029 /* macOS Example */,
 				291BFE141BB9ECEE00FFB029 /* tvOS Example */,
 			);
 		};
@@ -668,7 +668,7 @@
 		};
 		29E6F1F31BB9E37200A4466C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 29E6F1E51BB9E37200A4466C /* Today Extension Example */;
+			target = 29E6F1E51BB9E37200A4466C /* iOS Today Extension Example */;
 			targetProxy = 29E6F1F21BB9E37200A4466C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -921,12 +921,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "OS X Example/Info.plist";
+				INFOPLIST_FILE = "macOS Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.OS-X-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.macOS-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -964,11 +964,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "OS X Example/Info.plist";
+				INFOPLIST_FILE = "macOS Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.OS-X-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.macOS-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -1074,12 +1074,61 @@
 		29E6F16F1BB9DA2E00A4466C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
 		29E6F1701BB9DA2E00A4466C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -1284,7 +1333,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		291BFDF81BB9E8C700FFB029 /* Build configuration list for PBXNativeTarget "OS X Example" */ = {
+		291BFDF81BB9E8C700FFB029 /* Build configuration list for PBXNativeTarget "macOS Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				291BFDF91BB9E8C700FFB029 /* Debug */,
@@ -1320,7 +1369,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		29E6F1F51BB9E37200A4466C /* Build configuration list for PBXNativeTarget "Today Extension Example" */ = {
+		29E6F1F51BB9E37200A4466C /* Build configuration list for PBXNativeTarget "iOS Today Extension Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				29E6F1F61BB9E37200A4466C /* Debug */,
