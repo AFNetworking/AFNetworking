@@ -37,7 +37,6 @@
 @property (readwrite, nonatomic, strong) AFURLSessionManager *backgroundManager;
 @end
 
-
 @implementation AFURLSessionManagerTests
 
 - (NSURLRequest *)bigImageURLRequest {
@@ -132,6 +131,26 @@
             completionHandler:nil];
     [task resume];
     [self waitForExpectationsWithCommonTimeout];
+}
+
+// iOS 7 has a bug that may return nil for a session. To simulate that, nil out the
+// session and it will return nil itself.
+- (void)testFileUploadTaskReturnsNilWithBug {
+    [self.localManager setValue:nil forKey:@"session"];
+    
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
+    __block NSURLSessionUploadTask *task = nil;
+    void (^test)(void) = ^{
+        task = [self.localManager uploadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                                                     fromFile:nil
+                                                     progress:NULL
+                                      completionHandler:NULL];
+    };
+#pragma GCC diagnostic pop
+    
+    XCTAssertNoThrowSpecificNamed(test, NSException, NSInternalInconsistencyException);
+    XCTAssertNil(task, @"Upload task should be nil.");
 }
 
 - (void)testUploadTaskDoesReportProgress {
