@@ -745,8 +745,12 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
             }
         }
     });
-
-    [self addDelegateForUploadTask:uploadTask progress:uploadProgressBlock completionHandler:completionHandler];
+    
+    if (uploadTask) {
+        [self addDelegateForUploadTask:uploadTask
+                              progress:uploadProgressBlock
+                     completionHandler:completionHandler];
+    }
 
     return uploadTask;
 }

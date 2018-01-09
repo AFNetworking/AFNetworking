@@ -140,17 +140,12 @@
     
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnonnull"
-    __block NSURLSessionUploadTask *task = nil;
-    void (^test)(void) = ^{
-        task = [self.localManager uploadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
-                                                     fromFile:nil
-                                                     progress:NULL
-                                      completionHandler:NULL];
-    };
+    XCTAssertNil([self.localManager uploadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                                                 fromFile:nil
+                                                 progress:NULL
+                                        completionHandler:NULL],
+                 @"Upload task should be nil.");
 #pragma GCC diagnostic pop
-    
-    XCTAssertNoThrowSpecificNamed(test, NSException, NSInternalInconsistencyException);
-    XCTAssertNil(task, @"Upload task should be nil.");
 }
 
 - (void)testUploadTaskDoesReportProgress {
