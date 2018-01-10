@@ -319,4 +319,4 @@ If you believe you have identified a security vulnerability with AFNetworking, y
 
 ## License
 
-AFNetworking is released under the MIT license. See LICENSE for details.
+AFNetworking is released under the MIT license. See [LICENSE](https://github.com/AFNetworking/AFNetworking/blob/master/LICENSE) for details.
