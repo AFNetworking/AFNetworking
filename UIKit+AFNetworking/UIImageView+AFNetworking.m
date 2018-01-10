@@ -77,8 +77,11 @@
 {
 
     if ([urlRequest URL] == nil) {
-        [self cancelImageDownloadTask];
         self.image = placeholderImage;
+        if (failure) {
+            NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
+            failure(nil, nil, error);
+        }
         return;
     }
 
