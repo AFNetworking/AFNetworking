@@ -148,7 +148,11 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
         progress.pausingHandler = ^{
             [weakTask suspend];
         };
+#if __has_warning("-Wunguarded-availability-new")
+        if (@available(iOS 9, macOS 10.11, *)) {
+#else
         if ([progress respondsToSelector:@selector(setResumingHandler:)]) {
+#endif
             progress.resumingHandler = ^{
                 [weakTask resume];
             };
