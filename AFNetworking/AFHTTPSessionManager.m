@@ -183,6 +183,12 @@
     return dataTask;
 }
 
+-(NSString *)ssss
+{
+    NSLog(@"添加一个测试");
+    return @"";
+}
+
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
                     parameters:(nullable id)parameters
      constructingBodyWithBlock:(nullable void (^)(id<AFMultipartFormData> _Nonnull))block
