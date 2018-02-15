@@ -414,7 +414,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param block A block object to be executed once all messages enqueued for a session have been delivered. The block has no return value and takes a single argument: the session.
  */
-- (void)setDidFinishEventsForBackgroundURLSessionBlock:(nullable void (^)(NSURLSession *session))block;
+- (void)setDidFinishEventsForBackgroundURLSessionBlock:(nullable void (^)(NSURLSession *session))block API_UNAVAILABLE(macos);
 
 ///-----------------------------------------------
 /// @name Setting Download Task Delegate Callbacks

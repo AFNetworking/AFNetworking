@@ -452,7 +452,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 @property (readwrite, nonatomic, strong) NSLock *lock;
 @property (readwrite, nonatomic, copy) AFURLSessionDidBecomeInvalidBlock sessionDidBecomeInvalid;
 @property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
-@property (readwrite, nonatomic, copy) AFURLSessionDidFinishEventsForBackgroundURLSessionBlock didFinishEventsForBackgroundURLSession;
+@property (readwrite, nonatomic, copy) AFURLSessionDidFinishEventsForBackgroundURLSessionBlock didFinishEventsForBackgroundURLSession API_UNAVAILABLE(macos);
 @property (readwrite, nonatomic, copy) AFURLSessionTaskWillPerformHTTPRedirectionBlock taskWillPerformHTTPRedirection;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskDidReceiveAuthenticationChallengeBlock taskDidReceiveAuthenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskNeedNewBodyStreamBlock taskNeedNewBodyStream;
@@ -839,9 +839,11 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.sessionDidReceiveAuthenticationChallenge = block;
 }
 
+#if !TARGET_OS_OSX
 - (void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^)(NSURLSession *session))block {
     self.didFinishEventsForBackgroundURLSession = block;
 }
+#endif
 
 #pragma mark -
 
@@ -910,9 +912,12 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         return self.dataTaskDidReceiveResponse != nil;
     } else if (selector == @selector(URLSession:dataTask:willCacheResponse:completionHandler:)) {
         return self.dataTaskWillCacheResponse != nil;
-    } else if (selector == @selector(URLSessionDidFinishEventsForBackgroundURLSession:)) {
+    }
+#if !TARGET_OS_OSX
+    else if (selector == @selector(URLSessionDidFinishEventsForBackgroundURLSession:)) {
         return self.didFinishEventsForBackgroundURLSession != nil;
     }
+#endif
 
     return [[self class] instancesRespondToSelector:selector];
 }
