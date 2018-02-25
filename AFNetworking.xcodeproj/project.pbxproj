@@ -10,15 +10,15 @@
 		1BF9F9601C87832B00F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
 		1BF9F9611C87843200F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
 		1BF9F9621C87843300F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
-		1F0EEE581FC5E7EC00DAF282 /* httpbinorg_02102018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F0EEE571FC5E74A00DAF282 /* httpbinorg_02102018.cer */; };
-		1F0EEE591FC5E7F100DAF282 /* httpbinorg_02102018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F0EEE571FC5E74A00DAF282 /* httpbinorg_02102018.cer */; };
-		1F0EEE5A1FC5E7F200DAF282 /* httpbinorg_02102018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F0EEE571FC5E74A00DAF282 /* httpbinorg_02102018.cer */; };
 		1F6F7DF71F17051000C979D0 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */; };
 		1F6F7DF81F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
 		1F6F7DFA1F17051000C979D0 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */; };
 		1F6F7DFB1F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
 		1F6F7DFD1F17051100C979D0 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */; };
 		1F6F7DFE1F17051100C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
+		1FDA5AE42036373000BF0F94 /* httpbinorg_04112018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */; };
+		1FDA5AE52036373000BF0F94 /* httpbinorg_04112018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */; };
+		1FDA5AE62036373000BF0F94 /* httpbinorg_04112018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */; };
 		2960BAC31C1B2F1A00BA02F0 /* AFUIButtonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */; };
 		297824A31BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; };
 		297824A41BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; };
@@ -229,9 +229,9 @@
 
 /* Begin PBXFileReference section */
 		1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageResponseSerializerTests.m; sourceTree = "<group>"; };
-		1F0EEE571FC5E74A00DAF282 /* httpbinorg_02102018.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_02102018.cer; sourceTree = "<group>"; };
 		1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Let's Encrypt Authority X3.cer"; sourceTree = "<group>"; };
 		1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DST Root CA X3.cer"; sourceTree = "<group>"; };
+		1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_04112018.cer; sourceTree = "<group>"; };
 		2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIButtonTests.m; sourceTree = "<group>"; };
 		297824A01BC2D69A0041C395 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
 		297824A11BC2D69A0041C395 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
@@ -407,7 +407,7 @@
 				298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */,
 				1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */,
 				1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */,
-				1F0EEE571FC5E74A00DAF282 /* httpbinorg_02102018.cer */,
+				1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */,
 			);
 			path = HTTPBin.org;
 			sourceTree = "<group>";
@@ -839,7 +839,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F0EEE5A1FC5E7F200DAF282 /* httpbinorg_02102018.cer in Resources */,
 				2987B0DE1BC40AFB00179A4C /* foobar.com.cer in Resources */,
 				2987B0D61BC40AEC00179A4C /* ADNNetServerTrustChain in Resources */,
 				2987B0DF1BC40AFB00179A4C /* NoDomains.cer in Resources */,
@@ -851,6 +850,7 @@
 				2987B0D51BC40AE900179A4C /* adn_2.cer in Resources */,
 				5F4323D71BF63CB0003B8749 /* GoogleComServerTrustChainPath1 in Resources */,
 				1F6F7DFE1F17051100C979D0 /* Let's Encrypt Authority X3.cer in Resources */,
+				1FDA5AE62036373000BF0F94 /* httpbinorg_04112018.cer in Resources */,
 				5F4323DB1BF63CBA003B8749 /* GoogleComServerTrustChainPath2 in Resources */,
 				5F4323BD1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
@@ -865,7 +865,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F0EEE581FC5E7EC00DAF282 /* httpbinorg_02102018.cer in Resources */,
 				298D7CBF1BC2CA9D00FD3B3E /* foobar.com.cer in Resources */,
 				298D7CBA1BC2CA9800FD3B3E /* logo.png in Resources */,
 				297824A31BC2D69A0041C395 /* adn_0.cer in Resources */,
@@ -877,6 +876,7 @@
 				298D7CBE1BC2CA9D00FD3B3E /* AltName.cer in Resources */,
 				5F4323D51BF63CB0003B8749 /* GoogleComServerTrustChainPath1 in Resources */,
 				1F6F7DF81F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */,
+				1FDA5AE42036373000BF0F94 /* httpbinorg_04112018.cer in Resources */,
 				5F4323D91BF63CBA003B8749 /* GoogleComServerTrustChainPath2 in Resources */,
 				5F4323BB1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DD1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
@@ -891,7 +891,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F0EEE591FC5E7F100DAF282 /* httpbinorg_02102018.cer in Resources */,
 				298D7CBC1BC2CA9C00FD3B3E /* foobar.com.cer in Resources */,
 				298D7CB91BC2CA9800FD3B3E /* logo.png in Resources */,
 				297824A41BC2D69A0041C395 /* adn_0.cer in Resources */,
@@ -903,6 +902,7 @@
 				298D7CBB1BC2CA9C00FD3B3E /* AltName.cer in Resources */,
 				5F4323D61BF63CB0003B8749 /* GoogleComServerTrustChainPath1 in Resources */,
 				1F6F7DFB1F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */,
+				1FDA5AE52036373000BF0F94 /* httpbinorg_04112018.cer in Resources */,
 				5F4323DA1BF63CBA003B8749 /* GoogleComServerTrustChainPath2 in Resources */,
 				5F4323BC1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323CE1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
