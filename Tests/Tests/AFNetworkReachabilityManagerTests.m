@@ -49,20 +49,17 @@
 }
 
 - (void)testInitializerThrowsExceptionWhenCalled {
-    XCTAssertThrows(^{
-        AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager alloc];
-        id (*custom_msgSend)(id, SEL) = (id(*)(id, SEL))objc_msgSend;
-        
-        manager = custom_msgSend(manager, @selector(init));
-    }());
+    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager alloc];
+    id (*custom_msgSend)(id, SEL) = (id(*)(id, SEL))objc_msgSend;
+
+    XCTAssertThrows(custom_msgSend(manager, @selector(init)));
 }
 
 - (void)testNewThrowsExceptionWhenCalled {
-    XCTAssertThrows(^{
-        id (*custom_msgSend)(id, SEL) = (id(*)(id, SEL))objc_msgSend;
+    id (*custom_msgSend)(id, SEL) = (id(*)(id, SEL))objc_msgSend;
 
-        __unused AFNetworkReachabilityManager *manager = custom_msgSend([AFNetworkReachabilityManager class], @selector(new));
-    }());
+    XCTAssertThrows(custom_msgSend([AFNetworkReachabilityManager class],
+                                   @selector(new)));
 }
 
 - (void)testAddressReachabilityStartsInUnknownState {
