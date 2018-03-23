@@ -172,7 +172,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 - (instancetype)init
 {
-    @throw [NSException exceptionWithName:NSGenericException reason:@"`-init` unavailable. Use `-initWithReachability:` instead" userInfo:nil];
+    @throw [NSException exceptionWithName:NSGenericException
+                                   reason:@"`-init` unavailable. Use `-initWithReachability:` instead"
+                                 userInfo:nil];
     return nil;
 }
 

@@ -23,6 +23,7 @@
 
 #import "AFNetworkReachabilityManager.h"
 #import <netinet/in.h>
+#import <objc/message.h>
 
 @interface AFNetworkReachabilityManagerTests : AFTestCase
 @property (nonatomic, strong) AFNetworkReachabilityManager *addressReachability;
@@ -45,6 +46,23 @@
     [self.domainReachability stopMonitoring];
 
     [super tearDown];
+}
+
+- (void)testInitializerThrowsExceptionWhenCalled {
+    XCTAssertThrows(^{
+        AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager alloc];
+        id (*custom_msgSend)(id, SEL) = (id(*)(id, SEL))objc_msgSend;
+        
+        manager = custom_msgSend(manager, @selector(init));
+    }());
+}
+
+- (void)testNewThrowsExceptionWhenCalled {
+    XCTAssertThrows(^{
+        id (*custom_msgSend)(id, SEL) = (id(*)(id, SEL))objc_msgSend;
+
+        __unused AFNetworkReachabilityManager *manager = custom_msgSend([AFNetworkReachabilityManager class], @selector(new));
+    }());
 }
 
 - (void)testAddressReachabilityStartsInUnknownState {
