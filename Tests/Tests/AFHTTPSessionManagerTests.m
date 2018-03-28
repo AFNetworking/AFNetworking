@@ -550,18 +550,6 @@
     XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
 }
 
-- (void)testInvalidCertificatePinningSecurityPolicyWithoutBaseURL {
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
-}
-
-- (void)testInvalidPublicKeyPinningSecurityPolicyWithoutBaseURL {
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
-    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModePublicKey];
-    XCTAssertThrowsSpecificNamed(manager.securityPolicy = securityPolicy, NSException, @"Invalid Security Policy");
-}
-
 # pragma mark - Server Trust
 
 - (void)testInvalidServerTrustProducesCorrectErrorForCertificatePinning {
