@@ -1132,6 +1132,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
     }
 }
 
+#if !TARGET_OS_MAC
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
     if (self.didFinishEventsForBackgroundURLSession) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -1139,6 +1140,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
         });
     }
 }
+#endif
 
 #pragma mark - NSURLSessionDownloadDelegate
 
