@@ -48,14 +48,17 @@
 }
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
+    __weak __typeof(self)weakSelf = self;
+    
     [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
+        __strong __typeof(weakSelf)strongSelf = weakSelf;
+        
         if (!error) {
-
-            self.post = posts.firstObject;
-            [self savePost:self.post];
+            strongSelf.post = posts.firstObject;
+            [strongSelf savePost:strongSelf.post];
 
             if (completionHandler) {
-                completionHandler(self.post != nil ? NCUpdateResultNewData : NCUpdateResultNoData);
+                completionHandler(strongSelf.post != nil ? NCUpdateResultNewData : NCUpdateResultNoData);
             }
 
         } else {
