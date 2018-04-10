@@ -37,7 +37,7 @@
 
 @implementation AFCachedImage
 
--(instancetype)initWithImage:(UIImage *)image identifier:(NSString *)identifier {
+- (instancetype)initWithImage:(UIImage *)image identifier:(NSString *)identifier {
     if (self = [self init]) {
         self.image = image;
         self.identifier = identifier;
@@ -134,7 +134,7 @@
                 [self.cachedImages removeObjectForKey:cachedImage.identifier];
                 bytesPurged += cachedImage.totalBytes;
                 if (bytesPurged >= bytesToPurge) {
-                    break ;
+                    break;
                 }
             }
             self.currentMemoryUsage -= bytesPurged;
