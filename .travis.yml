@@ -18,11 +18,11 @@ matrix:
     - osx_image: xcode9.3
       env: FASTLANE_ENV=osx
     - osx_image: xcode9.2
-      env: FASTLANE_ENV=ios11_xcode9
+      env: FASTLANE_ENV=ios11_xcode9 AF_IOS_SDK=iphonesimulator11.2
     - osx_image: xcode9.1
-      env: FASTLANE_ENV=ios11_xcode9
+      env: FASTLANE_ENV=ios11_xcode9 AF_IOS_SDK=iphonesimulator11.1
     - osx_image: xcode9
-      env: FASTLANE_ENV=ios11_xcode9
+      env: FASTLANE_ENV=ios11_xcode9 AF_IOS_SDK=iphonesimulator11.0
     - osx_image: xcode8.3
       env: FASTLANE_ENV=ios10_xcode8
     - osx_image: xcode7.3
