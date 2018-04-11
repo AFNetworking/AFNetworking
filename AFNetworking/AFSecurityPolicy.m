@@ -287,7 +287,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
             }
             return trustedPublicKeyCount > 0;
         }
-        case AFSSLPinningModeNone:
+            
         default:
             return NO;
     }
