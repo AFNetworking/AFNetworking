@@ -24,6 +24,10 @@ Pod::Spec.new do |s|
 #ifndef TARGET_OS_TV
   #define TARGET_OS_TV 0
 #endif
+
+#ifndef TARGET_OS_OSX
+  #define TARGET_OS_OSX 0
+#endif
 EOS
   s.prefix_header_contents = pch_AF
   
