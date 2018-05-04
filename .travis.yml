@@ -10,15 +10,27 @@ env:
 matrix:
   include:
     - osx_image: xcode9.3
-      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=default
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=ios11_xcode93
     - osx_image: xcode7.3
       env: FASTLANE_LANE=code_coverage FASTLANE_ENV=ios8_xcode7
+    - osx_image: xcode9.3
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=tvos11_xcode9
+    - osx_image: xcode7.3
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=tvos9_xcode7
+    - osx_image: xcode9.3
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=macos
+    - osx_image: xcode7.3
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=osx_10.11
+    - osx_image: xcode6.4
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=osx_10.10
+    - osx_image: xcode6.4
+      env: FASTLANE_LANE=code_coverage FASTLANE_ENV=osx_10.9
     - osx_image: xcode9.3
       env: FASTLANE_ENV=ios11_xcode93
     - osx_image: xcode9.3
       env: FASTLANE_ENV=tvos11_xcode9
     - osx_image: xcode9.3
-      env: FASTLANE_ENV=osx
+      env: FASTLANE_ENV=macos
     - osx_image: xcode9.2
       env: FASTLANE_ENV=ios11_xcode92
     - osx_image: xcode9.1
