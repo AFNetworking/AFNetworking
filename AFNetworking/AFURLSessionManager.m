@@ -20,7 +20,6 @@
 // THE SOFTWARE.
 
 #import "AFURLSessionManager.h"
-#import "AFCompatibilityMacros.h"
 #import <objc/runtime.h>
 
 #ifndef NSFoundationVersionNumber_iOS_8_0
