@@ -51,11 +51,6 @@
     return self;
 }
 
-- (UIImage*)accessImage {
-    self.lastAccessDate = [NSDate date];
-    return self.image;
-}
-
 - (NSString *)description {
     NSString *descriptionString = [NSString stringWithFormat:@"Idenfitier: %@  lastAccessDate: %@ ", self.identifier, self.lastAccessDate];
     return descriptionString;
