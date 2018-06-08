@@ -37,7 +37,7 @@
 
 @implementation AFCachedImage
 
--(instancetype)initWithImage:(UIImage *)image identifier:(NSString *)identifier {
+- (instancetype)initWithImage:(UIImage *)image identifier:(NSString *)identifier {
     if (self = [self init]) {
         self.image = image;
         self.identifier = identifier;
@@ -51,7 +51,7 @@
     return self;
 }
 
-- (UIImage*)accessImage {
+- (UIImage *)accessImage {
     self.lastAccessDate = [NSDate date];
     return self.image;
 }

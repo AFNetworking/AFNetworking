@@ -28,7 +28,7 @@
 
 @interface UIImage (AFNetworking)
 
-+ (UIImage*) safeImageWithData:(NSData*)data;
++ (UIImage *)safeImageWithData:(NSData *)data;
 
 @end
 

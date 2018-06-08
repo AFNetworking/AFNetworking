@@ -473,7 +473,7 @@
     return [NSURLRequest requestWithURL:self.delayURL];
 }
 
-- (IMP)_implementationForTask:(NSURLSessionTask  *)task selector:(SEL)selector {
+- (IMP)_implementationForTask:(NSURLSessionTask *)task selector:(SEL)selector {
     return [self _implementationForClass:[task class] selector:selector];
 }
 
