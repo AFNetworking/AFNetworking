@@ -193,6 +193,10 @@
     if (additionalIdentifier != nil) {
         key = [key stringByAppendingString:additionalIdentifier];
     }
+    if (request.HTTPBody) {
+        NSString *bodyStr = [[NSString alloc] initWithData:request.HTTPBody encoding:NSUTF8StringEncoding];
+        key = [key stringByAppendingString:bodyStr];
+    }
     return key;
 }
 
