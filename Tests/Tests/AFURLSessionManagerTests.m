@@ -133,6 +133,23 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
+- (void)testSessionTaskDoesReportMetrics {
+    [self expectationForNotification:AFNetworkingTaskDidCompleteNotification object:nil handler:^BOOL(NSNotification * _Nonnull notification) {
+#if AF_CAN_USE_AT_AVAILABLE
+        if (@available(iOS 10, macOS 10.12, watchOS 3, tvOS 10, *)) {
+            return [notification userInfo][AFNetworkingTaskDidCompleteSessionTaskMetrics] != nil;
+        }
+#endif
+        return YES;
+    }];
+    NSURLSessionTask *task = [self.localManager downloadTaskWithRequest:[self bigImageURLRequest]
+                                                               progress:nil
+                                                            destination:nil
+                                                      completionHandler:nil];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeout];
+}
+
 // iOS 7 has a bug that may return nil for a session. To simulate that, nil out the
 // session and it will return nil itself.
 - (void)testFileUploadTaskReturnsNilWithBug {
