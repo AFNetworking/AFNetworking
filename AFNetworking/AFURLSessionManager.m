@@ -82,6 +82,7 @@ NSString * const AFNetworkingTaskDidCompleteResponseSerializerKey = @"com.alamof
 NSString * const AFNetworkingTaskDidCompleteResponseDataKey = @"com.alamofire.networking.complete.finish.responsedata";
 NSString * const AFNetworkingTaskDidCompleteErrorKey = @"com.alamofire.networking.task.complete.error";
 NSString * const AFNetworkingTaskDidCompleteAssetPathKey = @"com.alamofire.networking.task.complete.assetpath";
+NSString * const AFNetworkingTaskDidCompleteSessionTaskMetrics = @"com.alamofire.networking.complete.sessiontaskmetrics";
 
 static NSString * const AFURLSessionManagerLockName = @"com.alamofire.networking.session.manager.lock";
 
@@ -121,6 +122,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @property (nonatomic, strong) NSProgress *uploadProgress;
 @property (nonatomic, strong) NSProgress *downloadProgress;
 @property (nonatomic, copy) NSURL *downloadFileURL;
+@property (nonatomic, strong) NSURLSessionTaskMetrics *sessionTaskMetrics;
 @property (nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
 @property (nonatomic, copy) AFURLSessionTaskProgressBlock uploadProgressBlock;
 @property (nonatomic, copy) AFURLSessionTaskProgressBlock downloadProgressBlock;
@@ -211,6 +213,14 @@ didCompleteWithError:(NSError *)error
         self.mutableData = nil;
     }
 
+#if AF_CAN_USE_AT_AVAILABLE
+    if (@available(iOS 10, macOS 10.12, watchOS 3, tvOS 10, *)) {
+        if (self.sessionTaskMetrics) {
+            userInfo[AFNetworkingTaskDidCompleteSessionTaskMetrics] = self.sessionTaskMetrics;
+        }
+    }
+#endif
+
     if (self.downloadFileURL) {
         userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
     } else if (data) {
@@ -257,6 +267,12 @@ didCompleteWithError:(NSError *)error
             });
         });
     }
+}
+
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
+    self.sessionTaskMetrics = metrics;
 }
 
 #pragma mark - NSURLSessionDataDelegate
@@ -1088,9 +1104,8 @@ didCompleteWithError:(NSError *)error
 didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
 {
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:task];
-
-    // delegate may be nil when completing a task in the background
-    if (delegate && [delegate respondsToSelector:@selector(URLSession:task:didFinishCollectingMetrics:)]) {
+    // Metrics may fire after URLSession:task:didCompleteWithError: is called, delegate may be nil
+    if (delegate) {
         [delegate URLSession:session task:task didFinishCollectingMetrics:metrics];
     }
 
