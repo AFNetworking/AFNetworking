@@ -143,7 +143,7 @@
         return YES;
     }];
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
     __weak XCTestExpectation *metricsBlock = [self expectationWithDescription:@"Metrics completion block is called"];
     [self.localManager setTaskDidFinishCollectingMetricsBlock:^(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLSessionTaskMetrics * _Nullable metrics) {
         [metricsBlock fulfill];

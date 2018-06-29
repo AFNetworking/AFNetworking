@@ -383,7 +383,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param block A block object to be executed when a session task is completed. The block has no return value, and takes three arguments: the session, the task, and any metrics that were collected in the process of executing the task.
  */
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
 - (void)setTaskDidFinishCollectingMetricsBlock:(nullable void (^)(NSURLSession *session, NSURLSessionTask *task, NSURLSessionTaskMetrics * _Nullable metrics))block;
 #endif
 ///-------------------------------------------

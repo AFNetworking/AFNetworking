@@ -98,7 +98,7 @@ typedef void (^AFURLSessionDidFinishEventsForBackgroundURLSessionBlock)(NSURLSes
 typedef NSInputStream * (^AFURLSessionTaskNeedNewBodyStreamBlock)(NSURLSession *session, NSURLSessionTask *task);
 typedef void (^AFURLSessionTaskDidSendBodyDataBlock)(NSURLSession *session, NSURLSessionTask *task, int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend);
 typedef void (^AFURLSessionTaskDidCompleteBlock)(NSURLSession *session, NSURLSessionTask *task, NSError *error);
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
 typedef void (^AFURLSessionTaskDidFinishCollectingMetricsBlock)(NSURLSession *session, NSURLSessionTask *task, NSURLSessionTaskMetrics * metrics);
 #endif
 
@@ -124,7 +124,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @property (nonatomic, strong) NSProgress *uploadProgress;
 @property (nonatomic, strong) NSProgress *downloadProgress;
 @property (nonatomic, copy) NSURL *downloadFileURL;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
 @property (nonatomic, strong) NSURLSessionTaskMetrics *sessionTaskMetrics;
 #endif
 @property (nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
@@ -217,7 +217,7 @@ didCompleteWithError:(NSError *)error
         self.mutableData = nil;
     }
 
-#if AF_CAN_USE_AT_AVAILABLE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if AF_CAN_USE_AT_AVAILABLE && AF_CAN_INCLUDE_SESSION_TASK_METRICS
     if (@available(iOS 10, macOS 10.12, watchOS 3, tvOS 10, *)) {
         if (self.sessionTaskMetrics) {
             userInfo[AFNetworkingTaskDidCompleteSessionTaskMetrics] = self.sessionTaskMetrics;
@@ -273,7 +273,7 @@ didCompleteWithError:(NSError *)error
     }
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
@@ -485,7 +485,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 @property (readwrite, nonatomic, copy) AFURLSessionTaskNeedNewBodyStreamBlock taskNeedNewBodyStream;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskDidSendBodyDataBlock taskDidSendBodyData;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskDidCompleteBlock taskDidComplete;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
 @property (readwrite, nonatomic, copy) AFURLSessionTaskDidFinishCollectingMetricsBlock taskDidFinishCollectingMetrics;
 #endif
 @property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidReceiveResponseBlock dataTaskDidReceiveResponse;
@@ -897,7 +897,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.taskDidComplete = block;
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
 - (void)setTaskDidFinishCollectingMetricsBlock:(void (^)(NSURLSession * _Nonnull, NSURLSessionTask * _Nonnull, NSURLSessionTaskMetrics * _Nullable))block {
     self.taskDidFinishCollectingMetrics = block;
 }
@@ -1109,7 +1109,7 @@ didCompleteWithError:(NSError *)error
     }
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
