@@ -142,6 +142,12 @@
 #endif
         return YES;
     }];
+
+    __weak XCTestExpectation *metricsBlock = [self expectationWithDescription:@"Metrics completion block is called"];
+    [self.localManager setTaskDidFinishCollectingMetricsBlock:^(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLSessionTaskMetrics * _Nullable metrics) {
+        [metricsBlock fulfill];
+    }];
+
     NSURLSessionTask *task = [self.localManager downloadTaskWithRequest:[self bigImageURLRequest]
                                                                progress:nil
                                                             destination:nil
