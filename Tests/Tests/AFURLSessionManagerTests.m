@@ -135,7 +135,7 @@
 
 - (void)testSessionTaskDoesReportMetrics {
     [self expectationForNotification:AFNetworkingTaskDidCompleteNotification object:nil handler:^BOOL(NSNotification * _Nonnull notification) {
-#if AF_CAN_USE_AT_AVAILABLE
+#if AF_CAN_USE_AT_AVAILABLE && AF_CAN_INCLUDE_SESSION_TASK_METRICS
         if (@available(iOS 10, macOS 10.12, watchOS 3, tvOS 10, *)) {
             return [notification userInfo][AFNetworkingTaskDidCompleteSessionTaskMetrics] != nil;
         }
