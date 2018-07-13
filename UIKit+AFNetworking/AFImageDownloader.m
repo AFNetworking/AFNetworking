@@ -254,7 +254,7 @@
                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                            dispatch_async(self.responseQueue, ^{
                                __strong __typeof__(weakSelf) strongSelf = weakSelf;
-                               AFImageDownloaderMergedTask *mergedTask = strongSelf.mergedTasks[URLIdentifier];
+                               AFImageDownloaderMergedTask *mergedTask = [strongSelf safelyGetMergedTask:URLIdentifier];
                                if ([mergedTask.identifier isEqual:mergedTaskIdentifier]) {
                                    mergedTask = [strongSelf safelyRemoveMergedTaskWithURLIdentifier:URLIdentifier];
                                    if (error) {
@@ -402,6 +402,14 @@
 
 - (BOOL)isActiveRequestCountBelowMaximumLimit {
     return self.activeRequestCount < self.maximumActiveDownloads;
+}
+
+- (AFImageDownloaderMergedTask *)safelyGetMergedTask:(NSString *)URLIdentifier {
+    __block AFImageDownloaderMergedTask *mergedTask;
+    dispatch_sync(self.synchronizationQueue, ^(){
+        mergedTask = self.mergedTasks[URLIdentifier];
+    });
+    return mergedTask;
 }
 
 @end
