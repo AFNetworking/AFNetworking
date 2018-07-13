@@ -151,6 +151,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setReachabilityStatusChangeBlock:(nullable void (^)(AFNetworkReachabilityStatus status))block;
 
+/**
+ Returns the reachability of current networkReachabilityManager.
+ */
+- (SCNetworkReachabilityRef)currentNetworkReachability;
+
 @end
 
 ///----------------
