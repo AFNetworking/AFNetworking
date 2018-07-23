@@ -28,7 +28,7 @@
 @interface AFCachedImage : NSObject
 
 @property (nonatomic, strong) UIImage *image;
-@property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, copy) NSString *identifier;
 @property (nonatomic, assign) UInt64 totalBytes;
 @property (nonatomic, strong) NSDate *lastAccessDate;
 @property (nonatomic, assign) UInt64 currentMemoryUsage;
@@ -37,7 +37,7 @@
 
 @implementation AFCachedImage
 
--(instancetype)initWithImage:(UIImage *)image identifier:(NSString *)identifier {
+- (instancetype)initWithImage:(UIImage *)image identifier:(NSString *)identifier {
     if (self = [self init]) {
         self.image = image;
         self.identifier = identifier;
@@ -51,7 +51,7 @@
     return self;
 }
 
-- (UIImage*)accessImage {
+- (UIImage *)accessImage {
     self.lastAccessDate = [NSDate date];
     return self.image;
 }
@@ -194,6 +194,10 @@
         key = [key stringByAppendingString:additionalIdentifier];
     }
     return key;
+}
+
+- (BOOL)shouldCacheImage:(UIImage *)image forRequest:(NSURLRequest *)request withAdditionalIdentifier:(nullable NSString *)identifier {
+    return YES;
 }
 
 @end

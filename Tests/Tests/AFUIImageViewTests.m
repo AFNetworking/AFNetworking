@@ -137,6 +137,30 @@
     XCTAssertNotNil(responseImage);
 }
 
+- (void)testThatImageDownloadFailsWhenUsingMalformedURLRequest {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
+    UIImage *placeholder = [UIImage imageNamed:@"logo"];
+    __block NSURLRequest *failureRequest;
+    __block NSHTTPURLResponse *failureResponse;
+    __block NSError *failureError;
+    NSString *nilString;
+    NSURLRequest *malformedRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:nilString]];
+    [self.imageView setImageWithURLRequest:malformedRequest
+                          placeholderImage:placeholder
+                                   success:nil
+                                   failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+                                       failureRequest = request;
+                                       failureResponse = response;
+                                       failureError = error;
+                                       [expectation fulfill];
+                                   }];
+    [self waitForExpectationsWithCommonTimeout];
+    XCTAssertEqual(self.imageView.image, placeholder);
+    XCTAssertEqual(failureRequest, malformedRequest);
+    XCTAssertNil(failureResponse);
+    XCTAssertNotNil(failureError);
+}
+
 - (void)testThatNilURLDoesntCrash {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
