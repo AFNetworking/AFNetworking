@@ -133,21 +133,6 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
-// iOS 7 has a bug that may return nil for a session. To simulate that, nil out the
-// session and it will return nil itself.
-- (void)testFileUploadTaskReturnsNilWithBug {
-    [self.localManager setValue:nil forKey:@"session"];
-    
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wnonnull"
-    XCTAssertNil([self.localManager uploadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
-                                                 fromFile:nil
-                                                 progress:NULL
-                                        completionHandler:NULL],
-                 @"Upload task should be nil.");
-#pragma GCC diagnostic pop
-}
-
 - (void)testUploadTaskDoesReportProgress {
     NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
     while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
