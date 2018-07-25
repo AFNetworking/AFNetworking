@@ -79,7 +79,7 @@ static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetwork
  * a queued notification (for an earlier status condition) is processed after
  * the later update, resulting in the listener being left in the wrong state.
  */
-static void AFPostReachabilityStatusChange(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, AFNetworkReachabilityStatusCallback block) {
+static void AFPostReachabilityStatusChange(SCNetworkReachabilityFlags flags, AFNetworkReachabilityStatusCallback block) {
     AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusForFlags(flags);
     dispatch_async(dispatch_get_main_queue(), ^{
         AFNetworkReachabilityManager *manager = nil;
@@ -92,8 +92,8 @@ static void AFPostReachabilityStatusChange(SCNetworkReachabilityRef target, SCNe
     });
 }
 
-static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info) {
-    AFPostReachabilityStatusChange(target, flags, (__bridge AFNetworkReachabilityStatusCallback)info);
+static void AFNetworkReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
+    AFPostReachabilityStatusChange(flags, (__bridge AFNetworkReachabilityStatusCallback)info);
 }
 
 
@@ -230,7 +230,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
         SCNetworkReachabilityFlags flags;
         if (SCNetworkReachabilityGetFlags(self.networkReachability, &flags)) {
-            AFPostReachabilityStatusChange(self.networkReachability, flags, callback);
+            AFPostReachabilityStatusChange(flags, callback);
         }
     });
 }
