@@ -1088,12 +1088,6 @@ didCompleteWithError:(NSError *)error
     if (self.taskDidComplete) {
         self.taskDidComplete(session, task, error);
     }
-    
-    if (self.mutableTaskDelegatesKeyedByTaskIdentifier.allKeys.count == 0) {
-        @synchronized (self) {
-            [self invalidateSessionCancelingTasks:NO];
-        }
-    }
 }
 
 #pragma mark - NSURLSessionDataDelegate
