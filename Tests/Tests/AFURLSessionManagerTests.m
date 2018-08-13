@@ -133,6 +133,31 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
+- (void)testSessionTaskDoesReportMetrics {
+    [self expectationForNotification:AFNetworkingTaskDidCompleteNotification object:nil handler:^BOOL(NSNotification * _Nonnull notification) {
+#if AF_CAN_USE_AT_AVAILABLE && AF_CAN_INCLUDE_SESSION_TASK_METRICS
+        if (@available(iOS 10, macOS 10.12, watchOS 3, tvOS 10, *)) {
+            return [notification userInfo][AFNetworkingTaskDidCompleteSessionTaskMetrics] != nil;
+        }
+#endif
+        return YES;
+    }];
+
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
+    __weak XCTestExpectation *metricsBlock = [self expectationWithDescription:@"Metrics completion block is called"];
+    [self.localManager setTaskDidFinishCollectingMetricsBlock:^(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLSessionTaskMetrics * _Nullable metrics) {
+        [metricsBlock fulfill];
+    }];
+#endif
+
+    NSURLSessionTask *task = [self.localManager downloadTaskWithRequest:[self bigImageURLRequest]
+                                                               progress:nil
+                                                            destination:nil
+                                                      completionHandler:nil];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeout];
+}
+
 - (void)testUploadTaskDoesReportProgress {
     NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
     while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {

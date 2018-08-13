@@ -69,6 +69,7 @@
     [self.sessionManager
      GET:@"/delay/1"
      parameters:nil
+     headers:nil
      progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
          [requestExpectation fulfill];
@@ -95,6 +96,7 @@
     [self.sessionManager
      GET:@"/status/404"
      parameters:nil
+     headers:nil
      progress:nil
      success:nil
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -128,6 +130,7 @@
     [self.sessionManager
      GET:@"/delay/2"
      parameters:nil
+     headers:nil
      progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
          requestEndTime = CACurrentMediaTime();
@@ -157,6 +160,7 @@
     [self.sessionManager
      GET:@"/delay/4"
      parameters:nil
+     headers:nil
      progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
          [requestExpectation fulfill];
@@ -167,6 +171,7 @@
     [self.sessionManager
      GET:@"/delay/2"
      parameters:nil
+     headers:nil
      progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
 
