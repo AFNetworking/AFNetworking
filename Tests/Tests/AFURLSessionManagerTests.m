@@ -158,6 +158,13 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
+- (void)testSessionRecreatesAgain {
+    
+    [self.localManager setValue:nil forKey:@"session"];
+    
+    XCTAssertNotNil([self.localManager valueForKey:@"session"]);
+}
+
 - (void)testUploadTaskDoesReportProgress {
     NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
     while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
