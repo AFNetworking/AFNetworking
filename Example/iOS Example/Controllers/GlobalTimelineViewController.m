@@ -59,7 +59,7 @@
     [self.tableView.tableHeaderView addSubview:self.refreshControl];
 
     self.tableView.rowHeight = 70.0f;
-    
+    NSLog(@"viewDidLoad");
     [self reload:nil];
 }
 
