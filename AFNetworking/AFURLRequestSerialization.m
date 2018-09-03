@@ -403,7 +403,9 @@ forHTTPHeaderField:(NSString *)field
             }
 
             if (data) {
-                [formData appendPartWithFormData:data name:[pair.field description]];
+                NSString * name = [pair.field description] != nil ? [pair.field description] : [pair.value description];
+                [formData appendPartWithFormData:data name:name];
+                
             }
         }
     }
