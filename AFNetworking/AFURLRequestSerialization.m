@@ -1255,25 +1255,36 @@ typedef enum {
     }];
 
     if (parameters) {
-        if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
-            [mutableRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        NSString* contentTypeValue = [mutableRequest valueForHTTPHeaderField:@"Content-Type"];
+        // If `Content-Type` not set, use `application/json` as default content type.
+        NSString* jsonContentType = @"application/json";
+        if (!contentTypeValue) {
+            contentTypeValue = jsonContentType.copy;
+            [mutableRequest setValue:contentTypeValue forHTTPHeaderField:@"Content-Type"];
         }
-
-        if (![NSJSONSerialization isValidJSONObject:parameters]) {
-            if (error) {
-                NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"The `parameters` argument is not valid JSON.", @"AFNetworking", nil)};
-                *error = [[NSError alloc] initWithDomain:AFURLRequestSerializationErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+        // The body data that we gonna use.
+        NSData *httpBodyData = nil;
+        // If content type is `application/json` and `parameters` isn't a valid json object.
+        // Then yells an error.
+        if ([contentTypeValue isEqualToString:jsonContentType]) {
+            if(![NSJSONSerialization isValidJSONObject:parameters]) {
+                if (error) {
+                    NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"The `parameters` argument is not valid JSON.", @"AFNetworking", nil)};
+                    *error = [[NSError alloc] initWithDomain:AFURLRequestSerializationErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+                }
+                return nil;
             }
+            httpBodyData = [NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error];
+        } else if([parameters isKindOfClass:NSString.class]) {
+            // In the case of content type being 'application/x-www-form-urlencoded'
+            // `Parameters` should be of `NSString` type.
+            httpBodyData = [(NSString *)parameters dataUsingEncoding:NSUTF8StringEncoding]; // UTF8 only currently.
+        }
+        // If still no body data. It should be an invalid request.
+        if (!httpBodyData) {
             return nil;
         }
-
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error];
-        
-        if (!jsonData) {
-            return nil;
-        }
-        
-        [mutableRequest setHTTPBody:jsonData];
+        [mutableRequest setHTTPBody:httpBodyData];
     }
 
     return mutableRequest;
