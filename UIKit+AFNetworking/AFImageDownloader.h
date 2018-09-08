@@ -82,11 +82,25 @@ typedef NS_ENUM(NSInteger, AFImageDownloadPrioritization) {
 + (NSURLCache *)defaultURLCache;
 
 /**
+ The default `NSURLSessionConfiguration` with common usage parameter values.
+ */
++ (NSURLSessionConfiguration *)defaultURLSessionConfiguration;
+
+/**
  Default initializer
 
  @return An instance of `AFImageDownloader` initialized with default values.
  */
 - (instancetype)init;
+
+/**
+ Initializer with specific `URLSessionConfiguration`
+ 
+ @param configuration The `NSURLSessionConfiguration` to be be used
+ 
+ @return An instance of `AFImageDownloader` initialized with default values and custom `NSURLSessionConfiguration`
+ */
+- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration;
 
 /**
  Initializes the `AFImageDownloader` instance with the given session manager, download prioritization, maximum active download count and image cache.
