@@ -46,7 +46,7 @@
     [super tearDown];
     self.networkActivityIndicatorManager = nil;
 
-    [self.sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    [self.sessionManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.sessionManager = nil;
 }
 

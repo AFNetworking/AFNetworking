@@ -70,10 +70,10 @@
 - (void)tearDown {
     [super tearDown];
     [self.localManager.session.configuration.URLCache removeAllCachedResponses];
-    [self.localManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.localManager = nil;
     
-    [self.backgroundManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    [self.backgroundManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.backgroundManager = nil;
 }
 
