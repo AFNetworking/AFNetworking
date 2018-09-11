@@ -70,10 +70,10 @@
 - (void)tearDown {
     [super tearDown];
     [self.localManager.session.configuration.URLCache removeAllCachedResponses];
-    [self.localManager invalidateSessionCancelingTasks:YES];
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:YES];
     self.localManager = nil;
     
-    [self.backgroundManager invalidateSessionCancelingTasks:YES];
+    [self.backgroundManager invalidateSessionCancelingTasks:YES resetSession:YES];
     self.backgroundManager = nil;
 }
 
@@ -158,11 +158,19 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
+- (void)testSessionIsStillValid {
+    
+    NSURLSession *session = self.localManager.session;
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:NO];
+    
+    XCTAssertEqual(session, self.localManager.session);
+}
+
 - (void)testSessionRecreatesAgain {
     
-    [self.localManager setValue:nil forKey:@"session"];
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:NO];
     
-    XCTAssertNotNil([self.localManager valueForKey:@"session"]);
+    XCTAssertNotNil(self.localManager.session);
 }
 
 - (void)testUploadTaskDoesReportProgress {
