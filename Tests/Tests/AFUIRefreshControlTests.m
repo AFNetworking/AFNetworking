@@ -40,7 +40,7 @@
 
 - (void)tearDown {
     [super tearDown];
-    [self.sessionManager invalidateSessionCancelingTasks:YES];
+    [self.sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
     self.sessionManager = nil;
 }
 

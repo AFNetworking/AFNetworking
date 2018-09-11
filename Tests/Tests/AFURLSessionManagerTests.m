@@ -168,7 +168,7 @@
 
 - (void)testSessionRecreatesAgain {
     
-    [self.localManager invalidateSessionCancelingTasks:YES resetSession:NO];
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:YES];
     
     XCTAssertNotNil(self.localManager.session);
 }
