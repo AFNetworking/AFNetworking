@@ -42,7 +42,7 @@
 }
 
 #pragma mark - init
-- (void)testSharedManagerIsNotEqualToInitdManager {
+- (void)testSharedManagerIsNotEqualToInitedManager {
     XCTAssertFalse([[AFHTTPSessionManager manager] isEqual:self.sessionManager]);
 }
 
