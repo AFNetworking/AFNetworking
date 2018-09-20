@@ -125,24 +125,15 @@
     [self verifyReachabilityStatusBlockGetsCalledWithManager:self.domainReachability];
 }
 
-- (void)testDifferentReachabilityManagerNotificationPostsAndGets {
-    [self verifyReachabilityNotificationPostsAndGetsConsistenceWithPostsManager:self.domainReachability getsManager:self.addressReachability];
-}
-
-- (void)testSameReachabilityManagerNotificationPostsAndGets {
-    [self verifyReachabilityNotificationPostsAndGetsConsistenceWithPostsManager:self.addressReachability getsManager:self.addressReachability];
-}
-
-- (void)verifyReachabilityNotificationPostsAndGetsConsistenceWithPostsManager:(AFNetworkReachabilityManager *)postsManager getsManager:(AFNetworkReachabilityManager *)getsManager {
-    BOOL isSameReachabilityManager = [postsManager isEqual:getsManager];
+- (void)testObjectPostingReachabilityManagerNotification {
     [self expectationForNotification:AFNetworkingReachabilityDidChangeNotification
-                              object:nil
-                             handler:^BOOL(NSNotification *note) {
-                                 BOOL isSameReachabilityManagerPostsAndGets = [note.object isEqual:getsManager];
-                                 return isSameReachabilityManager == isSameReachabilityManagerPostsAndGets;
+                              object:self.domainReachability
+                             handler:^BOOL(NSNotification *notification) {
+                                 BOOL isObjectPostingNotification = [notification.object isEqual:self.domainReachability];
+                                 return isObjectPostingNotification;
                              }];
     
-    [postsManager startMonitoring];
+    [self.domainReachability startMonitoring];
     
     [self waitForExpectationsWithCommonTimeout];
 }
