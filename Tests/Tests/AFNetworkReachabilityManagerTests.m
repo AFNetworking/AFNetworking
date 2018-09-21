@@ -125,4 +125,17 @@
     [self verifyReachabilityStatusBlockGetsCalledWithManager:self.domainReachability];
 }
 
+- (void)testObjectPostingReachabilityManagerNotification {
+    [self expectationForNotification:AFNetworkingReachabilityDidChangeNotification
+                              object:self.domainReachability
+                             handler:^BOOL(NSNotification *notification) {
+                                 BOOL isObjectPostingNotification = [notification.object isEqual:self.domainReachability];
+                                 return isObjectPostingNotification;
+                             }];
+    
+    [self.domainReachability startMonitoring];
+    
+    [self waitForExpectationsWithCommonTimeout];
+}
+
 @end
