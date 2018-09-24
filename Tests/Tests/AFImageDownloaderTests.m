@@ -45,7 +45,7 @@
 }
 
 - (void)tearDown {
-    [self.downloader.sessionManager invalidateSessionCancelingTasks:YES];
+    [self.downloader.sessionManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.downloader = nil;
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];

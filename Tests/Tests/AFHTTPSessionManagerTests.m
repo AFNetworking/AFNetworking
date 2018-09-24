@@ -25,24 +25,25 @@
 #import "AFSecurityPolicy.h"
 
 @interface AFHTTPSessionManagerTests : AFTestCase
-@property (readwrite, nonatomic, strong) AFHTTPSessionManager *manager;
+@property (readwrite, nonatomic, strong) AFHTTPSessionManager *sessionManager;
 @end
 
 @implementation AFHTTPSessionManagerTests
 
 - (void)setUp {
     [super setUp];
-    self.manager = [[AFHTTPSessionManager alloc] initWithBaseURL:self.baseURL];
+    self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:self.baseURL];
 }
 
 - (void)tearDown {
-    [self.manager invalidateSessionCancelingTasks:YES];
+    [self.sessionManager invalidateSessionCancelingTasks:YES resetSession:NO];
+    self.sessionManager = nil;
     [super tearDown];
 }
 
 #pragma mark - init
-- (void)testSharedManagerIsNotEqualToInitdManager {
-    XCTAssertFalse([[AFHTTPSessionManager manager] isEqual:self.manager]);
+- (void)testSharedManagerIsNotEqualToInitedManager {
+    XCTAssertFalse([[AFHTTPSessionManager manager] isEqual:self.sessionManager]);
 }
 
 #pragma mark - misc
@@ -54,7 +55,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/get" relativeToURL:self.baseURL]];
-    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
+    NSURLSessionDataTask *task = [self.sessionManager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
                                                  completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockResponseObject = responseObject;
         blockError = error;
@@ -76,7 +77,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/status/404" relativeToURL:self.baseURL]];
-    NSURLSessionDataTask *task = [self.manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
+    NSURLSessionDataTask *task = [self.sessionManager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil
                                                  completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
         [expectation fulfill];
@@ -97,13 +98,13 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
     NSURLRequest *redirectRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
-    NSURLSessionDataTask *redirectTask = [self.manager dataTaskWithRequest:redirectRequest uploadProgress:nil downloadProgress:nil
+    NSURLSessionDataTask *redirectTask = [self.sessionManager dataTaskWithRequest:redirectRequest uploadProgress:nil downloadProgress:nil
                                                          completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
         [expectation fulfill];
     }];
 
-    [self.manager setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
+    [self.sessionManager setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
         if (response) {
             success = YES;
         }
@@ -126,14 +127,14 @@
     __block NSURL *downloadFilePath = nil;
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
-    [self.manager setDownloadTaskDidFinishDownloadingBlock:^NSURL *(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, NSURL *location) {
+    [self.sessionManager setDownloadTaskDidFinishDownloadingBlock:^NSURL *(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, NSURL *location) {
         managerDownloadFinishedBlockExecuted = YES;
         NSURL *dirURL  = [[[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask] lastObject];
         return [dirURL URLByAppendingPathComponent:@"t1.file"];
     }];
 
     NSURLSessionDownloadTask *downloadTask;
-    downloadTask = [self.manager
+    downloadTask = [self.sessionManager
                     downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
                     progress:nil
                     destination:nil
@@ -155,7 +156,7 @@
     __block NSURL *downloadFilePath = nil;
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
-    NSURLSessionDownloadTask *downloadTask = [self.manager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+    NSURLSessionDownloadTask *downloadTask = [self.sessionManager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
                                                                           progress:nil
                                                                        destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
                                                                            destinationBlockExecuted = YES;
@@ -177,7 +178,7 @@
 - (void)testThatSerializationErrorGeneratesErrorAndNullTaskForGET {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Serialization should fail"];
 
-    [self.manager.requestSerializer setQueryStringSerializationWithBlock:^NSString * _Nonnull(NSURLRequest * _Nonnull request, id  _Nonnull parameters, NSError * _Nullable __autoreleasing * _Nullable error) {
+    [self.sessionManager.requestSerializer setQueryStringSerializationWithBlock:^NSString * _Nonnull(NSURLRequest * _Nonnull request, id  _Nonnull parameters, NSError * _Nullable __autoreleasing * _Nullable error) {
         if (error != NULL) {
             *error = [NSError errorWithDomain:@"Custom" code:-1 userInfo:nil];
         }
@@ -185,7 +186,7 @@
     }];
 
     NSURLSessionTask *nilTask;
-    nilTask = [self.manager
+    nilTask = [self.sessionManager
                GET:@"test"
                parameters:@{@"key":@"value"}
                headers:nil
@@ -206,12 +207,12 @@
 }
 
 - (void)testCanBeEncoded {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.manager];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.sessionManager];
     XCTAssertNotNil(data);
 }
 
 - (void)testCanBeDecoded {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.manager];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.sessionManager];
     AFHTTPSessionManager *newManager = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     XCTAssertNotNil(newManager.securityPolicy);
     XCTAssertNotNil(newManager.requestSerializer);
@@ -224,7 +225,7 @@
 #pragma mark - NSCopying 
 
 - (void)testCanBeCopied {
-    AFHTTPSessionManager *copyManager = [self.manager copy];
+    AFHTTPSessionManager *copyManager = [self.sessionManager copy];
     XCTAssertNotNil(copyManager);
 }
 
@@ -232,7 +233,7 @@
 
 - (void)testDownloadProgressIsReportedForGET {
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
-    [self.manager
+    [self.sessionManager
      GET:@"image"
      parameters:nil
      headers:nil
@@ -254,7 +255,7 @@
 
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:payload
      headers:nil
@@ -276,7 +277,7 @@
 
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:nil
      headers:nil
@@ -299,7 +300,7 @@
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      GET:@"image"
      parameters:nil
      progress:^(NSProgress * _Nonnull downloadProgress) {
@@ -322,7 +323,7 @@
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:payload
      progress:^(NSProgress * _Nonnull uploadProgress) {
@@ -345,7 +346,7 @@
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:nil
      constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
@@ -366,7 +367,7 @@
 
 - (void)testThatSuccessBlockIsCalledFor200 {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      GET:@"status/200"
      parameters:nil
      headers:nil
@@ -380,7 +381,7 @@
 
 - (void)testThatFailureBlockIsCalledFor404 {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      GET:@"status/404"
      parameters:nil
      headers:nil
@@ -395,7 +396,7 @@
 - (void)testThatResponseObjectIsEmptyFor204 {
     __block id urlResponseObject = nil;
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      GET:@"status/204"
      parameters:nil
      headers:nil
@@ -413,7 +414,7 @@
 
 - (void)testGET {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      GET:@"get"
      parameters:nil
      headers:nil
@@ -428,7 +429,7 @@
 
 - (void)testHEAD {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      HEAD:@"get"
      parameters:nil
      headers:nil
@@ -442,7 +443,7 @@
 
 - (void)testPOST {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:@{@"key":@"value"}
      headers:@{@"field":@"value"}
@@ -458,7 +459,7 @@
 
 - (void)testPOSTWithConstructingBody {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:@{@"key":@"value"}
      headers:@{@"field":@"value"}
@@ -481,7 +482,7 @@
 
 - (void)testPUT {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      PUT:@"put"
      parameters:@{@"key":@"value"}
      headers:@{@"field":@"value"}
@@ -496,7 +497,7 @@
 
 - (void)testDELETE {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      DELETE:@"delete"
      parameters:@{@"key":@"value"}
      headers:@{@"field":@"value"}
@@ -511,7 +512,7 @@
 
 - (void)testPATCH {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-    [self.manager
+    [self.sessionManager
      PATCH:@"patch"
      parameters:@{@"key":@"value"}
      headers:@{@"field":@"value"}
@@ -531,7 +532,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      GET:@"get"
      parameters:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -547,7 +548,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:@{@"key":@"value"}
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -563,7 +564,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:@{@"key":@"value"}
      constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
@@ -587,7 +588,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      GET:@"get"
      parameters:nil
      progress:nil
@@ -604,7 +605,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      HEAD:@"get"
      parameters:nil
      success:^(NSURLSessionDataTask * _Nonnull task) {
@@ -620,7 +621,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:@{@"key":@"value"}
      progress:nil
@@ -637,7 +638,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      POST:@"post"
      parameters:@{@"key":@"value"}
      constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
@@ -661,7 +662,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      PUT:@"put"
      parameters:@{@"key":@"value"}
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -677,7 +678,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      DELETE:@"delete"
      parameters:@{@"key":@"value"}
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -693,7 +694,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.manager
+    [self.sessionManager
      PATCH:@"patch"
      parameters:@{@"key":@"value"}
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -709,8 +710,8 @@
 
 - (void)testHiddenBasicAuthentication {
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should finish"];
-    [self.manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"user" password:@"password"];
-    [self.manager
+    [self.sessionManager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"user" password:@"password"];
+    [self.sessionManager
      GET:@"hidden-basic-auth/user/password"
      parameters:nil
      headers:nil
@@ -798,7 +799,7 @@
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeout];
-    [manager invalidateSessionCancelingTasks:YES];
+    [manager invalidateSessionCancelingTasks:YES resetSession:NO];
 }
 
 - (void)testInvalidServerTrustProducesCorrectErrorForPublicKeyPinning {
@@ -823,7 +824,7 @@
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeout];
-    [manager invalidateSessionCancelingTasks:YES];
+    [manager invalidateSessionCancelingTasks:YES resetSession:NO];
 }
 
 @end

@@ -196,7 +196,15 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param cancelPendingTasks Whether or not to cancel pending tasks.
  */
-- (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks;
+- (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks DEPRECATED_ATTRIBUTE;
+
+/**
+ Invalidates the managed session, optionally canceling pending tasks and optionally resets given session.
+ 
+ @param cancelPendingTasks  Whether or not to cancel pending tasks.
+ @param resetSession        Whether or not to reset the session of the manager.
+ */
+- (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks resetSession:(BOOL)resetSession;
 
 ///-------------------------
 /// @name Running Data Tasks

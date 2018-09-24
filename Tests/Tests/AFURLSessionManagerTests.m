@@ -70,10 +70,10 @@
 - (void)tearDown {
     [super tearDown];
     [self.localManager.session.configuration.URLCache removeAllCachedResponses];
-    [self.localManager invalidateSessionCancelingTasks:YES];
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.localManager = nil;
     
-    [self.backgroundManager invalidateSessionCancelingTasks:YES];
+    [self.backgroundManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.backgroundManager = nil;
 }
 
@@ -158,19 +158,19 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
-// iOS 7 has a bug that may return nil for a session. To simulate that, nil out the
-// session and it will return nil itself.
-- (void)testFileUploadTaskReturnsNilWithBug {
-    [self.localManager setValue:nil forKey:@"session"];
+- (void)testSessionIsStillValid {
     
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wnonnull"
-    XCTAssertNil([self.localManager uploadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
-                                                 fromFile:nil
-                                                 progress:NULL
-                                        completionHandler:NULL],
-                 @"Upload task should be nil.");
-#pragma GCC diagnostic pop
+    NSURLSession *session = self.localManager.session;
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:NO];
+    
+    XCTAssertEqual(session, self.localManager.session);
+}
+
+- (void)testSessionRecreatesAgain {
+    
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    
+    XCTAssertNotNil(self.localManager.session);
 }
 
 - (void)testUploadTaskDoesReportProgress {
