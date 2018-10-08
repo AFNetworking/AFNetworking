@@ -16,9 +16,13 @@
 		1F6F7DFB1F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
 		1F6F7DFD1F17051100C979D0 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */; };
 		1F6F7DFE1F17051100C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
-		1FDA5AE42036373000BF0F94 /* httpbinorg_04112018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */; };
-		1FDA5AE52036373000BF0F94 /* httpbinorg_04112018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */; };
-		1FDA5AE62036373000BF0F94 /* httpbinorg_04112018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */; };
+		1F73A747211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */; };
+		1F73A748211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */; };
+		1F73A749211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */; };
+		1F96D2A4203649560085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1F96D2A5203649570085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1F96D2A6203649570085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1F96D2A7203649580085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2960BAC31C1B2F1A00BA02F0 /* AFUIButtonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */; };
 		297824A31BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; };
 		297824A41BC2D69A0041C395 /* adn_0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 297824A01BC2D69A0041C395 /* adn_0.cer */; };
@@ -229,9 +233,10 @@
 
 /* Begin PBXFileReference section */
 		1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageResponseSerializerTests.m; sourceTree = "<group>"; };
+		1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFCompatibilityMacros.h; sourceTree = "<group>"; };
 		1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Let's Encrypt Authority X3.cer"; sourceTree = "<group>"; };
 		1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DST Root CA X3.cer"; sourceTree = "<group>"; };
-		1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_04112018.cer; sourceTree = "<group>"; };
+		1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_10102018.cer; sourceTree = "<group>"; };
 		2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIButtonTests.m; sourceTree = "<group>"; };
 		297824A01BC2D69A0041C395 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
 		297824A11BC2D69A0041C395 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
@@ -407,7 +412,7 @@
 				298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */,
 				1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */,
 				1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */,
-				1FDA5AE32036372900BF0F94 /* httpbinorg_04112018.cer */,
+				1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */,
 			);
 			path = HTTPBin.org;
 			sourceTree = "<group>";
@@ -509,6 +514,7 @@
 		299522451BBF125A00859F49 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */,
 				299522461BBF125A00859F49 /* AFHTTPSessionManager.h */,
 				299522471BBF125A00859F49 /* AFHTTPSessionManager.m */,
 				299522491BBF125A00859F49 /* AFNetworkReachabilityManager.h */,
@@ -581,6 +587,7 @@
 				29D96E8D1BCC3D7D00F571A5 /* AFURLSessionManager.h in Headers */,
 				29D96E941BCC406B00F571A5 /* AFAutoPurgingImageCache.h in Headers */,
 				29D96E951BCC406B00F571A5 /* AFImageDownloader.h in Headers */,
+				1F96D2A7203649580085FC3F /* AFCompatibilityMacros.h in Headers */,
 				29D96E961BCC406B00F571A5 /* UIActivityIndicatorView+AFNetworking.h in Headers */,
 				29D96E971BCC406B00F571A5 /* UIButton+AFNetworking.h in Headers */,
 				29D96E981BCC406B00F571A5 /* UIImage+AFNetworking.h in Headers */,
@@ -605,6 +612,7 @@
 				2995225E1BBF125A00859F49 /* AFURLSessionManager.h in Headers */,
 				2995225C1BBF125A00859F49 /* AFURLResponseSerialization.h in Headers */,
 				299522A21BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.h in Headers */,
+				1F96D2A4203649560085FC3F /* AFCompatibilityMacros.h in Headers */,
 				2995223D1BBF104D00859F49 /* AFNetworking.h in Headers */,
 				299522B01BBF13C700859F49 /* UIWebView+AFNetworking.h in Headers */,
 				299522AC1BBF13C700859F49 /* UIProgressView+AFNetworking.h in Headers */,
@@ -620,6 +628,7 @@
 			files = (
 				29D96E7A1BCC3D6000F571A5 /* AFHTTPSessionManager.h in Headers */,
 				29D96E7C1BCC3D6000F571A5 /* AFSecurityPolicy.h in Headers */,
+				1F96D2A5203649570085FC3F /* AFCompatibilityMacros.h in Headers */,
 				29D96E7D1BCC3D6000F571A5 /* AFURLRequestSerialization.h in Headers */,
 				29D96E7E1BCC3D6000F571A5 /* AFURLResponseSerialization.h in Headers */,
 				29D96E7F1BCC3D6000F571A5 /* AFURLSessionManager.h in Headers */,
@@ -634,6 +643,7 @@
 				29D96E811BCC3D7200F571A5 /* AFHTTPSessionManager.h in Headers */,
 				29D96E821BCC3D7200F571A5 /* AFNetworkReachabilityManager.h in Headers */,
 				29D96E831BCC3D7200F571A5 /* AFSecurityPolicy.h in Headers */,
+				1F96D2A6203649570085FC3F /* AFCompatibilityMacros.h in Headers */,
 				29D96E841BCC3D7200F571A5 /* AFURLRequestSerialization.h in Headers */,
 				29D96E851BCC3D7200F571A5 /* AFURLResponseSerialization.h in Headers */,
 				29D96E861BCC3D7200F571A5 /* AFURLSessionManager.h in Headers */,
@@ -776,7 +786,7 @@
 		299522301BBF104D00859F49 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0910;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = AFNetworking;
 				TargetAttributes = {
 					2987B0A41BC408A200179A4C = {
@@ -850,11 +860,11 @@
 				2987B0D51BC40AE900179A4C /* adn_2.cer in Resources */,
 				5F4323D71BF63CB0003B8749 /* GoogleComServerTrustChainPath1 in Resources */,
 				1F6F7DFE1F17051100C979D0 /* Let's Encrypt Authority X3.cer in Resources */,
-				1FDA5AE62036373000BF0F94 /* httpbinorg_04112018.cer in Resources */,
 				5F4323DB1BF63CBA003B8749 /* GoogleComServerTrustChainPath2 in Resources */,
 				5F4323BD1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
 				5F4323C01BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
+				1F73A749211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */,
 				1F6F7DFD1F17051100C979D0 /* DST Root CA X3.cer in Resources */,
 				5F4323CF1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323C31BF63741003B8749 /* google.com.cer in Resources */,
@@ -876,11 +886,11 @@
 				298D7CBE1BC2CA9D00FD3B3E /* AltName.cer in Resources */,
 				5F4323D51BF63CB0003B8749 /* GoogleComServerTrustChainPath1 in Resources */,
 				1F6F7DF81F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */,
-				1FDA5AE42036373000BF0F94 /* httpbinorg_04112018.cer in Resources */,
 				5F4323D91BF63CBA003B8749 /* GoogleComServerTrustChainPath2 in Resources */,
 				5F4323BB1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DD1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
 				5F4323BE1BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
+				1F73A747211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */,
 				1F6F7DF71F17051000C979D0 /* DST Root CA X3.cer in Resources */,
 				5F4323CD1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323C11BF63741003B8749 /* google.com.cer in Resources */,
@@ -902,11 +912,11 @@
 				298D7CBB1BC2CA9C00FD3B3E /* AltName.cer in Resources */,
 				5F4323D61BF63CB0003B8749 /* GoogleComServerTrustChainPath1 in Resources */,
 				1F6F7DFB1F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */,
-				1FDA5AE52036373000BF0F94 /* httpbinorg_04112018.cer in Resources */,
 				5F4323DA1BF63CBA003B8749 /* GoogleComServerTrustChainPath2 in Resources */,
 				5F4323BC1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323CE1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323DE1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
+				1F73A748211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */,
 				1F6F7DFA1F17051000C979D0 /* DST Root CA X3.cer in Resources */,
 				5F4323BF1BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
 				5F4323C21BF63741003B8749 /* google.com.cer in Resources */,
@@ -1102,6 +1112,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1126,6 +1137,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1148,6 +1160,7 @@
 		2987B0B81BC408A200179A4C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ./Tests/Info.plist;
@@ -1162,6 +1175,7 @@
 		2987B0B91BC408A200179A4C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ./Tests/Info.plist;
@@ -1176,6 +1190,7 @@
 		298D7C431BC2C79500FD3B3E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
@@ -1190,6 +1205,7 @@
 		298D7C441BC2C79500FD3B3E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
@@ -1204,6 +1220,7 @@
 		298D7C531BC2C7B200FD3B3E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
@@ -1219,6 +1236,7 @@
 		298D7C541BC2C7B200FD3B3E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
@@ -1237,6 +1255,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_CODE_COVERAGE = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_ASSIGN_ENUM = YES;
@@ -1317,6 +1336,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_CODE_COVERAGE = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_ASSIGN_ENUM = YES;
@@ -1390,6 +1410,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
@@ -1412,6 +1433,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
@@ -1434,6 +1456,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1457,6 +1480,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1480,6 +1504,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -1506,6 +1531,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;

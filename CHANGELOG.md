@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
+## [3.2.1](https://github.com/AFNetworking/AFNetworking/releases/tag/3.2.1) (05/04/2018)
+Released on Friday, May 04, 2018. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.2.1+is%3Aclosed).
+
+#### Updated
+* Xcode 9.3 Support
+ * Implemented by Jeff Kelley in [#4199](https://github.com/AFNetworking/AFNetworking/pull/4199).
+* Update HTTPBin certificates for April 2018.
+ * Implemented by Jeff Kelley in [#4198](https://github.com/AFNetworking/AFNetworking/pull/4198).
+
+#### Additional Changes
+* Remove conflicting nullable specifier on init
+ * Implemented by Nick Brook and Jeff Kelley in [#4182](https://github.com/AFNetworking/AFNetworking/pull/4182).
+* Use @available if available to silence a warning.
+ * Implemented by Jeff Kelley in [#4138](https://github.com/AFNetworking/AFNetworking/pull/4138).
+* UIImageView+AFNetworking: Prevent stuck state for malformed urlRequest
+ * Implemented by Adam Duflo and aduflo in [#4131](https://github.com/AFNetworking/AFNetworking/pull/4131).
+* add the link for LICENSE
+ * Implemented by Liao Malin in [#4125](https://github.com/AFNetworking/AFNetworking/pull/4125).
+* Fix analyzer warning for upload task creation
+ * Implemented by Jeff Kelley in [#4122](https://github.com/AFNetworking/AFNetworking/pull/4122).
+ 
+
 ## [3.2.0](https://github.com/AFNetworking/AFNetworking/releases/tag/3.2.0) (12/15/2017)
 Released on Friday, December 15, 2017. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.2.0+is%3Aclosed).
 
