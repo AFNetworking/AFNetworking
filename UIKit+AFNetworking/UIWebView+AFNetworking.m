@@ -49,7 +49,7 @@
 
 @implementation UIWebView (AFNetworking)
 
-- (AFHTTPSessionManager  *)sessionManager {
+- (AFHTTPSessionManager *)sessionManager {
     static AFHTTPSessionManager *_af_defaultHTTPSessionManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
