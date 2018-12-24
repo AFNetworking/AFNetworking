@@ -198,6 +198,23 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 #pragma mark - NSURLSessionTaskDelegate
 
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+   didSendBodyData:(int64_t)bytesSent
+    totalBytesSent:(int64_t)totalBytesSent
+totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend{
+    
+    self.uploadProgress.totalUnitCount = task.countOfBytesExpectedToSend;
+    self.uploadProgress.completedUnitCount = task.countOfBytesSent;
+}
+
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
+    self.sessionTaskMetrics = metrics;
+}
+#endif
+
 - (void)URLSession:(__unused NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
@@ -273,14 +290,6 @@ didCompleteWithError:(NSError *)error
     }
 }
 
-#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
-- (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
-    self.sessionTaskMetrics = metrics;
-}
-#endif
-
 #pragma mark - NSURLSessionDataDelegate
 
 - (void)URLSession:(__unused NSURLSession *)session
@@ -293,16 +302,25 @@ didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
     [self.mutableData appendData:data];
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
-   didSendBodyData:(int64_t)bytesSent
-    totalBytesSent:(int64_t)totalBytesSent
-totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend{
-    
-    self.uploadProgress.totalUnitCount = task.countOfBytesExpectedToSend;
-    self.uploadProgress.completedUnitCount = task.countOfBytesSent;
-}
-
 #pragma mark - NSURLSessionDownloadDelegate
+
+- (void)URLSession:(NSURLSession *)session
+      downloadTask:(NSURLSessionDownloadTask *)downloadTask
+didFinishDownloadingToURL:(NSURL *)location
+{
+    self.downloadFileURL = nil;
+    
+    if (self.downloadTaskDidFinishDownloading) {
+        self.downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
+        if (self.downloadFileURL) {
+            NSError *fileManagerError = nil;
+            
+            if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:self.downloadFileURL error:&fileManagerError]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:fileManagerError.userInfo];
+            }
+        }
+    }
+}
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
       didWriteData:(int64_t)bytesWritten
@@ -319,24 +337,6 @@ expectedTotalBytes:(int64_t)expectedTotalBytes{
     
     self.downloadProgress.totalUnitCount = expectedTotalBytes;
     self.downloadProgress.completedUnitCount = fileOffset;
-}
-
-- (void)URLSession:(NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
-didFinishDownloadingToURL:(NSURL *)location
-{
-    self.downloadFileURL = nil;
-
-    if (self.downloadTaskDidFinishDownloading) {
-        self.downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
-        if (self.downloadFileURL) {
-            NSError *fileManagerError = nil;
-
-            if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:self.downloadFileURL error:&fileManagerError]) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:fileManagerError.userInfo];
-            }
-        }
-    }
 }
 
 @end
@@ -1022,6 +1022,16 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
+#if !TARGET_OS_OSX
+- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
+    if (self.didFinishEventsForBackgroundURLSession) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.didFinishEventsForBackgroundURLSession(session);
+        });
+    }
+}
+#endif
+
 #pragma mark - NSURLSessionTaskDelegate
 
 - (void)URLSession:(NSURLSession *)session
@@ -1112,6 +1122,23 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
     }
 }
 
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
+{
+    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:task];
+    // Metrics may fire after URLSession:task:didCompleteWithError: is called, delegate may be nil
+    if (delegate) {
+        [delegate URLSession:session task:task didFinishCollectingMetrics:metrics];
+    }
+    
+    if (self.taskDidFinishCollectingMetrics) {
+        self.taskDidFinishCollectingMetrics(session, task, metrics);
+    }
+}
+#endif
+
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
@@ -1129,23 +1156,6 @@ didCompleteWithError:(NSError *)error
         self.taskDidComplete(session, task, error);
     }
 }
-
-#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
-- (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
-{
-    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:task];
-    // Metrics may fire after URLSession:task:didCompleteWithError: is called, delegate may be nil
-    if (delegate) {
-        [delegate URLSession:session task:task didFinishCollectingMetrics:metrics];
-    }
-
-    if (self.taskDidFinishCollectingMetrics) {
-        self.taskDidFinishCollectingMetrics(session, task, metrics);
-    }
-}
-#endif
 
 #pragma mark - NSURLSessionDataDelegate
 
@@ -1208,16 +1218,6 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
         completionHandler(cachedResponse);
     }
 }
-
-#if !TARGET_OS_OSX
-- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
-    if (self.didFinishEventsForBackgroundURLSession) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.didFinishEventsForBackgroundURLSession(session);
-        });
-    }
-}
-#endif
 
 #pragma mark - NSURLSessionDownloadDelegate
 
