@@ -196,7 +196,9 @@
     return key;
 }
 
-- (BOOL)shouldCacheImage:(UIImage *)image forRequest:(NSURLRequest *)request withAdditionalIdentifier:(nullable NSString *)identifier {
+- (BOOL)shouldCacheImage:(__unused UIImage *)image
+              forRequest:(__unused NSURLRequest *)request
+withAdditionalIdentifier:(__unused id)identifier {
     return YES;
 }
 

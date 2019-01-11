@@ -34,10 +34,13 @@
     #define AF_CAN_USE_AT_AVAILABLE 0
 #endif
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundef"
 #if ((__IPHONE_OS_VERSION_MAX_ALLOWED && __IPHONE_OS_VERSION_MAX_ALLOWED < 100000) || (__MAC_OS_VERSION_MAX_ALLOWED && __MAC_OS_VERSION_MAX_ALLOWED < 101200) ||(__WATCH_OS_MAX_VERSION_ALLOWED && __WATCH_OS_MAX_VERSION_ALLOWED < 30000) ||(__TV_OS_MAX_VERSION_ALLOWED && __TV_OS_MAX_VERSION_ALLOWED < 100000))
     #define AF_CAN_INCLUDE_SESSION_TASK_METRICS 0
 #else
     #define AF_CAN_INCLUDE_SESSION_TASK_METRICS 1
 #endif
+#pragma clang diagnostic pop
 
 #endif /* AFCompatibilityMacros_h */
