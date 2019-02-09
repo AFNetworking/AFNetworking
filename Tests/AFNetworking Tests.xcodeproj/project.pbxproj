@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F78455121BAD0B500DF7644 /* httpbinorg_12092018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455021BAD0B500DF7644 /* httpbinorg_12092018.cer */; };
-		1F78455221BAD0B500DF7644 /* httpbinorg_12092018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455021BAD0B500DF7644 /* httpbinorg_12092018.cer */; };
 		1F78455521BAD14A00DF7644 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455421BAD14200DF7644 /* Let's Encrypt Authority X3.cer */; };
 		1F78455621BAD14B00DF7644 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455421BAD14200DF7644 /* Let's Encrypt Authority X3.cer */; };
 		1F78455721BAD14C00DF7644 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455321BAD14200DF7644 /* DST Root CA X3.cer */; };
 		1F78455821BAD14D00DF7644 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455321BAD14200DF7644 /* DST Root CA X3.cer */; };
+		1F8482C4220F3A1200718111 /* httpbinorg_04082019.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482C3220F3A1200718111 /* httpbinorg_04082019.cer */; };
+		1F8482C5220F3A1200718111 /* httpbinorg_04082019.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482C3220F3A1200718111 /* httpbinorg_04082019.cer */; };
 		2902D27917DF4E1100C81C5A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B9ED5C17DF4D350021E4D5 /* XCTest.framework */; };
 		2902D27A17DF4E1200C81C5A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC35173BE382004117E8 /* Foundation.framework */; };
 		2902D27B17DF4E1200C81C5A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29133DD617DE77ED006E0493 /* UIKit.framework */; };
@@ -69,9 +69,9 @@
 
 /* Begin PBXFileReference section */
 		01BE740B4CCF820D2799B0A7 /* libPods-iOS Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1F78455021BAD0B500DF7644 /* httpbinorg_12092018.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_12092018.cer; sourceTree = "<group>"; };
 		1F78455321BAD14200DF7644 /* DST Root CA X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DST Root CA X3.cer"; sourceTree = "<group>"; };
 		1F78455421BAD14200DF7644 /* Let's Encrypt Authority X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Let's Encrypt Authority X3.cer"; sourceTree = "<group>"; };
+		1F8482C3220F3A1200718111 /* httpbinorg_04082019.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_04082019.cer; sourceTree = "<group>"; };
 		2544EC35173BE382004117E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2544EC44173BE382004117E8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		2544EC80173BFAA8004117E8 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
@@ -318,7 +318,7 @@
 				CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */,
 				1F78455321BAD14200DF7644 /* DST Root CA X3.cer */,
 				1F78455421BAD14200DF7644 /* Let's Encrypt Authority X3.cer */,
-				1F78455021BAD0B500DF7644 /* httpbinorg_12092018.cer */,
+				1F8482C3220F3A1200718111 /* httpbinorg_04082019.cer */,
 				29CBFC7517DF697C0021AB75 /* HTTPBinOrgServerTrustChain */,
 			);
 			name = HTTPBin.org;
@@ -448,8 +448,8 @@
 				A74DA00D18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D28117DF4E1200C81C5A /* InfoPlist.strings in Resources */,
 				36DE264E18053E930062F4E3 /* adn_0.cer in Resources */,
-				1F78455121BAD0B500DF7644 /* httpbinorg_12092018.cer in Resources */,
 				36DE264F18053E930062F4E3 /* adn_1.cer in Resources */,
+				1F8482C4220F3A1200718111 /* httpbinorg_04082019.cer in Resources */,
 				A74DA00B18D2FB9400F3B969 /* foobar.com.cer in Resources */,
 				1F78455721BAD14C00DF7644 /* DST Root CA X3.cer in Resources */,
 				36DE265018053E930062F4E3 /* adn_2.cer in Resources */,
@@ -469,8 +469,8 @@
 				A74DA00E18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D29517DF4E2A00C81C5A /* InfoPlist.strings in Resources */,
 				B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */,
-				1F78455221BAD0B500DF7644 /* httpbinorg_12092018.cer in Resources */,
 				B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */,
+				1F8482C5220F3A1200718111 /* httpbinorg_04082019.cer in Resources */,
 				A74DA00C18D2FB9400F3B969 /* foobar.com.cer in Resources */,
 				1F78455821BAD14D00DF7644 /* DST Root CA X3.cer in Resources */,
 				B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */,
