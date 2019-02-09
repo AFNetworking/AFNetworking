@@ -1,0 +1,47 @@
+PODS:
+  - AFNetworking (2.6.3):
+    - AFNetworking/NSURLConnection (= 2.6.3)
+    - AFNetworking/NSURLSession (= 2.6.3)
+    - AFNetworking/Reachability (= 2.6.3)
+    - AFNetworking/Security (= 2.6.3)
+    - AFNetworking/Serialization (= 2.6.3)
+    - AFNetworking/UIKit (= 2.6.3)
+  - AFNetworking/NSURLConnection (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.6.3)
+  - AFNetworking/Security (2.6.3)
+  - AFNetworking/Serialization (2.6.3)
+  - AFNetworking/UIKit (2.6.3):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - Expecta (0.2.4)
+  - OCMock (2.1.1)
+
+DEPENDENCIES:
+  - AFNetworking (from `../`)
+  - Expecta (~> 0.2.1)
+  - OCMock (~> 2.1.1)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Expecta
+    - OCMock
+
+EXTERNAL SOURCES:
+  AFNetworking:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  AFNetworking: 4e7e2ee63993f6aa0bbad6f8bb7641d9bfa85652
+  Expecta: cfaf1d3e2e194ca704a25e997093d30a1ce70b61
+  OCMock: add4220c4527115d16e40a21dab18cb6f829d476
+
+PODFILE CHECKSUM: c94ccd39e1ee81e51a0aa5dc9d53f130474dea3f
+
+COCOAPODS: 1.6.0
