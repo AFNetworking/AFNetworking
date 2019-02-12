@@ -207,7 +207,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes two arguments:, the created request operation and the `NSError` object describing the network or parsing error that occurred.
  */
 - (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)request
-                                                    success:(nullable void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                                                    success:(nullable void (^)(AFHTTPRequestOperation *operation, id __nullable responseObject))success
                                                     failure:(nullable void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 ///---------------------------
@@ -226,7 +226,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable AFHTTPRequestOperation *)GET:(NSString *)URLString
                      parameters:(nullable id)parameters
-                        success:(nullable void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                        success:(nullable void (^)(AFHTTPRequestOperation *operation, id __nullable responseObject))success
                         failure:(nullable void (^)(AFHTTPRequestOperation * __nullable operation, NSError *error))failure;
 
 /**
@@ -256,7 +256,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable AFHTTPRequestOperation *)POST:(NSString *)URLString
                       parameters:(nullable id)parameters
-                         success:(nullable void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                         success:(nullable void (^)(AFHTTPRequestOperation *operation, id __nullable responseObject))success
                          failure:(nullable void (^)(AFHTTPRequestOperation * __nullable operation, NSError *error))failure;
 
 /**
@@ -273,7 +273,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable AFHTTPRequestOperation *)POST:(NSString *)URLString
                       parameters:(nullable id)parameters
        constructingBodyWithBlock:(nullable void (^)(id <AFMultipartFormData> formData))block
-                         success:(nullable void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                         success:(nullable void (^)(AFHTTPRequestOperation *operation, id __nullable responseObject))success
                          failure:(nullable void (^)(AFHTTPRequestOperation * __nullable operation, NSError *error))failure;
 
 /**
@@ -288,7 +288,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable AFHTTPRequestOperation *)PUT:(NSString *)URLString
                      parameters:(nullable id)parameters
-                        success:(nullable void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                        success:(nullable void (^)(AFHTTPRequestOperation *operation, id __nullable responseObject))success
                         failure:(nullable void (^)(AFHTTPRequestOperation * __nullable operation, NSError *error))failure;
 
 /**
@@ -303,7 +303,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable AFHTTPRequestOperation *)PATCH:(NSString *)URLString
                        parameters:(nullable id)parameters
-                          success:(nullable void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                          success:(nullable void (^)(AFHTTPRequestOperation *operation, id __nullable responseObject))success
                           failure:(nullable void (^)(AFHTTPRequestOperation * __nullable operation, NSError *error))failure;
 
 /**
@@ -318,7 +318,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable AFHTTPRequestOperation *)DELETE:(NSString *)URLString
                         parameters:(nullable id)parameters
-                           success:(nullable void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+                           success:(nullable void (^)(AFHTTPRequestOperation *operation, id __nullable responseObject))success
                            failure:(nullable void (^)(AFHTTPRequestOperation * __nullable operation, NSError *error))failure;
 
 @end

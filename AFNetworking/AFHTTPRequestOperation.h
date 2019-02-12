@@ -62,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param success The block to be executed on the completion of a successful request. This block has no return value and takes two arguments: the receiver operation and the object constructed from the response data of the request.
  @param failure The block to be executed on the completion of an unsuccessful request. This block has no return value and takes two arguments: the receiver operation and the error that occurred during the request.
  */
-- (void)setCompletionBlockWithSuccess:(nullable void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+- (void)setCompletionBlockWithSuccess:(nullable void (^)(AFHTTPRequestOperation *operation, id __nullable responseObject))success
                               failure:(nullable void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 @end
