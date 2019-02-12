@@ -38,11 +38,12 @@ pod "AFNetworking", "~> 2.0"
 
 ## Requirements
 
-| AFNetworking Version | Minimum iOS Target  | Minimum OS X Target  |                                   Notes                                   |
-|:--------------------:|:---------------------------:|:----------------------------:|:-------------------------------------------------------------------------:|
-|          2.x         |            iOS 6            |           OS X 10.8          | Xcode 5 is required. `NSURLSession` subspec requires iOS 7 or OS X 10.9. |
-|          [1.x](https://github.com/AFNetworking/AFNetworking/tree/1.x)         |            iOS 5            |         Mac OS X 10.7        |                                                                           |
-|        [0.10.x](https://github.com/AFNetworking/AFNetworking/tree/0.10.x)        |            iOS 4            |         Mac OS X 10.6        |                                                                           |
+| AFNetworking Version | Minimum iOS Target  | Minimum OS X Target  | watchOS Target  |                                   Notes                                   |
+|:--------------------:|:---------------------------:|:----------------------------:|:----------------------------:|:-------------------------------------------------------------------------:|
+|          2.6+         |            iOS 7            |           OS X 10.9          | watchOS 2.0  |  |
+|          2.0.0 -> 2.5.4        |            iOS 6            |           OS X 10.8          | N/A | Xcode 5 is required. `NSURLSession` subspec requires iOS 7 or OS X 10.9. |
+|          [1.x](https://github.com/AFNetworking/AFNetworking/tree/1.x)         |            iOS 5            |         Mac OS X 10.7        | N/A |                                                                           |
+|        [0.10.x](https://github.com/AFNetworking/AFNetworking/tree/0.10.x)        |            iOS 4            |         Mac OS X 10.6        | N/A |                                                                           |
 
 (OS X projects must support [64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)).
 
@@ -366,14 +367,6 @@ AFNetworking includes a suite of unit tests within the Tests subdirectory. In or
     $ pod install
 
 Once testing dependencies are installed, you can execute the test suite via the 'iOS Tests' and 'OS X Tests' schemes within Xcode.
-
-### Running Tests from the Command Line
-
-Tests can also be run from the command line or within a continuous integration environment. The [`xcpretty`](https://github.com/supermarin/xcpretty) utility needs to be installed before running the tests from the command line:
-
-    $ gem install xcpretty
-
-Once `xcpretty` is installed, you can execute the suite via `rake test`.
 
 ## Credits
 

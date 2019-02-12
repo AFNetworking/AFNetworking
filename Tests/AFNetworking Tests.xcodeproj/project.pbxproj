@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F78455521BAD14A00DF7644 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455421BAD14200DF7644 /* Let's Encrypt Authority X3.cer */; };
+		1F78455621BAD14B00DF7644 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455421BAD14200DF7644 /* Let's Encrypt Authority X3.cer */; };
+		1F78455721BAD14C00DF7644 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455321BAD14200DF7644 /* DST Root CA X3.cer */; };
+		1F78455821BAD14D00DF7644 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F78455321BAD14200DF7644 /* DST Root CA X3.cer */; };
+		1F8482C4220F3A1200718111 /* httpbinorg_04082019.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482C3220F3A1200718111 /* httpbinorg_04082019.cer */; };
+		1F8482C5220F3A1200718111 /* httpbinorg_04082019.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482C3220F3A1200718111 /* httpbinorg_04082019.cer */; };
 		2902D27917DF4E1100C81C5A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B9ED5C17DF4D350021E4D5 /* XCTest.framework */; };
 		2902D27A17DF4E1200C81C5A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2544EC35173BE382004117E8 /* Foundation.framework */; };
 		2902D27B17DF4E1200C81C5A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29133DD617DE77ED006E0493 /* UIKit.framework */; };
@@ -34,8 +40,7 @@
 		36DE264F18053E930062F4E3 /* adn_1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264C18053E930062F4E3 /* adn_1.cer */; };
 		36DE265018053E930062F4E3 /* adn_2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 36DE264D18053E930062F4E3 /* adn_2.cer */; };
 		36DE2652180544600062F4E3 /* AFHTTPRequestOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBFC3817DF4F120021AB75 /* AFHTTPRequestOperationTests.m */; };
-		3D56634E3A564CEE86172413 /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A923755B00464187DEDBAF /* libPods-osx.a */; };
-		6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55E73C267F33406A9F92476C /* libPods-ios.a */; };
+		6027ACFF999DA75E3F9E527D /* libPods-iOS Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 01BE740B4CCF820D2799B0A7 /* libPods-iOS Tests.a */; };
 		77D65EBC1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
 		77D65EBD1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */; };
 		943B1F41192E406C00304316 /* AFURLSessionManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 943B1F40192E406C00304316 /* AFURLSessionManagerTests.m */; };
@@ -52,14 +57,9 @@
 		C61291641B21E27700B9475A /* AFUIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C61291631B21E27700B9475A /* AFUIImageViewTests.m */; };
 		C61291651B21F9E300B9475A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
 		C61291661B21FA4D00B9475A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C6F281174D2C6200B154D5 /* Icon.png */; };
-		CBBDB1651A7981FB00D412EE /* httpbinorg_01162016.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */; };
-		CBBDB1661A79820700D412EE /* httpbinorg_01162016.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */; };
 		CBBDB16A1A798AB500D412EE /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */; };
 		CBBDB16B1A798AB500D412EE /* AddTrust_External_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */; };
-		CBBDB16C1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1681A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer */; };
-		CBBDB16D1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1681A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer */; };
-		CBBDB16E1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1691A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
-		CBBDB16F1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */ = {isa = PBXBuildFile; fileRef = CBBDB1691A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */; };
+		DDA47FA750DA771844B622D2 /* libPods-OS X Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F87FC2F6293AA9FC47279C60 /* libPods-OS X Tests.a */; };
 		DE533FCE1ACCF34200C62CFB /* AFNetworkReachabilityManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DE533FCD1ACCF34200C62CFB /* AFNetworkReachabilityManagerTests.m */; };
 		DE533FCF1ACCF34200C62CFB /* AFNetworkReachabilityManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DE533FCD1ACCF34200C62CFB /* AFNetworkReachabilityManagerTests.m */; };
 		F837FFAF195744A0009078A0 /* AFHTTPResponseSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F837FFAE195744A0009078A0 /* AFHTTPResponseSerializationTests.m */; };
@@ -68,6 +68,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01BE740B4CCF820D2799B0A7 /* libPods-iOS Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F78455321BAD14200DF7644 /* DST Root CA X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DST Root CA X3.cer"; sourceTree = "<group>"; };
+		1F78455421BAD14200DF7644 /* Let's Encrypt Authority X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Let's Encrypt Authority X3.cer"; sourceTree = "<group>"; };
+		1F8482C3220F3A1200718111 /* httpbinorg_04082019.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_04082019.cer; sourceTree = "<group>"; };
 		2544EC35173BE382004117E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2544EC44173BE382004117E8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		2544EC80173BFAA8004117E8 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
@@ -117,6 +121,7 @@
 		520A0FB27D040CF3258787D2 /* Pods-osx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.debug.xcconfig"; path = "Pods/Target Support Files/Pods-osx/Pods-osx.debug.xcconfig"; sourceTree = "<group>"; };
 		55E73C267F33406A9F92476C /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		77D65EBB1848A03C004CA024 /* AFPropertyListResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListResponseSerializerTests.m; sourceTree = "<group>"; };
+		7C9E49663B2E7FA3096E7381 /* Pods-OS X Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OS X Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OS X Tests/Pods-OS X Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		943B1F40192E406C00304316 /* AFURLSessionManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManagerTests.m; sourceTree = "<group>"; };
 		95D45FB81CA3594FA8CF7430 /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		96A923755B00464187DEDBAF /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,13 +132,14 @@
 		BC9AB30A551203E10B6C890E /* Pods-osx.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.release.xcconfig"; path = "Pods/Target Support Files/Pods-osx/Pods-osx.release.xcconfig"; sourceTree = "<group>"; };
 		C280748C740FAD506581E3CE /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
 		C61291631B21E27700B9475A /* AFUIImageViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIImageViewTests.m; sourceTree = "<group>"; };
-		CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_01162016.cer; sourceTree = "<group>"; };
 		CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AddTrust_External_CA_Root.cer; sourceTree = "<group>"; };
-		CBBDB1681A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Certification_Authority.cer; sourceTree = "<group>"; };
-		CBBDB1691A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = COMODO_RSA_Domain_Validation_Secure_Server_CA.cer; sourceTree = "<group>"; };
+		D2CB7FD4971678533B812949 /* Pods-iOS Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS Tests/Pods-iOS Tests.release.xcconfig"; sourceTree = "<group>"; };
+		DBB49C2ECB1A13CFA66943ED /* Pods-OS X Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OS X Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-OS X Tests/Pods-OS X Tests.release.xcconfig"; sourceTree = "<group>"; };
 		DE533FCD1ACCF34200C62CFB /* AFNetworkReachabilityManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkReachabilityManagerTests.m; sourceTree = "<group>"; };
+		E1A31F8A319EF4B49FE24CA9 /* Pods-iOS Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS Tests/Pods-iOS Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		F837FFAE195744A0009078A0 /* AFHTTPResponseSerializationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPResponseSerializationTests.m; sourceTree = "<group>"; };
 		F87382941948AC15000B7AFA /* AFHTTPSessionManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManagerTests.m; sourceTree = "<group>"; };
+		F87FC2F6293AA9FC47279C60 /* libPods-OS X Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OS X Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C6F281174D2C6200B154D5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Example/Icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -145,7 +151,7 @@
 				2902D27917DF4E1100C81C5A /* XCTest.framework in Frameworks */,
 				2902D27B17DF4E1200C81C5A /* UIKit.framework in Frameworks */,
 				2902D27A17DF4E1200C81C5A /* Foundation.framework in Frameworks */,
-				6D86BAA5C6174E98AE719CE9 /* libPods-ios.a in Frameworks */,
+				6027ACFF999DA75E3F9E527D /* libPods-iOS Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +161,7 @@
 			files = (
 				2902D28D17DF4E2900C81C5A /* XCTest.framework in Frameworks */,
 				2902D28E17DF4E2A00C81C5A /* Foundation.framework in Frameworks */,
-				3D56634E3A564CEE86172413 /* libPods-osx.a in Frameworks */,
+				DDA47FA750DA771844B622D2 /* libPods-OS X Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +212,8 @@
 				55E73C267F33406A9F92476C /* libPods-ios.a */,
 				96A923755B00464187DEDBAF /* libPods-osx.a */,
 				2B6D24F8E1B74E10A269E8B3 /* libPods.a */,
+				F87FC2F6293AA9FC47279C60 /* libPods-OS X Tests.a */,
+				01BE740B4CCF820D2799B0A7 /* libPods-iOS Tests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -308,9 +316,9 @@
 			isa = PBXGroup;
 			children = (
 				CBBDB1671A798AB500D412EE /* AddTrust_External_CA_Root.cer */,
-				CBBDB1681A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer */,
-				CBBDB1691A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer */,
-				CBBDB1641A7981E200D412EE /* httpbinorg_01162016.cer */,
+				1F78455321BAD14200DF7644 /* DST Root CA X3.cer */,
+				1F78455421BAD14200DF7644 /* Let's Encrypt Authority X3.cer */,
+				1F8482C3220F3A1200718111 /* httpbinorg_04082019.cer */,
 				29CBFC7517DF697C0021AB75 /* HTTPBinOrgServerTrustChain */,
 			);
 			name = HTTPBin.org;
@@ -333,6 +341,10 @@
 				C280748C740FAD506581E3CE /* Pods-ios.release.xcconfig */,
 				520A0FB27D040CF3258787D2 /* Pods-osx.debug.xcconfig */,
 				BC9AB30A551203E10B6C890E /* Pods-osx.release.xcconfig */,
+				7C9E49663B2E7FA3096E7381 /* Pods-OS X Tests.debug.xcconfig */,
+				DBB49C2ECB1A13CFA66943ED /* Pods-OS X Tests.release.xcconfig */,
+				E1A31F8A319EF4B49FE24CA9 /* Pods-iOS Tests.debug.xcconfig */,
+				D2CB7FD4971678533B812949 /* Pods-iOS Tests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -365,12 +377,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2902D28717DF4E1200C81C5A /* Build configuration list for PBXNativeTarget "iOS Tests" */;
 			buildPhases = (
+				0B8FAAA6FAFB34F7F5637B58 /* [CP] Check Pods Manifest.lock */,
 				54CD36584E3B40719F14C3C9 /* Check Pods Manifest.lock */,
 				2902D27417DF4E1100C81C5A /* Sources */,
 				2902D27517DF4E1100C81C5A /* Frameworks */,
 				2902D27617DF4E1100C81C5A /* Resources */,
-				DFF6BB8B6C8D4F8ABC235667 /* Copy Pods Resources */,
-				52EFA949F9B961EBF551E519 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -385,12 +396,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2902D29917DF4E2A00C81C5A /* Build configuration list for PBXNativeTarget "OS X Tests" */;
 			buildPhases = (
+				7F267BFFD062AD7254BC0C78 /* [CP] Check Pods Manifest.lock */,
 				6949C05DBEB94BC2BAE81768 /* Check Pods Manifest.lock */,
 				2902D28817DF4E2900C81C5A /* Sources */,
 				2902D28917DF4E2900C81C5A /* Frameworks */,
 				2902D28A17DF4E2900C81C5A /* Resources */,
-				D728EB5862164B87922C9B80 /* Copy Pods Resources */,
-				2EF045980BC7CC4F5DE8BA5D /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -437,15 +447,15 @@
 				29CBFC8717DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
 				A74DA00D18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D28117DF4E1200C81C5A /* InfoPlist.strings in Resources */,
-				CBBDB1651A7981FB00D412EE /* httpbinorg_01162016.cer in Resources */,
 				36DE264E18053E930062F4E3 /* adn_0.cer in Resources */,
 				36DE264F18053E930062F4E3 /* adn_1.cer in Resources */,
-				CBBDB16C1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */,
-				CBBDB16E1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
+				1F8482C4220F3A1200718111 /* httpbinorg_04082019.cer in Resources */,
 				A74DA00B18D2FB9400F3B969 /* foobar.com.cer in Resources */,
+				1F78455721BAD14C00DF7644 /* DST Root CA X3.cer in Resources */,
 				36DE265018053E930062F4E3 /* adn_2.cer in Resources */,
 				29CBFC7617DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
 				C61291651B21F9E300B9475A /* Icon.png in Resources */,
+				1F78455521BAD14A00DF7644 /* Let's Encrypt Authority X3.cer in Resources */,
 				A74DA00918D2FB9400F3B969 /* AltName.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -458,15 +468,15 @@
 				29CBFC8817DF74C60021AB75 /* ADNNetServerTrustChain in Resources */,
 				A74DA00E18D2FB9400F3B969 /* NoDomains.cer in Resources */,
 				2902D29517DF4E2A00C81C5A /* InfoPlist.strings in Resources */,
-				CBBDB1661A79820700D412EE /* httpbinorg_01162016.cer in Resources */,
 				B6C1B95718ABF9E300C8B21A /* adn_0.cer in Resources */,
 				B6C1B95818ABF9E300C8B21A /* adn_1.cer in Resources */,
-				CBBDB16D1A798AB500D412EE /* COMODO_RSA_Certification_Authority.cer in Resources */,
-				CBBDB16F1A798AB500D412EE /* COMODO_RSA_Domain_Validation_Secure_Server_CA.cer in Resources */,
+				1F8482C5220F3A1200718111 /* httpbinorg_04082019.cer in Resources */,
 				A74DA00C18D2FB9400F3B969 /* foobar.com.cer in Resources */,
+				1F78455821BAD14D00DF7644 /* DST Root CA X3.cer in Resources */,
 				B6C1B95918ABF9E300C8B21A /* adn_2.cer in Resources */,
 				29CBFC7717DF697C0021AB75 /* HTTPBinOrgServerTrustChain in Resources */,
 				C61291661B21FA4D00B9475A /* Icon.png in Resources */,
+				1F78455621BAD14B00DF7644 /* Let's Encrypt Authority X3.cer in Resources */,
 				A74DA00A18D2FB9400F3B969 /* AltName.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -474,34 +484,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2EF045980BC7CC4F5DE8BA5D /* Embed Pods Frameworks */ = {
+		0B8FAAA6FAFB34F7F5637B58 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
+			inputFileListPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iOS Tests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-osx/Pods-osx-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		52EFA949F9B961EBF551E519 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ios/Pods-ios-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		54CD36584E3B40719F14C3C9 /* Check Pods Manifest.lock */ = {
@@ -534,34 +536,26 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		D728EB5862164B87922C9B80 /* Copy Pods Resources */ = {
+		7F267BFFD062AD7254BC0C78 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
+			inputFileListPaths = (
 			);
-			name = "Copy Pods Resources";
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OS X Tests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-osx/Pods-osx-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DFF6BB8B6C8D4F8ABC235667 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ios/Pods-ios-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -681,7 +675,7 @@
 		};
 		2902D28517DF4E1200C81C5A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 95D45FB81CA3594FA8CF7430 /* Pods-ios.debug.xcconfig */;
+			baseConfigurationReference = E1A31F8A319EF4B49FE24CA9 /* Pods-iOS Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -710,7 +704,7 @@
 		};
 		2902D28617DF4E1200C81C5A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C280748C740FAD506581E3CE /* Pods-ios.release.xcconfig */;
+			baseConfigurationReference = D2CB7FD4971678533B812949 /* Pods-iOS Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -736,7 +730,7 @@
 		};
 		2902D29A17DF4E2A00C81C5A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 520A0FB27D040CF3258787D2 /* Pods-osx.debug.xcconfig */;
+			baseConfigurationReference = 7C9E49663B2E7FA3096E7381 /* Pods-OS X Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -766,7 +760,7 @@
 		};
 		2902D29B17DF4E2A00C81C5A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BC9AB30A551203E10B6C890E /* Pods-osx.release.xcconfig */;
+			baseConfigurationReference = DBB49C2ECB1A13CFA66943ED /* Pods-OS X Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
