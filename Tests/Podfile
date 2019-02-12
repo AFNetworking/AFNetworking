@@ -1,6 +1,6 @@
 source 'https://github.com/CocoaPods/Specs'
 
-xcodeproj 'AFNetworking Tests'
+project 'AFNetworking Tests'
 workspace '../AFNetworking'
 inhibit_all_warnings!
 
@@ -10,14 +10,12 @@ def import_pods
   pod 'AFNetworking', :path => '../'
 end
 
-target :ios do
+target 'iOS Tests' do
   platform :ios, '7.0'
-  link_with 'iOS Tests'
   import_pods
 end
 
-target :osx do
+target 'OS X Tests' do
   platform :osx, '10.9'
-  link_with 'OS X Tests'
   import_pods
 end
