@@ -16,9 +16,9 @@
 		1F6F7DFB1F17051000C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
 		1F6F7DFD1F17051100C979D0 /* DST Root CA X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */; };
 		1F6F7DFE1F17051100C979D0 /* Let's Encrypt Authority X3.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */; };
-		1F73A747211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */; };
-		1F73A748211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */; };
-		1F73A749211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */; };
+		1F8482C0220F386200718111 /* httpbinorg_04082019.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482BF220F386200718111 /* httpbinorg_04082019.cer */; };
+		1F8482C1220F386200718111 /* httpbinorg_04082019.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482BF220F386200718111 /* httpbinorg_04082019.cer */; };
+		1F8482C2220F386200718111 /* httpbinorg_04082019.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482BF220F386200718111 /* httpbinorg_04082019.cer */; };
 		1F96D2A4203649560085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1F96D2A5203649570085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1F96D2A6203649570085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -236,7 +236,7 @@
 		1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFCompatibilityMacros.h; sourceTree = "<group>"; };
 		1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Let's Encrypt Authority X3.cer"; sourceTree = "<group>"; };
 		1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DST Root CA X3.cer"; sourceTree = "<group>"; };
-		1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_10102018.cer; sourceTree = "<group>"; };
+		1F8482BF220F386200718111 /* httpbinorg_04082019.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_04082019.cer; sourceTree = "<group>"; };
 		2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIButtonTests.m; sourceTree = "<group>"; };
 		297824A01BC2D69A0041C395 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
 		297824A11BC2D69A0041C395 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
@@ -412,7 +412,7 @@
 				298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */,
 				1F6F7DF61F1703A100C979D0 /* DST Root CA X3.cer */,
 				1F6F7DF51F1703A100C979D0 /* Let's Encrypt Authority X3.cer */,
-				1F73A746211B6C0C00AFCFA5 /* httpbinorg_10102018.cer */,
+				1F8482BF220F386200718111 /* httpbinorg_04082019.cer */,
 			);
 			path = HTTPBin.org;
 			sourceTree = "<group>";
@@ -851,6 +851,7 @@
 			files = (
 				2987B0DE1BC40AFB00179A4C /* foobar.com.cer in Resources */,
 				2987B0D61BC40AEC00179A4C /* ADNNetServerTrustChain in Resources */,
+				1F8482C2220F386200718111 /* httpbinorg_04082019.cer in Resources */,
 				2987B0DF1BC40AFB00179A4C /* NoDomains.cer in Resources */,
 				2987B0D41BC40AE900179A4C /* adn_1.cer in Resources */,
 				2987B0DD1BC40AFB00179A4C /* AltName.cer in Resources */,
@@ -864,7 +865,6 @@
 				5F4323BD1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
 				5F4323C01BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
-				1F73A749211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */,
 				1F6F7DFD1F17051100C979D0 /* DST Root CA X3.cer in Resources */,
 				5F4323CF1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323C31BF63741003B8749 /* google.com.cer in Resources */,
@@ -877,6 +877,7 @@
 			files = (
 				298D7CBF1BC2CA9D00FD3B3E /* foobar.com.cer in Resources */,
 				298D7CBA1BC2CA9800FD3B3E /* logo.png in Resources */,
+				1F8482C0220F386200718111 /* httpbinorg_04082019.cer in Resources */,
 				297824A31BC2D69A0041C395 /* adn_0.cer in Resources */,
 				298D7CE31BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */,
 				297824A71BC2D69A0041C395 /* adn_2.cer in Resources */,
@@ -890,7 +891,6 @@
 				5F4323BB1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DD1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
 				5F4323BE1BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
-				1F73A747211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */,
 				1F6F7DF71F17051000C979D0 /* DST Root CA X3.cer in Resources */,
 				5F4323CD1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323C11BF63741003B8749 /* google.com.cer in Resources */,
@@ -903,6 +903,7 @@
 			files = (
 				298D7CBC1BC2CA9C00FD3B3E /* foobar.com.cer in Resources */,
 				298D7CB91BC2CA9800FD3B3E /* logo.png in Resources */,
+				1F8482C1220F386200718111 /* httpbinorg_04082019.cer in Resources */,
 				297824A41BC2D69A0041C395 /* adn_0.cer in Resources */,
 				298D7CE41BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */,
 				297824A81BC2D69A0041C395 /* adn_2.cer in Resources */,
@@ -916,7 +917,6 @@
 				5F4323BC1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323CE1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323DE1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
-				1F73A748211B6C0C00AFCFA5 /* httpbinorg_10102018.cer in Resources */,
 				1F6F7DFA1F17051000C979D0 /* DST Root CA X3.cer in Resources */,
 				5F4323BF1BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
 				5F4323C21BF63741003B8749 /* google.com.cer in Resources */,
