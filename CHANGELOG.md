@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
+##[2.7.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.3) (2/12/2019)
+Released on Tuesday, February 12, 2019. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.7.0+is%3Aclosed).
+
+#### Fixed
+* Update Podfile to work on modern CocoaPods
+  * Fixed by [SlaunchaMan](https://github.com/SlaunchaMan) in [#4329](https://github.com/AFNetworking/AFNetworking/pull/4329).
+* Add nullability specifiers to all `id responseObject` parameters
+  * Fixed by [sashaweiss](https://github.com/sashaweiss) in [#4335](https://github.com/AFNetworking/AFNetworking/pull/4335).
+* Fix empty content crash on `AFHTTPSessionManager.post`
+  * Fixed by [jcravioto](https://github.com/jcravioto) in [#4296](https://github.com/AFNetworking/AFNetworking/pull/4296).
+
+
 ##[2.6.3](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.3) (11/11/2015)
 Released on Wednesday, November 11, 2015. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A2.6.3+is%3Aclosed).
 
