@@ -175,17 +175,11 @@ NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFo
 
 AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
 
+NSProgress *uploadProgress;
 NSURLSessionUploadTask *uploadTask;
 uploadTask = [manager
               uploadTaskWithStreamedRequest:request
-              progress:^(NSProgress * _Nonnull uploadProgress) {
-                  // This is not called back on the main queue.
-                  // You are responsible for dispatching to the main queue for UI updates
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                      //Update the progress view
-                      [progressView setProgress:uploadProgress.fractionCompleted];
-                  });
-              }
+              progress:&uploadProgress
               completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                   if (error) {
                       NSLog(@"Error: %@", error);
