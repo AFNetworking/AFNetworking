@@ -6,6 +6,7 @@
 [![codecov.io](https://codecov.io/github/AFNetworking/AFNetworking/coverage.svg?branch=master)](https://codecov.io/github/AFNetworking/AFNetworking?branch=master)
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/AFNetworking.svg)](https://img.shields.io/cocoapods/v/AFNetworking.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Accio supported](https://img.shields.io/badge/Accio-supported-0A7CF5.svg?style=flat)](https://github.com/JamitLabs/Accio)
 [![Platform](https://img.shields.io/cocoapods/p/AFNetworking.svg?style=flat)](http://cocoadocs.org/docsets/AFNetworking)
 [![Twitter](https://img.shields.io/badge/twitter-@AFNetworking-blue.svg?style=flat)](http://twitter.com/AFNetworking)
 
@@ -80,6 +81,29 @@ github "AFNetworking/AFNetworking" ~> 3.0
 ```
 
 Run `carthage` to build the framework and drag the built `AFNetworking.framework` into your Xcode project.
+
+### Installation with Accio
+
+[Accio](https://github.com/JamitLabs/Accio) is SwiftPM based dependency manager with improvements over Carthage.
+
+Add the following to your `Package.swift`:
+
+```swift
+.package(url: "https://github.com/AFNetworking/AFNetworking.git", .upToNextMajor(from: "2.7.0")),
+```
+
+Next, add `AFNetworking` to your App targets dependencies like so:
+
+```swift
+.target(
+    name: "App",
+    dependencies: [
+        "AFNetworking",
+    ]
+),
+```
+
+Then run `accio update`.
 
 ## Requirements
 
