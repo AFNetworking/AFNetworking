@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.homepage = 'https://github.com/AFNetworking/AFNetworking'
   s.social_media_url = 'https://twitter.com/AFNetworking'
   s.authors  = { 'Mattt Thompson' => 'm@mattt.me' }
-  s.source   = { :git => 'https://github.com/milantechholding/AFNetworking/AFNetworking.git', :tag => s.version, :submodules => true }
+  s.source   = { :git => 'https://github.com/milantechholding/AFNetworking.git', :tag => s.version, :submodules => true }
   s.requires_arc = true
   
   s.public_header_files = 'AFNetworking/AFNetworking.h'
