@@ -134,7 +134,7 @@
                 [self.cachedImages removeObjectForKey:cachedImage.identifier];
                 bytesPurged += cachedImage.totalBytes;
                 if (bytesPurged >= bytesToPurge) {
-                    break ;
+                    break;
                 }
             }
             self.currentMemoryUsage -= bytesPurged;

@@ -168,7 +168,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                        if ([[strongSelf af_imageDownloadReceiptForState:state].receiptID isEqual:downloadID]) {
                            if (success) {
                                success(request, response, responseObject);
-                           } else if(responseObject) {
+                           } else if (responseObject) {
                                [strongSelf setImage:responseObject forState:state];
                            }
                            [strongSelf af_setImageDownloadReceipt:nil forState:state];
@@ -247,7 +247,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
                        if ([[strongSelf af_backgroundImageDownloadReceiptForState:state].receiptID isEqual:downloadID]) {
                            if (success) {
                                success(request, response, responseObject);
-                           } else if(responseObject) {
+                           } else if (responseObject) {
                                [strongSelf setBackgroundImage:responseObject forState:state];
                            }
                            [strongSelf af_setBackgroundImageDownloadReceipt:nil forState:state];
