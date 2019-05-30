@@ -37,7 +37,6 @@
 @property (readwrite, nonatomic, strong) AFURLSessionManager *backgroundManager;
 @end
 
-
 @implementation AFURLSessionManagerTests
 
 - (NSURLRequest *)bigImageURLRequest {
@@ -71,10 +70,10 @@
 - (void)tearDown {
     [super tearDown];
     [self.localManager.session.configuration.URLCache removeAllCachedResponses];
-    [self.localManager invalidateSessionCancelingTasks:YES];
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.localManager = nil;
     
-    [self.backgroundManager invalidateSessionCancelingTasks:YES];
+    [self.backgroundManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.backgroundManager = nil;
 }
 
@@ -132,6 +131,46 @@
             completionHandler:nil];
     [task resume];
     [self waitForExpectationsWithCommonTimeout];
+}
+
+- (void)testSessionTaskDoesReportMetrics {
+    [self expectationForNotification:AFNetworkingTaskDidCompleteNotification object:nil handler:^BOOL(NSNotification * _Nonnull notification) {
+#if AF_CAN_USE_AT_AVAILABLE && AF_CAN_INCLUDE_SESSION_TASK_METRICS
+        if (@available(iOS 10, macOS 10.12, watchOS 3, tvOS 10, *)) {
+            return [notification userInfo][AFNetworkingTaskDidCompleteSessionTaskMetrics] != nil;
+        }
+#endif
+        return YES;
+    }];
+
+#if AF_CAN_INCLUDE_SESSION_TASK_METRICS
+    __weak XCTestExpectation *metricsBlock = [self expectationWithDescription:@"Metrics completion block is called"];
+    [self.localManager setTaskDidFinishCollectingMetricsBlock:^(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLSessionTaskMetrics * _Nullable metrics) {
+        [metricsBlock fulfill];
+    }];
+#endif
+
+    NSURLSessionTask *task = [self.localManager downloadTaskWithRequest:[self bigImageURLRequest]
+                                                               progress:nil
+                                                            destination:nil
+                                                      completionHandler:nil];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeout];
+}
+
+- (void)testSessionIsStillValid {
+    
+    NSURLSession *session = self.localManager.session;
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:NO];
+    
+    XCTAssertEqual(session, self.localManager.session);
+}
+
+- (void)testSessionRecreatesAgain {
+    
+    [self.localManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    
+    XCTAssertNotNil(self.localManager.session);
 }
 
 - (void)testUploadTaskDoesReportProgress {
@@ -459,7 +498,7 @@
     return [NSURLRequest requestWithURL:self.delayURL];
 }
 
-- (IMP)_implementationForTask:(NSURLSessionTask  *)task selector:(SEL)selector {
+- (IMP)_implementationForTask:(NSURLSessionTask *)task selector:(SEL)selector {
     return [self _implementationForClass:[task class] selector:selector];
 }
 

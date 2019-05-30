@@ -679,6 +679,11 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     return self;
 }
 
+- (void)setRequest:(NSMutableURLRequest *)request
+{
+    _request = [request mutableCopy];
+}
+
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL
                          name:(NSString *)name
                         error:(NSError * __autoreleasing *)error

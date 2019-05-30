@@ -219,7 +219,7 @@
     UInt64 postPurgeMemoryUsage = self.cache.memoryUsage;
     XCTAssertTrue(postPurgeMemoryUsage < prePurgeMemoryUsage);
 
-    for (NSUInteger index = 0; index <= numberOfImages ; index++) {
+    for (NSUInteger index = 0; index <= numberOfImages; index++) {
         NSString * identifier = [NSString stringWithFormat:@"image-%ld",(long)index];
         UIImage *cachedImage = [self.cache imageWithIdentifier:identifier];
         if (index == 0 || index >= 6) {
@@ -230,4 +230,12 @@
     }
 }
 
+#pragma mark - Should Cache Image
+- (void)testThatShouldCacheIsYes {
+    NSURL *url = [NSURL URLWithString:@"http://test.com/image"];
+    NSString *identifier = @"filter";
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    BOOL result = [self.cache shouldCacheImage:self.testImage forRequest:request withAdditionalIdentifier:identifier];
+    XCTAssertTrue(result);
+}
 @end

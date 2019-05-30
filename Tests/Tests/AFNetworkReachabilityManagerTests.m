@@ -23,6 +23,7 @@
 
 #import "AFNetworkReachabilityManager.h"
 #import <netinet/in.h>
+#import <objc/message.h>
 
 @interface AFNetworkReachabilityManagerTests : AFTestCase
 @property (nonatomic, strong) AFNetworkReachabilityManager *addressReachability;
@@ -45,6 +46,20 @@
     [self.domainReachability stopMonitoring];
 
     [super tearDown];
+}
+
+- (void)testInitializerThrowsExceptionWhenCalled {
+    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager alloc];
+    id (*custom_msgSend)(id, SEL) = (id(*)(id, SEL))objc_msgSend;
+
+    XCTAssertThrows(custom_msgSend(manager, @selector(init)));
+}
+
+- (void)testNewThrowsExceptionWhenCalled {
+    id (*custom_msgSend)(id, SEL) = (id(*)(id, SEL))objc_msgSend;
+
+    XCTAssertThrows(custom_msgSend([AFNetworkReachabilityManager class],
+                                   @selector(new)));
 }
 
 - (void)testAddressReachabilityStartsInUnknownState {
@@ -108,6 +123,19 @@
 
 - (void)testDomainReachabilityBlock {
     [self verifyReachabilityStatusBlockGetsCalledWithManager:self.domainReachability];
+}
+
+- (void)testObjectPostingReachabilityManagerNotification {
+    [self expectationForNotification:AFNetworkingReachabilityDidChangeNotification
+                              object:self.domainReachability
+                             handler:^BOOL(NSNotification *notification) {
+                                 BOOL isObjectPostingNotification = [notification.object isEqual:self.domainReachability];
+                                 return isObjectPostingNotification;
+                             }];
+    
+    [self.domainReachability startMonitoring];
+    
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 @end

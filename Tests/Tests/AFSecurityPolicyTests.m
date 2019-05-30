@@ -32,7 +32,7 @@ static SecTrustRef AFUTTrustChainForCertsInDirectory(NSString *directoryPath) {
     for (NSString *path in certFileNames) {
         NSData *certData = [NSData dataWithContentsOfFile:[directoryPath stringByAppendingPathComponent:path]];
         SecCertificateRef cert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
-        [certs addObject:(__bridge id)(cert)];
+        [certs addObject:(__bridge_transfer id)(cert)];
     }
 
     SecPolicyRef policy = SecPolicyCreateBasicX509();
@@ -58,7 +58,7 @@ static SecTrustRef AFUTADNNetServerTrust() {
 }
 
 static SecCertificateRef AFUTHTTPBinOrgCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"httpbinorg_08132017" ofType:@"cer"];
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"httpbinorg_04082019" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
     NSData *certData = [NSData dataWithContentsOfFile:certPath];
 
