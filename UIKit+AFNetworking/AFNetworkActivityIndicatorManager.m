@@ -122,18 +122,18 @@ typedef void (^AFNetworkActivityActionBlock)(BOOL networkActivityIndicatorVisibl
 
 
 - (void)incrementActivityCount {
-	@synchronized(self) {
+    @synchronized(self) {
         self.activityCount++;
-	}
+    }
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateCurrentStateForNetworkActivityChange];
     });
 }
 
 - (void)decrementActivityCount {
-	@synchronized(self) {
+    @synchronized(self) {
         self.activityCount = MAX(_activityCount - 1, 0);
-	}
+    }
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateCurrentStateForNetworkActivityChange];
     });
