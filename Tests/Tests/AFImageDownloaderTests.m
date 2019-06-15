@@ -512,6 +512,37 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
+- (void)testThatCancelImageDownloadItShouldCancelImmediately {
+    [self.downloader.imageCache removeAllImages];
+    NSArray *imageURLStrings = @[
+                                 @"https://secure.gravatar.com/avatar/5a105e8b9d40e1329780d62ea2265d8a?d=identicon",
+                                 @"https://secure.gravatar.com/avatar/6a105e8b9d40e1329780d62ea2265d8a?d=identicon",
+                                 @"https://secure.gravatar.com/avatar/7a105e8b9d40e1329780d62ea2265d8a?d=identicon",
+                                 @"https://secure.gravatar.com/avatar/8a105e8b9d40e1329780d62ea2265d8a?d=identicon",
+                                 @"https://secure.gravatar.com/avatar/9a105e8b9d40e1329780d62ea2265d8a?d=identicon"
+                                 ];
+    
+    for (NSString *imageURLString in imageURLStrings) {
+        AFImageDownloadReceipt *receipt = [self.downloader
+                                           downloadImageForURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURLString]]
+                                           success:nil
+                                           failure:nil];
+        [self.downloader cancelTaskForImageDownloadReceipt:receipt];
+    }
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:[NSString stringWithFormat:@"Image download should be cancelled immediately"]];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        for (NSString *imageURLString in imageURLStrings) {
+            UIImage *cacheImage = [self.downloader.imageCache imageWithIdentifier:imageURLString];
+            XCTAssertNil(cacheImage);
+        }
+        [expectation fulfill];
+    });
+    
+    [self waitForExpectationsWithCommonTimeout];
+}
+
+
 #pragma mark - Threading
 - (void)testThatItAlwaysCallsTheSuccessHandlerOnTheMainQueue {
     XCTestExpectation *expectation = [self expectationWithDescription:@"image download should succeed"];
