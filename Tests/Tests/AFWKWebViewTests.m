@@ -1,4 +1,4 @@
-// AFUIWebViewTests.h
+// AFWKWebViewTests.h
 // Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,20 +21,20 @@
 
 #import <XCTest/XCTest.h>
 #import "AFTestCase.h"
-#import "UIWebView+AFNetworking.h"
+#import "WKWebView+AFNetworking.h"
 
-@interface AFUIWebViewTests : AFTestCase
+@interface AFWKWebViewTests : AFTestCase
 
-@property (nonatomic, strong) UIWebView *webView;
+@property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, strong) NSURLRequest *HTMLRequest;
 
 @end
 
-@implementation AFUIWebViewTests
+@implementation AFWKWebViewTests
 
 - (void)setUp {
     [super setUp];
-    self.webView = [UIWebView new];
+    self.webView = [WKWebView new];
     self.HTMLRequest = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"html"]];
 }
 
