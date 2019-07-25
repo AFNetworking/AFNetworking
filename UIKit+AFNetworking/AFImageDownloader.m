@@ -120,9 +120,21 @@
     if ([[[UIDevice currentDevice] systemVersion] compare:@"8.2" options:NSNumericSearch] == NSOrderedAscending) {
         return [NSURLCache sharedURLCache];
     }
+#if TARGET_OS_UIKITFORMAC
     return [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024
                                          diskCapacity:150 * 1024 * 1024
-                                             diskPath:@"com.alamofire.imagedownloader"];
+                                         directoryURL:[NSURL URLWithString:@"com.alamofire.imagedownloader"]];
+#else
+    if (@available(iOS 13.0, *)) {
+        return [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024
+                                             diskCapacity:150 * 1024 * 1024
+                                             directoryURL:[NSURL URLWithString:@"com.alamofire.imagedownloader"]];
+    } else {
+        return [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024
+                                             diskCapacity:150 * 1024 * 1024
+                                                 diskPath:@"com.alamofire.imagedownloader"];
+    }
+#endif
 }
 
 + (NSURLSessionConfiguration *)defaultURLSessionConfiguration {
