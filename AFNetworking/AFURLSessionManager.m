@@ -111,6 +111,8 @@ typedef NSURL * (^AFURLSessionDownloadTaskDidFinishDownloadingBlock)(NSURLSessio
 typedef void (^AFURLSessionDownloadTaskDidWriteDataBlock)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
 typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes);
 typedef void (^AFURLSessionTaskProgressBlock)(NSProgress *);
+typedef void (^AFURLSessionTaskDidReceiveDataBlock)(NSData *);
+typedef void (^AFURLSessionTaskDidReceiveResponseBlock)(NSURLResponse *);
 
 typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id responseObject, NSError *error);
 
@@ -130,6 +132,8 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @property (nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
 @property (nonatomic, copy) AFURLSessionTaskProgressBlock uploadProgressBlock;
 @property (nonatomic, copy) AFURLSessionTaskProgressBlock downloadProgressBlock;
+@property (nonatomic, copy) AFURLSessionTaskDidReceiveDataBlock didReceiveDataBlock;
+@property (nonatomic, copy) AFURLSessionTaskDidReceiveResponseBlock didReceiveResponseBlock;
 @property (nonatomic, copy) AFURLSessionTaskCompletionHandler completionHandler;
 @end
 
@@ -197,6 +201,15 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 #pragma mark - NSURLSessionTaskDelegate
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+didReceiveResponse:(NSURLResponse *)response
+ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler{
+    if(self.didReceiveResponseBlock){
+        self.didReceiveResponseBlock(response);
+    }
+}
 
 - (void)URLSession:(__unused NSURLSession *)session
               task:(NSURLSessionTask *)task
@@ -290,7 +303,12 @@ didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
     self.downloadProgress.totalUnitCount = dataTask.countOfBytesExpectedToReceive;
     self.downloadProgress.completedUnitCount = dataTask.countOfBytesReceived;
 
-    [self.mutableData appendData:data];
+    if(self.didReceiveDataBlock){
+        self.didReceiveDataBlock(data);
+    }
+    else{
+        [self.mutableData appendData:data];
+    }
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
@@ -621,7 +639,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [self.lock unlock];
 }
 
-- (void)addDelegateForDataTask:(NSURLSessionDataTask *)dataTask
+- (AFURLSessionManagerTaskDelegate *)addDelegateForDataTask:(NSURLSessionDataTask *)dataTask
                 uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgressBlock
               downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock
              completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
@@ -635,9 +653,21 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     delegate.uploadProgressBlock = uploadProgressBlock;
     delegate.downloadProgressBlock = downloadProgressBlock;
+    return delegate;
 }
 
-- (void)addDelegateForUploadTask:(NSURLSessionUploadTask *)uploadTask
+- (AFURLSessionManagerTaskDelegate *)addDelegateForDataTask:(NSURLSessionDataTask *)dataTask
+                didReceiveData:(nullable void (^)(NSData *didReceiveData)) didReceiveDataBlock
+            didReceiveResponse:(nullable void (^)(NSURLResponse *response)) didReceiveResponseBlock
+             completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
+{
+    AFURLSessionManagerTaskDelegate *delegate = [self addDelegateForDataTask:dataTask uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
+    delegate.didReceiveDataBlock = didReceiveDataBlock;
+    delegate.didReceiveResponseBlock = didReceiveResponseBlock;
+    return delegate;
+}
+
+- (AFURLSessionManagerTaskDelegate *)addDelegateForUploadTask:(NSURLSessionUploadTask *)uploadTask
                         progress:(void (^)(NSProgress *uploadProgress)) uploadProgressBlock
                completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
 {
@@ -650,9 +680,10 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [self setDelegate:delegate forTask:uploadTask];
 
     delegate.uploadProgressBlock = uploadProgressBlock;
+    return delegate;
 }
 
-- (void)addDelegateForDownloadTask:(NSURLSessionDownloadTask *)downloadTask
+- (AFURLSessionManagerTaskDelegate *)addDelegateForDownloadTask:(NSURLSessionDownloadTask *)downloadTask
                           progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
                        destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
                  completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
@@ -672,6 +703,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [self setDelegate:delegate forTask:downloadTask];
 
     delegate.downloadProgressBlock = downloadProgressBlock;
+    return delegate;
 }
 
 - (void)removeDelegateForTask:(NSURLSessionTask *)task {
@@ -779,6 +811,18 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     [self addDelegateForDataTask:dataTask uploadProgress:uploadProgressBlock downloadProgress:downloadProgressBlock completionHandler:completionHandler];
 
+    return dataTask;
+}
+
+- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+                               didReceiveData:(nullable void (^)(NSData *data)) didReceiveDataBlock
+                           didReceiveResponse:(nullable void (^)(NSURLResponse *response)) didReceiveResponseBlock
+                            completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler {
+    __block NSURLSessionDataTask *dataTask = nil;
+    url_session_manager_create_task_safely(^{
+        dataTask = [self.session dataTaskWithRequest:request];
+    });
+    [self addDelegateForDataTask:dataTask didReceiveData:didReceiveDataBlock didReceiveResponse:didReceiveResponseBlock completionHandler:completionHandler];
     return dataTask;
 }
 
@@ -1158,6 +1202,11 @@ didReceiveResponse:(NSURLResponse *)response
 
     if (self.dataTaskDidReceiveResponse) {
         disposition = self.dataTaskDidReceiveResponse(session, dataTask, response);
+    }
+    
+    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:dataTask];
+    if (delegate) {
+        [delegate URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
     }
 
     if (completionHandler) {

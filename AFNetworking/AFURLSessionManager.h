@@ -232,6 +232,11 @@ NS_ASSUME_NONNULL_BEGIN
                              downloadProgress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
                             completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler;
 
+- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+                               didReceiveData:(nullable void (^)(NSData *data)) didReceiveDataBlock
+                           didReceiveResponse:(nullable void (^)(NSURLResponse *response)) didReceiveResponseBlock
+                            completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler;
+
 ///---------------------------
 /// @name Running Upload Tasks
 ///---------------------------
