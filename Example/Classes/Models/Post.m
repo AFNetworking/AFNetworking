@@ -44,18 +44,18 @@
 #pragma mark -
 
 + (NSURLSessionDataTask *)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block {
-    return [[AFAppDotNetAPIClient sharedClient] GET:@"stream/0/posts/stream/global" parameters:nil progress:nil success:^(NSURLSessionDataTask * __unused task, id JSON) {
-        NSArray *postsFromResponse = [JSON valueForKeyPath:@"data"];
+    return [[AFAppDotNetAPIClient sharedClient] GET:@"bins/1ebq65" parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSArray *postsFromResponse = [responseObject valueForKeyPath:@"data"];
         NSMutableArray *mutablePosts = [NSMutableArray arrayWithCapacity:[postsFromResponse count]];
         for (NSDictionary *attributes in postsFromResponse) {
             Post *post = [[Post alloc] initWithAttributes:attributes];
             [mutablePosts addObject:post];
         }
-
+        
         if (block) {
             block([NSArray arrayWithArray:mutablePosts], nil);
         }
-    } failure:^(NSURLSessionDataTask *__unused task, NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (block) {
             block([NSArray array], error);
         }
