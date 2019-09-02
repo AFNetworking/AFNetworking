@@ -1,40 +1,27 @@
-// AFUIWebViewTests.h
-// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
+//  AFWKWebViewTests.m
+//  AFNetworking
 //
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
+//  Created by Sebastiaan Seegers on 02/09/2019.
+//  Copyright © 2019 AFNetworking. All rights reserved.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
 
 #import <XCTest/XCTest.h>
 #import "AFTestCase.h"
-#import "UIWebView+AFNetworking.h"
+#import "WKWebView+AFNetworking.h"
 
-@interface AFUIWebViewTests : AFTestCase
+@interface AFWKWebViewTests : AFTestCase
 
-@property (nonatomic, strong) UIWebView *webView;
+@property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, strong) NSURLRequest *HTMLRequest;
 
 @end
 
-@implementation AFUIWebViewTests
+@implementation AFWKWebViewTests
 
-- (void)setUp {
+-(void)setUp {
     [super setUp];
-    self.webView = [UIWebView new];
+    self.webView = [WKWebView new];
     self.HTMLRequest = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"html"]];
 }
 
@@ -46,12 +33,11 @@
      success:^NSString * _Nonnull(NSHTTPURLResponse * _Nonnull response, NSString * _Nonnull HTML) {
          [expectation fulfill];
          return HTML;
-     }
-     failure:nil];
+     } failure:nil];
     [self waitForExpectationsWithCommonTimeout];
 }
 
-- (void)testNULLProgressDoesNotCauseCrash {
+- (void)testNUllProgressDoesNotCauseCrash {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
     [self.webView
      loadRequest:self.HTMLRequest
@@ -59,8 +45,7 @@
      success:^NSString * _Nonnull(NSHTTPURLResponse * _Nonnull response, NSString * _Nonnull HTML) {
          [expectation fulfill];
          return HTML;
-     }
-     failure:nil];
+     } failure:nil];
     [self waitForExpectationsWithCommonTimeout];
 }
 
@@ -89,15 +74,14 @@
      loadRequest:customHeaderRequest
      progress:NULL
      success:^NSString * _Nonnull(NSHTTPURLResponse * _Nonnull response, NSString * _Nonnull string) {
-         // Here string is actually JSON.
+         // Here string is actually JSON
          NSDictionary<NSString *, NSDictionary *> *responseObject = [NSJSONSerialization JSONObjectWithData:[string dataUsingEncoding:NSUTF8StringEncoding] options:(NSJSONReadingOptions)0 error:nil];
-
+         
          NSDictionary<NSString *, NSString *> *headers = responseObject[@"headers"];
          XCTAssertTrue([headers[@"Custom-Header-Field"] isEqualToString:@"Custom-Header-Value"]);
          [expectation fulfill];
          return string;
-     }
-     failure:nil];
+     } failure:nil];
     [self waitForExpectationsWithCommonTimeout];
 }
 
