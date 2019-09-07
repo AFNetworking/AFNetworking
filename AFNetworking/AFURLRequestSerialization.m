@@ -312,6 +312,13 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 - (void)setValue:(NSString *)value
 forHTTPHeaderField:(NSString *)field
 {
+    // sanitizing header field
+    // https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#missing-disappearing-http-headers
+    if([field containsString:@"_"]) {
+      sanitized_field = [field stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+      NSLog(@"Warning: sanitizing %@ -> %@", field, sanitized_field);
+      field = sanitized_field;
+    }
     dispatch_barrier_async(self.requestHeaderModificationQueue, ^{
         [self.mutableHTTPRequestHeaders setValue:value forKey:field];
     });
@@ -1268,11 +1275,11 @@ typedef enum {
         }
 
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error];
-        
+
         if (!jsonData) {
             return nil;
         }
-        
+
         [mutableRequest setHTTPBody:jsonData];
     }
 
@@ -1353,11 +1360,11 @@ typedef enum {
         }
 
         NSData *plistData = [NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error];
-        
+
         if (!plistData) {
             return nil;
         }
-        
+
         [mutableRequest setHTTPBody:plistData];
     }
 
