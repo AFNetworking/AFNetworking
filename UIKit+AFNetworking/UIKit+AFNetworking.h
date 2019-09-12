@@ -31,7 +31,6 @@
     #import "AFImageDownloader.h"
     #import "AFNetworkActivityIndicatorManager.h"
     #import "UIRefreshControl+AFNetworking.h"
-    #import "UIWebView+AFNetworking.h"
 #endif
 
     #import "UIActivityIndicatorView+AFNetworking.h"
