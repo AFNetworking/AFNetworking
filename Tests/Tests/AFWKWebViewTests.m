@@ -28,6 +28,8 @@
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, strong) WKNavigation *navigation;
 @property (nonatomic, strong) NSURLRequest *HTMLRequest;
+@property (nonatomic, strong) NSURLRequest *largeHTMLRequest;
+@property (nonatomic, strong) NSProgress *progressCapture;
 
 @end
 
@@ -37,7 +39,13 @@
     [super setUp];
     self.webView = [WKWebView new];
     self.navigation = [WKNavigation new];
-    self.HTMLRequest = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"html"]];
+    self.HTMLRequest = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"html"]
+                                        cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                    timeoutInterval:self.networkTimeout];
+    NSURL * largeURL = [[self.baseURL URLByAppendingPathComponent:@"bytes"] URLByAppendingPathComponent:@(1024 * 1024).stringValue];
+    self.largeHTMLRequest = [NSURLRequest requestWithURL:largeURL
+                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                         timeoutInterval:self.networkTimeout];
 }
 
 - (void)testNilProgressDoesNotCauseCrash {
@@ -69,8 +77,9 @@
 - (void)testProgressIsSet {
     NSProgress* progress = nil;
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+
     [self.webView
-     loadRequest:self.HTMLRequest
+     loadRequest:self.largeHTMLRequest
      navigation:self.navigation
      progress:&progress
      success:^NSString * _Nonnull(NSHTTPURLResponse * _Nonnull response, NSString * _Nonnull HTML) {
