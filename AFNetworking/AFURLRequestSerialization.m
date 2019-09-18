@@ -572,7 +572,7 @@ forHTTPHeaderField:(NSString *)field
         [coder encodeObject:self.mutableHTTPRequestHeaders forKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
     });
     [coder encodeInteger:(NSInteger)self.queryStringSerializationStyle forKey:NSStringFromSelector(@selector(queryStringSerializationStyle))];
- }}
+}
 
 #pragma mark - NSCopying
 
@@ -1296,7 +1296,6 @@ typedef enum {
     [super encodeWithCoder:coder];
 
     [coder encodeInteger:(NSInteger)self.writingOptions forKey:NSStringFromSelector(@selector(writingOptions))];
- }
 }
 
 #pragma mark - NSCopying
