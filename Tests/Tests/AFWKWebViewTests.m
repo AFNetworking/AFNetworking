@@ -20,15 +20,17 @@
 // THE SOFTWARE.
 
 #import <XCTest/XCTest.h>
+#import <WebKit/WebKit.h>
 #import "AFTestCase.h"
 #import "WKWebView+AFNetworking.h"
 
-@interface AFWKWebViewTests : AFTestCase
+@interface AFWKWebViewTests : AFTestCase <WKNavigationDelegate>
 
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, strong) WKNavigation *navigation;
 @property (nonatomic, strong) NSURLRequest *HTMLRequest;
 @property (nonatomic, strong) NSURLRequest *largeHTMLRequest;
+@property (nonatomic, strong) NSURLRequest *headerRequest;
 @property (nonatomic, strong) NSProgress *progressCapture;
 
 @end
@@ -38,6 +40,7 @@
 -(void)setUp {
     [super setUp];
     self.webView = [WKWebView new];
+    self.webView.navigationDelegate = self;
     self.navigation = [WKNavigation new];
     self.HTMLRequest = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"html"]
                                         cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
@@ -46,6 +49,9 @@
     self.largeHTMLRequest = [NSURLRequest requestWithURL:largeURL
                                              cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                          timeoutInterval:self.networkTimeout];
+    NSMutableURLRequest *customHeaderRequest = [NSMutableURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"headers"]];
+    [customHeaderRequest setValue:@"Custom-Header-Value" forHTTPHeaderField:@"Custom-Header-Field"];
+    self.headerRequest = customHeaderRequest;
 }
 
 - (void)testNilProgressDoesNotCauseCrash {
@@ -102,11 +108,10 @@
 }
 
 - (void)testRequestWithCustomHeaders {
-    NSMutableURLRequest *customHeaderRequest = [NSMutableURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"headers"]];
-    [customHeaderRequest setValue:@"Custom-Header-Value" forHTTPHeaderField:@"Custom-Header-Field"];
+
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
     [self.webView
-     loadRequest:customHeaderRequest
+     loadRequest:self.headerRequest
      navigation:self.navigation
      progress:NULL
      success:^NSString * _Nonnull(NSHTTPURLResponse * _Nonnull response, NSString * _Nonnull string) {
@@ -118,10 +123,14 @@
          [expectation fulfill];
          return string;
      } failure:^(NSError * _Nonnull error) {
-         XCTFail(@"Request %@ failed with error %@", customHeaderRequest, error);
+         XCTFail(@"Request %@ failed with error %@", self.headerRequest, error);
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeout];
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    XCTFail(@"Navigation failed with error %@", error);
 }
 
 @end
