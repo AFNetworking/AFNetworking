@@ -57,7 +57,10 @@
      success:^NSString * _Nonnull(NSHTTPURLResponse * _Nonnull response, NSString * _Nonnull HTML) {
          [expectation fulfill];
          return HTML;
-    } failure:nil];
+     } failure:^(NSError * _Nonnull error) {
+         XCTFail(@"Request %@ failed with error %@", self.HTMLRequest, error);
+         [expectation fulfill];
+     }];
     [self waitForExpectationsWithCommonTimeout];
 }
 
@@ -70,7 +73,10 @@
      success:^NSString * _Nonnull(NSHTTPURLResponse * _Nonnull response, NSString * _Nonnull HTML) {
          [expectation fulfill];
          return HTML;
-     } failure:nil];
+     } failure:^(NSError * _Nonnull error) {
+         XCTFail(@"Request %@ failed with error %@", self.HTMLRequest, error);
+         [expectation fulfill];
+     }];
     [self waitForExpectationsWithCommonTimeout];
 }
 
@@ -85,7 +91,10 @@
      success:^NSString * _Nonnull(NSHTTPURLResponse * _Nonnull response, NSString * _Nonnull HTML) {
          [expectation fulfill];
          return HTML;
-    } failure:nil];
+     } failure:^(NSError * _Nonnull error) {
+         XCTFail(@"Request %@ failed with error %@", self.largeHTMLRequest, error);
+         [expectation fulfill];
+     }];
     [self keyValueObservingExpectationForObject:progress
                                         keyPath:@"fractionCompleted"
                                   expectedValue:@(1.0)];
@@ -108,7 +117,10 @@
          XCTAssertTrue([headers[@"Custom-Header-Field"] isEqualToString:@"Custom-Header-Value"]);
          [expectation fulfill];
          return string;
-    } failure:nil];
+     } failure:^(NSError * _Nonnull error) {
+         XCTFail(@"Request %@ failed with error %@", customHeaderRequest, error);
+         [expectation fulfill];
+     }];
     [self waitForExpectationsWithCommonTimeout];
 }
 
