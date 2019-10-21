@@ -65,7 +65,7 @@
  ### `NSURLSessionDownloadDelegate`
 
  - `URLSession:downloadTask:didFinishDownloadingToURL:`
- - `URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesWritten:totalBytesExpectedToWrite:`
+ - `URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:`
  - `URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:`
 
  If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
@@ -445,7 +445,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setDownloadTaskDidFinishDownloadingBlock:(nullable NSURL * _Nullable  (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, NSURL *location))block;
 
 /**
- Sets a block to be executed periodically to track download progress, as handled by the `NSURLSessionDownloadDelegate` method `URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesWritten:totalBytesExpectedToWrite:`.
+ Sets a block to be executed periodically to track download progress, as handled by the `NSURLSessionDownloadDelegate` method `URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:`.
 
  @param block A block object to be called when an undetermined number of bytes have been downloaded from the server. This block has no return value and takes five arguments: the session, the download task, the number of bytes read since the last time the download progress block was called, the total bytes read, and the total bytes expected to be read during the request, as initially determined by the expected content size of the `NSHTTPURLResponse` object. This block may be called multiple times, and will execute on the session manager operation queue.
  */
