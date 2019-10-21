@@ -45,7 +45,7 @@
 }
 
 - (void)tearDown {
-    [self.downloader.sessionManager invalidateSessionCancelingTasks:YES];
+    [self.downloader.sessionManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.downloader = nil;
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
@@ -561,7 +561,7 @@
 
 @implementation MockAFAutoPurgingImageCache
 
--(BOOL)shouldCacheImage:(UIImage *)image forRequest:(NSURLRequest *)request withAdditionalIdentifier:(NSString *)identifier {
+- (BOOL)shouldCacheImage:(UIImage *)image forRequest:(NSURLRequest *)request withAdditionalIdentifier:(NSString *)identifier {
     if (self.shouldCache) {
         return self.shouldCache(image, request, identifier);
     }
@@ -570,7 +570,7 @@
     }
 }
 
--(void)addImage:(UIImage *)image withIdentifier:(NSString *)identifier{
+- (void)addImage:(UIImage *)image withIdentifier:(NSString *)identifier{
     [super addImage:image withIdentifier:identifier];
     if (self.addCache) {
         self.addCache(image, identifier);
