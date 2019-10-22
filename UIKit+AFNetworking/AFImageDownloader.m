@@ -120,12 +120,17 @@
     if ([[[UIDevice currentDevice] systemVersion] compare:@"8.2" options:NSNumericSearch] == NSOrderedAscending) {
         return [NSURLCache sharedURLCache];
     }
-#if defined(TARGET_OS_MACCATALYST) && TARGET_OS_MACCATALYST
+#if TARGET_OS_MACCATALYST
     return [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024
                                          diskCapacity:150 * 1024 * 1024
                                          directoryURL:[NSURL URLWithString:@"com.alamofire.imagedownloader"]];
 #else
+#if AF_CAN_USE_AT_AVAILABLE
     if (@available(iOS 13.0, *)) {
+#else
+    if ([NSURLCache instancesRespondToSelector:@selector(initWithMemoryCapacity:diskCapacity:directoryURL:)])
+#endif
+    {
         return [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024
                                              diskCapacity:150 * 1024 * 1024
                                              directoryURL:[NSURL URLWithString:@"com.alamofire.imagedownloader"]];
