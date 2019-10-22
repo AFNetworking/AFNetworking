@@ -37,7 +37,7 @@ before_install:
   # Force bundler 1.12.5 because version 1.13 has issues, see https://github.com/fastlane/fastlane/issues/6065#issuecomment-246044617
   - gem uninstall bundler -v '>1.12.5' --force --executables || echo "bundler >1.12.5 is not installed"
   - gem install bundler -v 1.12.5 --no-rdoc --no-ri --no-document --quiet
-  - gem install fastlane --no-rdoc --no-ri --no-document --quiet
+  - gem install fastlane -v 2.109.1 --no-rdoc --no-ri --no-document --quiet
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
 script:
   - set -o pipefail
