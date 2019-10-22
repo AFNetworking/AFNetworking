@@ -126,7 +126,7 @@
                                          directoryURL:[NSURL URLWithString:@"com.alamofire.imagedownloader"]];
 #else
 #if AF_CAN_USE_AT_AVAILABLE
-    if (@available(iOS 13.0, *)) {
+    if (@available(iOS 13.0, *))
 #else
     if ([NSURLCache instancesRespondToSelector:@selector(initWithMemoryCapacity:diskCapacity:directoryURL:)])
 #endif
