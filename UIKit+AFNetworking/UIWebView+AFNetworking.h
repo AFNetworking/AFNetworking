@@ -23,7 +23,7 @@
 
 #import <TargetConditionals.h>
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
 
 #import <UIKit/UIKit.h>
 

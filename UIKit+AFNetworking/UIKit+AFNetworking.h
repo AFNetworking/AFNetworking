@@ -26,7 +26,7 @@
 #ifndef _UIKIT_AFNETWORKING_
     #define _UIKIT_AFNETWORKING_
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
     #import "AFAutoPurgingImageCache.h"
     #import "AFImageDownloader.h"
     #import "AFNetworkActivityIndicatorManager.h"
