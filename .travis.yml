@@ -30,8 +30,8 @@ matrix:
     - osx_image: xcode9
       env: FASTLANE_ENV=ios11_xcode9
 before_install:
-  - gem install fastlane -no-ri-no-rdoc --no-document --quiet
-  - gem install cocoapods -no-ri-no-rdoc --no-document --quiet
+  - gem install fastlane --no-document --quiet
+  - gem install cocoapods --no-document --quiet
 script:
   - set -o pipefail
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
