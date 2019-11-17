@@ -51,7 +51,7 @@
     [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
         if (!error) {
             self.post = posts.firstObject;
-            [self savePost:strongSelf.post];
+            [self savePost:self.post];
 
             if (completionHandler) {
                 completionHandler(self.post != nil ? NCUpdateResultNewData : NCUpdateResultNoData);
