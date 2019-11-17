@@ -37,13 +37,10 @@
 - (void)reload:(__unused id)sender {
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
-    __weak __typeof(self)weakSelf = self;
     NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
-        __strong __typeof(weakSelf)strongSelf = weakSelf;
-        
         if (!error) {
-            strongSelf.posts = posts;
-            [strongSelf.tableView reloadData];
+            self.posts = posts;
+            [self.tableView reloadData];
         }
     }];
 
