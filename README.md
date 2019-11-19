@@ -81,6 +81,9 @@ github "AFNetworking/AFNetworking" ~> 3.0
 
 Run `carthage` to build the framework and drag the built `AFNetworking.framework` into your Xcode project.
 
+### Installation with Swift Package Manager
+
+You can install using the SPM (Swift Package Manager) for more info [cick here](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app)
 ## Requirements
 
 | AFNetworking Version | Minimum iOS Target  | Minimum macOS Target  | Minimum watchOS Target  | Minimum tvOS Target  |                                   Notes                                   |
