@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		124EFE0F2383FA5E00959E8E /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124EFE0E2383FA5E00959E8E /* Package.swift */; };
 		1BF9F9601C87832B00F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
 		1BF9F9611C87843200F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
 		1BF9F9621C87843300F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
@@ -235,6 +236,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		124EFE0E2383FA5E00959E8E /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = SOURCE_ROOT; };
 		1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageResponseSerializerTests.m; sourceTree = "<group>"; };
 		1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFCompatibilityMacros.h; sourceTree = "<group>"; };
 		1F8482BF220F386200718111 /* httpbinorg_03172020.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_03172020.cer; sourceTree = "<group>"; };
@@ -532,6 +534,7 @@
 				299522501BBF125A00859F49 /* AFURLResponseSerialization.m */,
 				299522511BBF125A00859F49 /* AFURLSessionManager.h */,
 				299522521BBF125A00859F49 /* AFURLSessionManager.m */,
+				124EFE0E2383FA5E00959E8E /* Package.swift */,
 			);
 			path = AFNetworking;
 			sourceTree = "<group>";
@@ -810,6 +813,7 @@
 					};
 					299522381BBF104D00859F49 = {
 						CreatedOnToolsVersion = 7.0.1;
+						LastSwiftMigration = 1120;
 					};
 					299522641BBF129200859F49 = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -824,6 +828,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 2995222F1BBF104D00859F49;
@@ -1055,6 +1060,7 @@
 				299522571BBF125A00859F49 /* AFNetworkReachabilityManager.m in Sources */,
 				299522AF1BBF13C700859F49 /* UIRefreshControl+AFNetworking.m in Sources */,
 				299522AA1BBF13C700859F49 /* UIImageView+AFNetworking.m in Sources */,
+				124EFE0F2383FA5E00959E8E /* Package.swift in Sources */,
 				299522B11BBF13C700859F49 /* UIWebView+AFNetworking.m in Sources */,
 				299522591BBF125A00859F49 /* AFSecurityPolicy.m in Sources */,
 				299522A71BBF13C700859F49 /* UIButton+AFNetworking.m in Sources */,
@@ -1198,6 +1204,7 @@
 		298D7C431BC2C79500FD3B3E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEVELOPMENT_TEAM = "";
@@ -1213,6 +1220,7 @@
 		298D7C441BC2C79500FD3B3E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEVELOPMENT_TEAM = "";
@@ -1418,6 +1426,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -1431,6 +1440,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
@@ -1441,6 +1452,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -1454,6 +1466,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
