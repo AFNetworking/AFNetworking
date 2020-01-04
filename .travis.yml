@@ -1,5 +1,5 @@
 language: objective-c
-osx_image: xcode10
+osx_image: xcode11
 sudo: false
 env:
   global:
@@ -9,14 +9,16 @@ env:
   - FASTLANE_LANE=ci_commit
 matrix:
   include:
-    - osx_image: xcode10
+    - osx_image: xcode11
       env: FASTLANE_LANE=code_coverage FASTLANE_ENV=default
+    - osx_image: xcode11
+      env: FASTLANE_ENV=ios13_xcode11
+    - osx_image: xcode11
+      env: FASTLANE_ENV=tvos13_xcode11
+    - osx_image: xcode11
+      env: FASTLANE_ENV=osx
     - osx_image: xcode10
       env: FASTLANE_ENV=ios12_xcode10
-    - osx_image: xcode10
-      env: FASTLANE_ENV=tvos12_xcode10
-    - osx_image: xcode10
-      env: FASTLANE_ENV=osx
     - osx_image: xcode9.4
       env: FASTLANE_ENV=ios11_xcode94
     - osx_image: xcode9.3
@@ -27,18 +29,9 @@ matrix:
       env: FASTLANE_ENV=ios11_xcode91
     - osx_image: xcode9
       env: FASTLANE_ENV=ios11_xcode9
-    - osx_image: xcode8.3
-      env: FASTLANE_ENV=ios10_xcode8
-    - osx_image: xcode7.3
-      env: FASTLANE_ENV=ios9_xcode7
-    - osx_image: xcode7.3
-      env: FASTLANE_ENV=ios8_xcode7
 before_install:
-  # Force bundler 1.12.5 because version 1.13 has issues, see https://github.com/fastlane/fastlane/issues/6065#issuecomment-246044617
-  - gem uninstall bundler -v '>1.12.5' --force --executables || echo "bundler >1.12.5 is not installed"
-  - gem install bundler -v 1.12.5 --no-rdoc --no-ri --no-document --quiet
-  - gem install fastlane --no-rdoc --no-ri --no-document --quiet
-  - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
+  - gem install fastlane --no-document --quiet
+  - gem install cocoapods --no-document --quiet
 script:
   - set -o pipefail
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
