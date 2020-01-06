@@ -46,8 +46,10 @@
         self.postsArrayController.content = posts;
     }];
     
+    __weak __typeof(self)weakSelf = self;
     [[NSNotificationCenter defaultCenter] addObserverForName:kUserProfileImageDidLoadNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-        [self.tableView reloadData];
+        __strong __typeof(weakSelf)strongSelf = weakSelf;
+        [strongSelf.tableView reloadData];
     }];
 }
 
