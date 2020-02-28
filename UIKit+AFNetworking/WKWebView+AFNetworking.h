@@ -1,4 +1,4 @@
-// UIWebView+AFNetworking.h
+// WKWebView+AFNetworking.h
 // Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,6 +23,8 @@
 
 #import <TargetConditionals.h>
 
+#import <WebKit/WebKit.h>
+
 #if TARGET_OS_IOS
 
 #import <UIKit/UIKit.h>
@@ -32,11 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
 @class AFHTTPSessionManager;
 
 /**
- This category adds methods to the UIKit framework's `UIWebView` class. The methods in this category provide increased control over the request cycle, including progress monitoring and success / failure handling.
+ This category adds methods to the UIKit framework's `WKWebView` class. The methods in this category provide increased control over the request cycle, including progress monitoring and success / failure handling.
 
  @discussion When using these category methods, make sure to assign `delegate` for the web view, which implements `–webView:shouldStartLoadWithRequest:navigationType:` appropriately. This allows for tapped links to be loaded through AFNetworking, and can ensure that `canGoBack` & `canGoForward` update their values correctly.
  */
-@interface UIWebView (AFNetworking)
+@interface WKWebView (AFNetworking)
 
 /**
  The session manager used to download all requests.

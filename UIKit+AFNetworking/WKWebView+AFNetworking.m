@@ -1,4 +1,4 @@
-// UIWebView+AFNetworking.m
+// WKWebView+AFNetworking.m
 // Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,7 +19,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "UIWebView+AFNetworking.h"
+#import "WKWebView+AFNetworking.h"
 
 #import <objc/runtime.h>
 
@@ -29,11 +29,11 @@
 #import "AFURLResponseSerialization.h"
 #import "AFURLRequestSerialization.h"
 
-@interface UIWebView (_AFNetworking)
+@interface WKWebView (_AFNetworking)
 @property (readwrite, nonatomic, strong, setter = af_setURLSessionTask:) NSURLSessionDataTask *af_URLSessionTask;
 @end
 
-@implementation UIWebView (_AFNetworking)
+@implementation WKWebView (_AFNetworking)
 
 - (NSURLSessionDataTask *)af_URLSessionTask {
     return (NSURLSessionDataTask *)objc_getAssociatedObject(self, @selector(af_URLSessionTask));
@@ -47,7 +47,7 @@
 
 #pragma mark -
 
-@implementation UIWebView (AFNetworking)
+@implementation WKWebView (AFNetworking)
 
 - (AFHTTPSessionManager *)sessionManager {
     static AFHTTPSessionManager *_af_defaultHTTPSessionManager = nil;
@@ -119,6 +119,7 @@
     self.af_URLSessionTask = nil;
 
     __weak __typeof(self)weakSelf = self;
+    __strong __typeof(self.navigationDelegate) strongNavSelf = self.navigationDelegate;
     __block NSURLSessionDataTask *dataTask;
     dataTask = [self.sessionManager
                 dataTaskWithRequest:request
@@ -134,10 +135,10 @@
                         if (success) {
                             success((NSHTTPURLResponse *)response, responseObject);
                         }
-                        [strongSelf loadData:responseObject MIMEType:MIMEType textEncodingName:textEncodingName baseURL:[dataTask.currentRequest URL]];
+                        [strongSelf loadData:responseObject MIMEType:MIMEType characterEncodingName:textEncodingName baseURL:[dataTask.currentRequest URL]];
 
-                        if ([strongSelf.delegate respondsToSelector:@selector(webViewDidFinishLoad:)]) {
-                            [strongSelf.delegate webViewDidFinishLoad:strongSelf];
+                        if([strongNavSelf respondsToSelector:@selector(webView:didFinishNavigation:)]){
+                            [strongNavSelf webView:strongSelf didFinishNavigation:strongNavSelf];
                         }
                     }
                 }];
@@ -147,8 +148,8 @@
     }
     [self.af_URLSessionTask resume];
 
-    if ([self.delegate respondsToSelector:@selector(webViewDidStartLoad:)]) {
-        [self.delegate webViewDidStartLoad:self];
+    if([strongNavSelf respondsToSelector:@selector(webView:didStartProvisionalNavigation:)]){
+        [strongNavSelf webView:self didStartProvisionalNavigation:strongNavSelf];
     }
 }
 
