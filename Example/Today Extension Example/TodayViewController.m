@@ -50,7 +50,6 @@
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
         if (!error) {
-
             self.post = posts.firstObject;
             [self savePost:self.post];
 
