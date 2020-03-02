@@ -82,10 +82,19 @@ _out:
 
 static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
     BOOL isValid = NO;
-    SecTrustResultType result;
-    __Require_noErr_Quiet(SecTrustEvaluate(serverTrust, &result), _out);
+    if (@available(iOS 12, macOS 10.14, tvOS 12, watchOS 5, *)) {
+        CFErrorRef error = nil;
+        isValid = SecTrustEvaluateWithError(serverTrust, &error);
+        if (error) {
+            NSLog(@"Server trust error: %@", error);
+            CFRelease(error);
+        }
+    } else {
+        SecTrustResultType result;
+        __Require_noErr_Quiet(SecTrustEvaluate(serverTrust, &result), _out);
 
-    isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
+        isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
+    }
 
 _out:
     return isValid;
