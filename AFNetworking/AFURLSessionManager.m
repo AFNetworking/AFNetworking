@@ -916,7 +916,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 }
 
 #if AF_CAN_INCLUDE_SESSION_TASK_METRICS
-- (void)setTaskDidFinishCollectingMetricsBlock:(void (^)(NSURLSession * _Nonnull, NSURLSessionTask * _Nonnull, NSURLSessionTaskMetrics * _Nullable))block {
+- (void)setTaskDidFinishCollectingMetricsBlock:(void (^)(NSURLSession * _Nonnull, NSURLSessionTask * _Nonnull, NSURLSessionTaskMetrics * _Nullable))block AF_API_AVAILABLE(ios(10), macosx(10.12), watchos(3), tvos(10)) {
     self.taskDidFinishCollectingMetrics = block;
 }
 #endif
