@@ -144,7 +144,7 @@
                         [expectation fulfill];
                     }];
     [downloadTask resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertTrue(completionBlockExecuted);
     XCTAssertTrue(managerDownloadFinishedBlockExecuted);
     XCTAssertNotNil(downloadFilePath);
@@ -169,7 +169,7 @@
                                                                      [expectation fulfill];
                                                                  }];
     [downloadTask resume];
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     XCTAssertTrue(completionBlockExecuted);
     XCTAssertTrue(destinationBlockExecuted);
     XCTAssertNotNil(downloadFilePath);
