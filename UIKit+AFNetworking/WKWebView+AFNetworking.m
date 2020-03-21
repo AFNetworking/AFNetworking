@@ -119,7 +119,6 @@
     self.af_URLSessionTask = nil;
 
     __weak __typeof(self)weakSelf = self;
-    __strong __typeof(self.navigationDelegate) strongNavSelf = self.navigationDelegate;
     __block NSURLSessionDataTask *dataTask;
     dataTask = [self.sessionManager
                 dataTaskWithRequest:request
@@ -127,6 +126,7 @@
                 downloadProgress:nil
                 completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nullable error) {
                     __strong __typeof(weakSelf) strongSelf = weakSelf;
+                    __strong __typeof(weakSelf.navigationDelegate) strongNavigation = strongSelf.navigationDelegate;
                     if (error) {
                         if (failure) {
                             failure(error);
@@ -137,8 +137,8 @@
                         }
                         [strongSelf loadData:responseObject MIMEType:MIMEType characterEncodingName:textEncodingName baseURL:[dataTask.currentRequest URL]];
 
-                        if([strongNavSelf respondsToSelector:@selector(webView:didFinishNavigation:)]){
-                            [strongNavSelf webView:strongSelf didFinishNavigation:strongNavSelf];
+                        if([strongNavigation respondsToSelector:@selector(webView:didFinishNavigation:)]){
+                            [strongNavigation webView:strongSelf didFinishNavigation:strongNavigation];
                         }
                     }
                 }];
@@ -148,8 +148,9 @@
     }
     [self.af_URLSessionTask resume];
 
-    if([strongNavSelf respondsToSelector:@selector(webView:didStartProvisionalNavigation:)]){
-        [strongNavSelf webView:self didStartProvisionalNavigation:strongNavSelf];
+    __typeof(self.navigationDelegate)navigationDelegate = self.navigationDelegate;
+    if([navigationDelegate respondsToSelector:@selector(webView:didStartProvisionalNavigation:)]){
+        [navigationDelegate webView:self didStartProvisionalNavigation:navigationDelegate];
     }
 }
 
