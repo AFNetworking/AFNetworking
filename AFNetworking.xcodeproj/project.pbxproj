@@ -195,7 +195,7 @@
 		5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
 		DCCF6D1A242B831B008F29BD /* WKWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = DCCF6D18242B831A008F29BD /* WKWebView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DCCF6D1B242B831B008F29BD /* WKWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCF6D19242B831A008F29BD /* WKWebView+AFNetworking.m */; };
-		DCCF6D1D242B83DB008F29BD /* AFWKWebViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCF6D1C242B83DB008F29BD /* AFWKWebViewTests.m */; };
+		DCCF6D20242BB7C3008F29BD /* AFWKWebViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCF6D1C242B83DB008F29BD /* AFWKWebViewTests.m */; };
 		E2B10D8E233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer in Resources */ = {isa = PBXBuildFile; fileRef = E2B10D8B233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer */; };
 		E2B10D8F233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer in Resources */ = {isa = PBXBuildFile; fileRef = E2B10D8B233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer */; };
 		E2B10D90233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer in Resources */ = {isa = PBXBuildFile; fileRef = E2B10D8B233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer */; };
@@ -1018,6 +1018,7 @@
 				298D7CD91BC2CAF200FD3B3E /* AFNetworkReachabilityManagerTests.m in Sources */,
 				297824AA1BC2DAD80041C395 /* AFAutoPurgingImageCacheTests.m in Sources */,
 				298D7C981BC2CA2500FD3B3E /* AFURLSessionManagerTests.m in Sources */,
+				DCCF6D20242BB7C3008F29BD /* AFWKWebViewTests.m in Sources */,
 				297824AC1BC2DB450041C395 /* AFImageDownloaderTests.m in Sources */,
 				2D4563901DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */,
 				298D7CD51BC2CAEC00FD3B3E /* AFHTTPSessionManagerTests.m in Sources */,
@@ -1053,7 +1054,6 @@
 			files = (
 				299522AD1BBF13C700859F49 /* UIProgressView+AFNetworking.m in Sources */,
 				299522571BBF125A00859F49 /* AFNetworkReachabilityManager.m in Sources */,
-				DCCF6D1D242B83DB008F29BD /* AFWKWebViewTests.m in Sources */,
 				299522AF1BBF13C700859F49 /* UIRefreshControl+AFNetworking.m in Sources */,
 				DCCF6D1B242B831B008F29BD /* WKWebView+AFNetworking.m in Sources */,
 				299522AA1BBF13C700859F49 /* UIImageView+AFNetworking.m in Sources */,
