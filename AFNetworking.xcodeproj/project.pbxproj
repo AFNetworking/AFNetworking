@@ -193,7 +193,7 @@
 		5F4323DD1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
 		5F4323DE1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
 		5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323DC1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer */; };
-		DCCF6D1A242B831B008F29BD /* WKWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = DCCF6D18242B831A008F29BD /* WKWebView+AFNetworking.h */; };
+		DCCF6D1A242B831B008F29BD /* WKWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = DCCF6D18242B831A008F29BD /* WKWebView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DCCF6D1B242B831B008F29BD /* WKWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCF6D19242B831A008F29BD /* WKWebView+AFNetworking.m */; };
 		DCCF6D1D242B83DB008F29BD /* AFWKWebViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCF6D1C242B83DB008F29BD /* AFWKWebViewTests.m */; };
 		E2B10D8E233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer in Resources */ = {isa = PBXBuildFile; fileRef = E2B10D8B233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer */; };
@@ -622,8 +622,8 @@
 				299522AC1BBF13C700859F49 /* UIProgressView+AFNetworking.h in Headers */,
 				299522A61BBF13C700859F49 /* UIButton+AFNetworking.h in Headers */,
 				299522A01BBF13C700859F49 /* AFNetworkActivityIndicatorManager.h in Headers */,
-				299522AE1BBF13C700859F49 /* UIRefreshControl+AFNetworking.h in Headers */,
 				DCCF6D1A242B831B008F29BD /* WKWebView+AFNetworking.h in Headers */,
+				299522AE1BBF13C700859F49 /* UIRefreshControl+AFNetworking.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
