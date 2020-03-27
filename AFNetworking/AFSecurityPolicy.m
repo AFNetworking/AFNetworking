@@ -53,15 +53,21 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
     SecCertificateRef allowedCertificate;
     SecPolicyRef policy = nil;
     SecTrustRef allowedTrust = nil;
-    SecTrustResultType result;
 
     allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificate);
     __Require_Quiet(allowedCertificate != NULL, _out);
 
     policy = SecPolicyCreateBasicX509();
     __Require_noErr_Quiet(SecTrustCreateWithCertificates(allowedCertificate, policy, &allowedTrust), _out);
+    
+#if TARGET_OS_MACCATALYST
+    BOOL isTrustValid = SecTrustEvaluateWithError(allowedTrust, nil);
+    if (!isTrustValid) { goto _out; }
+#else
+    SecTrustResultType result;
     __Require_noErr_Quiet(SecTrustEvaluate(allowedTrust, &result), _out);
-
+#endif
+    
     allowedPublicKey = (__bridge_transfer id)SecTrustCopyPublicKey(allowedTrust);
 
 _out:
@@ -82,11 +88,17 @@ _out:
 
 static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
     BOOL isValid = NO;
+    
+#if TARGET_OS_MACCATALYST
+    isValid = SecTrustEvaluateWithError(serverTrust, nil);
+    goto _out;
+#else
     SecTrustResultType result;
     __Require_noErr_Quiet(SecTrustEvaluate(serverTrust, &result), _out);
 
     isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
-
+#endif
+    
 _out:
     return isValid;
 }
@@ -115,10 +127,13 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
         SecTrustRef trust;
         __Require_noErr_Quiet(SecTrustCreateWithCertificates(certificates, policy, &trust), _out);
-
+#if TARGET_OS_MACCATALYST
+        BOOL isValid = SecTrustEvaluateWithError(serverTrust, nil);
+        if (!isValid) { goto _out; }
+#else
         SecTrustResultType result;
         __Require_noErr_Quiet(SecTrustEvaluate(trust, &result), _out);
-
+#endif
         [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
 
     _out:
@@ -237,7 +252,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
     if (self.SSLPinningMode == AFSSLPinningModeNone) {
         return self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust);
-    } else if (!AFServerTrustIsValid(serverTrust) && !self.allowInvalidCertificates) {
+    } else if (!self.allowInvalidCertificates && !AFServerTrustIsValid(serverTrust)) {
         return NO;
     }
 

@@ -207,13 +207,13 @@
 }
 
 - (void)testCanBeEncoded {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.sessionManager];
+    NSData *data = [self archivedDataWithRootObject:self.sessionManager];
     XCTAssertNotNil(data);
 }
 
 - (void)testCanBeDecoded {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.sessionManager];
-    AFHTTPSessionManager *newManager = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSData *data = [self archivedDataWithRootObject:self.sessionManager];
+    AFHTTPSessionManager *newManager = [self unarchivedObjectOfClass:[AFHTTPSessionManager class] fromData:data];;
     XCTAssertNotNil(newManager.securityPolicy);
     XCTAssertNotNil(newManager.requestSerializer);
     XCTAssertNotNil(newManager.responseSerializer);

@@ -40,8 +40,6 @@
 
  Developers targeting iOS 7 or Mac OS X 10.9 or later that deal extensively with a web service are encouraged to subclass `AFHTTPSessionManager`, providing a class method that returns a shared singleton object on which authentication and other configuration can be shared across the application.
 
- For developers targeting iOS 6 or Mac OS X 10.8 or earlier, `AFHTTPRequestOperationManager` may be used to similar effect.
-
  ## Methods to Override
 
  To change the behavior of all data task operation construction, which is also used in the `GET` / `POST` / et al. convenience methods, override `dataTaskWithRequest:uploadProgress:downloadProgress:completionHandler:`.
@@ -431,6 +429,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param method The HTTPMethod string used to create the request.
  @param URLString The URL string used to create the request URL.
  @param parameters The parameters to be encoded according to the client request serializer.
+ @param headers The headers appended to the default headers for this request.
  @param uploadProgress A block object to be executed when the upload progress is updated. Note this block is called on the session queue, not the main queue.
  @param downloadProgress A block object to be executed when the download progress is updated. Note this block is called on the session queue, not the main queue.
  @param success A block object to be executed when the task finishes successfully. This block has no return value and takes two arguments: the data task, and the response object created by the client response serializer.
@@ -441,10 +440,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSURLSessionDataTask *)dataTaskWithHTTPMethod:(NSString *)method
                                        URLString:(NSString *)URLString
                                       parameters:(nullable id)parameters
+                                         headers:(nullable NSDictionary <NSString *, NSString *> *)headers
                                   uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgress
                                 downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgress
-                                         success:(void (^)(NSURLSessionDataTask *, id))success
-                                         failure:(void (^)(NSURLSessionDataTask *, NSError *))failure;
+                                         success:(nullable void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                                         failure:(nullable void (^)(NSURLSessionDataTask * _Nullable task, NSError *error))failure;
 
 @end
 

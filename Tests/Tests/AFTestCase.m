@@ -63,4 +63,24 @@
     [self waitForExpectationsWithTimeout:self.networkTimeout handler:handler];
 }
 
+- (NSData *)archivedDataWithRootObject:(id)object {
+#if TARGET_OS_MACCATALYST
+    NSError *error;
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:object requiringSecureCoding:NO error:&error];
+    return data;
+#else
+    return [NSKeyedArchiver archivedDataWithRootObject:object];
+#endif
+}
+
+- (id)unarchivedObjectOfClass:(Class)class fromData:(NSData *)data {
+#if TARGET_OS_MACCATALYST
+    NSError *error;
+    id object = [NSKeyedUnarchiver unarchivedObjectOfClass:class fromData:data error:&error];
+    return object;
+#else
+    return [NSKeyedUnarchiver unarchiveObjectWithData:data];
+#endif
+}
+
 @end
