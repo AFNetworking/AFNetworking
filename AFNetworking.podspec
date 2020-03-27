@@ -28,7 +28,7 @@ EOS
   s.prefix_header_contents = pch_AF
   
   s.ios.deployment_target = '10.0'
-  s.osx.deployment_target = '10.9'
+  s.osx.deployment_target = '10.10'
   s.watchos.deployment_target = '2.0'
   s.tvos.deployment_target = '10.0'
   
@@ -48,7 +48,7 @@ EOS
 
   s.subspec 'Reachability' do |ss|
     ss.ios.deployment_target = '10.0'
-    ss.osx.deployment_target = '10.9'
+    ss.osx.deployment_target = '10.10'
     ss.tvos.deployment_target = '10.0'
 
     ss.source_files = 'AFNetworking/AFNetworkReachabilityManager.{h,m}'
