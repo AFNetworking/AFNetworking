@@ -48,7 +48,7 @@ $ gem install cocoapods
 To integrate AFNetworking into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-source 'https://github.com/CocoaPods/Specs.git'
+source 'https://cdn.cocoapods.org/'
 platform :ios, '8.0'
 
 target 'TargetName' do

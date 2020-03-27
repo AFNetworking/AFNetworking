@@ -22,10 +22,16 @@
 #ifndef AFCompatibilityMacros_h
 #define AFCompatibilityMacros_h
 
-#ifdef API_UNAVAILABLE
-    #define AF_API_UNAVAILABLE(x) API_UNAVAILABLE(x)
+#ifdef API_AVAILABLE
+    #define AF_API_AVAILABLE(...) API_AVAILABLE(__VA_ARGS__)
 #else
-    #define AF_API_UNAVAILABLE(x)
+    #define AF_API_AVAILABLE(...)
+#endif // API_AVAILABLE
+
+#ifdef API_UNAVAILABLE
+    #define AF_API_UNAVAILABLE(...) API_UNAVAILABLE(__VA_ARGS__)
+#else
+    #define AF_API_UNAVAILABLE(...)
 #endif // API_UNAVAILABLE
 
 #if __has_warning("-Wunguarded-availability-new")

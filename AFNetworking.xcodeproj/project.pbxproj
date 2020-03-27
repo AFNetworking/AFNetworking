@@ -172,6 +172,9 @@
 		2D4563911DB117A200AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */; };
 		2D4563921DB117A200AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */; };
 		2D4563941DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D4563931DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m */; };
+		323D83E2231D185400C5BFC6 /* WKWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 323D83E0231D185400C5BFC6 /* WKWebView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		323D83E3231D185400C5BFC6 /* WKWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 323D83E1231D185400C5BFC6 /* WKWebView+AFNetworking.m */; };
+		323D83E5231D188400C5BFC6 /* AFWKWebViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */; };
 		5F4323BB1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323B31BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer */; };
 		5F4323BC1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323B31BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer */; };
 		5F4323BD1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323B31BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer */; };
@@ -303,6 +306,9 @@
 		29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCompoundResponseSerializerTests.m; sourceTree = "<group>"; };
 		2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLParserResponseSerializerTests.m; sourceTree = "<group>"; };
 		2D4563931DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLDocumentResponseSerializerTests.m; sourceTree = "<group>"; };
+		323D83E0231D185400C5BFC6 /* WKWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+AFNetworking.h"; sourceTree = "<group>"; };
+		323D83E1231D185400C5BFC6 /* WKWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+AFNetworking.m"; sourceTree = "<group>"; };
+		323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWKWebViewTests.m; sourceTree = "<group>"; };
 		5F4323B31BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Equifax_Secure_Certificate_Authority_Root.cer; sourceTree = "<group>"; };
 		5F4323B41BF63741003B8749 /* GeoTrust_Global_CA-cross.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GeoTrust_Global_CA-cross.cer"; sourceTree = "<group>"; };
 		5F4323B51BF63741003B8749 /* google.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = google.com.cer; sourceTree = "<group>"; };
@@ -467,6 +473,7 @@
 				298D7C8D1BC2C88F00FD3B3E /* AFUIImageViewTests.m */,
 				298D7C8E1BC2C88F00FD3B3E /* AFUIRefreshControlTests.m */,
 				2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */,
+				323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */,
 			);
 			name = "AFNetworking UIKit Tests";
 			sourceTree = "<group>";
@@ -550,6 +557,8 @@
 				299522971BBF13C700859F49 /* UIProgressView+AFNetworking.m */,
 				299522981BBF13C700859F49 /* UIRefreshControl+AFNetworking.h */,
 				299522991BBF13C700859F49 /* UIRefreshControl+AFNetworking.m */,
+				323D83E0231D185400C5BFC6 /* WKWebView+AFNetworking.h */,
+				323D83E1231D185400C5BFC6 /* WKWebView+AFNetworking.m */,
 			);
 			path = "UIKit+AFNetworking";
 			sourceTree = "<group>";
@@ -606,6 +615,7 @@
 				299522A91BBF13C700859F49 /* UIImageView+AFNetworking.h in Headers */,
 				2995229E1BBF13C700859F49 /* AFImageDownloader.h in Headers */,
 				2995225E1BBF125A00859F49 /* AFURLSessionManager.h in Headers */,
+				323D83E2231D185400C5BFC6 /* WKWebView+AFNetworking.h in Headers */,
 				2995225C1BBF125A00859F49 /* AFURLResponseSerialization.h in Headers */,
 				299522A21BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.h in Headers */,
 				1F96D2A4203649560085FC3F /* AFCompatibilityMacros.h in Headers */,
@@ -814,6 +824,7 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1008,6 +1019,7 @@
 				298D7CD91BC2CAF200FD3B3E /* AFNetworkReachabilityManagerTests.m in Sources */,
 				297824AA1BC2DAD80041C395 /* AFAutoPurgingImageCacheTests.m in Sources */,
 				298D7C981BC2CA2500FD3B3E /* AFURLSessionManagerTests.m in Sources */,
+				323D83E5231D188400C5BFC6 /* AFWKWebViewTests.m in Sources */,
 				297824AC1BC2DB450041C395 /* AFImageDownloaderTests.m in Sources */,
 				2D4563901DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */,
 				298D7CD51BC2CAEC00FD3B3E /* AFHTTPSessionManagerTests.m in Sources */,
@@ -1048,6 +1060,7 @@
 				299522591BBF125A00859F49 /* AFSecurityPolicy.m in Sources */,
 				299522A71BBF13C700859F49 /* UIButton+AFNetworking.m in Sources */,
 				299522541BBF125A00859F49 /* AFHTTPSessionManager.m in Sources */,
+				323D83E3231D185400C5BFC6 /* WKWebView+AFNetworking.m in Sources */,
 				2995225F1BBF125A00859F49 /* AFURLSessionManager.m in Sources */,
 				2995225B1BBF125A00859F49 /* AFURLRequestSerialization.m in Sources */,
 				2995229D1BBF13C700859F49 /* AFAutoPurgingImageCache.m in Sources */,

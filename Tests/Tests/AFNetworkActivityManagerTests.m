@@ -184,4 +184,18 @@
 
 }
 
+- (void)testThatIndicatorKVOOnlyTriggerOnce {
+    // create new one indicator manager
+    AFNetworkActivityIndicatorManager *manager = [AFNetworkActivityIndicatorManager new];
+    __block NSInteger kvoTriggerCount = 0;
+    
+    XCTKVOExpectation *activityCountExpectation = [[XCTKVOExpectation alloc] initWithKeyPath:@"activityCount" object:manager];
+    activityCountExpectation.handler = ^BOOL(id  _Nonnull observedObject, NSDictionary * _Nonnull change) {
+        kvoTriggerCount += 1;
+        return [change[NSKeyValueChangeNewKey] isEqualToNumber:@(1)];
+    };
+    [manager incrementActivityCount];
+    XCTAssertTrue(kvoTriggerCount == 1);
+}
+
 @end
