@@ -778,7 +778,7 @@
 # pragma mark - Server Trust
 
 - (void)testInvalidServerTrustProducesCorrectErrorForCertificatePinning {
-    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail with untrusted certificate error"];
     NSURL *googleCertificateURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"google.com" withExtension:@"cer"];
     NSData *googleCertificateData = [NSData dataWithContentsOfURL:googleCertificateURL];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://apple.com/"]];
@@ -795,7 +795,8 @@
      }
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
-         XCTAssertEqual(error.code, NSURLErrorCancelled);
+         XCTAssertEqual(error.code, NSURLErrorServerCertificateUntrusted);
+         XCTAssertEqualObjects(error.localizedDescription, @"The certificate for this server is invalid. You might be connecting to a server that is pretending to be “apple.com” which could put your confidential information at risk.");
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeout];
@@ -803,7 +804,7 @@
 }
 
 - (void)testInvalidServerTrustProducesCorrectErrorForPublicKeyPinning {
-    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail with untrusted certificate error"];
     NSURL *googleCertificateURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"google.com" withExtension:@"cer"];
     NSData *googleCertificateData = [NSData dataWithContentsOfURL:googleCertificateURL];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://apple.com/"]];
@@ -820,11 +821,38 @@
      }
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
-         XCTAssertEqual(error.code, NSURLErrorCancelled);
+         XCTAssertEqual(error.code, NSURLErrorServerCertificateUntrusted);
+         XCTAssertEqualObjects(error.localizedDescription, @"The certificate for this server is invalid. You might be connecting to a server that is pretending to be “apple.com” which could put your confidential information at risk.");
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeout];
     [manager invalidateSessionCancelingTasks:YES resetSession:NO];
+}
+
+# pragma mark - Custom Authentication Challenge Handler
+
+- (void)testAuthenticationChallengeHandlerCredentialResult {
+    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request succeed with provided credentials"];
+    self.manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [self.manager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
+        if ([challenge.protectionSpace.realm isEqualToString:@"Fake Realm"]) {
+            return [NSURLCredential credentialWithUser:@"user" password:@"passwd" persistence:NSURLCredentialPersistenceNone];
+        }
+        return @(NSURLSessionAuthChallengePerformDefaultHandling);
+    }];
+    [self.manager
+     GET:@"basic-auth/user/passwd"
+     parameters:nil
+     progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+         [expectation fulfill];
+     }
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         XCTFail(@"Request should succeed");
+         [expectation fulfill];
+     }];
+    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self.manager invalidateSessionCancelingTasks:YES];
 }
 
 @end

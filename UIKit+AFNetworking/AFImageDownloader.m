@@ -337,7 +337,7 @@
             }
         }
 
-        if (mergedTask.responseHandlers.count == 0 && mergedTask.task.state == NSURLSessionTaskStateSuspended) {
+        if (mergedTask.responseHandlers.count == 0) {
             [mergedTask.task cancel];
             [self removeMergedTaskWithURLIdentifier:URLIdentifier];
         }
