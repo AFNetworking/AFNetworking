@@ -441,6 +441,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSURLSessionDataTask *)dataTaskWithHTTPMethod:(NSString *)method
                                        URLString:(NSString *)URLString
                                       parameters:(nullable id)parameters
+                                         headers:(NSDictionary <NSString *, NSString *> *)headers
                                   uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgress
                                 downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgress
                                          success:(void (^)(NSURLSessionDataTask *, id))success

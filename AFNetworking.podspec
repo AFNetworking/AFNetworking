@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'AFNetworking'
-  s.version  = '3.2.2'
+  s.version  = '4.0.0'
   s.license  = 'MIT'
   s.summary  = 'A delightful iOS and OS X networking framework.'
   s.homepage = 'https://github.com/AFNetworking/AFNetworking'
@@ -35,8 +35,8 @@ EOS
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
     ss.public_header_files = 'AFNetworking/AFURL{Request,Response}Serialization.h'
-    ss.watchos.frameworks = 'MobileCoreServices', 'CoreGraphics'
-    ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
+    ss.watchos.frameworks = 'CoreServices', 'CoreGraphics'
+    ss.ios.frameworks = 'CoreServices', 'CoreGraphics'
     ss.osx.frameworks = 'CoreServices'
   end
 
