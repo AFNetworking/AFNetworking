@@ -138,8 +138,6 @@
 		299522AD1BBF13C700859F49 /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 299522971BBF13C700859F49 /* UIProgressView+AFNetworking.m */; };
 		299522AE1BBF13C700859F49 /* UIRefreshControl+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 299522981BBF13C700859F49 /* UIRefreshControl+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		299522AF1BBF13C700859F49 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 299522991BBF13C700859F49 /* UIRefreshControl+AFNetworking.m */; };
-		299522B01BBF13C700859F49 /* UIWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 2995229A1BBF13C700859F49 /* UIWebView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		299522B11BBF13C700859F49 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 2995229B1BBF13C700859F49 /* UIWebView+AFNetworking.m */; };
 		29D3413F1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */; };
 		29D341401C20D46400A7D266 /* AFCompoundResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */; };
 		29D341411C20D46400A7D266 /* AFCompoundResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */; };
@@ -170,11 +168,13 @@
 		29D96E981BCC406B00F571A5 /* UIImage+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 299522921BBF13C700859F49 /* UIImage+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		29D96E991BCC406B00F571A5 /* UIImageView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 299522931BBF13C700859F49 /* UIImageView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		29D96E9A1BCC406B00F571A5 /* UIProgressView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 299522961BBF13C700859F49 /* UIProgressView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		29F5EF031C47E64F008B976A /* AFUIWebViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29F5EF021C47E64F008B976A /* AFUIWebViewTests.m */; };
 		2D4563901DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */; };
 		2D4563911DB117A200AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */; };
 		2D4563921DB117A200AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */; };
 		2D4563941DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D4563931DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m */; };
+		323D83E2231D185400C5BFC6 /* WKWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 323D83E0231D185400C5BFC6 /* WKWebView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		323D83E3231D185400C5BFC6 /* WKWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 323D83E1231D185400C5BFC6 /* WKWebView+AFNetworking.m */; };
+		323D83E5231D188400C5BFC6 /* AFWKWebViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */; };
 		5F4323BB1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323B31BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer */; };
 		5F4323BC1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323B31BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer */; };
 		5F4323BD1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5F4323B31BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer */; };
@@ -303,12 +303,12 @@
 		299522971BBF13C700859F49 /* UIProgressView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIProgressView+AFNetworking.m"; sourceTree = "<group>"; };
 		299522981BBF13C700859F49 /* UIRefreshControl+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIRefreshControl+AFNetworking.h"; sourceTree = "<group>"; };
 		299522991BBF13C700859F49 /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
-		2995229A1BBF13C700859F49 /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
-		2995229B1BBF13C700859F49 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCompoundResponseSerializerTests.m; sourceTree = "<group>"; };
-		29F5EF021C47E64F008B976A /* AFUIWebViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIWebViewTests.m; sourceTree = "<group>"; };
 		2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLParserResponseSerializerTests.m; sourceTree = "<group>"; };
 		2D4563931DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLDocumentResponseSerializerTests.m; sourceTree = "<group>"; };
+		323D83E0231D185400C5BFC6 /* WKWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+AFNetworking.h"; sourceTree = "<group>"; };
+		323D83E1231D185400C5BFC6 /* WKWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+AFNetworking.m"; sourceTree = "<group>"; };
+		323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWKWebViewTests.m; sourceTree = "<group>"; };
 		5F4323B31BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Equifax_Secure_Certificate_Authority_Root.cer; sourceTree = "<group>"; };
 		5F4323B41BF63741003B8749 /* GeoTrust_Global_CA-cross.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GeoTrust_Global_CA-cross.cer"; sourceTree = "<group>"; };
 		5F4323B51BF63741003B8749 /* google.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = google.com.cer; sourceTree = "<group>"; };
@@ -473,7 +473,7 @@
 				298D7C8D1BC2C88F00FD3B3E /* AFUIImageViewTests.m */,
 				298D7C8E1BC2C88F00FD3B3E /* AFUIRefreshControlTests.m */,
 				2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */,
-				29F5EF021C47E64F008B976A /* AFUIWebViewTests.m */,
+				323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */,
 			);
 			name = "AFNetworking UIKit Tests";
 			sourceTree = "<group>";
@@ -557,8 +557,8 @@
 				299522971BBF13C700859F49 /* UIProgressView+AFNetworking.m */,
 				299522981BBF13C700859F49 /* UIRefreshControl+AFNetworking.h */,
 				299522991BBF13C700859F49 /* UIRefreshControl+AFNetworking.m */,
-				2995229A1BBF13C700859F49 /* UIWebView+AFNetworking.h */,
-				2995229B1BBF13C700859F49 /* UIWebView+AFNetworking.m */,
+				323D83E0231D185400C5BFC6 /* WKWebView+AFNetworking.h */,
+				323D83E1231D185400C5BFC6 /* WKWebView+AFNetworking.m */,
 			);
 			path = "UIKit+AFNetworking";
 			sourceTree = "<group>";
@@ -615,11 +615,11 @@
 				299522A91BBF13C700859F49 /* UIImageView+AFNetworking.h in Headers */,
 				2995229E1BBF13C700859F49 /* AFImageDownloader.h in Headers */,
 				2995225E1BBF125A00859F49 /* AFURLSessionManager.h in Headers */,
+				323D83E2231D185400C5BFC6 /* WKWebView+AFNetworking.h in Headers */,
 				2995225C1BBF125A00859F49 /* AFURLResponseSerialization.h in Headers */,
 				299522A21BBF13C700859F49 /* UIActivityIndicatorView+AFNetworking.h in Headers */,
 				1F96D2A4203649560085FC3F /* AFCompatibilityMacros.h in Headers */,
 				2995223D1BBF104D00859F49 /* AFNetworking.h in Headers */,
-				299522B01BBF13C700859F49 /* UIWebView+AFNetworking.h in Headers */,
 				299522AC1BBF13C700859F49 /* UIProgressView+AFNetworking.h in Headers */,
 				299522A61BBF13C700859F49 /* UIButton+AFNetworking.h in Headers */,
 				299522A01BBF13C700859F49 /* AFNetworkActivityIndicatorManager.h in Headers */,
@@ -824,6 +824,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 2995222F1BBF104D00859F49;
@@ -1017,8 +1018,8 @@
 				298D7CD91BC2CAF200FD3B3E /* AFNetworkReachabilityManagerTests.m in Sources */,
 				297824AA1BC2DAD80041C395 /* AFAutoPurgingImageCacheTests.m in Sources */,
 				298D7C981BC2CA2500FD3B3E /* AFURLSessionManagerTests.m in Sources */,
+				323D83E5231D188400C5BFC6 /* AFWKWebViewTests.m in Sources */,
 				297824AC1BC2DB450041C395 /* AFImageDownloaderTests.m in Sources */,
-				29F5EF031C47E64F008B976A /* AFUIWebViewTests.m in Sources */,
 				2D4563901DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */,
 				298D7CD51BC2CAEC00FD3B3E /* AFHTTPSessionManagerTests.m in Sources */,
 				298D7CD71BC2CAEF00FD3B3E /* AFJSONSerializationTests.m in Sources */,
@@ -1055,10 +1056,10 @@
 				299522571BBF125A00859F49 /* AFNetworkReachabilityManager.m in Sources */,
 				299522AF1BBF13C700859F49 /* UIRefreshControl+AFNetworking.m in Sources */,
 				299522AA1BBF13C700859F49 /* UIImageView+AFNetworking.m in Sources */,
-				299522B11BBF13C700859F49 /* UIWebView+AFNetworking.m in Sources */,
 				299522591BBF125A00859F49 /* AFSecurityPolicy.m in Sources */,
 				299522A71BBF13C700859F49 /* UIButton+AFNetworking.m in Sources */,
 				299522541BBF125A00859F49 /* AFHTTPSessionManager.m in Sources */,
+				323D83E3231D185400C5BFC6 /* WKWebView+AFNetworking.m in Sources */,
 				2995225F1BBF125A00859F49 /* AFURLSessionManager.m in Sources */,
 				2995225B1BBF125A00859F49 /* AFURLRequestSerialization.m in Sources */,
 				2995229D1BBF13C700859F49 /* AFAutoPurgingImageCache.m in Sources */,
