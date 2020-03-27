@@ -470,6 +470,43 @@
     }
 }
 
+#pragma mark - Notifications
+
+- (void)testTaskMoveSuccessfullyAfterDownloading {
+    NSURL *dirURL = [[[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *destinationURL = [dirURL URLByAppendingPathComponent:NSUUID.UUID.UUIDString];
+
+    NSURLSessionDownloadTask *task = [self.localManager downloadTaskWithRequest:[self bigImageURLRequest]
+                progress:nil
+             destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+                return destinationURL;
+            }
+       completionHandler:nil];
+
+    [self expectationForNotification:AFURLSessionDownloadTaskDidMoveFileSuccessfullyNotification
+                              object:nil
+                             handler:nil];
+    [task resume];
+    [self waitForExpectationsWithCommonTimeout];
+    [[NSFileManager defaultManager] removeItemAtURL:destinationURL error:nil];
+}
+
+- (void)testTaskMoveFailedAfterDownloading {
+    NSURLSessionDownloadTask *downloadTask = [self.localManager downloadTaskWithRequest:[self bigImageURLRequest]
+               progress:nil
+            destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+                // Try to move the destination file to a nonexist path on purpose for simulating a move failure.
+                return [NSURL fileURLWithPath:@"/a/b/c"];
+            }
+      completionHandler:nil];
+
+    [self expectationForNotification:AFURLSessionDownloadTaskDidFailToMoveFileNotification
+                              object:nil
+                             handler:nil];
+    [downloadTask resume];
+    [self waitForExpectationsWithCommonTimeout];
+}
+
 #pragma mark - private
 
 - (void)_testResumeNotificationForTask:(NSURLSessionTask *)task {
