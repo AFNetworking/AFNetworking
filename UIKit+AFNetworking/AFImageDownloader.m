@@ -109,18 +109,6 @@
 @implementation AFImageDownloader
 
 + (NSURLCache *)defaultURLCache {
-    
-    // It's been discovered that a crash will occur on certain versions
-    // of iOS if you customize the cache.
-    //
-    // More info can be found here: https://devforums.apple.com/message/1102182#1102182
-    //
-    // When iOS 7 support is dropped, this should be modified to use
-    // NSProcessInfo methods instead.
-    if ([[[UIDevice currentDevice] systemVersion] compare:@"8.2" options:NSNumericSearch] == NSOrderedAscending) {
-        return [NSURLCache sharedURLCache];
-    }
-    
     NSUInteger memoryCapacity = 20 * 1024 * 1024; // 20MB
     NSUInteger diskCapacity = 150 * 1024 * 1024; // 150MB
     NSURL *cacheURL = [[[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory
