@@ -496,6 +496,11 @@ FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidSuspendNotification;
 FOUNDATION_EXPORT NSString * const AFURLSessionDidInvalidateNotification;
 
 /**
+ Posted when a session download task finished moving the temporary download file to a specified destination successfully.
+ */
+FOUNDATION_EXPORT NSString * const AFURLSessionDownloadTaskDidMoveFileSuccessfullyNotification;
+
+/**
  Posted when a session download task encountered an error when moving the temporary download file to a specified destination.
  */
 FOUNDATION_EXPORT NSString * const AFURLSessionDownloadTaskDidFailToMoveFileNotification;
