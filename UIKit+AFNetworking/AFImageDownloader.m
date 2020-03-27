@@ -167,7 +167,7 @@
     if (self = [super init]) {
         self.sessionManager = sessionManager;
 
-        self.downloadPrioritizaton = downloadPrioritization;
+        self.downloadPrioritization = downloadPrioritization;
         self.maximumActiveDownloads = maximumActiveDownloads;
         self.imageCache = imageCache;
 
@@ -387,7 +387,7 @@
 }
 
 - (void)enqueueMergedTask:(AFImageDownloaderMergedTask *)mergedTask {
-    switch (self.downloadPrioritizaton) {
+    switch (self.downloadPrioritization) {
         case AFImageDownloadPrioritizationFIFO:
             [self.queuedMergedTasks addObject:mergedTask];
             break;
