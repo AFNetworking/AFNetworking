@@ -833,16 +833,17 @@
 
 - (void)testAuthenticationChallengeHandlerCredentialResult {
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request succeed with provided credentials"];
-    self.manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [self.manager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
+    self.sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [self.sessionManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
         if ([challenge.protectionSpace.realm isEqualToString:@"Fake Realm"]) {
             return [NSURLCredential credentialWithUser:@"user" password:@"passwd" persistence:NSURLCredentialPersistenceNone];
         }
         return @(NSURLSessionAuthChallengePerformDefaultHandling);
     }];
-    [self.manager
+    [self.sessionManager
      GET:@"basic-auth/user/passwd"
      parameters:nil
+     headers:nil
      progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          [expectation fulfill];
@@ -852,7 +853,6 @@
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
-    [self.manager invalidateSessionCancelingTasks:YES];
 }
 
 @end
