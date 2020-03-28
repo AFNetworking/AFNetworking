@@ -35,7 +35,7 @@ before_install:
 script:
   - set -o pipefail
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
-  - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
+  # - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
 after_failure:
  - cat -n ~/Library/Logs/scan/*
  - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
