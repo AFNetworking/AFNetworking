@@ -53,13 +53,13 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
     SecCertificateRef allowedCertificate;
     SecPolicyRef policy = nil;
     SecTrustRef allowedTrust = nil;
+    SecTrustResultType result;
 
     allowedCertificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificate);
     __Require_Quiet(allowedCertificate != NULL, _out);
 
     policy = SecPolicyCreateBasicX509();
     __Require_noErr_Quiet(SecTrustCreateWithCertificates(allowedCertificate, policy, &allowedTrust), _out);
-    SecTrustResultType result;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     __Require_noErr_Quiet(SecTrustEvaluate(allowedTrust, &result), _out);
