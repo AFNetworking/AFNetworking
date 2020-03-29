@@ -28,7 +28,7 @@ jobs:
       - name: iOS - ${{ matrix.destination }}
         run: fastlane ci_commit configuration:Debug --env ios13_xcode11
   Catalyst:
-    name: Test iOS 
+    name: Test Catalyst 
     runs-on: macOS-latest
     env: 
       DEVELOPER_DIR: /Applications/Xcode_11.3.1.app/Contents/Developer
