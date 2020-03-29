@@ -64,23 +64,17 @@
 }
 
 - (NSData *)archivedDataWithRootObject:(id)object {
-#if TARGET_OS_MACCATALYST
-    NSError *error;
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:object requiringSecureCoding:NO error:&error];
-    return data;
-#else
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     return [NSKeyedArchiver archivedDataWithRootObject:object];
-#endif
+#pragma clang diagnostic pop
 }
 
 - (id)unarchivedObjectOfClass:(Class)class fromData:(NSData *)data {
-#if TARGET_OS_MACCATALYST
-    NSError *error;
-    id object = [NSKeyedUnarchiver unarchivedObjectOfClass:class fromData:data error:&error];
-    return object;
-#else
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     return [NSKeyedUnarchiver unarchiveObjectWithData:data];
-#endif
+#pragma clang diagnostic pop
 }
 
 @end
