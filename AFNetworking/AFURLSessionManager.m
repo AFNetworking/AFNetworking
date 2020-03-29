@@ -195,7 +195,7 @@ didCompleteWithError:(NSError *)error
 
     __block id responseObject = nil;
 
-    __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     userInfo[AFNetworkingTaskDidCompleteResponseSerializerKey] = manager.responseSerializer;
 
     //Performance Improvement from #2672
