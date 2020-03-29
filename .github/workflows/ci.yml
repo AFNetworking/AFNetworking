@@ -25,7 +25,7 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_11.3.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@v2
-      - name: iOS - ${{ matrix.destination }}
+      - name: iOS
         run: fastlane ci_commit configuration:Debug --env ios13_xcode11
   Catalyst:
     name: Test Catalyst 
@@ -34,7 +34,7 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_11.3.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@v2
-      - name: iOS - ${{ matrix.destination }}
+      - name: Catalyst
         run: fastlane ci_commit configuration:Debug --env catalyst
   tvOS:
     name: Test tvOS 
@@ -43,7 +43,7 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_11.3.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@v2
-      - name: tvOS - ${{ matrix.destination }}
+      - name: tvOS
         run: fastlane ci_commit configuration:Debug --env tvos13_xcode11
   watchOS:
     name: Build watchOS
