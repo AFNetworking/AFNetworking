@@ -12,8 +12,6 @@ AFNetworking is a delightful networking library for iOS, macOS, watchOS, and tvO
 
 Perhaps the most important feature of all, however, is the amazing community of developers who use and contribute to AFNetworking every day. AFNetworking powers some of the most popular and critically-acclaimed apps on the iPhone, iPad, and Mac.
 
-Choose AFNetworking for your next project, or migrate over your existing projects—you'll be happy you did!
-
 ## How To Get Started
 
 - [Download AFNetworking](https://github.com/AFNetworking/AFNetworking/archive/master.zip) and try out the included Mac and iPhone example apps
@@ -39,7 +37,6 @@ To integrate AFNetworking into your Xcode project using CocoaPods, specify it in
 pod 'AFNetworking', '~> 4.0'
 ```
 
-
 ### Installation with Swift Package Manager
 
 Once you have your Swift package set up, adding AFNetworking as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
@@ -54,19 +51,17 @@ dependencies: [
 
 ### Installation with Carthage
 
-[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
+[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate AFNetworking, add the following to your `Cartfile`.
 
 ```ogdl
 github "AFNetworking/AFNetworking" ~> 4.0
 ```
 
-Run `carthage` to build the framework and drag the built `AFNetworking.framework` into your Xcode project.
-
 ## Requirements
 
 | AFNetworking Version | Minimum iOS Target  | Minimum macOS Target  | Minimum watchOS Target  | Minimum tvOS Target  |                                   Notes                                   |
 |:--------------------:|:---------------------------:|:----------------------------:|:----------------------------:|:----------------------------:|:-------------------------------------------------------------------------:|
-| 4.x | iOS 9 | macOS 10.10 | watchOS 2.0 | tvOS 9.0 | Xcode +9+ is required. |
+| 4.x | iOS 9 | macOS 10.10 | watchOS 2.0 | tvOS 9.0 | Xcode 11+ is required. |
 | 3.x | iOS 7 | OS X 10.9 | watchOS 2.0 | tvOS 9.0 | Xcode 7+ is required. `NSURLConnectionOperation` support has been removed. |
 | 2.6 -> 2.6.3 | iOS 7 | OS X 10.9 | watchOS 2.0 | n/a | Xcode 7+ is required. |
 | 2.0 -> 2.5.4 | iOS 6 | OS X 10.8 | n/a | n/a | Xcode 5+ is required. `NSURLSession` subspec requires iOS 7 or OS X 10.9. |
