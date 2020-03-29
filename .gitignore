@@ -29,3 +29,4 @@ fastlane/test-output/*
 Carthage/Build
 
 fastlane/README.md
+.build

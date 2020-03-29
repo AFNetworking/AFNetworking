@@ -271,6 +271,10 @@ id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions 
 
 #pragma mark - NSSecureCoding
 
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
 - (instancetype)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
     if (!self) {
@@ -488,6 +492,10 @@ id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions 
 
 #pragma mark - NSSecureCoding
 
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
 - (instancetype)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
     if (!self) {
@@ -704,6 +712,10 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 #pragma mark - NSSecureCoding
 
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
 - (instancetype)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
     if (!self) {
@@ -790,13 +802,18 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 #pragma mark - NSSecureCoding
 
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
 - (instancetype)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.responseSerializers = [decoder decodeObjectOfClass:[NSArray class] forKey:NSStringFromSelector(@selector(responseSerializers))];
+    NSSet *classes = [NSSet setWithArray:@[[NSArray class], [AFHTTPResponseSerializer <AFURLResponseSerialization> class]]];
+    self.responseSerializers = [decoder decodeObjectOfClasses:classes forKey:NSStringFromSelector(@selector(responseSerializers))];
 
     return self;
 }

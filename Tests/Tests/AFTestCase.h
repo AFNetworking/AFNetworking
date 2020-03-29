@@ -33,5 +33,7 @@
 
 - (void)waitForExpectationsWithCommonTimeout;
 - (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler;
+- (NSData *)archivedDataWithRootObject:(id)object;
+- (id)unarchivedObjectOfClass:(Class)class fromData:(NSData *)data;
 
 @end

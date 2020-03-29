@@ -63,4 +63,18 @@
     [self waitForExpectationsWithTimeout:self.networkTimeout handler:handler];
 }
 
+- (NSData *)archivedDataWithRootObject:(id)object {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    return [NSKeyedArchiver archivedDataWithRootObject:object];
+#pragma clang diagnostic pop
+}
+
+- (id)unarchivedObjectOfClass:(Class)class fromData:(NSData *)data {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    return [NSKeyedUnarchiver unarchiveObjectWithData:data];
+#pragma clang diagnostic pop
+}
+
 @end

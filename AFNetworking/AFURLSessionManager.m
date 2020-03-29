@@ -58,8 +58,6 @@ NSString * const AFNetworkingTaskDidCompleteSessionTaskMetrics = @"com.alamofire
 
 static NSString * const AFURLSessionManagerLockName = @"com.alamofire.networking.session.manager.lock";
 
-static NSUInteger const AFMaximumNumberOfAttemptsToRecreateBackgroundSessionUploadTask = 3;
-
 typedef void (^AFURLSessionDidBecomeInvalidBlock)(NSURLSession *session, NSError *error);
 typedef NSURLSessionAuthChallengeDisposition (^AFURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential);
 
@@ -131,7 +129,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
             [weakTask suspend];
         };
 #if AF_CAN_USE_AT_AVAILABLE
-        if (@available(iOS 9, macOS 10.11, *))
+        if (@available(macOS 10.11, *))
 #else
         if ([progress respondsToSelector:@selector(setResumingHandler:)])
 #endif
@@ -197,7 +195,7 @@ didCompleteWithError:(NSError *)error
 
     __block id responseObject = nil;
 
-    __block NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     userInfo[AFNetworkingTaskDidCompleteResponseSerializerKey] = manager.responseSerializer;
 
     //Performance Improvement from #2672
@@ -474,7 +472,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 @property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLSessionDidFinishEventsForBackgroundURLSessionBlock didFinishEventsForBackgroundURLSession AF_API_UNAVAILABLE(macos);
 @property (readwrite, nonatomic, copy) AFURLSessionTaskWillPerformHTTPRedirectionBlock taskWillPerformHTTPRedirection;
-@property (readwrite, nonatomic, copy) AFURLSessionTaskDidReceiveAuthenticationChallengeBlock taskDidReceiveAuthenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskAuthenticationChallengeBlock authenticationChallengeHandler;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskNeedNewBodyStreamBlock taskNeedNewBodyStream;
 @property (readwrite, nonatomic, copy) AFURLSessionTaskDidSendBodyDataBlock taskDidSendBodyData;
@@ -716,10 +713,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 #pragma mark -
 
-- (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks {
-    [self invalidateSessionCancelingTasks:cancelPendingTasks resetSession:NO];
-}
-
 - (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks resetSession:(BOOL)resetSession {
     if (cancelPendingTasks) {
         [self.session invalidateAndCancel];
@@ -753,12 +746,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 #pragma mark -
 
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
-                            completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
-{
-    return [self dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
-}
-
-- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
                                uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgressBlock
                              downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock
                             completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler {
@@ -778,13 +765,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
                                 completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
 {
     NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request fromFile:fileURL];
-    
-    // uploadTask may be nil on iOS7 because uploadTaskWithRequest:fromFile: may return nil despite being documented as nonnull (https://devforums.apple.com/message/926113#926113)
-    if (!uploadTask && self.attemptsToRecreateUploadTasksForBackgroundSessions && self.session.configuration.identifier) {
-        for (NSUInteger attempts = 0; !uploadTask && attempts < AFMaximumNumberOfAttemptsToRecreateBackgroundSessionUploadTask; attempts++) {
-            uploadTask = [self.session uploadTaskWithRequest:request fromFile:fileURL];
-        }
-    }
     
     if (uploadTask) {
         [self addDelegateForUploadTask:uploadTask
@@ -877,10 +857,6 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 - (void)setTaskWillPerformHTTPRedirectionBlock:(NSURLRequest * (^)(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request))block {
     self.taskWillPerformHTTPRedirection = block;
-}
-
-- (void)setTaskDidReceiveAuthenticationChallengeBlock:(NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block {
-    self.taskDidReceiveAuthenticationChallenge = block;
 }
 
 - (void)setTaskDidSendBodyDataBlock:(void (^)(NSURLSession *session, NSURLSessionTask *task, int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend))block {
@@ -1009,7 +985,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     NSURLCredential *credential = nil;
 
     if (self.authenticationChallengeHandler) {
-        NSAssert(self.taskDidReceiveAuthenticationChallenge == nil, @"Do not call both `setAuthenticationChallengeHandler:` and `setTaskDidReceiveAuthenticationChallengeBlock:`");
         id result = self.authenticationChallengeHandler(session, task, challenge, completionHandler);
         if (result == nil) {
             return;
@@ -1026,9 +1001,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         } else {
             @throw [NSException exceptionWithName:@"Invalid Return Value" reason:@"The return value from the authentication challenge handler must be nil, an NSError, an NSURLCredential or an NSNumber." userInfo:nil];
         }
-    } else if (self.taskDidReceiveAuthenticationChallenge) {
-        NSLog(@"WARNING: -[AFURLSessionManager setTaskDidReceiveAuthenticationChallengeBlock:] is deprecated, use -[AFURLSessionManager setAuthenticationChallengeHandler:] instead.");
-        disposition = self.taskDidReceiveAuthenticationChallenge(session, task, challenge, &credential);
     } else {
         evaluateServerTrust = YES;
     }

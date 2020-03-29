@@ -165,19 +165,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong, nullable) dispatch_group_t completionGroup;
 
-///---------------------------------
-/// @name Working Around System Bugs
-///---------------------------------
-
-/**
- Whether to attempt to retry creation of upload tasks for background sessions when initial call returns `nil`. `NO` by default.
-
- @bug As of iOS 7.0, there is a bug where upload tasks created for background tasks are sometimes `nil`. As a workaround, if this property is `YES`, AFNetworking will follow Apple's recommendation to try creating the task again.
-
- @see https://github.com/AFNetworking/AFNetworking/issues/1675
- */
-@property (nonatomic, assign) BOOL attemptsToRecreateUploadTasksForBackgroundSessions;
-
 ///---------------------
 /// @name Initialization
 ///---------------------
@@ -192,13 +179,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithSessionConfiguration:(nullable NSURLSessionConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
 
 /**
- Invalidates the managed session, optionally canceling pending tasks.
-
- @param cancelPendingTasks Whether or not to cancel pending tasks.
- */
-- (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks DEPRECATED_ATTRIBUTE;
-
-/**
  Invalidates the managed session, optionally canceling pending tasks and optionally resets given session.
  
  @param cancelPendingTasks  Whether or not to cancel pending tasks.
@@ -209,15 +189,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///-------------------------
 /// @name Running Data Tasks
 ///-------------------------
-
-/**
- Creates an `NSURLSessionDataTask` with the specified request.
-
- @param request The HTTP request for the request.
- @param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
- */
-- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
-                            completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler DEPRECATED_ATTRIBUTE;
 
 /**
  Creates an `NSURLSessionDataTask` with the specified request.
@@ -369,13 +340,6 @@ NS_ASSUME_NONNULL_BEGIN
  @param block A block object to be executed when an HTTP request is attempting to perform a redirection to a different URL. The block returns the request to be made for the redirection, and takes four arguments: the session, the task, the redirection response, and the request corresponding to the redirection response.
  */
 - (void)setTaskWillPerformHTTPRedirectionBlock:(nullable NSURLRequest * _Nullable (^)(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request))block;
-
-/**
- Sets a block to be executed when a session task has received a request specific authentication challenge, as handled by the `NSURLSessionTaskDelegate` method `URLSession:task:didReceiveChallenge:completionHandler:`.
-
- @param block A block object to be executed when a session task has received a request specific authentication challenge. The block returns the disposition of the authentication challenge, and takes four arguments: the session, the task, the authentication challenge, and a pointer to the credential that should be used to resolve the challenge.
- */
-- (void)setTaskDidReceiveAuthenticationChallengeBlock:(nullable NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential))block DEPRECATED_MSG_ATTRIBUTE("Use setAuthenticationChallengeHandler: instead.");
 
 /**
  Sets a block to be executed when a session task has received a request specific authentication challenge, as handled by the `NSURLSessionTaskDelegate` method `URLSession:task:didReceiveChallenge:completionHandler:`.

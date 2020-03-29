@@ -10,9 +10,6 @@
 		1BF9F9601C87832B00F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
 		1BF9F9611C87843200F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
 		1BF9F9621C87843300F1F35A /* AFImageResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */; };
-		1F8482C0220F386200718111 /* httpbinorg_03172020.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482BF220F386200718111 /* httpbinorg_03172020.cer */; };
-		1F8482C1220F386200718111 /* httpbinorg_03172020.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482BF220F386200718111 /* httpbinorg_03172020.cer */; };
-		1F8482C2220F386200718111 /* httpbinorg_03172020.cer in Resources */ = {isa = PBXBuildFile; fileRef = 1F8482BF220F386200718111 /* httpbinorg_03172020.cer */; };
 		1F96D2A4203649560085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1F96D2A5203649570085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1F96D2A6203649570085FC3F /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -172,6 +169,9 @@
 		2D4563911DB117A200AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */; };
 		2D4563921DB117A200AE4812 /* AFXMLParserResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */; };
 		2D4563941DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D4563931DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m */; };
+		31CBC007242D8DF200934333 /* httpbinorg_02182021.cer in Resources */ = {isa = PBXBuildFile; fileRef = 31CBC006242D8DF200934333 /* httpbinorg_02182021.cer */; };
+		31CBC008242D8DF200934333 /* httpbinorg_02182021.cer in Resources */ = {isa = PBXBuildFile; fileRef = 31CBC006242D8DF200934333 /* httpbinorg_02182021.cer */; };
+		31CBC009242D8DF200934333 /* httpbinorg_02182021.cer in Resources */ = {isa = PBXBuildFile; fileRef = 31CBC006242D8DF200934333 /* httpbinorg_02182021.cer */; };
 		323D83E2231D185400C5BFC6 /* WKWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 323D83E0231D185400C5BFC6 /* WKWebView+AFNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		323D83E3231D185400C5BFC6 /* WKWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 323D83E1231D185400C5BFC6 /* WKWebView+AFNetworking.m */; };
 		323D83E5231D188400C5BFC6 /* AFWKWebViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */; };
@@ -237,7 +237,6 @@
 /* Begin PBXFileReference section */
 		1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageResponseSerializerTests.m; sourceTree = "<group>"; };
 		1F083A4920364648004D80C7 /* AFCompatibilityMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFCompatibilityMacros.h; sourceTree = "<group>"; };
-		1F8482BF220F386200718111 /* httpbinorg_03172020.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = httpbinorg_03172020.cer; sourceTree = "<group>"; };
 		2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUIButtonTests.m; sourceTree = "<group>"; };
 		297824A01BC2D69A0041C395 /* adn_0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_0.cer; path = ADNNetServerTrustChain/adn_0.cer; sourceTree = "<group>"; };
 		297824A11BC2D69A0041C395 /* adn_1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = adn_1.cer; path = ADNNetServerTrustChain/adn_1.cer; sourceTree = "<group>"; };
@@ -306,6 +305,7 @@
 		29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCompoundResponseSerializerTests.m; sourceTree = "<group>"; };
 		2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLParserResponseSerializerTests.m; sourceTree = "<group>"; };
 		2D4563931DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLDocumentResponseSerializerTests.m; sourceTree = "<group>"; };
+		31CBC006242D8DF200934333 /* httpbinorg_02182021.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = httpbinorg_02182021.cer; sourceTree = "<group>"; };
 		323D83E0231D185400C5BFC6 /* WKWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		323D83E1231D185400C5BFC6 /* WKWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWKWebViewTests.m; sourceTree = "<group>"; };
@@ -417,7 +417,7 @@
 				E2B10D8D233035100004E005 /* Amazon.cer */,
 				E2B10D8B233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer */,
 				298D7CE21BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain */,
-				1F8482BF220F386200718111 /* httpbinorg_03172020.cer */,
+				31CBC006242D8DF200934333 /* httpbinorg_02182021.cer */,
 			);
 			path = HTTPBin.org;
 			sourceTree = "<group>";
@@ -446,19 +446,19 @@
 		298D7CD11BC2CABE00FD3B3E /* AFNetworking Tests */ = {
 			isa = PBXGroup;
 			children = (
+				29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */,
 				298D7C811BC2C88F00FD3B3E /* AFHTTPRequestSerializationTests.m */,
 				298D7C821BC2C88F00FD3B3E /* AFHTTPResponseSerializationTests.m */,
 				298D7C831BC2C88F00FD3B3E /* AFHTTPSessionManagerTests.m */,
-				298D7C851BC2C88F00FD3B3E /* AFJSONSerializationTests.m */,
-				2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */,
-				2D4563931DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m */,
-				298D7C881BC2C88F00FD3B3E /* AFPropertyListResponseSerializerTests.m */,
-				E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */,
-				29D3413E1C20D46400A7D266 /* AFCompoundResponseSerializerTests.m */,
 				1BF9F95F1C87832B00F1F35A /* AFImageResponseSerializerTests.m */,
+				298D7C851BC2C88F00FD3B3E /* AFJSONSerializationTests.m */,
 				298D7C871BC2C88F00FD3B3E /* AFNetworkReachabilityManagerTests.m */,
+				E91164641DA6A7AE00DFFF56 /* AFPropertyListRequestSerializerTests.m */,
+				298D7C881BC2C88F00FD3B3E /* AFPropertyListResponseSerializerTests.m */,
 				298D7C891BC2C88F00FD3B3E /* AFSecurityPolicyTests.m */,
 				298D7C8F1BC2C88F00FD3B3E /* AFURLSessionManagerTests.m */,
+				2D4563931DB11DDB00AE4812 /* AFXMLDocumentResponseSerializerTests.m */,
+				2D45638F1DB1179D00AE4812 /* AFXMLParserResponseSerializerTests.m */,
 			);
 			name = "AFNetworking Tests";
 			sourceTree = "<group>";
@@ -470,9 +470,9 @@
 				298D7C841BC2C88F00FD3B3E /* AFImageDownloaderTests.m */,
 				298D7C861BC2C88F00FD3B3E /* AFNetworkActivityManagerTests.m */,
 				298D7C8C1BC2C88F00FD3B3E /* AFUIActivityIndicatorViewTests.m */,
+				2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */,
 				298D7C8D1BC2C88F00FD3B3E /* AFUIImageViewTests.m */,
 				298D7C8E1BC2C88F00FD3B3E /* AFUIRefreshControlTests.m */,
-				2960BAC21C1B2F1A00BA02F0 /* AFUIButtonTests.m */,
 				323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */,
 			);
 			name = "AFNetworking UIKit Tests";
@@ -791,41 +791,46 @@
 		299522301BBF104D00859F49 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = AFNetworking;
 				TargetAttributes = {
 					2987B0A41BC408A200179A4C = {
 						CreatedOnToolsVersion = 7.1;
+						ProvisioningStyle = Automatic;
 					};
 					2987B0AD1BC408A200179A4C = {
 						CreatedOnToolsVersion = 7.1;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					298D7C3A1BC2C79500FD3B3E = {
 						CreatedOnToolsVersion = 7.0.1;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					298D7C491BC2C7B200FD3B3E = {
 						CreatedOnToolsVersion = 7.0.1;
+						ProvisioningStyle = Automatic;
 					};
 					299522381BBF104D00859F49 = {
 						CreatedOnToolsVersion = 7.0.1;
+						ProvisioningStyle = Automatic;
 					};
 					299522641BBF129200859F49 = {
 						CreatedOnToolsVersion = 7.0.1;
+						ProvisioningStyle = Automatic;
 					};
 					299522761BBF136400859F49 = {
 						CreatedOnToolsVersion = 7.0.1;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = 299522331BBF104D00859F49 /* Build configuration list for PBXProject "AFNetworking" */;
 			compatibilityVersion = "Xcode 6.3";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = 2995222F1BBF104D00859F49;
 			productRefGroup = 2995223A1BBF104D00859F49 /* Products */;
@@ -858,7 +863,6 @@
 				2987B0DE1BC40AFB00179A4C /* foobar.com.cer in Resources */,
 				2987B0D61BC40AEC00179A4C /* ADNNetServerTrustChain in Resources */,
 				E2B10D90233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer in Resources */,
-				1F8482C2220F386200718111 /* httpbinorg_03172020.cer in Resources */,
 				2987B0DF1BC40AFB00179A4C /* NoDomains.cer in Resources */,
 				2987B0D41BC40AE900179A4C /* adn_1.cer in Resources */,
 				2987B0DD1BC40AFB00179A4C /* AltName.cer in Resources */,
@@ -872,6 +876,7 @@
 				5F4323BD1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DF1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
 				E2B10D93233035100004E005 /* Amazon Root CA 1.cer in Resources */,
+				31CBC009242D8DF200934333 /* httpbinorg_02182021.cer in Resources */,
 				5F4323C01BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
 				5F4323CF1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323C31BF63741003B8749 /* google.com.cer in Resources */,
@@ -885,7 +890,6 @@
 				298D7CBF1BC2CA9D00FD3B3E /* foobar.com.cer in Resources */,
 				298D7CBA1BC2CA9800FD3B3E /* logo.png in Resources */,
 				E2B10D8E233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer in Resources */,
-				1F8482C0220F386200718111 /* httpbinorg_03172020.cer in Resources */,
 				297824A31BC2D69A0041C395 /* adn_0.cer in Resources */,
 				298D7CE31BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */,
 				297824A71BC2D69A0041C395 /* adn_2.cer in Resources */,
@@ -899,6 +903,7 @@
 				5F4323BB1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323DD1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
 				E2B10D91233035100004E005 /* Amazon Root CA 1.cer in Resources */,
+				31CBC007242D8DF200934333 /* httpbinorg_02182021.cer in Resources */,
 				5F4323BE1BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
 				5F4323CD1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				5F4323C11BF63741003B8749 /* google.com.cer in Resources */,
@@ -912,7 +917,6 @@
 				298D7CBC1BC2CA9C00FD3B3E /* foobar.com.cer in Resources */,
 				298D7CB91BC2CA9800FD3B3E /* logo.png in Resources */,
 				E2B10D8F233035100004E005 /* Starfield Services Root Certificate Authority - G2.cer in Resources */,
-				1F8482C1220F386200718111 /* httpbinorg_03172020.cer in Resources */,
 				297824A41BC2D69A0041C395 /* adn_0.cer in Resources */,
 				298D7CE41BC2CB7C00FD3B3E /* HTTPBinOrgServerTrustChain in Resources */,
 				297824A81BC2D69A0041C395 /* adn_2.cer in Resources */,
@@ -926,6 +930,7 @@
 				5F4323BC1BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer in Resources */,
 				5F4323CE1BF63741003B8749 /* GoogleInternetAuthorityG2.cer in Resources */,
 				E2B10D92233035100004E005 /* Amazon Root CA 1.cer in Resources */,
+				31CBC008242D8DF200934333 /* httpbinorg_02182021.cer in Resources */,
 				5F4323DE1BF63CCC003B8749 /* GeoTrust_Global_CA_Root.cer in Resources */,
 				5F4323BF1BF63741003B8749 /* GeoTrust_Global_CA-cross.cer in Resources */,
 				5F4323C21BF63741003B8749 /* google.com.cer in Resources */,
@@ -1122,22 +1127,23 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1147,22 +1153,23 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -1170,14 +1177,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ./Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.afnetworking.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Debug;
 		};
@@ -1185,14 +1194,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ./Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.afnetworking.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Release;
 		};
@@ -1200,14 +1211,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = ./Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-iOS-Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.afnetworking.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 			};
 			name = Debug;
 		};
@@ -1215,14 +1229,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = ./Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-iOS-Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.afnetworking.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 			};
 			name = Release;
 		};
@@ -1230,14 +1247,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = ./Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-Mac-OS-X-Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.afnetworking.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -1246,14 +1266,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = ./Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-Mac-OS-X-Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.afnetworking.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -1262,8 +1285,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_CODE_COVERAGE = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1298,7 +1322,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1306,7 +1330,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -1325,8 +1349,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MARKETING_VERSION = 4.0.0;
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1335,6 +1360,11 @@
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
@@ -1343,8 +1373,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_CODE_COVERAGE = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1379,9 +1410,9 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -1400,8 +1431,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MARKETING_VERSION = 4.0.0;
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -1410,6 +1442,11 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
@@ -1420,20 +1457,25 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = YES;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1443,20 +1485,25 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = YES;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -1466,8 +1513,11 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1476,11 +1526,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-watchOS";
 				PRODUCT_NAME = AFNetworking;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1490,8 +1539,11 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1500,11 +1552,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alamofire.AFNetworking-watchOS";
 				PRODUCT_NAME = AFNetworking;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -1514,24 +1565,24 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = marker;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1541,24 +1592,24 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alamofire.AFNetworking;
 				PRODUCT_NAME = AFNetworking;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};

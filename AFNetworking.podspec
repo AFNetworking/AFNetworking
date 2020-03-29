@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
   s.name     = 'AFNetworking'
-  s.version  = '3.2.1'
+  s.version  = '4.0.0'
   s.license  = 'MIT'
-  s.summary  = 'A delightful iOS and OS X networking framework.'
+  s.summary  = 'A delightful networking framework for Apple platforms.'
   s.homepage = 'https://github.com/AFNetworking/AFNetworking'
   s.social_media_url = 'https://twitter.com/AFNetworking'
   s.authors  = { 'Mattt Thompson' => 'm@mattt.me' }
@@ -27,8 +27,8 @@ Pod::Spec.new do |s|
 EOS
   s.prefix_header_contents = pch_AF
   
-  s.ios.deployment_target = '8.0'
-  s.osx.deployment_target = '10.9'
+  s.ios.deployment_target = '9.0'
+  s.osx.deployment_target = '10.10'
   s.watchos.deployment_target = '2.0'
   s.tvos.deployment_target = '9.0'
   
@@ -47,8 +47,8 @@ EOS
   end
 
   s.subspec 'Reachability' do |ss|
-    ss.ios.deployment_target = '8.0'
-    ss.osx.deployment_target = '10.9'
+    ss.ios.deployment_target = '9.0'
+    ss.osx.deployment_target = '10.10'
     ss.tvos.deployment_target = '9.0'
 
     ss.source_files = 'AFNetworking/AFNetworkReachabilityManager.{h,m}'
@@ -69,7 +69,7 @@ EOS
   end
 
   s.subspec 'UIKit' do |ss|
-    ss.ios.deployment_target = '8.0'
+    ss.ios.deployment_target = '9.0'
     ss.tvos.deployment_target = '9.0'
     ss.dependency 'AFNetworking/NSURLSession'
 

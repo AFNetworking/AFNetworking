@@ -62,8 +62,6 @@ id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions 
 
 - (instancetype)init;
 
-@property (nonatomic, assign) NSStringEncoding stringEncoding DEPRECATED_MSG_ATTRIBUTE("The string encoding is never used. AFHTTPResponseSerializer only validates status codes and content types but does not try to decode the received data in any way.");
-
 /**
  Creates and returns a serializer with default configuration.
  */

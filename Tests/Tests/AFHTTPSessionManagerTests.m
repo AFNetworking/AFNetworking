@@ -207,13 +207,13 @@
 }
 
 - (void)testCanBeEncoded {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.sessionManager];
+    NSData *data = [self archivedDataWithRootObject:self.sessionManager];
     XCTAssertNotNil(data);
 }
 
 - (void)testCanBeDecoded {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.sessionManager];
-    AFHTTPSessionManager *newManager = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSData *data = [self archivedDataWithRootObject:self.sessionManager];
+    AFHTTPSessionManager *newManager = [self unarchivedObjectOfClass:[AFHTTPSessionManager class] fromData:data];;
     XCTAssertNotNil(newManager.securityPolicy);
     XCTAssertNotNil(newManager.requestSerializer);
     XCTAssertNotNil(newManager.responseSerializer);
@@ -291,75 +291,6 @@
      }
      success:nil
      failure:nil];
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-# pragma mark - Deprecated Progress
-
-- (void)testDownloadProgressIsReportedForDeprecatedGET {
-    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     GET:@"image"
-     parameters:nil
-     progress:^(NSProgress * _Nonnull downloadProgress) {
-         if (downloadProgress.fractionCompleted == 1.0) {
-             [expectation fulfill];
-         }
-     }
-     success:nil
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testUploadProgressIsReportedForDeprecatedPOST {
-    NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
-    while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
-        [payload appendString:@"AFNetworking"];
-    }
-    
-    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     POST:@"post"
-     parameters:payload
-     progress:^(NSProgress * _Nonnull uploadProgress) {
-         if (uploadProgress.fractionCompleted == 1.0) {
-             [expectation fulfill];
-         }
-     }
-     success:nil
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testUploadProgressIsReportedForStreamingDeprecatedPost {
-    NSMutableString *payload = [NSMutableString stringWithString:@"AFNetworking"];
-    while ([payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < 20000) {
-        [payload appendString:@"AFNetworking"];
-    }
-    
-    __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Progress Should equal 1.0"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     POST:@"post"
-     parameters:nil
-     constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-         [formData appendPartWithFileData:[payload dataUsingEncoding:NSUTF8StringEncoding] name:@"AFNetworking" fileName:@"AFNetworking" mimeType:@"text/html"];
-     }
-     progress:^(NSProgress * _Nonnull uploadProgress) {
-         if (uploadProgress.fractionCompleted == 1.0) {
-             [expectation fulfill];
-         }
-     }
-     success:nil
-     failure:nil];
-#pragma clang diagnostic pop
     [self waitForExpectationsWithCommonTimeout];
 }
 
@@ -526,186 +457,6 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
-#pragma mark - Deprecated Rest Interface
-
-- (void)testDeprecatedGETWithoutProgress {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     GET:@"get"
-     parameters:nil
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         XCTAssertNotNil(responseObject);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testDeprecatedPOSTWithoutProgress {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     POST:@"post"
-     parameters:@{@"key":@"value"}
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         XCTAssertTrue([responseObject[@"form"][@"key"] isEqualToString:@"value"]);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testDeprecatedPOSTWithoutProgressWithConstructingBody {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     POST:@"post"
-     parameters:@{@"key":@"value"}
-     constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-         [formData appendPartWithFileData:[@"Data" dataUsingEncoding:NSUTF8StringEncoding]
-                                     name:@"DataName"
-                                 fileName:@"DataFileName"
-                                 mimeType:@"data"];
-     }
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         XCTAssertTrue([responseObject[@"files"][@"DataName"] isEqualToString:@"Data"]);
-         XCTAssertTrue([responseObject[@"form"][@"key"] isEqualToString:@"value"]);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop    
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-
-- (void)testDeprecatedGETWithoutHeaders {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     GET:@"get"
-     parameters:nil
-     progress:nil
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         XCTAssertNotNil(responseObject);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testDeprecatedHEADWithoutHeaders {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     HEAD:@"get"
-     parameters:nil
-     success:^(NSURLSessionDataTask * _Nonnull task) {
-         XCTAssertNotNil(task);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testDeprecatedPOSTWithoutHeaders {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     POST:@"post"
-     parameters:@{@"key":@"value"}
-     progress:nil
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         XCTAssertTrue([responseObject[@"form"][@"key"] isEqualToString:@"value"]);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testDeprecatedPOSTWithoutHeadersWithConstructingBody {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     POST:@"post"
-     parameters:@{@"key":@"value"}
-     constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-         [formData appendPartWithFileData:[@"Data" dataUsingEncoding:NSUTF8StringEncoding]
-                                     name:@"DataName"
-                                 fileName:@"DataFileName"
-                                 mimeType:@"data"];
-     }
-     progress:nil
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         XCTAssertTrue([responseObject[@"files"][@"DataName"] isEqualToString:@"Data"]);
-         XCTAssertTrue([responseObject[@"form"][@"key"] isEqualToString:@"value"]);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testDeprecatedPUTWithoutHeaders {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     PUT:@"put"
-     parameters:@{@"key":@"value"}
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         XCTAssertTrue([responseObject[@"form"][@"key"] isEqualToString:@"value"]);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testDeprecatedDELETEWithoutHeaders {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     DELETE:@"delete"
-     parameters:@{@"key":@"value"}
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         XCTAssertTrue([responseObject[@"args"][@"key"] isEqualToString:@"value"]);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
-- (void)testDeprecatedPATCHWithoutHeaders {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.sessionManager
-     PATCH:@"patch"
-     parameters:@{@"key":@"value"}
-     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         XCTAssertTrue([responseObject[@"form"][@"key"] isEqualToString:@"value"]);
-         [expectation fulfill];
-     }
-     failure:nil];
-#pragma clang diagnostic pop
-    [self waitForExpectationsWithCommonTimeout];
-}
-
 #pragma mark - Auth
 
 - (void)testHiddenBasicAuthentication {
@@ -833,16 +584,17 @@
 
 - (void)testAuthenticationChallengeHandlerCredentialResult {
     __weak XCTestExpectation *expectation = [self expectationWithDescription:@"Request succeed with provided credentials"];
-    self.manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [self.manager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
+    self.sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [self.sessionManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
         if ([challenge.protectionSpace.realm isEqualToString:@"Fake Realm"]) {
             return [NSURLCredential credentialWithUser:@"user" password:@"passwd" persistence:NSURLCredentialPersistenceNone];
         }
         return @(NSURLSessionAuthChallengePerformDefaultHandling);
     }];
-    [self.manager
+    [self.sessionManager
      GET:@"basic-auth/user/passwd"
      parameters:nil
+     headers:nil
      progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          [expectation fulfill];
@@ -852,7 +604,6 @@
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
-    [self.manager invalidateSessionCancelingTasks:YES];
 }
 
 @end
