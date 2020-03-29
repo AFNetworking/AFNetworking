@@ -10,25 +10,17 @@ env:
 matrix:
   include:
     - osx_image: xcode11.3
-      env: 
-          - FASTLANE_ENV=ios13_xcode11
-          # - FL_XCODE_VERSION="~> 11.4.0"
+      env: FASTLANE_ENV=ios13_xcode11
     - osx_image: xcode11.3
-      env: 
-          - FASTLANE_ENV=tvos13_xcode11
-          # - FL_XCODE_VERSION="~> 11.4.0"
+      env: FASTLANE_ENV=tvos13_xcode11
     - osx_image: xcode11.3
-      env: 
-          - FASTLANE_ENV=macos
-          # - FL_XCODE_VERSION="~> 11.4.0"
+      env: FASTLANE_ENV=macos
+    - osx_image: xcode11.3
+      env: FASTLANE_ENV=catalyst
     - osx_image: xcode10.3
-      env: 
-          - FASTLANE_ENV=ios12_xcode10
-          # - FL_XCODE_VERSION="~> 10.3.0"
+      env: FASTLANE_ENV=ios12_xcode10
     - osx_image: xcode9.4
-      env: 
-          - FASTLANE_ENV=ios11_xcode94
-          # - FL_XCODE_VERSION="~> 9.4.0"
+      env: FASTLANE_ENV=ios11_xcode94
 before_install:
   - gem install fastlane --no-document --quiet
   - gem install cocoapods --no-document --quiet
