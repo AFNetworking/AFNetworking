@@ -59,15 +59,12 @@ static id AFPublicKeyForCertificate(NSData *certificate) {
 
     policy = SecPolicyCreateBasicX509();
     __Require_noErr_Quiet(SecTrustCreateWithCertificates(allowedCertificate, policy, &allowedTrust), _out);
-    
-#if TARGET_OS_MACCATALYST
-    BOOL isTrustValid = SecTrustEvaluateWithError(allowedTrust, nil);
-    if (!isTrustValid) { goto _out; }
-#else
     SecTrustResultType result;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     __Require_noErr_Quiet(SecTrustEvaluate(allowedTrust, &result), _out);
-#endif
-    
+#pragma clang diagnostic pop
+
     allowedPublicKey = (__bridge_transfer id)SecTrustCopyPublicKey(allowedTrust);
 
 _out:
@@ -88,17 +85,14 @@ _out:
 
 static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
     BOOL isValid = NO;
-    
-#if TARGET_OS_MACCATALYST
-    isValid = SecTrustEvaluateWithError(serverTrust, nil);
-    goto _out;
-#else
     SecTrustResultType result;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     __Require_noErr_Quiet(SecTrustEvaluate(serverTrust, &result), _out);
+#pragma clang diagnostic pop
 
     isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
-#endif
-    
+
 _out:
     return isValid;
 }
@@ -127,13 +121,11 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
         SecTrustRef trust;
         __Require_noErr_Quiet(SecTrustCreateWithCertificates(certificates, policy, &trust), _out);
-#if TARGET_OS_MACCATALYST
-        BOOL isValid = SecTrustEvaluateWithError(serverTrust, nil);
-        if (!isValid) { goto _out; }
-#else
         SecTrustResultType result;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         __Require_noErr_Quiet(SecTrustEvaluate(trust, &result), _out);
-#endif
+#pragma clang diagnostic pop
         [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];
 
     _out:
