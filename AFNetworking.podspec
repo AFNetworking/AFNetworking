@@ -21,14 +21,10 @@ Pod::Spec.new do |s|
 
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
-    ss.watchos.frameworks = 'MobileCoreServices', 'CoreGraphics'
-    ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
-    ss.osx.frameworks = 'CoreServices'
   end
 
   s.subspec 'Security' do |ss|
     ss.source_files = 'AFNetworking/AFSecurityPolicy.{h,m}'
-    ss.frameworks = 'Security'
   end
 
   s.subspec 'Reachability' do |ss|
@@ -37,8 +33,6 @@ Pod::Spec.new do |s|
     ss.tvos.deployment_target = '9.0'
 
     ss.source_files = 'AFNetworking/AFNetworkReachabilityManager.{h,m}'
-
-    ss.frameworks = 'SystemConfiguration'
   end
 
   s.subspec 'NSURLSession' do |ss|
