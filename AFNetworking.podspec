@@ -8,7 +8,6 @@ Pod::Spec.new do |s|
   s.authors  = { 'Mattt Thompson' => 'm@mattt.me' }
   s.source   = { :git => 'https://github.com/AFNetworking/AFNetworking.git', :tag => s.version }
 
-  s.public_header_files = 'AFNetworking/AFNetworking.h'
   s.source_files = 'AFNetworking/AFNetworking.h'
 
   pch_AF = <<-EOS
@@ -33,7 +32,6 @@ EOS
 
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
-    ss.public_header_files = 'AFNetworking/AFURL{Request,Response}Serialization.h'
     ss.watchos.frameworks = 'MobileCoreServices', 'CoreGraphics'
     ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
     ss.osx.frameworks = 'CoreServices'
@@ -41,7 +39,6 @@ EOS
 
   s.subspec 'Security' do |ss|
     ss.source_files = 'AFNetworking/AFSecurityPolicy.{h,m}'
-    ss.public_header_files = 'AFNetworking/AFSecurityPolicy.h'
     ss.frameworks = 'Security'
   end
 
@@ -51,7 +48,6 @@ EOS
     ss.tvos.deployment_target = '9.0'
 
     ss.source_files = 'AFNetworking/AFNetworkReachabilityManager.{h,m}'
-    ss.public_header_files = 'AFNetworking/AFNetworkReachabilityManager.h'
 
     ss.frameworks = 'SystemConfiguration'
   end
@@ -64,7 +60,6 @@ EOS
     ss.dependency 'AFNetworking/Security'
 
     ss.source_files = 'AFNetworking/AF{URL,HTTP}SessionManager.{h,m}', 'AFNetworking/AFCompatibilityMacros.h'
-    ss.public_header_files = 'AFNetworking/AF{URL,HTTP}SessionManager.h', 'AFNetworking/AFCompatibilityMacros.h'
   end
 
   s.subspec 'UIKit' do |ss|
@@ -72,7 +67,6 @@ EOS
     ss.tvos.deployment_target = '9.0'
     ss.dependency 'AFNetworking/NSURLSession'
 
-    ss.public_header_files = 'UIKit+AFNetworking/*.h'
     ss.source_files = 'UIKit+AFNetworking'
   end
 end
