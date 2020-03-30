@@ -8,6 +8,10 @@ Pod::Spec.new do |s|
   s.authors  = { 'Mattt Thompson' => 'm@mattt.me' }
   s.source   = { :git => 'https://github.com/AFNetworking/AFNetworking.git', :tag => s.version }
 
+  s.pod_target_xcconfig = {
+    'PRODUCT_BUNDLE_IDENTIFIER' => 'com.alamofire.AFNetworking'
+  }
+
   s.source_files = 'AFNetworking/AFNetworking.h'
 
   pch_AF = <<-EOS
