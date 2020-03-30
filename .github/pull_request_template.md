@@ -1,26 +1,13 @@
-What does this implement/fix? Explain your changes.
----------------------------------------------------
-…
+### Issue Link :link:
+<!-- What issue does this fix? If an issue doesn't exist, remove this section. -->
 
-Does this close any currently open issues?
-------------------------------------------
-…
+### Goals :soccer:
+<!-- List the high-level objectives of this pull request. -->
+<!-- Include any relevant context. -->
 
+### Implementation Details :construction:
+<!-- Explain the reasoning behind any architectural changes. -->
+<!-- Highlight any new functionality. -->
 
-Any relevant logs, error output, etc?
--------------------------------------
-<!--
-If the logs is quite long, please paste to https://ghostbin.com/ and insert the link here.
--->
-
-Any other comments?
--------------------
-…
-
-Where has this been tested?
----------------------------
-**Devices/Simulators:** …
-
-**iOS version:** …
-
-**AFNetworking version:** …
+### Testing Details :mag:
+<!-- Describe what tests you've added for your changes. -->

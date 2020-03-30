@@ -1,27 +1,33 @@
-<!--
-Hi, thanks so much for opening an issue! 🤗
+> ℹ Please fill out this template when filing an issue.
+> All lines beginning with an ℹ symbol instruct you with what info we expect. You can delete those lines once you've filled in the info.
+>
+> Per our [*CONTRIBUTING guidelines](https://github.com/AFNetworking/AFNetworking/blob/master/CONTRIBUTING.md), we use GitHub for
+> bugs and feature requests, not general support. Other issues should be opened on Stack Overflow with the tag `afnetworking`.
+>
+> Please remove this line and everything above it before submitting.
 
-To better pinpoint (and solve) the issue you're experiencing, we could use some information on your behalf.
+* [ ] I've read, understood, and done my best to follow the [*CONTRIBUTING guidelines](https://github.com/AFNetworking/AFNetworking/blob/master/CONTRIBUTING.md).
 
-Please let us know the following things:
+## What did you do?
 
-- What version of AFNetworking are you using?
-- What version of iOS are you running on?
-- What version of Swift (if any) are you running on?
-- What device(s) are you testing on? Are these simulators?
-- Is the issue you're experiencing reproducable in the example app?
+ℹ Please replace this with what you did.  
 
-In some cases it can be really helpful to provide a short example of your code.
-If so, please wrap these code blocks in backticks, like this:
+## What did you expect to happen?
 
-```objective-c
-*your code goes here*
-```
+ℹ Please replace this with what you expected to happen.  
 
-When referencing a dependency manager-related issue (think CocoaPods, Carthage, SPM), please add its configuration file and version to the issue.
-It would be helpful to put the contents in a code block too, using ```ruby for CocoaPods and ```swift for SwiftPM.
+## What happened instead?
 
-Also please make sure your title describes your problem well. Questions end with a question mark.
+ℹ Please replace this with of what happened instead.  
 
-Thanks again, and let us know if there are any other questions you might have.
--->
+## AFNetworking Environment
+
+**AFNetworking version:**
+**Xcode version:**
+**Swift version:**
+**Platform(s) running AFNetworking:**
+**macOS version running Xcode:**
+
+## Demo Project
+
+ℹ Please link to or upload a project we can download that reproduces the issue.
