@@ -1,6 +1,6 @@
-#Change Log
+# Change Log
 All notable changes to this project will be documented in this file.
-`AFNetworking` adheres to [Semantic Versioning](http://semver.org/).
+`AFNetworking` adheres to [Semantic Versioning](https://semver.org/).
 
 --- 
 
