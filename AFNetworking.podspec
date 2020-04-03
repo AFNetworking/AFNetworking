@@ -8,27 +8,24 @@ Pod::Spec.new do |s|
   s.authors  = { 'Mattt Thompson' => 'm@mattt.me' }
   s.source   = { :git => 'https://github.com/AFNetworking/AFNetworking.git', :tag => s.version }
 
-  s.pod_target_xcconfig = {
-    'PRODUCT_BUNDLE_IDENTIFIER' => 'com.alamofire.AFNetworking'
-  }
-
-  s.source_files = 'AFNetworking/AFNetworking.h'
-
   s.ios.deployment_target = '9.0'
   s.osx.deployment_target = '10.10'
   s.watchos.deployment_target = '2.0'
   s.tvos.deployment_target = '9.0'
 
+  s.ios.pod_target_xcconfig = { 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.alamofire.AFNetworking' }
+  s.osx.pod_target_xcconfig = { 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.alamofire.AFNetworking' }
+  s.watchos.pod_target_xcconfig = { 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.alamofire.AFNetworking-watchOS' }
+  s.tvos.pod_target_xcconfig = { 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.alamofire.AFNetworking' }
+
+  s.source_files = 'AFNetworking/AFNetworking.h'
+
   s.subspec 'Serialization' do |ss|
     ss.source_files = 'AFNetworking/AFURL{Request,Response}Serialization.{h,m}'
-    ss.watchos.frameworks = 'MobileCoreServices', 'CoreGraphics'
-    ss.ios.frameworks = 'MobileCoreServices', 'CoreGraphics'
-    ss.osx.frameworks = 'CoreServices'
   end
 
   s.subspec 'Security' do |ss|
     ss.source_files = 'AFNetworking/AFSecurityPolicy.{h,m}'
-    ss.frameworks = 'Security'
   end
 
   s.subspec 'Reachability' do |ss|
@@ -37,8 +34,6 @@ Pod::Spec.new do |s|
     ss.tvos.deployment_target = '9.0'
 
     ss.source_files = 'AFNetworking/AFNetworkReachabilityManager.{h,m}'
-
-    ss.frameworks = 'SystemConfiguration'
   end
 
   s.subspec 'NSURLSession' do |ss|
