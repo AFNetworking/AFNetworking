@@ -1001,7 +1001,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             @throw [NSException exceptionWithName:@"Invalid Return Value" reason:@"The return value from the authentication challenge handler must be nil, an NSError, an NSURLCredential or an NSNumber." userInfo:nil];
         }
     } else {
-        evaluateServerTrust = YES;
+        // serverTrust is nil if the authentication method of the protection space is not server trust
+        evaluateServerTrust = challenge.protectionSpace.serverTrust != nil;
     }
 
     if (evaluateServerTrust) {
