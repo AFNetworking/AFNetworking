@@ -1247,7 +1247,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 
 #pragma mark - Authentication helpers
 
-+ (nonnull NSError *)serverTrustErrorWithServerTrust:(nullable SecTrustRef)serverTrust url:(nonnull NSURL *)url {
++ (nonnull NSError *)serverTrustErrorWithServerTrust:(nonnull SecTrustRef)serverTrust url:(nonnull NSURL *)url {
 
         NSBundle *CFNetworkBundle = [NSBundle bundleWithIdentifier:@"com.apple.CFNetwork"];
     NSString *defaultValue = @"The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.";

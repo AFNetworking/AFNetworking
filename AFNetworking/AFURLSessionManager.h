@@ -447,7 +447,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setDownloadTaskDidResumeBlock:(nullable void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes))block;
 
-+ (nonnull NSError *)serverTrustErrorWithServerTrust:(nullable SecTrustRef)serverTrust url:(nonnull NSURL *)url;
++ (nonnull NSError *)serverTrustErrorWithServerTrust:(nonnull SecTrustRef)serverTrust url:(nonnull NSURL *)url;
 
 @end
 
