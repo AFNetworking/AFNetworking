@@ -606,4 +606,12 @@
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
 }
 
+static const void * const AuthenticationChallengeErrorKey = &AuthenticationChallengeErrorKey;
+
+- (void)testServerTrustErrorCrash {
+    NSURLProtectionSpace *space = [[NSURLProtectionSpace alloc] initWithHost:@"https://pinning-test.badssl.com" port:443 protocol:nil realm:nil authenticationMethod:NSURLAuthenticationMethodClientCertificate];
+    XCTAssertNil((__bridge id)space.serverTrust);
+    XCTAssertThrows([AFURLSessionManager serverTrustErrorWithServerTrust:space.serverTrust url:[NSURL URLWithString:@"https://pinning-test.badssl.com"]]);
+}
+
 @end
