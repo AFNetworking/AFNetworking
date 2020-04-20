@@ -180,7 +180,7 @@
     NSError *serializationError = nil;
     NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters constructingBodyWithBlock:block error:&serializationError];
     for (NSString *headerField in headers.keyEnumerator) {
-        [request addValue:headers[headerField] forHTTPHeaderField:headerField];
+        [request setValue:headers[headerField] forHTTPHeaderField:headerField];
     }
     if (serializationError) {
         if (failure) {
@@ -261,7 +261,7 @@
     NSError *serializationError = nil;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
     for (NSString *headerField in headers.keyEnumerator) {
-        [request addValue:headers[headerField] forHTTPHeaderField:headerField];
+        [request setValue:headers[headerField] forHTTPHeaderField:headerField];
     }
     if (serializationError) {
         if (failure) {
