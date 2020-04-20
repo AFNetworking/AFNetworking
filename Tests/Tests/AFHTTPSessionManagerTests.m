@@ -206,6 +206,33 @@
     [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
+- (void)testSettingHTTPHeadersPerRequestCanReplaceTheDefaultValueSpecifiedInRequestSerializer {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+
+    [self.sessionManager.requestSerializer setValue:@"foo value"
+                                 forHTTPHeaderField:@"X-Foo"];
+    [self.sessionManager.requestSerializer setValue:@"bar value"
+                                 forHTTPHeaderField:@"X-Bar"];
+
+    NSURLSessionDataTask *testTask =
+        [self.sessionManager dataTaskWithHTTPMethod:@"GET"
+                                          URLString:@"get"
+                                         parameters:nil
+                                            headers:@{ @"X-Foo": @"request value" }
+                                     uploadProgress:nil
+                                   downloadProgress:nil
+                                            success:^(NSURLSessionDataTask * _Nonnull task, id _Nullable responseObject) {
+        XCTAssertTrue([task.originalRequest.allHTTPHeaderFields[@"X-Foo"] isEqualToString:@"request value"]);
+        XCTAssertTrue([task.originalRequest.allHTTPHeaderFields[@"X-Bar"] isEqualToString:@"bar value"]);
+        [expectation fulfill];
+    }
+                                            failure:nil];
+
+    [testTask resume];
+
+    [self waitForExpectationsWithCommonTimeout];
+}
+
 #pragma mark - NSCoding
 
 - (void)testSupportsSecureCoding {
@@ -380,6 +407,8 @@
 
 - (void)testPOST {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager.requestSerializer setValue:@"default value"
+                                 forHTTPHeaderField:@"field"];
     [self.sessionManager
      POST:@"post"
      parameters:@{@"key":@"value"}
@@ -396,6 +425,8 @@
 
 - (void)testPOSTWithConstructingBody {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager.requestSerializer setValue:@"default value"
+                                 forHTTPHeaderField:@"field"];
     [self.sessionManager
      POST:@"post"
      parameters:@{@"key":@"value"}
@@ -419,6 +450,8 @@
 
 - (void)testPUT {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager.requestSerializer setValue:@"default value"
+                                 forHTTPHeaderField:@"field"];
     [self.sessionManager
      PUT:@"put"
      parameters:@{@"key":@"value"}
@@ -434,6 +467,8 @@
 
 - (void)testDELETE {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager.requestSerializer setValue:@"default value"
+                                 forHTTPHeaderField:@"field"];
     [self.sessionManager
      DELETE:@"delete"
      parameters:@{@"key":@"value"}
@@ -449,6 +484,8 @@
 
 - (void)testPATCH {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.sessionManager.requestSerializer setValue:@"default value"
+                                 forHTTPHeaderField:@"field"];
     [self.sessionManager
      PATCH:@"patch"
      parameters:@{@"key":@"value"}
