@@ -28,6 +28,12 @@
 @property (readwrite, nonatomic, strong) AFHTTPSessionManager *sessionManager;
 @end
 
+@interface AFURLSessionManager (Testing)
+
+- (nonnull NSError *)serverTrustErrorForServerTrust:(SecTrustRef)serverTrust url:(NSURL *)url;
+
+@end
+
 @implementation AFHTTPSessionManagerTests
 
 - (void)setUp {
@@ -641,6 +647,48 @@
          [expectation fulfill];
      }];
     [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+}
+
+- (void)testThatServerTrustErrorIsCreatedWithProperUserInfoWithAllParameters {
+    NSURL *url = [NSURL URLWithString:@"https://httpbin.org/get"];
+    SecTrustRef trust = AFUTTrustChainForCertsInDirectory([[[NSBundle bundleForClass:[self class]] resourcePath]
+                                                           stringByAppendingPathComponent:@"HTTPBinOrgServerTrustChain"]);
+    NSError *error = [self.sessionManager serverTrustErrorForServerTrust:trust url:url];
+
+    XCTAssertNotNil(error);
+    XCTAssertNotNil(error.userInfo[NSURLErrorFailingURLPeerTrustErrorKey]);
+    XCTAssertEqual(error.userInfo[NSURLErrorFailingURLErrorKey], url);
+    XCTAssertEqual(error.userInfo[NSURLErrorFailingURLStringErrorKey], url.absoluteString);
+}
+
+- (void)testThatServerTrustErrorIsCreatedWithProperUserInfoWhenTrustIsNil {
+    NSURL *url = [NSURL URLWithString:@"https://httpbin.org/get"];
+    NSError *error = [self.sessionManager serverTrustErrorForServerTrust:nil url:url];
+
+    XCTAssertNotNil(error);
+    XCTAssertNil(error.userInfo[NSURLErrorFailingURLPeerTrustErrorKey]);
+    XCTAssertEqual(error.userInfo[NSURLErrorFailingURLErrorKey], url);
+    XCTAssertEqual(error.userInfo[NSURLErrorFailingURLStringErrorKey], url.absoluteString);
+}
+
+- (void)testThatServerTrustErrorIsCreatedWithProperUserInfoWhenURLIsNil {
+    SecTrustRef trust = AFUTTrustChainForCertsInDirectory([[[NSBundle bundleForClass:[self class]] resourcePath]
+                                                           stringByAppendingPathComponent:@"HTTPBinOrgServerTrustChain"]);
+    NSError *error = [self.sessionManager serverTrustErrorForServerTrust:trust url:nil];
+
+    XCTAssertNotNil(error);
+    XCTAssertNotNil(error.userInfo[NSURLErrorFailingURLPeerTrustErrorKey]);
+    XCTAssertNil(error.userInfo[NSURLErrorFailingURLErrorKey]);
+    XCTAssertNil(error.userInfo[NSURLErrorFailingURLStringErrorKey]);
+}
+
+- (void)testThatServerTrustErrorIsCreatedWithProperUserInfoAllParametersAreNil {
+    NSError *error = [self.sessionManager serverTrustErrorForServerTrust:nil url:nil];
+
+    XCTAssertNotNil(error);
+    XCTAssertNil(error.userInfo[NSURLErrorFailingURLPeerTrustErrorKey]);
+    XCTAssertNil(error.userInfo[NSURLErrorFailingURLErrorKey]);
+    XCTAssertNil(error.userInfo[NSURLErrorFailingURLStringErrorKey]);
 }
 
 @end

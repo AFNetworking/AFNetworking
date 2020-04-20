@@ -21,6 +21,8 @@
 
 #import <XCTest/XCTest.h>
 
+SecTrustRef AFUTTrustChainForCertsInDirectory(NSString *directoryPath);
+
 @interface AFTestCase : XCTestCase
 
 @property (nonatomic, strong, readonly) NSURL *baseURL;
