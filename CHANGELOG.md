@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 --- 
 
-## [4.0.1]((https://github.com/AFNetworking/AFNetworking/releases/tag/4.0.0) (04/19/2020)
+## [4.0.1](https://github.com/AFNetworking/AFNetworking/releases/tag/4.0.1) (04/19/2020)
 Release on Sunday, April 19, 2020. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/milestone/20?closed=1).
 
 #### Updated
