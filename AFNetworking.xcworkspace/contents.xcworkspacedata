@@ -125,12 +125,6 @@
          location = "group:UIProgressView+AFNetworking.m">
       </FileRef>
       <FileRef
-         location = "group:UIWebView+AFNetworking.h">
-      </FileRef>
-      <FileRef
-         location = "group:UIWebView+AFNetworking.m">
-      </FileRef>
-      <FileRef
          location = "group:UIRefreshControl+AFNetworking.h">
       </FileRef>
       <FileRef
