@@ -33,7 +33,7 @@ AFNetworking supports multiple methods for installing the library in a project.
 To integrate AFNetworking into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-pod 'AFNetworking', '~> 4.0'
+pod 'AFNetworking', '~> 4.0.1'
 ```
 
 ### Installation with Swift Package Manager
@@ -42,7 +42,7 @@ Once you have your Swift package set up, adding AFNetworking as a dependency is 
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AFNetworking/AFNetworking.git", .upToNextMajor(from: "4.0.0"))
+    .package(url: "https://github.com/AFNetworking/AFNetworking.git", .upToNextMajor(from: "4.0.1"))
 ]
 ```
 
@@ -53,7 +53,7 @@ dependencies: [
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate AFNetworking, add the following to your `Cartfile`.
 
 ```ogdl
-github "AFNetworking/AFNetworking" ~> 4.0
+github "AFNetworking/AFNetworking" ~> 4.0.1
 ```
 
 ## Requirements
