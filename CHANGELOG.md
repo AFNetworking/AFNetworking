@@ -1,8 +1,116 @@
-#Change Log
+# Change Log
 All notable changes to this project will be documented in this file.
-`AFNetworking` adheres to [Semantic Versioning](http://semver.org/).
+`AFNetworking` adheres to [Semantic Versioning](https://semver.org/).
 
 --- 
+
+## [4.0.1](https://github.com/AFNetworking/AFNetworking/releases/tag/4.0.1) (04/19/2020)
+Release on Sunday, April 19, 2020. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/milestone/20?closed=1).
+
+#### Updated
+* Project templates and integrations.
+  * Implemented by Kaspik in [#4531](https://github.com/AFNetworking/AFNetworking/pull/4531).
+* Various CocoaPods podspec settings.
+  * Implemented by ElfSundae in [#4528](https://github.com/AFNetworking/AFNetworking/pull/4528), [#4532](https://github.com/AFNetworking/AFNetworking/pull/4532), and [#4533](https://github.com/AFNetworking/AFNetworking/pull/4533).
+
+#### Fixed
+* Crash during authentication delegate method.
+  * Implemented by Kaspik, ElfSundae, and jshier in [#4542](https://github.com/AFNetworking/AFNetworking/pull/4542), [#4552](https://github.com/AFNetworking/AFNetworking/pull/4552), and [#4553](https://github.com/AFNetworking/AFNetworking/pull/4553).
+* SPM integration.
+  * Implemented by jshier in [#4554](https://github.com/AFNetworking/AFNetworking/pull/4554).
+* Improper update instead of replacement of header values.
+  * Implemented by ElfSundae in [#4550](https://github.com/AFNetworking/AFNetworking/pull/4550).
+* Nullability of some methods.
+  * Implemented by ElfSundae in [#4551](https://github.com/AFNetworking/AFNetworking/pull/4551).
+* Typos in CHANGELOG.
+  * Implemented by ElfSundae in [#4537](https://github.com/AFNetworking/AFNetworking/pull/4537).
+* Missing tvOS compatibility for some methods.
+  * Implemented by ElfSundae in [#4536](https://github.com/AFNetworking/AFNetworking/pull/4536).
+* Missing `FOUNDATION_EXPORT` for `AFJSONObjectByRemovingKeysWithNullValues`.
+  * Implemented by ElfSundae in [#4529](https://github.com/AFNetworking/AFNetworking/pull/4529).
+  
+#### Removed
+* Unused UIImage+AFNetworking.h file.
+  * Implemented by ElfSundae in [#4535](https://github.com/AFNetworking/AFNetworking/pull/4535).
+
+## [4.0.0](https://github.com/AFNetworking/AFNetworking/releases/tag/4.0.0) (03/29/2020)
+Released on Sunday, March 29, 2020. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/milestone/16?closed=1).
+
+#### Added
+* Notificate when a downloaded file has been moved successfully.
+  * Implemented by xingheng in [#4393](https://github.com/AFNetworking/AFNetworking/pull/4393).
+* Specific error for certificate pinning failure.
+  * Implemented by 0xced in [#3425](https://github.com/AFNetworking/AFNetworking/pull/3425).
+* `WKWebView` extensions.
+  * Implemented by tjanela in [#4439](https://github.com/AFNetworking/AFNetworking/pull/4439).
+* Automatic location of certificates in the main bundle for certificate pinning.
+  * Implemented by 0xced in [#3752](https://github.com/AFNetworking/AFNetworking/pull/3752).
+* User-Agent support for tvOS.
+  * Implemented by ghking in [#4014](https://github.com/AFNetworking/AFNetworking/pull/4014).
+* Ability for `AFHTTPSessionManager` to recreate its underlying `NSURLSession`.
+  * Implemented by Kaspik in [#4256](https://github.com/AFNetworking/AFNetworking/pull/4256).
+* Ability to set HTTP headers per request.
+  * Implemented by stnslw in [#4113](https://github.com/AFNetworking/AFNetworking/pull/4113).
+* Ability to capture `NSURLSessionTaskMetrics`.
+  * Implemented by Caelink in [#4237](https://github.com/AFNetworking/AFNetworking/pull/4237).
+
+#### Updated
+* `dataTaskWithHTTPMethod` to be public.
+  * Implemented by smartinspereira in [#4007](https://github.com/AFNetworking/AFNetworking/pull/4007).
+* Reachability notification to include the instance which issued the notification.
+  * Implemented by LMsgSendNilSelf in [#4051](https://github.com/AFNetworking/AFNetworking/pull/4051).
+* `AFJSONObjectByRemovingKeysWithNullValues` to be public.
+  * Implemented by ashfurrow in [#4051](https://github.com/AFNetworking/AFNetworking/pull/4051).
+* `AFJSONObjectByRemovingKeysWithNullValues` to remove `NSNull` values from `NSArray`s.
+  * Implemented by ashfurrow in [#4052](https://github.com/AFNetworking/AFNetworking/pull/4052).
+
+#### Changed
+* Automated CI to GitHub Actions.
+  * Implemented by jshier in [#4523](https://github.com/AFNetworking/AFNetworking/pull/4523).
+
+#### Fixed
+* Explicit `NSSecureCoding` support.
+  * Implemented by jshier in [#4523](https://github.com/AFNetworking/AFNetworking/pull/4523).
+* Deprecated API usage on Catalyst.
+  * Implemented by jshier in [#4523](https://github.com/AFNetworking/AFNetworking/pull/4523).
+* Nullability annotations.
+  * Implemented by jshier in [#4523](https://github.com/AFNetworking/AFNetworking/pull/4523).
+* `AFImageDownloader` to more accurately cancel downloads.
+  * Implemented by kinarobin in [#4407](https://github.com/AFNetworking/AFNetworking/pull/4407).
+* Double KVO notifications in `AFNetworkActivityManager`.
+  * Implemented by kinarobin in [#4406](https://github.com/AFNetworking/AFNetworking/pull/4406).
+* Availability annotations around `NSURLSessionTaskMetrics`.
+  * Implemented by ElfSundae in [#4516](https://github.com/AFNetworking/AFNetworking/pull/4516).
+* Issues with `associated_object` and subclasses.
+  * Implemented by welcommand in [#3872](https://github.com/AFNetworking/AFNetworking/pull/3872).
+* Memory leak in example application.
+  * Implemented by svoit in [#4196](https://github.com/AFNetworking/AFNetworking/pull/4196).
+* Crashes in multithreaded scenarios and `dispatch_barrier`.
+  * Implemented by streeter in [#4474](https://github.com/AFNetworking/AFNetworking/pull/4474).
+* Issues with `NSSecureCoding`.
+  * Implemented by ElfSudae in [#4409](https://github.com/AFNetworking/AFNetworking/pull/4409).
+* Code style issues.
+  * Implemented by svoit in [#4200](https://github.com/AFNetworking/AFNetworking/pull/4200).
+* Race condition in `AFImageDownloader`.
+  * Implemented by bbeversdorf in [#4246](https://github.com/AFNetworking/AFNetworking/pull/4246).
+* Coding style issues.
+  * Implemented by LeeHongHwa in [#4002](https://github.com/AFNetworking/AFNetworking/pull/4002).
+
+#### Removed
+* Support for iOS < 9, macOS < 10.10.
+  * Implemented by jshier in [#4523](https://github.com/AFNetworking/AFNetworking/pull/4523).
+* All previously deprecated APIs.
+  * Implemented by jshier in [#4523](https://github.com/AFNetworking/AFNetworking/pull/4523).
+* Unnecessary `__block` capture.
+  * Implemented by kinarobin in [#4526](https://github.com/AFNetworking/AFNetworking/pull/4526).
+* Workaround for `NSURLSessionUploadTask` creation on iOS 7.
+  * Implemented by kinarobin in [#4525](https://github.com/AFNetworking/AFNetworking/pull/4525).
+* Workaround for safe `NSURLSessionTask` creation on iOS < 8.
+  * Implemented by kinarobin in [#4401](https://github.com/AFNetworking/AFNetworking/pull/4401).
+* `UIWebView` extensions.
+  * Implemented by tjanela in [#4439](https://github.com/AFNetworking/AFNetworking/pull/4439).
+
+---
 
 ## [3.2.1](https://github.com/AFNetworking/AFNetworking/releases/tag/3.2.1) (05/04/2018)
 Released on Friday, May 04, 2018. All issues associated with this milestone can be found using this [filter](https://github.com/AFNetworking/AFNetworking/issues?q=milestone%3A3.2.1+is%3Aclosed).

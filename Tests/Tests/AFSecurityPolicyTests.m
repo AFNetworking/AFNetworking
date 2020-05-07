@@ -26,23 +26,6 @@
 
 @end
 
-static SecTrustRef AFUTTrustChainForCertsInDirectory(NSString *directoryPath) {
-    NSArray *certFileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:nil];
-    NSMutableArray *certs  = [NSMutableArray arrayWithCapacity:[certFileNames count]];
-    for (NSString *path in certFileNames) {
-        NSData *certData = [NSData dataWithContentsOfFile:[directoryPath stringByAppendingPathComponent:path]];
-        SecCertificateRef cert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)(certData));
-        [certs addObject:(__bridge_transfer id)(cert)];
-    }
-
-    SecPolicyRef policy = SecPolicyCreateBasicX509();
-    SecTrustRef trust = NULL;
-    SecTrustCreateWithCertificates((__bridge CFTypeRef)(certs), policy, &trust);
-    CFRelease(policy);
-
-    return trust;
-}
-
 static SecTrustRef AFUTHTTPBinOrgServerTrust() {
     NSString *bundlePath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] resourcePath];
     NSString *serverCertDirectoryPath = [bundlePath stringByAppendingPathComponent:@"HTTPBinOrgServerTrustChain"];
@@ -58,7 +41,7 @@ static SecTrustRef AFUTADNNetServerTrust() {
 }
 
 static SecCertificateRef AFUTHTTPBinOrgCertificate() {
-    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"httpbinorg_03172020" ofType:@"cer"];
+    NSString *certPath = [[NSBundle bundleForClass:[AFSecurityPolicyTests class]] pathForResource:@"httpbinorg_02182021" ofType:@"cer"];
     NSCAssert(certPath != nil, @"Path for certificate should not be nil");
     NSData *certData = [NSData dataWithContentsOfFile:certPath];
 
@@ -552,13 +535,8 @@ static SecTrustRef AFUTTrustWithCertificate(SecCertificateRef certificate) {
     policy.validatesDomainName = NO;
     policy.pinnedCertificates = [NSSet setWithObject:(__bridge_transfer id)SecCertificateCopyData(AFUTHTTPBinOrgCertificate())];
 
-    NSMutableData *archiveData = [NSMutableData new];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:archiveData];
-    [archiver encodeObject:policy forKey:@"policy"];
-    [archiver finishEncoding];
-
-    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:archiveData];
-    AFSecurityPolicy *unarchivedPolicy = [unarchiver decodeObjectOfClass:[AFSecurityPolicy class] forKey:@"policy"];
+    NSData *archive = [self archivedDataWithRootObject:policy];
+    AFSecurityPolicy *unarchivedPolicy = [self unarchivedObjectOfClass:[AFSecurityPolicy class] fromData:archive];
 
     XCTAssertNotEqual(unarchivedPolicy, policy);
     XCTAssertEqual(unarchivedPolicy.allowInvalidCertificates, policy.allowInvalidCertificates);

@@ -33,7 +33,11 @@
 
 - (void)setUp {
     [super setUp];
+#if TARGET_OS_MACCATALYST
+    self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
+#else
     self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+#endif
     self.request = [NSURLRequest requestWithURL:self.delayURL];
     self.sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:nil];
 }

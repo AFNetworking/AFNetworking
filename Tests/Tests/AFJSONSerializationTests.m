@@ -206,4 +206,23 @@ static NSData * AFJSONTestData() {
     XCTAssertEqual(copiedSerializer.removesKeysWithNullValues, self.responseSerializer.removesKeysWithNullValues);
 }
 
+#pragma mark NSSecureCoding
+
+- (void)testJSONSerializerSupportsSecureCoding {
+    XCTAssertTrue([AFJSONResponseSerializer supportsSecureCoding]);
+}
+
+- (void)testJSONSerializerCanBeArchivedAndUnarchived {
+    AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
+    NSData *archive = nil;
+    
+    archive = [self archivedDataWithRootObject:responseSerializer];
+    XCTAssertNotNil(archive);
+    AFJSONResponseSerializer *unarchivedSerializer = [self unarchivedObjectOfClass:[AFJSONResponseSerializer class] fromData:archive];
+    XCTAssertNotNil(unarchivedSerializer);
+    XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
+    XCTAssertTrue([unarchivedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
+    XCTAssertTrue([unarchivedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
+}
+
 @end

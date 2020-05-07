@@ -56,11 +56,11 @@
 
 - (void)testImageSerializerCanBeArchivedAndUnarchived {
     AFImageResponseSerializer   *responseSerializer = [AFImageResponseSerializer serializer];
-    NSData  *archive    = nil;
+    NSData *archive = nil;
     
-    archive = [NSKeyedArchiver archivedDataWithRootObject:responseSerializer];
+    archive = [self archivedDataWithRootObject:responseSerializer];
     XCTAssertNotNil(archive);
-    AFImageResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
+    AFImageResponseSerializer *unarchivedSerializer = [self unarchivedObjectOfClass:[AFImageResponseSerializer class] fromData:archive];
     XCTAssertNotNil(unarchivedSerializer);
     XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
     XCTAssertTrue([unarchivedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
@@ -83,9 +83,9 @@
     responseSerializer.imageScale = responseSerializer.imageScale * 2.0f;
 #endif
     
-    archive = [NSKeyedArchiver archivedDataWithRootObject:responseSerializer];
+    archive = [self archivedDataWithRootObject:responseSerializer];
     XCTAssertNotNil(archive);
-    AFImageResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
+    AFImageResponseSerializer *unarchivedSerializer = [self unarchivedObjectOfClass:[AFImageResponseSerializer class] fromData:archive];
     XCTAssertNotNil(unarchivedSerializer);
     XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
 

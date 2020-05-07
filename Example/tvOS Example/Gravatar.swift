@@ -39,7 +39,7 @@ private extension String  {
             hash += String(format: "%02x", result[i])
         }
 
-        result.deallocate(capacity: digestLength)
+        result.deallocate()
 
         return String(format: hash)
     }
