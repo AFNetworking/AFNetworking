@@ -203,6 +203,23 @@ NS_ASSUME_NONNULL_BEGIN
                              downloadProgress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
                             completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler;
 
+/**
+Creates an `NSURLSessionDataTask` with the specified request.
+
+@param request The HTTP request for the request.
+@param uploadProgressBlock A block object to be executed when the upload progress is updated. Note this block is called on the session queue, not the main queue.
+@param downloadProgressBlock A block object to be executed when the download progress is updated. Note this block is called on the session queue, not the main queue.
+@param didReceiveResponseBlock A block object to be executed when the session received response from the server. Note this block is called on the session queue, not the main queue.
+@param didReceiveDataBlock A block object to be executed when the new portion of data is received from the server. Note if this block is set then you will not receive AFNetworkingTaskDidCompleteResponseDataKey in AFNetworkingTaskDidCompleteNotification. Note this block is called on the session queue, not the main queue.
+@param completionHandler A block object to be executed when the task finishes. This block has no return value and takes three arguments: the server response, the response object created by that serializer, and the error that occurred, if any.
+*/
+- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+                               uploadProgress:(nullable void (^)(NSProgress *uploadProgress))uploadProgressBlock
+                             downloadProgress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
+                           didReceiveResponse:(nullable void (^)(NSURLResponse *response)) didReceiveResponseBlock
+                               didReceiveData:(nullable void (^)(NSData *data)) didReceiveDataBlock
+                            completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler;
+
 ///---------------------------
 /// @name Running Upload Tasks
 ///---------------------------
