@@ -168,10 +168,9 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
     _networkReachability = CFRetain(reachability);
     SCNetworkReachabilityFlags flags;
+    self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
     if (SCNetworkReachabilityGetFlags(self.networkReachability, &flags)) {
         self.networkReachabilityStatus = AFNetworkReachabilityStatusForFlags(flags);;
-    } else {
-        self.networkReachabilityStatus = AFNetworkReachabilityStatusUnknown;
     }
 
     return self;
