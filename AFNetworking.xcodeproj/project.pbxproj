@@ -306,6 +306,15 @@
 		323D83E0231D185400C5BFC6 /* WKWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		323D83E1231D185400C5BFC6 /* WKWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		323D83E4231D188400C5BFC6 /* AFWKWebViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWKWebViewTests.m; sourceTree = "<group>"; };
+		439E280C247E16DE004467ED /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
+		439E280D247E16DE004467ED /* Gemfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; indentWidth = 2; lineEnding = 0; path = Gemfile; sourceTree = SOURCE_ROOT; tabWidth = 2; };
+		439E280E247E16DE004467ED /* Gemfile.lock */ = {isa = PBXFileReference; explicitFileType = text.yaml; fileEncoding = 4; indentWidth = 2; lineEnding = 0; path = Gemfile.lock; sourceTree = SOURCE_ROOT; tabWidth = 2; };
+		439E280F247E16DE004467ED /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = SOURCE_ROOT; };
+		439E2810247E16DE004467ED /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		439E2811247E16DE004467ED /* AFNetworking.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; indentWidth = 2; lineEnding = 0; path = AFNetworking.podspec; sourceTree = SOURCE_ROOT; tabWidth = 2; };
+		439E2812247E16DE004467ED /* CONTRIBUTING_CH.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING_CH.md; sourceTree = SOURCE_ROOT; };
+		439E2813247E16DE004467ED /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = SOURCE_ROOT; };
+		439E2814247E16DF004467ED /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = SOURCE_ROOT; };
 		5F4323B31BF63741003B8749 /* Equifax_Secure_Certificate_Authority_Root.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Equifax_Secure_Certificate_Authority_Root.cer; sourceTree = "<group>"; };
 		5F4323B41BF63741003B8749 /* GeoTrust_Global_CA-cross.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GeoTrust_Global_CA-cross.cer"; sourceTree = "<group>"; };
 		5F4323B51BF63741003B8749 /* google.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = google.com.cer; sourceTree = "<group>"; };
@@ -508,6 +517,15 @@
 			children = (
 				2995223C1BBF104D00859F49 /* AFNetworking.h */,
 				2995223E1BBF104D00859F49 /* Info.plist */,
+				439E2811247E16DE004467ED /* AFNetworking.podspec */,
+				439E2814247E16DF004467ED /* CHANGELOG.md */,
+				439E2812247E16DE004467ED /* CONTRIBUTING_CH.md */,
+				439E280F247E16DE004467ED /* CONTRIBUTING.md */,
+				439E280D247E16DE004467ED /* Gemfile */,
+				439E280E247E16DE004467ED /* Gemfile.lock */,
+				439E280C247E16DE004467ED /* LICENSE */,
+				439E2813247E16DE004467ED /* Package.swift */,
+				439E2810247E16DE004467ED /* README.md */,
 			);
 			name = "Supporting Files";
 			path = AFNetworking;
