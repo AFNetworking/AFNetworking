@@ -368,10 +368,8 @@ forHTTPHeaderField:(NSString *)field
     NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:url];
     mutableRequest.HTTPMethod = method;
 
-    for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
-        if ([self.mutableObservedChangedKeyPaths containsObject:keyPath]) {
-            [mutableRequest setValue:[self valueForKeyPath:keyPath] forKey:keyPath];
-        }
+    for (NSString *keyPath in self.mutableObservedChangedKeyPaths) {
+        [mutableRequest setValue:[self valueForKeyPath:keyPath] forKey:keyPath];
     }
 
     mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
