@@ -416,7 +416,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setDataTaskWillCacheResponseBlock:(nullable NSCachedURLResponse * (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse))block;
 
 /**
- Sets a block to be executed once all messages enqueued for a session have been delivered, as handled by the `NSURLSessionDataDelegate` method `URLSessionDidFinishEventsForBackgroundURLSession:`.
+ Sets a block to be executed once all messages enqueued for a session have been delivered, as handled by the `NSURLSessionDelegate` method `URLSessionDidFinishEventsForBackgroundURLSession:`.
 
  @param block A block object to be executed once all messages enqueued for a session have been delivered. The block has no return value and takes a single argument: the session.
  */
