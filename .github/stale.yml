@@ -6,7 +6,12 @@ daysUntilStale: 14
 # Number of days of inactivity before a stale Issue or Pull Request is closed
 daysUntilClose: 7
 
-onlyLabels: []
+# Issues or Pull Requests with these labels will never be considered stale
+ exemptLabels:		
+   - "support"		
+   - "bug"		
+   - "security"
+   - "needs investigation"
 
 # Label to use when marking as stale
 staleLabel: stale
