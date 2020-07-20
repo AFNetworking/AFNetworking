@@ -119,7 +119,7 @@
     self.af_URLSessionTask = nil;
     
     __weak __typeof(self)weakSelf = self;
-    __block NSURLSessionDataTask *dataTask;
+    NSURLSessionDataTask *dataTask;
     __strong __typeof(weakSelf) strongSelf = weakSelf;
     __strong __typeof(weakSelf.navigationDelegate) strongSelfDelegate = strongSelf.navigationDelegate;
     dataTask = [self.sessionManager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
@@ -131,7 +131,7 @@
             if (success) {
                 success((NSHTTPURLResponse *)response, responseObject);
             }
-            [strongSelf loadData:responseObject MIMEType:MIMEType characterEncodingName:textEncodingName baseURL:[dataTask.currentRequest URL]];
+            [strongSelf loadData:responseObject MIMEType:MIMEType characterEncodingName:textEncodingName baseURL:[request URL]];
             
             if ([strongSelfDelegate respondsToSelector:@selector(webView:didFinishNavigation:)]) {
                 [strongSelfDelegate webView:strongSelf didFinishNavigation:navigation];
