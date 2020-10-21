@@ -166,6 +166,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) dispatch_group_t completionGroup;
 
 ///---------------------
+/// @name File
+///---------------------
+
+/**
+ A Boolean value that indicates if we should allow a downloaded file to overwrite
+ a previously downloaded file of the same name. Default is `NO`.
+ */
+@property (nonatomic, assign) BOOL shouldOverwrite;
+
+///---------------------
 /// @name Initialization
 ///---------------------
 
