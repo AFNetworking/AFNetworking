@@ -51,7 +51,6 @@
 		EBE11F6A1B66716F00753127 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E02CF2177A8B710087BB23 /* UIImageView+AFNetworking.m */; };
 		EBE11F6B1B66716F00753127 /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E02CF4177A8B710087BB23 /* UIProgressView+AFNetworking.m */; };
 		EBE11F6C1B66716F00753127 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8664A1F18AA99F5007D8554 /* UIRefreshControl+AFNetworking.m */; };
-		EBE11F6D1B66716F00753127 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E02CF6177A8B710087BB23 /* UIWebView+AFNetworking.m */; };
 		F8129C7415910C37009BFE23 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8129C7215910C37009BFE23 /* AppDelegate.m */; };
 		F818101615E6A0C600EF93C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ABD6EC159FC2CE001BE42C /* MobileCoreServices.framework */; };
 		F8664A2018AA99F5007D8554 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8664A1F18AA99F5007D8554 /* UIRefreshControl+AFNetworking.m */; };
@@ -72,7 +71,6 @@
 		F8E02CF9177A8B710087BB23 /* UIButton+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E02CF0177A8B710087BB23 /* UIButton+AFNetworking.m */; };
 		F8E02CFA177A8B710087BB23 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E02CF2177A8B710087BB23 /* UIImageView+AFNetworking.m */; };
 		F8E02CFB177A8B710087BB23 /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E02CF4177A8B710087BB23 /* UIProgressView+AFNetworking.m */; };
-		F8E02CFC177A8B710087BB23 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F8E02CF6177A8B710087BB23 /* UIWebView+AFNetworking.m */; };
 		F8E469651395739D00DB05C8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469641395739D00DB05C8 /* UIKit.framework */; };
 		F8E469671395739D00DB05C8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469661395739D00DB05C8 /* Foundation.framework */; };
 		F8E469691395739D00DB05C8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E469681395739D00DB05C8 /* CoreGraphics.framework */; };
@@ -656,6 +654,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -756,7 +755,6 @@
 				EBE11F6A1B66716F00753127 /* UIImageView+AFNetworking.m in Sources */,
 				EBE11F6B1B66716F00753127 /* UIProgressView+AFNetworking.m in Sources */,
 				EBE11F6C1B66716F00753127 /* UIRefreshControl+AFNetworking.m in Sources */,
-				EBE11F6D1B66716F00753127 /* UIWebView+AFNetworking.m in Sources */,
 				EBE11F501B62EDD200753127 /* TodayViewController.m in Sources */,
 				EBE11F5A1B666EA200753127 /* Post.m in Sources */,
 				EBE11F5B1B666EA200753127 /* User.m in Sources */,
@@ -786,7 +784,6 @@
 				F8FA94B1150EFEC100ED4EAD /* AFHTTPSessionManager.m in Sources */,
 				F8D5499D17DB0EFE00BFF314 /* AFURLRequestSerialization.m in Sources */,
 				F8D5499A17DB0EF300BFF314 /* AFURLResponseSerialization.m in Sources */,
-				F8E02CFC177A8B710087BB23 /* UIWebView+AFNetworking.m in Sources */,
 				F8FA94B2150EFEC100ED4EAD /* AFHTTPRequestOperation.m in Sources */,
 				F8FA94B8150EFEC100ED4EAD /* AFURLConnectionOperation.m in Sources */,
 				F8FA94C1150F019100ED4EAD /* PostTableViewCell.m in Sources */,
