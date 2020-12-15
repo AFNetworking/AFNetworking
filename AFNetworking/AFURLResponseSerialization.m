@@ -87,6 +87,14 @@ id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions 
     return JSONObject;
 }
 
+@interface AFHTTPResponseSerializer () {
+    NSSet <NSString *> *_acceptableContentTypes;
+}
+
+@property (nonatomic, strong) dispatch_queue_t requestContentTypesModificationQueue;
+
+@end
+
 @implementation AFHTTPResponseSerializer
 
 + (instancetype)serializer {
@@ -98,7 +106,7 @@ id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions 
     if (!self) {
         return nil;
     }
-
+    self.requestContentTypesModificationQueue = dispatch_queue_create("requestContentTypesModificationQueue", DISPATCH_QUEUE_CONCURRENT);
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
     self.acceptableContentTypes = nil;
 
@@ -200,6 +208,24 @@ id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions 
     serializer.acceptableContentTypes = [self.acceptableContentTypes copyWithZone:zone];
 
     return serializer;
+}
+
+#pragma mark - Override Property
+
+- (NSSet <NSString *> *)acceptableContentTypes {
+    NSSet <NSString *> __block *value;
+    dispatch_sync(self.requestContentTypesModificationQueue, ^{
+        value = _acceptableContentTypes;
+    });
+    return value;
+}
+
+- (void)setAcceptableContentTypes:(NSSet<NSString *> *)acceptableContentTypes {
+    dispatch_barrier_async(self.requestContentTypesModificationQueue, ^{
+        if (acceptableContentTypes) {
+            _acceptableContentTypes = [acceptableContentTypes copy];
+        }
+    });
 }
 
 @end
