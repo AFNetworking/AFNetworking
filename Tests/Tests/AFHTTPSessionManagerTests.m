@@ -103,7 +103,7 @@
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
-    NSURLRequest *redirectRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"/redirect/1" relativeToURL:self.baseURL]];
+    NSURLRequest *redirectRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://httpbingo.org/redirect/1"]];
     NSURLSessionDataTask *redirectTask = [self.sessionManager dataTaskWithRequest:redirectRequest uploadProgress:nil downloadProgress:nil
                                                          completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
