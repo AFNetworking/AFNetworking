@@ -571,7 +571,7 @@ forHTTPHeaderField:(NSString *)field
     dispatch_sync(self.requestHeaderModificationQueue, ^{
         [coder encodeObject:self.mutableHTTPRequestHeaders forKey:NSStringFromSelector(@selector(mutableHTTPRequestHeaders))];
     });
-    [coder encodeInteger:self.queryStringSerializationStyle forKey:NSStringFromSelector(@selector(queryStringSerializationStyle))];
+    [coder encodeInteger:(NSInteger)self.queryStringSerializationStyle forKey:NSStringFromSelector(@selector(queryStringSerializationStyle))];
 }
 
 #pragma mark - NSCopying
@@ -1295,7 +1295,7 @@ typedef enum {
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
 
-    [coder encodeInteger:self.writingOptions forKey:NSStringFromSelector(@selector(writingOptions))];
+    [coder encodeInteger:(NSInteger)self.writingOptions forKey:NSStringFromSelector(@selector(writingOptions))];
 }
 
 #pragma mark - NSCopying
@@ -1381,7 +1381,7 @@ typedef enum {
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
 
-    [coder encodeInteger:self.format forKey:NSStringFromSelector(@selector(format))];
+    [coder encodeInteger:(NSInteger)self.format forKey:NSStringFromSelector(@selector(format))];
     [coder encodeObject:@(self.writeOptions) forKey:NSStringFromSelector(@selector(writeOptions))];
 }
 
