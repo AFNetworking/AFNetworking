@@ -106,7 +106,7 @@ id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions 
     if (!self) {
         return nil;
     }
-    self.requestContentTypesModificationQueue = dispatch_queue_create("requestContentTypesModificationQueue", DISPATCH_QUEUE_CONCURRENT);
+    self.requestContentTypesModificationQueue = dispatch_queue_create("requestContentTypesModificationQueue", DISPATCH_QUEUE_SERIAL);
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
     self.acceptableContentTypes = nil;
 
@@ -221,7 +221,7 @@ id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions 
 }
 
 - (void)setAcceptableContentTypes:(NSSet<NSString *> *)acceptableContentTypes {
-    dispatch_barrier_async(self.requestContentTypesModificationQueue, ^{
+    dispatch_async(self.requestContentTypesModificationQueue, ^{
         if (acceptableContentTypes) {
             _acceptableContentTypes = [acceptableContentTypes copy];
         }
