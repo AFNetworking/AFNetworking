@@ -103,7 +103,7 @@
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
 
-    NSURLRequest *redirectRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://httpbingo.org/redirect/1"]];
+    NSURLRequest *redirectRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://httpbingo.org/redirect/1" relativeToURL:self.baseURL]];
     NSURLSessionDataTask *redirectTask = [self.sessionManager dataTaskWithRequest:redirectRequest uploadProgress:nil downloadProgress:nil
                                                          completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         blockError = error;
@@ -154,6 +154,41 @@
     XCTAssertTrue(completionBlockExecuted);
     XCTAssertTrue(managerDownloadFinishedBlockExecuted);
     XCTAssertNotNil(downloadFilePath);
+}
+
+- (void)testDownloadFileForOverwriteCompletionSpecifiesURLInCompletionBlock
+{
+    __block BOOL destinationBlockExecuted = NO;
+    __block BOOL completionBlockExecuted = NO;
+    __block NSData *downloadFileData = nil;
+    __block NSURL *downloadFilePath = nil;
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    
+    NSURL *dirURL  = [[[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *filePathURL = [dirURL URLByAppendingPathComponent:@"t1.file"];
+    NSString *tempFileContent = @"TODAY is a Singapore English-language digital news provider under Mediacorp. It was formerly a national free daily newspaper. Mediacorp, the newspaper's parent company is Singapore's largest media broadcaster and provider in Singapore and the only terrestrial television broadcaster in the country. At its inception, Mediacorp had a 60% stake in TODAY while, Singapore Press Holdings owned 40% of TODAY. The newspaper was published and distributed from Monday to Saturday. In 2017, the two media companies announced that SPH will divest its stakes in Mediacorp Press, which publishes TODAY, and Mediacorp TV, which owns Channels 5, 8, U, and Mediacorp Studio. TODAY was distributed to selected homes upon subscription and for free at MRT stations, bus interchanges, selected food and beverage outlets, shopping malls among other public areas during the morning rush hour.";
+    NSData *tempFileData = [tempFileContent dataUsingEncoding:NSUTF8StringEncoding];
+    BOOL ret = [tempFileData writeToURL:filePathURL atomically:YES];
+    
+    self.sessionManager.shouldOverwrite = YES;
+    NSURLSessionDownloadTask *downloadTask = [self.sessionManager downloadTaskWithRequest:[NSURLRequest requestWithURL:self.baseURL]
+                                                                          progress:nil
+                                                                       destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+                                                                           destinationBlockExecuted = YES;
+                                                                           return filePathURL;
+                                                                       }
+                                                                 completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+                                                                     downloadFilePath = filePath;
+                                                                     completionBlockExecuted = YES;
+                                                                     downloadFileData = [NSData dataWithContentsOfURL:filePath];
+                                                                     [expectation fulfill];
+                                                                 }];
+    [downloadTask resume];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+    XCTAssertTrue(completionBlockExecuted);
+    XCTAssertTrue(destinationBlockExecuted);
+    XCTAssertNotNil(downloadFilePath);
+    XCTAssertTrue(ret == YES && tempFileData.length != downloadFileData.length);
 }
 
 - (void)testDownloadFileCompletionSpecifiesURLInCompletionBlock {
