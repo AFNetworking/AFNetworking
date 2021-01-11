@@ -621,36 +621,6 @@ static inline NSString * AFContentTypeForPathExtension(NSString *extension) {
 NSUInteger const kAFUploadStream3GSuggestedPacketSize = 1024 * 16;
 NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
-@interface AFHTTPBodyPart : NSObject
-@property (nonatomic, assign) NSStringEncoding stringEncoding;
-@property (nonatomic, strong) NSDictionary *headers;
-@property (nonatomic, copy) NSString *boundary;
-@property (nonatomic, strong) id body;
-@property (nonatomic, assign) unsigned long long bodyContentLength;
-@property (nonatomic, strong) NSInputStream *inputStream;
-
-@property (nonatomic, assign) BOOL hasInitialBoundary;
-@property (nonatomic, assign) BOOL hasFinalBoundary;
-
-@property (readonly, nonatomic, assign, getter = hasBytesAvailable) BOOL bytesAvailable;
-@property (readonly, nonatomic, assign) unsigned long long contentLength;
-
-- (NSInteger)read:(uint8_t *)buffer
-        maxLength:(NSUInteger)length;
-@end
-
-@interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
-@property (nonatomic, assign) NSUInteger numberOfBytesInPacket;
-@property (nonatomic, assign) NSTimeInterval delay;
-@property (nonatomic, strong) NSInputStream *inputStream;
-@property (readonly, nonatomic, assign) unsigned long long contentLength;
-@property (readonly, nonatomic, assign, getter = isEmpty) BOOL empty;
-
-- (instancetype)initWithStringEncoding:(NSStringEncoding)encoding;
-- (void)setInitialAndFinalBoundaries;
-- (void)appendHTTPBodyPart:(AFHTTPBodyPart *)bodyPart;
-@end
-
 #pragma mark -
 
 @interface AFStreamingMultipartFormData ()
@@ -884,6 +854,13 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 - (void)appendHTTPBodyPart:(AFHTTPBodyPart *)bodyPart {
     [self.HTTPBodyParts addObject:bodyPart];
+}
+
+- (void)flushData {
+    self.currentHTTPBodyPart = nil;
+    self.HTTPBodyPartEnumerator = nil;
+    [self.HTTPBodyParts removeAllObjects];
+    self.HTTPBodyParts = nil;
 }
 
 - (BOOL)isEmpty {
