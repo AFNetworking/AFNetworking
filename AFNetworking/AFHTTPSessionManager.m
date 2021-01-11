@@ -193,6 +193,10 @@
     }
     
     __block NSURLSessionDataTask *task = [self uploadTaskWithStreamedRequest:request progress:uploadProgress completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
+        AFMultipartBodyStream *stream = (AFMultipartBodyStream *)request.HTTPBodyStream;
+        if ([stream isKindOfClass:[AFMultipartBodyStream class]]) {
+            [stream flushData];
+        }
         if (error) {
             if (failure) {
                 failure(task, error);

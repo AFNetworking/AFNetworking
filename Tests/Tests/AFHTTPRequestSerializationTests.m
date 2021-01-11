@@ -23,7 +23,7 @@
 
 #import "AFURLRequestSerialization.h"
 
-@interface AFMultipartBodyStream : NSInputStream <NSStreamDelegate>
+@interface AFMultipartBodyStream () <NSStreamDelegate>
 @property (readwrite, nonatomic, strong) NSMutableArray *HTTPBodyParts;
 @end
 
@@ -32,22 +32,6 @@
 
 - (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
                     stringEncoding:(NSStringEncoding)encoding;
-@end
-
-@interface AFHTTPBodyPart : NSObject
-@property (nonatomic, assign) NSStringEncoding stringEncoding;
-@property (nonatomic, strong) NSDictionary *headers;
-@property (nonatomic, copy) NSString *boundary;
-@property (nonatomic, strong) id body;
-@property (nonatomic, assign) NSUInteger bodyContentLength;
-@property (nonatomic, strong) NSInputStream *inputStream;
-@property (nonatomic, assign) BOOL hasInitialBoundary;
-@property (nonatomic, assign) BOOL hasFinalBoundary;
-@property (readonly, nonatomic, assign, getter = hasBytesAvailable) BOOL bytesAvailable;
-@property (readonly, nonatomic, assign) NSUInteger contentLength;
-
-- (NSInteger)read:(uint8_t *)buffer
-        maxLength:(NSUInteger)length;
 @end
 
 #pragma mark -
