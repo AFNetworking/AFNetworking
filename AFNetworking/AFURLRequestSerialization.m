@@ -728,11 +728,11 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         return NO;
     }
 
-    NSDictionary *mutableHeaders = [self headersWith:fileName mimeType:mimeType name:name];
+    NSDictionary *headers = [self headersWith:fileName mimeType:mimeType name:name];
 
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
-    bodyPart.headers = mutableHeaders;
+    bodyPart.headers = headers;
     bodyPart.boundary = self.boundary;
     bodyPart.body = fileURL;
     bodyPart.bodyContentLength = [fileAttributes[NSFileSize] unsignedLongLongValue];
@@ -751,11 +751,11 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(fileName);
     NSParameterAssert(mimeType);
 
-    NSDictionary *mutableHeaders = [self headersWith:fileName mimeType:mimeType name:name];
+    NSDictionary *headers = [self headersWith:fileName mimeType:mimeType name:name];
 
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
-    bodyPart.headers = mutableHeaders;
+    bodyPart.headers = headers;
     bodyPart.boundary = self.boundary;
     bodyPart.body = inputStream;
 
@@ -773,9 +773,9 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(fileName);
     NSParameterAssert(mimeType);
 
-    NSDictionary *mutableHeaders = [self headersWith:fileName mimeType:mimeType name:name];
+    NSDictionary *headers = [self headersWith:fileName mimeType:mimeType name:name];
 
-    [self appendPartWithHeaders:mutableHeaders body:data];
+    [self appendPartWithHeaders:headers body:data];
 }
 
 - (void)appendPartWithFormData:(NSData *)data
