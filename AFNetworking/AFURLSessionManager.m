@@ -192,17 +192,12 @@ didCompleteWithError:(NSError *)error
 
 #if AF_CAN_USE_AT_AVAILABLE && AF_CAN_INCLUDE_SESSION_TASK_METRICS
     if (@available(iOS 10, macOS 10.12, watchOS 3, tvOS 10, *)) {
-        if (self.sessionTaskMetrics) {
-            userInfo[AFNetworkingTaskDidCompleteSessionTaskMetrics] = self.sessionTaskMetrics;
-        }
+        userInfo[AFNetworkingTaskDidCompleteSessionTaskMetrics] = self.sessionTaskMetrics;
     }
 #endif
 
-    if (self.downloadFileURL) {
-        userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
-    } else if (data) {
-        userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
-    }
+    userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
+    userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
 
     if (error) {
         userInfo[AFNetworkingTaskDidCompleteErrorKey] = error;
@@ -225,13 +220,9 @@ didCompleteWithError:(NSError *)error
                 responseObject = self.downloadFileURL;
             }
 
-            if (responseObject) {
-                userInfo[AFNetworkingTaskDidCompleteSerializedResponseKey] = responseObject;
-            }
+            userInfo[AFNetworkingTaskDidCompleteSerializedResponseKey] = responseObject;
 
-            if (serializationError) {
-                userInfo[AFNetworkingTaskDidCompleteErrorKey] = serializationError;
-            }
+            userInfo[AFNetworkingTaskDidCompleteErrorKey] = serializationError;
 
             dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
                 if (self.completionHandler) {
@@ -1016,16 +1007,12 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         NSLocalizedDescriptionKey: localizedDescription
     } mutableCopy];
 
-    if (serverTrust) {
-        userInfo[NSURLErrorFailingURLPeerTrustErrorKey] = (__bridge id)serverTrust;
-    }
+    userInfo[NSURLErrorFailingURLPeerTrustErrorKey] = (__bridge id)serverTrust;
 
-    if (url) {
-        userInfo[NSURLErrorFailingURLErrorKey] = url;
+    userInfo[NSURLErrorFailingURLErrorKey] = url;
 
-        if (url.absoluteString) {
-            userInfo[NSURLErrorFailingURLStringErrorKey] = url.absoluteString;
-        }
+    if (url.absoluteString) {
+        userInfo[NSURLErrorFailingURLStringErrorKey] = url.absoluteString;
     }
 
     return [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorServerCertificateUntrusted userInfo:userInfo];
