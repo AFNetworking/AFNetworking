@@ -728,9 +728,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         return NO;
     }
 
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    NSDictionary *mutableHeaders = [self headersWith:fileName mimeType:mimeType name:name];
 
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
@@ -753,9 +751,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(fileName);
     NSParameterAssert(mimeType);
 
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    NSDictionary *mutableHeaders = [self headersWith:fileName mimeType:mimeType name:name];
 
     AFHTTPBodyPart *bodyPart = [[AFHTTPBodyPart alloc] init];
     bodyPart.stringEncoding = self.stringEncoding;
@@ -777,9 +773,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(fileName);
     NSParameterAssert(mimeType);
 
-    NSMutableDictionary *mutableHeaders = [NSMutableDictionary dictionary];
-    [mutableHeaders setValue:[NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName] forKey:@"Content-Disposition"];
-    [mutableHeaders setValue:mimeType forKey:@"Content-Type"];
+    NSDictionary *mutableHeaders = [self headersWith:fileName mimeType:mimeType name:name];
 
     [self appendPartWithHeaders:mutableHeaders body:data];
 }
@@ -830,6 +824,16 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     [self.request setValue:[NSString stringWithFormat:@"%llu", [self.bodyStream contentLength]] forHTTPHeaderField:@"Content-Length"];
 
     return self.request;
+}
+
+- (NSDictionary *)headersWith:(NSString * _Nonnull)fileName
+                     mimeType:(NSString * _Nonnull)mimeType
+                         name:(NSString * _Nonnull)name {
+    NSDictionary *headers = @{
+        @"Content-Disposition": [NSString stringWithFormat:@"form-data; name=\"%@\"; filename=\"%@\"", name, fileName],
+        @"Content-Type": mimeType
+    };
+    return headers;
 }
 
 @end
