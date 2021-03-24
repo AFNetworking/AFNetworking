@@ -135,14 +135,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) UInt64 memoryUsage;
 
 /**
- Initialies the `AutoPurgingImageCache` instance with default values for memory capacity and preferred memory usage after purge limit. `memoryCapcity` defaults to `100 MB`. `preferredMemoryUsageAfterPurge` defaults to `60 MB`.
+ Initializes the `AutoPurgingImageCache` instance with default values for memory capacity and preferred memory usage after purge limit. `memoryCapcity` defaults to `100 MB`. `preferredMemoryUsageAfterPurge` defaults to `60 MB`.
 
  @return The new `AutoPurgingImageCache` instance.
  */
 - (instancetype)init;
 
 /**
- Initialies the `AutoPurgingImageCache` instance with the given memory capacity and preferred memory usage
+ Initializes the `AutoPurgingImageCache` instance with the given memory capacity and preferred memory usage
  after purge limit.
 
  @param memoryCapacity The total memory capacity of the cache in bytes.
