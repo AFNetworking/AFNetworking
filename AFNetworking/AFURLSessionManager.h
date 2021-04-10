@@ -54,6 +54,7 @@
  - `URLSession:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:`
  - `URLSession:task:needNewBodyStream:`
  - `URLSession:task:didCompleteWithError:`
+ - `URLSession:task:didFinishCollectingMetrics:`
 
  ### `NSURLSessionDataDelegate`
 
