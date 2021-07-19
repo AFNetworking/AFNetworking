@@ -225,7 +225,7 @@
 }
 
 #pragma mark - Issue #2702 Tests
-// The following tests are all releated to issue #2702
+// The following tests are all related to issue #2702
 
 - (void)testDidResumeNotificationIsReceivedByLocalDataTaskAfterResume {
     NSURLSessionDataTask *task = [self.localManager dataTaskWithRequest:[self _delayURLRequest]
