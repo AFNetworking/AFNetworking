@@ -84,11 +84,9 @@
         return;
     }
     
-    if ([self isActiveTaskURLEqualToURLRequest:urlRequest]) {
-        return;
+    if (![self isActiveTaskURLEqualToURLRequest:urlRequest]) {
+        [self cancelImageDownloadTask];
     }
-    
-    [self cancelImageDownloadTask];
 
     AFImageDownloader *downloader = [[self class] sharedImageDownloader];
     id <AFImageRequestCache> imageCache = downloader.imageCache;
@@ -134,6 +132,10 @@
                             [strongSelf clearActiveDownloadInformation];
                         }
                    }];
+        
+        if ([self isActiveTaskURLEqualToURLRequest:urlRequest]) {
+            [self cancelImageDownloadTask];
+        }
 
         self.af_activeImageDownloadReceipt = receipt;
     }
