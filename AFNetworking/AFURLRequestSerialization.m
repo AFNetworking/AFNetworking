@@ -591,7 +591,7 @@ forHTTPHeaderField:(NSString *)field
 #pragma mark -
 
 static NSString * AFCreateMultipartFormBoundary() {
-    return [NSString stringWithFormat:@"Boundary+%08X%08X", arc4random(), arc4random()];
+    return [NSString stringWithFormat:@"Boundary-%08X%08X", arc4random(), arc4random()];
 }
 
 static NSString * const kAFMultipartFormCRLF = @"\r\n";
