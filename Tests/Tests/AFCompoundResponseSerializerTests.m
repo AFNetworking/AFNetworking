@@ -71,8 +71,8 @@
     XCTAssertNotNil(copiedSerializer);
     XCTAssertNotEqual(compoundSerializer, copiedSerializer);
     XCTAssertTrue(compoundSerializer.responseSerializers.count == copiedSerializer.responseSerializers.count);
-    XCTAssertTrue([NSStringFromClass([[copiedSerializer.responseSerializers objectAtIndex:0] class]) isEqualToString:NSStringFromClass([AFImageResponseSerializer class])]);
-    XCTAssertTrue([NSStringFromClass([[copiedSerializer.responseSerializers objectAtIndex:1] class]) isEqualToString:NSStringFromClass([AFJSONResponseSerializer class])]);
+    XCTAssertTrue([NSStringFromClass([copiedSerializer.responseSerializers[0] class]) isEqualToString:NSStringFromClass([AFImageResponseSerializer class])]);
+    XCTAssertTrue([NSStringFromClass([copiedSerializer.responseSerializers[1] class]) isEqualToString:NSStringFromClass([AFJSONResponseSerializer class])]);
     XCTAssertEqual(compoundSerializer.acceptableStatusCodes, copiedSerializer.acceptableStatusCodes);
     XCTAssertEqual(compoundSerializer.acceptableContentTypes, copiedSerializer.acceptableContentTypes);
 }
@@ -81,14 +81,14 @@
     AFImageResponseSerializer *imageSerializer = [AFImageResponseSerializer serializer];
     AFJSONResponseSerializer *jsonSerializer = [AFJSONResponseSerializer serializer];
     AFCompoundResponseSerializer *compoundSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[imageSerializer, jsonSerializer]];
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:compoundSerializer];
+    NSData *data = [self archivedDataWithRootObject:compoundSerializer];
     XCTAssertNotNil(data);
-    AFCompoundResponseSerializer *unarchivedSerializer = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    AFCompoundResponseSerializer *unarchivedSerializer = [self unarchivedObjectOfClass:[AFCompoundResponseSerializer class] fromData:data];
     XCTAssertNotNil(unarchivedSerializer);
     XCTAssertNotEqual(unarchivedSerializer, compoundSerializer);
     XCTAssertTrue(compoundSerializer.responseSerializers.count == compoundSerializer.responseSerializers.count);
-    XCTAssertTrue([NSStringFromClass([[unarchivedSerializer.responseSerializers objectAtIndex:0] class]) isEqualToString:NSStringFromClass([AFImageResponseSerializer class])]);
-    XCTAssertTrue([NSStringFromClass([[unarchivedSerializer.responseSerializers objectAtIndex:1] class]) isEqualToString:NSStringFromClass([AFJSONResponseSerializer class])]);
+    XCTAssertTrue([NSStringFromClass([unarchivedSerializer.responseSerializers[0] class]) isEqualToString:NSStringFromClass([AFImageResponseSerializer class])]);
+    XCTAssertTrue([NSStringFromClass([unarchivedSerializer.responseSerializers[1] class]) isEqualToString:NSStringFromClass([AFJSONResponseSerializer class])]);
 }
 
 @end

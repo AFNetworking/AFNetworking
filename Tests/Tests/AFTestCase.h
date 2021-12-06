@@ -21,6 +21,8 @@
 
 #import <XCTest/XCTest.h>
 
+SecTrustRef AFUTTrustChainForCertsInDirectory(NSString *directoryPath);
+
 @interface AFTestCase : XCTestCase
 
 @property (nonatomic, strong, readonly) NSURL *baseURL;
@@ -33,5 +35,7 @@
 
 - (void)waitForExpectationsWithCommonTimeout;
 - (void)waitForExpectationsWithCommonTimeoutUsingHandler:(XCWaitCompletionHandler)handler;
+- (NSData *)archivedDataWithRootObject:(id)object;
+- (id)unarchivedObjectOfClass:(Class)class fromData:(NSData *)data;
 
 @end

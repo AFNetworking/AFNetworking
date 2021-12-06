@@ -33,14 +33,18 @@
 
 - (void)setUp {
     [super setUp];
+#if TARGET_OS_MACCATALYST
+    self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
+#else
     self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+#endif
     self.request = [NSURLRequest requestWithURL:self.delayURL];
     self.sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:nil];
 }
 
 - (void)tearDown {
     [super tearDown];
-    [self.sessionManager invalidateSessionCancelingTasks:YES];
+    [self.sessionManager invalidateSessionCancelingTasks:YES resetSession:NO];
     self.sessionManager = nil;
 }
 

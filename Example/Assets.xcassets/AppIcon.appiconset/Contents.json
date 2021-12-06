@@ -2,79 +2,110 @@
   "images" : [
     {
       "idiom" : "iphone",
-      "size" : "29x29",
       "scale" : "2x",
-      "filename" : "Icon-Small@2x.png"
+      "size" : "20x20"
     },
     {
       "idiom" : "iphone",
-      "size" : "29x29",
       "scale" : "3x",
-      "filename" : "Icon-Small@3x.png"
+      "size" : "20x20"
     },
     {
+      "filename" : "Icon-Small@2x.png",
       "idiom" : "iphone",
-      "size" : "40x40",
       "scale" : "2x",
-      "filename" : "Icon-40@2x.png"
+      "size" : "29x29"
     },
     {
+      "filename" : "Icon-Small@3x.png",
       "idiom" : "iphone",
-      "size" : "40x40",
       "scale" : "3x",
-      "filename" : "Icon-40@3x.png"
+      "size" : "29x29"
     },
     {
+      "filename" : "Icon-40@2x.png",
       "idiom" : "iphone",
-      "size" : "60x60",
       "scale" : "2x",
-      "filename" : "Icon-60@2x.png"
+      "size" : "40x40"
     },
     {
+      "filename" : "Icon-40@3x.png",
       "idiom" : "iphone",
-      "size" : "60x60",
       "scale" : "3x",
-      "filename" : "Icon-60@3x.png"
+      "size" : "40x40"
     },
     {
-      "idiom" : "ipad",
-      "size" : "29x29",
-      "scale" : "1x",
-      "filename" : "Icon-Small.png"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "29x29",
+      "filename" : "Icon-60@2x.png",
+      "idiom" : "iphone",
       "scale" : "2x",
-      "filename" : "Icon-Small@2x.png"
+      "size" : "60x60"
+    },
+    {
+      "filename" : "Icon-60@3x.png",
+      "idiom" : "iphone",
+      "scale" : "3x",
+      "size" : "60x60"
     },
     {
       "idiom" : "ipad",
-      "size" : "40x40",
       "scale" : "1x",
-      "filename" : "Icon-40.png"
+      "size" : "20x20"
     },
     {
       "idiom" : "ipad",
-      "size" : "40x40",
       "scale" : "2x",
-      "filename" : "Icon-40@2x.png"
+      "size" : "20x20"
     },
     {
+      "filename" : "Icon-Small.png",
       "idiom" : "ipad",
-      "size" : "76x76",
       "scale" : "1x",
-      "filename" : "Icon-76.png"
+      "size" : "29x29"
+    },
+    {
+      "filename" : "Icon-Small@2x.png",
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "size" : "29x29"
+    },
+    {
+      "filename" : "Icon-40.png",
+      "idiom" : "ipad",
+      "scale" : "1x",
+      "size" : "40x40"
+    },
+    {
+      "filename" : "Icon-40@2x.png",
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "size" : "40x40"
+    },
+    {
+      "filename" : "Icon-76.png",
+      "idiom" : "ipad",
+      "scale" : "1x",
+      "size" : "76x76"
+    },
+    {
+      "filename" : "Icon-76@2x.png",
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "size" : "76x76"
     },
     {
       "idiom" : "ipad",
-      "size" : "76x76",
       "scale" : "2x",
-      "filename" : "Icon-76@2x.png"
+      "size" : "83.5x83.5"
+    },
+    {
+      "filename" : "Icon-1024.png",
+      "idiom" : "ios-marketing",
+      "scale" : "1x",
+      "size" : "1024x1024"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "makeappicon"
+    "author" : "xcode",
+    "version" : 1
   }
 }

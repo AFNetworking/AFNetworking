@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9052" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9052"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -13,10 +15,10 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <menu title="AMainMenu" systemMenu="main" id="29">
             <items>
-                <menuItem title="AFNetworking OS X Example" id="56">
-                    <menu key="submenu" title="AFNetworking OS X Example" systemMenu="apple" id="57">
+                <menuItem title="AFNetworking macOS Example" id="56">
+                    <menu key="submenu" title="AFNetworking macOS Example" systemMenu="apple" id="57">
                         <items>
-                            <menuItem title="About AFNetworking OS X Example" id="58">
+                            <menuItem title="About AFNetworking macOS Example" id="58">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="orderFrontStandardAboutPanel:" target="-2" id="142"/>
@@ -31,7 +33,7 @@
                             <menuItem isSeparatorItem="YES" id="144">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Hide AFNetworking OS X Example" keyEquivalent="h" id="134">
+                            <menuItem title="Hide AFNetworking macOS Example" keyEquivalent="h" id="134">
                                 <connections>
                                     <action selector="hide:" target="-1" id="367"/>
                                 </connections>
@@ -50,7 +52,7 @@
                             <menuItem isSeparatorItem="YES" id="149">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Quit AFNetworking OS X Example" keyEquivalent="q" id="136">
+                            <menuItem title="Quit AFNetworking macOS Example" keyEquivalent="q" id="136">
                                 <connections>
                                     <action selector="terminate:" target="-3" id="449"/>
                                 </connections>
@@ -148,7 +150,7 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Help" systemMenu="help" id="491">
                         <items>
-                            <menuItem title="AFNetworking OS X Example Help" keyEquivalent="?" id="492">
+                            <menuItem title="AFNetworking macOS Example Help" keyEquivalent="?" id="492">
                                 <connections>
                                     <action selector="showHelp:" target="-1" id="493"/>
                                 </connections>
@@ -158,33 +160,32 @@
                 </menuItem>
             </items>
         </menu>
-        <window title="AFNetworking OS X Example" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="371">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" unifiedTitleAndToolbar="YES"/>
+        <window title="AFNetworking macOS Example" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="60" y="295" width="331" height="500"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <rect key="contentRect" x="60" y="295" width="375" height="494"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <value key="minSize" type="size" width="375" height="200"/>
             <value key="maxSize" type="size" width="375" height="1280"/>
             <view key="contentView" id="372">
-                <rect key="frame" x="0.0" y="0.0" width="331" height="500"/>
+                <rect key="frame" x="0.0" y="0.0" width="387" height="494"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="95" horizontalPageScroll="10" verticalLineScroll="95" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="537">
-                        <rect key="frame" x="-1" y="0.0" width="333" height="500"/>
+                        <rect key="frame" x="0.0" y="0.0" width="387" height="494"/>
                         <clipView key="contentView" id="9mM-mF-FPz">
-                            <rect key="frame" x="1" y="1" width="331" height="498"/>
+                            <rect key="frame" x="1" y="1" width="385" height="492"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="85" rowSizeStyle="automatic" viewBased="YES" id="541">
-                                    <rect key="frame" x="0.0" y="0.0" width="331" height="0.0"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="385" height="492"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="10" height="10"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn width="321" minWidth="70" maxWidth="10000" id="542">
+                                        <tableColumn width="375" minWidth="70" maxWidth="10000" id="542">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -192,11 +193,11 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
                                                 <tableCellView id="577">
-                                                    <rect key="frame" x="5" y="5" width="321" height="85"/>
+                                                    <rect key="frame" x="5" y="5" width="375" height="85"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="578">
-                                                            <rect key="frame" x="85" y="65" width="235" height="17"/>
+                                                            <rect key="frame" x="85" y="65" width="272" height="17"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="17" id="813"/>
                                                             </constraints>
@@ -221,14 +222,12 @@
                                                             </connections>
                                                         </imageView>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="596">
-                                                            <rect key="frame" x="85" y="3" width="234" height="56"/>
+                                                            <rect key="frame" x="85" y="3" width="272" height="56"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="34" id="694"/>
                                                                 <constraint firstAttribute="height" constant="56" id="842"/>
-                                                                <constraint firstAttribute="width" priority="652" constant="230" id="843"/>
                                                             </constraints>
                                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="597">
-                                                                <font key="font" metaFont="smallSystem"/>
+                                                                <font key="font" metaFont="message" size="11"/>
                                                                 <string key="title">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mi.</string>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -239,15 +238,14 @@
                                                         </textField>
                                                     </subviews>
                                                     <constraints>
-                                                        <constraint firstItem="596" firstAttribute="top" secondItem="577" secondAttribute="top" constant="26" id="702"/>
                                                         <constraint firstItem="594" firstAttribute="leading" secondItem="577" secondAttribute="leading" constant="17" id="816"/>
                                                         <constraint firstItem="594" firstAttribute="top" secondItem="577" secondAttribute="top" constant="11" id="824"/>
-                                                        <constraint firstAttribute="trailing" secondItem="578" secondAttribute="trailing" constant="3" id="836"/>
+                                                        <constraint firstAttribute="trailing" secondItem="578" secondAttribute="trailing" constant="20" symbolic="YES" id="836"/>
                                                         <constraint firstItem="578" firstAttribute="leading" secondItem="596" secondAttribute="leading" id="837"/>
                                                         <constraint firstItem="578" firstAttribute="top" secondItem="577" secondAttribute="top" constant="3" id="838"/>
-                                                        <constraint firstItem="578" firstAttribute="centerX" secondItem="596" secondAttribute="centerX" id="844"/>
-                                                        <constraint firstItem="596" firstAttribute="leading" secondItem="577" secondAttribute="leading" constant="87" id="845"/>
-                                                        <constraint firstItem="578" firstAttribute="leading" secondItem="577" secondAttribute="leading" constant="87" id="846"/>
+                                                        <constraint firstItem="596" firstAttribute="trailing" secondItem="578" secondAttribute="trailing" id="9Qo-AA-Rvh"/>
+                                                        <constraint firstItem="596" firstAttribute="top" secondItem="578" secondAttribute="bottom" constant="6" id="KDb-ef-4rO"/>
+                                                        <constraint firstItem="578" firstAttribute="leading" secondItem="594" secondAttribute="trailing" constant="20" id="eeZ-0e-Yl6"/>
                                                     </constraints>
                                                     <connections>
                                                         <outlet property="textField" destination="578" id="580"/>
@@ -261,25 +259,25 @@
                                     </tableColumns>
                                 </tableView>
                             </subviews>
-                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
-                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="540">
-                            <rect key="frame" x="1" y="484" width="373" height="15"/>
+                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.45454545454545453" horizontal="YES" id="540">
+                            <rect key="frame" x="1" y="477" width="373" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="538">
+                        <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="538">
                             <rect key="frame" x="224" y="17" width="15" height="102"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="537" firstAttribute="centerY" secondItem="372" secondAttribute="centerY" id="714"/>
-                    <constraint firstAttribute="trailing" secondItem="537" secondAttribute="trailing" constant="-1" id="839"/>
-                    <constraint firstItem="537" firstAttribute="leading" secondItem="372" secondAttribute="leading" constant="-1" id="840"/>
-                    <constraint firstItem="537" firstAttribute="top" secondItem="372" secondAttribute="top" id="841"/>
+                    <constraint firstAttribute="bottom" secondItem="537" secondAttribute="bottom" id="CcA-p3-gNK"/>
+                    <constraint firstItem="537" firstAttribute="top" secondItem="372" secondAttribute="top" id="SMl-Wl-xmG"/>
+                    <constraint firstItem="537" firstAttribute="leading" secondItem="372" secondAttribute="leading" id="co3-52-6Hz"/>
+                    <constraint firstAttribute="trailing" secondItem="537" secondAttribute="trailing" id="reX-Sf-Lm8"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="130.5" y="148"/>
         </window>
         <customObject id="494" customClass="AppDelegate">
             <connections>

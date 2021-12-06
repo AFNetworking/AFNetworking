@@ -177,7 +177,7 @@ static NSData * AFJSONTestData() {
 - (void)testThatJSONRemovesKeysWithNullValues {
     self.responseSerializer.removesKeysWithNullValues = YES;
     NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:self.baseURL statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Content-Type":@"text/json"}];
-    NSData *data = [NSJSONSerialization dataWithJSONObject:@{@"key":@"value",@"nullkey":[NSNull null],@"array":@[@{@"subnullkey":[NSNull null]}]}
+    NSData *data = [NSJSONSerialization dataWithJSONObject:@{@"key":@"value",@"nullkey":[NSNull null],@"array":@[@{@"subnullkey":[NSNull null]}], @"arrayWithNulls": @[[NSNull null]]}
                                                    options:(NSJSONWritingOptions)0
                                                      error:nil];
 
@@ -189,6 +189,7 @@ static NSData * AFJSONTestData() {
     XCTAssertNotNil(responseObject[@"key"]);
     XCTAssertNil(responseObject[@"nullkey"]);
     XCTAssertNil(responseObject[@"array"][0][@"subnullkey"]);
+    XCTAssertEqualObjects(responseObject[@"arrayWithNulls"], @[]);
 }
 
 - (void)testThatJSONResponseSerializerCanBeCopied {
@@ -203,6 +204,25 @@ static NSData * AFJSONTestData() {
     XCTAssertEqual(copiedSerializer.acceptableContentTypes, self.responseSerializer.acceptableContentTypes);
     XCTAssertEqual(copiedSerializer.readingOptions, self.responseSerializer.readingOptions);
     XCTAssertEqual(copiedSerializer.removesKeysWithNullValues, self.responseSerializer.removesKeysWithNullValues);
+}
+
+#pragma mark NSSecureCoding
+
+- (void)testJSONSerializerSupportsSecureCoding {
+    XCTAssertTrue([AFJSONResponseSerializer supportsSecureCoding]);
+}
+
+- (void)testJSONSerializerCanBeArchivedAndUnarchived {
+    AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
+    NSData *archive = nil;
+    
+    archive = [self archivedDataWithRootObject:responseSerializer];
+    XCTAssertNotNil(archive);
+    AFJSONResponseSerializer *unarchivedSerializer = [self unarchivedObjectOfClass:[AFJSONResponseSerializer class] fromData:archive];
+    XCTAssertNotNil(unarchivedSerializer);
+    XCTAssertNotEqual(unarchivedSerializer, responseSerializer);
+    XCTAssertTrue([unarchivedSerializer.acceptableContentTypes isEqualToSet:responseSerializer.acceptableContentTypes]);
+    XCTAssertTrue([unarchivedSerializer.acceptableStatusCodes isEqualToIndexSet:responseSerializer.acceptableStatusCodes]);
 }
 
 @end
