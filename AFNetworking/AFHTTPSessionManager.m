@@ -199,8 +199,15 @@
             }
         } else {
             if (success) {
-                success(task, responseObject);
+                NSArray* data;
+                if (responseObject) {
+                    data = @[response, responseObject];
+                } else {
+                    data = @[response, [NSNull null]];
+                }
+                success(task, data);
             }
+            
         }
     }];
     
@@ -284,7 +291,13 @@
             }
         } else {
             if (success) {
-                success(dataTask, responseObject);
+                NSArray* data;
+                if (responseObject) {
+                    data = @[response, responseObject];
+                } else {
+                    data = @[response, [NSNull null]];
+                }
+                success(dataTask, data);
             }
         }
     }];
