@@ -74,6 +74,51 @@
     [self waitForExpectationsWithCommonTimeout];
 }
 
+- (void)testThatDuplicateRequestOnlyCalledLastTime {
+    XCTAssertNil(self.imageView.image);
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
+    [self.imageView
+     setImageWithURLRequest:self.jpegURLRequest
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+        XCTFail("repeat requests should be called only the last time");
+     }
+     failure:nil];
+    
+    [self.imageView
+     setImageWithURLRequest:self.error404URLRequest
+     placeholderImage:nil
+     success:nil
+     failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithCommonTimeout];
+}
+
+- (void)testThatDuplicateSameRequestOnlyCalledLastTime {
+    XCTAssertNil(self.imageView.image);
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Request should succeed"];
+    [self.imageView
+     setImageWithURLRequest:self.jpegURLRequest
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+        XCTFail("repeat requests should be called only the last time");
+     }
+     failure:nil];
+    
+    __block UIImage *responseImage;
+    [self.imageView
+     setImageWithURLRequest:self.jpegURLRequest
+     placeholderImage:nil
+     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+        responseImage = image;
+        [expectation fulfill];
+     }
+     failure:nil];
+    [self waitForExpectationsWithCommonTimeout];
+    XCTAssertNotNil(responseImage);
+}
+
 - (void)testThatPlaceholderImageIsSetIfRequestFails {
     UIImage *placeholder = [UIImage imageNamed:@"logo"];
     XCTestExpectation *expectation = [self expectationWithDescription:@"Request should fail"];
