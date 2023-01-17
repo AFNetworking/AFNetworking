@@ -111,21 +111,21 @@
 + (NSURLCache *)defaultURLCache {
     NSUInteger memoryCapacity = 20 * 1024 * 1024; // 20MB
     NSUInteger diskCapacity = 150 * 1024 * 1024; // 150MB
+    NSString *diskPath = @"com.alamofire.imagedownloader";
+#if TARGET_OS_MACCATALYST
     NSURL *cacheURL = [[[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory
                                                               inDomain:NSUserDomainMask
                                                      appropriateForURL:nil
                                                                 create:YES
                                                                  error:nil]
-                       URLByAppendingPathComponent:@"com.alamofire.imagedownloader"];
-    
-#if TARGET_OS_MACCATALYST
+                       URLByAppendingPathComponent:diskPath];
     return [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity
                                          diskCapacity:diskCapacity
                                          directoryURL:cacheURL];
 #else
     return [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity
                                          diskCapacity:diskCapacity
-                                             diskPath:[cacheURL path]];
+                                             diskPath:diskPath];
 #endif
 }
 
