@@ -1,3 +1,14 @@
+# AFNetworking is Deprecated
+
+As of Jan. 17, 2023, AFNetworking is deprecated and there will be no further releases. This repo will remain online in perpetuity as an archive. There are a couple options for continued AFNetworking use:
+
+1. Copy AFNetworking into your project and compile it directly. This gives you full control over the code.
+2. Fork AFNetworking and use the fork in your dependency manager. There will be no official forks but anyone can fork at any time and can even publish those forks under a different name, in accordance with AFNetworking's license.
+
+Moving forward, Alamofire is the suggested migration path for networking in modern Swift. Anyone who needs help making that migration is welcome to ask on [StackOverflow](https://stackoverflow.com) and tag `alamofire` and `afnetworking`, or open a discussion on Alamofire's [GitHub Discussions](https://github.com/Alamofire/Alamofire/discussions) regarding any migration issues or missing features.
+
+---
+
 <p align="center" >
   <img src="https://raw.github.com/AFNetworking/AFNetworking/assets/afnetworking-logo.png" alt="AFNetworking" title="AFNetworking">
 </p>
@@ -26,6 +37,7 @@ Perhaps the most important feature of all, however, is the amazing community of 
 - If you **want to contribute**, submit a pull request.
 
 ## Installation
+
 AFNetworking supports multiple methods for installing the library in a project.
 
 ## Installation with CocoaPods
@@ -58,14 +70,14 @@ github "AFNetworking/AFNetworking" ~> 4.0
 
 ## Requirements
 
-| AFNetworking Version | Minimum iOS Target  | Minimum macOS Target  | Minimum watchOS Target  | Minimum tvOS Target  |                                   Notes                                   |
-|:--------------------:|:---------------------------:|:----------------------------:|:----------------------------:|:----------------------------:|:-------------------------------------------------------------------------:|
-| 4.x | iOS 9 | macOS 10.10 | watchOS 2.0 | tvOS 9.0 | Xcode 11+ is required. |
-| 3.x | iOS 7 | OS X 10.9 | watchOS 2.0 | tvOS 9.0 | Xcode 7+ is required. `NSURLConnectionOperation` support has been removed. |
-| 2.6 -> 2.6.3 | iOS 7 | OS X 10.9 | watchOS 2.0 | n/a | Xcode 7+ is required. |
-| 2.0 -> 2.5.4 | iOS 6 | OS X 10.8 | n/a | n/a | Xcode 5+ is required. `NSURLSession` subspec requires iOS 7 or OS X 10.9. |
-| 1.x | iOS 5 | Mac OS X 10.7 | n/a | n/a |
-| 0.10.x | iOS 4 | Mac OS X 10.6 | n/a | n/a |
+| AFNetworking Version | Minimum iOS Target | Minimum macOS Target | Minimum watchOS Target | Minimum tvOS Target |                                   Notes                                    |
+| :------------------: | :----------------: | :------------------: | :--------------------: | :-----------------: | :------------------------------------------------------------------------: |
+|         4.x          |       iOS 9        |     macOS 10.10      |      watchOS 2.0       |      tvOS 9.0       |                           Xcode 11+ is required.                           |
+|         3.x          |       iOS 7        |      OS X 10.9       |      watchOS 2.0       |      tvOS 9.0       | Xcode 7+ is required. `NSURLConnectionOperation` support has been removed. |
+|     2.6 -> 2.6.3     |       iOS 7        |      OS X 10.9       |      watchOS 2.0       |         n/a         |                           Xcode 7+ is required.                            |
+|     2.0 -> 2.5.4     |       iOS 6        |      OS X 10.8       |          n/a           |         n/a         | Xcode 5+ is required. `NSURLSession` subspec requires iOS 7 or OS X 10.9.  |
+|         1.x          |       iOS 5        |    Mac OS X 10.7     |          n/a           |         n/a         |
+|        0.10.x        |       iOS 4        |    Mac OS X 10.6     |          n/a           |         n/a         |
 
 (macOS projects must support [64-bit with modern Cocoa runtime](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtVersionsPlatforms.html)).
 
@@ -80,11 +92,11 @@ github "AFNetworking/AFNetworking" ~> 4.0
 
 ### Serialization
 
-* `<AFURLRequestSerialization>`
+- `<AFURLRequestSerialization>`
   - `AFHTTPRequestSerializer`
   - `AFJSONRequestSerializer`
   - `AFPropertyListRequestSerializer`
-* `<AFURLResponseSerialization>`
+- `<AFURLResponseSerialization>`
   - `AFHTTPResponseSerializer`
   - `AFJSONResponseSerializer`
   - `AFXMLParserResponseSerializer`
@@ -239,12 +251,12 @@ NSDictionary *parameters = @{@"foo": @"bar", @"baz": @[@1, @2, @3]};
 
 `AFNetworkReachabilityManager` monitors the reachability of domains, and addresses for both WWAN and WiFi network interfaces.
 
-* Do not use Reachability to determine if the original request should be sent.
-	* You should try to send it.
-* You can use Reachability to determine when a request should be automatically retried.
-	* Although it may still fail, a Reachability notification that the connectivity is available is a good time to retry something.
-* Network reachability is a useful tool for determining why a request might have failed.
-	* After a network request has failed, telling the user they're offline is better than giving them a more technical but accurate error, such as "request timed out."
+- Do not use Reachability to determine if the original request should be sent.
+  - You should try to send it.
+- You can use Reachability to determine when a request should be automatically retried.
+  - Although it may still fail, a Reachability notification that the connectivity is available is a good time to retry something.
+- Network reachability is a useful tool for determining why a request might have failed.
+  - After a network request has failed, telling the user they're offline is better than giving them a more technical but accurate error, such as "request timed out."
 
 See also [WWDC 2012 session 706, "Networking Best Practices."](https://developer.apple.com/videos/play/wwdc2012-706/).
 
