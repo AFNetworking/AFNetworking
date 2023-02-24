@@ -819,73 +819,73 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
 #pragma mark -
 
-- (void)setSessionDidBecomeInvalidBlock:(void (^)(NSURLSession *session, NSError *error))block {
+- (void)setSessionDidBecomeInvalidBlock:(AFURLSessionDidBecomeInvalidBlock)block {
     self.sessionDidBecomeInvalid = block;
 }
 
-- (void)setSessionDidReceiveAuthenticationChallengeBlock:(NSURLSessionAuthChallengeDisposition (^)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential))block {
+- (void)setSessionDidReceiveAuthenticationChallengeBlock:(AFURLSessionDidReceiveAuthenticationChallengeBlock)block {
     self.sessionDidReceiveAuthenticationChallenge = block;
 }
 
 #if !TARGET_OS_OSX
-- (void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^)(NSURLSession *session))block {
+- (void)setDidFinishEventsForBackgroundURLSessionBlock:(AFURLSessionDidFinishEventsForBackgroundURLSessionBlock)block {
     self.didFinishEventsForBackgroundURLSession = block;
 }
 #endif
 
 #pragma mark -
 
-- (void)setTaskNeedNewBodyStreamBlock:(NSInputStream * (^)(NSURLSession *session, NSURLSessionTask *task))block {
+- (void)setTaskNeedNewBodyStreamBlock:(AFURLSessionTaskNeedNewBodyStreamBlock)block {
     self.taskNeedNewBodyStream = block;
 }
 
-- (void)setTaskWillPerformHTTPRedirectionBlock:(NSURLRequest * (^)(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request))block {
+- (void)setTaskWillPerformHTTPRedirectionBlock:(AFURLSessionTaskWillPerformHTTPRedirectionBlock)block {
     self.taskWillPerformHTTPRedirection = block;
 }
 
-- (void)setTaskDidSendBodyDataBlock:(void (^)(NSURLSession *session, NSURLSessionTask *task, int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend))block {
+- (void)setTaskDidSendBodyDataBlock:(AFURLSessionTaskDidSendBodyDataBlock)block {
     self.taskDidSendBodyData = block;
 }
 
-- (void)setTaskDidCompleteBlock:(void (^)(NSURLSession *session, NSURLSessionTask *task, NSError *error))block {
+- (void)setTaskDidCompleteBlock:(AFURLSessionTaskDidCompleteBlock)block {
     self.taskDidComplete = block;
 }
 
 #if AF_CAN_INCLUDE_SESSION_TASK_METRICS
-- (void)setTaskDidFinishCollectingMetricsBlock:(void (^)(NSURLSession * _Nonnull, NSURLSessionTask * _Nonnull, NSURLSessionTaskMetrics * _Nullable))block AF_API_AVAILABLE(ios(10), macosx(10.12), watchos(3), tvos(10)) {
+- (void)setTaskDidFinishCollectingMetricsBlock:(AFURLSessionTaskDidFinishCollectingMetricsBlock)block AF_API_AVAILABLE(ios(10), macosx(10.12), watchos(3), tvos(10)) {
     self.taskDidFinishCollectingMetrics = block;
 }
 #endif
 
 #pragma mark -
 
-- (void)setDataTaskDidReceiveResponseBlock:(NSURLSessionResponseDisposition (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response))block {
+- (void)setDataTaskDidReceiveResponseBlock:(AFURLSessionDataTaskDidReceiveResponseBlock)block {
     self.dataTaskDidReceiveResponse = block;
 }
 
-- (void)setDataTaskDidBecomeDownloadTaskBlock:(void (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLSessionDownloadTask *downloadTask))block {
+- (void)setDataTaskDidBecomeDownloadTaskBlock:(AFURLSessionDataTaskDidBecomeDownloadTaskBlock)block {
     self.dataTaskDidBecomeDownloadTask = block;
 }
 
-- (void)setDataTaskDidReceiveDataBlock:(void (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data))block {
+- (void)setDataTaskDidReceiveDataBlock:(AFURLSessionDataTaskDidReceiveDataBlock)block {
     self.dataTaskDidReceiveData = block;
 }
 
-- (void)setDataTaskWillCacheResponseBlock:(NSCachedURLResponse * (^)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse))block {
+- (void)setDataTaskWillCacheResponseBlock:(AFURLSessionDataTaskWillCacheResponseBlock)block {
     self.dataTaskWillCacheResponse = block;
 }
 
 #pragma mark -
 
-- (void)setDownloadTaskDidFinishDownloadingBlock:(NSURL * (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, NSURL *location))block {
+- (void)setDownloadTaskDidFinishDownloadingBlock:(AFURLSessionDownloadTaskDidFinishDownloadingBlock)block {
     self.downloadTaskDidFinishDownloading = block;
 }
 
-- (void)setDownloadTaskDidWriteDataBlock:(void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite))block {
+- (void)setDownloadTaskDidWriteDataBlock:(AFURLSessionDownloadTaskDidWriteDataBlock)block {
     self.downloadTaskDidWriteData = block;
 }
 
-- (void)setDownloadTaskDidResumeBlock:(void (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes))block {
+- (void)setDownloadTaskDidResumeBlock:(AFURLSessionDownloadTaskDidResumeBlock)block {
     self.downloadTaskDidResume = block;
 }
 
